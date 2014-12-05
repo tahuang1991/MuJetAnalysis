@@ -43,7 +43,7 @@ void PrintAnalysis(){
 
   //   TFile *f = new TFile("DoubleMuParked_Run2012ABCD.root");
 
-  TFile *f = new TFile("DarkSUSY_mH_125_mGammaD_0250_ctauExp_5_8TeV-madgraph452_bridge224_LHE_pythia6_537p4_PAT_v1.root");
+  TFile *f = new TFile("/uscms/home/dildick/nobackup/work/DisplacedMuHLT/CMSSW_5_3_11_patch5/src/out_cutana_mGammaD_1500_ctauExp_5.root");
 
 
   //   f->cd("Analysis");
@@ -73,6 +73,9 @@ void PrintAnalysis(){
   Int_t m_eventsMassDiMuonsOK;
   Int_t m_eventsIsoDiMuonsOK;
   Int_t m_eventsVertexOK;
+  Int_t m_eventsMassDiMuonsOKnoHLT;
+  Int_t m_eventsIsoDiMuonsOKnoHLT;
+  Int_t m_eventsVertexOKnoHLT;
 
   Int_t m_eventsOK_diMuonsLxy;
 
@@ -116,7 +119,9 @@ void PrintAnalysis(){
   m_eventsIsoDiMuonsOK = 0;
   m_eventsVertexOK = 0;
   m_eventsOK_diMuonsLxy = 0;
-
+  m_eventsMassDiMuonsOKnoHLT = 0;
+  m_eventsIsoDiMuonsOKnoHLT = 0;
+  m_eventsVertexOKnoHLT = 0;
 
   t->SetBranchAddress("event", &event);
   t->SetBranchAddress("run", &run);
@@ -126,7 +131,7 @@ void PrintAnalysis(){
   t->SetBranchAddress("is4SelMu8", &is4SelMu8);
   t->SetBranchAddress("is2MuJets", &is2MuJets);
   t->SetBranchAddress("is2DiMuons", &is2DiMuons);
-  t->SetBranchAddress("isDzDiMuonsOK", &isDzDiMuonsOK);
+  t->SetBranchAddress("diMuons_dz_FittedVtx", &isDzDiMuonsOK); //isDzDiMuonsOK
   t->SetBranchAddress("isDiMuonHLTFired", &isDiMuonsHLTFired);
   t->SetBranchAddress("isMassDiMuonsOK", &isMassDiMuonsOK);
   t->SetBranchAddress("isIsoDiMuonsOK", &isIsoDiMuonsOK);
@@ -158,18 +163,15 @@ void PrintAnalysis(){
     if ( is1GenMu17){
       m_events1GenMu17++;
       if ( is2GenMu8){
-	m_events2GenMu8++;
+        m_events2GenMu8++;
       }
       if ( is3GenMu8){
-	m_events3GenMu8++;
+        m_events3GenMu8++;
       }
       if ( is4GenMu8){
-	m_events4GenMu8++;
+        m_events4GenMu8++;
       }
     }
-
-
-
 
     if (is1SelMu17){
       m_events1SelMu17++;
@@ -179,10 +181,13 @@ void PrintAnalysis(){
     }
 
     if (is2MuJets) m_events2MuJets++;
-    if (is2MuJets && is2DiMuons){
-      m_events2DiMuons++;
-    }
+    if (is2MuJets && is2DiMuons) m_events2DiMuons++;   
     if (is2MuJets && is2DiMuons && isDzDiMuonsOK) m_eventsDz2DiMuonsOK++;
+    // non-HLT counters
+    if (is2MuJets && is2DiMuons && isDzDiMuonsOK && isMassDiMuonsOK) m_eventsMassDiMuonsOKnoHLT++;
+    if (is2MuJets && is2DiMuons && isDzDiMuonsOK && isMassDiMuonsOK && isIsoDiMuonsOK) m_eventsIsoDiMuonsOKnoHLT++;
+    if (is2MuJets && is2DiMuons && isDzDiMuonsOK && isMassDiMuonsOK && isIsoDiMuonsOK && isVertexOK) m_eventsVertexOKnoHLT++;
+    
     if (is2MuJets && is2DiMuons && isDzDiMuonsOK && isDiMuonsHLTFired) m_eventsDiMuonsHLTFired++;
     if (is2MuJets && is2DiMuons && isDzDiMuonsOK && isDiMuonsHLTFired && isMassDiMuonsOK) m_eventsMassDiMuonsOK++;
     if (is2MuJets && is2DiMuons && isDzDiMuonsOK && isDiMuonsHLTFired && isMassDiMuonsOK && isIsoDiMuonsOK) m_eventsIsoDiMuonsOK++;

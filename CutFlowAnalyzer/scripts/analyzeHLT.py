@@ -26,22 +26,15 @@ def analyzeHLT():
 
     m_events2DiMuonsMassOK_FittedVtx_noHLT = 0
     m_events2DiMuonsMassOK_ConsistentVtx_noHLT = 0
-    
     m_events2DiMuonsIsoTkOK_FittedVtx_noHLT = 0
     m_events2DiMuonsIsoTkOK_ConsistentVtx_noHLT = 0
-
     m_eventsVertexOK_FittedVtx_noHLT = 0
     m_eventsVertexOK_ConsistentVtx_noHLT = 0
 
     m_eventsDiMuonHLTFired_FittedVtx = 0
     m_eventsDiMuonHLTFired_ConsistentVtx = 0
-    
-    m_events2DiMuonsDzOK_FittedVtx = 0
-    m_events2DiMuonsDzOK_ConsistentVtx = 0
-
     m_events2DiMuonsMassOK_FittedVtx = 0
     m_events2DiMuonsMassOK_ConsistentVtx = 0
-    
     m_events2DiMuonsIsoTkOK_FittedVtx = 0
     m_events2DiMuonsIsoTkOK_ConsistentVtx = 0
 
@@ -60,12 +53,8 @@ def analyzeHLT():
     
     b_is2DiMuonsIsoTkOK_FittedVtx = 0   
     b_is2DiMuonsIsoTkOK_ConsistentVtx = 0
-    """
     
     b_isVertexOK   
-   
-    
-    
     m_events2DiMuonMassOk_FittedVtx_noHLT = 0
     m_events2DiMuonMassOk_ConsistentVtx_noHLT = 0
     m_events2DiMuonIsoTkOk_FittedVtx_noHLT = 0
@@ -80,6 +69,7 @@ def analyzeHLT():
     m_eventsMassDiMuonsOK = 0
     m_eventsIsoDiMuonsOK = 0
     m_eventsVertexOK = 0
+    """
 
     for k in range(0,nentries):
         t.GetEntry(k)    
@@ -111,13 +101,13 @@ def analyzeHLT():
                 
                 if (t.is2DiMuonsDzOK_FittedVtx):
                     m_events2DiMuonsDzOK_FittedVtx += 1
-                    if (t.is2DiMuonsMassOK_FittedVtx_noHLT):
+                    if (t.is2DiMuonsMassOK_FittedVtx):
                         m_events2DiMuonsMassOK_FittedVtx_noHLT += 1
-                        if (t.is2DiMuonsIsoTkOK_FittedVtx_noHLT):
+                        if (t.is2DiMuonsIsoTkOK_FittedVtx):
                             m_events2DiMuonsIsoTkOK_FittedVtx_noHLT += 1
-                            if (t.isVertexOK_noHLT):
+                            if (t.isVertexOK):
                                 m_eventsVertexOK_FittedVtx_noHLT += 1
-                    if (t.isDiMuonHLTFired_FittedVtx):
+                    if (t.isDiMuonHLTFired):
                         m_eventsDiMuonHLTFired_FittedVtx += 1
                         if (t.is2DiMuonsMassOK_FittedVtx):
                             m_events2DiMuonsMassOK_FittedVtx += 1
@@ -128,13 +118,13 @@ def analyzeHLT():
                                     
                 if (t.is2DiMuonsDzOK_ConsistentVtx):
                     m_events2DiMuonsDzOK_ConsistentVtx += 1
-                    if (t.is2DiMuonsMassOK_ConsistentVtx_noHLT):
+                    if (t.is2DiMuonsMassOK_ConsistentVtx):
                         m_events2DiMuonsMassOK_ConsistentVtx_noHLT += 1
-                        if (t.is2DiMuonsIsoTkOK_ConsistentVtx_noHLT):
+                        if (t.is2DiMuonsIsoTkOK_ConsistentVtx):
                             m_events2DiMuonsIsoTkOK_ConsistentVtx_noHLT += 1
-                            if (t.isVertexOK_noHLT):
+                            if (t.isVertexOK):
                                 m_eventsVertexOK_ConsistentVtx_noHLT += 1
-                    if (t.isDiMuonHLTFired_ConsistentVtx):
+                    if (t.isDiMuonHLTFired):
                         m_eventsDiMuonHLTFired_ConsistentVtx += 1
                         if (t.is2DiMuonsMassOK_ConsistentVtx):
                             m_events2DiMuonsMassOK_ConsistentVtx += 1
@@ -157,22 +147,21 @@ def analyzeHLT():
     print "m_events2MuJets", m_events2MuJets
     print "m_events2DiMuons", m_events2DiMuons
 
-    print "m_events2DiMuonsDzOK_FittedVtx_noHLT", m_events2DiMuonsDzOK_FittedVtx_noHLT
+    print "m_events2DiMuonsDzOK_FittedVtx", m_events2DiMuonsDzOK_FittedVtx
+    print "m_events2DiMuonsDzOK_ConsistentVtx", m_events2DiMuonsDzOK_ConsistentVtx
+    
     print "m_events2DiMuonsMassOK_FittedVtx_noHLT", m_events2DiMuonsMassOK_FittedVtx_noHLT
     print "m_events2DiMuonsIsoTkOK_FittedVtx_noHLT", m_events2DiMuonsIsoTkOK_FittedVtx_noHLT
     print "m_eventsVertexOK_FittedVtx_noHLT", m_eventsVertexOK_FittedVtx_noHLT
     
-    print "m_events2DiMuonsDzOK_FittedVtx", m_events2DiMuonsDzOK_FittedVtx
     print "m_events2DiMuonsMassOK_FittedVtx", m_events2DiMuonsMassOK_FittedVtx
     print "m_events2DiMuonsIsoTkOK_FittedVtx", m_events2DiMuonsIsoTkOK_FittedVtx
     print "m_eventsVertexOK_FittedVtx", m_eventsVertexOK_FittedVtx
 
-    print "m_events2DiMuonsDzOK_ConsistentVtx_noHLT", m_events2DiMuonsDzOK_ConsistentVtx_noHLT
     print "m_events2DiMuonsMassOK_ConsistentVtx_noHLT", m_events2DiMuonsMassOK_ConsistentVtx_noHLT
     print "m_events2DiMuonsIsoTkOK_ConsistentVtx_noHLT", m_events2DiMuonsIsoTkOK_ConsistentVtx_noHLT
     print "m_eventsVertexOK_ConsistentVtx_noHLT", m_eventsVertexOK_ConsistentVtx_noHLT
     
-    print "m_events2DiMuonsDzOK_ConsistentVtx", m_events2DiMuonsDzOK_ConsistentVtx
     print "m_events2DiMuonsMassOK_ConsistentVtx", m_events2DiMuonsMassOK_ConsistentVtx
     print "m_events2DiMuonsIsoTkOK_ConsistentVtx", m_events2DiMuonsIsoTkOK_ConsistentVtx
     print "m_eventsVertexOK_ConsistentVtx", m_eventsVertexOK_ConsistentVtx

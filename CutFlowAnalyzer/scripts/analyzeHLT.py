@@ -1,7 +1,12 @@
 from ROOT import *
 
 def analyzeHLT():
-    f = TFile.Open("/eos/uscms/store/user/lpcgem/dildick/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_ANA/d37f287c329e62f6cda917e97d6b627b/out_cutana_1_2_1Aa.root")
+    files = {}
+    files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV'] = "/eos/uscms/store/user/lpcgem/dildick/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_ANA/d37f287c329e62f6cda917e97d6b627b/out_cutana_1_2_1Aa.root"
+    files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_02_8TeV'] = "/eos/uscms/store/user/lpcgem/dildick/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_02_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_02_8TeV_madgraph452_bridge224_LHE_pythia6_ANA/d37f287c329e62f6cda917e97d6b627b/out_cutana_1_1_t1W.root"
+    files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_05_8TeV'] = "/eos/uscms/store/user/lpcgem/dildick/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_05_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_05_8TeV_madgraph452_bridge224_LHE_pythia6_ANA/d37f287c329e62f6cda917e97d6b627b/out_cutana_1_2_mjw.root"
+    files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV'] = "/eos/uscms/store/user/lpcgem/dildick/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_ANA/d37f287c329e62f6cda917e97d6b627b/out_cutana_1_1_Y38.root"
+    f = TFile.Open(files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_05_8TeV'])
     f.cd("cutFlowAnalyzer")      
     f.ls()
 
@@ -41,40 +46,18 @@ def analyzeHLT():
     m_eventsVertexOK_FittedVtx = 0
     m_eventsVertexOK_ConsistentVtx = 0
 
-    """
-    m_eventsVertexOK_FittedVtx = 0
-    m_eventsVertexOK_ConsistentVtx = 0
-    
-    m_events2DiMuonsLxyOK_FittedVtx = 0
-    m_events2DiMuonsLxyOK_ConsistentVtx = 0
-    
-    b_is2DiMuonsMassOK_FittedVtx = 0  
-    b_is2DiMuonsMassOK_ConsistentVtx = 0
-    
-    b_is2DiMuonsIsoTkOK_FittedVtx = 0   
-    b_is2DiMuonsIsoTkOK_ConsistentVtx = 0
-    
-    b_isVertexOK   
-    m_events2DiMuonMassOk_FittedVtx_noHLT = 0
-    m_events2DiMuonMassOk_ConsistentVtx_noHLT = 0
-    m_events2DiMuonIsoTkOk_FittedVtx_noHLT = 0
-    m_events2DiMuonIsoTkOk_ConsistentVtx_noHLT = 0
+    m_eventsFailingHLT = 0
+    m_isDiMuonHLTFired = 0
 
-    m_eventsMassDiMuonsOKnoHLT = 0
-    m_eventsIsoDiMuonsOKnoHLT = 0
-    m_eventsVertexOKnoHLT = 0
-    
-    m_eventsDiMuonsHLTFired = 0
-    
-    m_eventsMassDiMuonsOK = 0
-    m_eventsIsoDiMuonsOK = 0
-    m_eventsVertexOK = 0
-    """
+    text_file = open("Output.txt", "w")
+    text_file2 = open("lxy.txt", "w")
 
     for k in range(0,nentries):
         t.GetEntry(k)    
         m_events += 1
-            
+
+        if (t.isDiMuonHLTFired):
+            m_isDiMuonHLTFired += 1
         if (t.is4GenMu):
             m_events4GenMu += 1            
         if (t.is1GenMu17):
@@ -107,6 +90,14 @@ def analyzeHLT():
                             m_events2DiMuonsIsoTkOK_FittedVtx_noHLT += 1
                             if (t.isVertexOK):
                                 m_eventsVertexOK_FittedVtx_noHLT += 1
+                                if (not t.isDiMuonHLTFired):                                    
+                                    m_eventsFailingHLT += 1
+                                    text_file.write("'%s:%s:%s',"%(t.run, t.lumi, t.event))
+                                    text_file2.write("%s\t%s\n"%(t.genA0_Lxy, t.genA1_Lxy))
+#                                    text_file2.write("%s\n"%(t.genA1_Lxy))
+                                    print t.genA0_Lxy
+#                                    print "genA0_Lxy", t.genA0_Lxy, "genA1_Lxy", t.genA1_Lxy
+
                     if (t.isDiMuonHLTFired):
                         m_eventsDiMuonHLTFired_FittedVtx += 1
                         if (t.is2DiMuonsMassOK_FittedVtx):
@@ -134,6 +125,7 @@ def analyzeHLT():
                                     m_eventsVertexOK_ConsistentVtx += 1
                                     
     print "m_events", m_events
+    print "m_isDiMuonHLTFired", m_isDiMuonHLTFired
     print "m_events4GenMu", m_events4GenMu
     print "m_events1GenMu17", m_events1GenMu17
     print "m_events2GenMu8", m_events2GenMu8
@@ -153,18 +145,25 @@ def analyzeHLT():
     print "m_events2DiMuonsMassOK_FittedVtx_noHLT", m_events2DiMuonsMassOK_FittedVtx_noHLT
     print "m_events2DiMuonsIsoTkOK_FittedVtx_noHLT", m_events2DiMuonsIsoTkOK_FittedVtx_noHLT
     print "m_eventsVertexOK_FittedVtx_noHLT", m_eventsVertexOK_FittedVtx_noHLT
-    
+    print
     print "m_events2DiMuonsMassOK_FittedVtx", m_events2DiMuonsMassOK_FittedVtx
     print "m_events2DiMuonsIsoTkOK_FittedVtx", m_events2DiMuonsIsoTkOK_FittedVtx
     print "m_eventsVertexOK_FittedVtx", m_eventsVertexOK_FittedVtx
-
+    print
     print "m_events2DiMuonsMassOK_ConsistentVtx_noHLT", m_events2DiMuonsMassOK_ConsistentVtx_noHLT
     print "m_events2DiMuonsIsoTkOK_ConsistentVtx_noHLT", m_events2DiMuonsIsoTkOK_ConsistentVtx_noHLT
     print "m_eventsVertexOK_ConsistentVtx_noHLT", m_eventsVertexOK_ConsistentVtx_noHLT
-    
+    print
     print "m_events2DiMuonsMassOK_ConsistentVtx", m_events2DiMuonsMassOK_ConsistentVtx
     print "m_events2DiMuonsIsoTkOK_ConsistentVtx", m_events2DiMuonsIsoTkOK_ConsistentVtx
     print "m_eventsVertexOK_ConsistentVtx", m_eventsVertexOK_ConsistentVtx
+    print
+    print "m_eventsFailingHLT", m_eventsFailingHLT
+
+    text_file.close()
+    text_file2.close()
+
+
     
 if __name__ == "__main__":
     analyzeHLT()

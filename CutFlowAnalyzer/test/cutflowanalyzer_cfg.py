@@ -5,7 +5,7 @@ from TrackingTools.TransientTrack.TransientTrackBuilder_cfi import *
 
 process = cms.Process("CutFlowAnalyzer")
 
-sample_name = os.environ["SAMPLE_NAME"]
+#sample_name = os.environ["SAMPLE_NAME"]
 
 # NMSSM Samples
 
@@ -49,13 +49,19 @@ sample_name = os.environ["SAMPLE_NAME"]
 #sample_name = "DoubleJPsiDPSto4mu_pTJPsi3GeV_8TeV-pythia8_537p4_PATv3"
 #sample_name = "pp4mu_8TeV-calchep34cpc_LHE_pythia6_537p4_PAT_v2"
 
-print "Start analyze sample:", sample_name
+#print "Start analyze sample:", sample_name
 
-file_list = "MuJetAnalysis.FileLists." + sample_name + "_cff"
-process.load(file_list)
+#file_list = "MuJetAnalysis.FileLists." + sample_name + "_cff"
+#process.load(file_list)
+
+# Input source
+process.source = cms.Source("PoolSource",
+    secondaryFileNames = cms.untracked.vstring(),
+    #fileNames = cms.untracked.vstring('file:/eos/uscms/store/user/lpcgem/dildick/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_HLT/0a5876aaa3054a855e150da7afbee7a7/out_hlt_1_1_Vjv.root')
+    fileNames = cms.untracked.vstring('file:/eos/uscms/store/user/lpcgem/dildick/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RECO/d3ab0667c6cb6bf77e14d12c3b05fdd8/out_reco_1_1_r0Y.root')
+)
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger = cms.Service("MessageLogger", destinations = cms.untracked.vstring("cout"), cout = cms.untracked.PSet(threshold = cms.untracked.string("ERROR")))
@@ -107,9 +113,11 @@ process.cutFlowAnalyzer = cms.EDAnalyzer('CutFlowAnalyzer',
 
 )
 
-process.p = cms.Path(process.TrackerMuJetProducer05 * process.PFMuJetProducer05 * process.cutFlowAnalyzer)
+process.p = cms.Path(process.TrackerMuJetProducer05 *
+                     process.PFMuJetProducer05 *
+                     process.cutFlowAnalyzer)
 
-output_file = sample_name+".root"
+output_file = "out_cutana.root"
 process.TFileService = cms.Service("TFileService", fileName = cms.string(output_file))
 
 

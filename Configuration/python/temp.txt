@@ -1,0 +1,12 @@
+cmsDriver.py DarkSUSY_mH_125_mGammaD_1500_ctauExp_5_8TeV_madgraph452_bridge224_LHE_pythia6_cfi \
+-s GEN,SIM,DIGI,L1,DIGI2RAW \
+--datatier GEN-SIM-DIGI-RAW \
+--conditions auto:startup_GRun \
+--mc \
+--magField 38T \
+--geometry DB \
+--eventcontent FEVTDEBUGHLT \
+--evt_type MuJetAnalysis/Configuration/DarkSUSY_mH_125_mGammaD_1500_ctauExp_5_8TeV_madgraph452_bridge224_LHE_pythia6_cfi \      
+--fileout out_raw.root \
+-n 10 \
+--no_exec

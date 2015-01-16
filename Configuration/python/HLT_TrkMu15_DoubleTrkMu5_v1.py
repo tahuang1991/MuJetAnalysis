@@ -6075,11 +6075,11 @@ process.HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1 = cms.Path( process.HLTBeginSequen
 ##    1 mu with pt>17
 
 """
-Step 1: Start from HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1; rename to HLT_Mu17_DoubleMu5_v1
-Step 2: Remove the isolation sequence; we will try to circumvene the isolation
+Step 1: Start from HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1; rename to HLT_TrkMu15_DoubleTrkMu5_v1
+Step 2: Remove the isolation sequence
 Step 3: Add the TrkMu reconstruction sequence
 """
-process.HLT_Mu17_DoubleMu5_v1 = cms.Path( 
+process.HLT_TrkMu15_DoubleTrkMu5_v1 = cms.Path( 
     process.HLTBeginSequence + 
     process.hltL1sL1DoubleMu103p5ORDoubleMu125 + 
     process.hltPreMu17TrkIsoVVLMu8TrkIsoVVL + 

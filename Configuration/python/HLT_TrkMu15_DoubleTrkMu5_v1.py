@@ -5718,6 +5718,41 @@ process.hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4 = cms.EDFilter( "HLTMuonIsoFilter
     CandTag = cms.InputTag( "hltGlbTrkMuonCands" ),
     DepTag = cms.VInputTag( 'hltGlbTrkMuonRelTrkIsolationVVL' )
 )
+
+process.hltTriTrkMu5Filtered = cms.EDFilter("HLTMuonTrkFilter",
+    maxNormalizedChi2 = cms.double( 1.0E99 ),
+    saveTags = cms.bool( False ),
+    maxAbsEta = cms.double( 2.5 ),
+    previousCandTag = cms.InputTag( "" ),
+    minPt = cms.double( 5.0 ),
+    minN = cms.int32( 2 ),
+    inputCandCollection = cms.InputTag( "hltGlbTrkMuonCands" ),
+    minMuonStations = cms.int32( 2 ),
+    trkMuonId = cms.uint32( 0 ),
+    requiredTypeMask = cms.uint32( 0 ),
+    minMuonHits = cms.int32( -1 ),
+    minTrkHits = cms.int32( -1 ),
+    inputMuonCollection = cms.InputTag( "hltGlbTrkMuons" ),
+    allowedTypeMask = cms.uint32( 255 )
+)
+
+process.hltSingleTrkMu15Filtered = cms.EDFilter("HLTMuonTrkFilter",
+    maxNormalizedChi2 = cms.double( 1.0E99 ),
+    saveTags = cms.bool( False ),
+    maxAbsEta = cms.double( 2.5 ),
+    previousCandTag = cms.InputTag( "" ),
+    minPt = cms.double( 15.0 ),
+    minN = cms.int32( 1 ),
+    inputCandCollection = cms.InputTag( "hltGlbTrkMuonCands" ),
+    minMuonStations = cms.int32( 2 ),
+    trkMuonId = cms.uint32( 0 ),
+    requiredTypeMask = cms.uint32( 0 ),
+    minMuonHits = cms.int32( -1 ),
+    minTrkHits = cms.int32( -1 ),
+    inputMuonCollection = cms.InputTag( "hltGlbTrkMuons" ),
+    allowedTypeMask = cms.uint32( 255 )
+)
+
 process.hltFEDSelector = cms.EDProducer( "EvFFEDSelector",
     inputTag = cms.InputTag( "rawDataCollector" ),
     fedList = cms.vuint32( 1023 )
@@ -6078,6 +6113,8 @@ process.HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1 = cms.Path( process.HLTBeginSequen
 Step 1: Start from HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1; rename to HLT_TrkMu15_DoubleTrkMu5_v1
 Step 2: Remove the isolation sequence
 Step 3: Add the TrkMu reconstruction sequence
+Step 4: Add TriTrkMu pt5 filter (HLTMuonTrkFilter)
+Step 5: Add SingleTrkMu15 filter (HLTMuonTrkFilter)
 """
 process.HLT_TrkMu15_DoubleTrkMu5_v1 = cms.Path( 
     process.HLTBeginSequence + 
@@ -6092,8 +6129,9 @@ process.HLT_TrkMu15_DoubleTrkMu5_v1 = cms.Path(
     process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered17 + 
     #process.HLTL3muontrkisovvlSequence + 
     #process.hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4 + 
-    process.HLTTrackerMuonSequence + 
-    process.hltDiMuonGlbFiltered17TrkFiltered8 + 
+    process.HLTTrackerMuonSequence +
+    process.hltTriTrkMu5Filtered +
+    process.hltSingleTrkMu15Filtered +
     process.HLTEndSequence 
 )
 

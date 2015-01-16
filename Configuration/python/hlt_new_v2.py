@@ -6059,9 +6059,45 @@ process.HLTIterativeTrackingGlbTrkMuonIter02 = cms.Sequence( process.HLTIterativ
 process.HLTTrackReconstructionForIsoGlbTrkMuonIter02 = cms.Sequence( process.HLTPixelTrackingGlbTrkMuon + process.HLTDoLocalStripSequence + process.HLTIterativeTrackingGlbTrkMuonIter02 )
 process.HLTGlbtrkmuontrkisovvlSequence = cms.Sequence( process.HLTTrackReconstructionForIsoGlbTrkMuonIter02 + process.hltGlbTrkMuonRelTrkIsolationVVL )
 
+
+## path defintions
 process.HLTriggerFirstPath = cms.Path( process.hltGetConditions + process.hltGetRaw + process.hltBoolFalse )
+
 process.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1 = cms.Path( process.HLTBeginSequence + process.hltL1sL1DoubleMu103p5ORDoubleMu125 + process.hltPreMu17TrkIsoVVLMu8TrkIsoVVL + process.hltL1fL1sDoubleMu103p5ORDoubleMu125L1Filtered0 + process.HLTL2muonrecoSequence + process.hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0 + process.hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMu + process.HLTL3muonrecoSequence + process.hltL3pfL1sDoubleMu103p5L1f0L2pf0L3PreFiltered8 + process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered17 + process.HLTL3muontrkisovvlSequence + process.hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4 + process.HLTEndSequence )
+
 process.HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1 = cms.Path( process.HLTBeginSequence + process.hltL1sL1DoubleMu103p5ORDoubleMu125 + process.hltPreMu17TrkIsoVVLTkMu8TrkIsoVVL + process.hltL1fL1sDoubleMu103p5L1OneMuFiltered0 + process.HLTL2muonrecoSequence + process.hltL2fL1sDoubleMu103p5L1f0OneMuL2Filtered10 + process.HLTL3muonrecoSequence + process.hltL3fL1sDoubleMu103p5L1f0L2f10L3Filtered17 + process.HLTTrackerMuonSequence + process.hltDiMuonGlbFiltered17TrkFiltered8 + process.HLTGlbtrkmuontrkisovvlSequence + process.hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4 + process.HLTEndSequence )
+
+## custom trigger
+## 2 L1 muons with pt 10-3.5 or 12-5
+## 2 L3 muons with pt 15-5 or 15-7
+## TrkMu:
+##    3 mu with pt>5
+##    1 mu with pt>17
+
+"""
+Step 1: Start from HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1; rename to HLT_Mu17_DoubleMu5_v1
+Step 2: Remove the isolation sequence; we will try to circumvene the isolation
+Step 3: Add the TrkMu reconstruction sequence
+"""
+process.HLT_Mu17_DoubleMu5_v1 = cms.Path( 
+    process.HLTBeginSequence + 
+    process.hltL1sL1DoubleMu103p5ORDoubleMu125 + 
+    process.hltPreMu17TrkIsoVVLMu8TrkIsoVVL + 
+    process.hltL1fL1sDoubleMu103p5ORDoubleMu125L1Filtered0 + 
+    process.HLTL2muonrecoSequence + 
+    process.hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0 + 
+    process.hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMu + 
+    process.HLTL3muonrecoSequence + 
+    process.hltL3pfL1sDoubleMu103p5L1f0L2pf0L3PreFiltered8 + 
+    process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered17 + 
+    #process.HLTL3muontrkisovvlSequence + 
+    #process.hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4 + 
+    process.HLTTrackerMuonSequence + 
+    process.hltDiMuonGlbFiltered17TrkFiltered8 + 
+    process.HLTEndSequence 
+)
+
+
 process.HLTriggerFinalPath = cms.Path( process.hltGtDigis + process.hltScalersRawToDigi + process.hltFEDSelector + process.hltTriggerSummaryAOD + process.hltTriggerSummaryRAW )
 """
 process.AOutput = cms.EndPath( process.hltPreAOutput + process.hltOutputA )

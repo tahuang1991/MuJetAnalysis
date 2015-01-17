@@ -8,8 +8,8 @@ process.source = cms.Source("PoolSource",
   )
 )
 
-from GEMCode.GEMValidation.InputFileHelpers import *
-process = useInputDir(process, ["/eos/uscms/store/user/lpcgem/dildick/dildick/DarkSUSY_mH_125_mGammaD_1500_ctauExp_5_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_1500_ctauExp_5_8TeV_madgraph452_bridge224_LHE_pythia6_RECO/d3ab0667c6cb6bf77e14d12c3b05fdd8/"])
+#from GEMCode.GEMValidation.InputFileHelpers import *
+#process = useInputDir(process, ["/eos/uscms/store/user/lpcgem/dildick/dildick/DarkSUSY_mH_125_mGammaD_1500_ctauExp_5_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_1500_ctauExp_5_8TeV_madgraph452_bridge224_LHE_pythia6_RECO/d3ab0667c6cb6bf77e14d12c3b05fdd8/"])
 
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
 

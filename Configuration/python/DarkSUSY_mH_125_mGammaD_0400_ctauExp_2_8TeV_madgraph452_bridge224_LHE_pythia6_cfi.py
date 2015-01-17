@@ -3,7 +3,7 @@ import os
 cmssw = os.getenv("CMSSW_BASE") + "/src/"
 
 source = cms.Source("LHESource",
-    fileNames = cms.untracked.vstring('file:/uscms/home/dildick/nobackup/work/DisplacedMuHLT/CMSSW_5_3_11_patch5/src/MuJetAnalysis/Configuration/python/DarkSUSY_mH_125_mGammaD_1500_ctauExp_5_8TeV_madgraph452_bridge224_events80k.lhe')
+    fileNames = cms.untracked.vstring('file:/uscms_data/d3/dildick/work/DisplacedMuHLT/CMSSW_7_3_0_patch1/src/CrabJobs/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_events80k.lhe')
 )
 
 from Configuration.Generator.PythiaUEZ2starSettings_cfi import *

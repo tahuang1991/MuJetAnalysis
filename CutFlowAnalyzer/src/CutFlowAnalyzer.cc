@@ -123,6 +123,12 @@ bool isTrackerMuonPrivateID (const reco::Muon* mu) {
   return isTrackerMuonPrivateID;
 }
 
+double dxy(double px, double py, double vx, double vy, double pt)
+{
+  //Source: https://cmssdt.cern.ch/SDT/lxr/source/DataFormats/TrackReco/interface/TrackBase.h#119
+  return (- vx * py + vy * px ) / pt;
+}
+
 //******************************************************************************
 //                           Class declaration                                  
 //******************************************************************************
@@ -291,6 +297,11 @@ class CutFlowAnalyzer : public edm::EDAnalyzer {
   Float_t b_genA1Mu0_pz;
   Float_t b_genA1Mu1_pz;
   
+  Float_t b_genA0Mu0_pt;
+  Float_t b_genA0Mu1_pt;
+  Float_t b_genA1Mu0_pt;
+  Float_t b_genA1Mu1_pt;
+
   Float_t b_genA0Mu0_eta;
   Float_t b_genA0Mu1_eta;
   Float_t b_genA1Mu0_eta;
@@ -316,6 +327,11 @@ class CutFlowAnalyzer : public edm::EDAnalyzer {
   Float_t b_genA1Mu0_vz;
   Float_t b_genA1Mu1_vz;
   
+  Float_t b_genA0Mu0_dxy;
+  Float_t b_genA0Mu1_dxy;
+  Float_t b_genA1Mu0_dxy;
+  Float_t b_genA1Mu1_dxy;
+
   Float_t b_genA0Mu_dEta;
   Float_t b_genA1Mu_dEta;
   Float_t b_genA0Mu_dPhi;
@@ -817,6 +833,11 @@ CutFlowAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       b_genA1Mu0_pz = genMuonGroups[1][0]->pz();
       b_genA1Mu1_pz = genMuonGroups[1][1]->pz();
     
+      b_genA0Mu0_pt = genMuonGroups[0][0]->pt();
+      b_genA0Mu1_pt = genMuonGroups[0][1]->pt();
+      b_genA1Mu0_pt = genMuonGroups[1][0]->pt();
+      b_genA1Mu1_pt = genMuonGroups[1][1]->pt();
+
       b_genA0Mu0_eta = genMuonGroups[0][0]->eta();
       b_genA0Mu1_eta = genMuonGroups[0][1]->eta();
       b_genA1Mu0_eta = genMuonGroups[1][0]->eta();
@@ -858,6 +879,11 @@ CutFlowAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	        b_genA0_Lz = b_genA0Mu0_vz - b_genA0_vz;
 	        b_genA1_Lz = b_genA1Mu0_vz - b_genA1_vz;
             
+          b_genA0Mu0_dxy = dxy(b_genA0Mu0_px, b_genA0Mu0_py, b_genA0Mu0_vx - b_beamSpot_x, b_genA0Mu0_vy - b_beamSpot_y, b_genA0Mu0_pt);
+          b_genA0Mu1_dxy = dxy(b_genA0Mu1_px, b_genA0Mu1_py, b_genA0Mu1_vx - b_beamSpot_x, b_genA0Mu1_vy - b_beamSpot_y, b_genA0Mu1_pt);
+          b_genA1Mu0_dxy = dxy(b_genA1Mu0_px, b_genA1Mu0_py, b_genA1Mu0_vx - b_beamSpot_x, b_genA1Mu0_vy - b_beamSpot_y, b_genA1Mu0_pt);
+          b_genA1Mu1_dxy = dxy(b_genA1Mu1_px, b_genA1Mu1_py, b_genA1Mu1_vx - b_beamSpot_x, b_genA1Mu1_vy - b_beamSpot_y, b_genA1Mu1_pt);
+
 	        b_genA0_Lxy = sqrt( b_genA0_Lx * b_genA0_Lx + b_genA0_Ly * b_genA0_Ly );
 	        b_genA1_Lxy = sqrt( b_genA1_Lx * b_genA1_Lx + b_genA1_Ly * b_genA1_Ly );
 
@@ -877,6 +903,11 @@ CutFlowAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 	      b_genA1_Lxy = -1000.0;
 	      b_genA0_L   = -1000.0;
 	      b_genA1_L   = -1000.0;
+
+        b_genA0Mu0_dxy = -1000.0;
+        b_genA0Mu1_dxy = -1000.0;
+        b_genA1Mu0_dxy = -1000.0;
+        b_genA1Mu1_dxy = -1000.0;
       }
     
       b_genA0Mu_dEta = genMuonGroups[0][0]->eta() - genMuonGroups[0][1]->eta();
@@ -1709,6 +1740,11 @@ CutFlowAnalyzer::beginJob() {
   m_ttree->Branch("genA1Mu0_vz", &b_genA1Mu0_vz, "genA1Mu0_vz/F");
   m_ttree->Branch("genA1Mu1_vz", &b_genA1Mu1_vz, "genA1Mu1_vz/F");
   
+  m_ttree->Branch("genA0Mu0_dxy", &b_genA0Mu0_dxy, "genA0Mu0_dxy/F");
+  m_ttree->Branch("genA0Mu1_dxy", &b_genA0Mu1_dxy, "genA0Mu1_dxy/F");
+  m_ttree->Branch("genA1Mu0_dxy", &b_genA1Mu0_dxy, "genA1Mu0_dxy/F");
+  m_ttree->Branch("genA1Mu1_dxy", &b_genA1Mu1_dxy, "genA1Mu1_dxy/F");
+
   m_ttree->Branch("genA0Mu_dEta", &b_genA0Mu_dEta, "genA0Mu_dEta/F");
   m_ttree->Branch("genA1Mu_dEta", &b_genA1Mu_dEta, "genA1Mu_dEta/F");
   m_ttree->Branch("genA0Mu_dPhi", &b_genA0Mu_dPhi, "genA0Mu_dPhi/F");

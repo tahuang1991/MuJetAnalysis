@@ -58,7 +58,9 @@ process = cms.Process("CutFlowAnalyzer")
 process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
     #fileNames = cms.untracked.vstring('file:/eos/uscms/store/user/lpcgem/dildick/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_HLT/0a5876aaa3054a855e150da7afbee7a7/out_hlt_1_1_Vjv.root')
-    fileNames = cms.untracked.vstring('file:/eos/uscms/store/user/lpcgem/dildick/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RECO/d3ab0667c6cb6bf77e14d12c3b05fdd8/out_reco_1_1_r0Y.root')
+    fileNames = cms.untracked.vstring(
+        'file:out_pat.root')
+        #'file:/eos/uscms/store/user/lpcgem/dildick/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RECO/d3ab0667c6cb6bf77e14d12c3b05fdd8/out_reco_1_1_r0Y.root')
 )
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )

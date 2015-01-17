@@ -7,7 +7,8 @@ def analyzeHLT():
     files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_02_8TeV'] = "/eos/uscms/store/user/lpcgem/dildick/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_02_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_02_8TeV_madgraph452_bridge224_LHE_pythia6_ANA/d37f287c329e62f6cda917e97d6b627b/out_cutana_1_1_t1W.root"
     files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_05_8TeV'] = "/eos/uscms/store/user/lpcgem/dildick/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_05_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_05_8TeV_madgraph452_bridge224_LHE_pythia6_ANA/d37f287c329e62f6cda917e97d6b627b/out_cutana_1_2_mjw.root"
     files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV'] = "/eos/uscms/store/user/lpcgem/dildick/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_ANA/d37f287c329e62f6cda917e97d6b627b/out_cutana_1_1_Y38.root"
-    f = TFile.Open(files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV'])
+#    f = TFile.Open(files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_05_8TeV'])
+    f = TFile.Open('out_cutana.root')
     f.cd("cutFlowAnalyzer")      
     f.ls()
 

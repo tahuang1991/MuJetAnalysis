@@ -33,7 +33,7 @@ process.source = cms.Source("PoolSource",
 )
 
 #                                         ##
-process.maxEvents.input = 100
+process.maxEvents.input = 1000
 #                                         ##
 #   process.out.outputCommands = [ ... ]  ##  (e.g. taken from PhysicsTools/PatAlgos/python/patEventContent_cff.py)
 #                                         ##

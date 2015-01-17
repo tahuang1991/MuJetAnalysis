@@ -5,13 +5,13 @@ from TrackingTools.GeomPropagators.SmartPropagator_cff import *
 from TrackingTools.MaterialEffects.MaterialPropagator_cfi import *
 from TrackingTools.MaterialEffects.OppositeMaterialPropagator_cfi import *
 
-import PhysicsTools.PatAlgos.patSequences_cff
+from  PhysicsTools.PatAlgos.patSequences_cff import *
 
-muonMatch = PhysicsTools.PatAlgos.patSequences_cff.muonMatch.clone(
+muonMatch = muonMatch.clone(
     src = cms.InputTag("muons"),
     resolveByMatchQuality = cms.bool(True)
 )
-patMuons = PhysicsTools.PatAlgos.patSequences_cff.patMuons.clone(
+patMuons = patMuons.clone(
     muonSource = cms.InputTag("muons"),
     genParticleMatch = cms.InputTag("muonMatch"),
     addTeVRefits = cms.bool(False),
@@ -30,27 +30,27 @@ patMuons = PhysicsTools.PatAlgos.patSequences_cff.patMuons.clone(
     embedTcMETMuonCorrs = cms.bool(False),
 )
 # Tracker Muons Part
-selectedPatTrackerMuons = PhysicsTools.PatAlgos.patSequences_cff.selectedPatMuons.clone(
+selectedPatTrackerMuons = selectedPatMuons.clone(
     src = cms.InputTag("patMuons"),
     cut = cms.string("pt > 5.0 && isTrackerMuon() && numberOfMatches() > 1 && -2.4 < eta() && eta() < 2.4")
 )
-cleanPatTrackerMuons = PhysicsTools.PatAlgos.patSequences_cff.cleanPatMuons.clone(
+cleanPatTrackerMuons = cleanPatMuons.clone(
     src = cms.InputTag("selectedPatTrackerMuons")
 )
-countPatTrackerMuons = PhysicsTools.PatAlgos.patSequences_cff.countPatMuons.clone(
+countPatTrackerMuons = countPatMuons.clone(
     src = cms.InputTag("cleanPatTrackerMuons")
 )
 # PF Muons Part
-selectedPatPFMuons = PhysicsTools.PatAlgos.patSequences_cff.selectedPatMuons.clone(
+selectedPatPFMuons = selectedPatMuons.clone(
     src = cms.InputTag("patMuons"),
     #"Loose Muon" requirement on PF muons as recommended by Muon POG:
     #https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideMuonId#Loose_Muon
     cut = cms.string("pt > 5.0 && isPFMuon() && ( isTrackerMuon() || isGlobalMuon() ) && -2.4 < eta() && eta() < 2.4")
 )
-cleanPatPFMuons = PhysicsTools.PatAlgos.patSequences_cff.cleanPatMuons.clone(
+cleanPatPFMuons = cleanPatMuons.clone(
     src = cms.InputTag("selectedPatPFMuons")
 )
-countPatPFMuons = PhysicsTools.PatAlgos.patSequences_cff.countPatMuons.clone(
+countPatPFMuons = countPatMuons.clone(
     src = cms.InputTag("cleanPatPFMuons")
 )
 
@@ -142,3 +142,8 @@ patifyMC = cms.Sequence(
     muonMatch * 
     patifyData
 )
+
+patDefaultSequence = cms.Sequence()
+patCandidates = cms.Sequence()
+makePatMuons = cms.Sequence()
+

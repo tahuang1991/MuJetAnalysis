@@ -501,8 +501,8 @@ class CutFlowAnalyzer : public edm::EDAnalyzer {
 //  Float_t b_diMuonC_IsoPF_ConsistentVtx;
 //  Float_t b_diMuonF_IsoPF_ConsistentVtx;
 
-  std::string hltPath_;
-
+  std::vector<std::string> hltPaths_;
+  std::vector<std::string> b_hltPaths;
 };
 
 //
@@ -590,7 +590,7 @@ CutFlowAnalyzer::CutFlowAnalyzer(const edm::ParameterSet& iConfig)
   m_events2DiMuonsLxyOK_FittedVtx      = 0;
   m_events2DiMuonsLxyOK_ConsistentVtx  = 0;
 
-  hltPath_ = iConfig.getParameter<std::string>("hltPath");
+  hltPaths_ = iConfig.getParameter<std::vector<std::string> >("hltPaths");
 }
 
 
@@ -1360,18 +1360,13 @@ CutFlowAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   iEvent.getByLabel("patTriggerEvent", triggerEvent);
   
   b_isDiMuonHLTFired = false;
-  // if (    ( triggerEvent->path("HLT_Mu17_Mu8_v22") && triggerEvent->path("HLT_Mu17_Mu8_v22")->wasAccept() )
-  //      || ( triggerEvent->path("HLT_Mu17_Mu8_v21") && triggerEvent->path("HLT_Mu17_Mu8_v21")->wasAccept() )
-  //      || ( triggerEvent->path("HLT_Mu17_Mu8_v19") && triggerEvent->path("HLT_Mu17_Mu8_v19")->wasAccept() )
-  //      || ( triggerEvent->path("HLT_Mu17_Mu8_v18") && triggerEvent->path("HLT_Mu17_Mu8_v18")->wasAccept() )
-  //      || ( triggerEvent->path("HLT_Mu17_Mu8_v17") && triggerEvent->path("HLT_Mu17_Mu8_v17")->wasAccept() )
-  //      || ( triggerEvent->path("HLT_Mu17_Mu8_v16") && triggerEvent->path("HLT_Mu17_Mu8_v16")->wasAccept() ) ) {
-  //   b_isDiMuonHLTFired = true;
-  // }
-  if ( !triggerEvent->path(hltPath_) )
-       std::cout << hltPath_ << " does not appear in event " << std::endl;
-  if ( triggerEvent->path(hltPath_) && triggerEvent->path(hltPath_)->wasAccept() ){
-    b_isDiMuonHLTFired = true;
+  for (auto p : hltPaths_){
+    if ( !triggerEvent->path(p) )
+      std::cout << p << " does not appear in event " << std::endl;
+    if ( triggerEvent->path(p) && triggerEvent->path(p)->wasAccept() ){
+      b_isDiMuonHLTFired = true;
+      b_hltPaths.push_back(p);
+    } 
   } 
   
   if ( m_debug > 10 ) std::cout << m_events << " Apply cut on HLT" << std::endl;
@@ -1903,6 +1898,7 @@ CutFlowAnalyzer::beginJob() {
   m_ttree->Branch("is2DiMuonsLxyOK_FittedVtx",      &b_is2DiMuonsLxyOK_FittedVtx,      "is2DiMuonsLxyOK_FittedVtx/O");
   m_ttree->Branch("is2DiMuonsLxyOK_ConsistentVtx",  &b_is2DiMuonsLxyOK_ConsistentVtx,  "is2DiMuonsLxyOK_ConsistentVtx/O");
   
+  m_ttree->Branch("hltPaths",  &b_hltPaths);
 }
 
 // ------------ method called once each job just after ending the event loop  ------------

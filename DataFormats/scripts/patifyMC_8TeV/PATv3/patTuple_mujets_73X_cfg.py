@@ -5,7 +5,9 @@ from PhysicsTools.PatAlgos.patTemplate_cfg import *
 process.options.allowUnscheduled = cms.untracked.bool(True)
 
 ### Add MuJet Dataformats
-process.load("MuJetAnalysis.DataFormats.EventContent_version9_cff")
+from MuJetAnalysis.DataFormats.EventContent_version9_cff import *
+process = customizePatOutput(process)
+
 process.load("MuJetAnalysis.DataFormats.RECOtoPAT_cff")
 process.patMuons.addGenMatch = cms.bool(True)
 process.patMuons.embedGenMatch = cms.bool(True)
@@ -13,7 +15,6 @@ process.patMuons.embedGenMatch = cms.bool(True)
 ## pick latest HLT process
 process.patTrigger.processName = cms.string( "*" )
 
-process.maxEvents.input = 100
 process.source = cms.Source("PoolSource",
   fileNames = cms.untracked.vstring(
     #"file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_RECO/ee2b69195f87ad6497ae607e47718adf/out_reco_1_1_XNE.root"
@@ -22,4 +23,7 @@ process.source = cms.Source("PoolSource",
         'file:out_hlt.root'
   )
 )
+
+process.maxEvents.input = -1
+
 

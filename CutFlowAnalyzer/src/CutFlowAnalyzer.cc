@@ -590,7 +590,7 @@ CutFlowAnalyzer::CutFlowAnalyzer(const edm::ParameterSet& iConfig)
   m_events2DiMuonsLxyOK_FittedVtx      = 0;
   m_events2DiMuonsLxyOK_ConsistentVtx  = 0;
 
-  hltPath_ = iConfig.getParameter<edm::InputTag>("hltPath");
+  hltPath_ = iConfig.getParameter<std::string>("hltPath");
 }
 
 
@@ -1368,13 +1368,11 @@ CutFlowAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   //      || ( triggerEvent->path("HLT_Mu17_Mu8_v16") && triggerEvent->path("HLT_Mu17_Mu8_v16")->wasAccept() ) ) {
   //   b_isDiMuonHLTFired = true;
   // }
-  // if ( triggerEvent->path("HLT_TrkMu15_DoubleTrkMu5_v1") )
-  //   std::cout << "HLT_TrkMu15_DoubleTrkMu5_v1 exists " << std::endl;
-  // else 
-  //   std::cout << "HLT_TrkMu15_DoubleTrkMu5_v1 does not exist " << std::endl;
+  if ( !triggerEvent->path(hltPath_) )
+       std::cout << hltPath_ << " does not appear in event " << std::endl;
   if ( triggerEvent->path(hltPath_) && triggerEvent->path(hltPath_)->wasAccept() ){
     b_isDiMuonHLTFired = true;
-  }
+  } 
   
   if ( m_debug > 10 ) std::cout << m_events << " Apply cut on HLT" << std::endl;
   if ( b_is1SelMu17 && b_is4SelMu8 && b_is2MuJets && b_is2DiMuons && b_is2DiMuonsDzOK_FittedVtx     && b_isDiMuonHLTFired ) m_eventsDiMuonHLTFired_FittedVtx++;

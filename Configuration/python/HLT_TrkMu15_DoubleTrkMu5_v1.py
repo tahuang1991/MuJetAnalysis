@@ -115,10 +115,10 @@ def addHLT_TrkMu15_DoubleTrkMu5_v1(process):
         process.hltL1sL1DoubleMu103p5ORDoubleMu125 + 
         process.hltPreMu17TrkIsoVVLMu8TrkIsoVVL + 
         process.hltL1fL1sDoubleMu103p5ORDoubleMu125L1Filtered0 + 
-        process.HLTL2muonrecoSequenceNoVtx + 
+        process.HLTL2muonrecoSequenceNoVtx + ## take from HLT_DoubleMu33NoFiltersNoVtx_v1
         process.hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0 + 
         process.hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMu + 
-        process.HLTL3NoFiltersNoVtxmuonrecoSequence + 
+        process.HLTL3NoFiltersNoVtxmuonrecoSequence + ## take from HLT_DoubleMu33NoFiltersNoVtx_v1
         process.hltL3pfL1sDoubleMu103p5L1f0L2pf0L3PreFiltered5 + 
         process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15 + 
         process.HLTTrackerMuonSequence +

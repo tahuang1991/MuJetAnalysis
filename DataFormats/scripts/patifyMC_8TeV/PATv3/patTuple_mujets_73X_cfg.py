@@ -10,6 +10,9 @@ process.load("MuJetAnalysis.DataFormats.RECOtoPAT_cff")
 process.patMuons.addGenMatch = cms.bool(True)
 process.patMuons.embedGenMatch = cms.bool(True)
 
+## pick latest HLT process
+process.patTrigger.processName = cms.string( "*" )
+
 process.maxEvents.input = 100
 process.source = cms.Source("PoolSource",
   fileNames = cms.untracked.vstring(

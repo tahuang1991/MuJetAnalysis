@@ -501,6 +501,8 @@ class CutFlowAnalyzer : public edm::EDAnalyzer {
 //  Float_t b_diMuonC_IsoPF_ConsistentVtx;
 //  Float_t b_diMuonF_IsoPF_ConsistentVtx;
 
+  std::string hltPath_;
+
 };
 
 //
@@ -587,7 +589,8 @@ CutFlowAnalyzer::CutFlowAnalyzer(const edm::ParameterSet& iConfig)
   m_eventsVertexOK_ConsistentVtx       = 0;
   m_events2DiMuonsLxyOK_FittedVtx      = 0;
   m_events2DiMuonsLxyOK_ConsistentVtx  = 0;
-  
+
+  hltPath_ = iConfig.getParameter<edm::InputTag>("hltPath");
 }
 
 
@@ -1357,12 +1360,19 @@ CutFlowAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   iEvent.getByLabel("patTriggerEvent", triggerEvent);
   
   b_isDiMuonHLTFired = false;
-  if (    ( triggerEvent->path("HLT_Mu17_Mu8_v22") && triggerEvent->path("HLT_Mu17_Mu8_v22")->wasAccept() )
-       || ( triggerEvent->path("HLT_Mu17_Mu8_v21") && triggerEvent->path("HLT_Mu17_Mu8_v21")->wasAccept() )
-       || ( triggerEvent->path("HLT_Mu17_Mu8_v19") && triggerEvent->path("HLT_Mu17_Mu8_v19")->wasAccept() )
-       || ( triggerEvent->path("HLT_Mu17_Mu8_v18") && triggerEvent->path("HLT_Mu17_Mu8_v18")->wasAccept() )
-       || ( triggerEvent->path("HLT_Mu17_Mu8_v17") && triggerEvent->path("HLT_Mu17_Mu8_v17")->wasAccept() )
-       || ( triggerEvent->path("HLT_Mu17_Mu8_v16") && triggerEvent->path("HLT_Mu17_Mu8_v16")->wasAccept() ) ) {
+  // if (    ( triggerEvent->path("HLT_Mu17_Mu8_v22") && triggerEvent->path("HLT_Mu17_Mu8_v22")->wasAccept() )
+  //      || ( triggerEvent->path("HLT_Mu17_Mu8_v21") && triggerEvent->path("HLT_Mu17_Mu8_v21")->wasAccept() )
+  //      || ( triggerEvent->path("HLT_Mu17_Mu8_v19") && triggerEvent->path("HLT_Mu17_Mu8_v19")->wasAccept() )
+  //      || ( triggerEvent->path("HLT_Mu17_Mu8_v18") && triggerEvent->path("HLT_Mu17_Mu8_v18")->wasAccept() )
+  //      || ( triggerEvent->path("HLT_Mu17_Mu8_v17") && triggerEvent->path("HLT_Mu17_Mu8_v17")->wasAccept() )
+  //      || ( triggerEvent->path("HLT_Mu17_Mu8_v16") && triggerEvent->path("HLT_Mu17_Mu8_v16")->wasAccept() ) ) {
+  //   b_isDiMuonHLTFired = true;
+  // }
+  // if ( triggerEvent->path("HLT_TrkMu15_DoubleTrkMu5_v1") )
+  //   std::cout << "HLT_TrkMu15_DoubleTrkMu5_v1 exists " << std::endl;
+  // else 
+  //   std::cout << "HLT_TrkMu15_DoubleTrkMu5_v1 does not exist " << std::endl;
+  if ( triggerEvent->path(hltPath_) && triggerEvent->path(hltPath_)->wasAccept() ){
     b_isDiMuonHLTFired = true;
   }
   

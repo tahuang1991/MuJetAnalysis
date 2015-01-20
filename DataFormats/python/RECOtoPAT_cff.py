@@ -4,8 +4,10 @@ from Configuration.StandardSequences.MagneticField_cff import *
 from TrackingTools.GeomPropagators.SmartPropagator_cff import *
 from TrackingTools.MaterialEffects.MaterialPropagator_cfi import *
 from TrackingTools.MaterialEffects.OppositeMaterialPropagator_cfi import *
-
-from  PhysicsTools.PatAlgos.patSequences_cff import *
+from PhysicsTools.PatAlgos.patSequences_cff import *
+from PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cfi import *
+from PhysicsTools.PatAlgos.triggerLayer1.triggerEventProducer_cfi import *
+#from PhysicsTools.PatAlgos.triggerLayer1.triggerMatcher_cfi import * -- deprecated in 73
 
 muonMatch = muonMatch.clone(
     src = cms.InputTag("muons"),
@@ -53,11 +55,6 @@ cleanPatPFMuons = cleanPatMuons.clone(
 countPatPFMuons = countPatMuons.clone(
     src = cms.InputTag("cleanPatPFMuons")
 )
-
-from PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cfi import *
-from PhysicsTools.PatAlgos.triggerLayer1.triggerEventProducer_cfi import *
-#from PhysicsTools.PatAlgos.triggerLayer1.triggerMatcher_cfi import * -- deprecated in 73
-
 cleanMuonTriggerMatchHLTMu17 = cms.EDProducer("PATTriggerMatcherDRDPtLessByR", # match by DeltaR only, best match by DeltaR
     src     = cms.InputTag( "cleanPatMuons" ),
     matched = cms.InputTag( "patTrigger" ),  # default producer label as defined in PhysicsTools/PatAlgos/python/triggerLayer1/triggerProducer_cfi.py
@@ -110,7 +107,6 @@ cleanPatPFMuonsTriggerMatch = cms.EDProducer("PATTriggerMatchMuonEmbedder",
                             "cleanPFMuonTriggerMatchHLTIsoMu",
                             "cleanPFMuonTriggerMatchHLTDoubleMu")
 )
-                                                                   
 patifyTrackerMuon = cms.Sequence(
     selectedPatTrackerMuons * 
     cleanPatTrackerMuons * 
@@ -129,7 +125,6 @@ patifyPFMuon = cms.Sequence(
     cleanPFMuonTriggerMatchHLTDoubleMu * 
     cleanPatPFMuonsTriggerMatch
 )
-
 patifyData = cms.Sequence(
     patMuons * 
     patTrigger * 
@@ -137,7 +132,6 @@ patifyData = cms.Sequence(
     patifyTrackerMuon * 
     patifyPFMuon
 )
-
 patifyMC = cms.Sequence(
     muonMatch * 
     patifyData

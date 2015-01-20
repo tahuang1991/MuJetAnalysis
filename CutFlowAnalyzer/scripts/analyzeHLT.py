@@ -7,12 +7,24 @@ def analyzeHLT():
     files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_02_8TeV'] = "/eos/uscms/store/user/lpcgem/dildick/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_02_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_02_8TeV_madgraph452_bridge224_LHE_pythia6_ANA/d37f287c329e62f6cda917e97d6b627b/out_cutana_1_1_t1W.root"
     files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_05_8TeV'] = "/eos/uscms/store/user/lpcgem/dildick/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_05_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_05_8TeV_madgraph452_bridge224_LHE_pythia6_ANA/d37f287c329e62f6cda917e97d6b627b/out_cutana_1_2_mjw.root"
     files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV'] = "/eos/uscms/store/user/lpcgem/dildick/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_ANA/d37f287c329e62f6cda917e97d6b627b/out_cutana_1_1_Y38.root"
+    files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_newHLT'] = "/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_ANA/affac282894e650623257df569467666/out_ana_1_1_ZEm.root"
 #    f = TFile.Open(files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_05_8TeV'])
-    f = TFile.Open('out_cutana.root')
-    f.cd("cutFlowAnalyzer")      
-    f.ls()
+#files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_newHLT']
+    file = "file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_ANA_3/c2a1d8d9d4e09ccfe856b56c4a74ff8c/out_ana.root"
+    file = "file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_ANA_5/c2a1d8d9d4e09ccfe856b56c4a74ff8c/out_ana.root"
+    f = TFile.Open(file)
+    ana = "anaHLT_Mu17_Mu8_DZ_v1"    
+    ana = "anaHLT_Mu30_TkMu11_v1"
+    #ana = "anaHLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1"
+    #ana = "anaHLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1_NoIso"
+    #ana = "anaHLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1"
+    #ana = "anaHLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1_NoIso"
+    #ana = "anaHLT_TripleMu_12_10_5_v1"
+    #ana = "anaHLT_TrkMu15_DoubleTrkMu5_v1"
 
-    t = f.Get("cutFlowAnalyzer/Events");
+    dir = f.Get(ana)      
+    print "Opening directory", dir.GetName()
+    t = dir.Get("Events");
     
     nentries = t.GetEntries();
     m_events = 0

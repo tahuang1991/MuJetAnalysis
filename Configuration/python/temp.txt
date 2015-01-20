@@ -66,8 +66,7 @@ hltGetConfiguration /dev/CMSSW_7_3_0/GRun/V25 \
 --unprescale \
 --process TEST \
 --globaltag auto:startup_GRun \
---paths HLTriggerFirstPath,HLT_Mu17_Mu8_DZ_v1,HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1,HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1,HLT_Mu30_TkMu11_v1,HLT_TripleMu_12_10_5_v1,HLT_DoubleMu33NoFiltersNoVtx_v1,HLT_Mu38NoFiltersNoVtx_Photon38_CaloIdL_v1,HLTriggerFinalPath > hlt_new_v5.py
+--paths HLTriggerFirstPath,HLT_Mu17_Mu8_DZ_v1,HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1,HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1,HLT_Mu30_TkMu11_v1,HLT_TripleMu_12_10_5_v1,HLT_DoubleMu33NoFiltersNoVtx_v1,HLTriggerFinalPath > hlt_new_v5.py
 
-echo ''  >> hlt_new_v5.py
 echo 'from MuJetAnalysis.Configuration.HLT_TrkMu15_DoubleTrkMu5_v1 import customizeHLT_TrkMu15_DoubleTrkMu5_v1' >> hlt_new_v5.py
 echo 'process = customizeHLT_TrkMu15_DoubleTrkMu5_v1(process)'  >> hlt_new_v5.py

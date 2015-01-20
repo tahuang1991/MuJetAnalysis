@@ -2,7 +2,7 @@
 
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process( "HLT" )
+process = cms.Process( "TEST" )
 
 process.HLTConfigVersion = cms.PSet(
   tableName = cms.string('/dev/CMSSW_7_3_0/GRun/V25')
@@ -5838,7 +5838,7 @@ process.hltDiMuonGlb30Trk11DzFiltered0p2 = cms.EDFilter( "HLT2MuonMuonDZ",
     inputTag2 = cms.InputTag( "hltDiMuonGlbFiltered30TrkFiltered11" )
 )
 process.hltL1sL1TripleMu553 = cms.EDFilter( "HLTLevel1GTSeed",
-    L1SeedsLogicalExpression = cms.string( "L1_TripleMu_5_5_3" ),
+    L1SeedsLogicalExpression = cms.string( "L1_TripleMu_5_5_3_HighQ" ),
     saveTags = cms.bool( True ),
     L1MuonCollectionTag = cms.InputTag( "hltL1extraParticles" ),
     L1UseL1TriggerObjectMaps = cms.bool( True ),

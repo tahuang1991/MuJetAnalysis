@@ -10,21 +10,14 @@ def analyzeHLT():
     files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_newHLT'] = "/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_ANA/affac282894e650623257df569467666/out_ana_1_1_ZEm.root"
 #    f = TFile.Open(files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_05_8TeV'])
 #files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_newHLT']
-    file = "file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_ANA_3/c2a1d8d9d4e09ccfe856b56c4a74ff8c/out_ana.root"
-    file = "file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_ANA_5/c2a1d8d9d4e09ccfe856b56c4a74ff8c/out_ana.root"
-    f = TFile.Open(file)
-    ana = "anaHLT_Mu17_Mu8_DZ_v1"    
-    ana = "anaHLT_Mu30_TkMu11_v1"
-    #ana = "anaHLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1"
-    #ana = "anaHLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1_NoIso"
-    #ana = "anaHLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1"
-    #ana = "anaHLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1_NoIso"
-    #ana = "anaHLT_TripleMu_12_10_5_v1"
-    #ana = "anaHLT_TrkMu15_DoubleTrkMu5_v1"
-
+    #file = "file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_ANA_3/c2a1d8d9d4e09ccfe856b56c4a74ff8c/out_ana.root"
+    #file = "file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_ANA_5/c2a1d8d9d4e09ccfe856b56c4a74ff8c/out_ana.root"
+    f = TFile.Open("file:out_ana.root")
+    ana = "cutFlowAnalyzer"
     dir = f.Get(ana)      
     print "Opening directory", dir.GetName()
     t = dir.Get("Events");
+    print "Loading tree", t.GetName()
     
     nentries = t.GetEntries();
     m_events = 0
@@ -70,6 +63,7 @@ def analyzeHLT():
     for k in range(0,nentries):
         t.GetEntry(k)    
         m_events += 1
+        print k, t.hltPaths[3]
 
         if (t.isDiMuonHLTFired):
             m_isDiMuonHLTFired += 1

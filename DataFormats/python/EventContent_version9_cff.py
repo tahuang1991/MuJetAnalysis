@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-out = cms.OutputModule("PoolOutputModule",
+output = cms.OutputModule("PoolOutputModule",
     outputCommands = cms.untracked.vstring(
         "drop *",
         "keep *_patMuons_*_*",

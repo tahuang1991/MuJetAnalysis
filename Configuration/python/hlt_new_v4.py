@@ -6278,6 +6278,20 @@ process.hltOutputA = cms.OutputModule( "PoolOutputModule",
       'keep triggerTriggerEvent_*_*_*' )
 )
 
+process.hltOutputFULL = cms.OutputModule( "PoolOutputModule",
+    fileName = cms.untracked.string( "out_hlt.root" ),
+    fastCloning = cms.untracked.bool( False ),
+    dataset = cms.untracked.PSet(
+        dataTier = cms.untracked.string( 'RECO' ),
+        filterName = cms.untracked.string( '' )
+    ),
+    SelectEvents = cms.untracked.PSet(  
+        SelectEvents = cms.vstring('*') 
+    ),
+    outputCommands = cms.untracked.vstring( 'keep *' )
+)
+process.FULLOutput = cms.EndPath( process.hltOutputFULL )
+
 process.HLTL1UnpackerSequence = cms.Sequence( process.hltGtDigis + process.hltGctDigis + process.hltL1GtObjectMap + process.hltL1extraParticles )
 process.HLTBeamSpot = cms.Sequence( process.hltScalersRawToDigi + process.hltOnlineBeamSpot )
 process.HLTBeginSequence = cms.Sequence( process.hltTriggerType + process.HLTL1UnpackerSequence + process.HLTBeamSpot )

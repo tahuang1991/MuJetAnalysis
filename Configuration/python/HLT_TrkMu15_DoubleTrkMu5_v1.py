@@ -2,48 +2,6 @@
 
 import FWCore.ParameterSet.Config as cms
 
-hltL3pfL1sDoubleMu103p5L1f0L2pf0L3PreFiltered5 = cms.EDFilter( "HLTMuonL3PreFilter",
-    MaxNormalizedChi2 = cms.double( 9999.0 ),
-    saveTags = cms.bool( True ),
-    PreviousCandTag = cms.InputTag( "hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0" ),
-    MinNmuonHits = cms.int32( 0 ),
-    MinN = cms.int32( 3 ),
-    MinTrackPt = cms.double( 0.0 ),
-    MaxEta = cms.double( 2.5 ),
-    MaxDXYBeamSpot = cms.double( 9999.0 ),
-    MinNhits = cms.int32( 0 ),
-    MinDxySig = cms.double( -1.0 ),
-    NSigmaPt = cms.double( 0.0 ),
-    MaxDz = cms.double( 9999.0 ),
-    MaxPtDifference = cms.double( 9999.0 ),
-    MaxDr = cms.double( 2.0 ),
-    CandTag = cms.InputTag( "hltL3MuonCandidates" ),
-    MinDXYBeamSpot = cms.double( -1.0 ),
-    MinDr = cms.double( -1.0 ),
-    BeamSpotTag = cms.InputTag( "hltOnlineBeamSpot" ),
-    MinPt = cms.double( 5.0 )
-)
-hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15 = cms.EDFilter( "HLTMuonL3PreFilter",
-    MaxNormalizedChi2 = cms.double( 9999.0 ),
-    saveTags = cms.bool( True ),
-    PreviousCandTag = cms.InputTag( "hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMu" ),
-    MinNmuonHits = cms.int32( 0 ),
-    MinN = cms.int32( 1 ),
-    MinTrackPt = cms.double( 0.0 ),
-    MaxEta = cms.double( 2.5 ),
-    MaxDXYBeamSpot = cms.double( 9999.0 ),
-    MinNhits = cms.int32( 0 ),
-    MinDxySig = cms.double( -1.0 ),
-    NSigmaPt = cms.double( 0.0 ),
-    MaxDz = cms.double( 9999.0 ),
-    MaxPtDifference = cms.double( 9999.0 ),
-    MaxDr = cms.double( 2.0 ),
-    CandTag = cms.InputTag( "hltL3MuonCandidates" ),
-    MinDXYBeamSpot = cms.double( -1.0 ),
-    MinDr = cms.double( -1.0 ),
-    BeamSpotTag = cms.InputTag( "hltOnlineBeamSpot" ),
-    MinPt = cms.double( 15.0 )
-)
 hltTriTrkMu5Filtered = cms.EDFilter("HLTMuonTrkFilter",
     maxNormalizedChi2 = cms.double( 1.0E99 ),
     saveTags = cms.bool( False ),
@@ -77,7 +35,60 @@ hltSingleTrkMu15Filtered = cms.EDFilter("HLTMuonTrkFilter",
     allowedTypeMask = cms.uint32( 255 )
 )
 
-def add_HLT_TrkMu15_DoubleTrkMu5_v1(process):
+def addHLT_Mu17_Mu8_v1_NoDz(process):
+    ## drop the dz filter at the end
+    process.HLT_Mu17_Mu8_DZ_v1_NoDz = cms.Path( 
+        process.HLTBeginSequence + 
+        process.hltL1sL1DoubleMu103p5ORDoubleMu125 + 
+        process.hltPreMu17Mu8DZ + 
+        process.hltL1fL1sDoubleMu103p5ORDoubleMu125L1Filtered0 + 
+        process.HLTL2muonrecoSequence + 
+        process.hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0 + 
+        process.hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMu + 
+        process.HLTL3muonrecoSequence + 
+        process.hltL3pfL1sDoubleMu103p5L1f0L2pf0L3PreFiltered8 + 
+        process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered17 + 
+        process.HLTEndSequence 
+    )
+    return process
+
+def addHLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1_NoIso(process):
+    ## drop the isolation filter at the end
+    process.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1_NoIso = cms.Path( 
+        process.HLTBeginSequence + 
+        process.hltL1sL1DoubleMu103p5ORDoubleMu125 + 
+        process.hltPreMu17TrkIsoVVLMu8TrkIsoVVL + 
+        process.hltL1fL1sDoubleMu103p5ORDoubleMu125L1Filtered0 + 
+        process.HLTL2muonrecoSequence + 
+        process.hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0 + 
+        process.hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMu + 
+        process.HLTL3muonrecoSequence + 
+        process.hltL3pfL1sDoubleMu103p5L1f0L2pf0L3PreFiltered8 + 
+        process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered17 + 
+        process.HLTL3muontrkisovvlSequence + 
+        process.HLTEndSequence 
+    )
+    return process
+
+def addHLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1_NoIso(process):
+    ## drop the isolation filter at the end
+    process.HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1_NoIso = cms.Path( 
+        process.HLTBeginSequence + 
+        process.hltL1sL1DoubleMu103p5ORDoubleMu125 + 
+        process.hltPreMu17TrkIsoVVLTkMu8TrkIsoVVL + 
+        process.hltL1fL1sDoubleMu103p5L1OneMuFiltered0 + 
+        process.HLTL2muonrecoSequence + 
+        process.hltL2fL1sDoubleMu103p5L1f0OneMuL2Filtered10 + 
+        process.HLTL3muonrecoSequence + 
+        process.hltL3fL1sDoubleMu103p5L1f0L2f10L3Filtered17 + 
+        process.HLTTrackerMuonSequence + 
+        process.hltDiMuonGlbFiltered17TrkFiltered8 + 
+        process.HLTGlbtrkmuontrkisovvlSequence + 
+        process.HLTEndSequence 
+    )
+    return process
+
+def addHLT_TrkMu15_DoubleTrkMu5_v1(process):
 
     """
     Step 1: Start from HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1; rename to HLT_TrkMu15_DoubleTrkMu5_v1
@@ -88,8 +99,14 @@ def add_HLT_TrkMu15_DoubleTrkMu5_v1(process):
     Step 6: Replace the L2 and L3 RECO sequence by variants that do not have dxy cut
     Step 7: Change L3 prefilter and filter
     """
-    process.hltL3pfL1sDoubleMu103p5L1f0L2pf0L3PreFiltered5 = hltL3pfL1sDoubleMu103p5L1f0L2pf0L3PreFiltered5
-    process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15 = hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15
+    process.hltL3pfL1sDoubleMu103p5L1f0L2pf0L3PreFiltered5 = process.hltL3pfL1sDoubleMu103p5L1f0L2pf0L3PreFiltered8.clone(
+        MinN = cms.int32( 3 ),
+        MinPt = cms.double( 5.0 )
+    )
+    process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15 = process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered17.clone(
+        MinN = cms.int32( 1 ),
+        MinPt = cms.double( 15.0 )
+    )
     process.hltTriTrkMu5Filtered = hltTriTrkMu5Filtered
     process.hltSingleTrkMu15Filtered = hltSingleTrkMu15Filtered
 
@@ -111,7 +128,14 @@ def add_HLT_TrkMu15_DoubleTrkMu5_v1(process):
     )
     return process
 
-def addFullOutputModule(process):
+def customizeOutputModule(process):
+    ## drop existing output modules
+    if hasattr(process,"AOutput"):
+         delattr(process,"AOutput")
+    if hasattr(process,"DQMOutput"):
+         delattr(process,"DQMOutput")
+
+    ## add custom output module
     process.hltOutputFULL = cms.OutputModule( "PoolOutputModule",
         fileName = cms.untracked.string( "out_hlt.root" ),
         fastCloning = cms.untracked.bool( False ),
@@ -127,8 +151,17 @@ def addFullOutputModule(process):
     process.FULLOutput = cms.EndPath( process.hltOutputFULL )
     return process
 
-def changeL1SeedhltL1sL1TripleMu553(process):
+def customizeL1SeedhltL1sL1TripleMu553(process):
     ## Change the seed L1_TripleMu_5_5_3 to L1_TripleMu_5_5_3_HighQ in hltL1sL1TripleMu553
     process.hltL1sL1TripleMu553.L1SeedsLogicalExpression = "L1_TripleMu_5_5_3_HighQ"
+    return process
+
+def customizeHLT_TrkMu15_DoubleTrkMu5_v1(process):
+    process = addHLT_TrkMu15_DoubleTrkMu5_v1(process)
+    process = addHLT_Mu17_Mu8_v1_NoDz(process)
+    process = addHLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1_NoIso(process)
+    process = addHLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1_NoIso(process)
+    process = customizeOutputModule(process)
+    process = customizeL1SeedhltL1sL1TripleMu553(process)
     return process
 

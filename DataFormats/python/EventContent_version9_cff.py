@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
-output = cms.OutputModule("PoolOutputModule",
-    outputCommands = cms.untracked.vstring(
+def customizePatOutput(process):
+    process.out.outputCommands = cms.untracked.vstring(
         "drop *",
         "keep *_patMuons_*_*",
         "keep *_cleanPatTrackerMuons_*_*",
@@ -57,6 +57,6 @@ output = cms.OutputModule("PoolOutputModule",
         "keep *_ak7CaloJets_*_*",
         "keep *_ak7PFJets_*_*",
         "keep *_ak7TrackJets_*_*",
-    ),
-    fileName = cms.untracked.string("out_pat.root")
-)
+    )
+    process.out.fileName = cms.untracked.string("out_pat.root")
+    return process

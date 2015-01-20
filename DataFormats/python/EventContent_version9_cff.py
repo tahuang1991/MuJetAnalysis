@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-patOutput = cms.OutputModule("PoolOutputModule",
+out = cms.OutputModule("PoolOutputModule",
     outputCommands = cms.untracked.vstring(
         "drop *",
         "keep *_patMuons_*_*",
@@ -25,7 +25,7 @@ patOutput = cms.OutputModule("PoolOutputModule",
         "keep *_cscSegments_*_*",
         "keep *_dt4DSegments_*_*",
 
-        "keep *_TriggerResults_*_HLT",
+        "keep *_TriggerResults_*_TEST",
         "keep L1AcceptBunchCrossings_*_*_*",
         "keep L1GlobalTriggerReadoutRecord_gtDigis_*_*",
         
@@ -58,5 +58,5 @@ patOutput = cms.OutputModule("PoolOutputModule",
         "keep *_ak7PFJets_*_*",
         "keep *_ak7TrackJets_*_*",
     ),
-    fileName = cms.untracked.string("REPLACEME.root")
+    fileName = cms.untracked.string("out_pat.root")
 )

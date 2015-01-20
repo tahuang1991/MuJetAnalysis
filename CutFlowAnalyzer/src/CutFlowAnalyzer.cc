@@ -1362,9 +1362,8 @@ CutFlowAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   b_isDiMuonHLTFired = false;
   for (auto p : hltPaths_){
     if ( !triggerEvent->path(p) )
-      std::cout << p << " does not appear in event " << std::endl;
+      std::cout << p << " does not occur in pat::TriggerEvent" << std::endl;
     if ( triggerEvent->path(p) && triggerEvent->path(p)->wasAccept() ){
-      b_isDiMuonHLTFired = true;
       b_hltPaths.push_back(p);
     } 
   } 

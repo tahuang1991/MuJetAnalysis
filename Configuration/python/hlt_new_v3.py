@@ -6219,9 +6219,17 @@ process.HLTTrackReconstructionForIsoGlbTrkMuonIter02 = cms.Sequence( process.HLT
 process.HLTGlbtrkmuontrkisovvlSequence = cms.Sequence( process.HLTTrackReconstructionForIsoGlbTrkMuonIter02 + process.hltGlbTrkMuonRelTrkIsolationVVL )
 
 process.HLTriggerFirstPath = cms.Path( process.hltGetConditions + process.hltGetRaw + process.hltBoolFalse )
+
 process.HLT_Mu17_Mu8_DZ_v1 = cms.Path( process.HLTBeginSequence + process.hltL1sL1DoubleMu103p5ORDoubleMu125 + process.hltPreMu17Mu8DZ + process.hltL1fL1sDoubleMu103p5ORDoubleMu125L1Filtered0 + process.HLTL2muonrecoSequence + process.hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0 + process.hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMu + process.HLTL3muonrecoSequence + process.hltL3pfL1sDoubleMu103p5L1f0L2pf0L3PreFiltered8 + process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered17 + process.hltDiMuonGlb17Glb8DzFiltered0p2 + process.HLTEndSequence )
+
 process.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1 = cms.Path( process.HLTBeginSequence + process.hltL1sL1DoubleMu103p5ORDoubleMu125 + process.hltPreMu17TrkIsoVVLMu8TrkIsoVVL + process.hltL1fL1sDoubleMu103p5ORDoubleMu125L1Filtered0 + process.HLTL2muonrecoSequence + process.hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0 + process.hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMu + process.HLTL3muonrecoSequence + process.hltL3pfL1sDoubleMu103p5L1f0L2pf0L3PreFiltered8 + process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered17 + process.HLTL3muontrkisovvlSequence + process.hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4 + process.HLTEndSequence )
+
 process.HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1 = cms.Path( process.HLTBeginSequence + process.hltL1sL1DoubleMu103p5ORDoubleMu125 + process.hltPreMu17TrkIsoVVLTkMu8TrkIsoVVL + process.hltL1fL1sDoubleMu103p5L1OneMuFiltered0 + process.HLTL2muonrecoSequence + process.hltL2fL1sDoubleMu103p5L1f0OneMuL2Filtered10 + process.HLTL3muonrecoSequence + process.hltL3fL1sDoubleMu103p5L1f0L2f10L3Filtered17 + process.HLTTrackerMuonSequence + process.hltDiMuonGlbFiltered17TrkFiltered8 + process.HLTGlbtrkmuontrkisovvlSequence + process.hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4 + process.HLTEndSequence )
+
+process.HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1_NoIso = cms.Path( process.HLTBeginSequence + process.hltL1sL1DoubleMu103p5ORDoubleMu125 + process.hltPreMu17TrkIsoVVLMu8TrkIsoVVL + process.hltL1fL1sDoubleMu103p5ORDoubleMu125L1Filtered0 + process.HLTL2muonrecoSequence + process.hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0 + process.hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMu + process.HLTL3muonrecoSequence + process.hltL3pfL1sDoubleMu103p5L1f0L2pf0L3PreFiltered8 + process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered17 + process.HLTL3muontrkisovvlSequence + process.HLTEndSequence )
+
+process.HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1_NoIso = cms.Path( process.HLTBeginSequence + process.hltL1sL1DoubleMu103p5ORDoubleMu125 + process.hltPreMu17TrkIsoVVLTkMu8TrkIsoVVL + process.hltL1fL1sDoubleMu103p5L1OneMuFiltered0 + process.HLTL2muonrecoSequence + process.hltL2fL1sDoubleMu103p5L1f0OneMuL2Filtered10 + process.HLTL3muonrecoSequence + process.hltL3fL1sDoubleMu103p5L1f0L2f10L3Filtered17 + process.HLTTrackerMuonSequence + process.hltDiMuonGlbFiltered17TrkFiltered8 + process.HLTGlbtrkmuontrkisovvlSequence + process.HLTEndSequence )
+
 process.HLT_TripleMu_12_10_5_v1 = cms.Path( process.HLTBeginSequence + process.hltL1sL1TripleMu553 + process.hltPreTripleMu12105 + process.hltL1TripleMu553L1TriMuFiltered3 + process.HLTL2muonrecoSequence + process.hltL1TripleMu553L2TriMuFiltered3 + process.HLTL3muonrecoSequence + process.hltL1TripleMu553L2TriMuFiltered3L3TriMuFiltered5 + process.hltL1TripleMu553L2TriMuFiltered3L3TriMuFiltered10105 + process.hltL1TripleMu553L2TriMuFiltered3L3TriMuFiltered12105 + process.HLTEndSequence )
 
 """
@@ -6231,22 +6239,7 @@ Step 3: Add the TrkMu reconstruction sequence
 Step 4: Add TriTrkMu pt5 filter (HLTMuonTrkFilter)
 Step 5: Add SingleTrkMu15 filter (HLTMuonTrkFilter)
 """
-process.HLT_TrkMu15_DoubleTrkMu5_v1 = cms.Path( 
-    process.HLTBeginSequence + 
-    process.hltL1sL1DoubleMu103p5ORDoubleMu125 + 
-    process.hltPreMu17TrkIsoVVLMu8TrkIsoVVL + 
-    process.hltL1fL1sDoubleMu103p5ORDoubleMu125L1Filtered0 + 
-    process.HLTL2muonrecoSequence + 
-    process.hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0 + 
-    process.hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMu + 
-    process.HLTL3muonrecoSequence + 
-    process.hltL3pfL1sDoubleMu103p5L1f0L2pf0L3PreFiltered8 + 
-    process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered17 + 
-    process.HLTTrackerMuonSequence +
-    process.hltTriTrkMu5Filtered +
-    process.hltSingleTrkMu15Filtered +
-    process.HLTEndSequence 
-)
+process.HLT_TrkMu15_DoubleTrkMu5_v1 = cms.Path( process.HLTBeginSequence + process.hltL1sL1DoubleMu103p5ORDoubleMu125 + process.hltPreMu17TrkIsoVVLMu8TrkIsoVVL + process.hltL1fL1sDoubleMu103p5ORDoubleMu125L1Filtered0 + process.HLTL2muonrecoSequence + process.hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0 + process.hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMu + process.HLTL3muonrecoSequence + process.hltL3pfL1sDoubleMu103p5L1f0L2pf0L3PreFiltered8 + process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered17 + process.HLTTrackerMuonSequence + process.hltTriTrkMu5Filtered + process.hltSingleTrkMu15Filtered + process.HLTEndSequence )
 
 process.HLTriggerFinalPath = cms.Path( process.hltGtDigis + process.hltScalersRawToDigi + process.hltFEDSelector + process.hltTriggerSummaryAOD + process.hltTriggerSummaryRAW )
 #process.AOutput = cms.EndPath( process.hltPreAOutput + process.hltOutputA )

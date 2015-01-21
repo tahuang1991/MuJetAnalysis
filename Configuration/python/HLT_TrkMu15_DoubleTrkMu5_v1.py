@@ -89,7 +89,44 @@ def addHLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1_NoIso(process):
     return process
 
 def addHLT_TrkMu15_DoubleTrkMu5_v1(process):
+    """
+    Step 1: Start from HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1; rename to HLT_TrkMu15_DoubleTrkMu5_v1
+    Step 2: Remove the isolation sequence
+    Step 3: Add the TrkMu reconstruction sequence
+    Step 4: Add TriTrkMu pt5 filter (HLTMuonTrkFilter)
+    Step 5: Add SingleTrkMu15 filter (HLTMuonTrkFilter)
+    Step 6: Change L3 prefilter and filter
+    """
+    process.hltL3pfL1sDoubleMu103p5L1f0L2pf0L3PreFiltered5 = process.hltL3pfL1sDoubleMu103p5L1f0L2pf0L3PreFiltered8.clone(
+        MinN = cms.int32( 3 ),
+        MinPt = cms.double( 5.0 )
+    )
+    process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15 = process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered17.clone(
+        MinN = cms.int32( 1 ),
+        MinPt = cms.double( 15.0 )
+    )
+    process.hltTriTrkMu5Filtered = hltTriTrkMu5Filtered
+    process.hltSingleTrkMu15Filtered = hltSingleTrkMu15Filtered
 
+    process.HLT_TrkMu15_DoubleTrkMu5_v1 = cms.Path( 
+        process.HLTBeginSequence + 
+        process.hltL1sL1DoubleMu103p5ORDoubleMu125 + 
+        process.hltPreMu17TrkIsoVVLMu8TrkIsoVVL + 
+        process.hltL1fL1sDoubleMu103p5ORDoubleMu125L1Filtered0 + 
+        process.HLTL2muonrecoSequence + 
+        process.hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0 + 
+        process.hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMu + 
+        process.HLTL3muonrecoSequence + 
+        process.hltL3pfL1sDoubleMu103p5L1f0L2pf0L3PreFiltered5 + 
+        process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15 + 
+        process.HLTTrackerMuonSequence +
+        process.hltTriTrkMu5Filtered +
+        process.hltSingleTrkMu15Filtered +
+        process.HLTEndSequence 
+    )
+    return process
+
+def addHLT_TrkMu15_DoubleTrkMu5NoDxy_v1(process):
     """
     Step 1: Start from HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1; rename to HLT_TrkMu15_DoubleTrkMu5_v1
     Step 2: Remove the isolation sequence
@@ -125,10 +162,32 @@ def addHLT_TrkMu15_DoubleTrkMu5_v1(process):
         process.hltTriTrkMu5Filtered +
         process.hltSingleTrkMu15Filtered +
         process.HLTEndSequence 
+     )
+    return process
+
+def addHLT_TripleMu_12_10_5_onlyL1OldSeed_v1(process):
+    process.HLT_TripleMu_12_10_5_onlyL1OldSeed_v1 = cms.Path( 
+        process.HLTBeginSequence + 
+        process.hltL1sL1TripleMu553 + 
+        process.HLTEndSequence 
+    )
+    return process
+
+def addHLT_TripleMu_12_10_5_onlyL1NewSeed_v1(process):
+    process.hltL1sL1TripleMu553NewSeed = process.hltL1sL1TripleMu553.clone(
+        L1SeedsLogicalExpression = "L1_TripleMu_5_5_3_HighQ"
+    )
+    process.HLT_TripleMu_12_10_5_onlyL1NewSeed_v1 = cms.Path( 
+        process.HLTBeginSequence + 
+        process.hltL1sL1TripleMu553NewSeed + 
+        process.HLTEndSequence 
     )
     return process
 
 def customizeOutputModule(process):
+    ## remove previous trigger results
+    process.source.inputCommands.append('drop *_*_*_TEST')
+
     ## drop existing output modules
     if hasattr(process,"AOutput"):
          delattr(process,"AOutput")
@@ -161,10 +220,12 @@ def customizeL1SeedhltL1sL1TripleMu553(process):
     return process
 
 def customizeHLT_TrkMu15_DoubleTrkMu5_v1(process):
+    process = addHLT_TripleMu_12_10_5_onlyL1OldSeed_v1(process)
+    process = addHLT_TripleMu_12_10_5_onlyL1NewSeed_v1(process)
     process = addHLT_TrkMu15_DoubleTrkMu5_v1(process)
+    process = addHLT_TrkMu15_DoubleTrkMu5NoDxy_v1(process)
     process = addHLT_Mu17_Mu8_v1_NoDz(process)
     process = addHLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1_NoIso(process)
     process = addHLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1_NoIso(process)
-    process = customizeL1SeedhltL1sL1TripleMu553(process)
     return process
 

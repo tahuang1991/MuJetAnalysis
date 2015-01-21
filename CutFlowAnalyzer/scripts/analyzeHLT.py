@@ -15,9 +15,10 @@ def analyzeHLT():
     #file = "file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_ANA_3/c2a1d8d9d4e09ccfe856b56c4a74ff8c/out_ana.root"
     #file = "file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_ANA_5/c2a1d8d9d4e09ccfe856b56c4a74ff8c/out_ana.root"
     file = "file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_ANA_5/b97cadbec7ab990f85182de4f25716c7/out_ana.root"    
-    file = "file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_ANA/b97cadbec7ab990f85182de4f25716c7/out_ana.root"
+#    file = "file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_ANA/b97cadbec7ab990f85182de4f25716c7/out_ana.root"
 
     f = TFile.Open(file)
+    print "Processing", file
     ana = "cutFlowAnalyzer"
     dir = f.Get(ana)      
     print "Opening directory", dir.GetName()
@@ -194,7 +195,11 @@ def analyzeHLT():
     print
     print "Trigger efficiencies:"
     for p in hltPaths:
-        print "\t", p, "Pass", hltPathPass[p], "Fail", hltPathFail[p], "Efficiency", hltPathPass[p]/m_eventsVertexOK_FittedVtx_noHLT
+        eff = hltPathPass[p]/m_eventsVertexOK_FittedVtx_noHLT
+#        print "\tTrigger {0:10} Pass {0:5} Fail {0:5} Efficiency {0:10}".format(p, hltPathPass[p], hltPathFail[p], eff)
+        #print "\tTrigger {0:10} Pass {10:15}".format(p,hltPathPass[p])
+        data = p, hltPathPass[p], hltPathFail[p], eff
+        print '\t{0[0]:<20} Pass {0[1]:<5} Fail {0[2]:<5} Efficiency {0[3]:<10}'.format(data)
     
 if __name__ == "__main__":
     analyzeHLT()

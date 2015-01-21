@@ -72,17 +72,16 @@ def analyzeHLT():
                 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1_NoIso',
                 'HLT_TripleMu_12_10_5_v1',
                 'HLT_TrkMu15_DoubleTrkMu5_v1']
-    hltPathCounter = {}
+    hltPathPass = {}
+    hltPathFail = {}
     for p in hltPaths:
-        hltPathCounter[p] = 0 ## intialization
-
-    text_file = open("GoodEventsAna.txt", "w")
-    text_file2 = open("lxy.txt", "w")
+        hltPathPass[p] = 0 ## intialization
+        hltPathFail[p] = 0 ## intialization
 
     for k in range(0,nentries):
         t.GetEntry(k)    
         m_events += 1
-        print "Processing Event", k
+        ## print "Processing Event", k
 
         if (t.is4GenMu):
             m_events4GenMu += 1            
@@ -117,9 +116,10 @@ def analyzeHLT():
                             if (t.isVertexOK):
                                 m_eventsVertexOK_FittedVtx_noHLT += 1
                                 for p in hltPaths:
-                                    print p
                                     if passedHltPath(t,p):
-                                        hltPathCounter[p] += 1
+                                        hltPathPass[p] += 1
+                                    else:
+                                        hltPathFail[p] += 1
                                 """
                                 text_file.write("'%s:%s:%s',"%(t.run, t.lumi, t.event))
                                 if (not t.isDiMuonHLTFired):                                    
@@ -192,13 +192,9 @@ def analyzeHLT():
 ##     print "m_events2DiMuonsIsoTkOK_ConsistentVtx", m_events2DiMuonsIsoTkOK_ConsistentVtx
 ##     print "m_eventsVertexOK_ConsistentVtx", m_eventsVertexOK_ConsistentVtx
     print
-    print "m_eventsGoodFailingHLT", m_eventsGoodFailingHLT
-    print "m_eventsGoodPassingHLT", m_eventsGoodPassingHLT
-    print "Trigger efficiency", m_eventsGoodPassingHLT/m_eventsVertexOK_FittedVtx_noHLT
-    text_file.close()
-    text_file2.close()
-
-
+    print "Trigger efficiencies:"
+    for p in hltPaths:
+        print "\t", p, "Pass", hltPathPass[p], "Fail", hltPathFail[p], "Efficiency", hltPathPass[p]/m_eventsVertexOK_FittedVtx_noHLT
     
 if __name__ == "__main__":
     analyzeHLT()

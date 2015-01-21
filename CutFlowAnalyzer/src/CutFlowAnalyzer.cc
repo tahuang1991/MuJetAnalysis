@@ -1360,6 +1360,7 @@ CutFlowAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   iEvent.getByLabel("patTriggerEvent", triggerEvent);
   
   b_isDiMuonHLTFired = false;
+  b_hltPaths.clear();
   for (auto p : hltPaths_){
     if ( !triggerEvent->path(p) )
       std::cout << p << " does not occur in pat::TriggerEvent" << std::endl;

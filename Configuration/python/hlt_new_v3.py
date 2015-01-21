@@ -6258,7 +6258,7 @@ process.dqmOutput = cms.OutputModule("DQMRootOutputModule",
 
 process.source = cms.Source( "PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:out_reco.root',
+        'file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RECO/ee2b69195f87ad6497ae607e47718adf/out_reco_2_1_IDw.root',
     ),
     inputCommands = cms.untracked.vstring(
         'keep *'

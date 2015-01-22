@@ -1,5 +1,4 @@
 import FWCore.ParameterSet.Config as cms
-from TrackingTools.TransientTrack.TransientTrackBuilder_cfi import *
 
 process = cms.Process("CutFlowAnalyzer")
 

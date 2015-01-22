@@ -1,0 +1,12 @@
+hltGetConfiguration /dev/CMSSW_7_3_0/GRun/V25 --full --offline --mc --timing --unprescale --process HLT --globaltag auto:run2_mc \
+--paths HLTriggerFirstPath,HLT_Mu17_Mu8_DZ_v1,HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1,HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1,HLT_Mu30_TkMu11_v1,HLT_TripleMu_12_10_5_v1,HLT_DoubleMu33NoFiltersNoVtx_v1,HLT_Mu38NoFiltersNoVtx_Photon38_CaloIdL_v1,HLTriggerFinalPath > hlt_Run2_HLT.py
+
+hltGetConfiguration /dev/CMSSW_7_3_0/GRun/V25 --full --offline --mc --timing --unprescale --process TEST --globaltag auto:run2_mc \
+--paths HLTriggerFirstPath,HLT_Mu17_Mu8_DZ_v1,HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1,HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1,HLT_Mu30_TkMu11_v1,HLT_TripleMu_12_10_5_v1,HLT_DoubleMu33NoFiltersNoVtx_v1,HLT_Mu38NoFiltersNoVtx_Photon38_CaloIdL_v1,HLTriggerFinalPath > hlt_Run2_TEST.py
+
+
+from MuJetAnalysis.Configuration.HLT_TrkMu15_DoubleTrkMu5_v1 import *
+process=customizeHLT_TrkMu15_DoubleTrkMu5_v1(process)
+
+
+process=customizeOutputModule(process)

@@ -27,55 +27,7 @@ process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
 process.GlobalTag.globaltag = "MCRUN2_72_V3::All"
 
 process.load("MuJetAnalysis.MuJetProducer.MuJetProducer_cff")
-process.TrackerMuJetProducer05 = process.MuJetProducer.clone(
-    maxMass = cms.double(5.),
-    muons = cms.InputTag("cleanPatTrackerMuonsTriggerMatch"),
-    selectTrackerMuons = cms.bool(True),
-    selectGlobalMuons = cms.bool(False),
-    groupingMode = cms.string("GroupByMassAndVertexProbOrDeltaR"),
-    maxDeltaR = cms.double(0.01),
-    minSegmentMatches = cms.int32(2),
-    minTrackerHits = cms.int32(8),
-    maxTrackerNormChi2 = cms.double(4.0)
-)
-
-process.PFMuJetProducer05 = process.MuJetProducer.clone(
-    maxMass = cms.double(5.),
-    muons = cms.InputTag("cleanPatPFMuonsTriggerMatch"),
-    selectTrackerMuons = cms.bool(False),
-    selectGlobalMuons = cms.bool(False),
-    groupingMode = cms.string("GroupByMassAndVertexProbOrDeltaR"),
-    maxDeltaR = cms.double(0.01),
-#    minSegmentMatches = cms.int32(2),
-    minSegmentMatches = cms.int32(-1),
-    minTrackerHits = cms.int32(-1),
-    maxTrackerNormChi2 = cms.double(-1.0)
-)
-
-process.cutFlowAnalyzer = cms.EDAnalyzer('CutFlowAnalyzer',
-    analyzerDebug = cms.int32(0),
-    fillGenLevel = cms.bool(True),
-#    muons = cms.InputTag("cleanPatTrackerMuonsTriggerMatch"),
-#    muJets = cms.InputTag("TrackerMuJetProducer05"),
-    muons = cms.InputTag("cleanPatPFMuonsTriggerMatch"),
-    muJets = cms.InputTag("PFMuJetProducer05"),
-    DiMuons_Iso_Max = cms.double(2.0),
-    nThrowsConsistentVertexesCalculator = cms.int32(100000),
-    hltPaths = cms.vstring(
-        'HLT_DoubleMu33NoFiltersNoVtx_v1',
-        'HLT_Mu17_Mu8_DZ_v1',
-        'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1',
-        'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1',
-        'HLT_Mu30_TkMu11_v1',
-        'HLT_Mu38NoFiltersNoVtx_Photon38_CaloIdL_v1',
-        'HLT_TripleMu_12_10_5_v1',
-        'HLT_TripleMu_12_10_5_onlyL1NewSeed_v1',
-        'HLT_TrkMu15_DoubleTrkMu5_v1',
-        'HLT_Mu17_Mu8_DZ_v1_NoDz',
-        'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1_NoIso',
-        'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1_NoIso'
-    )
-)
+process.load("MuJetAnalysis.CutFlowAnalyzer.CutFlowAnalyzer_cfi")
 
 process.p = cms.Path(
     process.TrackerMuJetProducer05 *

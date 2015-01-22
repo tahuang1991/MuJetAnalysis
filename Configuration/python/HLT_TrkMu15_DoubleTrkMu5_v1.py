@@ -220,7 +220,7 @@ def customizeL1SeedhltL1sL1TripleMu553(process):
     return process
 
 def customizeHLT_TrkMu15_DoubleTrkMu5_v1(process):
-    process = addHLT_TripleMu_12_10_5_onlyL1OldSeed_v1(process)
+    process = customizeL1SeedhltL1sL1TripleMu553(process)
     process = addHLT_TripleMu_12_10_5_onlyL1NewSeed_v1(process)
     process = addHLT_TrkMu15_DoubleTrkMu5_v1(process)
     process = addHLT_TrkMu15_DoubleTrkMu5NoDxy_v1(process)

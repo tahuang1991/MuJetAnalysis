@@ -26,9 +26,8 @@ process.MessageLogger = cms.Service("MessageLogger",
     cout = cms.untracked.PSet(threshold = cms.untracked.string("ERROR"))
 )
 
-process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
-from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
+process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
+process.GlobalTag.globaltag = "MCRUN2_72_V3::All"
 
 process.load("MuJetAnalysis.MuJetProducer.MuJetProducer_cff")
 process.TrackerMuJetProducer05 = process.MuJetProducer.clone(

@@ -14,6 +14,7 @@ process.patMuons.embedGenMatch = cms.bool(True)
 
 ## pick latest HLT process
 process.patTrigger.processName = cms.string( "*" )
+process.patTriggerEvent.processName = cms.string( "*" )
 
 process.source = cms.Source("PoolSource",
   fileNames = cms.untracked.vstring(

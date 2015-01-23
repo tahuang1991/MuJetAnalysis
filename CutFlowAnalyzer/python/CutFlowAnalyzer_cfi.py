@@ -18,7 +18,7 @@ cutFlowAnalyzer = cms.EDAnalyzer('CutFlowAnalyzer',
         'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1',
         'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1',
         'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1_NoIso',
-        'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1_NoIso'
+        'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1_NoIso',
         'HLT_TripleMu_12_10_5_v1',
         'HLT_TripleMu_12_10_5_onlyL1NewSeed_v1',
         'HLT_TrkMu15_DoubleTrkMu5_v1',

@@ -462,10 +462,14 @@ def addHLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
         MuonCollectionLabel = cms.InputTag( 'hltL2Muons' )
     )    
     process.hltL3TrajectorySeedNoVtx = process.hltL3TrajectorySeed.clone(
-        labels = cms.VInputTag( 'hltL3TrajSeedIOHitNoVtx','hltL3TrajSeedOIStateNoVtx','hltL3TrajSeedOIHitNoVtx' )
+        labels = cms.VInputTag( 'hltL3TrajSeedIOHitNoVtx',
+                                'hltL3TrajSeedOIStateNoVtx',
+                                'hltL3TrajSeedOIHitNoVtx' )
     )
     process.hltL3TrackCandidateFromL2NoVtx = process.hltL3TrackCandidateFromL2.clone(
-        labels = cms.VInputTag( 'hltL3TrackCandidateFromL2IOHitNoVtx','hltL3TrackCandidateFromL2OIHitNoVtx','hltL3TrackCandidateFromL2OIStateNoVtx' )
+        labels = cms.VInputTag( 'hltL3TrackCandidateFromL2IOHitNoVtx',
+                                'hltL3TrackCandidateFromL2OIHitNoVtx',
+                                'hltL3TrackCandidateFromL2OIStateNoVtx' )
     )
 
     ## need noVtx inputs for this sequence

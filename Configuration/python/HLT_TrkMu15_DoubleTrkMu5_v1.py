@@ -34,6 +34,38 @@ hltSingleTrkMuFiltered15 = cms.EDFilter("HLTMuonTrkFilter",
     inputMuonCollection = cms.InputTag( "hltGlbTrkMuons" ),
     allowedTypeMask = cms.uint32( 255 )
 )
+hltTripleTrkMuFiltered5NoVtx = cms.EDFilter("HLTMuonTrkFilter",
+    maxNormalizedChi2 = cms.double( 1.0E99 ),
+    saveTags = cms.bool( False ),
+    maxAbsEta = cms.double( 2.5 ),
+    previousCandTag = cms.InputTag( "" ),
+    minPt = cms.double( 5.0 ),
+    minN = cms.uint32( 3 ),
+    inputCandCollection = cms.InputTag( "hltGlbTrkMuonCandsNoVtx" ),
+    minMuonStations = cms.int32( 2 ),
+    trkMuonId = cms.uint32( 0 ),
+    requiredTypeMask = cms.uint32( 0 ),
+    minMuonHits = cms.int32( -1 ),
+    minTrkHits = cms.int32( -1 ),
+    inputMuonCollection = cms.InputTag( "hltGlbTrkMuonsNoVtx" ),
+    allowedTypeMask = cms.uint32( 255 )
+)
+hltSingleTrkMuFiltered15NoVtx = cms.EDFilter("HLTMuonTrkFilter",
+    maxNormalizedChi2 = cms.double( 1.0E99 ),
+    saveTags = cms.bool( False ),
+    maxAbsEta = cms.double( 2.5 ),
+    previousCandTag = cms.InputTag( "" ),
+    minPt = cms.double( 15.0 ),
+    minN = cms.uint32( 1 ),
+    inputCandCollection = cms.InputTag( "hltGlbTrkMuonCandsNoVtx" ),
+    minMuonStations = cms.int32( 2 ),
+    trkMuonId = cms.uint32( 0 ),
+    requiredTypeMask = cms.uint32( 0 ),
+    minMuonHits = cms.int32( -1 ),
+    minTrkHits = cms.int32( -1 ),
+    inputMuonCollection = cms.InputTag( "hltGlbTrkMuonsNoVtx" ),
+    allowedTypeMask = cms.uint32( 255 )
+)
 hltL3pfL1sDoubleMu103p5L1f0L2pf0TwoMuL3PreFiltered5 = cms.EDFilter( "HLTMuonL3PreFilter",
     MaxNormalizedChi2 = cms.double( 9999.0 ),
     saveTags = cms.bool( True ),
@@ -345,7 +377,7 @@ def addHLT_Mu15_DoubleMu5NoVtx_v1(process):
         process.HLTEndSequence 
     )
 
-    process.HLT_Mu15_DoubleMu5NoVtx_v1_hltL3pfL1sDoubleMu103p5L1f0L2pf0TwoMuL3PreFiltered5OnMuFiltered15 = cms.Path( 
+    process.HLT_Mu15_DoubleMu5NoVtx_v1_TwoMuL3PreFiltered5_OneMuL3Filtered15 = cms.Path( 
         process.HLTBeginSequence + 
         process.hltL1sL1DoubleMu103p5ORDoubleMu125 + 
         process.hltPreMu17TrkIsoVVLMu8TrkIsoVVL + 
@@ -390,6 +422,98 @@ def addHLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
     process.hltTripleTrkMuFiltered5 = hltTripleTrkMuFiltered5
     process.hltSingleTrkMuFiltered15 = hltSingleTrkMuFiltered15
 
+    ## define new NoVtx modules by cloning updatedAtVtx ones
+    process.hltL3MuonsOIStateNoVtx = process.hltL3MuonsOIStateNoVtx.clone(
+        MuonCollectionLabel = cms.InputTag( 'hltL2Muons' )
+    )    
+    process.hltL3TrajSeedOIHitNoVtx = process.hltL3TrajSeedOIHit.clone(
+        TkSeedGenerator.Set( L3TkCollectionA = cms.InputTag( "hltL3MuonsOIStateNoVtx" ) ),
+        MuonCollectionLabel = cms.InputTag( 'hltL2Muons' )
+    )
+    process.hltL3TrackCandidateFromL2OIHitNoVtx = process.hltL3TrackCandidateFromL2OIHit.clone(
+        src = cms.InputTag( "hltL3TrajSeedOIHitNoVtx" ),
+    )
+    process.hltL3TkTracksFromL2OIHitNoVtx = process.hltL3TkTracksFromL2OIHit.clone(
+        src = cms.InputTag( "hltL3TrackCandidateFromL2OIHitNoVtx" ),
+    )
+    process.hltL3MuonsOIHitNoVtx = process.hltL3MuonsOIHit.clone(
+        MuonCollectionLabel = cms.InputTag( 'hltL2Muons' )
+    )
+    process.hltL3TkFromL2OICombinationNoVtx = process.hltL3TkFromL2OICombination.clone(
+        labels = cms.VInputTag( 'hltL3MuonsOIStateNoVtx','hltL3MuonsOIHitNoVtx' )
+    )    
+    process.hltL3TrajSeedIOHitNoVtx = process.hltL3TrajSeedIOHit.clone(
+        TkSeedGenerator.Set( L3TkCollectionA = cms.InputTag( "hltL3TkFromL2OICombinationNoVtx" ) ),
+        MuonCollectionLabel = cms.InputTag( 'hltL2Muons' )
+    )
+    process.hltL3TrackCandidateFromL2IOHitNoVtx = process.hltL3TrackCandidateFromL2IOHit.clone(
+        src = cms.InputTag( "hltL3TrajSeedIOHitNoVtx" ),
+    )
+    process.hltL3TkTracksFromL2IOHitNoVtx = process.hltL3TkTracksFromL2IOHit.clone(
+        src = cms.InputTag( "hltL3TrackCandidateFromL2IOHitNoVtx" ),        
+    )
+    process.hltL3MuonsIOHitNoVtx = process.hltL3MuonsIOHit.clone(
+        MuonCollectionLabel = cms.InputTag( 'hltL2Muons' )
+    )    
+    process.hltL3TrajectorySeedNoVtx = process.hltL3TrajectorySeedNoVtx.clone(
+        labels = cms.VInputTag( 'hltL3TrajSeedIOHitNoVtx','hltL3TrajSeedOIStateNoVtx','hltL3TrajSeedOIHitNoVtx' )
+    )
+    process.hltL3TrackCandidateFromL2NoVtx = process.hltL3TrackCandidateFromL2NoVtx.clone(
+        labels = cms.VInputTag( 'hltL3TrackCandidateFromL2IOHitNoVtx','hltL3TrackCandidateFromL2OIHitNoVtx','hltL3TrackCandidateFromL2OIStateNoVtx' )
+    )
+
+    ## need noVtx inputs for this sequence
+    HLTL3muonTkCandidateSequenceNoVtx = cms.Sequence( 
+        process.HLTDoLocalPixelSequence + 
+        process.HLTDoLocalStripSequence + 
+
+        process.hltL3TrajSeedOIStateNoVtx + ## already defined, takes hltL2Muons as input instead of hltL2Muons:UpdatedAtVtx
+        process.hltL3TrackCandidateFromL2OIStateNoVtx + ## already defined
+        process.hltL3TkTracksFromL2OIStateNoVtx + ## already defined
+        process.hltL3MuonsOIStateNoVtx + ## need to redefine this one
+
+        process.hltL3TrajSeedOIHitNoVtx + ## need to redefine this one
+        process.hltL3TrackCandidateFromL2OIHitNoVtx + ## need to redefine this one
+        process.hltL3TkTracksFromL2OIHitNoVtx + ## need to redefine this one
+        process.hltL3MuonsOIHitNoVtx + ## need to redefine this one
+
+        process.hltL3TkFromL2OICombinationNoVtx + ## need to redefine this one
+
+        process.hltPixelLayerTriplets + 
+        process.hltPixelLayerPairs + 
+        process.hltMixedLayerPairs + 
+
+        process.hltL3TrajSeedIOHitNoVtx + ## need to redefine this one
+        process.hltL3TrackCandidateFromL2IOHitNoVtx + ## need to redefine this one
+        process.hltL3TkTracksFromL2IOHitNoVtx + ## need to redefine this one
+        process.hltL3MuonsIOHitNoVtx + ## need to redefine this one
+
+        process.hltL3TrajectorySeedNoVtx + ## need to redefine this one
+        process.hltL3TrackCandidateFromL2NoVtx ## need to redefine this one
+    )
+    process.hltL3TkTracksMergeStep1NoVtx = process.hltL3TkTracksMergeStep1.clone(
+        selectedTrackQuals = cms.VInputTag( 'hltL3TkTracksFromL2OIStateNoVtx','hltL3TkTracksFromL2OIHitNoVtx' ),
+        TrackProducers = cms.VInputTag( 'hltL3TkTracksFromL2OIStateNoVtx','hltL3TkTracksFromL2OIHitNoVtx' ),
+    )
+    process.hltL3TkTracksFromL2NoVtx = process.hltL3TkTracksFromL2.clone(
+        src = cms.InputTag( "hltL3TrackCandidateFromL2OIStateNoVtx" ),
+    )        
+    process.hltL3MuonsLinksCombinationNoVtx = process.hltL3MuonsLinksCombination.clone(
+        labels = cms.VInputTag( 'hltL3MuonsOIStateNoVtx','hltL3MuonsOIHitNoVtx','hltL3MuonsIOHitNoVtx' )        
+    )    
+    process.hltL3MuonsNoVtx = process.hltL3Muons.clone(
+        labels = cms.VInputTag( 'hltL3MuonsOIStateNoVtx','hltL3MuonsOIHitNoVtx','hltL3MuonsIOHitNoVtx' )
+    )
+    
+    ## need noVtx inputs for this sequence
+    HLTL3muonrecoNocandSequenceNoVtx = cms.Sequence( 
+        process.HLTL3muonTkCandidateSequenceNoVtx + ## need to redefine this one
+        process.hltL3TkTracksMergeStep1NoVtx + ## need to redefine this one
+        process.hltL3TkTracksFromL2NoVtx + ## need to redefine this one
+        process.hltL3MuonsLinksCombinationNoVtx + ## need to redefine this one
+        process.hltL3MuonsNoVtx ## need to redefine this one
+    )
+
     ## redefine the tracker muon sequence
     ## need to check the inputs
     process.HLTTrackerMuonSequenceNoVtx = cms.Sequence( 
@@ -401,6 +525,7 @@ def addHLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
         process.hltMuCkfTrackCandidates + 
         process.hltMuCtfTracks + 
         process.HLTL3muonrecoNocandSequence + 
+#        process.HLTL3muonrecoNocandSequenceNoVtx + 
         process.hltDiMuonMerging + 
         process.hltDiMuonLinks + 
         process.hltGlbTrkMuons + 
@@ -491,7 +616,7 @@ def customizeHLT_TrkMu15_DoubleTrkMu5_v1(process):
     process = addHLT_TripleMu_12_10_5_onlyL1NewSeed_v1(process)
     process = addHLT_TrkMu15_DoubleTrkMu5_v1(process)
     process = addHLT_Mu15_DoubleMu5NoVtx_v1(process)
-    ##process = addHLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process) -- need to fix trackrecosequence first
+    process = addHLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process) #-- need to fix trackrecosequence first
     process = addHLT_Mu17_Mu8_v1_NoDz(process)
     process = addHLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1_NoIso(process)
     process = addHLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1_NoIso(process)

@@ -467,7 +467,7 @@ def addHLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
         process.HLTDoLocalPixelSequence + 
         process.HLTDoLocalStripSequence + 
 
-        process.hltL3TrajSeedOIStateNoVtx + ## already defined, takes hltL2Muons as input instead of hltL2Muons:UpdatedAtVtx
+        process.hltL3TrajSeedOIStateNoVtx + ## already defined
         process.hltL3TrackCandidateFromL2OIStateNoVtx + ## already defined
         process.hltL3TkTracksFromL2OIStateNoVtx + ## already defined
         process.hltL3MuonsOIStateNoVtx + ## need to redefine this one

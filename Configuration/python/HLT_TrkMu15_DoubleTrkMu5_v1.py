@@ -419,15 +419,18 @@ def addHLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
 
     process.hltL3pfL1sDoubleMu103p5L1f0L2pf0ThreeMuL3PreFiltered5 = hltL3pfL1sDoubleMu103p5L1f0L2pf0ThreeMuL3PreFiltered5
     process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15 = hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15
-    process.hltTripleTrkMuFiltered5 = hltTripleTrkMuFiltered5
-    process.hltSingleTrkMuFiltered15 = hltSingleTrkMuFiltered15
+    process.hltTripleTrkMuFiltered5NoVtx = hltTripleTrkMuFiltered5NoVtx
+    process.hltSingleTrkMuFiltered15NoVtx = hltSingleTrkMuFiltered15NoVtx
 
     ## define new NoVtx modules by cloning updatedAtVtx ones
-    process.hltL3MuonsOIStateNoVtx = process.hltL3MuonsOIStateNoVtx.clone(
+    process.hltL3MuonsOIStateNoVtx = process.hltL3MuonsOIState.clone(
         MuonCollectionLabel = cms.InputTag( 'hltL2Muons' )
-    )    
+    ) 
+    hltL3TrajSeedOIHitNoVtx_TkSeedGenerator = process.hltL3TrajSeedOIHit.TkSeedGenerator.clone(
+        L3TkCollectionA = cms.InputTag( "hltL3MuonsOIStateNoVtx" )       
+    )
     process.hltL3TrajSeedOIHitNoVtx = process.hltL3TrajSeedOIHit.clone(
-        TkSeedGenerator.Set( L3TkCollectionA = cms.InputTag( "hltL3MuonsOIStateNoVtx" ) ),
+        TkSeedGenerator = hltL3TrajSeedOIHitNoVtx_TkSeedGenerator,
         MuonCollectionLabel = cms.InputTag( 'hltL2Muons' )
     )
     process.hltL3TrackCandidateFromL2OIHitNoVtx = process.hltL3TrackCandidateFromL2OIHit.clone(
@@ -442,8 +445,11 @@ def addHLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
     process.hltL3TkFromL2OICombinationNoVtx = process.hltL3TkFromL2OICombination.clone(
         labels = cms.VInputTag( 'hltL3MuonsOIStateNoVtx','hltL3MuonsOIHitNoVtx' )
     )    
+    hltL3TrajSeedIOHitNoVtx_TkSeedGenerator = process.hltL3TrajSeedIOHit.TkSeedGenerator.clone(
+        L3TkCollectionA = cms.InputTag( "hltL3TkFromL2OICombinationNoVtx" )       
+    )
     process.hltL3TrajSeedIOHitNoVtx = process.hltL3TrajSeedIOHit.clone(
-        TkSeedGenerator.Set( L3TkCollectionA = cms.InputTag( "hltL3TkFromL2OICombinationNoVtx" ) ),
+        TkSeedGenerator = hltL3TrajSeedIOHitNoVtx_TkSeedGenerator,
         MuonCollectionLabel = cms.InputTag( 'hltL2Muons' )
     )
     process.hltL3TrackCandidateFromL2IOHitNoVtx = process.hltL3TrackCandidateFromL2IOHit.clone(
@@ -455,15 +461,15 @@ def addHLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
     process.hltL3MuonsIOHitNoVtx = process.hltL3MuonsIOHit.clone(
         MuonCollectionLabel = cms.InputTag( 'hltL2Muons' )
     )    
-    process.hltL3TrajectorySeedNoVtx = process.hltL3TrajectorySeedNoVtx.clone(
+    process.hltL3TrajectorySeedNoVtx = process.hltL3TrajectorySeed.clone(
         labels = cms.VInputTag( 'hltL3TrajSeedIOHitNoVtx','hltL3TrajSeedOIStateNoVtx','hltL3TrajSeedOIHitNoVtx' )
     )
-    process.hltL3TrackCandidateFromL2NoVtx = process.hltL3TrackCandidateFromL2NoVtx.clone(
+    process.hltL3TrackCandidateFromL2NoVtx = process.hltL3TrackCandidateFromL2.clone(
         labels = cms.VInputTag( 'hltL3TrackCandidateFromL2IOHitNoVtx','hltL3TrackCandidateFromL2OIHitNoVtx','hltL3TrackCandidateFromL2OIStateNoVtx' )
     )
 
     ## need noVtx inputs for this sequence
-    HLTL3muonTkCandidateSequenceNoVtx = cms.Sequence( 
+    process.HLTL3muonTkCandidateSequenceNoVtx = cms.Sequence( 
         process.HLTDoLocalPixelSequence + 
         process.HLTDoLocalStripSequence + 
 
@@ -506,7 +512,7 @@ def addHLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
     )
     
     ## need noVtx inputs for this sequence
-    HLTL3muonrecoNocandSequenceNoVtx = cms.Sequence( 
+    process.HLTL3muonrecoNocandSequenceNoVtx = cms.Sequence( 
         process.HLTL3muonTkCandidateSequenceNoVtx + ## need to redefine this one
         process.hltL3TkTracksMergeStep1NoVtx + ## need to redefine this one
         process.hltL3TkTracksFromL2NoVtx + ## need to redefine this one

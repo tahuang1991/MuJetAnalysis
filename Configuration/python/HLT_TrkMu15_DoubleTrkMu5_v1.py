@@ -514,6 +514,21 @@ def addHLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
         process.hltL3MuonsNoVtx ## need to redefine this one
     )
 
+    process.hltDiMuonMergingNoVtx = process.hltDiMuonMerging.clone(
+        selectedTrackQuals = cms.VInputTag( 'hltL3TkTracksFromL2NoVtx','hltMuCtfTracks' ),
+        TrackProducers = cms.VInputTag( 'hltL3TkTracksFromL2L2NoVtx','hltMuCtfTracks' ),
+    )
+    process.hltDiMuonLinksNoVtx = process.hltDiMuonLinks.clone(
+        InclusiveTrackerTrackCollection = cms.InputTag( "hltDiMuonMergingNoVtx" ),
+        LinkCollection = cms.InputTag( "hltL3MuonsLinksCombinationNoVtx" ),
+    )
+    process.hltGlbTrkMuonsNoVtx = process.hltGlbTrkMuons.clone(
+        inputCollectionLabels = cms.VInputTag( 'hltDiMuonMergingNoVtx','hltDiMuonLinksNoVtx' ),
+    )
+    process.hltGlbTrkMuonCandsNoVtx = process.hltGlbTrkMuonCands.clone(
+        InputObjects = cms.InputTag( "hltGlbTrkMuonsNoVtx" )
+    )
+
     ## redefine the tracker muon sequence
     ## need to check the inputs
     process.HLTTrackerMuonSequenceNoVtx = cms.Sequence( 
@@ -524,12 +539,11 @@ def addHLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
         process.hltMuTrackSeeds + 
         process.hltMuCkfTrackCandidates + 
         process.hltMuCtfTracks + 
-        process.HLTL3muonrecoNocandSequence + 
-#        process.HLTL3muonrecoNocandSequenceNoVtx + 
-        process.hltDiMuonMerging + 
-        process.hltDiMuonLinks + 
-        process.hltGlbTrkMuons + 
-        process.hltGlbTrkMuonCands 
+        process.HLTL3muonrecoNocandSequenceNoVtx + ## need to redefine this one
+        process.hltDiMuonMergingNoVtx + ## need to redefine this one
+        process.hltDiMuonLinksNoVtx + ## need to redefine this one
+        process.hltGlbTrkMuonsNoVtx + ## need to redefine this one
+        process.hltGlbTrkMuonCandsNoVtx ## need to redefine this one
     )
 
     process.HLT_TrkMu15_DoubleTrkMu5NoVtx_v1 = cms.Path( 
@@ -543,9 +557,9 @@ def addHLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
         process.HLTL3NoFiltersNoVtxmuonrecoSequence +  ## take from HLT_DoubleMu33NoFiltersNoVtx_v
         process.hltL3pfL1sDoubleMu103p5L1f0L2pf0ThreeMuL3PreFiltered5 + 
         process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15 + 
-        process.HLTTrackerMuonSequenceNoVtx + ## check the inputs for this sequence
-        process.hltTripleTrkMuFiltered5 +
-        process.hltSingleTrkMuFiltered15 +
+        process.HLTTrackerMuonSequenceNoVtx + 
+        process.hltTripleTrkMuFiltered5NoVtx +
+        process.hltSingleTrkMuFiltered15NoVtx +
         process.HLTEndSequence 
     )
     return process

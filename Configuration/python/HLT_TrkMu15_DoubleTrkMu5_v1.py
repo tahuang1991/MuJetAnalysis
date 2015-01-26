@@ -383,7 +383,7 @@ def addHLT_Mu15_DoubleMu5NoVtx_v1(process):
         process.hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0 + 
         process.hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMu + 
         process.HLTL3NoFiltersNoVtxmuonrecoSequence +  ## take from HLT_DoubleMu33NoFiltersNoVtx_v
-        process.hltL3pfL1sDoubleMu103p5L1f0L2pf0ThreeMuL3PreFiltered5 +
+        process.hltL3pfL1sDoubleMu103p5L1f0L2pf0TwoMuL3PreFiltered5 +
         process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15 +
         process.HLTEndSequence 
     )
@@ -507,13 +507,26 @@ def addHLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
         process.hltL3MuonsNoVtx ## need to redefine this one
     )
 
+    """
+    Take inputs from 
+    HLTL3NoFiltersNoVtxmuonrecoNocandSequence = cms.Sequence(
+                                          HLTL3NoFiltersNoVtxmuonTkCandidateSequence +
+                                          hltL3NoFiltersNoVtxTkTracksMergeStep1 +
+                                          hltL3NoFiltersTkTracksFromL2Novtx +
+                                          hltL3NoFiltersNoVtxMuonsLinksCombination +
+                                          hltL3NoFiltersNoVtxMuons
+                                          )
+    """
+
     process.hltDiMuonMergingNoVtx = process.hltDiMuonMerging.clone(
-        selectedTrackQuals = cms.VInputTag( 'hltL3TkTracksFromL2NoVtx','hltMuCtfTracks' ),
-        TrackProducers = cms.VInputTag( 'hltL3TkTracksFromL2L2NoVtx','hltMuCtfTracks' ),
+        #selectedTrackQuals = cms.VInputTag( 'hltL3TkTracksFromL2NoVtx','hltMuCtfTracks' ),
+        #TrackProducers = cms.VInputTag(     'hltL3TkTracksFromL2NoVtx','hltMuCtfTracks' ),
+        selectedTrackQuals = cms.VInputTag( 'hltL3NoFiltersTkTracksFromL2Novtx','hltMuCtfTracks' ),
+        TrackProducers = cms.VInputTag( 'hltL3NoFiltersTkTracksFromL2Novtx','hltMuCtfTracks' ),
     )
     process.hltDiMuonLinksNoVtx = process.hltDiMuonLinks.clone(
         InclusiveTrackerTrackCollection = cms.InputTag( "hltDiMuonMergingNoVtx" ),
-        LinkCollection = cms.InputTag( "hltL3MuonsLinksCombinationNoVtx" ),
+        LinkCollection = cms.InputTag( "hltL3NoFiltersNoVtxMuonsLinksCombination" ),
     )
     process.hltGlbTrkMuonsNoVtx = process.hltGlbTrkMuons.clone(
         inputCollectionLabels = cms.VInputTag( 'hltDiMuonMergingNoVtx','hltDiMuonLinksNoVtx' ),
@@ -532,7 +545,8 @@ def addHLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
         process.hltMuTrackSeeds + 
         process.hltMuCkfTrackCandidates + 
         process.hltMuCtfTracks + 
-        process.HLTL3muonrecoNocandSequenceNoVtx + ## need to redefine this one
+        process.HLTL3NoFiltersNoVtxmuonrecoNocandSequence + 
+#        process.HLTL3muonrecoNocandSequenceNoVtx + ## need to redefine this one
         process.hltDiMuonMergingNoVtx + ## need to redefine this one
         process.hltDiMuonLinksNoVtx + ## need to redefine this one
         process.hltGlbTrkMuonsNoVtx + ## need to redefine this one
@@ -591,7 +605,7 @@ def addHLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
         process.hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0 + 
         process.hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMu + 
         process.HLTL3NoFiltersNoVtxmuonrecoSequence +  ## take from HLT_DoubleMu33NoFiltersNoVtx_v
-        process.hltL3pfL1sDoubleMu103p5L1f0L2pf0ThreeMuL3PreFiltered5 + 
+        process.hltL3pfL1sDoubleMu103p5L1f0L2pf0TwoMuL3PreFiltered5 + 
         process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15 + 
         process.HLTTrackerMuonSequenceNoVtx + 
         process.hltTripleTrkMuFiltered5NoVtx +

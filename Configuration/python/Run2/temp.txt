@@ -63,3 +63,6 @@ cmsDriver.py DarkSUSY_mH_125_mGammaD_XX_ctauExp_YY_ZZTeV_madgraph452_bridge224_L
 --fileout out_reco.root \
 -n 80000 \
 --no_exec
+
+hltGetConfiguration /dev/CMSSW_7_3_0/GRun/V25 --full --offline --mc --unprescale --process HLT --globaltag auto:run2_mc \
+--paths HLTriggerFirstPath,HLT_Mu17_Mu8_DZ_v1,HLTriggerFinalPath > hlt_Run2_QCDMuEnrichL1Mu.py

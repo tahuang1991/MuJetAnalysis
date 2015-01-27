@@ -389,6 +389,7 @@ def addHLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
     """
 
     process.hltL3pfL1sDoubleMu103p5L1f0L2pf0ThreeMuL3PreFiltered5 = hltL3pfL1sDoubleMu103p5L1f0L2pf0ThreeMuL3PreFiltered5
+    process.hltL3pfL1sDoubleMu103p5L1f0L2pf0TwoMuL3PreFiltered5 = hltL3pfL1sDoubleMu103p5L1f0L2pf0TwoMuL3PreFiltered5
     process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15 = hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15
     process.hltTripleTrkMuFiltered5NoVtx = hltTripleTrkMuFiltered5NoVtx
     process.hltSingleTrkMuFiltered15NoVtx = hltSingleTrkMuFiltered15NoVtx
@@ -600,6 +601,24 @@ def addHLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
         process.hltSingleTrkMuFiltered15NoVtx +
         process.HLTEndSequence 
     )
+
+    process.HLT_TrkMu15_DoubleTrkMu5NoVtx_v1_TwoMuL3PreFiltered5 = cms.Path( 
+        process.HLTBeginSequence + 
+        process.hltL1sL1DoubleMu103p5ORDoubleMu125 + 
+        process.hltPreMu17TrkIsoVVLMu8TrkIsoVVL + 
+        process.hltL1fL1sDoubleMu103p5ORDoubleMu125L1Filtered0 + 
+        process.HLTL2muonrecoSequenceNoVtx +  ## take from HLT_DoubleMu33NoFiltersNoVtx_v
+        process.hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0 + 
+        process.hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMu + 
+        process.HLTL3NoFiltersNoVtxmuonrecoSequence +  ## take from HLT_DoubleMu33NoFiltersNoVtx_v
+        process.hltL3pfL1sDoubleMu103p5L1f0L2pf0TwoMuL3PreFiltered5 + 
+        process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15 + 
+        process.HLTTrackerMuonSequenceNoVtx + 
+        process.hltTripleTrkMuFiltered5NoVtx +
+        process.hltSingleTrkMuFiltered15NoVtx +
+        process.HLTEndSequence 
+    )
+
     return process
 
 def addHLT_TripleMu_12_10_5_onlyL1OldSeed_v1(process):

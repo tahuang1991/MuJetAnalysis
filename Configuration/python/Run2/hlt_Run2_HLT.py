@@ -8097,12 +8097,6 @@ process.dqmOutput = cms.OutputModule("DQMRootOutputModule",
 
 process.DQMOutput = cms.EndPath( process.dqmOutput )
 
-process=customizeOutputModule(process)
-
-
-
-
-
 process.source = cms.Source( "PoolSource",
     fileNames = cms.untracked.vstring(
         'file:RelVal_Raw_GRun_MC.root',
@@ -8111,6 +8105,8 @@ process.source = cms.Source( "PoolSource",
         'keep *'
     )
 )
+
+process=customizeOutputModule(process)
 
 # customise the HLT menu for running on MC
 from HLTrigger.Configuration.customizeHLTforMC import customizeHLTforMC

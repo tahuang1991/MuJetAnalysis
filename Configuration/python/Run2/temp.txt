@@ -1,37 +1,37 @@
 ## GEN-SIM-DIGI-L1-DIGI2RAW
 
-cmsDriver.py DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_cfi_RunII \
+cmsDriver.py DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_13TeV_madgraph452_bridge224_LHE_pythia6_cfi \
 -s GEN,SIM,DIGI,L1,DIGI2RAW \
 --datatier GEN-SIM-RAW \
 --conditions auto:run2_mc \
 --magField 38T_PostLS1 \
 --customise=SLHCUpgradeSimulations/Configuration/postLS1Customs.customisePostLS1 \
 --eventcontent FEVTDEBUGHLT \
---evt_type MuJetAnalysis/Configuration/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_cfi \
+--evt_type MuJetAnalysis/Configuration/Run2/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_13TeV_madgraph452_bridge224_LHE_pythia6_cfi \
 --fileout out_raw.root \
 -n 80000 \
 --no_exec
 
-cmsDriver.py DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_cfi_RunII \
+cmsDriver.py DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_13TeV_madgraph452_bridge224_LHE_pythia6_cfi \
 -s GEN,SIM,DIGI,L1,DIGI2RAW \
 --datatier GEN-SIM-RAW \
 --conditions auto:run2_mc \
 --magField 38T_PostLS1 \
 --customise=SLHCUpgradeSimulations/Configuration/postLS1Customs.customisePostLS1 \
 --eventcontent FEVTDEBUGHLT \
---evt_type MuJetAnalysis/Configuration/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_cfi \
+--evt_type MuJetAnalysis/Configuration/Run2/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_13TeV_madgraph452_bridge224_LHE_pythia6_cfi \
 --fileout out_raw.root \
 -n 80000 \
 --no_exec
 
-cmsDriver.py DarkSUSY_mH_125_mGammaD_2000_ctauExp_5_8TeV_madgraph452_bridge224_LHE_pythia6_cfi_RunII \
+cmsDriver.py DarkSUSY_mH_125_mGammaD_2000_ctauExp_5_13TeV_madgraph452_bridge224_LHE_pythia6_cfi \
 -s GEN,SIM,DIGI,L1,DIGI2RAW \
 --datatier GEN-SIM-RAW \
 --conditions auto:run2_mc \
 --magField 38T_PostLS1 \
 --customise=SLHCUpgradeSimulations/Configuration/postLS1Customs.customisePostLS1 \
 --eventcontent FEVTDEBUGHLT \
---evt_type MuJetAnalysis/Configuration/DarkSUSY_mH_125_mGammaD_2000_ctauExp_5_8TeV_madgraph452_bridge224_LHE_pythia6_cfi \
+--evt_type MuJetAnalysis/Configuration/Run2/DarkSUSY_mH_125_mGammaD_2000_ctauExp_5_13TeV_madgraph452_bridge224_LHE_pythia6_cfi \
 --fileout out_raw.root \
 -n 80000 \
 --no_exec

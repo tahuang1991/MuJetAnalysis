@@ -649,7 +649,7 @@ def addHLT_TripleMu_12_10_5_onlyL1OldSeed_v1(process):
 
 def addHLT_TripleMu_12_10_5_onlyL1NewSeed_v1(process):
     process.hltL1sL1TripleMu553NewSeed = process.hltL1sL1TripleMu553.clone(
-        L1SeedsLogicalExpression = "L1_TripleMu_5_5_3_HighQ"
+        L1SeedsLogicalExpression = "L1_TripleMu_5_5_3"
     )
     process.HLT_TripleMu_12_10_5_onlyL1NewSeed_v1 = cms.Path( 
         process.HLTBeginSequence + 
@@ -708,7 +708,7 @@ def customizeL1SeedhltL1sL1TripleMu553(process):
     return process
 
 def customizeHLT_TrkMu15_DoubleTrkMu5_v1(process):
-    process = customizeL1SeedhltL1sL1TripleMu553(process)
+#    process = customizeL1SeedhltL1sL1TripleMu553(process)
     process = addHLT_TripleMu_12_10_5_onlyL1NewSeed_v1(process)
     process = addHLT_TrkMu15_DoubleTrkMu5_v1(process)
     process = addHLT_Mu15_DoubleMu5NoVtx_v1(process)

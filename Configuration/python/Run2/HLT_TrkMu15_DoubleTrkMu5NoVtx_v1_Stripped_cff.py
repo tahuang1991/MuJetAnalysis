@@ -4,32 +4,52 @@ import FWCore.ParameterSet.Config as cms
 
 def add_HLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
 
-    process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15 = cms.EDFilter("HLTMuonL3PreFilter",
-        MaxNormalizedChi2 = cms.double( 9999.0 ),
+    process.hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0NoVtx = cms.EDFilter("HLTMuonL2PreFilter",
         saveTags = cms.bool( True ),
-        PreviousCandTag = cms.InputTag( "hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMu" ),
-        MinNmuonHits = cms.int32( 0 ),
-        MinN = cms.int32( 1 ),
-        MinTrackPt = cms.double( 0.0 ),
+        MaxDr = cms.double( 9999.0 ),
+        CutOnChambers = cms.bool( False ),
+        PreviousCandTag = cms.InputTag( "hltL1fL1sDoubleMu103p5ORDoubleMu125L1Filtered0" ),
+        MinPt = cms.double( 0.0 ),
+        MinN = cms.int32( 2 ),
+        SeedMapTag = cms.InputTag( "hltL2Muons" ),
         MaxEta = cms.double( 2.5 ),
-        MaxDXYBeamSpot = cms.double( 9999.0 ),
-        MinNhits = cms.int32( 0 ),
+        MinNhits = cms.vint32( 0 ),
         MinDxySig = cms.double( -1.0 ),
-        NSigmaPt = cms.double( 0.0 ),
+        MinNchambers = cms.vint32( 0 ),
+        AbsEtaBins = cms.vdouble( 5.0 ),
         MaxDz = cms.double( 9999.0 ),
-        MaxPtDifference = cms.double( 9999.0 ),
-        MaxDr = cms.double( 2.0 ),
-        CandTag = cms.InputTag( "hltL3MuonCandidates" ),
-        MinDXYBeamSpot = cms.double( -1.0 ),
-        MinDr = cms.double( -1.0 ),
+        CandTag = cms.InputTag( "hltL2MuonCandidatesNoVtx" ),
         BeamSpotTag = cms.InputTag( "hltOnlineBeamSpot" ),
-        MinPt = cms.double( 15.0 )
+        MinDr = cms.double( -1.0 ),
+        NSigmaPt = cms.double( 0.0 ),
+        MinNstations = cms.vint32( 0 )
     )
 
-    process.hltL3pfL1sDoubleMu103p5L1f0L2pf0TwoMuL3PreFiltered5 = cms.EDFilter("HLTMuonL3PreFilter",
+    process.hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMuNoVtx = cms.EDFilter("HLTMuonL2PreFilter",
+        saveTags = cms.bool( True ),
+        MaxDr = cms.double( 9999.0 ),
+        CutOnChambers = cms.bool( False ),
+        PreviousCandTag = cms.InputTag( "hltL1fL1sDoubleMu103p5ORDoubleMu125L1Filtered0" ),
+        MinPt = cms.double( 10.0 ),
+        MinN = cms.int32( 1 ),
+        SeedMapTag = cms.InputTag( "hltL2Muons" ),
+        MaxEta = cms.double( 2.5 ),
+        MinNhits = cms.vint32( 0 ),
+        MinDxySig = cms.double( -1.0 ),
+        MinNchambers = cms.vint32( 0 ),
+        AbsEtaBins = cms.vdouble( 5.0 ),
+        MaxDz = cms.double( 9999.0 ),
+        CandTag = cms.InputTag( "hltL2MuonCandidatesNoVtx" ),
+        BeamSpotTag = cms.InputTag( "hltOnlineBeamSpot" ),
+        MinDr = cms.double( -1.0 ),
+        NSigmaPt = cms.double( 0.0 ),
+        MinNstations = cms.vint32( 0 )
+     )
+
+    process.hltL3pfL1sDoubleMu103p5L1f0L2pf0TwoMuL3PreFiltered5NoVtx = cms.EDFilter("HLTMuonL3PreFilter",
         MaxNormalizedChi2 = cms.double( 9999.0 ),
         saveTags = cms.bool( True ),
-        PreviousCandTag = cms.InputTag( "hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0" ),
+        PreviousCandTag = cms.InputTag( "hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0NoVtx" ),
         MinNmuonHits = cms.int32( 0 ),
         MinN = cms.int32( 2 ),
         MinTrackPt = cms.double( 0.0 ),
@@ -41,11 +61,33 @@ def add_HLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
         MaxDz = cms.double( 9999.0 ),
         MaxPtDifference = cms.double( 9999.0 ),
         MaxDr = cms.double( 2.0 ),
-        CandTag = cms.InputTag( "hltL3MuonCandidates" ),
+        CandTag = cms.InputTag( "hltL3NoFiltersNoVtxMuonCandidates" ),
         MinDXYBeamSpot = cms.double( -1.0 ),
         MinDr = cms.double( -1.0 ),
         BeamSpotTag = cms.InputTag( "hltOnlineBeamSpot" ),
         MinPt = cms.double( 5.0 )
+    )
+
+    process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15NoVtx = cms.EDFilter("HLTMuonL3PreFilter",
+        MaxNormalizedChi2 = cms.double( 9999.0 ),
+        saveTags = cms.bool( True ),
+        PreviousCandTag = cms.InputTag( "hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMuNoVtx" ),
+        MinNmuonHits = cms.int32( 0 ),
+        MinN = cms.int32( 1 ),
+        MinTrackPt = cms.double( 0.0 ),
+        MaxEta = cms.double( 2.5 ),
+        MaxDXYBeamSpot = cms.double( 9999.0 ),
+        MinNhits = cms.int32( 0 ),
+        MinDxySig = cms.double( -1.0 ),
+        NSigmaPt = cms.double( 0.0 ),
+        MaxDz = cms.double( 9999.0 ),
+        MaxPtDifference = cms.double( 9999.0 ),
+        MaxDr = cms.double( 2.0 ),
+        CandTag = cms.InputTag( "hltL3NoFiltersNoVtxMuonCandidates" ),
+        MinDXYBeamSpot = cms.double( -1.0 ),
+        MinDr = cms.double( -1.0 ),
+        BeamSpotTag = cms.InputTag( "hltOnlineBeamSpot" ),
+        MinPt = cms.double( 15.0 )
     )
 
     process.hltTripleTrkMuFiltered5NoVtx = cms.EDFilter("HLTMuonTrkFilter",
@@ -118,11 +160,11 @@ def add_HLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
         process.hltPreMu17TrkIsoVVLMu8TrkIsoVVL + 
         process.hltL1fL1sDoubleMu103p5ORDoubleMu125L1Filtered0 + 
         process.HLTL2muonrecoSequenceNoVtx +  
-        process.hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0 + 
-        process.hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMu + 
+        process.hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0NoVtx + 
+        process.hltL2fL1sDoubleMu103p5L1f0L2Filtered10OneMuNoVtx + 
         process.HLTL3NoFiltersNoVtxmuonrecoSequence +  
-        process.hltL3pfL1sDoubleMu103p5L1f0L2pf0TwoMuL3PreFiltered5 + 
-        process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15 + 
+        process.hltL3pfL1sDoubleMu103p5L1f0L2pf0TwoMuL3PreFiltered5NoVtx + 
+        process.hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15NoVtx + 
         process.HLTTrackerMuonSequenceNoVtx + 
         process.hltTripleTrkMuFiltered5NoVtx +
         process.hltSingleTrkMuFiltered15NoVtx +

@@ -43,7 +43,7 @@ process.dqmFileSaver = cms.EDAnalyzer( "DQMFileSaver",
 
 process.TimingOutput = cms.EndPath( process.fastTimerServiceClient + process.dqmFileSaver )
 
-process.load("setup_cff")
+process.load("MuJetAnalysis.Configuration.Run2.setup_cff")
 #################################################################################################################
 
 
@@ -42907,10 +42907,8 @@ process.HLT_Physics_v1 = cms.Path( process.HLTBeginSequence + process.hltPrePhys
 process.HLT_ReducedIterativeTracking_v1 = cms.Path( process.HLTBeginSequence + process.hltPreReducedIterativeTracking + process.HLTRecoJetSequenceAK4PrePF + process.HLTDoLocalPixelSequence + process.HLTRecopixelvertexingSequence + process.HLTDoLocalStripSequence + process.HLTIterativeTrackingIter02 + process.HLTEndSequence )
 process.HLT_ZeroBias_v1 = cms.Path( process.HLTBeginSequence + process.hltL1sL1ZeroBias + process.hltPreZeroBias + process.HLTEndSequence )
 
-from MuJetAnalysis.Configuration.HLT_TrkMu15_DoubleTrkMu5_v1 import *
-process=customizeHLT_TrkMu15_DoubleTrkMu5_v1(process)
-
-
+from MuJetAnalysis.Configuration.Run2.HLT_TrkMu15_DoubleTrkMu5NoVtx_v1_Stripped_cff import *
+process=add_HLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process)
 
 process.HLTriggerFinalPath = cms.Path( process.hltGtDigis + process.hltScalersRawToDigi + process.hltFEDSelector + process.hltTriggerSummaryAOD + process.hltTriggerSummaryRAW )
 process.AOutput = cms.EndPath( process.hltPreAOutput + process.hltOutputA )
@@ -42925,37 +42923,42 @@ process.dqmOutput = cms.OutputModule("DQMRootOutputModule",
 
 process.DQMOutput = cms.EndPath( process.dqmOutput )
 
-
-
-
-
-
 process.source = cms.Source( "PoolSource",
     fileNames = cms.untracked.vstring(
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/00278680-8A57-E411-98BB-0025B3E06400.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/002B8EF4-2659-E411-83CD-001E673983A4.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/0036F06B-F456-E411-A627-001E67396E32.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/0074C0A6-DD56-E411-BAD0-001E67397008.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/00A6040C-B558-E411-8C3F-0025B3E0654E.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/00A631E0-A656-E411-B194-001E67396BA3.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/00D321EC-C658-E411-9C1D-002590200B6C.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/00E727DF-9158-E411-BE79-001E673967C5.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/020FAB14-0756-E411-93C8-002590A83190.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/027F5EAC-0259-E411-A37E-0025B3E063AC.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/029DBFB3-1A56-E411-BF46-002590A88800.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/0404592D-3A56-E411-B7BE-001E67396FA9.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/0424D5E1-3B59-E411-B9AB-001E67396E28.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/042CBAF4-0058-E411-9569-0025B3E06438.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/045BC5DE-9157-E411-9572-002590A37114.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/04882233-6758-E411-8C6F-002590A81DAC.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/04B06307-DF57-E411-93DC-001E67397B11.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/0658C4F0-C856-E411-947E-002590A3C978.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/066DCFE8-8658-E411-B844-001E6739689C.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/06A315BC-5157-E411-9100-001E67397AA3.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/06B99C00-8957-E411-A55E-0025B3E06400.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/06C00601-2257-E411-972A-002590200B48.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/06FB9628-0257-E411-A170-0025B3E05E00.root',
-        '/store/mc/Fall13dr/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/10000/0808FD40-D857-E411-852E-001E67396FD1.root'
+        'file:/data/samples/run207515/run207515_lumi81.root',
+        'file:/data/samples/run207515/run207515_lumi82.root',
+        'file:/data/samples/run207515/run207515_lumi83.root',
+        'file:/data/samples/run207515/run207515_lumi84.root',
+        'file:/data/samples/run207515/run207515_lumi85.root',
+        'file:/data/samples/run207515/run207515_lumi86.root',
+        'file:/data/samples/run207515/run207515_lumi87.root',
+        'file:/data/samples/run207515/run207515_lumi88.root',
+        'file:/data/samples/run207515/run207515_lumi89.root',
+        'file:/data/samples/run207515/run207515_lumi90.root',
+        'file:/data/samples/run207515/run207515_lumi91.root',
+        'file:/data/samples/run207515/run207515_lumi92.root',
+        'file:/data/samples/run207515/run207515_lumi93.root',
+        'file:/data/samples/run207515/run207515_lumi94.root',
+        'file:/data/samples/run207515/run207515_lumi95.root',
+        'file:/data/samples/run207515/run207515_lumi96.root',
+        'file:/data/samples/run207515/run207515_lumi97.root',
+        'file:/data/samples/run207515/run207515_lumi98.root',
+        'file:/data/samples/run207515/run207515_lumi99.root',
+        'file:/data/samples/run207515/run207515_lumi100.root',
+        'file:/data/samples/run207515/run207515_lumi101.root',
+        'file:/data/samples/run207515/run207515_lumi102.root',
+        'file:/data/samples/run207515/run207515_lumi103.root',
+        'file:/data/samples/run207515/run207515_lumi104.root',
+        'file:/data/samples/run207515/run207515_lumi105.root',
+        'file:/data/samples/run207515/run207515_lumi106.root',
+        'file:/data/samples/run207515/run207515_lumi107.root',
+        'file:/data/samples/run207515/run207515_lumi108.root',
+        'file:/data/samples/run207515/run207515_lumi109.root',
+        'file:/data/samples/run207515/run207515_lumi112.root',
+        'file:/data/samples/run207515/run207515_lumi113.root',
+        'file:/data/samples/run207515/run207515_lumi114.root',
+        'file:/data/samples/run207515/run207515_lumi115.root',
+        'file:/data/samples/run207515/run207515_lumi116.root'
     ),
     inputCommands = cms.untracked.vstring(
         'keep *'
@@ -43052,7 +43055,7 @@ if 'hltDQML1SeedLogicScalers' in process.__dict__:
 
 # limit the number of events to be processed
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32( 10000 )
+    input = cms.untracked.int32( 3000 )
 )
 
 # override the GlobalTag, connection string and pfnPrefix

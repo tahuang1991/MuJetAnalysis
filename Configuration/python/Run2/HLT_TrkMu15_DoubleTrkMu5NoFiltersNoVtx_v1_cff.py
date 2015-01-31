@@ -2,7 +2,7 @@
 
 import FWCore.ParameterSet.Config as cms
 
-def add_HLT_TrkMu15_DoubleTrkMu5NoVtx_v1(process):
+def add_HLT_TrkMu15_DoubleTrkMu5NoFiltersNoVtx_v1(process):
 
     process.hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0NoVtx = cms.EDFilter("HLTMuonL2PreFilter",
         saveTags = cms.bool( True ),

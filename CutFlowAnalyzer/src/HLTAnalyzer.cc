@@ -102,7 +102,8 @@ HLTAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   b_run   = iEvent.id().run();
   b_lumi  = iEvent.id().luminosityBlock();
   b_event = iEvent.id().event();
-  
+
+   
   edm::Handle<edm::TriggerResults> trigResults; //our trigger result object
   edm::InputTag trigResultsTag("TriggerResults","","TEST"); //make sure have correct process on MC
   //data process=HLT, MC depends, Spring11 is REDIGI311X
@@ -112,13 +113,84 @@ HLTAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   auto names(trigNames.triggerNames());
   auto nTriggers = names.size();
   if (false) cout << "nTriggers " << nTriggers << endl;
-  // for (auto t : names)
-  //   cout << t << endl;
-  
-  bool failTrig = (*trigResults).accept(trigNames.triggerIndex("HLT_TrkMu15_DoubleTrkMu5NoVtx_v1"));
-  if (failTrig) 
-    cout << "Failed HLT_TrkMu15_DoubleTrkMu5NoVtx_v1" << endl;
 
+  bool wasTriggered=false;
+  // check that at least one trigger accepted this event (exclude the protoype)
+  for (auto name : names) {
+    if (name=="HLT_TrkMu15_DoubleTrkMu5NoVtx_v1") continue;
+    int index(trigNames.triggerIndex(name));
+    if ((*trigResults).accept(index)) {
+      wasTriggered = true;
+      break;
+    }
+  }
+
+  // check if this event was triggered only by HLT_TrkMu15_DoubleTrkMu5NoVtx_v1
+  if (!wasTriggered) {
+    int index(trigNames.triggerIndex("HLT_TrkMu15_DoubleTrkMu5NoVtx_v1"));
+    if ((*trigResults).accept(index)) {
+      cout << "Only accepted by HLT_TrkMu15_DoubleTrkMu5NoVtx_v1" << end;
+    }
+  }
+
+
+  /*
+ /// Was at least one path run?
+  bool wasrun() const {return State(0);}
+  /// Has at least one path accepted the event?
+  bool accept() const {return State(1);}
+  /// Has any path encountered an error (exception)
+  bool  error() const {return State(2);}
+
+  // get hold of individual elements, using safe indexing with "at" which throws!
+
+  const HLTPathStatus& at (const unsigned int i)   const { return paths_.at(i); }
+  HLTPathStatus& at (const unsigned int i)         { return paths_.at(i); }
+  const HLTPathStatus& operator[](const unsigned int i) const { return paths_.at(i); }
+  HLTPathStatus& operator[](const unsigned int i)       { return paths_.at(i); }
+
+  /// Was ith path run?
+  bool wasrun(const unsigned int i) const { return at(i).wasrun(); }
+  /// Has ith path accepted the event?
+  bool accept(const unsigned int i) const { return at(i).accept(); }
+  /// Has ith path encountered an error (exception)?
+  bool  error(const unsigned int i) const { return at(i).error() ; }
+  */
+  // cout << "HLT menu information " << endl;
+  // cout << (*trigResults).wasrun() <<  " " << (*trigResults).accept() << " " << (*trigResults).error() << endl;
+
+  // int index(trigNames.triggerIndex("HLT_TrkMu15_DoubleTrkMu5NoVtx_v1"));
+  // cout << "HLT_TrkMu15_DoubleTrkMu5NoVtx_v1 information " << endl;
+  // cout << (*trigResults).wasrun(index) <<  " " << (*trigResults).accept(index) << " " << (*trigResults).error(index) << endl;
+
+    
+  
+  // if ((*trigResults).accept())
+  //   cout << "passed HLT menu" << endl;    
+  // bool passCustomPath = (*trigResults).accept(trigNames.triggerIndex("HLT_TrkMu15_DoubleTrkMu5NoVtx_v1")) or 
+  //   (*trigResults).accept(trigNames.triggerIndex("HLT_TrkMu15_DoubleTrkMu5NoFiltersNoVtx_v1"));
+  // if (passCustomPath)
+  //   cout << "\tpassed HLT_TrkMu15_DoubleTrkMu5NoVtx_v1" << endl;    
+  
+  // for (auto p : hltPaths_){
+  //   if (triggerEvent->path(p) )
+  //     std::cout << p << " does not occur in pat::TriggerEvent" << std::endl;
+  //   if ( triggerEvent->path(p) && triggerEvent->path(p)->wasAccept() ){
+  //     b_hltPaths.push_back(p);
+  //   } 
+  // } 
+
+
+  /*
+  // was the event trigger by at least one path?
+  bool passAtLeastOnePath((*trigResults).accept());
+  if (passAtLeastOnePath){
+    // did it fail our path?
+    bool passCustomPath = (*trigResults).accept(trigNames.triggerIndex("HLT_TrkMu15_DoubleTrkMu5NoVtx_v1"));
+    if (!passCustomPath) 
+      cout << "Passed HLT menu, failed HLT_TrkMu15_DoubleTrkMu5NoVtx_v1" << endl;    
+  }
+  */
   m_ttree->Fill();  
 }
 

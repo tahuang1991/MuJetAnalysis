@@ -66,3 +66,11 @@ cmsDriver.py DarkSUSY_mH_125_mGammaD_XX_ctauExp_YY_ZZTeV_madgraph452_bridge224_L
 
 hltGetConfiguration /dev/CMSSW_7_3_0/GRun/V25 --full --offline --mc --unprescale --process HLT --globaltag auto:run2_mc \
 --paths HLTriggerFirstPath,HLT_Mu17_Mu8_DZ_v1,HLTriggerFinalPath > hlt_Run2_QCDMuEnrichL1Mu.py
+
+
+## new configurations Feb 5 2015
+
+from MuJetAnalysis.HLTrigger.HLT_TrkMu15_DoubleTrkMu5NoFiltersNoVtx_v1_cff import *
+process=add_HLT_TrkMu15_DoubleTrkMu5NoFiltersNoVtx_v1(process)
+
+hltGetConfiguration /dev/CMSSW_7_3_0/GRun --l1-emulator 'stage1,gt' --full --offline --mc --process TEST --globaltag auto:run2_mc --l1Xml L1Menu_Collisions2015_25ns_v2_L1T_Scales_20141121_Imp0_0x1030.xml > hlt_Run2_QCDMuEnrichL1Mu_Rate.py

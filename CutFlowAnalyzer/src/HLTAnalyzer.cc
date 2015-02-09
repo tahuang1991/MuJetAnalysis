@@ -112,26 +112,32 @@ HLTAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   const edm::TriggerNames& trigNames = iEvent.triggerNames(*trigResults);   
   auto names(trigNames.triggerNames());
   auto nTriggers = names.size();
-  if (false) cout << "nTriggers " << nTriggers << endl;
+  if (true) cout << "nTriggers " << nTriggers << endl;
 
-  bool wasTriggered=false;
+  bool triggeredByMany=false;
   // check that at least one trigger accepted this event (exclude the protoype)
-  for (auto name : names) {
-    if (name=="HLT_TrkMu15_DoubleTrkMu5NoVtx_v1") continue;
+  for (auto name : names) {    
+    if (name=="HLT_TrkMu15_DoubleTrkMu5NoFiltersNoVtx_v1") continue;
+    if (name=="HLT_Physics_v1") continue;
+    if (name=="HLTriggerFinalPath") continue;
+
     int index(trigNames.triggerIndex(name));
     if ((*trigResults).accept(index)) {
-      wasTriggered = true;
-      break;
+      cout << "Triggered by " << name << endl;      
+      triggeredByMany=true;
     }
   }
+  if (!triggeredByMany)
+    cout << "Only triggered by HLT_TrkMu15_DoubleTrkMu5NoFiltersNoVtx_v1" << endl;
+  
 
-  // check if this event was triggered only by HLT_TrkMu15_DoubleTrkMu5NoVtx_v1
-  if (!wasTriggered) {
-    int index(trigNames.triggerIndex("HLT_TrkMu15_DoubleTrkMu5NoVtx_v1"));
-    if ((*trigResults).accept(index)) {
-      cout << "Only accepted by HLT_TrkMu15_DoubleTrkMu5NoVtx_v1" << end;
-    }
-  }
+  // // check if this event was triggered only by HLT_TrkMu15_DoubleTrkMu5NoVtx_v1
+  // if (wasTriggered) {
+  //   int index(trigNames.triggerIndex("HLT_TrkMu15_DoubleTrkMu5NoVtx_v1"));
+  //   if ((*trigResults).accept(index)) {
+  //     cout << "Only accepted by HLT_TrkMu15_DoubleTrkMu5NoVtx_v1" << endl;
+  //   }
+  // }
 
 
   /*

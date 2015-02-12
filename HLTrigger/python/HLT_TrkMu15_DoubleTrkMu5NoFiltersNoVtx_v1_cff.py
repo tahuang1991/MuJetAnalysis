@@ -127,7 +127,7 @@ hltSingleTrkMuFiltered15NoVtx = cms.EDFilter("HLTMuonTrkFilter",
     allowedTypeMask = cms.uint32( 255 )
 )
 
-def add_HLT_TrkMu15_DoubleTrkMu5NoFiltersNoVtx_v1(process):
+def addHLT_TrkMu15_DoubleTrkMu5NoFiltersNoVtx_v1(process):
 
     process.hltPreTrkMu15DoubleTrkMu5NoFiltersNoVtx = hltPreTrkMu15DoubleTrkMu5NoFiltersNoVtx
     process.hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0NoVtx = hltL2pfL1sDoubleMu103p5L1f0L2PreFiltered0NoVtx

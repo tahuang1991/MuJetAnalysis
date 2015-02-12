@@ -1,40 +1,8 @@
+import FWCore.ParameterSet.Config as cms
+
 hltPreTrkMu15DoubleTrkMu5 = cms.EDFilter( "HLTPrescaler",
     L1GtReadoutRecordTag = cms.InputTag( "hltGtDigis" ),
     offset = cms.uint32( 0 )
-)
-
-hltTripleTrkMuFiltered5 = cms.EDFilter("HLTMuonTrkFilter",
-    maxNormalizedChi2 = cms.double( 1.0E99 ),
-    saveTags = cms.bool( False ),
-    maxAbsEta = cms.double( 2.5 ),
-    previousCandTag = cms.InputTag( "" ),
-    minPt = cms.double( 5.0 ),
-    minN = cms.uint32( 3 ),
-    inputCandCollection = cms.InputTag( "hltGlbTrkMuonCands" ),
-    minMuonStations = cms.int32( 2 ),
-    trkMuonId = cms.uint32( 0 ),
-    requiredTypeMask = cms.uint32( 0 ),
-    minMuonHits = cms.int32( -1 ),
-    minTrkHits = cms.int32( -1 ),
-    inputMuonCollection = cms.InputTag( "hltGlbTrkMuons" ),
-    allowedTypeMask = cms.uint32( 255 )
-)
-
-hltSingleTrkMuFiltered15 = cms.EDFilter("HLTMuonTrkFilter",
-    maxNormalizedChi2 = cms.double( 1.0E99 ),
-    saveTags = cms.bool( False ),
-    maxAbsEta = cms.double( 2.5 ),
-    previousCandTag = cms.InputTag( "" ),
-    minPt = cms.double( 15.0 ),
-    minN = cms.uint32( 1 ),
-    inputCandCollection = cms.InputTag( "hltGlbTrkMuonCands" ),
-    minMuonStations = cms.int32( 2 ),
-    trkMuonId = cms.uint32( 0 ),
-    requiredTypeMask = cms.uint32( 0 ),
-    minMuonHits = cms.int32( -1 ),
-    minTrkHits = cms.int32( -1 ),
-    inputMuonCollection = cms.InputTag( "hltGlbTrkMuons" ),
-    allowedTypeMask = cms.uint32( 255 )
 )
 
 hltL3pfL1sDoubleMu103p5L1f0L2pf0TwoMuL3PreFiltered5 = cms.EDFilter( "HLTMuonL3PreFilter",
@@ -79,6 +47,40 @@ hltL3fL1sDoubleMu103p5L1f0L2f10OneMuL3Filtered15 = cms.EDFilter( "HLTMuonL3PreFi
     MinDr = cms.double( -1.0 ),
     BeamSpotTag = cms.InputTag( "hltOnlineBeamSpot" ),
     MinPt = cms.double( 15.0 )
+)
+
+hltTripleTrkMuFiltered5 = cms.EDFilter("HLTMuonTrkFilter",
+    maxNormalizedChi2 = cms.double( 1.0E99 ),
+    saveTags = cms.bool( False ),
+    maxAbsEta = cms.double( 2.5 ),
+    previousCandTag = cms.InputTag( "" ),
+    minPt = cms.double( 5.0 ),
+    minN = cms.uint32( 3 ),
+    inputCandCollection = cms.InputTag( "hltGlbTrkMuonCands" ),
+    minMuonStations = cms.int32( 2 ),
+    trkMuonId = cms.uint32( 0 ),
+    requiredTypeMask = cms.uint32( 0 ),
+    minMuonHits = cms.int32( -1 ),
+    minTrkHits = cms.int32( -1 ),
+    inputMuonCollection = cms.InputTag( "hltGlbTrkMuons" ),
+    allowedTypeMask = cms.uint32( 255 )
+)
+
+hltSingleTrkMuFiltered15 = cms.EDFilter("HLTMuonTrkFilter",
+    maxNormalizedChi2 = cms.double( 1.0E99 ),
+    saveTags = cms.bool( False ),
+    maxAbsEta = cms.double( 2.5 ),
+    previousCandTag = cms.InputTag( "" ),
+    minPt = cms.double( 15.0 ),
+    minN = cms.uint32( 1 ),
+    inputCandCollection = cms.InputTag( "hltGlbTrkMuonCands" ),
+    minMuonStations = cms.int32( 2 ),
+    trkMuonId = cms.uint32( 0 ),
+    requiredTypeMask = cms.uint32( 0 ),
+    minMuonHits = cms.int32( -1 ),
+    minTrkHits = cms.int32( -1 ),
+    inputMuonCollection = cms.InputTag( "hltGlbTrkMuons" ),
+    allowedTypeMask = cms.uint32( 255 )
 )
 
 def addHLT_TrkMu15_DoubleTrkMu5_v1(process):

@@ -43120,6 +43120,9 @@ process.hltTrigReport = cms.EDAnalyzer( "HLTrigReport",
     HLTriggerResults = cms.InputTag( 'TriggerResults','','HLT' )
 )
 
+## HLTDEBUG event content
+process.load('Configuration.EventContent.EventContent_cff')
+
 process.hltOutputA = cms.OutputModule( "PoolOutputModule",
     fileName = cms.untracked.string( "out_hlt.root" ),
     fastCloning = cms.untracked.bool( False ),
@@ -43128,12 +43131,7 @@ process.hltOutputA = cms.OutputModule( "PoolOutputModule",
         dataTier = cms.untracked.string( "RAW" )
         ),
     SelectEvents = cms.untracked.PSet(  SelectEvents = ( cms.vstring( 'HLT_TrkMu15_DoubleTrkMu5NoFiltersNoVtx_v1' ) ) ),
-    outputCommands = cms.untracked.vstring( 'drop *',
-                                            'keep *_hltL1GtObjectMap_*_*',
-                                            'keep FEDRawDataCollection_rawDataCollector_*_*',
-                                            'keep FEDRawDataCollection_source_*_*',
-                                            'keep edmTriggerResults_*_*_*',
-                                            'keep triggerTriggerEvent_*_*_*' )
+    outputCommands = process.HLTDEBUGEventContent.outputCommands
 )
 
 process.HLTL1UnpackerSequence = cms.Sequence( process.hltGtDigis + process.hltGctDigis + process.hltL1GtObjectMap + process.hltL1extraParticles )
@@ -43741,6 +43739,7 @@ process = customizeDisplacedMuHLT(process)
 
 process.HLTriggerFinalPath = cms.Path( process.hltGtDigis + process.hltScalersRawToDigi + process.hltFEDSelector + process.hltTriggerSummaryAOD + process.hltTriggerSummaryRAW )
 process.AOutput = cms.EndPath( process.hltPreAOutput + process.hltOutputA )
+
 
 # load the DQMStore and DQMRootOutputModule
 process.load( "DQMServices.Core.DQMStore_cfi" )

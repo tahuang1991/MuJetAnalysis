@@ -2,7 +2,12 @@
 
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process( "TEST" )
+#processName = "TEST"
+processName = "NoOverlappingSegmentsAnd4TrkMuonNoVtx"
+#processName = "TMLastStationOptimizedLowPtTight"
+#processName = "TMOneStationTight"
+
+process = cms.Process( processName )
 
 process.HLTConfigVersion = cms.PSet(
   tableName = cms.string('/dev/CMSSW_7_3_0/GRun/V49')
@@ -43124,15 +43129,19 @@ process.hltTrigReport = cms.EDAnalyzer( "HLTrigReport",
 process.load('Configuration.EventContent.EventContent_cff')
 
 process.hltOutputA = cms.OutputModule( "PoolOutputModule",
-    fileName = cms.untracked.string( "out_hlt.root" ),
+    fileName = cms.untracked.string( "out_hlt_DarkSUSY_DisplacedMuHLT_AddTrkCollections_20150220_1302.root" ),
     fastCloning = cms.untracked.bool( False ),
     dataset = cms.untracked.PSet(
         filterName = cms.untracked.string( "" ),
-        dataTier = cms.untracked.string( "RAW" )
+        dataTier = cms.untracked.string( "FEVT" )
         ),
     SelectEvents = cms.untracked.PSet(  SelectEvents = ( cms.vstring( 'HLT_TrkMu15_DoubleTrkMu5NoFiltersNoVtx_v1' ) ) ),
-    outputCommands = process.HLTDEBUGEventContent.outputCommands
+    outputCommands = process.FEVTDEBUGHLTEventContent.outputCommands
 )
+
+process.hltOutputA.outputCommands.append("keep recoTrack*_*_*_*")
+process.hltOutputA.outputCommands.append("keep TrackingRecHitsOwned_*_*_*")
+process.hltOutputA.outputCommands.append("keep recoMuons_*_*_*")
 
 process.HLTL1UnpackerSequence = cms.Sequence( process.hltGtDigis + process.hltGctDigis + process.hltL1GtObjectMap + process.hltL1extraParticles )
 process.HLTBeamSpot = cms.Sequence( process.hltScalersRawToDigi + process.hltOnlineBeamSpot )
@@ -43429,6 +43438,7 @@ process.HLTMu15IsolationSequence = cms.Sequence( process.HLTL3muonEcalPFisorecoS
 process.HLTBeginSequenceRandom = cms.Sequence( process.hltRandomEventsFilter + process.hltGtDigis )
 
 process.HLTriggerFirstPath = cms.Path( process.hltGetConditions + process.hltGetRaw + process.hltBoolFalse )
+
 process.HLT_AK8PFJet360TrimMod_Mass30_v1 = cms.Path( process.HLTBeginSequence + process.hltL1sL1SingleJet176ORSingleJet200 + process.hltPreAK8PFJet360TrimModMass30 + process.HLTAK8CaloJetsSequence + process.hltAK8SingleCaloJet260 + process.HLTAK8PFJetsSequence + process.hltAK8PFJetsCorrectedMatchedToCaloJets260 + process.hltAK8TrimModJets + process.hltAK8SinglePFJet360TrimModMass30 + process.HLTEndSequence )
 process.HLT_AK8PFHT700_TrimR0p1PT0p03Mass50_v1 = cms.Path( process.HLTBeginSequence + process.hltL1sL1HTT150ORHTT175 + process.hltPreAK8PFHT700TrimR0p1PT0p03Mass50 + process.HLTAK8CaloJetsSequence + process.hltAK8HtMht + process.hltAK8Ht600 + process.HLTAK8PFJetsSequence + process.hltAK8PFHT + process.hltAK8PFJetsTrimR0p1PT0p03 + process.hlt1AK8PFJetsTrimR0p1PT0p03Mass50 + process.hltAK8PFHT700 + process.HLTEndSequence )
 process.HLT_CaloJet500_NoJetID_v1 = cms.Path( process.HLTBeginSequence + process.hltL1sL1SingleJet200 + process.hltPreCaloJet500NoJetID + process.HLTAK4CaloJetsReconstructionNoIDSequence + process.HLTAK4CaloJetsCorrectionNoIDSequence + process.hltSingleCaloJet500 + process.HLTEndSequence )
@@ -43735,7 +43745,8 @@ process.HLT_Random_v1 = cms.Path( process.HLTBeginSequenceRandom + process.hltPr
 process.HLT_ZeroBias_v1 = cms.Path( process.HLTBeginSequence + process.hltL1sL1ZeroBias + process.hltPreZeroBias + process.HLTEndSequence )
 
 from MuJetAnalysis.HLTrigger.customizeDisplacedMuHLT_cff import *
-process = customizeDisplacedMuHLT(process)
+#process = customizeDisplacedMuHLT(process)
+process = addHLT_TrkMu15_DoubleTrkMu5NoFiltersNoVtx_v1(process)
 
 process.HLTriggerFinalPath = cms.Path( process.hltGtDigis + process.hltScalersRawToDigi + process.hltFEDSelector + process.hltTriggerSummaryAOD + process.hltTriggerSummaryRAW )
 process.AOutput = cms.EndPath( process.hltPreAOutput + process.hltOutputA )
@@ -43759,7 +43770,10 @@ process.HLTAnalyzerEndpath = cms.EndPath( process.hltL1GtTrigReport + process.hl
 
 process.source = cms.Source( "PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:RelVal_Raw_GRun_MC.root',
+#        'file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8_DisplacedMuHLT_fixedPreScale/56dfcc76a898de06d8aa21a996d4b8c7/out_hlt_total.root',
+        "file:out_hlt_DarkSUSY_DisplacedMuHLT_AddTrkCollections_20150220_1302_NoOverlappingSegments.root"
+        #'file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_2000_ctauExp_5_13TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_2000_ctauExp_5_13TeV_madgraph452_bridge224_LHE_pythia6_RAW/a85cf78031f133c046595ab7e0c2237e/out_raw_1_1_2fv.root'
+#        'file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_13TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_13TeV_madgraph452_bridge224_LHE_pythia6_RAW/a85cf78031f133c046595ab7e0c2237e/out_raw_1_1_RLo.root'
     ),
     inputCommands = cms.untracked.vstring(
         'keep *'
@@ -43782,39 +43796,39 @@ process = customisePostLS1(process)
 
 # adapt HLT modules to the correct process name
 if 'hltTrigReport' in process.__dict__:
-    process.hltTrigReport.HLTriggerResults                    = cms.InputTag( 'TriggerResults', '', 'TEST' )
+    process.hltTrigReport.HLTriggerResults                    = cms.InputTag( 'TriggerResults', '', processName )
 
 if 'hltPreExpressCosmicsOutputSmart' in process.__dict__:
-    process.hltPreExpressCosmicsOutputSmart.hltResults = cms.InputTag( 'TriggerResults', '', 'TEST' )
+    process.hltPreExpressCosmicsOutputSmart.hltResults = cms.InputTag( 'TriggerResults', '', processName )
 
 if 'hltPreExpressOutputSmart' in process.__dict__:
-    process.hltPreExpressOutputSmart.hltResults        = cms.InputTag( 'TriggerResults', '', 'TEST' )
+    process.hltPreExpressOutputSmart.hltResults        = cms.InputTag( 'TriggerResults', '', processName )
 
 if 'hltPreDQMForHIOutputSmart' in process.__dict__:
-    process.hltPreDQMForHIOutputSmart.hltResults       = cms.InputTag( 'TriggerResults', '', 'TEST' )
+    process.hltPreDQMForHIOutputSmart.hltResults       = cms.InputTag( 'TriggerResults', '', processName )
 
 if 'hltPreDQMForPPOutputSmart' in process.__dict__:
-    process.hltPreDQMForPPOutputSmart.hltResults       = cms.InputTag( 'TriggerResults', '', 'TEST' )
+    process.hltPreDQMForPPOutputSmart.hltResults       = cms.InputTag( 'TriggerResults', '', processName )
 
 if 'hltPreHLTDQMResultsOutputSmart' in process.__dict__:
-    process.hltPreHLTDQMResultsOutputSmart.hltResults  = cms.InputTag( 'TriggerResults', '', 'TEST' )
+    process.hltPreHLTDQMResultsOutputSmart.hltResults  = cms.InputTag( 'TriggerResults', '', processName )
 
 if 'hltPreHLTDQMOutputSmart' in process.__dict__:
-    process.hltPreHLTDQMOutputSmart.hltResults         = cms.InputTag( 'TriggerResults', '', 'TEST' )
+    process.hltPreHLTDQMOutputSmart.hltResults         = cms.InputTag( 'TriggerResults', '', processName )
 
 if 'hltPreHLTMONOutputSmart' in process.__dict__:
-    process.hltPreHLTMONOutputSmart.hltResults         = cms.InputTag( 'TriggerResults', '', 'TEST' )
+    process.hltPreHLTMONOutputSmart.hltResults         = cms.InputTag( 'TriggerResults', '', processName )
 
 if 'hltDQMHLTScalers' in process.__dict__:
-    process.hltDQMHLTScalers.triggerResults                   = cms.InputTag( 'TriggerResults', '', 'TEST' )
-    process.hltDQMHLTScalers.processname                      = 'TEST'
+    process.hltDQMHLTScalers.triggerResults                   = cms.InputTag( 'TriggerResults', '', processName )
+    process.hltDQMHLTScalers.processname                      = processName
 
 if 'hltDQML1SeedLogicScalers' in process.__dict__:
-    process.hltDQML1SeedLogicScalers.processname              = 'TEST'
+    process.hltDQML1SeedLogicScalers.processname              = processName
 
 # limit the number of events to be processed
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32( 100 )
+    input = cms.untracked.int32( -1 )
 )
 
 # override the GlobalTag, connection string and pfnPrefix

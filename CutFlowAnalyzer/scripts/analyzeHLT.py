@@ -4,6 +4,10 @@ from ROOT import *
 def passedHltPath(t,trigger):
     return (trigger in t.hltPaths)
 
+def error_binom(total, selected):
+    '''Source: 'http://home.fnal.gov/~paterno/images/effic.pdf'''
+    return 1/total*TMath.Sqrt(selected*(1-(selected/total)))
+
 def analyzeHLT():
     files = {}
     files['DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV'] = "/eos/uscms/store/user/lpcgem/dildick/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_ANA/d37f287c329e62f6cda917e97d6b627b/out_cutana_1_2_1Aa.root"
@@ -16,7 +20,9 @@ def analyzeHLT():
     #file = "file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_ANA_5/c2a1d8d9d4e09ccfe856b56c4a74ff8c/out_ana.root"
     file = "file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_8TeV_madgraph452_bridge224_LHE_pythia6_ANA_5/b97cadbec7ab990f85182de4f25716c7/out_ana.root"    
 #    file = "file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_0_8TeV_madgraph452_bridge224_LHE_pythia6_ANA/b97cadbec7ab990f85182de4f25716c7/out_ana.root"
-
+#    file = "file:out_ana.root"
+    file = "file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_2000_ctauExp_5_13TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_2000_ctauExp_5_13TeV_madgraph452_bridge224_LHE_pythia6_PAT_ANA_2/84a8b1696c8cfc7f1ca081e9a42fecc4/out_ana.root"
+#    file = "file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_2000_ctauExp_5_13TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_2000_ctauExp_5_13TeV_madgraph452_bridge224_LHE_pythia6_PAT_ANA/84a8b1696c8cfc7f1ca081e9a42fecc4/out_ana_total.root"
     f = TFile.Open(file)
     print "Processing", file
     ana = "cutFlowAnalyzer"
@@ -62,17 +68,26 @@ def analyzeHLT():
     m_eventsGoodFailingHLT = 0
     m_eventsGoodPassingHLT = 0
     m_isDiMuonHLTFired = 0
+    m_eventsVertexOK_FittedVtx_noHLT_lxyCut = 0
 
     ## make a dictionary to count the triggers
-    hltPaths = ['HLT_Mu17_Mu8_DZ_v1',
-                'HLT_Mu17_Mu8_DZ_v1_NoDz',
-                'HLT_Mu30_TkMu11_v1',
-                'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1',
-                'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1_NoIso',
-                'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1',
-                'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1_NoIso',
-                'HLT_TripleMu_12_10_5_v1',
-                'HLT_TrkMu15_DoubleTrkMu5_v1']
+    hltPaths = [
+        'HLT_DoubleMu33NoFiltersNoVtx_v1',
+        'HLT_Mu17_Mu8_DZ_v1',
+        'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1',
+        'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1',
+        'HLT_Mu30_TkMu11_v1',
+        'HLT_TripleMu_12_10_5_v1',
+        'HLT_TripleMu_12_10_5_onlyL1NewSeed_v1',
+        'HLT_TrkMu15_DoubleTrkMu5_v1',
+        'HLT_Mu15_DoubleMu5NoVtx_v1',
+        'HLT_TrkMu15_DoubleTrkMu5NoVtx_v1',
+        'HLT_TrkMu15_DoubleTrkMu5NoFiltersNoVtx_v1',
+        'HLT_Mu17_Mu8_DZ_v1_NoDz',
+        'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v1_NoIso',
+        'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v1_NoIso',
+        'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v1'
+    ]
     hltPathPass = {}
     hltPathFail = {}
     for p in hltPaths:
@@ -115,23 +130,14 @@ def analyzeHLT():
                         if (t.is2DiMuonsIsoTkOK_FittedVtx):
                             m_events2DiMuonsIsoTkOK_FittedVtx_noHLT += 1
                             if (t.isVertexOK):
-                                m_eventsVertexOK_FittedVtx_noHLT += 1
-                                for p in hltPaths:
-                                    if passedHltPath(t,p):
-                                        hltPathPass[p] += 1
-                                    else:
-                                        hltPathFail[p] += 1
-                                """
-                                text_file.write("'%s:%s:%s',"%(t.run, t.lumi, t.event))
-                                if (not t.isDiMuonHLTFired):                                    
-                                    m_eventsGoodFailingHLT += 1
-                                    text_file2.write("%s\t%s\n"%(t.genA0_Lxy, t.genA1_Lxy))
-                                    #                                    text_file2.write("%s\n"%(t.genA1_Lxy))
-                                    #print t.genA0_Lxy
-                                    #                                    print "genA0_Lxy", t.genA0_Lxy, "genA1_Lxy", t.genA1_Lxy
-                                else:
-                                    m_eventsGoodPassingHLT += 1
-                                """
+                                m_eventsVertexOK_FittedVtx_noHLT += 1                         
+                                if (t.genA0_Lxy < 22 and t.genA1_Lxy < 22):                                  
+                                    m_eventsVertexOK_FittedVtx_noHLT_lxyCut += 1
+                                    for p in hltPaths:
+                                        if passedHltPath(t,p):
+                                            hltPathPass[p] += 1
+                                        else:
+                                            hltPathFail[p] += 1
 
                     if (t.isDiMuonHLTFired):
                         m_eventsDiMuonHLTFired_FittedVtx += 1
@@ -180,6 +186,7 @@ def analyzeHLT():
     print "m_events2DiMuonsMassOK_FittedVtx_noHLT", m_events2DiMuonsMassOK_FittedVtx_noHLT
     print "m_events2DiMuonsIsoTkOK_FittedVtx_noHLT", m_events2DiMuonsIsoTkOK_FittedVtx_noHLT
     print "m_eventsVertexOK_FittedVtx_noHLT", m_eventsVertexOK_FittedVtx_noHLT
+    print "m_eventsVertexOK_FittedVtx_noHLT_lxyCut", m_eventsVertexOK_FittedVtx_noHLT_lxyCut
     print
     print "m_events2DiMuonsMassOK_FittedVtx", m_events2DiMuonsMassOK_FittedVtx
     print "m_events2DiMuonsIsoTkOK_FittedVtx", m_events2DiMuonsIsoTkOK_FittedVtx
@@ -195,11 +202,9 @@ def analyzeHLT():
     print
     print "Trigger efficiencies:"
     for p in hltPaths:
-        eff = hltPathPass[p]/m_eventsVertexOK_FittedVtx_noHLT
-#        print "\tTrigger {0:10} Pass {0:5} Fail {0:5} Efficiency {0:10}".format(p, hltPathPass[p], hltPathFail[p], eff)
-        #print "\tTrigger {0:10} Pass {10:15}".format(p,hltPathPass[p])
+        eff = hltPathPass[p]/m_eventsVertexOK_FittedVtx_noHLT_lxyCut
         data = p, hltPathPass[p], hltPathFail[p], eff
-        print '\t{0[0]:<20} Pass {0[1]:<5} Fail {0[2]:<5} Efficiency {0[3]:<10}'.format(data)
+        print '\t{0[0]:<20} Pass {0[1]:<5} Fail {0[2]:<5} Efficiency {0[3]:<10}'.format(data), error_binom(m_eventsVertexOK_FittedVtx_noHLT_lxyCut, hltPathPass[p])
     
 if __name__ == "__main__":
     analyzeHLT()

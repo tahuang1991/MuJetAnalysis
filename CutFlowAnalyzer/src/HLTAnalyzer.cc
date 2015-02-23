@@ -65,6 +65,8 @@ class HLTAnalyzer : public edm::EDAnalyzer {
   
   std::vector<std::string> hltPaths_;
   std::vector<std::string> b_hltPaths;
+  std::map<std::string,int> pathCounter_;
+
 };
 
 //
@@ -78,8 +80,13 @@ class HLTAnalyzer : public edm::EDAnalyzer {
 //
 // constructors and destructor
 //
-HLTAnalyzer::HLTAnalyzer(const edm::ParameterSet& iConfig)
+HLTAnalyzer::HLTAnalyzer(const edm::ParameterSet& iConfig) : 
+  hltPaths_(iConfig.getParameter<std::vector<std::string> >("hltPaths"))
 {
+  // initialize
+  for (auto p: hltPaths_){
+    pathCounter_[p] = 0;
+  }
 }
 
 
@@ -103,7 +110,7 @@ HLTAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   b_lumi  = iEvent.id().luminosityBlock();
   b_event = iEvent.id().event();
 
-   
+
   edm::Handle<edm::TriggerResults> trigResults; //our trigger result object
   edm::InputTag trigResultsTag("TriggerResults","","TEST"); //make sure have correct process on MC
   //data process=HLT, MC depends, Spring11 is REDIGI311X
@@ -120,16 +127,21 @@ HLTAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     if (name=="HLT_TrkMu15_DoubleTrkMu5NoFiltersNoVtx_v1") continue;
     if (name=="HLT_Physics_v1") continue;
     if (name=="HLTriggerFinalPath") continue;
+    if (name=="HLT_Random_v1") continue;
+    if (name=="HLT_TrkMu15_DoubleTrkMu5_v1") continue;
+    if (name=="HLT_Mu15_DoubleMu5NoVtx_v1") continue;
 
     int index(trigNames.triggerIndex(name));
     if ((*trigResults).accept(index)) {
-      cout << "Triggered by " << name << endl;      
+      pathCounter_[name] += 1;
+      //      cout << "Triggered by " << name << endl;      
       triggeredByMany=true;
     }
   }
   if (!triggeredByMany)
-    cout << "Only triggered by HLT_TrkMu15_DoubleTrkMu5NoFiltersNoVtx_v1" << endl;
-  
+    //Only triggered by HLT_TrkMu15_DoubleTrkMu5NoFiltersNoVtx_v1 
+    cout << "Only triggered by HLT_TrkMu15_DoubleTrkMu5NoFiltersNoVtx_v1'" << b_run << ":" << b_lumi << ":" << b_event << "',";
+  cout << endl;
 
   // // check if this event was triggered only by HLT_TrkMu15_DoubleTrkMu5NoVtx_v1
   // if (wasTriggered) {
@@ -224,6 +236,10 @@ HLTAnalyzer::beginJob() {
 void 
 HLTAnalyzer::endJob() 
 {
+  std::cout << "Trigger Counts" << std::endl;
+  for (auto name: hltPaths_){
+    if (pathCounter_[name] != 0) std::cout << name << " " << pathCounter_[name] << std::endl;
+  }
 }
 
 // ------------ method called when starting to processes a run  ------------

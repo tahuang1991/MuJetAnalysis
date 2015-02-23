@@ -2,6 +2,12 @@
 
 import FWCore.ParameterSet.Config as cms
 
+trkMuId = 0
+#trkMuIdString = "AllArbitrated"; trkMuId = 5
+#trkMuIdString = "TMLastStationOptimizedLowPtLoose"; trkMuId = 13
+#trkMuIdString = "TMLastStationOptimizedLowPtTight"; trkMuId = 14
+#trkMuIdString = "TMOneStationTight"; trkMuId = 12
+
 hltPreTrkMu15DoubleTrkMu5NoFiltersNoVtx = cms.EDFilter( "HLTPrescaler",
     L1GtReadoutRecordTag = cms.InputTag( "hltGtDigis" ),
     offset = cms.uint32( 0 )
@@ -99,10 +105,10 @@ hltTripleTrkMuFiltered5NoVtx = cms.EDFilter("HLTMuonTrkFilter",
     maxAbsEta = cms.double( 2.5 ),
     previousCandTag = cms.InputTag( "" ),
     minPt = cms.double( 5.0 ),
-    minN = cms.uint32( 3 ),
+    minN = cms.uint32( 4 ),
     inputCandCollection = cms.InputTag( "hltGlbTrkMuonCandsNoVtx" ),
     minMuonStations = cms.int32( 2 ),
-    trkMuonId = cms.uint32( 0 ),
+    trkMuonId = cms.uint32( trkMuId ),
     requiredTypeMask = cms.uint32( 0 ),
     minMuonHits = cms.int32( -1 ),
     minTrkHits = cms.int32( -1 ),
@@ -119,7 +125,7 @@ hltSingleTrkMuFiltered15NoVtx = cms.EDFilter("HLTMuonTrkFilter",
     minN = cms.uint32( 1 ),
     inputCandCollection = cms.InputTag( "hltGlbTrkMuonCandsNoVtx" ),
     minMuonStations = cms.int32( 2 ),
-    trkMuonId = cms.uint32( 0 ),
+    trkMuonId = cms.uint32( trkMuId ),
     requiredTypeMask = cms.uint32( 0 ),
     minMuonHits = cms.int32( -1 ),
     minTrkHits = cms.int32( -1 ),

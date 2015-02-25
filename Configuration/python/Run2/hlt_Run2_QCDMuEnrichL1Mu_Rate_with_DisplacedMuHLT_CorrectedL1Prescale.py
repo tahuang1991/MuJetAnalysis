@@ -43879,3 +43879,8 @@ if 'MessageLogger' in process.__dict__:
     process.MessageLogger.categories.append('HLTrigReport')
     process.MessageLogger.categories.append('FastReport')
 
+process.hltCsc2DRecHits.wireDigiTag = cms.InputTag('simMuonCSCDigis','MuonCSCWireDigi')
+process.hltCsc2DRecHits.stripDigiTag = cms.InputTag('simMuonCSCDigis','MuonCSCStripDigi')
+
+process.cscReEmulTriggerPrimitiveDigis.CSCComparatorDigiProducer = cms.InputTag("simMuonCSCDigis","MuonCSCComparatorDigi")
+process.cscReEmulTriggerPrimitiveDigis.CSCWireDigiProducer = cms.InputTag("simMuonCSCDigis","MuonCSCWireDigi")

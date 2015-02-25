@@ -2,8 +2,8 @@
 
 import FWCore.ParameterSet.Config as cms
 
-#processName = "TEST"
-processName = "NoOverlappingSegmentsAnd4TrkMuonNoVtx"
+processName = "TEST2"
+#processName = "NoOverlappingSegmentsAnd4TrkMuonNoVtx"
 #processName = "TMLastStationOptimizedLowPtTight"
 #processName = "TMOneStationTight"
 
@@ -43129,12 +43129,12 @@ process.hltTrigReport = cms.EDAnalyzer( "HLTrigReport",
 process.load('Configuration.EventContent.EventContent_cff')
 
 process.hltOutputA = cms.OutputModule( "PoolOutputModule",
-    fileName = cms.untracked.string( "out_hlt_DarkSUSY_DisplacedMuHLT_AddTrkCollections_20150220_1302.root" ),
+    fileName = cms.untracked.string( "out_hlt_DarkSUSY_DisplacedMuHLT_AddTrkCollections_20150223.root" ),
     fastCloning = cms.untracked.bool( False ),
     dataset = cms.untracked.PSet(
         filterName = cms.untracked.string( "" ),
-        dataTier = cms.untracked.string( "FEVT" )
-        ),
+        dataTier = cms.untracked.string( "RAW" )
+    ),
     SelectEvents = cms.untracked.PSet(  SelectEvents = ( cms.vstring( 'HLT_TrkMu15_DoubleTrkMu5NoFiltersNoVtx_v1' ) ) ),
     outputCommands = process.FEVTDEBUGHLTEventContent.outputCommands
 )
@@ -43770,8 +43770,8 @@ process.HLTAnalyzerEndpath = cms.EndPath( process.hltL1GtTrigReport + process.hl
 
 process.source = cms.Source( "PoolSource",
     fileNames = cms.untracked.vstring(
-#        'file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8_DisplacedMuHLT_fixedPreScale/56dfcc76a898de06d8aa21a996d4b8c7/out_hlt_total.root',
-        "file:out_hlt_DarkSUSY_DisplacedMuHLT_AddTrkCollections_20150220_1302_NoOverlappingSegments.root"
+        'file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8/QCD_Pt-30to50_MuEnrichedPt5_PionKaonDecay_Tune4C_13TeV_pythia8_DisplacedMuHLT_fixedPreScale/56dfcc76a898de06d8aa21a996d4b8c7/out_hlt_total.root',
+        #"file:out_hlt_DarkSUSY_DisplacedMuHLT_AddTrkCollections_20150220_1302_NoOverlappingSegments.root"
         #'file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_2000_ctauExp_5_13TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_2000_ctauExp_5_13TeV_madgraph452_bridge224_LHE_pythia6_RAW/a85cf78031f133c046595ab7e0c2237e/out_raw_1_1_2fv.root'
 #        'file:/eos/uscms/store/user/lpcgem/dildick/CMSSW_73/dildick/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_13TeV_madgraph452_bridge224_LHE_pythia6_RAW/DarkSUSY_mH_125_mGammaD_0400_ctauExp_2_13TeV_madgraph452_bridge224_LHE_pythia6_RAW/a85cf78031f133c046595ab7e0c2237e/out_raw_1_1_RLo.root'
     ),

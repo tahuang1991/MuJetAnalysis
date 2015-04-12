@@ -405,6 +405,13 @@ namespace pat {
   }
 
   template <class LeptonType>
+  double pat::MultiLepton<LeptonType>::daughterCOMcosTheta(int i, bool vertex) const 
+  {
+    GlobalVector d = daughterCOMrot(i, vertex);
+    return d.z() / d.mag();
+  }
+
+  template <class LeptonType>
   std::vector<std::pair<int,int> > pat::MultiLepton<LeptonType>::consistentPairs(bool vertex) const 
   {
     std::vector<int> positives, negatives;

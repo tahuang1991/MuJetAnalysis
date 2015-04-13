@@ -357,6 +357,66 @@ namespace pat {
   }
 
   template <class LeptonType>
+  GlobalVector pat::MultiLepton<LeptonType>::daughterCOM(int i, bool vertex) const 
+  {
+    double betax = 0.;
+    double betay = 0.;
+    double betaz = 0.;
+    GlobalVector d;
+    
+    if (vertex) {
+      LorentzVector p = vertexP4();
+      betax = -p.px() / p.energy();
+      betay = -p.py() / p.energy();
+      betaz = -p.pz() / p.energy();
+      d = vertexMomentum(i);
+    }
+    else {
+      betax = -px() / energy();
+      betay = -py() / energy();
+      betaz = -pz() / energy();
+      d = GlobalVector(daughter(i)->px(), daughter(i)->py(), daughter(i)->pz());
+    }
+    
+    double gamma = 1. / sqrt(1. - pow(betax, 2) - pow(betay, 2) - pow(betaz, 2));
+    double bgam = pow(gamma, 2) / (1. + gamma);
+    
+    double denergy = sqrt(pow(daughter(i)->mass(), 2) + pow(d.x(), 2) + pow(d.y(), 2) + pow(d.z(), 2));
+    
+    // double E  = denergy*(gamma) +       d.x()*(gamma*betax) +             d.y()*(gamma*betay) +             d.z()*(gamma*betaz);
+    double px = denergy*(gamma*betax) + d.x()*(1. + bgam * betax*betax) + d.y()*(bgam * betax * betay) +    d.z()*(bgam * betax * betaz);
+    double py = denergy*(gamma*betay) + d.x()*(bgam * betax * betay) +    d.y()*(1. + bgam * betay*betay) + d.z()*(bgam * betay * betaz);
+    double pz = denergy*(gamma*betaz) + d.x()*(bgam * betax * betaz) +    d.y()*(bgam * betay * betaz) +    d.z()*(1. + bgam * betaz*betaz);
+    
+    return GlobalVector(px, py, pz);
+  }
+  
+  template <class LeptonType>
+  GlobalVector pat::MultiLepton<LeptonType>::daughterCOMrot(int i, bool vertex) const 
+  {
+    GlobalVector d = daughterCOM(i, vertex);
+    
+    double anglexz = atan2(px(), pz());
+    double arotxz1 = d.x()*cos(anglexz) + d.y()*0. - d.z()*sin(anglexz);
+    double arotxz2 = d.x()*0.           + d.y()*1. + d.z()*0.;
+    double arotxz3 = d.x()*sin(anglexz) + d.y()*0. + d.z()*cos(anglexz);
+    
+    double angleyz = atan2(py(), sqrt(pow(px(), 2) + pow(pz(), 2)));
+    double arot1 = arotxz1*1. + arotxz2*0.           + arotxz3*0.;
+    double arot2 = arotxz1*0. + arotxz2*cos(angleyz) - arotxz3*sin(angleyz);
+    double arot3 = arotxz1*0. + arotxz2*sin(angleyz) + arotxz3*cos(angleyz);
+    
+    return GlobalVector(arot1, arot2, arot3);
+  }
+  
+  template <class LeptonType>
+  double pat::MultiLepton<LeptonType>::daughterCOMcosTheta(int i, bool vertex) const 
+  {
+    GlobalVector d = daughterCOMrot(i, vertex);
+    return d.z() / d.mag();
+  }
+  
+  template <class LeptonType>
   double MultiLepton<LeptonType>::dphi(int i, int j, bool vertex) const 
   {
     double phi_i, phi_j;
@@ -402,13 +462,6 @@ namespace pat {
       }
     }
     return max;
-  }
-
-  template <class LeptonType>
-  double pat::MultiLepton<LeptonType>::daughterCOMcosTheta(int i, bool vertex) const 
-  {
-    GlobalVector d = daughterCOMrot(i, vertex);
-    return d.z() / d.mag();
   }
 
   template <class LeptonType>

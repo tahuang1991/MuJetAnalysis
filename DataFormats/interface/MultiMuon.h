@@ -10,7 +10,7 @@
 */
 
 // uncomment for compiling in strict FWLite
-// #define MULTIMUONCANDIDATE_FOR_FWLITE
+// #define MULTILEPTONCANDIDATE_FOR_FWLITE
 
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "MuJetAnalysis/DataFormats/interface/MultiLepton.h"
@@ -28,6 +28,7 @@ namespace pat {
 // Class definition
 namespace pat {
   class MultiMuon : public MultiLepton<Muon> {
+
     public:
     /// default constructor
     MultiMuon() : MultiLepton<Muon>() {}
@@ -63,6 +64,10 @@ namespace pat {
     /// cast daughters as MultiMuons
     const pat::Muon *muon(int i) const { return dynamic_cast<const pat::Muon*>(daughter(i)); }
 
+    /// does this MultiMuon overlap another one? or contain a given muon?
+    bool overlaps(const pat::MultiMuon &aMultiMuon) const;
+    bool contains(const pat::Muon &aMuon) const;
+
     /// calculate a vertex from the daughter muons (performed by constructor if transientTrackBuilder != NULL)
     virtual bool calculateVertex(const TransientTrackBuilder *transientTrackBuilder);
 
@@ -92,10 +97,6 @@ namespace pat {
 						Float_t *diagnosticdR    = NULL,
 						Float_t *diagnosticpT    = NULL);
 	 
-    /// does this MultiMuon overlap another one? or contain a given muon?
-    bool overlaps(const pat::MultiMuon &aMultiMuon) const;
-    bool contains(const pat::Muon &aMuon) const;
-
     /// create a new MultiMuon which has muons from this and aMultiMuon
     pat::MultiMuon merge(const pat::MultiMuon        &aMultiMuon,
 			 const TransientTrackBuilder *transientTrackBuilder = NULL,

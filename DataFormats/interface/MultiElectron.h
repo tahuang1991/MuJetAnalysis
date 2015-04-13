@@ -9,6 +9,9 @@
    namespace.
 */
 
+// uncomment for compiling in strict FWLite
+// #define MULTILEPTONCANDIDATE_FOR_FWLITE
+
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "MuJetAnalysis/DataFormats/interface/MultiLepton.h"
 
@@ -74,16 +77,16 @@ namespace pat {
     // calculate isolation (performed by constructor if tracks, electrons, and caloTowers != NULL)
     // Track Isolation
     virtual void calculateTrackIsolation(const reco::TrackCollection *tracks,
-				 const pat::ElectronCollection   *allelectrons,
-				 double centralCone,
-				 double unionCone,
-				 double centralThreshold,
-				 double unionThreshold,
-				 TTree   *diagnosticTTree = NULL,
-				 Float_t *diagnosticdR    = NULL,
-				 Float_t *diagnosticpT    = NULL);    
-
-    virtual void calculateNumberAboveThresholdIsolation(const reco::TrackCollection *tracks,
+					 const pat::ElectronCollection   *allelectrons,
+					 double centralCone,
+					 double unionCone,
+					 double centralThreshold,
+					 double unionThreshold,
+					 TTree   *diagnosticTTree = NULL,
+					 Float_t *diagnosticdR    = NULL,
+					 Float_t *diagnosticpT    = NULL);    
+    
+    void calculateNumberAboveThresholdIsolation(const reco::TrackCollection *tracks,
 						const  pat::ElectronCollection   *allelectrons,
 						double centralCone,
 						double unionCone,
@@ -110,6 +113,9 @@ namespace pat {
 			     double centralNumberAboveThresholdPt   = 1e6,
 			     double unionNumberAboveThresholdPt     = 1e6);
 
+    //------------------------------------------------------------------------------
+    // Return vertex results
+    //------------------------------------------------------------------------------
     virtual double vertexDz(const Point& myBeamSpot) const;
     virtual double noiseEcal(const CaloTower &tower) const;
     virtual double noiseHcal(const CaloTower &tower) const; 

@@ -1,12 +1,12 @@
 #include "MuJetAnalysis/DataFormats/interface/MultiElectron.h"
 
-#ifndef MULTIELECTRONCANDIDATE_FOR_FWLITE
+#ifndef MULTILEPTONCANDIDATE_FOR_FWLITE
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrack.h"
 #include "RecoVertex/KalmanVertexFit/interface/KalmanVertexFitter.h"
 #else
 class TransientTrackBuilder {};
-#endif // MULTIELECTRONCANDIDATE_FOR_FWLITE
+#endif // MULTILEPTONCANDIDATE_FOR_FWLITE
 
 /// default constructor
 pat::MultiElectron::MultiElectron( std::vector<const pat::Electron*> &electrons,
@@ -131,10 +131,10 @@ pat::MultiElectron::~MultiElectron()
 /// calculate the vertex from TransientTracks; return true if successful
 bool pat::MultiElectron::calculateVertex(const TransientTrackBuilder *transientTrackBuilder) 
 {
-#ifdef MULTIELECTRONCANDIDATE_FOR_FWLITE
+#ifdef MULTILEPTONCANDIDATE_FOR_FWLITE
   return false;
-#endif // MULTIELECTRONCANDIDATE_FOR_FWLITE
-#ifndef MULTIELECTRONCANDIDATE_FOR_FWLITE
+#endif // MULTILEPTONCANDIDATE_FOR_FWLITE
+#ifndef MULTILEPTONCANDIDATE_FOR_FWLITE
   
   std::vector<reco::TransientTrack> tracksToVertex;
   for (unsigned int i = 0;  i < numberOfDaughters();  i++) {
@@ -182,7 +182,7 @@ bool pat::MultiElectron::calculateVertex(const TransientTrackBuilder *transientT
   }
   
    return true;
-#endif // MULTIELECTRONCANDIDATE_FOR_FWLITE
+#endif // MULTILEPTONCANDIDATE_FOR_FWLITE
 }
 
 

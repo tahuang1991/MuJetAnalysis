@@ -1,12 +1,12 @@
 #include "MuJetAnalysis/DataFormats/interface/MultiMuon.h"
 
-#ifndef MULTIMUONCANDIDATE_FOR_FWLITE
+#ifndef MULTILEPTONCANDIDATE_FOR_FWLITE
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrack.h"
 #include "RecoVertex/KalmanVertexFit/interface/KalmanVertexFitter.h"
 #else
 class TransientTrackBuilder {};
-#endif // MULTIMUONCANDIDATE_FOR_FWLITE
+#endif // MULTILEPTONCANDIDATE_FOR_FWLITE
 
 /// default constructor
 pat::MultiMuon::MultiMuon( std::vector<const pat::Muon*> &muons,
@@ -130,10 +130,10 @@ pat::MultiMuon::~MultiMuon() {}
 
 /// calculate the vertex from TransientTracks; return true iff successful
 bool pat::MultiMuon::calculateVertex(const TransientTrackBuilder *transientTrackBuilder) {
-#ifdef MULTIMUONCANDIDATE_FOR_FWLITE
+#ifdef MULTILEPTONCANDIDATE_FOR_FWLITE
   return false;
-#endif // MULTIMUONCANDIDATE_FOR_FWLITE
-#ifndef MULTIMUONCANDIDATE_FOR_FWLITE
+#endif // MULTILEPTONCANDIDATE_FOR_FWLITE
+#ifndef MULTILEPTONCANDIDATE_FOR_FWLITE
   
   std::vector<reco::TransientTrack> tracksToVertex;
   for (unsigned int i = 0;  i < numberOfDaughters();  i++) {
@@ -184,7 +184,7 @@ bool pat::MultiMuon::calculateVertex(const TransientTrackBuilder *transientTrack
   }
   
    return true;
-#endif // MULTIMUONCANDIDATE_FOR_FWLITE
+#endif // MULTILEPTONCANDIDATE_FOR_FWLITE
 }
 
 void pat::MultiMuon::calculateTrackIsolation( const reco::TrackCollection *tracks,

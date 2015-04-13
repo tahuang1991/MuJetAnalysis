@@ -11,7 +11,7 @@
 */
 
 // uncomment for compiling in strict FWLite
-// #define MULTIMUONCANDIDATE_FOR_FWLITE
+// #define MULTILEPTONCANDIDATE_FOR_FWLITE
 
 #include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
 #include "DataFormats/GeometryVector/interface/GlobalPoint.h"

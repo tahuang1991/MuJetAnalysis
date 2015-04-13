@@ -116,16 +116,7 @@ namespace pat {
     //------------------------------------------------------------------------------
     // Return vertex results
     //------------------------------------------------------------------------------
-    virtual double vertexDz(const Point& myBeamSpot) const {
-      if (vertexValid()) {
-        GlobalPoint  v      = vertexPoint();
-        GlobalVector p      = vertexMomentum();
-        double      pt_mag = sqrt( p.x()*p.x() + p.y()*p.y() );
-        return (v.z()-myBeamSpot.z()) - ((v.x()-myBeamSpot.x())*p.x()+(v.y()-myBeamSpot.y())*p.y())/pt_mag * p.z()/pt_mag;
-      }
-      else return muon(0)->innerTrack()->dz(myBeamSpot);
-    }
-  
+    virtual double vertexDz(const Point& myBeamSpot) const;
     virtual double noiseEcal(const CaloTower &tower) const;
     virtual double noiseHcal(const CaloTower &tower) const;
     virtual double noiseHOcal(const CaloTower &tower) const;

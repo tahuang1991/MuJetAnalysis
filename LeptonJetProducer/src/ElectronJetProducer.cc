@@ -233,48 +233,48 @@ bool ElectronJetProducer::electronOkay(const pat::Electron &electron) {
   if (m_selectGlobalElectrons   &&  !electron.isGlobalElectron()  ) return false;
 
   if (m_minTrackerHits > 0) {
-    if (electron.innerTrack().isNull()) return false;
-    if (electron.innerTrack()->numberOfValidHits() < m_minTrackerHits) return false;
+    if (electron.closestTrack().isNull()) return false;
+    if (electron.closestTrack()->numberOfValidHits() < m_minTrackerHits) return false;
   }
 
   if (m_maxTrackerNormChi2 > 0.) {
-    if (electron.innerTrack().isNull()) return false;
-    if (electron.innerTrack()->normalizedChi2() > m_maxTrackerNormChi2) return false;
+    if (electron.closestTrack().isNull()) return false;
+    if (electron.closestTrack()->normalizedChi2() > m_maxTrackerNormChi2) return false;
   }
 
   if (m_maxTrackerDxy > 0.) {
-    if (electron.innerTrack().isNull()) return false;
-    if (fabs(electron.innerTrack()->dxy()) > m_maxTrackerDxy) return false;
+    if (electron.closestTrack().isNull()) return false;
+    if (fabs(electron.closestTrack()->dxy()) > m_maxTrackerDxy) return false;
   }
 
   if (m_maxTrackerDz > 0.) {
-    if (electron.innerTrack().isNull()) return false;
-    if (fabs(electron.innerTrack()->dsz()) > m_maxTrackerDz) return false;
+    if (electron.closestTrack().isNull()) return false;
+    if (fabs(electron.closestTrack()->dsz()) > m_maxTrackerDz) return false;
   }
 
   if (m_maxQoverpError > 0.) {
-    if (electron.innerTrack().isNull()) return false;
-    if (electron.innerTrack()->qoverpError() > m_maxQoverpError) return false;
+    if (electron.closestTrack().isNull()) return false;
+    if (electron.closestTrack()->qoverpError() > m_maxQoverpError) return false;
   }
 
   if (m_maxPhiError > 0.) {
-    if (electron.innerTrack().isNull()) return false;
-    if (electron.innerTrack()->phiError() > m_maxPhiError) return false;
+    if (electron.closestTrack().isNull()) return false;
+    if (electron.closestTrack()->phiError() > m_maxPhiError) return false;
   }
 
   if (m_maxEtaError > 0.) {
-    if (electron.innerTrack().isNull()) return false;
-    if (electron.innerTrack()->etaError() > m_maxEtaError) return false;
+    if (electron.closestTrack().isNull()) return false;
+    if (electron.closestTrack()->etaError() > m_maxEtaError) return false;
   }
 
   if (m_maxDxyError > 0.) {
-    if (electron.innerTrack().isNull()) return false;
-    if (electron.innerTrack()->dxyError() > m_maxDxyError) return false;
+    if (electron.closestTrack().isNull()) return false;
+    if (electron.closestTrack()->dxyError() > m_maxDxyError) return false;
   }
 
   if (m_maxDzError > 0.) {
-    if (electron.innerTrack().isNull()) return false;
-    if (electron.innerTrack()->dzError() > m_maxDzError) return false;
+    if (electron.closestTrack().isNull()) return false;
+    if (electron.closestTrack()->dzError() > m_maxDzError) return false;
   }
 
   if (m_minOuterHits > 0) {

@@ -481,19 +481,33 @@ pat::MultiMuon pat::MultiMuon::merge( const pat::MultiMuon &aMultiMuon,
   return pat::MultiMuon(muons, transientTrackBuilder, tracks, allmuons, caloTowers, centralTrackIsolationCone, unionTrackIsolationCone, centralTrackThresholdPt, unionTrackThresholdPt, centralCaloIsolationCone, unionCaloIsolationCone, centralNumberAboveThresholdCone, unionNumberAboveThresholdCone, centralNumberAboveThresholdPt, unionNumberAboveThresholdPt);
 }
 
-double pat::MultiMuon::noiseEcal(const CaloTower &tower) const {
+double pat::MultiMuon::vertexDz(const Point& myBeamSpot) const 
+{
+  if (vertexValid()) {
+    GlobalPoint  v      = vertexPoint();
+    GlobalVector p      = vertexMomentum();
+    double      pt_mag = sqrt( p.x()*p.x() + p.y()*p.y() );
+    return (v.z()-myBeamSpot.z()) - ((v.x()-myBeamSpot.x())*p.x()+(v.y()-myBeamSpot.y())*p.y())/pt_mag * p.z()/pt_mag;
+  }
+  else return muon(0)->innerTrack()->dz(myBeamSpot);
+}
+
+double pat::MultiMuon::noiseEcal(const CaloTower &tower) const 
+{
   const double theNoiseTow_EB = 0.04;
   const double theNoiseTow_EE = 0.15;
   return (fabs(tower.eta()) > 1.479 ? theNoiseTow_EE : theNoiseTow_EB);
 }
 
-double pat::MultiMuon::noiseHcal(const CaloTower &tower) const {
+double pat::MultiMuon::noiseHcal(const CaloTower &tower) const 
+{
   const double theNoise_HB = 0.2;
   const double theNoise_HE = 0.2;
   return (fabs(tower.eta()) > 1.479 ? theNoise_HE : theNoise_HB);
 }
 
-double pat::MultiMuon::noiseHOcal(const CaloTower &tower) const {
+double pat::MultiMuon::noiseHOcal(const CaloTower &tower) const 
+{
   const double theNoise_HO = 0.2;
   return theNoise_HO;
 }

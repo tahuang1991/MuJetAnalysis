@@ -111,7 +111,6 @@ namespace pat {
 			     double unionNumberAboveThresholdPt     = 1e6);
 
     virtual double vertexDz(const Point& myBeamSpot) const;
-
     virtual double noiseEcal(const CaloTower &tower) const;
     virtual double noiseHcal(const CaloTower &tower) const; 
     virtual double noiseHOcal(const CaloTower &tower) const;

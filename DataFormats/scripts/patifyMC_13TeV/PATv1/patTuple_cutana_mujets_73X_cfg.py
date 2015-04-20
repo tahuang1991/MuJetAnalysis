@@ -1,6 +1,9 @@
 ## import skeleton process
 from PhysicsTools.PatAlgos.patTemplate_cfg import *
 
+## PostLS1 Magnetic field                                                                                                                                                                         
+process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
+
 # verbose flags for the PF2PAT modules
 process.options.allowUnscheduled = cms.untracked.bool(True)
 

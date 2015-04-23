@@ -1,6 +1,9 @@
 ## import skeleton process
 from PhysicsTools.PatAlgos.patTemplate_cfg import *
 
+## PostLS1 Magnetic field
+process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
+
 # verbose flags for the PF2PAT modules
 process.options.allowUnscheduled = cms.untracked.bool(True)
 
@@ -18,7 +21,8 @@ process.patTriggerEvent.processName = cms.string( "*" )
 
 process.source = cms.Source("PoolSource",
   fileNames = cms.untracked.vstring(
-        'file:out_hlt.root'
+        #'file:/fdata/hepx/store/user/dildick/DarkSUSY_mH_125_mGammaD_0250_13TeV-madgraph452_bridge224_LHE_pythia8_731p2_GEN_v2/DarkSUSY_mH_125_mGammaD_0250_ctau_0_13TeV_madgraph452_bridge224_LHE_pythia8_731p2_RECO/0c27b465590c55ed0293b8cec2e2e17b/out_reco_1_1_cp4.root'
+		"file:/fdata/hepx/store/user/dildick/DarkSUSY_mH_125_mGammaD_0250_13TeV-madgraph452_bridge224_LHE_pythia8_731p2_GEN_v2/DarkSUSY_mH_125_mGammaD_0250_ctau_0_13TeV_madgraph452_bridge224_LHE_pythia8_731p2_RECO/0c27b465590c55ed0293b8cec2e2e17b/out_reco_2_1_xVI.root"
   )
 )
 
@@ -28,9 +32,9 @@ process.load("MuJetAnalysis.MuJetProducer.MuJetProducer_cff")
 process.load("MuJetAnalysis.CutFlowAnalyzer.CutFlowAnalyzer_cfi")
 
 process.p = cms.Path(
-    process.TrackerMuJetProducer05 *
-    process.PFMuJetProducer05 *
-    process.cutFlowAnalyzer
+    process.TrackerMuJetProducer05 
+	* process.PFMuJetProducer05
+	* process.cutFlowAnalyzer
 )
 
 process.outpath = cms.EndPath(process.out)

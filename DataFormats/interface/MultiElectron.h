@@ -1,6 +1,17 @@
 #ifndef MuJetAnalysis_DataFormats_MultiElectron_h
 #define MuJetAnalysis_DataFormats_MultiElectron_h
 
+/**
+  \class    pat::MultiElectron MultiElectron.h "MuJetAnalysis/DataFormats/interface/MultiElectron.h"
+  \brief    Analysis-level particle class
+
+   MultiElectron implements an analysis-level multi-electron class within the 'pat'
+   namespace.
+*/
+
+// uncomment for compiling in strict FWLite
+// #define MULTILEPTONCANDIDATE_FOR_FWLITE
+
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "MuJetAnalysis/DataFormats/interface/MultiLepton.h"
 
@@ -60,19 +71,22 @@ namespace pat {
     /// calculate a vertex from the daughter leptons (performed by constructor if transientTrackBuilder != NULL)
     virtual bool calculateVertex(const TransientTrackBuilder *transientTrackBuilder);
 
+    // Calorimeter Isolation
+    virtual void calculateCaloIsolation(const CaloTowerCollection *caloTowers, double centralCone, double unionCone);
+
     // calculate isolation (performed by constructor if tracks, electrons, and caloTowers != NULL)
     // Track Isolation
     virtual void calculateTrackIsolation(const reco::TrackCollection *tracks,
-				 const pat::ElectronCollection   *allelectrons,
-				 double centralCone,
-				 double unionCone,
-				 double centralThreshold,
-				 double unionThreshold,
-				 TTree   *diagnosticTTree = NULL,
-				 Float_t *diagnosticdR    = NULL,
-				 Float_t *diagnosticpT    = NULL);    
-
-    virtual void calculateNumberAboveThresholdIsolation(const reco::TrackCollection *tracks,
+					 const pat::ElectronCollection   *allelectrons,
+					 double centralCone,
+					 double unionCone,
+					 double centralThreshold,
+					 double unionThreshold,
+					 TTree   *diagnosticTTree = NULL,
+					 Float_t *diagnosticdR    = NULL,
+					 Float_t *diagnosticpT    = NULL);    
+    
+    void calculateNumberAboveThresholdIsolation(const reco::TrackCollection *tracks,
 						const  pat::ElectronCollection   *allelectrons,
 						double centralCone,
 						double unionCone,
@@ -99,8 +113,10 @@ namespace pat {
 			     double centralNumberAboveThresholdPt   = 1e6,
 			     double unionNumberAboveThresholdPt     = 1e6);
 
+    //------------------------------------------------------------------------------
+    // Return vertex results
+    //------------------------------------------------------------------------------
     virtual double vertexDz(const Point& myBeamSpot) const;
-
     virtual double noiseEcal(const CaloTower &tower) const;
     virtual double noiseHcal(const CaloTower &tower) const; 
     virtual double noiseHOcal(const CaloTower &tower) const;

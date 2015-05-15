@@ -1,4 +1,4 @@
 MuJetAnalysis
 =============
 
-Physics analysis of events with muon jets
+Branch for development of Pt assignment at HLT step for displaced muons.

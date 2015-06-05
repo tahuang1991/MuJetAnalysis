@@ -59,8 +59,27 @@ using namespace std;
 #include "Geometry/Records/interface/DTRecoGeometryRcd.h"
 #include "Geometry/DTGeometryBuilder/plugins/DTGeometryESModule.h"
 #include "FWCore/Framework/interface/EventSetupRecordImplementation.h"
-#include "Geometry/Records/interface/DTRecoGeometryRcd.h"
 #include "FWCore/Framework/interface/eventsetuprecord_registration_macro.h"
+#include "DataFormats/L1Trigger/interface/L1MuonParticle.h"
+#include "Geometry/DTGeometryBuilder/plugins/DTGeometryESModule.h"
+#include "Geometry/Records/interface/MuonNumberingRecord.h"
+#include "MuonAnalysis/MuonAssociators/interface/L1MuonMatcherAlgo.h"
+#include "MuonAnalysis/MuonAssociators/interface/PropagateToMuon.h"
+#include "DataFormats/Math/interface/deltaR.h"
+#include "DataFormats/Math/interface/deltaPhi.h"
+struct MyTrackEffL1
+{
+ void init();
+ TTree*book(TTree *t, const std::string & name = "l1_particles_");
+
+ Float_t L1_pt;
+ Float_t L1_eta;
+ Float_t L1_phi;
+ Float_t L1_charge;
+ 
+
+
+};
 
 struct MyTrackEffDT
 {
@@ -132,12 +151,29 @@ struct MyTrackEffDT
  Float_t eta_SimTrack_dt;
  Float_t phi_SimTrack_dt;
  Char_t has_dt_sh;
- Char_t nlayerdt;
+ Int_t nlayerdt;
  Float_t R_gv;
  Float_t Z_gv;
  Float_t X_gv;
  Float_t Y_gv;
+
+ Float_t L1_pt;
+ Float_t L1_eta;
+ Float_t L1_q;
+ Float_t L1_phi_;
+
 };
+
+void MyTrackEffL1::init()
+{
+
+ L1_pt = -99.;
+ L1_eta = -9.;
+ L1_phi = - 99.;
+ L1_charge = - 9.;
+
+
+} 
 
 void MyTrackEffDT::init()
 {
@@ -205,12 +241,35 @@ void MyTrackEffDT::init()
  X_gv=-9999.;
  Y_gv=-9999.;
 
+
+ L1_pt = - 99.;
+ L1_eta = - 9.;
+ L1_q = - 9.;
+ L1_phi_ = -999.;
+}
+
+TTree*MyTrackEffL1::book(TTree *t, const std::string & name)
+{
+  edm::Service< TFileService> fs;
+  t = fs->make<TTree>(name.c_str(),name.c_str());
+ 
+  t->Branch("L1_pt", &L1_pt);
+  t->Branch("L1_eta", &L1_eta);
+  t->Branch("L1_charge", &L1_charge);
+  t->Branch("L1_phi", &L1_phi);
+
+  return t;
 }
 
 TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
 {
   edm::Service< TFileService > fs;
   t = fs->make<TTree>(name.c_str(),name.c_str());
+
+  t->Branch("L1_pt", &L1_pt);
+  t->Branch("L1_eta", &L1_eta);
+  t->Branch("L1_q", &L1_q);
+  t->Branch("L1_phi_", &L1_phi_);
 
   t->Branch("lumi", &lumi);
   t->Branch("run", &run);
@@ -309,8 +368,6 @@ class HLTBendingAngle : public edm::EDAnalyzer {
 
       int check_is_dt(unsigned int detId) const;
 
-      GlobalPoint propagateToZ(GlobalPoint &inner_point, GlobalVector &inner_vector, float z) const;
-      GlobalPoint propagateToZ(float z) const;
 
       edm::ESHandle<DTGeometry> dt_geom;
       const DTGeometry* dtGeometry_;
@@ -329,6 +386,15 @@ class HLTBendingAngle : public edm::EDAnalyzer {
       edm::ESHandle<MagneticField> magfield_;
       edm::ESHandle<Propagator> propagator_;
       edm::ESHandle<Propagator> propagatorOpposite_;
+
+
+      float deltaR;
+      float deltaPhi;
+      int does_it_match;
+
+      edm::Handle<std::vector<l1extra::L1MuonParticle> > l1_particles;
+
+      std::vector<edm::ParameterSet> iConfigforL1;
 
       GlobalPoint simHitsMeanPosition(const edm::PSimHitContainer& sim_hits) const;
       GlobalPoint detidToGlobalDT(const edm::PSimHitContainer& sim_hits) const;
@@ -374,8 +440,16 @@ class HLTBendingAngle : public edm::EDAnalyzer {
       int detIdToMBStation(int wh, int st);
       std::vector<string> dtStations_;
       std::set<int> stationsdt_to_use_;
+    
+      std::set<int> l1particles_muons_;
+
       TTree *tree_eff_dt_[26];
       MyTrackEffDT etrk_dt_[26];
+
+
+
+      TTree *tree_eff_l1_[6];
+      MyTrackEffL1 etrk_l1_[6];
       double vtx_dt;
       double vty_dt;
       double vtz_dt; 
@@ -427,6 +501,18 @@ HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& iConfig)
   stationsDT.push_back("MB24n");
   
 
+  std::vector<string> L1Ppabc;
+  L1Ppabc.push_back("Muon1");
+  L1Ppabc.push_back("Muon2");
+  L1Ppabc.push_back("Muon3");
+  L1Ppabc.push_back("Muon4");
+  L1Ppabc.push_back("Muon5");
+  L1Ppabc.push_back("Muon6");
+  L1Ppabc.push_back("Muon7");
+  L1Ppabc.push_back("Muon8");
+  L1Ppabc.push_back("Muon9");
+  L1Ppabc.push_back("Muon10");
+  
   std::vector<int> DtStationsToUse;
   DtStationsToUse.push_back(0);
   DtStationsToUse.push_back(1);
@@ -441,6 +527,27 @@ HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& iConfig)
   DtStationsToUse.push_back(10);
   DtStationsToUse.push_back(11);
   DtStationsToUse.push_back(12);
+
+  std::vector<int> L1Particles;
+  L1Particles.push_back(0);
+  L1Particles.push_back(1);
+  L1Particles.push_back(2);
+  L1Particles.push_back(4);
+  L1Particles.push_back(5);
+  L1Particles.push_back(6);
+  L1Particles.push_back(7);
+  L1Particles.push_back(8);
+  L1Particles.push_back(9);
+
+  copy(L1Particles.begin(), L1Particles.end(), inserter(l1particles_muons_, l1particles_muons_.end()));
+  for(auto m: l1particles_muons_)
+  {
+	stringstream ss;
+ 	ss<<" trk_eff_l1_"<< L1Ppabc[m];
+	tree_eff_l1_[m] = etrk_l1_[m].book(tree_eff_l1_[m], ss.str());
+
+  }
+
 
   copy(DtStationsToUse.begin(),DtStationsToUse.end(),inserter(stationsdt_to_use_,stationsdt_to_use_.end()));
     for (auto m: stationsdt_to_use_)
@@ -487,7 +594,7 @@ int HLTBendingAngle::detIdToMBStation(int wh,  int st)
 void
 HLTBendingAngle::beginRun(edm::Run const& run, edm::EventSetup const& es)
 {
-
+/*
   try {
     es.get<MuonGeometryRecord>().get(dt_geom);
     dtGeometry_ = &*dt_geom;
@@ -497,7 +604,7 @@ HLTBendingAngle::beginRun(edm::Run const& run, edm::EventSetup const& es)
 
     }
 
-
+*/
 
 
 };
@@ -543,8 +650,11 @@ HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
 */
 
  // auto simInputLabel_ = "hltL1extraParticles";
- //
- //
+ 
+  dt_detid_to_hits_.clear();
+  dt_layer_to_hits_.clear();
+  dt_chamber_to_hits_.clear();
+
   auto simInputLabel_ = "g4SimHits";
   edm::Handle<edm::SimTrackContainer> sim_tracks;
   edm::Handle<edm::SimVertexContainer> sim_vertices;
@@ -554,7 +664,16 @@ HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
   const edm::SimVertexContainer & sim_vert = *sim_vertices.product();
   const edm::SimTrackContainer & sim_track = *sim_tracks.product();
 
+  ev.getByLabel("g4SimHits","MuonDTHits", dt_hits);
+  const edm::PSimHitContainer & hits_dt = *dt_hits.product();
   //std::cout << "Total number of SimTrack in this event: " << sim_track.size() << std::endl;
+  //
+  ev.getByLabel("hltL1extraParticles", l1_particles);
+ 
+  
+  
+
+ 
   int trk_no=0;
   for (auto& t: *sim_tracks.product())
   {
@@ -576,16 +695,24 @@ HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
     vector<unsigned> track_ids = getIdsOfSimTrackShower(t.trackId(), *sim_tracks.product(), *sim_vertices.product());
 
     //edm::InputTag dtSimHitInput_ = ("g4SimHits","MuonDTHits");
-    ev.getByLabel("g4SimHits","MuonDTHits", dt_hits);
-  
-    const edm::PSimHitContainer & hits_dt = *dt_hits.product();
+   
+
+    //edm::ParameterSet pSetabc;
+    //pSetabc.addParameter("preselection", std::string("l1"));
 
 
-    std::cout<<"Size of track: "<<track_ids.size()<<" , size of simhits: "<<hits_dt.size()<<std::endl;
+
+
+    //TrajectoryStateOnSurface propagated123;
+    //bool does_it_match2 = L1MuonMatcherAlgo(pSetabc).match(t, sim_vert, l1_particles, deltaR, deltaPhi, propagated123);
+
+
+    //std::cout<<"Size of track: "<<track_ids.size()<<" , size of simhits: "<<hits_dt.size()<<std::endl;
     matchSimHitsToSimTrack(track_ids, hits_dt);
 
     analyzeTrackEfficiency(t, sim_vert[t.vertIndex()], ev, es , trk_no);
   
+
     //trk_no = trk_no + 1;
   } 
 	
@@ -624,14 +751,31 @@ HLTBendingAngle::analyzeTrackEfficiency(const SimTrack& t, const SimVertex& v, c
 
     auto pphi = t.momentum().phi();
     etrk_dt_[asdt].dt_dxy = vtx_dt*sin(pphi) - vty_dt*cos(pphi);
-     
+  
+
+       for(std::vector<l1extra::L1MuonParticle>::const_iterator muon=l1_particles->begin(); muon!=l1_particles->end(); ++muon)
+       {
+   
+
+		etrk_dt_[asdt].L1_pt = muon->pt();
+		etrk_dt_[asdt].L1_eta = muon->eta();
+		etrk_dt_[asdt].L1_phi_ = muon->phi();
+		etrk_dt_[asdt].L1_q = muon->charge();
+
+	//std::cout<<" L1 Muon Particle PT: "<<muon->pt()<<", eta: "<<muon->eta()<<", charge: "<<muon->charge()<<", phi: "<<muon->phi()<<std::endl;
+                 
+       }
+   
     } 
+
+  
+
 
 
    auto dt_simhits = layerIdsDT();
 
 
-   std::cout<<" Size of dt sh: "<<dt_simhits.size()<<std::endl;
+   //std::cout<<" Size of dt sh: "<<dt_simhits.size()<<std::endl;
    for (auto ddt: dt_simhits)
    {
 
@@ -647,10 +791,10 @@ HLTBendingAngle::analyzeTrackEfficiency(const SimTrack& t, const SimVertex& v, c
      etrk_dt_[stdt].has_dt_sh |= 1;
      etrk_dt_[stdt].nlayerdt  = nlayersdtch;
 
-    GlobalPoint hitGp = detidToGlobalDT(hitsInLayerDT(ddt));
+//    GlobalPoint hitGp = detidToGlobalDT(hitsInLayerDT(ddt));
 
 
-    etrk_dt_[stdt].eta_gp = hitGp.eta();
+  //  etrk_dt_[stdt].eta_gp = hitGp.eta();
 /*    etrk_dt_[stdt].x_gp = hitGp.x();
     etrk_dt_[stdt].y_gp = hitGp.y();
     etrk_dt_[stdt].z_gp = hitGp.z();
@@ -745,6 +889,7 @@ HLTBendingAngle::analyzeTrackEfficiency(const SimTrack& t, const SimVertex& v, c
     }
 
 
+  dt_layer_to_hits_.clear();
 }
 
 

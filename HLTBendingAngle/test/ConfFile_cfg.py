@@ -18,11 +18,9 @@ process.load('TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorAl
 #from Geometry.CMSCommonData.cmsExtendedGeometry2023XML_cfi import *
 #from Geometry.TrackerNumberingBuilder.trackerTopology2023Constants_cfi import *
 #from Configuration.Geometry.GeometryExtended2023Muon_cff import *
+process.load("Geometry.CMSCommonData.cmsExtendedGeometry2023XML_cfi")
 process.load("Geometry.CMSCommonData.cmsIdealGeometryXML_cfi")
 process.load("Geometry.DTGeometryBuilder.dtGeometry_cfi")
-process.load("Geometry.DTGeometryBuilder.dtGeometryDB_cfi")
-#process.load("Geometry.CMSCommonData.cmsExtendedGeometry2023XML_cfi")a
-
 
 
 

@@ -3,6 +3,13 @@
 <use name="CommonTools/UtilAlgos"/>
 <use name="FWCore/Framework"/>
 <use name="FWCore/PluginManager"/>
+<use name="SimMuon/MCTruth"/>
+<use name="SimTracker/Records"/>
+<use name="SimTracker/TrackAssociation"/>
+<use name="MuonAnalysis/MuonAssociators"/>
+<use name="TrackingTools/TransientTrack"/>
+<use name="TrackingTools/Records"/>
+<use name="Geometry/MuonNumbering"/>
 
  <use name="root"/>
  <use name="boost"/>

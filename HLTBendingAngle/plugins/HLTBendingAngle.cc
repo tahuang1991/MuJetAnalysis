@@ -161,6 +161,9 @@ struct MyTrackEffDT
  Float_t L1_eta;
  Float_t L1_q;
  Float_t L1_phi_;
+ 
+ Int_t wheel;
+ Int_t station;
 
 };
 
@@ -234,14 +237,15 @@ void MyTrackEffDT::init()
  dtvertex_y=-9999;
  dtvertex_z=-9999;
  dtvertex_r=-9999;
- has_dt_sh=0;
- nlayerdt = 0;
+ has_dt_sh=-1;
+ nlayerdt = -1;
  R_gv=-9999.;
  Z_gv=-9999.;
  X_gv=-9999.;
  Y_gv=-9999.;
 
-
+ wheel = -9;
+ station = - 9;
  L1_pt = - 99.;
  L1_eta = - 9.;
  L1_q = - 9.;
@@ -290,6 +294,8 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
   t->Branch("has_third_dtst_hit", &has_third_dtst_hit);
   t->Branch("has_fourth_dtst_hit", &has_fourth_dtst_hit);
 
+  t->Branch("wheel", &wheel);
+  t->Branch("station", &station);
   t->Branch("wheel_second", &wheel_second);
   t->Branch("eta_gv_second", &eta_gv_second);
   t->Branch("eta_gp_second", &eta_gp_second);
@@ -443,8 +449,8 @@ class HLTBendingAngle : public edm::EDAnalyzer {
     
       std::set<int> l1particles_muons_;
 
-      TTree *tree_eff_dt_[26];
-      MyTrackEffDT etrk_dt_[26];
+      TTree *tree_eff_dt_[56];
+      MyTrackEffDT etrk_dt_[56];
 
 
 
@@ -477,8 +483,10 @@ HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& iConfig)
 {
    //now do what ever initialization is needed
 
+
   // auto input = cms.InputTag("g4SimHits","MuonDTHits");
   std::vector<string> stationsDT; 
+  stationsDT.push_back("ALL");
   stationsDT.push_back("MB01");
   stationsDT.push_back("MB11");
   stationsDT.push_back("MB21");
@@ -527,6 +535,14 @@ HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& iConfig)
   DtStationsToUse.push_back(10);
   DtStationsToUse.push_back(11);
   DtStationsToUse.push_back(12);
+  DtStationsToUse.push_back(13);
+  DtStationsToUse.push_back(14);
+  DtStationsToUse.push_back(15);
+  DtStationsToUse.push_back(16);
+  DtStationsToUse.push_back(17);
+  DtStationsToUse.push_back(18);
+  DtStationsToUse.push_back(19);
+  DtStationsToUse.push_back(20);
 
   std::vector<int> L1Particles;
   L1Particles.push_back(0);
@@ -580,6 +596,11 @@ HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& iConfig)
   dtStationsCo_.push_back(std::make_pair(-1,4));
   dtStationsCo_.push_back(std::make_pair(-2,4));
 
+    for (auto m: stationsdt_to_use_)
+    {
+
+  	  etrk_dt_[m].init();
+    }
 
 };
 
@@ -641,22 +662,12 @@ HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
 {
    using namespace edm;
 
-
- /*
-  
-  event().getByLabel(mInputLabel_, sim_tracks);
-  event().getByLabel(simInputLabel_, sim_vertices);
-  event().getByLabel(dtSimHitInput_, dt_hits);
-*/
-
- // auto simInputLabel_ = "hltL1extraParticles";
- 
   dt_detid_to_hits_.clear();
-  dt_layer_to_hits_.clear();
   dt_chamber_to_hits_.clear();
-
-  auto simInputLabel_ = "g4SimHits";
+  dt_layer_to_hits_.clear();
+  
   edm::Handle<edm::SimTrackContainer> sim_tracks;
+  auto simInputLabel_ = "g4SimHits";
   edm::Handle<edm::SimVertexContainer> sim_vertices;
 
   ev.getByLabel(simInputLabel_, sim_tracks);
@@ -667,12 +678,8 @@ HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
   ev.getByLabel("g4SimHits","MuonDTHits", dt_hits);
   const edm::PSimHitContainer & hits_dt = *dt_hits.product();
   //std::cout << "Total number of SimTrack in this event: " << sim_track.size() << std::endl;
-  //
+  
   ev.getByLabel("hltL1extraParticles", l1_particles);
- 
-  
-  
-
  
   int trk_no=0;
   for (auto& t: *sim_tracks.product())
@@ -693,27 +700,17 @@ HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
     }
 
     vector<unsigned> track_ids = getIdsOfSimTrackShower(t.trackId(), *sim_tracks.product(), *sim_vertices.product());
-
-    //edm::InputTag dtSimHitInput_ = ("g4SimHits","MuonDTHits");
-   
-
-    //edm::ParameterSet pSetabc;
-    //pSetabc.addParameter("preselection", std::string("l1"));
-
-
-
-
-    //TrajectoryStateOnSurface propagated123;
-    //bool does_it_match2 = L1MuonMatcherAlgo(pSetabc).match(t, sim_vert, l1_particles, deltaR, deltaPhi, propagated123);
-
-
     //std::cout<<"Size of track: "<<track_ids.size()<<" , size of simhits: "<<hits_dt.size()<<std::endl;
+
     matchSimHitsToSimTrack(track_ids, hits_dt);
 
     analyzeTrackEfficiency(t, sim_vert[t.vertIndex()], ev, es , trk_no);
   
 
-    //trk_no = trk_no + 1;
+    dt_layer_to_hits_.clear();
+    dt_detid_to_hits_.clear();
+    dt_chamber_to_hits_.clear();
+    trk_no = trk_no + 1;
   } 
 	
 
@@ -728,7 +725,6 @@ HLTBendingAngle::analyzeTrackEfficiency(const SimTrack& t, const SimVertex& v, c
 
   for (auto asdt: stationsdt_to_use_)
     {
-    etrk_dt_[asdt].init();
     etrk_dt_[asdt].run = ev.id().run();
     etrk_dt_[asdt].lumi= ev.id().luminosityBlock();
     etrk_dt_[asdt].event = ev.id().event();
@@ -768,128 +764,47 @@ HLTBendingAngle::analyzeTrackEfficiency(const SimTrack& t, const SimVertex& v, c
    
     } 
 
-  
-
-
-
    auto dt_simhits = layerIdsDT();
 
-
-   //std::cout<<" Size of dt sh: "<<dt_simhits.size()<<std::endl;
+   std::cout<<" Size of dt sh: "<<dt_simhits.size()<<std::endl;
    for (auto ddt: dt_simhits)
    {
-
     if (check_is_dt(ddt) == 0) continue;
-    DTWireId iddt(ddt);
-    const int stdt(detIdToMBStation(iddt.wheel(),iddt.station()));
-    if (stationsdt_to_use_.count(stdt) == 0) continue;
 
+
+    DTWireId iddt(ddt);
+
+    const int stdt(detIdToMBStation(iddt.wheel(),iddt.station()));
+
+    if (stationsdt_to_use_.count(stdt) == 0) continue;
+    
     int nlayersdtch = nLayerWithHitsInLayerDT(iddt);
     
     if (nlayersdtch == 0) continue;
+    etrk_dt_[stdt].has_dt_sh = 1;
+    etrk_dt_[stdt].nlayerdt  = nlayersdtch;
 
-     etrk_dt_[stdt].has_dt_sh |= 1;
-     etrk_dt_[stdt].nlayerdt  = nlayersdtch;
+    etrk_dt_[stdt].wheel = iddt.wheel();
+    etrk_dt_[stdt].station = iddt.station();
 
-//    GlobalPoint hitGp = detidToGlobalDT(hitsInLayerDT(ddt));
+    tree_eff_dt_[stdt]->Fill();
 
+   }
 
-  //  etrk_dt_[stdt].eta_gp = hitGp.eta();
-/*    etrk_dt_[stdt].x_gp = hitGp.x();
-    etrk_dt_[stdt].y_gp = hitGp.y();
-    etrk_dt_[stdt].z_gp = hitGp.z();
-    etrk_dt_[stdt].r_gp = hitGp.perp();
-    etrk_dt_[stdt].phi_gp = hitGp.phi();
-
-    GlobalVector ym = detDTGlobalPT(hitsInLayerDT(ddt));
-
-    etrk_dt_[stdt].eta_gv = ym.eta();
-    etrk_dt_[stdt].pt_gv = ym.perp();
-    etrk_dt_[stdt].phi_gv = ym.phi();
-    etrk_dt_[stdt].R_gv = sqrt (ym.x()*ym.x()+ym.y()*ym.y());
-    etrk_dt_[stdt].Z_gv = ym.z();
-    etrk_dt_[stdt].X_gv = ym.x();
-    etrk_dt_[stdt].Y_gv = ym.y();
-    //etrk_dt_[stdt].deltaphi_h_g = hitGp.phi() - ym.phi();     //This one
-
-    //etrk_dt_[stdt].pt_calculated_dt = (1/(hitGp.phi() - ym.phi()))*1.4025845 + 0.674463;
-
-
-    for (auto s_ddt: dt_simhits) // Looking for a second hit in DT stations 
-    {
-      DTWireId s_iddt(s_ddt);
-      const int s_stdt(detIdToMBStation(s_iddt.wheel(),s_iddt.station()));
-      if (stationsdt_to_use_.count(s_stdt) == 0) continue;
-      int s_nlayersdtch = nLayerWithHitsInLayerDT(s_ddt);
-      int d_nlayersdtch = nLayerWithHitsInLayerDT(ddt);
-
-      if(s_nlayersdtch == 0) continue; // Check to have hits in the secondary chamber
-      if(d_nlayersdtch == 0) continue; //Check that has hits in previous one
-      if(iddt.wheel()==s_iddt.wheel() and iddt.station()==s_iddt.station()) continue; //Not to count double hits in the same chamber
-
-      if(s_iddt.station() == 2){
-            GlobalPoint s_hitGp = detidToGlobalDT(hitsInLayerDT(s_ddt));
-            GlobalVector s_ym = detDTGlobalPT(hitsInLayerDT(s_ddt));
-            etrk_dt_[stdt].has_second_dtst_hit = 1;
-            etrk_dt_[stdt].deltaphi_first_second_gv= -s_ym.phi() + ym.phi();
-            etrk_dt_[stdt].deltaphi_first_second_gp=  hitGp.phi() - s_hitGp.phi();
-            etrk_dt_[stdt].pt_calculated_dt_12 = (1/( -s_ym.phi() + ym.phi()))*0.160453 + 3.174856;
-            etrk_dt_[stdt].wheel_second = s_iddt.wheel();
-            etrk_dt_[stdt].phi_gp_second = s_hitGp.phi();
-            etrk_dt_[stdt].eta_gp_second = s_hitGp.eta();
-            etrk_dt_[stdt].phi_gv_second = s_ym.phi();
-            etrk_dt_[stdt].eta_gv_second = s_ym.eta();
-        }
-
-      if(s_iddt.station() == 3){
-            GlobalPoint t_hitGp = detidToGlobalDT(hitsInLayerDT(s_ddt));
-            GlobalVector t_ym = detDTGlobalPT(hitsInLayerDT(s_ddt));
-            etrk_dt_[stdt].has_third_dtst_hit = 1;
-            etrk_dt_[stdt].deltaphi_first_third_gv= -t_ym.phi() + ym.phi();
-            etrk_dt_[stdt].deltaphi_first_third_gp=  hitGp.phi() - t_hitGp.phi();
-            etrk_dt_[stdt].pt_calculated_dt_13 = (1/( -t_ym.phi() + ym.phi()))*0.4112057 + 3.599571;
-            etrk_dt_[stdt].wheel_third = s_iddt.wheel();
-            etrk_dt_[stdt].phi_gp_third = t_hitGp.phi();
-            etrk_dt_[stdt].eta_gp_third = t_hitGp.eta();
-            etrk_dt_[stdt].phi_gv_third = t_ym.phi();
-            etrk_dt_[stdt].eta_gv_third = t_ym.eta();
-        }
-
-      if(s_iddt.station() == 4){
-            GlobalPoint f_hitGp = detidToGlobalDT(hitsInLayerDT(s_ddt));
-            GlobalVector f_ym = detDTGlobalPT(hitsInLayerDT(s_ddt));
-            etrk_dt_[stdt].has_fourth_dtst_hit = 1;
-            etrk_dt_[stdt].deltaphi_first_fourth_gv= -f_ym.phi() + ym.phi();
-            etrk_dt_[stdt].deltaphi_first_fourth_gp=  hitGp.phi() - f_hitGp.phi();
-            etrk_dt_[stdt].pt_calculated_dt_14 = (1/( -f_ym.phi() + ym.phi()))*0.656863 + 4.1039583;
-            etrk_dt_[stdt].wheel_fourth = s_iddt.wheel();
-            etrk_dt_[stdt].phi_gp_fourth = f_hitGp.phi();
-            etrk_dt_[stdt].eta_gp_fourth = f_hitGp.eta();
-            etrk_dt_[stdt].phi_gv_fourth = f_ym.phi();
-            etrk_dt_[stdt].eta_gv_fourth = f_ym.eta();
-        }
-
-
-     }
+ 
+/*
+    TrajectoryStateOnSurface propagated123;
+    bool does_it_match2 = L1MuonMatcherAlgo(pSetabc).match(t, sim_vert, l1_particles, deltaR, deltaPhi, propagated123);
 
 */
 
 
-
-
-   }
-
-
-
-
- for (auto sdt: stationsdt_to_use_)
+ for (auto stdt: stationsdt_to_use_)
     {
-    tree_eff_dt_[sdt]->Fill();
 
+    tree_eff_dt_[stdt]->Fill();
     }
 
-
-  dt_layer_to_hits_.clear();
 }
 
 
@@ -959,7 +874,7 @@ HLTBendingAngle::nLayerWithHitsInLayerDT(unsigned int detid) const
     auto hits=hitsInLayerDT(detid);
     for (auto& h: hits)
     {
-    
+
     DTWireId idd(h.detUnitId());
     DT_layers_with_hits.insert(idd.layerId());
     }

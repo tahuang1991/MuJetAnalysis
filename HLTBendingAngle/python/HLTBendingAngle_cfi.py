@@ -1,4 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
-demo = cms.EDAnalyzer('HLTBendingAngle'
+from GEMCode.GEMValidation.simTrackMatching_cfi import SimTrackMatching
+HLTBendingAngle = cms.EDAnalyzer('HLTBendingAngle'
+    verbose = cms.untracked.int32(0),
+    simTrackMatching = SimTrackMatching
 )

@@ -335,7 +335,7 @@ public:
   
 private:
   
-  void analyzeTrackEfficiency(const SimTrack& t, const SimVertex& v, const edm::Event& ev, const edm::EventSetup& es, int trk_no);
+  void analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no);
   
   bool isSimTrackGood(const SimTrack &t);
   
@@ -350,9 +350,6 @@ private:
   
   TTree *tree_eff_l1_[6];
   MyTrackEffL1 etrk_l1_[6];
-  double vtx_dt;
-  double vty_dt;
-  double vtz_dt; 
   float deltaR;
   float deltaPhi;
   int does_it_match;
@@ -367,7 +364,7 @@ private:
   double simTrackOnlyMuon_;
 };
 
-HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& iConfig)
+HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
   : cfg_(ps.getParameterSet("simTrackMatching"))
   , verbose_(ps.getUntrackedParameter<int>("verbose", 0))
 {
@@ -521,39 +518,45 @@ HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
      std::cout << "Total number of SimTracks in this event: " << sim_track.size() << std::endl;      
    }
 
-   edm::Handle<std::vector<l1extra::L1MuonParticle> > l1_particles;
-   // ev.getByLabel("hltL1extraParticles", l1_particles);
- 
   int trk_no=0;
   for (auto& t: *sim_tracks.product())
   {
     if(!isSimTrackGood(t)) continue;
-    vtx_dt = sim_vert[t.vertIndex()].position().x();
-    vty_dt = sim_vert[t.vertIndex()].position().y();
-    vtz_dt = sim_vert[t.vertIndex()].position().z();
+    if (verboseSimTrack_){
+      std::cout << "Processing SimTrack " << trk_no + 1 << std::endl;      
+      std::cout << "pt(GeV/c) = " << t.momentum().pt() << ", eta = " << t.momentum().eta()  
+                << ", phi = " << t.momentum().phi() << ", Q = " << t.charge() << std::endl;
+    }
 
     SimTrackMatchManager match(t, sim_vert[t.vertIndex()], cfg_, ev, es);
-    analyzeTrackEfficiency(t, sim_vert[t.vertIndex()], ev, es , trk_no);
+    analyzeTrackEfficiency(match, trk_no);
+    ++trk_no;
   } 
 }
 
 void 
-HLTBendingAngle::analyzeTrackEfficiency(const SimTrack& t, const SimVertex& v, const edm::Event& ev, const edm::EventSetup& es, int trk_no)
+HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
 {
   const SimHitMatcher& match_sh = match.simhits();
   const TrackMatcher& match_track = match.tracks();
-  
+  const SimTrack &t = match_sh.trk();
+  const SimVertex &vtx = match_sh.vtx();
+
   for (auto asdt: stationsdt_to_use_)
   {
-    etrk_dt_[asdt].run = ev.id().run();
-    etrk_dt_[asdt].lumi= ev.id().luminosityBlock();
-    etrk_dt_[asdt].event = ev.id().event();
+    etrk_dt_[asdt].run = match_sh.event().id().run();
+    etrk_dt_[asdt].lumi= match_sh.event().id().luminosityBlock();
+    etrk_dt_[asdt].event = match_sh.event().id().event();
     etrk_dt_[asdt].charge_dt=t.charge();
     
-    etrk_dt_[asdt].dtvertex_x = vtx_dt;
-    etrk_dt_[asdt].dtvertex_y = vty_dt;
-    etrk_dt_[asdt].dtvertex_z = vtz_dt;
-    etrk_dt_[asdt].dtvertex_r = sqrt(vtx_dt*vtx_dt+vty_dt*vty_dt);
+    const float vtx_x = vtx.position().x();
+    const float vtx_y = vtx.position().y();
+    const float vtx_z = vtx.position().z();
+
+    etrk_dt_[asdt].dtvertex_x = vtx_x;
+    etrk_dt_[asdt].dtvertex_y = vtx_y;
+    etrk_dt_[asdt].dtvertex_z = vtx_z;
+    etrk_dt_[asdt].dtvertex_r = sqrt(vtx_x*vtx_x+vtx_y*vtx_y);
     
     etrk_dt_[asdt].pt_SimTrack_dt=t.momentum().pt(); //This one
     etrk_dt_[asdt].eta_SimTrack_dt=t.momentum().eta();
@@ -566,27 +569,21 @@ HLTBendingAngle::analyzeTrackEfficiency(const SimTrack& t, const SimVertex& v, c
     }
 
     auto pphi = t.momentum().phi();
-    etrk_dt_[asdt].dt_dxy = vtx_dt*sin(pphi) - vty_dt*cos(pphi);
-      
-    for(std::vector<l1extra::L1MuonParticle>::const_iterator muon=l1_particles->begin(); muon!=l1_particles->end(); ++muon)
-    {
-      etrk_dt_[asdt].L1_pt = muon->pt();
-      etrk_dt_[asdt].L1_eta = muon->eta();
-      etrk_dt_[asdt].L1_phi_ = muon->phi();
-      etrk_dt_[asdt].L1_q = muon->charge();
-      
-      //std::cout<<" L1 Muon Particle PT: "<<muon->pt()<<", eta: "<<muon->eta()<<", charge: "<<muon->charge()<<", phi: "<<muon->phi()<<std::endl;      
-    }   
+    etrk_dt_[asdt].dt_dxy = vtx_x*sin(pphi) - vtx_y*cos(pphi);
+
+    // add a section on wheter the simtrack was matched to the L1MuonParticle
+    // Define additional accessors in TrackMather.h if need be
+    // for inspiration, look at GEMCSCAnalyzer
   } 
   
   auto dt_simhits(match_sh.chamberIdsDT());
   std::cout<<" Size of dt sh: "<<dt_simhits.size()<<std::endl;
   for(auto d: dt_simhits)
   {
-    DTDetId id(d);
+    DTWireId id(d);
     const int stdt(detIdToMBStation(id.wheel(),id.station()));
     if (stationsdt_to_use_.count(stdt) == 0) continue;
-    int nlayersdtch = nLayersWithHitsInLayerDT(id);
+    int nlayersdtch = nLayersWithHitsInLayerDT(id.rawId());
     
     if (nlayersdtch == 0) continue;
     etrk_dt_[stdt].has_dt_sh = 1;
@@ -596,34 +593,6 @@ HLTBendingAngle::analyzeTrackEfficiency(const SimTrack& t, const SimVertex& v, c
     etrk_dt_[stdt].station = id.station();
   } 	
 
-
-  // auto dt_simhits = layerIdsDT();
-  
-  // for (auto ddt: dt_simhits)
-  //   {
-  //     if (check_is_dt(ddt) == 0) continue;
-      
-      
-  //     DTWireId iddt(ddt);
-      
-  //   const int stdt(detIdToMBStation(iddt.wheel(),iddt.station()));
-
-  //   if (stationsdt_to_use_.count(stdt) == 0) continue;
-    
-  //   int nlayersdtch = nLayerWithHitsInLayerDT(iddt);
-    
-  //   if (nlayersdtch == 0) continue;
-  //   etrk_dt_[stdt].has_dt_sh = 1;
-  //   etrk_dt_[stdt].nlayerdt  = nlayersdtch;
-
-  //   etrk_dt_[stdt].wheel = iddt.wheel();
-  //   etrk_dt_[stdt].station = iddt.station();
-
-  //   tree_eff_dt_[stdt]->Fill();
-
-  //  }
-
- 
   /*
     TrajectoryStateOnSurface propagated123;
     bool does_it_match2 = L1MuonMatcherAlgo(pSetabc).match(t, sim_vert, l1_particles, deltaR, deltaPhi, propagated123);

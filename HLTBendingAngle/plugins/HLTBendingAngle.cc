@@ -580,10 +580,10 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   std::cout<<" Size of dt sh: "<<dt_simhits.size()<<std::endl;
   for(auto d: dt_simhits)
   {
-    DTWireId id(d);
+    const DTWireId id(d);
     const int stdt(detIdToMBStation(id.wheel(),id.station()));
     if (stationsdt_to_use_.count(stdt) == 0) continue;
-    int nlayersdtch = nLayersWithHitsInLayerDT(id.rawId());
+    const int nlayersdtch(match_sh.nLayersWithHitsInLayerDT(id.rawId()));
     
     if (nlayersdtch == 0) continue;
     etrk_dt_[stdt].has_dt_sh = 1;

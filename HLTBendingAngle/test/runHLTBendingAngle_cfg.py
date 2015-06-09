@@ -3,6 +3,7 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("HLTBending")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
+
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
@@ -16,8 +17,8 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100))
 
 process.source = cms.Source("PoolSource",
    fileNames = cms.untracked.vstring(
-      'file:outputA.root'
- )
+      'file:/uscms_data/d3/jdimasva/Second_Analyzer_Summer2015/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/outputA.root'
+   )
 )
 
 process.TFileService = cms.Service("TFileService",

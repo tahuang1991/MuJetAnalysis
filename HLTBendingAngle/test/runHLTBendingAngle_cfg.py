@@ -5,6 +5,7 @@ process = cms.Process("HLTBending")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
+#process.load('Configuration.Geometry.GeometrySimDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.EventContent.EventContent_cff')
@@ -12,6 +13,9 @@ process.load('Configuration.StandardSequences.Services_cff')
 process.load('TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorOpposite_cfi')
 process.load('TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorAlong_cfi')
 process.load("MuJetAnalysis.HLTBendingAngle.HLTBendingAngle_cfi")
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
+from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, 'MCRUN2_74_V9', '')
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100))
 

@@ -370,7 +370,7 @@ HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
 {
   auto simTrack = cfg_.getParameter<edm::ParameterSet>("simTrack");
   verboseSimTrack_ = simTrack.getParameter<int>("verbose");
-  simInputLabel_ = simTrack.getParameter<edm::InputTag>("input");
+  simInputLabel_ = edm::InputTag("g4SimHits");
   simTrackMinPt_ = simTrack.getParameter<double>("minPt");
   simTrackMinEta_ = simTrack.getParameter<double>("minEta");
   simTrackMaxEta_ = simTrack.getParameter<double>("maxEta");

@@ -139,6 +139,301 @@ struct MyTrackEffDT
 
 };
 
+
+class HLTBendingAngle : public edm::EDAnalyzer 
+{
+public:
+  explicit HLTBendingAngle(const edm::ParameterSet&);
+  ~HLTBendingAngle();
+  
+  virtual void analyze(const edm::Event&, const edm::EventSetup&) ;
+  
+  static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+  
+private:
+  
+  void analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no);
+  
+  bool isSimTrackGood(const SimTrack &t);
+  
+  int detIdToMBStation(int wh, int st);
+  std::vector<string> dtStations_;
+  std::set<int> stationsdt_to_use_;
+  
+  std::set<int> l1particles_muons_;
+  
+  TTree *tree_eff_dt_[56];
+  MyTrackEffDT etrk_dt_[56];
+  
+  TTree *tree_eff_l1_[6];
+  MyTrackEffL1 etrk_l1_[6];
+  float deltaR;
+  float deltaPhi;
+  int does_it_match;
+  
+  edm::ParameterSet cfg_;
+  int verbose_;
+  int verboseSimTrack_;
+  edm::InputTag simInputLabel_;
+  double simTrackMinPt_;
+  double simTrackMinEta_;
+  double simTrackMaxEta_;
+  double simTrackOnlyMuon_;
+  std::vector<std::pair<int,int> > dtStationsCo_;
+};
+
+HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
+  : cfg_(ps.getParameterSet("simTrackMatching"))
+  , verbose_(ps.getUntrackedParameter<int>("verbose", 0))
+{
+  auto simTrack = cfg_.getParameter<edm::ParameterSet>("simTrack");
+  verboseSimTrack_ = simTrack.getParameter<int>("verbose");
+  simInputLabel_ = edm::InputTag("g4SimHits");
+  simTrackMinPt_ = simTrack.getParameter<double>("minPt");
+  simTrackMinEta_ = simTrack.getParameter<double>("minEta");
+  simTrackMaxEta_ = simTrack.getParameter<double>("maxEta");
+  simTrackOnlyMuon_ = simTrack.getParameter<bool>("onlyMuon");
+
+  // auto input = cms.InputTag("g4SimHits","MuonDTHits");
+  std::vector<string> stationsDT; 
+  stationsDT.push_back("ALL");
+  stationsDT.push_back("MB01");
+  stationsDT.push_back("MB11");
+  stationsDT.push_back("MB21");
+  stationsDT.push_back("MB02");
+  stationsDT.push_back("MB12");
+  stationsDT.push_back("MB22");
+  stationsDT.push_back("MB03");
+  stationsDT.push_back("MB13");
+  stationsDT.push_back("MB23");
+  stationsDT.push_back("MB04");
+  stationsDT.push_back("MB14");
+  stationsDT.push_back("MB24");
+  stationsDT.push_back("MB11n");
+  stationsDT.push_back("MB21n");
+  stationsDT.push_back("MB12n");
+  stationsDT.push_back("MB22n");
+  stationsDT.push_back("MB13n");
+  stationsDT.push_back("MB23n");
+  stationsDT.push_back("MB14n");
+  stationsDT.push_back("MB24n");
+  
+
+  std::vector<string> L1Ppabc;
+  L1Ppabc.push_back("Muon1");
+  L1Ppabc.push_back("Muon2");
+  L1Ppabc.push_back("Muon3");
+  L1Ppabc.push_back("Muon4");
+  L1Ppabc.push_back("Muon5");
+  L1Ppabc.push_back("Muon6");
+  L1Ppabc.push_back("Muon7");
+  L1Ppabc.push_back("Muon8");
+  L1Ppabc.push_back("Muon9");
+  L1Ppabc.push_back("Muon10");
+  
+  std::vector<int> DtStationsToUse;
+  DtStationsToUse.push_back(0);
+  DtStationsToUse.push_back(1);
+  DtStationsToUse.push_back(2);
+  DtStationsToUse.push_back(3);
+  DtStationsToUse.push_back(4);
+  DtStationsToUse.push_back(5);
+  DtStationsToUse.push_back(6);
+  DtStationsToUse.push_back(7);
+  DtStationsToUse.push_back(8);
+  DtStationsToUse.push_back(9);
+  DtStationsToUse.push_back(10);
+  DtStationsToUse.push_back(11);
+  DtStationsToUse.push_back(12);
+  DtStationsToUse.push_back(13);
+  DtStationsToUse.push_back(14);
+  DtStationsToUse.push_back(15);
+  DtStationsToUse.push_back(16);
+  DtStationsToUse.push_back(17);
+  DtStationsToUse.push_back(18);
+  DtStationsToUse.push_back(19);
+  DtStationsToUse.push_back(20);
+
+  std::vector<int> L1Particles;
+  L1Particles.push_back(0);
+  L1Particles.push_back(1);
+  L1Particles.push_back(2);
+  L1Particles.push_back(4);
+  L1Particles.push_back(5);
+  L1Particles.push_back(6);
+  L1Particles.push_back(7);
+  L1Particles.push_back(8);
+  L1Particles.push_back(9);
+
+  copy(L1Particles.begin(), L1Particles.end(), inserter(l1particles_muons_, l1particles_muons_.end()));
+  for(auto m: l1particles_muons_)
+  {
+    stringstream ss;
+    ss<<" trk_eff_l1_"<< L1Ppabc[m];
+    tree_eff_l1_[m] = etrk_l1_[m].book(tree_eff_l1_[m], ss.str());    
+  }
+
+  copy(DtStationsToUse.begin(),DtStationsToUse.end(),inserter(stationsdt_to_use_,stationsdt_to_use_.end()));
+  for (auto m: stationsdt_to_use_)
+  {
+    stringstream ss;
+    ss<< "trk_eff_dt_" << stationsDT[m];
+    tree_eff_dt_[m] = etrk_dt_[m].book(tree_eff_dt_[m], ss.str());    
+  }
+
+  dtStationsCo_.push_back(std::make_pair(-99,-99));
+  dtStationsCo_.push_back(std::make_pair(0,1));
+  dtStationsCo_.push_back(std::make_pair(1,1));
+  dtStationsCo_.push_back(std::make_pair(2,1));
+  dtStationsCo_.push_back(std::make_pair(0,2));
+  dtStationsCo_.push_back(std::make_pair(1,2));
+  dtStationsCo_.push_back(std::make_pair(2,2));
+  dtStationsCo_.push_back(std::make_pair(0,3));
+  dtStationsCo_.push_back(std::make_pair(1,3));
+  dtStationsCo_.push_back(std::make_pair(2,3));
+  dtStationsCo_.push_back(std::make_pair(0,4));
+  dtStationsCo_.push_back(std::make_pair(1,4));
+  dtStationsCo_.push_back(std::make_pair(2,4));
+  dtStationsCo_.push_back(std::make_pair(-1,1));
+  dtStationsCo_.push_back(std::make_pair(-2,1));
+  dtStationsCo_.push_back(std::make_pair(-1,2));
+  dtStationsCo_.push_back(std::make_pair(-2,2));
+  dtStationsCo_.push_back(std::make_pair(-1,3));
+  dtStationsCo_.push_back(std::make_pair(-2,3));
+  dtStationsCo_.push_back(std::make_pair(-1,4));
+  dtStationsCo_.push_back(std::make_pair(-2,4));
+
+  for (auto m: stationsdt_to_use_)
+  {    
+    etrk_dt_[m].init();
+  }
+};
+
+int HLTBendingAngle::detIdToMBStation(int wh,  int st)
+{
+  auto p(std::make_pair(wh, st));
+  return std::find(dtStationsCo_.begin(), dtStationsCo_.end(),p) - dtStationsCo_.begin();
+};
+
+HLTBendingAngle::~HLTBendingAngle()
+{
+}
+
+void
+HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
+{
+   using namespace edm;
+
+   edm::Handle<edm::SimTrackContainer> sim_tracks;
+   ev.getByLabel(simInputLabel_, sim_tracks);
+   const edm::SimTrackContainer & sim_track = *sim_tracks.product();
+
+   edm::Handle<edm::SimVertexContainer> sim_vertices;
+   ev.getByLabel(simInputLabel_, sim_vertices);
+   const edm::SimVertexContainer & sim_vert = *sim_vertices.product();
+
+   if (verboseSimTrack_){
+     std::cout << "Total number of SimTracks in this event: " << sim_track.size() << std::endl;   
+     std::cout << "Total number of SimVertexs in this event: " << sim_vert.size() << std::endl;
+   }
+   
+   int trk_no=0;
+   for (auto& t: *sim_tracks.product()) {
+     if(!isSimTrackGood(t)) continue;
+     if (verboseSimTrack_) {
+       std::cout << "Processing SimTrack " << trk_no + 1 << std::endl;      
+       std::cout << "pt(GeV/c) = " << t.momentum().pt() << ", eta = " << t.momentum().eta()  
+                 << ", phi = " << t.momentum().phi() << ", Q = " << t.charge()
+                 << ", vtxIndex = " << t.vertIndex() << std::endl;
+     }
+    
+    SimTrackMatchManager match(t, sim_vert[t.vertIndex()], cfg_, ev, es);
+    analyzeTrackEfficiency(match, trk_no);
+    ++trk_no;
+  }
+}
+
+void 
+HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
+{
+  const SimHitMatcher& match_sh = match.simhits();
+  const TrackMatcher& match_track = match.tracks();
+  const SimTrack &t = match_sh.trk();
+  const SimVertex &vtx = match_sh.vtx();
+
+  for (auto asdt: stationsdt_to_use_)
+  {
+    etrk_dt_[asdt].run = match_sh.event().id().run();
+    etrk_dt_[asdt].lumi= match_sh.event().id().luminosityBlock();
+    etrk_dt_[asdt].event = match_sh.event().id().event();
+    etrk_dt_[asdt].charge_dt=t.charge();
+    
+    const float vtx_x = vtx.position().x();
+    const float vtx_y = vtx.position().y();
+    const float vtx_z = vtx.position().z();
+
+    etrk_dt_[asdt].dtvertex_x = vtx_x;
+    etrk_dt_[asdt].dtvertex_y = vtx_y;
+    etrk_dt_[asdt].dtvertex_z = vtx_z;
+    etrk_dt_[asdt].dtvertex_r = sqrt(vtx_x*vtx_x+vtx_y*vtx_y);
+    
+    etrk_dt_[asdt].pt_SimTrack_dt=t.momentum().pt(); //This one
+    etrk_dt_[asdt].eta_SimTrack_dt=t.momentum().eta();
+    etrk_dt_[asdt].phi_SimTrack_dt = t.momentum().phi();
+    
+    if (!(t.momentum().pt()==0)){
+      etrk_dt_[asdt].apt_SimTrack_dt =1/ t.momentum().pt();  //This one
+    }else{
+      etrk_dt_[asdt].apt_SimTrack_dt = 0;
+    }
+
+    auto pphi = t.momentum().phi();
+    etrk_dt_[asdt].dt_dxy = vtx_x*sin(pphi) - vtx_y*cos(pphi);
+
+    // add a section on wheter the simtrack was matched to the L1MuonParticle
+    // Define additional accessors in TrackMather.h if need be
+    // for inspiration, look at GEMCSCAnalyzer
+  } 
+  
+  auto dt_chambers(match_sh.chamberIdsDT());
+  std::cout<<"number of hit DT chambers: "<<dt_chambers.size()<<std::endl;
+  for(auto d: dt_chambers)
+  {
+    const DTChamberId id(d);
+    std::cout << "ch id " << id << std::endl;
+    const int stdt(detIdToMBStation(id.wheel(),id.station()));
+    if (stationsdt_to_use_.count(stdt) == 0) continue;
+
+    const int nsl(match_sh.nSuperLayersWithHitsInChamberDT(id.rawId()));
+    std::cout << "nSuperLayers hit in this chamber " << nsl << std::endl;
+    if (nsl == 0) continue;
+    etrk_dt_[stdt].has_dt_sh = 1;
+    etrk_dt_[stdt].nlayerdt  = nlayers;
+    
+    etrk_dt_[stdt].wheel = id.wheel();
+    etrk_dt_[stdt].station = id.station();
+  } 	
+
+  // fill the tree for every simtrack 
+ for (auto stdt: stationsdt_to_use_)
+ {
+   tree_eff_dt_[stdt]->Fill();
+ }
+}
+
+bool 
+HLTBendingAngle::isSimTrackGood(const SimTrack &t)
+{
+  // select only muon tracks
+  if (t.noVertex()) return false;
+  if (t.noGenpart()) return false;
+  if (std::abs(t.type()) != 13 and simTrackOnlyMuon_) return false;
+  if (t.momentum().pt() < simTrackMinPt_) return false;
+  const float eta(std::abs(t.momentum().eta()));
+  if (eta > simTrackMaxEta_ || eta < simTrackMinEta_) return false; 
+  return true;
+}
+
 void MyTrackEffL1::init()
 {
 
@@ -320,304 +615,6 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
   return t;
 }
 
-
-std::vector<std::pair<int,int> > dtStationsCo_;
-
-class HLTBendingAngle : public edm::EDAnalyzer 
-{
-public:
-  explicit HLTBendingAngle(const edm::ParameterSet&);
-  ~HLTBendingAngle();
-  
-  virtual void analyze(const edm::Event&, const edm::EventSetup&) ;
-  
-  static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-  
-private:
-  
-  void analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no);
-  
-  bool isSimTrackGood(const SimTrack &t);
-  
-  int detIdToMBStation(int wh, int st);
-  std::vector<string> dtStations_;
-  std::set<int> stationsdt_to_use_;
-  
-  std::set<int> l1particles_muons_;
-  
-  TTree *tree_eff_dt_[56];
-  MyTrackEffDT etrk_dt_[56];
-  
-  TTree *tree_eff_l1_[6];
-  MyTrackEffL1 etrk_l1_[6];
-  float deltaR;
-  float deltaPhi;
-  int does_it_match;
-  
-  edm::ParameterSet cfg_;
-  int verbose_;
-  int verboseSimTrack_;
-  edm::InputTag simInputLabel_;
-  double simTrackMinPt_;
-  double simTrackMinEta_;
-  double simTrackMaxEta_;
-  double simTrackOnlyMuon_;
-};
-
-HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
-  : cfg_(ps.getParameterSet("simTrackMatching"))
-  , verbose_(ps.getUntrackedParameter<int>("verbose", 0))
-{
-  auto simTrack = cfg_.getParameter<edm::ParameterSet>("simTrack");
-  verboseSimTrack_ = simTrack.getParameter<int>("verbose");
-  simInputLabel_ = edm::InputTag("g4SimHits");
-  simTrackMinPt_ = simTrack.getParameter<double>("minPt");
-  simTrackMinEta_ = simTrack.getParameter<double>("minEta");
-  simTrackMaxEta_ = simTrack.getParameter<double>("maxEta");
-  simTrackOnlyMuon_ = simTrack.getParameter<bool>("onlyMuon");
-
-  // auto input = cms.InputTag("g4SimHits","MuonDTHits");
-  std::vector<string> stationsDT; 
-  stationsDT.push_back("ALL");
-  stationsDT.push_back("MB01");
-  stationsDT.push_back("MB11");
-  stationsDT.push_back("MB21");
-  stationsDT.push_back("MB02");
-  stationsDT.push_back("MB12");
-  stationsDT.push_back("MB22");
-  stationsDT.push_back("MB03");
-  stationsDT.push_back("MB13");
-  stationsDT.push_back("MB23");
-  stationsDT.push_back("MB04");
-  stationsDT.push_back("MB14");
-  stationsDT.push_back("MB24");
-  stationsDT.push_back("MB11n");
-  stationsDT.push_back("MB21n");
-  stationsDT.push_back("MB12n");
-  stationsDT.push_back("MB22n");
-  stationsDT.push_back("MB13n");
-  stationsDT.push_back("MB23n");
-  stationsDT.push_back("MB14n");
-  stationsDT.push_back("MB24n");
-  
-
-  std::vector<string> L1Ppabc;
-  L1Ppabc.push_back("Muon1");
-  L1Ppabc.push_back("Muon2");
-  L1Ppabc.push_back("Muon3");
-  L1Ppabc.push_back("Muon4");
-  L1Ppabc.push_back("Muon5");
-  L1Ppabc.push_back("Muon6");
-  L1Ppabc.push_back("Muon7");
-  L1Ppabc.push_back("Muon8");
-  L1Ppabc.push_back("Muon9");
-  L1Ppabc.push_back("Muon10");
-  
-  std::vector<int> DtStationsToUse;
-  DtStationsToUse.push_back(0);
-  DtStationsToUse.push_back(1);
-  DtStationsToUse.push_back(2);
-  DtStationsToUse.push_back(3);
-  DtStationsToUse.push_back(4);
-  DtStationsToUse.push_back(5);
-  DtStationsToUse.push_back(6);
-  DtStationsToUse.push_back(7);
-  DtStationsToUse.push_back(8);
-  DtStationsToUse.push_back(9);
-  DtStationsToUse.push_back(10);
-  DtStationsToUse.push_back(11);
-  DtStationsToUse.push_back(12);
-  DtStationsToUse.push_back(13);
-  DtStationsToUse.push_back(14);
-  DtStationsToUse.push_back(15);
-  DtStationsToUse.push_back(16);
-  DtStationsToUse.push_back(17);
-  DtStationsToUse.push_back(18);
-  DtStationsToUse.push_back(19);
-  DtStationsToUse.push_back(20);
-
-  std::vector<int> L1Particles;
-  L1Particles.push_back(0);
-  L1Particles.push_back(1);
-  L1Particles.push_back(2);
-  L1Particles.push_back(4);
-  L1Particles.push_back(5);
-  L1Particles.push_back(6);
-  L1Particles.push_back(7);
-  L1Particles.push_back(8);
-  L1Particles.push_back(9);
-
-  copy(L1Particles.begin(), L1Particles.end(), inserter(l1particles_muons_, l1particles_muons_.end()));
-  for(auto m: l1particles_muons_)
-  {
-    stringstream ss;
-    ss<<" trk_eff_l1_"<< L1Ppabc[m];
-    tree_eff_l1_[m] = etrk_l1_[m].book(tree_eff_l1_[m], ss.str());    
-  }
-
-  copy(DtStationsToUse.begin(),DtStationsToUse.end(),inserter(stationsdt_to_use_,stationsdt_to_use_.end()));
-  for (auto m: stationsdt_to_use_)
-  {
-    stringstream ss;
-    ss<< "trk_eff_dt_" << stationsDT[m];
-    tree_eff_dt_[m] = etrk_dt_[m].book(tree_eff_dt_[m], ss.str());    
-  }
-
-  dtStationsCo_.push_back(std::make_pair(-99,-99));
-  dtStationsCo_.push_back(std::make_pair(0,1));
-  dtStationsCo_.push_back(std::make_pair(1,1));
-  dtStationsCo_.push_back(std::make_pair(2,1));
-  dtStationsCo_.push_back(std::make_pair(0,2));
-  dtStationsCo_.push_back(std::make_pair(1,2));
-  dtStationsCo_.push_back(std::make_pair(2,2));
-  dtStationsCo_.push_back(std::make_pair(0,3));
-  dtStationsCo_.push_back(std::make_pair(1,3));
-  dtStationsCo_.push_back(std::make_pair(2,3));
-  dtStationsCo_.push_back(std::make_pair(0,4));
-  dtStationsCo_.push_back(std::make_pair(1,4));
-  dtStationsCo_.push_back(std::make_pair(2,4));
-  dtStationsCo_.push_back(std::make_pair(-1,1));
-  dtStationsCo_.push_back(std::make_pair(-2,1));
-  dtStationsCo_.push_back(std::make_pair(-1,2));
-  dtStationsCo_.push_back(std::make_pair(-2,2));
-  dtStationsCo_.push_back(std::make_pair(-1,3));
-  dtStationsCo_.push_back(std::make_pair(-2,3));
-  dtStationsCo_.push_back(std::make_pair(-1,4));
-  dtStationsCo_.push_back(std::make_pair(-2,4));
-
-  for (auto m: stationsdt_to_use_)
-  {    
-    etrk_dt_[m].init();
-  }
-};
-
-int HLTBendingAngle::detIdToMBStation(int wh,  int st)
-{
-  auto p(std::make_pair(wh, st));
-  return std::find(dtStationsCo_.begin(), dtStationsCo_.end(),p) - dtStationsCo_.begin();
-};
-
-HLTBendingAngle::~HLTBendingAngle()
-{
-}
-
-void
-HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
-{
-   using namespace edm;
-
-   edm::Handle<edm::SimTrackContainer> sim_tracks;
-   ev.getByLabel(simInputLabel_, sim_tracks);
-   const edm::SimTrackContainer & sim_track = *sim_tracks.product();
-
-   edm::Handle<edm::SimVertexContainer> sim_vertices;
-   ev.getByLabel(simInputLabel_, sim_vertices);
-   const edm::SimVertexContainer & sim_vert = *sim_vertices.product();
-
-   if (verboseSimTrack_){
-     std::cout << "Total number of SimTracks in this event: " << sim_track.size() << std::endl;      
-   }
-
-  int trk_no=0;
-  for (auto& t: *sim_tracks.product())
-  {
-    if(!isSimTrackGood(t)) continue;
-    if (verboseSimTrack_){
-      std::cout << "Processing SimTrack " << trk_no + 1 << std::endl;      
-      std::cout << "pt(GeV/c) = " << t.momentum().pt() << ", eta = " << t.momentum().eta()  
-                << ", phi = " << t.momentum().phi() << ", Q = " << t.charge() << std::endl;
-    }
-
-    SimTrackMatchManager match(t, sim_vert[t.vertIndex()], cfg_, ev, es);
-    analyzeTrackEfficiency(match, trk_no);
-    ++trk_no;
-  } 
-}
-
-void 
-HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
-{
-  const SimHitMatcher& match_sh = match.simhits();
-  const TrackMatcher& match_track = match.tracks();
-  const SimTrack &t = match_sh.trk();
-  const SimVertex &vtx = match_sh.vtx();
-
-  for (auto asdt: stationsdt_to_use_)
-  {
-    etrk_dt_[asdt].run = match_sh.event().id().run();
-    etrk_dt_[asdt].lumi= match_sh.event().id().luminosityBlock();
-    etrk_dt_[asdt].event = match_sh.event().id().event();
-    etrk_dt_[asdt].charge_dt=t.charge();
-    
-    const float vtx_x = vtx.position().x();
-    const float vtx_y = vtx.position().y();
-    const float vtx_z = vtx.position().z();
-
-    etrk_dt_[asdt].dtvertex_x = vtx_x;
-    etrk_dt_[asdt].dtvertex_y = vtx_y;
-    etrk_dt_[asdt].dtvertex_z = vtx_z;
-    etrk_dt_[asdt].dtvertex_r = sqrt(vtx_x*vtx_x+vtx_y*vtx_y);
-    
-    etrk_dt_[asdt].pt_SimTrack_dt=t.momentum().pt(); //This one
-    etrk_dt_[asdt].eta_SimTrack_dt=t.momentum().eta();
-    etrk_dt_[asdt].phi_SimTrack_dt = t.momentum().phi();
-    
-    if (!(t.momentum().pt()==0)){
-      etrk_dt_[asdt].apt_SimTrack_dt =1/ t.momentum().pt();  //This one
-    }else{
-      etrk_dt_[asdt].apt_SimTrack_dt = 0;
-    }
-
-    auto pphi = t.momentum().phi();
-    etrk_dt_[asdt].dt_dxy = vtx_x*sin(pphi) - vtx_y*cos(pphi);
-
-    // add a section on wheter the simtrack was matched to the L1MuonParticle
-    // Define additional accessors in TrackMather.h if need be
-    // for inspiration, look at GEMCSCAnalyzer
-  } 
-  
-  auto dt_simhits(match_sh.chamberIdsDT());
-  std::cout<<" Size of dt sh: "<<dt_simhits.size()<<std::endl;
-  for(auto d: dt_simhits)
-  {
-    const DTWireId id(d);
-    const int stdt(detIdToMBStation(id.wheel(),id.station()));
-    if (stationsdt_to_use_.count(stdt) == 0) continue;
-    const int nlayersdtch(match_sh.nLayersWithHitsInLayerDT(id.rawId()));
-    
-    if (nlayersdtch == 0) continue;
-    etrk_dt_[stdt].has_dt_sh = 1;
-    etrk_dt_[stdt].nlayerdt  = nlayersdtch;
-
-    etrk_dt_[stdt].wheel = id.wheel();
-    etrk_dt_[stdt].station = id.station();
-  } 	
-
-  /*
-    TrajectoryStateOnSurface propagated123;
-    bool does_it_match2 = L1MuonMatcherAlgo(pSetabc).match(t, sim_vert, l1_particles, deltaR, deltaPhi, propagated123);
-    
-  */
-
-  // fill the tree for every simtrack 
- for (auto stdt: stationsdt_to_use_)
- {
-   tree_eff_dt_[stdt]->Fill();
- }
-}
-
-bool 
-HLTBendingAngle::isSimTrackGood(const SimTrack &t)
-{
-  // select only muon tracks
-  if (t.noVertex()) return false;
-  if (t.noGenpart()) return false;
-  if (std::abs(t.type()) != 13 and simTrackOnlyMuon_) return false;
-  if (t.momentum().pt() < simTrackMinPt_) return false;
-  const float eta(std::abs(t.momentum().eta()));
-  if (eta > simTrackMaxEta_ || eta < simTrackMinEta_) return false; 
-  return true;
-}
 
 void
 HLTBendingAngle::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {

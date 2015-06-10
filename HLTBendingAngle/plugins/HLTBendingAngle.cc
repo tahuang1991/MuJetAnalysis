@@ -404,14 +404,24 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     const int stdt(detIdToMBStation(id.wheel(),id.station()));
     if (stationsdt_to_use_.count(stdt) == 0) continue;
 
-    const int nsl(match_sh.nSuperLayersWithHitsInChamberDT(id.rawId()));
-    std::cout << "nSuperLayers hit in this chamber " << nsl << std::endl;
-    if (nsl == 0) continue;
-    etrk_dt_[stdt].has_dt_sh = 1;
-    etrk_dt_[stdt].nlayerdt  = nlayers;
-    
-    etrk_dt_[stdt].wheel = id.wheel();
-    etrk_dt_[stdt].station = id.station();
+    // which superlayers were hit?
+    auto superLayers(match_sh.superlayerIdsDT());    
+    std::cout << "nSuperLayers hit in this chamber " << superLayers.size() << std::endl;
+
+    int nltotal(0);
+    for (auto sl: superLayers) {
+      // cehck number of layers hit in this super chamber (require at least 3/4)
+      const int nl(match_sh.nLayersWithHitsInSuperLayerDT(sl));
+      if (nl < 3) continue;  
+      nltotal += nl;      
+      std::cout << "Superlayer " << DTSuperLayerId(sl) << " has " << nl<<" hit layers!" << std::endl;
+      etrk_dt_[stdt].has_dt_sh = 1;
+      etrk_dt_[stdt].wheel = id.wheel();
+      etrk_dt_[stdt].station = id.station();
+    }
+    std::cout << "Chamber " << id << " has "<< nltotal<< " hit layers!" << std::endl;
+    // use total number of layers!
+    etrk_dt_[stdt].nlayerdt  = nltotal;
   } 	
 
   // fill the tree for every simtrack 

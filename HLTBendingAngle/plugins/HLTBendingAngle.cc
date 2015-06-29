@@ -60,7 +60,6 @@ struct MyTrackEffL1
 struct MyTrackEffDT
 {
  void init();
-
  TTree*book(TTree *t, const std::string & name = "trk_eff_dt_");
  Int_t lumi;
  Int_t run;
@@ -126,8 +125,9 @@ struct MyTrackEffDT
  Float_t eta_SimTrack_dt;
  Float_t phi_SimTrack_dt;
  Char_t has_dt_sh;
- Int_t nlayerdt;
  Float_t R_gv;
+ Int_t nlayerdt;
+ Int_t nslayerdt;
  Float_t Z_gv;
  Float_t X_gv;
  Float_t Y_gv;
@@ -143,7 +143,6 @@ struct MyTrackEffDT
 
  Int_t has_l1_sh_matched;
  Int_t has_l1_st_matched;
-
  Int_t has_l2;
  Float_t L2_pp;
  Float_t L2_pt;
@@ -153,6 +152,9 @@ struct MyTrackEffDT
  Float_t L2_sh_dr;
  Float_t L2_st_dr;
 
+ Float_t Seg_dphi_sh;
+ Float_t Seg_deta_sh;
+
  Float_t Seg_dr_sh;
  Float_t Seg_dr_st;
  Float_t Seg_dr_l2;
@@ -161,6 +163,19 @@ struct MyTrackEffDT
  Int_t has_seg_l2_matched;
  Int_t has_DTSegments;
 
+ Int_t Seg_second_wheel;
+ Int_t Seg_second_station;
+ Float_t Seg_second_gp_eta;
+ Float_t Seg_second_gp_phi;
+ Float_t Seg_second_gp_z;
+ Float_t Seg_second_gp_y;
+ Float_t Seg_second_gp_x;
+ Float_t Seg_second_gv_eta;
+ Float_t Seg_second_gv_phi;
+ Float_t Seg_second_sh_dr;
+ Int_t Seg_second_st; //1-4 depending on the station;
+
+ Int_t has_eta_phi_dr;
  Int_t Seg_wheel;
  Int_t Seg_station;
  Float_t Seg_gp_eta;
@@ -177,6 +192,14 @@ struct MyTrackEffDT
  Float_t Seg_deltaphi_24_gv;
  Float_t Seg_deltaphi_34_gv;
  Int_t has_seg_14;
+ Int_t has_second_segment_matched;
+ Int_t has_seg_13;
+ Int_t has_seg_12;
+ Int_t has_seg_23;
+ Int_t has_seg_24;
+ Int_t has_seg_34;
+ Int_t has_second_dtSegment;
+ Float_t Seg_deltaphi_gv;
 
  Float_t L2t_wheel;
  Float_t L2t_station;
@@ -195,6 +218,7 @@ struct MyTrackEffDT
  Int_t has_l2_sh_matched;
  Int_t has_l2_st_matched;
 
+
 };
 
 
@@ -210,7 +234,7 @@ public:
   
 private:
   
-   void analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no, edm::Handle<std::vector<l1extra::L1MuonParticle> > l1p, edm::Handle<std::vector<reco::RecoChargedCandidate> > hlt_l2_pp, edm::Handle<std::vector<reco::TrackExtra> > l2_track, edm::Handle<edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> > > SegmentsDT);
+  void analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no, edm::Handle<std::vector<l1extra::L1MuonParticle> > l1p, edm::Handle<std::vector<reco::RecoChargedCandidate> > hlt_l2_pp, edm::Handle<std::vector<reco::TrackExtra> > l2_track, edm::Handle<edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> > > SegmentsDT);
 
   bool isSimTrackGood(const SimTrack &t);
   
@@ -435,7 +459,7 @@ void
 HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no, edm::Handle<std::vector<l1extra::L1MuonParticle> > l1p, edm::Handle<std::vector<reco::RecoChargedCandidate> > hlt_l2_pp, edm::Handle<std::vector<reco::TrackExtra> > l2_track, edm::Handle<edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> > > SegmentsDT)
 {
   const SimHitMatcher& match_sh = match.simhits();
-  const TrackMatcher& match_track = match.tracks();
+  //const TrackMatcher& match_track = match.tracks();
   const SimTrack &t = match_sh.trk();
   //const SimVertex &vtx = match_sh.vtx();
 
@@ -546,41 +570,30 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
   } 
   
   auto dt_chambers(match_sh.chamberIdsDT());
-  //std::cout<<"number of hit DT chambers: "<<dt_chambers.size()<<std::endl;
   for(auto ddt: dt_chambers)
   {
     const DTChamberId id(ddt);
-    //std::cout << "ch id " << id << std::endl;
     const int stdt(detIdToMBStation(id.wheel(),id.station()));
     if (stationsdt_to_use_.count(stdt) == 0) continue;
 
-/*
-    // which superlayers were hit?
-    auto superLayers(match_sh.superlayerIdsDT());    
-    //std::cout << "nSuperLayers hit in this chamber " << superLayers.size() << std::endl;
 
-    int nltotal(0);
-    for (auto sl: superLayers) {
-      // cehck number of layers hit in this super chamber (require at least 3/4)
-      const int nl(match_sh.nLayersWithHitsInSuperLayerDT(sl));
-      if (nl < 3) continue;  
-      nltotal += nl;      
-      std::cout << "Superlayer " << DTSuperLayerId(sl) << " has " << nl<<" hit layers!" << std::endl;
-      etrk_dt_[stdt].has_dt_sh = 1;
-      etrk_dt_[stdt].wheel = id.wheel();
-      etrk_dt_[stdt].station = id.station();
-    }
-    std::cout << "Chamber " << id << " has "<< nltotal<< " hit layers!" << std::endl;
-    // use total number of layers!
-    etrk_dt_[stdt].nlayerdt  = nltotal;
-
-*/
-
-   const int nsl(match_sh.nSuperLayersWithHitsInChamberDT(id.rawId()));
+    const int nsl(match_sh.nSuperLayersWithHitsInChamberDT(id.rawId()));
     if (nsl == 0) continue;
 
+    etrk_dt_[stdt].nslayerdt  = nsl;
+
+    int nltotal(0);
+    auto superLayers(match_sh.superlayerIdsDT());
+    for (auto sl: superLayers) {
+      const int nl(match_sh.nLayersWithHitsInSuperLayerDT(sl));
+      if (nl < 3) continue;
+      nltotal += nl;
+
+    }
+
+    etrk_dt_[stdt].nlayerdt  = nltotal;
     etrk_dt_[stdt].has_dt_sh = 1;
-    etrk_dt_[stdt].nlayerdt  = nsl;
+
 
     etrk_dt_[stdt].wheel = id.wheel();
     etrk_dt_[stdt].station = id.station();
@@ -741,7 +754,13 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
     etrk_dt_[stdt].has_l2t_sh_matched = nttm;
 
     float bestSegdR = 99.;
+    float bestSegdEta = 99.;
+    float bestSegdPhi = 99.;
+    float bestDTSegBendingAngle1 = 99.;
+    int DTSegment_fist_station = 0;
     int segDTm = 0;
+    int has_deta_dphi_dr = 0;
+    int nDTSegments = 0;
 
     for(edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> >::const_iterator seg = SegmentsDT->begin();  seg!=SegmentsDT->end(); ++seg)
     {
@@ -751,6 +770,7 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
         if(segdt.wheel()!=id.wheel()) continue;
         if(segdt.station()!=id.station()) continue;
 
+        nDTSegments = nDTSegments  + 1;
         etrk_dt_[21].has_DTSegments = 1;
         etrk_dt_[stdt].has_DTSegments = 1;
 
@@ -782,75 +802,62 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
         etrk_dt_[stdt].Seg_gv_phi = GVv.phi();
         etrk_dt_[stdt].Seg_gv_eta = GVv.eta();
 
-        float deltaeta = GPp.eta() - hitGp.eta();
+        float deltaeta = std::sqrt( ( GPp.eta() - hitGp.eta()) * ( GPp.eta() - hitGp.eta()));
         float deltaphi = deltaPhi(GPp.phi(), hitGp.phi());
-        float dr = std::sqrt ( deltaeta*deltaeta + deltaphi*deltaphi);
+        float dr;
+        int has_ddr = 0;
 
-        if(dr < bestSegdR) bestSegdR = dr;
-        if(dr < 0.2 ) segDTm = segDTm + 1;
-        for(edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> >::const_iterator seg2 = SegmentsDT->begin();  seg2!=SegmentsDT->end(); ++seg2)
-        {
-            auto segdt2 = seg2->chamberId();
-            if((segdt2.wheel()==segdt.wheel()) and (segdt2.station()==segdt.station())) continue; //No checking on the same chamber
+        if(seg->hasPhi()){
+            if(seg->hasZed()){
+                dr = std::sqrt ( deltaeta*deltaeta + deltaphi*deltaphi);
+                std::cout<<" First has both "<<std::endl;
+                has_ddr = 3;
+            }else{
+                dr = deltaphi;
+                std::cout<<" First only has phi "<<std::endl;
+                has_ddr = 2;
+            }
+        }else {
+            if(seg->hasZed()){
+                dr = deltaeta;
+                has_ddr = 1;
+                std::cout<<" First only has eta "<<std::endl;
+            }else{
+                dr = 99;
+                std::cout<<" First has none "<<std::endl;
+                has_ddr = 0;
+            }
+        }
 
-            auto gvv2 = seg2->localDirection();
-            GlobalVector GVv2 = match_sh.DTSegmentsGlobalVector(gvv2, DTChamberId(segdt2));
+        if (dr > 1.0) continue;
 
-            if(segdt.station()==1){
+        std::cout<<"DT Segment on  MB"<<segdt.wheel()<<segdt.station()<<" with deltaR to SimHits: "<<dr<<std::endl;
+        if(std::abs(dr) < std::abs(bestSegdR)){
+            bestDTSegBendingAngle1= GVv.phi();
+            bestSegdR = dr;
+            DTSegment_fist_station = segdt.station();
+            has_deta_dphi_dr = has_ddr;
+        }
 
-                if(segdt2.station()==2) {
-                     etrk_dt_[stdt].Seg_deltaphi_12_gv = GVv2.phi()-GVv.phi();
-                     etrk_dt_[21].Seg_deltaphi_12_gv = GVv2.phi()-GVv.phi();
-                }
+        if(std::abs(dr) < 0.01 ) segDTm = segDTm + 1;
 
-                if(segdt2.station()==3) {
-                      etrk_dt_[stdt].Seg_deltaphi_13_gv = GVv2.phi()-GVv.phi();
-                      etrk_dt_[21].Seg_deltaphi_13_gv = GVv2.phi()-GVv.phi();
-                }
-
-                if(segdt2.station()==4) {
-                        etrk_dt_[21].Seg_deltaphi_14_gv = GVv2.phi()-GVv.phi();
-                        etrk_dt_[stdt].Seg_deltaphi_14_gv = GVv2.phi()-GVv.phi();
-                        etrk_dt_[stdt].has_seg_14 = 1;
-                        etrk_dt_[21].has_seg_14 = 1;
-
-                }
-           }
-
-           if(segdt.station()==2){
-
-                 if(segdt2.station()==3) {
-                        etrk_dt_[21].Seg_deltaphi_23_gv = GVv2.phi()-GVv.phi();
-                        etrk_dt_[stdt].Seg_deltaphi_23_gv = GVv2.phi()-GVv.phi();
-
-                 }
+        if(deltaeta < bestSegdEta) bestSegdEta = deltaeta;
+        if(deltaphi < bestSegdPhi) bestSegdPhi = deltaphi;
 
 
-                if(segdt2.station()==4) {
-                         etrk_dt_[21].Seg_deltaphi_24_gv = GVv2.phi()-GVv.phi();
-                         etrk_dt_[stdt].Seg_deltaphi_24_gv = GVv2.phi()-GVv.phi();
-                }
-
-           }
-
-           if(segdt.station()==3){
-
-                if(segdt2.station()==4) {
-
-                        etrk_dt_[21].Seg_deltaphi_34_gv = GVv2.phi()-GVv.phi();
-                        etrk_dt_[stdt].Seg_deltaphi_34_gv = GVv2.phi()-GVv.phi();
-                }
-
-           }
-
-        } // End of second loop
     } // End of first loop
 
+    std::cout<<"Best Bending Angle of the chosen DTSegment: "<<bestDTSegBendingAngle1<<" on with deltar: "<<bestSegdR<<" on station: MBX"<<DTSegment_fist_station<<" with delta: "<<has_deta_dphi_dr<<std::endl;
+    etrk_dt_[21].Seg_dphi_sh = bestSegdPhi;
+    etrk_dt_[stdt].Seg_dphi_sh = bestSegdPhi;
+    etrk_dt_[21].Seg_deta_sh = bestSegdEta;
+    etrk_dt_[stdt].Seg_deta_sh = bestSegdEta;
     etrk_dt_[21].Seg_dr_sh = bestSegdR;
     etrk_dt_[stdt].Seg_dr_sh = bestSegdR;
     etrk_dt_[stdt].has_seg_sh_matched = segDTm;
     etrk_dt_[21].has_seg_sh_matched = segDTm;
-
+    etrk_dt_[21].has_eta_phi_dr = has_deta_dphi_dr;
+    etrk_dt_[stdt].has_eta_phi_dr = has_deta_dphi_dr;
 
 
 
@@ -872,6 +879,7 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
 
       GlobalVector ym2 = match_sh.simHitsMeanMomentum(match_sh.hitsInChamber(s_ddt));
       GlobalPoint hitGp2 = match_sh.simHitsMeanPosition(match_sh.hitsInChamber(s_ddt));
+
 
       if(s_iddt.station() == 2){
             etrk_dt_[stdt].has_second_dtst_hit = 1;
@@ -908,6 +916,143 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
             etrk_dt_[stdt].phi_gv_fourth = ym2.phi();
             etrk_dt_[stdt].eta_gv_fourth = ym2.eta();
         }
+
+
+       float bestDTSegment_second_BendingAngle = 99.;
+       float bestDeltaRSecondST = 99.;
+       int has_second_seg_matched = 0;
+       int stationsasdf=0;
+       for(edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> >::const_iterator seg2 = SegmentsDT->begin();  seg2!=SegmentsDT->end(); ++seg2)
+       {
+
+            auto segdt2 = seg2->chamberId();
+            if(!(segdt2.wheel()== s_iddt.wheel() and segdt2.station()==s_iddt.station())) continue; // Same location as the hit.
+
+            etrk_dt_[stdt].has_second_dtSegment = 1;
+            etrk_dt_[21].has_second_dtSegment = 1;
+            auto lp2 = seg2->localPosition();
+            GlobalPoint GPp2 = match_sh.DTSegmentsGlobalPosition(lp2, DTChamberId(segdt2));
+            auto gvv2 = seg2->localDirection();
+            GlobalVector GVv2 = match_sh.DTSegmentsGlobalVector(gvv2, DTChamberId(segdt2));
+
+            float deltaEta22 = std::abs(GPp2.eta() - hitGp2.eta());
+            float deltaPhi22 = deltaPhi( GPp2.phi(), hitGp2.phi());
+            float deltar2;
+
+            if(seg2->hasPhi()){
+                if(seg2->hasZed()) {
+                    deltar2 = std::sqrt(deltaEta22*deltaEta22 + deltaPhi22*deltaPhi22);
+                    std::cout<<"Has both deltas"<<std::endl;
+                }else{
+                    deltar2 = deltaPhi22;
+                    std::cout<<" Only has phi "<<std::endl;
+                }
+            }else{
+                if(seg2->hasZed()) {
+                    deltar2 = deltaEta22;
+                    std::cout<<" Only has eta "<<std::endl;
+                }else{
+                    deltar2 = 99;
+                    std::cout<<" Has none "<<std::endl;
+                }
+            }
+
+            if (deltar2 > 10) continue;
+
+            if(std::abs(deltar2)<0.01) has_second_seg_matched = has_second_seg_matched + 1;
+            if(std::abs(deltar2)< std::abs(bestDeltaRSecondST)) {
+                bestDeltaRSecondST = deltar2;
+                bestDTSegment_second_BendingAngle = GVv2.phi();
+                stationsasdf = segdt2.station();
+            }
+
+            std::cout<<"Second DT Segment on Chamber MB"<<segdt2.wheel()<<segdt2.station()<<" with deltaR: "<<deltar2<<" and DeltaEta: "<<deltaEta22<<" and deltaPhi: "<<deltaPhi22<<std::endl;
+
+            etrk_dt_[stdt].Seg_second_wheel = segdt2.wheel();
+            etrk_dt_[stdt].Seg_second_station = segdt2.station();
+            etrk_dt_[stdt].Seg_second_gp_eta = GPp2.eta();
+            etrk_dt_[stdt].Seg_second_gp_phi = GPp2.phi();
+            etrk_dt_[stdt].Seg_second_gp_z = GPp2.z();
+            etrk_dt_[stdt].Seg_second_gp_y = GPp2.y();
+            etrk_dt_[stdt].Seg_second_gp_x = GPp2.x();
+            etrk_dt_[stdt].Seg_second_gv_eta = GVv2.eta();
+            etrk_dt_[stdt].Seg_second_gv_phi = GVv2.phi();
+
+
+       }
+
+        if(has_second_seg_matched==0) continue;
+        if(bestDeltaRSecondST == 99) continue;
+
+       etrk_dt_[21].has_second_segment_matched = has_second_seg_matched;
+       etrk_dt_[stdt].has_second_segment_matched = has_second_seg_matched;
+       etrk_dt_[stdt].Seg_second_sh_dr = bestDeltaRSecondST;
+       etrk_dt_[21].Seg_second_sh_dr = bestDeltaRSecondST;
+
+        std::cout<<"Best Second DTSegment stored, in MBX"<<stationsasdf<<" with delta R: "<<bestDeltaRSecondST<<" and having "<<has_second_seg_matched<<" segment[s]  matched to that chamber"<<std::endl;
+
+        etrk_dt_[21].Seg_deltaphi_gv = deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
+        etrk_dt_[stdt].Seg_deltaphi_gv = deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
+
+       if (DTSegment_fist_station == 1){
+
+            if(stationsasdf==2){
+                 etrk_dt_[21].Seg_deltaphi_12_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
+                 etrk_dt_[stdt].Seg_deltaphi_12_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
+                 etrk_dt_[stdt].has_seg_12 =1;
+                 etrk_dt_[21].has_seg_12 =1;
+            }
+
+            if(stationsasdf==3){
+                 etrk_dt_[stdt].Seg_deltaphi_13_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
+                 etrk_dt_[21].Seg_deltaphi_13_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
+                 etrk_dt_[stdt].has_seg_13 =1;
+                 etrk_dt_[21].has_seg_13 =1;
+            }
+
+            if(stationsasdf==4){
+                 etrk_dt_[stdt].Seg_deltaphi_14_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
+                 etrk_dt_[21].Seg_deltaphi_14_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
+                 etrk_dt_[stdt].has_seg_14 =1;
+                 etrk_dt_[21].has_seg_14 =1;
+                 std::cout<<"Best Bending Angle MBX1 -  MBX4: "<<bestDTSegment_second_BendingAngle<<" with deltaR: "<<bestDeltaRSecondST<<std::endl;
+            }
+
+       }
+
+
+
+       if( DTSegment_fist_station == 2){
+
+            if(stationsasdf==3){
+                 etrk_dt_[21].Seg_deltaphi_23_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
+                 etrk_dt_[stdt].Seg_deltaphi_23_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
+                 etrk_dt_[stdt].has_seg_23 =1;
+                 etrk_dt_[21].has_seg_23 =1;
+            }
+
+            if(stationsasdf==4){
+                 etrk_dt_[21].Seg_deltaphi_24_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
+                 etrk_dt_[stdt].Seg_deltaphi_24_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
+                 etrk_dt_[stdt].has_seg_24 =1;
+                 etrk_dt_[21].has_seg_24 =1;
+                 std::cout<<"Best Bending Angle MBX2 -  MBX4: "<<bestDTSegment_second_BendingAngle<<" with deltaR: "<<bestDeltaRSecondST<<std::endl;
+            }
+
+       }
+
+       if(DTSegment_fist_station == 3) {
+
+            if(stationsasdf==4){
+                 etrk_dt_[stdt].Seg_deltaphi_34_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
+                 etrk_dt_[21].Seg_deltaphi_34_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
+                 etrk_dt_[stdt].has_seg_34 =1;
+                 etrk_dt_[21].has_seg_34 =1;
+                 std::cout<<"Best Bending Angle MBX3 -  MBX4: "<<bestDTSegment_second_BendingAngle<<" with deltaR: "<<bestDeltaRSecondST<<std::endl;
+            }
+       }
+
+
 
 
     } // End of Second DT SimHIt
@@ -965,6 +1110,9 @@ void MyTrackEffDT::init()
  apt_SimTrack_dt=-999;
  charge_dt = -99;
 
+ Seg_dphi_sh = 99;
+ Seg_deta_sh = 99;
+
  Seg_dr_sh = -9.;
  Seg_dr_st = -9.;
  Seg_dr_l2 = -9.;
@@ -973,6 +1121,18 @@ void MyTrackEffDT::init()
  has_seg_l2_matched = 0;
  has_DTSegments = 0;
 
+ Seg_second_wheel =  - 9;
+ Seg_second_station = - 9;
+ Seg_second_st = 0;
+ Seg_second_gp_eta = - 99.;
+ Seg_second_gp_phi = - 99.;
+ Seg_second_gp_z = - 9999.;
+ Seg_second_gp_y = - 9999.;
+ Seg_second_gp_x = - 9999.;
+ Seg_second_gv_eta = - 99.;
+ Seg_second_gv_phi = - 9.;
+ Seg_second_sh_dr = - 9.;
+ has_eta_phi_dr = 0;
  Seg_wheel = - 9;
  Seg_station = - 9;
  Seg_gp_eta = - 99.;
@@ -989,6 +1149,15 @@ void MyTrackEffDT::init()
  Seg_deltaphi_24_gv = - 99.;
  Seg_deltaphi_34_gv = - 99.;
  has_seg_14 = 0;
+ has_second_segment_matched = 0;
+ has_second_dtSegment  = 0;
+ Seg_deltaphi_gv = - 999.;
+
+ has_seg_13 = 0;
+ has_seg_12 = 0;
+ has_seg_23 = 0;
+ has_seg_24 = 0;
+ has_seg_34 = 0;
 
  L2t_eta = -99.;
  L2t_phi = - 99.;
@@ -1045,8 +1214,9 @@ void MyTrackEffDT::init()
  dtvertex_z=-9999;
  dtvertex_r=-9999;
  has_dt_sh= 0;
- nlayerdt = 0;
  R_gv=-9999.;
+ nlayerdt = 0;
+ nslayerdt = 0;
  Z_gv=-9999.;
  X_gv=-9999.;
  Y_gv=-9999.;
@@ -1059,9 +1229,9 @@ void MyTrackEffDT::init()
  L1_phi_ = -99.;
  L1_sh_dr = - 99.;
  L1_st_dr = - 99.;
+
  has_l1_sh_matched = 0;
  has_l1_st_matched = 0;
-
  has_l2 = 0;
  L2_pp = - 99.;
  L2_pt = - 99.;
@@ -1093,6 +1263,7 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
 {
   edm::Service< TFileService > fs;
   t = fs->make<TTree>(name.c_str(),name.c_str());
+
   t->Branch("L1_st_dr", &L1_st_dr);
   t->Branch("L1_sh_dr", &L1_sh_dr);
   t->Branch("L1_pt", &L1_pt);
@@ -1100,6 +1271,8 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
   t->Branch("L1_q", &L1_q);
   t->Branch("L1_phi_", &L1_phi_);
 
+  t->Branch("Seg_dphi_sh", &Seg_dphi_sh);
+  t->Branch("Seg_deta_sh", &Seg_deta_sh);
 
   t->Branch("Seg_dr_sh", &Seg_dr_sh);
   t->Branch("Seg_dr_st", &Seg_dr_st);
@@ -1109,6 +1282,18 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
   t->Branch("has_seg_l2_matched", &has_seg_l2_matched);
   t->Branch("has_DTSegments", &has_DTSegments);
 
+  t->Branch("Seg_second_wheel", &Seg_second_wheel);
+  t->Branch("Seg_second_station", &Seg_second_station);
+  t->Branch("Seg_second_st", &Seg_second_st);
+  t->Branch("Seg_second_gp_eta", &Seg_second_gp_eta);
+  t->Branch("Seg_second_gp_phi", &Seg_second_gp_phi);
+  t->Branch("Seg_second_gp_z", &Seg_second_gp_z);
+  t->Branch("Seg_second_gp_y", &Seg_second_gp_y);
+  t->Branch("Seg_second_gp_x", &Seg_second_gp_x);
+  t->Branch("Seg_second_gv_eta", &Seg_second_gv_eta);
+  t->Branch("Seg_second_gv_phi", &Seg_second_gv_phi);
+  t->Branch("Seg_second_sh_dr", &Seg_second_sh_dr);
+  t->Branch("has_eta_phi_dr", &has_eta_phi_dr);
   t->Branch("Seg_wheel", &Seg_wheel);
   t->Branch("Seg_station", & Seg_station);
   t->Branch("Seg_gp_eta", &Seg_gp_eta);
@@ -1119,12 +1304,20 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
   t->Branch("Seg_gv_phi", &Seg_gv_phi);
   t->Branch("Seg_gv_eta", &Seg_gv_eta);
   t->Branch("Seg_deltaphi_12_gv", &Seg_deltaphi_12_gv);
+  t->Branch("Seg_deltaphi_gv", &Seg_deltaphi_gv);
   t->Branch("Seg_deltaphi_13_gv", &Seg_deltaphi_13_gv);
   t->Branch("Seg_deltaphi_14_gv", &Seg_deltaphi_14_gv);
   t->Branch("Seg_deltaphi_23_gv", &Seg_deltaphi_23_gv);
   t->Branch("Seg_deltaphi_24_gv", &Seg_deltaphi_24_gv);
   t->Branch("Seg_deltaphi_34_gv", &Seg_deltaphi_34_gv);
+  t->Branch("has_second_segment_matched", &has_second_segment_matched);
+  t->Branch("has_second_dtSegment", &has_second_dtSegment);
   t->Branch("has_seg_14", &has_seg_14);
+  t->Branch("has_seg_13", &has_seg_13);
+  t->Branch("has_seg_12", &has_seg_12);
+  t->Branch("has_seg_23", &has_seg_23);
+  t->Branch("has_seg_24", &has_seg_24);
+  t->Branch("has_seg_34", &has_seg_34);
 
   t->Branch("has_l2", &has_l2);
   t->Branch("L2_pp", &L2_pp);
@@ -1148,14 +1341,13 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
   t->Branch("L2t_wheel", &L2t_wheel);
   t->Branch("L2t_station", &L2t_station);
 
+
   t->Branch("lumi", &lumi);
   t->Branch("run", &run);
   t->Branch("event", &event);
   t->Branch("eta_SimTrack_dt", &eta_SimTrack_dt);
   t->Branch("pt_SimTrack_dt", &pt_SimTrack_dt);
   t->Branch("eta_gv", &eta_gv);
-
-
   t->Branch("deltaphi_first_second_gv", &deltaphi_first_second_gv);
   t->Branch("deltaphi_first_second_gp", &deltaphi_first_second_gp);
   t->Branch("deltaphi_first_third_gv", &deltaphi_first_third_gv);
@@ -1193,6 +1385,7 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
   t->Branch("pt_calculated_dt_13", &pt_calculated_dt_13);
   t->Branch("pt_calculated_dt_14", &pt_calculated_dt_14);
 
+
   t->Branch("pt_gv", &pt_gv);
   t->Branch("phi_gv", &phi_gv);
   t->Branch("eta_gp", &eta_gp);
@@ -1211,6 +1404,7 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
   t->Branch("phi_SimTrack_dt", &phi_SimTrack_dt);
   t->Branch("has_dt_sh", &has_dt_sh);
   t->Branch("nlayerdt", &nlayerdt);
+  t->Branch("nslayerdt", &nslayerdt);
   t->Branch("R_gv", &R_gv);
   t->Branch("Z_gv", &Z_gv);
   t->Branch("X_gv", &X_gv);
@@ -1222,6 +1416,7 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
 
   t->Branch("has_l1_sh_matched", &has_l1_sh_matched);
   t->Branch("has_l2_sh_matched", &has_l2_sh_matched);
+
 
   return t;
 

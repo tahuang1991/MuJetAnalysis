@@ -57,6 +57,18 @@ struct MyTrackEffL1
  Float_t L1_charge;
 };
 
+struct MyTrackEffHLT
+{
+  void init();
+  TTree*book(TTree *t, const std::string & name = "l1_particles_");
+  
+  Int_t has_HLT_TrackExtra;
+  Float_t HLT_TrackExtra_pt;
+  Float_t HLT_TrackExtra_eta;
+  Float_t HLT_TrackExtra_phi;
+  Float_t HLT_TrackExtra_charge;
+};
+
 struct MyTrackEffDT
 {
  void init();
@@ -125,6 +137,7 @@ struct MyTrackEffDT
  Float_t pt_SimTrack_dt;
  Float_t eta_SimTrack_dt;
  Float_t phi_SimTrack_dt;
+  Float_t dxy_SimTrack_dt;
  Char_t has_dt_sh;
  Int_t nlayerdt;
  Float_t R_gv;
@@ -195,6 +208,11 @@ struct MyTrackEffDT
  Int_t has_l2_sh_matched;
  Int_t has_l2_st_matched;
 
+  Float_t st_dxy;
+  Int_t has_matched_TrackExtra;
+  Int_t has_matched_L2MuCandidatesNoVtx;
+  Int_t has_two_DTSegments;
+
 };
 
 
@@ -210,7 +228,7 @@ public:
   
 private:
   
-   void analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no, edm::Handle<std::vector<l1extra::L1MuonParticle> > l1p, edm::Handle<std::vector<reco::RecoChargedCandidate> > hlt_l2_pp, edm::Handle<std::vector<reco::TrackExtra> > l2_track, edm::Handle<edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> > > SegmentsDT);
+  void analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no, edm::Handle<std::vector<l1extra::L1MuonParticle> > l1p, edm::Handle<std::vector<reco::TrackExtra> > l2_track, edm::Handle<edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> > > SegmentsDT);
 
   bool isSimTrackGood(const SimTrack &t);
   
@@ -403,16 +421,17 @@ HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
    ev.getByLabel("hltL2Muons", l2_track);
 
 
-   edm::Handle<std::vector<reco::RecoChargedCandidate> > hlt_l2_pp;
-   ev.getByLabel("hltL2MuonCandidatesNoVtx", hlt_l2_pp);
+   // edm::Handle<std::vector<reco::RecoChargedCandidate> > hlt_l2_pp;
+   // ev.getByLabel("hltL2MuonCandidatesNoVtx", hlt_l2_pp);
 
 
-   edm::Handle<edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> > > SegmentsDT;
+   edm::Handle<DTRecSegment4DCollection> SegmentsDT;
    ev.getByLabel("hltDt4DSegments", SegmentsDT);
 
    int trk_no=0;
    for (auto& t: *sim_tracks.product()) {
      if(!isSimTrackGood(t)) continue;
+     if (trk_no>0) break; // temporary
      if (verboseSimTrack_) {
        std::cout << "Processing SimTrack " << trk_no + 1 << std::endl;      
        std::cout << "pt(GeV/c) = " << t.momentum().pt() << ", eta = " << t.momentum().eta()  
@@ -425,19 +444,21 @@ HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
      vtz_dt = sim_vert[t.vertIndex()].position().z();
 
      SimTrackMatchManager match(t, sim_vert[t.vertIndex()], cfg_, ev, es);
-     analyzeTrackEfficiency(match, trk_no, l1_particles, hlt_l2_pp, l2_track, SegmentsDT);
+     analyzeTrackEfficiency(match, trk_no, l1_particles, l2_track, SegmentsDT);
 
     ++trk_no;
   }
 }
 
 void 
-HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no, edm::Handle<std::vector<l1extra::L1MuonParticle> > l1p, edm::Handle<std::vector<reco::RecoChargedCandidate> > hlt_l2_pp, edm::Handle<std::vector<reco::TrackExtra> > l2_track, edm::Handle<edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> > > SegmentsDT)
+HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no, edm::Handle<std::vector<l1extra::L1MuonParticle> > l1p, edm::Handle<std::vector<reco::TrackExtra> > l2_track, edm::Handle<DTRecSegment4DCollection> SegmentsDT)
 {
   const SimHitMatcher& match_sh = match.simhits();
-  const TrackMatcher& match_track = match.tracks();
-  const SimTrack &t = match_sh.trk();
-  //const SimVertex &vtx = match_sh.vtx();
+  const DTRecHitMatcher& match_dt = match.dtRecHits();
+  const L1TrackMatcher& match_track = match.l1Tracks();
+  const HLTTrackMatcher& match_hlt_track = match.hltTracks();
+  const SimTrack& t = match_sh.trk();
+  const SimVertex& vtx = match_sh.vtx();
 
   for (auto asdt: stationsdt_to_use_)
   {
@@ -454,6 +475,7 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
     etrk_dt_[asdt].dtvertex_r = sqrt(vtx_dt*vtx_dt+vty_dt*vty_dt);
 
     etrk_dt_[asdt].pt_SimTrack_dt=t.momentum().pt(); //This one
+    etrk_dt_[asdt].dxy_SimTrack_dt=(- vtx.position().x() * t.momentum().py() + vtx.position().y() * t.momentum().px() ) / t.momentum().pt();
 
     etrk_dt_[asdt].eta_SimTrack_dt=t.momentum().eta();
     etrk_dt_[asdt].phi_SimTrack_dt = t.momentum().phi();
@@ -496,29 +518,29 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
     etrk_dt_[asdt].L1_st_dr = bestdRl1;
 
 
-    float bestdRl2=99.;
-    int nl2tr=0;
-    for(std::vector<reco::RecoChargedCandidate>::const_iterator muon = hlt_l2_pp->begin(); muon!=hlt_l2_pp->end(); ++muon)
-    {
-      float L2eta = muon->eta();
-      float L2phi = muon->phi();
+    // float bestdRl2=99.;
+    // int nl2tr=0;
+    // for(std::vector<reco::RecoChargedCandidate>::const_iterator muon = hlt_l2_pp->begin(); muon!=hlt_l2_pp->end(); ++muon)
+    // {
+    //   float L2eta = muon->eta();
+    //   float L2phi = muon->phi();
 
-      float dptr = deltaPhi(L2phi, t.momentum().phi());
-      float detatr = L2eta - t.momentum().eta();
-      float drtr = std::sqrt(dptr*dptr + detatr*detatr);
+    //   float dptr = deltaPhi(L2phi, t.momentum().phi());
+    //   float detatr = L2eta - t.momentum().eta();
+    //   float drtr = std::sqrt(dptr*dptr + detatr*detatr);
 
 
-      if (drtr < 0.2){
-          nl2tr = nl2tr + 1;
-      }
+    //   if (drtr < 0.2){
+    //       nl2tr = nl2tr + 1;
+    //   }
 
-      if(drtr < bestdRl2){
-          bestdRl2 = drtr;
-      }
-    }
+    //   if(drtr < bestdRl2){
+    //       bestdRl2 = drtr;
+    //   }
+    // }
 
-    etrk_dt_[asdt].has_l2_st_matched = nl2tr;
-    etrk_dt_[asdt].L2_st_dr = bestdRl2;
+    // etrk_dt_[asdt].has_l2_st_matched = nl2tr;
+    // etrk_dt_[asdt].L2_st_dr = bestdRl2;
 
     float bestdRltt = 99;
     int nmtt2= 0;
@@ -655,44 +677,44 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
 
     float bestdRl2 = 99.;
     int nl2sh = 0;
-    for(std::vector<reco::RecoChargedCandidate>::const_iterator muon = hlt_l2_pp->begin(); muon!=hlt_l2_pp->end(); ++muon)
-    {
+    // for(std::vector<reco::RecoChargedCandidate>::const_iterator muon = hlt_l2_pp->begin(); muon!=hlt_l2_pp->end(); ++muon)
+    // {
 
-           auto tracIdd = muon->track()->innerDetId();
-           if(tracIdd != ddt) continue;
+    //        auto tracIdd = muon->track()->innerDetId();
+    //        if(tracIdd != ddt) continue;
 
-           float ptx = muon->track()->innerMomentum().X();
-           float pty = muon->track()->innerMomentum().Y();
-           float pz = muon->track()->innerMomentum().Z();
+    //        float ptx = muon->track()->innerMomentum().X();
+    //        float pty = muon->track()->innerMomentum().Y();
+    //        float pz = muon->track()->innerMomentum().Z();
 
-           auto Xx = muon->track()->innerPosition().eta();
-           auto Xy = muon->track()->innerPosition().phi();
+    //        auto Xx = muon->track()->innerPosition().eta();
+    //        auto Xy = muon->track()->innerPosition().phi();
 
-           etrk_dt_[stdt].L2_eta = Xx;
-           etrk_dt_[stdt].L2_phi= Xy;
-           etrk_dt_[stdt].has_l2 = 1;
-           etrk_dt_[21].L2_eta = Xx;
-           etrk_dt_[21].L2_phi= Xy;
-           etrk_dt_[21].has_l2 = 1;
-           etrk_dt_[stdt].L2_pp = pz;
-           etrk_dt_[21].L2_pp = pz;
-           etrk_dt_[stdt].L2_pt = std::sqrt(ptx*ptx+pty*pty);
-           etrk_dt_[21].L2_pt = std::sqrt(ptx*ptx+pty*pty);
+    //        etrk_dt_[stdt].L2_eta = Xx;
+    //        etrk_dt_[stdt].L2_phi= Xy;
+    //        etrk_dt_[stdt].has_l2 = 1;
+    //        etrk_dt_[21].L2_eta = Xx;
+    //        etrk_dt_[21].L2_phi= Xy;
+    //        etrk_dt_[21].has_l2 = 1;
+    //        etrk_dt_[stdt].L2_pp = pz;
+    //        etrk_dt_[21].L2_pp = pz;
+    //        etrk_dt_[stdt].L2_pt = std::sqrt(ptx*ptx+pty*pty);
+    //        etrk_dt_[21].L2_pt = std::sqrt(ptx*ptx+pty*pty);
 
-           float dX = Xx - hitGp.eta();
-           float dY = deltaPhi(Xy, hitGp.phi());
+    //        float dX = Xx - hitGp.eta();
+    //        float dY = deltaPhi(Xy, hitGp.phi());
 
-           float dr = std::sqrt(dX*dX+dY*dY);
+    //        float dr = std::sqrt(dX*dX+dY*dY);
 
-           if (dr < 0.2){
-                  nl2sh = nl2sh + 1;
-           }
+    //        if (dr < 0.2){
+    //               nl2sh = nl2sh + 1;
+    //        }
 
-           if (dr < bestdRl2){
-                    bestdRl2 = dr;
-           }
+    //        if (dr < bestdRl2){
+    //                 bestdRl2 = dr;
+    //        }
 
-    }
+    // }
 
     etrk_dt_[stdt].L2_sh_dr = bestdRl2;
     etrk_dt_[21].L2_sh_dr = bestdRl2;
@@ -704,7 +726,7 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
     float bestl2tdR = 99;
     int nttm = 0;
 
-    for(std::vector<reco::TrackExtra>::const_iterator l2tt = l2_track->begin(); l2tt!=l2_track->end();++l2tt)
+    for(auto l2tt = l2_track->begin(); l2tt!=l2_track->end();++l2tt)
     {
          auto detIdd = l2tt->innerDetId();
          if(detIdd != ddt) continue;
@@ -740,10 +762,10 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
     etrk_dt_[21].has_l2t_sh_matched = nttm;
     etrk_dt_[stdt].has_l2t_sh_matched = nttm;
 
-    float bestSegdR = 99.;
-    int segDTm = 0;
+    // float bestSegdR = 99.;
+    // int segDTm = 0;
 
-    for(edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> >::const_iterator seg = SegmentsDT->begin();  seg!=SegmentsDT->end(); ++seg)
+    for(auto seg = SegmentsDT->begin();  seg!=SegmentsDT->end(); ++seg)
     {
 
         auto segdt = seg->chamberId();
@@ -754,102 +776,102 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
         etrk_dt_[21].has_DTSegments = 1;
         etrk_dt_[stdt].has_DTSegments = 1;
 
-        auto lp = seg->localPosition();
-        GlobalPoint GPp = match_sh.DTSegmentsGlobalPosition(lp, DTChamberId(segdt));
+    //     auto lp = seg->localPosition();
+    //     GlobalPoint GPp = match_sh.DTSegmentsGlobalPosition(lp, DTChamberId(segdt));
 
 
-        auto gvv = seg->localDirection();
-        GlobalVector GVv = match_sh.DTSegmentsGlobalVector(gvv, DTChamberId(segdt));
+    //     auto gvv = seg->localDirection();
+    //     GlobalVector GVv = match_sh.DTSegmentsGlobalVector(gvv, DTChamberId(segdt));
 
-        etrk_dt_[21].Seg_wheel = id.wheel();
-        etrk_dt_[21].Seg_station = id.station();
-        etrk_dt_[21].Seg_gp_eta = GPp.eta();
-        etrk_dt_[21].Seg_gp_phi = GPp.phi();
-        etrk_dt_[21].Seg_gp_x = GPp.x();
-        etrk_dt_[21].Seg_gp_y = GPp.y();
-        etrk_dt_[21].Seg_gp_z = GPp.z();
-        etrk_dt_[21].Seg_gv_phi = GVv.phi();
-        etrk_dt_[21].Seg_gv_eta = GVv.eta();
-
-
-        etrk_dt_[stdt].Seg_wheel = id.wheel();
-        etrk_dt_[stdt].Seg_station = id.station();
-        etrk_dt_[stdt].Seg_gp_eta = GPp.eta();
-        etrk_dt_[stdt].Seg_gp_phi = GPp.phi();
-        etrk_dt_[stdt].Seg_gp_x = GPp.x();
-        etrk_dt_[stdt].Seg_gp_y = GPp.y();
-        etrk_dt_[stdt].Seg_gp_z = GPp.z();
-        etrk_dt_[stdt].Seg_gv_phi = GVv.phi();
-        etrk_dt_[stdt].Seg_gv_eta = GVv.eta();
-
-        float deltaeta = GPp.eta() - hitGp.eta();
-        float deltaphi = deltaPhi(GPp.phi(), hitGp.phi());
-        float dr = std::sqrt ( deltaeta*deltaeta + deltaphi*deltaphi);
-
-        if(dr < bestSegdR) bestSegdR = dr;
-        if(dr < 0.2 ) segDTm = segDTm + 1;
-        for(edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> >::const_iterator seg2 = SegmentsDT->begin();  seg2!=SegmentsDT->end(); ++seg2)
-        {
-            auto segdt2 = seg2->chamberId();
-            if((segdt2.wheel()==segdt.wheel()) and (segdt2.station()==segdt.station())) continue; //No checking on the same chamber
-
-            auto gvv2 = seg2->localDirection();
-            GlobalVector GVv2 = match_sh.DTSegmentsGlobalVector(gvv2, DTChamberId(segdt2));
-
-            if(segdt.station()==1){
-
-                if(segdt2.station()==2) {
-                     etrk_dt_[stdt].Seg_deltaphi_12_gv = GVv2.phi()-GVv.phi();
-                     etrk_dt_[21].Seg_deltaphi_12_gv = GVv2.phi()-GVv.phi();
-                }
-
-                if(segdt2.station()==3) {
-                      etrk_dt_[stdt].Seg_deltaphi_13_gv = GVv2.phi()-GVv.phi();
-                      etrk_dt_[21].Seg_deltaphi_13_gv = GVv2.phi()-GVv.phi();
-                }
-
-                if(segdt2.station()==4) {
-                        etrk_dt_[21].Seg_deltaphi_14_gv = GVv2.phi()-GVv.phi();
-                        etrk_dt_[stdt].Seg_deltaphi_14_gv = GVv2.phi()-GVv.phi();
-                        etrk_dt_[stdt].has_seg_14 = 1;
-                        etrk_dt_[21].has_seg_14 = 1;
-
-                }
-           }
-
-           if(segdt.station()==2){
-
-                 if(segdt2.station()==3) {
-                        etrk_dt_[21].Seg_deltaphi_23_gv = GVv2.phi()-GVv.phi();
-                        etrk_dt_[stdt].Seg_deltaphi_23_gv = GVv2.phi()-GVv.phi();
-
-                 }
+    //     etrk_dt_[21].Seg_wheel = id.wheel();
+    //     etrk_dt_[21].Seg_station = id.station();
+    //     etrk_dt_[21].Seg_gp_eta = GPp.eta();
+    //     etrk_dt_[21].Seg_gp_phi = GPp.phi();
+    //     etrk_dt_[21].Seg_gp_x = GPp.x();
+    //     etrk_dt_[21].Seg_gp_y = GPp.y();
+    //     etrk_dt_[21].Seg_gp_z = GPp.z();
+    //     etrk_dt_[21].Seg_gv_phi = GVv.phi();
+    //     etrk_dt_[21].Seg_gv_eta = GVv.eta();
 
 
-                if(segdt2.station()==4) {
-                         etrk_dt_[21].Seg_deltaphi_24_gv = GVv2.phi()-GVv.phi();
-                         etrk_dt_[stdt].Seg_deltaphi_24_gv = GVv2.phi()-GVv.phi();
-                }
+    //     etrk_dt_[stdt].Seg_wheel = id.wheel();
+    //     etrk_dt_[stdt].Seg_station = id.station();
+    //     etrk_dt_[stdt].Seg_gp_eta = GPp.eta();
+    //     etrk_dt_[stdt].Seg_gp_phi = GPp.phi();
+    //     etrk_dt_[stdt].Seg_gp_x = GPp.x();
+    //     etrk_dt_[stdt].Seg_gp_y = GPp.y();
+    //     etrk_dt_[stdt].Seg_gp_z = GPp.z();
+    //     etrk_dt_[stdt].Seg_gv_phi = GVv.phi();
+    //     etrk_dt_[stdt].Seg_gv_eta = GVv.eta();
 
-           }
+    //     float deltaeta = GPp.eta() - hitGp.eta();
+    //     float deltaphi = deltaPhi(GPp.phi(), hitGp.phi());
+    //     float dr = std::sqrt ( deltaeta*deltaeta + deltaphi*deltaphi);
 
-           if(segdt.station()==3){
+    //     if(dr < bestSegdR) bestSegdR = dr;
+    //     if(dr < 0.2 ) segDTm = segDTm + 1;
+    //     for(edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> >::const_iterator seg2 = SegmentsDT->begin();  seg2!=SegmentsDT->end(); ++seg2)
+    //     {
+    //         auto segdt2 = seg2->chamberId();
+    //         if((segdt2.wheel()==segdt.wheel()) and (segdt2.station()==segdt.station())) continue; //No checking on the same chamber
 
-                if(segdt2.station()==4) {
+    //         auto gvv2 = seg2->localDirection();
+    //         GlobalVector GVv2 = match_sh.DTSegmentsGlobalVector(gvv2, DTChamberId(segdt2));
 
-                        etrk_dt_[21].Seg_deltaphi_34_gv = GVv2.phi()-GVv.phi();
-                        etrk_dt_[stdt].Seg_deltaphi_34_gv = GVv2.phi()-GVv.phi();
-                }
+    //         if(segdt.station()==1){
 
-           }
+    //             if(segdt2.station()==2) {
+    //                  etrk_dt_[stdt].Seg_deltaphi_12_gv = GVv2.phi()-GVv.phi();
+    //                  etrk_dt_[21].Seg_deltaphi_12_gv = GVv2.phi()-GVv.phi();
+    //             }
 
-        } // End of second loop
-    } // End of first loop
+    //             if(segdt2.station()==3) {
+    //                   etrk_dt_[stdt].Seg_deltaphi_13_gv = GVv2.phi()-GVv.phi();
+    //                   etrk_dt_[21].Seg_deltaphi_13_gv = GVv2.phi()-GVv.phi();
+    //             }
 
-    etrk_dt_[21].Seg_dr_sh = bestSegdR;
-    etrk_dt_[stdt].Seg_dr_sh = bestSegdR;
-    etrk_dt_[stdt].has_seg_sh_matched = segDTm;
-    etrk_dt_[21].has_seg_sh_matched = segDTm;
+    //             if(segdt2.station()==4) {
+    //                     etrk_dt_[21].Seg_deltaphi_14_gv = GVv2.phi()-GVv.phi();
+    //                     etrk_dt_[stdt].Seg_deltaphi_14_gv = GVv2.phi()-GVv.phi();
+    //                     etrk_dt_[stdt].has_seg_14 = 1;
+    //                     etrk_dt_[21].has_seg_14 = 1;
+
+    //             }
+    //        }
+
+    //        if(segdt.station()==2){
+
+    //              if(segdt2.station()==3) {
+    //                     etrk_dt_[21].Seg_deltaphi_23_gv = GVv2.phi()-GVv.phi();
+    //                     etrk_dt_[stdt].Seg_deltaphi_23_gv = GVv2.phi()-GVv.phi();
+
+    //              }
+
+
+    //             if(segdt2.station()==4) {
+    //                      etrk_dt_[21].Seg_deltaphi_24_gv = GVv2.phi()-GVv.phi();
+    //                      etrk_dt_[stdt].Seg_deltaphi_24_gv = GVv2.phi()-GVv.phi();
+    //             }
+
+    //        }
+
+    //        if(segdt.station()==3){
+
+    //             if(segdt2.station()==4) {
+
+    //                     etrk_dt_[21].Seg_deltaphi_34_gv = GVv2.phi()-GVv.phi();
+    //                     etrk_dt_[stdt].Seg_deltaphi_34_gv = GVv2.phi()-GVv.phi();
+    //             }
+
+    //        }
+
+    //     } // End of second loop
+     } // End of first loop
+
+    // etrk_dt_[21].Seg_dr_sh = bestSegdR;
+    // etrk_dt_[stdt].Seg_dr_sh = bestSegdR;
+    // etrk_dt_[stdt].has_seg_sh_matched = segDTm;
+    // etrk_dt_[21].has_seg_sh_matched = segDTm;
 
 
 
@@ -915,6 +937,12 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
 
   } // End of DT Sim HIT
 
+  // HLT Tracsk
+  auto dtRecHits(match_dt.nDTRecSegment4Ds());
+  if (dtRecHits>=2) etrk_dt_[0].has_two_DTSegments = 1;
+  
+  auto trackExtras(match_hlt_track.getMatchedTrackExtras());
+  if (trackExtras.size()>=1) etrk_dt_[0].has_matched_TrackExtra = 1;
 
   // fill the tree for every simtrack 
  for (auto stdt: stationsdt_to_use_)
@@ -943,8 +971,15 @@ void MyTrackEffL1::init()
  L1_eta = -9.;
  L1_phi = - 99.;
  L1_charge = - 9.;
+} 
 
+void MyTrackEffHLT::init()
+{
 
+ HLT_TrackExtra_pt = -99.;
+ HLT_TrackExtra_eta = -9.;
+ HLT_TrackExtra_phi = - 99.;
+ HLT_TrackExtra_charge = - 9.;
 } 
 
 void MyTrackEffDT::init()
@@ -956,6 +991,7 @@ void MyTrackEffDT::init()
  pt_SimTrack_dt = -9.;
  eta_SimTrack_dt=-9.;
  phi_SimTrack_dt=-9.;
+ dxy_SimTrack_dt = -99;
  eta_gp = -9.;
  eta_gv = -9.;
  phi_gv= -9.;
@@ -1074,6 +1110,9 @@ void MyTrackEffDT::init()
  has_l2_sh_matched = 0;
  has_l2_st_matched = 0;
 
+ has_matched_TrackExtra = 0;
+ has_matched_L2MuCandidatesNoVtx = 0;
+ has_two_DTSegments = 0;
 }
 
 TTree*MyTrackEffL1::book(TTree *t, const std::string & name)
@@ -1223,9 +1262,11 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
   t->Branch("has_l1_sh_matched", &has_l1_sh_matched);
   t->Branch("has_l2_sh_matched", &has_l2_sh_matched);
 
+  t->Branch("has_matched_TrackExtra", &has_matched_TrackExtra);
+  t->Branch("has_matched_L2MuCandidatesNoVtx", &has_matched_L2MuCandidatesNoVtx);
+  t->Branch("has_two_DTSegments", &has_two_DTSegments);
+
   return t;
-
-
 }
 
 

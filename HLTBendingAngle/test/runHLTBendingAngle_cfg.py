@@ -17,11 +17,11 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'MCRUN2_74_V9', '')
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1))
 
 process.source = cms.Source("PoolSource",
    fileNames = cms.untracked.vstring(
-      'file:/uscms_data/d3/jdimasva/Second_Analyzer_Summer2015/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/outputA.root'
+      'file:outputA_1_1_u9S.root'
    )
 )
 

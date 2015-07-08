@@ -6,14 +6,7 @@
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-#include "DataFormats/TrackReco/interface/Track.h"
-#include "DataFormats/TrackReco/interface/TrackFwd.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
-#include "TrackingTools/TrajectoryState/interface/TrajectoryStateOnSurface.h"
-#include "TrackingTools/Records/interface/TrackingComponentsRecord.h"
-#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
-#include "DataFormats/GeometrySurface/interface/Plane.h"
-#include "SimDataFormats/TrackingHit/interface/PSimHitContainer.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -21,193 +14,154 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/ESHandle.h"
-#include <SimDataFormats/Track/interface/SimTrackContainer.h>
-#include <SimDataFormats/Vertex/interface/SimVertexContainer.h>
-#include <FWCore/Framework/interface/EventSetupRecord.h>
-#include "MagneticField/Engine/interface/MagneticField.h"
-#include <DataFormats/DetId/interface/DetId.h>
-#include "DataFormats/MuonDetId/interface/DTWireId.h"
-#include "DataFormats/MuonDetId/interface/MuonSubdetId.h"
 #include "DataFormats/GeometryVector/interface/GlobalPoint.h"
-#include "FWCore/Framework/interface/EventSetupRecordImplementation.h"
-#include "FWCore/Framework/interface/eventsetuprecord_registration_macro.h"
-#include "DataFormats/L1Trigger/interface/L1MuonParticle.h"
-#include "MuonAnalysis/MuonAssociators/interface/L1MuonMatcherAlgo.h"
-#include "MuonAnalysis/MuonAssociators/interface/PropagateToMuon.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
 #include "GEMCode/GEMValidation/interface/SimTrackMatchManager.h"
-#include "DataFormats/MuonReco/interface/Muon.h"
-#include "DataFormats/RecoCandidate/interface/RecoCandidate.h"
-#include "DataFormats/RecoCandidate/interface/RecoChargedCandidate.h"
-#include "DataFormats/RecoCandidate/interface/RecoChargedCandidateFwd.h"
-#include <DataFormats/TrackReco/interface/TrackExtra.h>
 
 
 using namespace std;
 
-struct MyTrackEffL1
-{
- void init();
- TTree*book(TTree *t, const std::string & name = "l1_particles_");
-
- Float_t L1_pt;
- Float_t L1_eta;
- Float_t L1_phi;
- Float_t L1_charge;
-};
-
-struct MyTrackEffHLT
-{
-  void init();
-  TTree*book(TTree *t, const std::string & name = "l1_particles_");
-  
-  Int_t has_HLT_TrackExtra;
-  Float_t HLT_TrackExtra_pt;
-  Float_t HLT_TrackExtra_eta;
-  Float_t HLT_TrackExtra_phi;
-  Float_t HLT_TrackExtra_charge;
-};
-
 struct MyTrackEffDT
 {
- void init();
-
- TTree*book(TTree *t, const std::string & name = "trk_eff_dt_");
- Int_t lumi;
- Int_t run;
- Int_t event;
- Char_t charge_dt;
-
- Float_t deltaphi_dt_rpc_gv;
- Float_t deltaphi_dt_rpc_gp;
- Float_t deltaphi_first_second_gv;
- Float_t deltaphi_first_second_gp;
- Float_t deltaphi_first_third_gv;
- Float_t deltaphi_first_third_gp;
- Float_t deltaphi_first_fourth_gv;
- Float_t deltaphi_first_fourth_gp;
-
- Float_t wheel_second;
- Float_t eta_gv_second;
- Float_t phi_gv_second;
- Float_t eta_gp_second;
- Float_t phi_gp_second;
-
- Float_t wheel_third;
- Float_t eta_gv_third;
- Float_t phi_gv_third;
- Float_t phi_gp_third;
- Float_t eta_gp_third;
-
- Float_t wheel_fourth;
- Float_t eta_gv_fourth;
- Float_t phi_gv_fourth;
- Float_t eta_gp_fourth;
- Float_t phi_gp_fourth;
-
- Char_t has_second_dtst_hit;
- Char_t has_third_dtst_hit;
- Char_t has_fourth_dtst_hit;
-
- Float_t pt_calculated_dt;
- Float_t pt_calculated_dt_12;
- Float_t pt_calculated_dt_14;
- Float_t pt_calculated_dt_13;
-
- Double_t dtvertex_x;
- Double_t dtvertex_y;
- Double_t dtvertex_z;
- Double_t dtvertex_r;
- Float_t dt_dxy;
- Float_t eta_gp;
- Float_t x_gp;
- Float_t y_gp;
- Float_t z_gp;
- Float_t deltaphi_h_g;
- Float_t deltaphi_t_h;
- Float_t deltaphi_t_g;
- Float_t pt_gv;
- Float_t apt_SimTrack_dt;
- Float_t phi_gv;
- Float_t eta_gv;
- Float_t r_gp;
- Float_t phi_gp;
-
- Float_t pt_SimTrack_dt;
- Float_t eta_SimTrack_dt;
- Float_t phi_SimTrack_dt;
-  Float_t dxy_SimTrack_dt;
- Char_t has_dt_sh;
- Int_t nlayerdt;
- Float_t R_gv;
- Float_t Z_gv;
- Float_t X_gv;
- Float_t Y_gv;
-
- Float_t L1_pt;
- Float_t L1_eta;
- Float_t L1_q;
- Float_t L1_phi_;
- Float_t L1_sh_dr;
- Int_t wheel;
- Int_t station;
- Float_t L1_st_dr;
-
- Int_t has_l1_sh_matched;
- Int_t has_l1_st_matched;
-
- Int_t has_l2;
- Float_t L2_pp;
- Float_t L2_pt;
- Float_t L2_eta;
- Float_t L2_q;
- Float_t L2_phi;
- Float_t L2_sh_dr;
- Float_t L2_st_dr;
-
- Float_t Seg_dr_sh;
- Float_t Seg_dr_st;
- Float_t Seg_dr_l2;
- Int_t has_seg_sh_matched;
- Int_t has_seg_st_matched;
- Int_t has_seg_l2_matched;
- Int_t has_DTSegments;
-
- Int_t Seg_wheel;
- Int_t Seg_station;
- Float_t Seg_gp_eta;
- Float_t Seg_gp_phi;
- Float_t Seg_gp_x;
- Float_t Seg_gp_y;
- Float_t Seg_gp_z;
- Float_t Seg_gv_phi;
- Float_t Seg_gv_eta;
- Float_t Seg_deltaphi_12_gv;
- Float_t Seg_deltaphi_14_gv;
- Float_t Seg_deltaphi_13_gv;
- Float_t Seg_deltaphi_23_gv;
- Float_t Seg_deltaphi_24_gv;
- Float_t Seg_deltaphi_34_gv;
- Int_t has_seg_14;
-
- Float_t L2t_wheel;
- Float_t L2t_station;
- Float_t L2t_eta;
- Float_t L2t_phi;
- Float_t L2t_pp;
- Float_t L2t_pt;
- Float_t L2t_q;
- Int_t has_l2t;
- Float_t L2t_st_dr;
- Float_t L2t_sh_dr;
- Int_t has_l2t_sh_matched;
- Int_t has_l2t_st_matched;
-
-
- Int_t has_l2_sh_matched;
- Int_t has_l2_st_matched;
-
+  void init();
+  
+  TTree*book(TTree *t, const std::string & name = "trk_eff_dt_");
+  Int_t lumi;
+  Int_t run;
+  Int_t event;
+  Char_t charge_dt;
+  
+  Float_t deltaphi_dt_rpc_gv;
+  Float_t deltaphi_dt_rpc_gp;
+  Float_t deltaphi_first_second_gv;
+  Float_t deltaphi_first_second_gp;
+  Float_t deltaphi_first_third_gv;
+  Float_t deltaphi_first_third_gp;
+  Float_t deltaphi_first_fourth_gv;
+  Float_t deltaphi_first_fourth_gp;
+  
+  Float_t wheel_second;
+  Float_t eta_gv_second;
+  Float_t phi_gv_second;
+  Float_t eta_gp_second;
+  Float_t phi_gp_second;
+  
+  Float_t wheel_third;
+  Float_t eta_gv_third;
+  Float_t phi_gv_third;
+  Float_t phi_gp_third;
+  Float_t eta_gp_third;
+  
+  Float_t wheel_fourth;
+  Float_t eta_gv_fourth;
+  Float_t phi_gv_fourth;
+  Float_t eta_gp_fourth;
+  Float_t phi_gp_fourth;
+  
+  Char_t has_second_dtst_hit;
+  Char_t has_third_dtst_hit;
+  Char_t has_fourth_dtst_hit;
+  
+  Float_t pt_calculated_dt;
+  Float_t pt_calculated_dt_12;
+  Float_t pt_calculated_dt_14;
+  Float_t pt_calculated_dt_13;
+  
+  Double_t vtx_x;
+  Double_t vtx_y;
+  Double_t vtx_z;
+  Double_t vtx_r;
+  Float_t dt_dxy;
+  Float_t eta_gp;
+  Float_t x_gp;
+  Float_t y_gp;
+  Float_t z_gp;
+  Float_t deltaphi_h_g;
+  Float_t deltaphi_t_h;
+  Float_t deltaphi_t_g;
+  Float_t pt_gv;
+  Float_t apt_SimTrack_dt;
+  Float_t phi_gv;
+  Float_t eta_gv;
+  Float_t r_gp;
+  Float_t phi_gp;
+  
+  Float_t sim_pt;
+  Float_t sim_pt_inv;
+  Float_t sim_eta;
+  Float_t sim_phi;
+  Float_t sim_dxy;
+  Char_t has_dt_sh;
+  Int_t nlayerdt;
+  Int_t nslayerdt;
+  Float_t R_gv;
+  Float_t Z_gv;
+  Float_t X_gv;
+  Float_t Y_gv;
+  
+  Float_t L1_pt;
+  Float_t L1_eta;
+  Float_t L1_q;
+  Float_t L1_phi_;
+  Float_t L1_sh_dr;
+  Int_t wheel;
+  Int_t station;
+  Float_t L1_st_dr;
+  
+  Int_t has_l1_sh_matched;
+  Int_t has_l1_st_matched;
+  
+  Int_t has_l2;
+  Float_t L2_pp;
+  Float_t L2_pt;
+  Float_t L2_eta;
+  Float_t L2_q;
+  Float_t L2_phi;
+  Float_t L2_sh_dr;
+  Float_t L2_st_dr;
+  
+  Float_t Seg_dr_sh;
+  Float_t Seg_dr_st;
+  Float_t Seg_dr_l2;
+  Int_t has_seg_sh_matched;
+  Int_t has_seg_st_matched;
+  Int_t has_seg_l2_matched;
+  Int_t has_DTSegments;
+  
+  Int_t Seg_wheel;
+  Int_t Seg_station;
+  Float_t Seg_gp_eta;
+  Float_t Seg_gp_phi;
+  Float_t Seg_gp_x;
+  Float_t Seg_gp_y;
+  Float_t Seg_gp_z;
+  Float_t Seg_gv_phi;
+  Float_t Seg_gv_eta;
+  Float_t Seg_deltaphi_12_gv;
+  Float_t Seg_deltaphi_14_gv;
+  Float_t Seg_deltaphi_13_gv;
+  Float_t Seg_deltaphi_23_gv;
+  Float_t Seg_deltaphi_24_gv;
+  Float_t Seg_deltaphi_34_gv;
+  Int_t has_seg_14;
+  
+  Float_t L2t_wheel;
+  Float_t L2t_station;
+  Float_t L2t_eta;
+  Float_t L2t_phi;
+  Float_t L2t_pp;
+  Float_t L2t_pt;
+  Float_t L2t_q;
+  Int_t has_l2t;
+  Float_t L2t_st_dr;
+  Float_t L2t_sh_dr;
+  Int_t has_l2t_sh_matched;
+  Int_t has_l2t_st_matched;
+    
+  Int_t has_l2_sh_matched;
+  Int_t has_l2_st_matched;
+  
   Float_t st_dxy;
   Int_t has_matched_TrackExtra;
   Int_t has_matched_L2MuCandidatesNoVtx;
@@ -228,7 +182,7 @@ public:
   
 private:
   
-  void analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no, edm::Handle<std::vector<l1extra::L1MuonParticle> > l1p, edm::Handle<std::vector<reco::TrackExtra> > l2_track, edm::Handle<edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> > > SegmentsDT);
+  void analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no);
 
   bool isSimTrackGood(const SimTrack &t);
   
@@ -236,20 +190,12 @@ private:
   std::vector<string> dtStations_;
   std::set<int> stationsdt_to_use_;
   
-  std::set<int> l1particles_muons_;
-  
   TTree *tree_eff_dt_[56];
   MyTrackEffDT etrk_dt_[56];
   
-  TTree *tree_eff_l1_[6];
-  MyTrackEffL1 etrk_l1_[6];
   float deltaR;
   int does_it_match;
 
-  double vtx_dt;
-  double vty_dt;
-  double vtz_dt;
-  
   edm::ParameterSet cfg_;
   int verbose_;
   int verboseSimTrack_;
@@ -298,18 +244,6 @@ HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
   stationsDT.push_back("MB24n");
   stationsDT.push_back("STMB2");  
 
-  std::vector<string> L1Ppabc;
-  L1Ppabc.push_back("Muon1");
-  L1Ppabc.push_back("Muon2");
-  L1Ppabc.push_back("Muon3");
-  L1Ppabc.push_back("Muon4");
-  L1Ppabc.push_back("Muon5");
-  L1Ppabc.push_back("Muon6");
-  L1Ppabc.push_back("Muon7");
-  L1Ppabc.push_back("Muon8");
-  L1Ppabc.push_back("Muon9");
-  L1Ppabc.push_back("Muon10");
-  
   std::vector<int> DtStationsToUse;
   DtStationsToUse.push_back(0);
   DtStationsToUse.push_back(1);
@@ -334,25 +268,6 @@ HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
   DtStationsToUse.push_back(20);
   DtStationsToUse.push_back(21);
 
-  std::vector<int> L1Particles;
-  L1Particles.push_back(0);
-  L1Particles.push_back(1);
-  L1Particles.push_back(2);
-  L1Particles.push_back(4);
-  L1Particles.push_back(5);
-  L1Particles.push_back(6);
-  L1Particles.push_back(7);
-  L1Particles.push_back(8);
-  L1Particles.push_back(9);
-
-  copy(L1Particles.begin(), L1Particles.end(), inserter(l1particles_muons_, l1particles_muons_.end()));
-  for(auto m: l1particles_muons_)
-  {
-    stringstream ss;
-    ss<<" trk_eff_l1_"<< L1Ppabc[m];
-    tree_eff_l1_[m] = etrk_l1_[m].book(tree_eff_l1_[m], ss.str());    
-  }
-
   copy(DtStationsToUse.begin(),DtStationsToUse.end(),inserter(stationsdt_to_use_,stationsdt_to_use_.end()));
   for (auto m: stationsdt_to_use_)
   {
@@ -360,7 +275,7 @@ HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
     ss<< "trk_eff_dt_" << stationsDT[m];
     tree_eff_dt_[m] = etrk_dt_[m].book(tree_eff_dt_[m], ss.str());    
   }
-
+  
   dtStationsCo_.push_back(std::make_pair(-99,-99));
   dtStationsCo_.push_back(std::make_pair(0,1));
   dtStationsCo_.push_back(std::make_pair(1,1));
@@ -382,7 +297,6 @@ HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
   dtStationsCo_.push_back(std::make_pair(-2,3));
   dtStationsCo_.push_back(std::make_pair(-1,4));
   dtStationsCo_.push_back(std::make_pair(-2,4));
-
 };
 
 int HLTBendingAngle::detIdToMBStation(int wh,  int st)
@@ -398,216 +312,98 @@ HLTBendingAngle::~HLTBendingAngle()
 void
 HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
 {
-   using namespace edm;
-
-   edm::Handle<edm::SimTrackContainer> sim_tracks;
-   ev.getByLabel(simInputLabel_, sim_tracks);
-   const edm::SimTrackContainer & sim_track = *sim_tracks.product();
-
-   edm::Handle<edm::SimVertexContainer> sim_vertices;
-   ev.getByLabel(simInputLabel_, sim_vertices);
-   const edm::SimVertexContainer & sim_vert = *sim_vertices.product();
-
-   if (verboseSimTrack_){
-     std::cout << "Total number of SimTracks in this event: " << sim_track.size() << std::endl;   
-     std::cout << "Total number of SimVertexs in this event: " << sim_vert.size() << std::endl;
-   }
-   
-   edm::Handle<std::vector<l1extra::L1MuonParticle> > l1_particles;
-   ev.getByLabel("hltL1extraParticles", l1_particles);
-
-
-   edm::Handle<std::vector<reco::TrackExtra> > l2_track;
-   ev.getByLabel("hltL2Muons", l2_track);
-
-
-   // edm::Handle<std::vector<reco::RecoChargedCandidate> > hlt_l2_pp;
-   // ev.getByLabel("hltL2MuonCandidatesNoVtx", hlt_l2_pp);
-
-
-   edm::Handle<DTRecSegment4DCollection> SegmentsDT;
-   ev.getByLabel("hltDt4DSegments", SegmentsDT);
-
-   int trk_no=0;
-   for (auto& t: *sim_tracks.product()) {
-     if(!isSimTrackGood(t)) continue;
-     if (trk_no>0) break; // temporary
-     if (verboseSimTrack_) {
-       std::cout << "Processing SimTrack " << trk_no + 1 << std::endl;      
-       std::cout << "pt(GeV/c) = " << t.momentum().pt() << ", eta = " << t.momentum().eta()  
-                 << ", phi = " << t.momentum().phi() << ", Q = " << t.charge()
-                 << ", vtxIndex = " << t.vertIndex() << std::endl;
-     }
-
-     vtx_dt = sim_vert[t.vertIndex()].position().x();
-     vty_dt = sim_vert[t.vertIndex()].position().y();
-     vtz_dt = sim_vert[t.vertIndex()].position().z();
-
-     SimTrackMatchManager match(t, sim_vert[t.vertIndex()], cfg_, ev, es);
-     analyzeTrackEfficiency(match, trk_no, l1_particles, l2_track, SegmentsDT);
-
+  using namespace edm;
+  
+  edm::Handle<edm::SimTrackContainer> sim_tracks;
+  ev.getByLabel(simInputLabel_, sim_tracks);
+  const edm::SimTrackContainer & sim_track = *sim_tracks.product();
+  
+  edm::Handle<edm::SimVertexContainer> sim_vertices;
+  ev.getByLabel(simInputLabel_, sim_vertices);
+  const edm::SimVertexContainer & sim_vert = *sim_vertices.product();
+  
+  if (verboseSimTrack_) {
+    std::cout << "Total number of SimTracks in this event: " << sim_track.size() << std::endl;   
+    std::cout << "Total number of SimVertexs in this event: " << sim_vert.size() << std::endl;
+  }
+  
+  int trk_no=0;
+  for (auto& t: *sim_tracks.product()) {
+    if(!isSimTrackGood(t)) continue;
+    if (verboseSimTrack_) {
+      std::cout << "Processing SimTrack " << trk_no + 1 << std::endl;      
+      std::cout << "pt(GeV/c) = " << t.momentum().pt() << ", eta = " << t.momentum().eta()  
+		<< ", phi = " << t.momentum().phi() << ", Q = " << t.charge()
+		<< ", vtxIndex = " << t.vertIndex() << std::endl;
+    }
+    SimTrackMatchManager match(t, sim_vert[t.vertIndex()], cfg_, ev, es);
+    analyzeTrackEfficiency(match, trk_no);    
     ++trk_no;
   }
 }
 
 void 
-HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no, edm::Handle<std::vector<l1extra::L1MuonParticle> > l1p, edm::Handle<std::vector<reco::TrackExtra> > l2_track, edm::Handle<DTRecSegment4DCollection> SegmentsDT)
+HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
 {
   const SimHitMatcher& match_sh = match.simhits();
   const DTRecHitMatcher& match_dt = match.dtRecHits();
-  const L1TrackMatcher& match_track = match.l1Tracks();
   const HLTTrackMatcher& match_hlt_track = match.hltTracks();
   const SimTrack& t = match_sh.trk();
   const SimVertex& vtx = match_sh.vtx();
 
-  for (auto asdt: stationsdt_to_use_)
+  // information for each chamber
+  for (auto st: stationsdt_to_use_)
   {
+    etrk_dt_[st].init();
+    etrk_dt_[st].run = match_sh.event().id().run();
+    etrk_dt_[st].lumi = match_sh.event().id().luminosityBlock();
+    etrk_dt_[st].event = match_sh.event().id().event();
+    etrk_dt_[st].charge_dt = t.charge();
 
-    etrk_dt_[asdt].init();
-    etrk_dt_[asdt].run = match.simhits().event().id().run();
-    etrk_dt_[asdt].lumi= match.simhits().event().id().luminosityBlock();
-    etrk_dt_[asdt].event = match.simhits().event().id().event();
-    etrk_dt_[asdt].charge_dt=t.charge();
-
-    etrk_dt_[asdt].dtvertex_x = vtx_dt;
-    etrk_dt_[asdt].dtvertex_y = vty_dt;
-    etrk_dt_[asdt].dtvertex_z = vtz_dt;
-    etrk_dt_[asdt].dtvertex_r = sqrt(vtx_dt*vtx_dt+vty_dt*vty_dt);
-
-    etrk_dt_[asdt].pt_SimTrack_dt=t.momentum().pt(); //This one
-    etrk_dt_[asdt].dxy_SimTrack_dt=(- vtx.position().x() * t.momentum().py() + vtx.position().y() * t.momentum().px() ) / t.momentum().pt();
-
-    etrk_dt_[asdt].eta_SimTrack_dt=t.momentum().eta();
-    etrk_dt_[asdt].phi_SimTrack_dt = t.momentum().phi();
-
-     if (!(t.momentum().pt()==0)){
-         etrk_dt_[asdt].apt_SimTrack_dt =1/ t.momentum().pt();  //This one
-     }else{
-         etrk_dt_[asdt].apt_SimTrack_dt = 0;
-     }
-
-    auto pphi = t.momentum().phi();
-    etrk_dt_[asdt].dt_dxy = vtx_dt*sin(pphi) - vty_dt*cos(pphi);
-
-    float bestdRl1 = 99.;
-    int nl1tr = 0;
-    for(std::vector<l1extra::L1MuonParticle>::const_iterator muon=l1p->begin(); muon!=l1p->end(); ++muon)
-    {
-      etrk_dt_[asdt].L1_pt = muon->pt();
-      etrk_dt_[asdt].L1_eta = muon->eta();
-      etrk_dt_[asdt].L1_phi_ = muon->phi();
-      etrk_dt_[asdt].L1_q = muon->charge();
-      float L1eta = muon->eta();
-      float L1phi = muon->phi();
-
-      float dptr = deltaPhi(L1phi, t.momentum().phi());
-      float detatr = L1eta - t.momentum().eta();
-      float drtr = std::sqrt(dptr*dptr + detatr*detatr);
-
-      if (drtr < 0.5){
-         nl1tr = nl1tr + 1;
-      }
-
-      if(drtr< bestdRl1){
-         bestdRl1 = drtr;
-      }
-
-    }
-
-    etrk_dt_[asdt].has_l1_st_matched = nl1tr;
-    etrk_dt_[asdt].L1_st_dr = bestdRl1;
-
-
-    // float bestdRl2=99.;
-    // int nl2tr=0;
-    // for(std::vector<reco::RecoChargedCandidate>::const_iterator muon = hlt_l2_pp->begin(); muon!=hlt_l2_pp->end(); ++muon)
-    // {
-    //   float L2eta = muon->eta();
-    //   float L2phi = muon->phi();
-
-    //   float dptr = deltaPhi(L2phi, t.momentum().phi());
-    //   float detatr = L2eta - t.momentum().eta();
-    //   float drtr = std::sqrt(dptr*dptr + detatr*detatr);
-
-
-    //   if (drtr < 0.2){
-    //       nl2tr = nl2tr + 1;
-    //   }
-
-    //   if(drtr < bestdRl2){
-    //       bestdRl2 = drtr;
-    //   }
-    // }
-
-    // etrk_dt_[asdt].has_l2_st_matched = nl2tr;
-    // etrk_dt_[asdt].L2_st_dr = bestdRl2;
-
-    float bestdRltt = 99;
-    int nmtt2= 0;
-
-    for(std::vector<reco::TrackExtra>::const_iterator l2tt = l2_track->begin(); l2tt!=l2_track->end();++l2tt)
-    {
-
-     auto Xx = l2tt->innerPosition().eta();
-     auto Xy = l2tt->innerPosition().phi();
-
-     float det = Xx = t.momentum().eta();
-     float dph = deltaPhi(Xy, t.momentum().phi());
-
-     float dr = std::sqrt(det*det + dph*dph);
-
-
-     if (dr< bestdRltt) bestdRltt = dr;
-     if (dr< 0.7 ) nmtt2 = nmtt2 + 1;
-    }
-
-    etrk_dt_[asdt].L2t_st_dr = bestdRltt;
-    etrk_dt_[asdt].has_l2t_st_matched = nmtt2;
-
-
-  } 
+    const double vtx_x = match_sh.vtx().position().x();
+    const double vtx_y = match_sh.vtx().position().y();
+    const double vtx_z = match_sh.vtx().position().z();
   
-  auto dt_chambers(match_sh.chamberIdsDT());
-  //std::cout<<"number of hit DT chambers: "<<dt_chambers.size()<<std::endl;
-  for(auto ddt: dt_chambers)
+    etrk_dt_[st].vtx_x = vtx_x;
+    etrk_dt_[st].vtx_y = vtx_y;
+    etrk_dt_[st].vtx_z = vtx_z;
+    etrk_dt_[st].vtx_r = sqrt(vtx_x*vtx_x + vtx_y*vtx_y);
+
+    etrk_dt_[st].sim_pt = t.momentum().pt(); 
+    etrk_dt_[st].sim_pt_inv = 1./t.momentum().pt(); 
+    etrk_dt_[st].sim_dxy = (- vtx.position().x() * t.momentum().py() + vtx.position().y() * t.momentum().px() ) / t.momentum().pt();
+    etrk_dt_[st].sim_eta = t.momentum().eta();
+    etrk_dt_[st].sim_phi = t.momentum().phi();
+  }
+
+  // simhit information
+  for(auto ddt: match_sh.chamberIdsDT())
   {
     const DTChamberId id(ddt);
-    //std::cout << "ch id " << id << std::endl;
     const int stdt(detIdToMBStation(id.wheel(),id.station()));
     if (stationsdt_to_use_.count(stdt) == 0) continue;
+    const int nsl(match_sh.nSuperLayersWithHitsInChamberDT(id.rawId()));
 
-/*
-    // which superlayers were hit?
-    auto superLayers(match_sh.superlayerIdsDT());    
-    //std::cout << "nSuperLayers hit in this chamber " << superLayers.size() << std::endl;
+    // require at least 1 superlayer
+    if (nsl == 0) continue; 
 
+    // count the total number of layers in each superlayer
     int nltotal(0);
-    for (auto sl: superLayers) {
-      // cehck number of layers hit in this super chamber (require at least 3/4)
-      const int nl(match_sh.nLayersWithHitsInSuperLayerDT(sl));
-      if (nl < 3) continue;  
-      nltotal += nl;      
-      std::cout << "Superlayer " << DTSuperLayerId(sl) << " has " << nl<<" hit layers!" << std::endl;
-      etrk_dt_[stdt].has_dt_sh = 1;
-      etrk_dt_[stdt].wheel = id.wheel();
-      etrk_dt_[stdt].station = id.station();
+    for (auto sl: match_sh.superlayerIdsDT()) {
+      nltotal += match_sh.nLayersWithHitsInSuperLayerDT(sl);
     }
-    std::cout << "Chamber " << id << " has "<< nltotal<< " hit layers!" << std::endl;
-    // use total number of layers!
+
+    // require at least 3 layers hit per chamber
+    if (nltotal<4) continue;
+
+    etrk_dt_[stdt].nslayerdt  = nsl;
     etrk_dt_[stdt].nlayerdt  = nltotal;
-
-*/
-
-   const int nsl(match_sh.nSuperLayersWithHitsInChamberDT(id.rawId()));
-    if (nsl == 0) continue;
-
     etrk_dt_[stdt].has_dt_sh = 1;
-    etrk_dt_[stdt].nlayerdt  = nsl;
 
     etrk_dt_[stdt].wheel = id.wheel();
     etrk_dt_[stdt].station = id.station();
 
-    GlobalPoint hitGp = match_sh.simHitsMeanPosition(match_sh.hitsInChamber(ddt));
+    const GlobalPoint hitGp(match_sh.simHitsMeanPosition(match_sh.hitsInChamber(ddt)));
     etrk_dt_[stdt].eta_gp = hitGp.eta();
     etrk_dt_[stdt].x_gp = hitGp.x();
     etrk_dt_[stdt].y_gp = hitGp.y();
@@ -615,7 +411,7 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
     etrk_dt_[stdt].r_gp = hitGp.perp();
     etrk_dt_[stdt].phi_gp = hitGp.phi();
 
-    GlobalVector ym = match_sh.simHitsMeanMomentum(match_sh.hitsInChamber(ddt));
+    const GlobalVector ym(match_sh.simHitsMeanMomentum(match_sh.hitsInChamber(ddt)));
     etrk_dt_[stdt].eta_gv = ym.eta();
     etrk_dt_[stdt].pt_gv = ym.perp();
     etrk_dt_[stdt].phi_gv = ym.phi();
@@ -623,326 +419,28 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
     etrk_dt_[stdt].Z_gv = ym.z();
     etrk_dt_[stdt].X_gv = ym.x();
     etrk_dt_[stdt].Y_gv = ym.y();
-    etrk_dt_[stdt].deltaphi_h_g = hitGp.phi() - ym.phi();     //This one
-    etrk_dt_[stdt].pt_calculated_dt = (1/(hitGp.phi() - ym.phi()))*1.4025845 + 0.674463;
-
-    if(id.station()==2){
-        int nl1=0;
-        float bestdR = 99.;
-        etrk_dt_[21].has_dt_sh = 1;
-        etrk_dt_[21].nlayerdt  = nsl;
-        etrk_dt_[21].wheel = id.wheel();
-        etrk_dt_[21].station = id.station();
-        etrk_dt_[21].eta_gp = hitGp.eta();
-        etrk_dt_[21].x_gp = hitGp.x();
-        etrk_dt_[21].y_gp = hitGp.y();
-        etrk_dt_[21].z_gp = hitGp.z();
-        etrk_dt_[21].r_gp = hitGp.perp();
-        etrk_dt_[21].phi_gp = hitGp.phi();
-        etrk_dt_[21].eta_gv = ym.eta();
-        etrk_dt_[21].pt_gv = ym.perp();
-        etrk_dt_[21].phi_gv = ym.phi();
-        etrk_dt_[21].R_gv = sqrt (ym.x()*ym.x()+ym.y()*ym.y());
-        etrk_dt_[21].Z_gv = ym.z();
-        etrk_dt_[21].X_gv = ym.x();
-        etrk_dt_[21].Y_gv = ym.y();
-        etrk_dt_[21].deltaphi_h_g = hitGp.phi() - ym.phi();     //This one
-        etrk_dt_[21].pt_calculated_dt = (1/(hitGp.phi() - ym.phi()))*1.4025845 + 0.674463;
-
-        for(std::vector<l1extra::L1MuonParticle>::const_iterator muon=l1p->begin(); muon!=l1p->end(); ++muon)
-        {
-           etrk_dt_[21].L1_pt = muon->pt();
-           etrk_dt_[21].L1_eta = muon->eta();
-           etrk_dt_[21].L1_phi_ = muon->phi();
-           etrk_dt_[21].L1_q = muon->charge();
-           float L1eta = muon->eta();
-           float L1phi = muon->phi();
-           float dp = deltaPhi(L1phi, hitGp.phi());
-           float dr = std::sqrt(dp*dp + (L1eta - hitGp.eta())*(L1eta - hitGp.eta()));
-           if (dr < 0.2 ){
-                  nl1 = nl1 + 1;
-           }
-
-           if (dr < bestdR){
-                bestdR = dr;
-           }
-
-        }
-
-        etrk_dt_[21].has_l1_sh_matched = nl1;
-        etrk_dt_[21].L1_sh_dr = bestdR;
-
-
-    }
-
-    float bestdRl2 = 99.;
-    int nl2sh = 0;
-    // for(std::vector<reco::RecoChargedCandidate>::const_iterator muon = hlt_l2_pp->begin(); muon!=hlt_l2_pp->end(); ++muon)
-    // {
-
-    //        auto tracIdd = muon->track()->innerDetId();
-    //        if(tracIdd != ddt) continue;
-
-    //        float ptx = muon->track()->innerMomentum().X();
-    //        float pty = muon->track()->innerMomentum().Y();
-    //        float pz = muon->track()->innerMomentum().Z();
-
-    //        auto Xx = muon->track()->innerPosition().eta();
-    //        auto Xy = muon->track()->innerPosition().phi();
-
-    //        etrk_dt_[stdt].L2_eta = Xx;
-    //        etrk_dt_[stdt].L2_phi= Xy;
-    //        etrk_dt_[stdt].has_l2 = 1;
-    //        etrk_dt_[21].L2_eta = Xx;
-    //        etrk_dt_[21].L2_phi= Xy;
-    //        etrk_dt_[21].has_l2 = 1;
-    //        etrk_dt_[stdt].L2_pp = pz;
-    //        etrk_dt_[21].L2_pp = pz;
-    //        etrk_dt_[stdt].L2_pt = std::sqrt(ptx*ptx+pty*pty);
-    //        etrk_dt_[21].L2_pt = std::sqrt(ptx*ptx+pty*pty);
-
-    //        float dX = Xx - hitGp.eta();
-    //        float dY = deltaPhi(Xy, hitGp.phi());
-
-    //        float dr = std::sqrt(dX*dX+dY*dY);
-
-    //        if (dr < 0.2){
-    //               nl2sh = nl2sh + 1;
-    //        }
-
-    //        if (dr < bestdRl2){
-    //                 bestdRl2 = dr;
-    //        }
-
-    // }
-
-    etrk_dt_[stdt].L2_sh_dr = bestdRl2;
-    etrk_dt_[21].L2_sh_dr = bestdRl2;
-    etrk_dt_[stdt].has_l2_sh_matched = nl2sh;
-    etrk_dt_[21].has_l2_sh_matched = nl2sh;
-
-
-
-    float bestl2tdR = 99;
-    int nttm = 0;
-
-    for(auto l2tt = l2_track->begin(); l2tt!=l2_track->end();++l2tt)
-    {
-         auto detIdd = l2tt->innerDetId();
-         if(detIdd != ddt) continue;
-         auto Xx = l2tt->innerPosition().eta();
-         auto Xy = l2tt->innerPosition().phi();
-         float ptx = l2tt->innerMomentum().X();
-         float pty = l2tt->innerMomentum().Y();
-         float pz = l2tt->innerMomentum().Z();
-
-         etrk_dt_[stdt].L2t_eta = Xx;
-         etrk_dt_[stdt].L2t_phi = Xy;
-         etrk_dt_[stdt].L2t_pp = pz;
-         etrk_dt_[stdt].L2t_pt = std::sqrt(ptx*ptx+pty*pty);
-         etrk_dt_[stdt].has_l2t = 1;
-         etrk_dt_[21].L2t_wheel = id.wheel();
-         etrk_dt_[21].L2t_station = id.station();
-         etrk_dt_[21].L2t_eta = Xx;
-         etrk_dt_[21].L2t_phi = Xy;
-         etrk_dt_[21].L2t_pp = pz;
-         etrk_dt_[21].L2t_pt = std::sqrt(ptx*ptx+pty*pty);
-         etrk_dt_[21].has_l2t = 1;
-
-         float dX = Xx - hitGp.eta();
-         float dY = deltaPhi(Xy, hitGp.phi());
-         float dr = std::sqrt(dX*dX+dY*dY);
-         if (dr < 0.2) nttm = nttm + 1;
-
-         if (dr < bestl2tdR) bestl2tdR = dr;
-    }
-
-    etrk_dt_[stdt].L2t_sh_dr = bestl2tdR;
-    etrk_dt_[21].L2t_sh_dr = bestl2tdR;
-    etrk_dt_[21].has_l2t_sh_matched = nttm;
-    etrk_dt_[stdt].has_l2t_sh_matched = nttm;
-
-    // float bestSegdR = 99.;
-    // int segDTm = 0;
-
-    for(auto seg = SegmentsDT->begin();  seg!=SegmentsDT->end(); ++seg)
-    {
-
-        auto segdt = seg->chamberId();
-
-        if(segdt.wheel()!=id.wheel()) continue;
-        if(segdt.station()!=id.station()) continue;
-
-        etrk_dt_[21].has_DTSegments = 1;
-        etrk_dt_[stdt].has_DTSegments = 1;
-
-    //     auto lp = seg->localPosition();
-    //     GlobalPoint GPp = match_sh.DTSegmentsGlobalPosition(lp, DTChamberId(segdt));
-
-
-    //     auto gvv = seg->localDirection();
-    //     GlobalVector GVv = match_sh.DTSegmentsGlobalVector(gvv, DTChamberId(segdt));
-
-    //     etrk_dt_[21].Seg_wheel = id.wheel();
-    //     etrk_dt_[21].Seg_station = id.station();
-    //     etrk_dt_[21].Seg_gp_eta = GPp.eta();
-    //     etrk_dt_[21].Seg_gp_phi = GPp.phi();
-    //     etrk_dt_[21].Seg_gp_x = GPp.x();
-    //     etrk_dt_[21].Seg_gp_y = GPp.y();
-    //     etrk_dt_[21].Seg_gp_z = GPp.z();
-    //     etrk_dt_[21].Seg_gv_phi = GVv.phi();
-    //     etrk_dt_[21].Seg_gv_eta = GVv.eta();
-
-
-    //     etrk_dt_[stdt].Seg_wheel = id.wheel();
-    //     etrk_dt_[stdt].Seg_station = id.station();
-    //     etrk_dt_[stdt].Seg_gp_eta = GPp.eta();
-    //     etrk_dt_[stdt].Seg_gp_phi = GPp.phi();
-    //     etrk_dt_[stdt].Seg_gp_x = GPp.x();
-    //     etrk_dt_[stdt].Seg_gp_y = GPp.y();
-    //     etrk_dt_[stdt].Seg_gp_z = GPp.z();
-    //     etrk_dt_[stdt].Seg_gv_phi = GVv.phi();
-    //     etrk_dt_[stdt].Seg_gv_eta = GVv.eta();
-
-    //     float deltaeta = GPp.eta() - hitGp.eta();
-    //     float deltaphi = deltaPhi(GPp.phi(), hitGp.phi());
-    //     float dr = std::sqrt ( deltaeta*deltaeta + deltaphi*deltaphi);
-
-    //     if(dr < bestSegdR) bestSegdR = dr;
-    //     if(dr < 0.2 ) segDTm = segDTm + 1;
-    //     for(edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> >::const_iterator seg2 = SegmentsDT->begin();  seg2!=SegmentsDT->end(); ++seg2)
-    //     {
-    //         auto segdt2 = seg2->chamberId();
-    //         if((segdt2.wheel()==segdt.wheel()) and (segdt2.station()==segdt.station())) continue; //No checking on the same chamber
-
-    //         auto gvv2 = seg2->localDirection();
-    //         GlobalVector GVv2 = match_sh.DTSegmentsGlobalVector(gvv2, DTChamberId(segdt2));
-
-    //         if(segdt.station()==1){
-
-    //             if(segdt2.station()==2) {
-    //                  etrk_dt_[stdt].Seg_deltaphi_12_gv = GVv2.phi()-GVv.phi();
-    //                  etrk_dt_[21].Seg_deltaphi_12_gv = GVv2.phi()-GVv.phi();
-    //             }
-
-    //             if(segdt2.station()==3) {
-    //                   etrk_dt_[stdt].Seg_deltaphi_13_gv = GVv2.phi()-GVv.phi();
-    //                   etrk_dt_[21].Seg_deltaphi_13_gv = GVv2.phi()-GVv.phi();
-    //             }
-
-    //             if(segdt2.station()==4) {
-    //                     etrk_dt_[21].Seg_deltaphi_14_gv = GVv2.phi()-GVv.phi();
-    //                     etrk_dt_[stdt].Seg_deltaphi_14_gv = GVv2.phi()-GVv.phi();
-    //                     etrk_dt_[stdt].has_seg_14 = 1;
-    //                     etrk_dt_[21].has_seg_14 = 1;
-
-    //             }
-    //        }
-
-    //        if(segdt.station()==2){
-
-    //              if(segdt2.station()==3) {
-    //                     etrk_dt_[21].Seg_deltaphi_23_gv = GVv2.phi()-GVv.phi();
-    //                     etrk_dt_[stdt].Seg_deltaphi_23_gv = GVv2.phi()-GVv.phi();
-
-    //              }
-
-
-    //             if(segdt2.station()==4) {
-    //                      etrk_dt_[21].Seg_deltaphi_24_gv = GVv2.phi()-GVv.phi();
-    //                      etrk_dt_[stdt].Seg_deltaphi_24_gv = GVv2.phi()-GVv.phi();
-    //             }
-
-    //        }
-
-    //        if(segdt.station()==3){
-
-    //             if(segdt2.station()==4) {
-
-    //                     etrk_dt_[21].Seg_deltaphi_34_gv = GVv2.phi()-GVv.phi();
-    //                     etrk_dt_[stdt].Seg_deltaphi_34_gv = GVv2.phi()-GVv.phi();
-    //             }
-
-    //        }
-
-    //     } // End of second loop
-     } // End of first loop
-
-    // etrk_dt_[21].Seg_dr_sh = bestSegdR;
-    // etrk_dt_[stdt].Seg_dr_sh = bestSegdR;
-    // etrk_dt_[stdt].has_seg_sh_matched = segDTm;
-    // etrk_dt_[21].has_seg_sh_matched = segDTm;
-
-
-
-
-    // Looking for a second station with hits.
-    //
-    for(auto s_ddt: dt_chambers)
-    {
-      const DTChamberId s_iddt(s_ddt);
-      const int s_stdt(detIdToMBStation(s_iddt.wheel(),s_iddt.station()));
-      if (stationsdt_to_use_.count(s_stdt) == 0) continue;
-
-
-      const int s_nlayersdtch(match_sh.nSuperLayersWithHitsInChamberDT(s_iddt.rawId()));
-      const int d_nlayersdtch(match_sh.nSuperLayersWithHitsInChamberDT(id.rawId()));
-
-      if(s_nlayersdtch == 0) continue; // Check to have hits in the secondary chamber
-      if(d_nlayersdtch == 0) continue; //Check that has hits in previous one
-      if(id.wheel()==s_iddt.wheel() and id.station()==s_iddt.station()) continue; //Not to count double hits in the same chamber
-
-      GlobalVector ym2 = match_sh.simHitsMeanMomentum(match_sh.hitsInChamber(s_ddt));
-      GlobalPoint hitGp2 = match_sh.simHitsMeanPosition(match_sh.hitsInChamber(s_ddt));
-
-      if(s_iddt.station() == 2){
-            etrk_dt_[stdt].has_second_dtst_hit = 1;
-            etrk_dt_[stdt].deltaphi_first_second_gv= -ym2.phi() + ym.phi();
-            etrk_dt_[stdt].deltaphi_first_second_gp=  hitGp.phi() - hitGp2.phi();
-            etrk_dt_[stdt].pt_calculated_dt_12 = (1/( -ym2.phi() + ym.phi()))*0.160453 + 3.174856;
-            etrk_dt_[stdt].wheel_second = s_iddt.wheel();
-            etrk_dt_[stdt].phi_gp_second = hitGp2.phi();
-            etrk_dt_[stdt].eta_gp_second = hitGp2.eta();
-            etrk_dt_[stdt].phi_gv_second = ym2.phi();
-            etrk_dt_[stdt].eta_gv_second = ym2.eta();
-        }
-
-      if(s_iddt.station() == 3){
-            etrk_dt_[stdt].has_third_dtst_hit = 1;
-            etrk_dt_[stdt].deltaphi_first_third_gv= -ym2.phi() + ym.phi();
-            etrk_dt_[stdt].deltaphi_first_third_gp=  hitGp.phi() - hitGp2.phi();
-            etrk_dt_[stdt].pt_calculated_dt_13 = (1/( -ym2.phi() + ym.phi()))*0.4112057 + 3.599571;
-            etrk_dt_[stdt].wheel_third = s_iddt.wheel();
-            etrk_dt_[stdt].phi_gp_third = hitGp2.phi();
-            etrk_dt_[stdt].eta_gp_third = hitGp2.eta();
-            etrk_dt_[stdt].phi_gv_third = ym2.phi();
-            etrk_dt_[stdt].eta_gv_third = ym2.eta();
-        }
-
-      if(s_iddt.station() == 4){
-            etrk_dt_[stdt].has_fourth_dtst_hit = 1;
-            etrk_dt_[stdt].deltaphi_first_fourth_gv= -ym2.phi() + ym.phi();
-            etrk_dt_[stdt].deltaphi_first_fourth_gp=  hitGp.phi() - hitGp2.phi();
-            etrk_dt_[stdt].pt_calculated_dt_14 = (1/( -ym2.phi() + ym.phi()))*0.656863 + 4.1039583;
-            etrk_dt_[stdt].wheel_fourth = s_iddt.wheel();
-            etrk_dt_[stdt].phi_gp_fourth = hitGp2.phi();
-            etrk_dt_[stdt].eta_gp_fourth = hitGp2.eta();
-            etrk_dt_[stdt].phi_gv_fourth = ym2.phi();
-            etrk_dt_[stdt].eta_gv_fourth = ym2.eta();
-        }
-
-
-    } // End of Second DT SimHIt
-
-
-  } // End of DT Sim HIT
+    etrk_dt_[stdt].deltaphi_h_g = reco::deltaR(hitGp.phi(), ym.phi());     //This one
+    // etrk_dt_[stdt].pt_calculated_dt = (1/(hitGp.phi() - ym.phi()))*1.4025845 + 0.674463;
+  } 
+
+  // segments 
+  // simhit information
+  for(auto ddt: match_dt.chamberIdsDTRecSegment4D())
+  {
+    const DTChamberId id(ddt);
+    const int stdt(detIdToMBStation(id.wheel(),id.station()));
+    if (stationsdt_to_use_.count(stdt) == 0) continue;
+    const int nsl(match_sh.nSuperLayersWithHitsInChamberDT(id.rawId()));
+
+    
+  }  
 
   // HLT Tracsk
   auto dtRecHits(match_dt.nDTRecSegment4Ds());
   if (dtRecHits>=2) etrk_dt_[0].has_two_DTSegments = 1;
   
-  auto trackExtras(match_hlt_track.getMatchedTrackExtras());
-  if (trackExtras.size()>=1) etrk_dt_[0].has_matched_TrackExtra = 1;
+  // auto trackExtras(match_hlt_track.getMatchedRecoTrackExtras());
+  // if (trackExtras.size()>=1) etrk_dt_[0].has_matched_TrackExtra = 1;
 
   // fill the tree for every simtrack 
  for (auto stdt: stationsdt_to_use_)
@@ -964,34 +462,17 @@ HLTBendingAngle::isSimTrackGood(const SimTrack &t)
   return true;
 }
 
-void MyTrackEffL1::init()
-{
-
- L1_pt = -99.;
- L1_eta = -9.;
- L1_phi = - 99.;
- L1_charge = - 9.;
-} 
-
-void MyTrackEffHLT::init()
-{
-
- HLT_TrackExtra_pt = -99.;
- HLT_TrackExtra_eta = -9.;
- HLT_TrackExtra_phi = - 99.;
- HLT_TrackExtra_charge = - 9.;
-} 
-
 void MyTrackEffDT::init()
 {
  lumi = -99;
  run= -99;
  event = -99;
 
- pt_SimTrack_dt = -9.;
- eta_SimTrack_dt=-9.;
- phi_SimTrack_dt=-9.;
- dxy_SimTrack_dt = -99;
+ sim_pt = -9.;
+ sim_pt_inv = -9.;
+ sim_eta=-9.;
+ sim_phi=-9.;
+ sim_dxy = -99;
  eta_gp = -9.;
  eta_gv = -9.;
  phi_gv= -9.;
@@ -1076,12 +557,13 @@ void MyTrackEffDT::init()
  r_gp = -9900.;
  phi_gp = -99;
  dt_dxy = -9999;
- dtvertex_x=-9999;
- dtvertex_y=-9999;
- dtvertex_z=-9999;
- dtvertex_r=-9999;
+ vtx_x=-9999;
+ vtx_y=-9999;
+ vtx_z=-9999;
+ vtx_r=-9999;
  has_dt_sh= 0;
  nlayerdt = 0;
+ nslayerdt = 0;
  R_gv=-9999.;
  Z_gv=-9999.;
  X_gv=-9999.;
@@ -1113,19 +595,6 @@ void MyTrackEffDT::init()
  has_matched_TrackExtra = 0;
  has_matched_L2MuCandidatesNoVtx = 0;
  has_two_DTSegments = 0;
-}
-
-TTree*MyTrackEffL1::book(TTree *t, const std::string & name)
-{
-  edm::Service< TFileService> fs;
-  t = fs->make<TTree>(name.c_str(),name.c_str());
- 
-  t->Branch("L1_pt", &L1_pt);
-  t->Branch("L1_eta", &L1_eta);
-  t->Branch("L1_charge", &L1_charge);
-  t->Branch("L1_phi", &L1_phi);
-
-  return t;
 }
 
 TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
@@ -1190,8 +659,9 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
   t->Branch("lumi", &lumi);
   t->Branch("run", &run);
   t->Branch("event", &event);
-  t->Branch("eta_SimTrack_dt", &eta_SimTrack_dt);
-  t->Branch("pt_SimTrack_dt", &pt_SimTrack_dt);
+  t->Branch("sim_eta", &sim_eta);
+  t->Branch("sim_pt", &sim_pt);
+  t->Branch("sim_pt_inv", &sim_pt_inv);
   t->Branch("eta_gv", &eta_gv);
 
 
@@ -1237,19 +707,20 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
   t->Branch("eta_gp", &eta_gp);
   t->Branch("apt_SimTrack_dt", &apt_SimTrack_dt);
   t->Branch("charge_dt", &charge_dt);
-  t->Branch("dtvertex_x", &dtvertex_x);
-  t->Branch("dtvertex_y", &dtvertex_y);
-  t->Branch("dtvertex_z", &dtvertex_z);
-  t->Branch("dtvertex_r", &dtvertex_r);
+  t->Branch("vtx_x", &vtx_x);
+  t->Branch("vtx_y", &vtx_y);
+  t->Branch("vtx_z", &vtx_z);
+  t->Branch("vtx_r", &vtx_r);
   t->Branch("deltaphi_h_g", &deltaphi_h_g);
   t->Branch("z_gp", &z_gp);
   t->Branch("x_gp", &x_gp);
   t->Branch("y_gp", &y_gp);
   t->Branch("r_gp", &r_gp);
   t->Branch("phi_gp", &phi_gp);
-  t->Branch("phi_SimTrack_dt", &phi_SimTrack_dt);
+  t->Branch("sim_phi", &sim_phi);
   t->Branch("has_dt_sh", &has_dt_sh);
   t->Branch("nlayerdt", &nlayerdt);
+  t->Branch("nslayerdt", &nslayerdt);
   t->Branch("R_gv", &R_gv);
   t->Branch("Z_gv", &Z_gv);
   t->Branch("X_gv", &X_gv);

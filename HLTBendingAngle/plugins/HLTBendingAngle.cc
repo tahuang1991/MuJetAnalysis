@@ -70,10 +70,14 @@ struct MyTrackEffCSC
  Float_t vertex_x;
  Float_t vertex_y;
  Float_t vertex_z;
- 
+ Float_t dxy_csc; 
  Int_t csc_station;
  Int_t csc_ring;
  
+ Float_t p_SimTrack_csc;
+ Float_t p_c_SimTrack_csc;
+ Float_t charge_csc;
+
  Float_t csc_gv_eta;
  Float_t csc_gv_phi;
  Float_t csc_gv_pt;
@@ -93,6 +97,10 @@ struct MyTrackEffCSC
  Float_t csc_bending_angle_13;
  Float_t csc_bending_angle_14;
  
+ Float_t csc_q_1bending_angle;
+ Float_t csc_q_1bending_angle_12;
+ Float_t csc_q_1bending_angle_13;
+ Float_t csc_q_1bending_angle_14;
  Float_t csc_deltaeta;
  Float_t csc_deltaeta_14;
  Float_t csc_deltaeta_13;
@@ -292,7 +300,8 @@ public:
   
 private:
   
-  void analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no, edm::Handle<std::vector<l1extra::L1MuonParticle> > l1p, edm::Handle<std::vector<reco::RecoChargedCandidate> > hlt_l2_pp, edm::Handle<std::vector<reco::TrackExtra> > l2_track, edm::Handle<edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> > > SegmentsDT);
+  void analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no);
+  //, edm::Handle<std::vector<l1extra::L1MuonParticle> > l1p, edm::Handle<std::vector<reco::RecoChargedCandidate> > hlt_l2_pp, edm::Handle<std::vector<reco::TrackExtra> > l2_track, edm::Handle<edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> > > SegmentsDT);
 
   bool isSimTrackGood(const SimTrack &t);
   int detIdToMEStation(int st, int ri);
@@ -355,6 +364,7 @@ HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
   stationsCSC.push_back("ME32");
   stationsCSC.push_back("ME41");
   stationsCSC.push_back("ME42");
+  stationsCSC.push_back("ME1");
 
   std::vector<int> CSCStationsToUse;
   CSCStationsToUse.push_back(0);  // ALL
@@ -369,6 +379,7 @@ HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
   CSCStationsToUse.push_back(9);  // ME32
   CSCStationsToUse.push_back(10);  // ME41
   CSCStationsToUse.push_back(11);  // ME42
+  CSCStationsToUse.push_back(12);  // ME1 only
 
   // auto input = cms.InputTag("g4SimHits","MuonDTHits");
   std::vector<string> stationsDT; 
@@ -543,20 +554,20 @@ HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
     // std::cout << "Total number of SimVertexs in this event: " << sim_vert.size() << std::endl;
    }
    
-   edm::Handle<std::vector<l1extra::L1MuonParticle> > l1_particles;
-   ev.getByLabel("hltL1extraParticles", l1_particles);
+   //edm::Handle<std::vector<l1extra::L1MuonParticle> > l1_particles;
+   //ev.getByLabel("hltL1extraParticles", l1_particles);
 
 
-   edm::Handle<std::vector<reco::TrackExtra> > l2_track;
-   ev.getByLabel("hltL2Muons", l2_track);
+   //edm::Handle<std::vector<reco::TrackExtra> > l2_track;
+   //ev.getByLabel("hltL2Muons", l2_track);
 
 
-   edm::Handle<std::vector<reco::RecoChargedCandidate> > hlt_l2_pp;
-   ev.getByLabel("hltL2MuonCandidatesNoVtx", hlt_l2_pp);
+   //edm::Handle<std::vector<reco::RecoChargedCandidate> > hlt_l2_pp;
+   //ev.getByLabel("hltL2MuonCandidatesNoVtx", hlt_l2_pp);
 
 
-   edm::Handle<edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> > > SegmentsDT;
-   ev.getByLabel("hltDt4DSegments", SegmentsDT);
+   //edm::Handle<edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> > > SegmentsDT;
+   //ev.getByLabel("hltDt4DSegments", SegmentsDT);
 
    int trk_no=0;
    for (auto& t: *sim_tracks.product()) {
@@ -573,14 +584,15 @@ HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
      vtz_dt = sim_vert[t.vertIndex()].position().z();
 
      SimTrackMatchManager match(t, sim_vert[t.vertIndex()], cfg_, ev, es);
-     analyzeTrackEfficiency(match, trk_no, l1_particles, hlt_l2_pp, l2_track, SegmentsDT);
+     analyzeTrackEfficiency(match, trk_no);
+    //a, l1_particles, hlt_l2_pp, l2_track, SegmentsDT);
 
-    ++trk_no;
+    trk_no = trk_no + 1;
   }
 }
 
 void 
-HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no, edm::Handle<std::vector<l1extra::L1MuonParticle> > l1p, edm::Handle<std::vector<reco::RecoChargedCandidate> > hlt_l2_pp, edm::Handle<std::vector<reco::TrackExtra> > l2_track, edm::Handle<edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> > > SegmentsDT)
+HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
 {
   const SimHitMatcher& match_sh = match.simhits();
   //const TrackMatcher& match_track = match.tracks();
@@ -600,10 +612,51 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
     etrk_csc_[st].vertex_x = vtx_dt;
     etrk_csc_[st].vertex_y = vty_dt;
     etrk_csc_[st].vertex_z = vtz_dt;
+    
+    auto pphi = t.momentum().phi();
+    etrk_csc_[st].dxy_csc = vtx_dt*sin(pphi) - vty_dt*cos(pphi);
+
+
+    auto totalp = std::sqrt( t.momentum().x()*t.momentum().x() + t.momentum().y()*t.momentum().y() + t.momentum().z()*t.momentum().z());
+
+    etrk_csc_[st].p_SimTrack_csc = totalp;
+    etrk_csc_[st].charge_csc = t.charge();
+    etrk_csc_[st]. p_c_SimTrack_csc = totalp*t.charge();
+
+
+    //std::cout<<" dxy value for csc: "<<vtx_dt*sin(pphi) - vty_dt*cos(pphi)<<std::endl;
+    //std::cout<<" p SimTrack : "<<totalp<<" p SimTrack * charge "<<totalp*t.charge()<<std::endl;
 
   }
 
 
+  // Station 1 case
+    etrk_csc_[12].init();
+    etrk_csc_[12].run = match.simhits().event().id().run();
+    etrk_csc_[12].lumi = match.simhits().event().id().luminosityBlock();
+
+    etrk_csc_[12].pt_SimTrack_csc = t.momentum().pt();
+    etrk_csc_[12].phi_SimTrack_csc = t.momentum().phi();
+    etrk_csc_[12].eta_SimTrack_csc = t.momentum().eta();
+    etrk_csc_[12].vertex_x = vtx_dt;
+    etrk_csc_[12].vertex_y = vty_dt;
+    etrk_csc_[12].vertex_z = vtz_dt;
+
+    auto pphi = t.momentum().phi();
+    etrk_csc_[12].dxy_csc = vtx_dt*sin(pphi) - vty_dt*cos(pphi);
+
+
+    auto totalp = std::sqrt( t.momentum().x()*t.momentum().x() + t.momentum().y()*t.momentum().y() + t.momentum().z()*t.momentum().z());
+
+    etrk_csc_[12].p_SimTrack_csc = totalp;
+    etrk_csc_[12].charge_csc = t.charge();
+    etrk_csc_[12]. p_c_SimTrack_csc = totalp*t.charge();
+
+
+
+
+
+/*
   for (auto asdt: stationsdt_to_use_)
   {
 
@@ -632,8 +685,8 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
     auto pphi = t.momentum().phi();
     etrk_dt_[asdt].dt_dxy = vtx_dt*sin(pphi) - vty_dt*cos(pphi);
 
-    float bestdRl1 = 99.;
-    int nl1tr = 0;
+ // float bestdRl1 = 99.;
+ // int nl1tr = 0;
     for(std::vector<l1extra::L1MuonParticle>::const_iterator muon=l1p->begin(); muon!=l1p->end(); ++muon)
     {
       etrk_dt_[asdt].L1_pt = muon->pt();
@@ -709,507 +762,8 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
 
 
   } 
-  
-  auto dt_chambers(match_sh.chamberIdsDT());
-  for(auto ddt: dt_chambers)
-  {
-    const DTChamberId id(ddt);
-    const int stdt(detIdToMBStation(id.wheel(),id.station()));
-    if (stationsdt_to_use_.count(stdt) == 0) continue;
 
-
-    const int nsl(match_sh.nSuperLayersWithHitsInChamberDT(id.rawId()));
-    if (nsl == 0) continue;
-
-    etrk_dt_[stdt].nslayerdt  = nsl;
-
-    int nltotal(0);
-    auto superLayers(match_sh.superlayerIdsDT());
-    for (auto sl: superLayers) {
-      const int nl(match_sh.nLayersWithHitsInSuperLayerDT(sl));
-      if (nl < 3) continue;
-      nltotal += nl;
-
-    }
-
-    etrk_dt_[stdt].nlayerdt  = nltotal;
-    etrk_dt_[stdt].has_dt_sh = 1;
-
-
-    etrk_dt_[stdt].wheel = id.wheel();
-    etrk_dt_[stdt].station = id.station();
-
-    GlobalPoint hitGp = match_sh.simHitsMeanPosition(match_sh.hitsInChamber(ddt));
-    etrk_dt_[stdt].eta_gp = hitGp.eta();
-    etrk_dt_[stdt].x_gp = hitGp.x();
-    etrk_dt_[stdt].y_gp = hitGp.y();
-    etrk_dt_[stdt].z_gp = hitGp.z();
-    etrk_dt_[stdt].r_gp = hitGp.perp();
-    etrk_dt_[stdt].phi_gp = hitGp.phi();
-
-    GlobalVector ym = match_sh.simHitsMeanMomentum(match_sh.hitsInChamber(ddt));
-    etrk_dt_[stdt].eta_gv = ym.eta();
-    etrk_dt_[stdt].pt_gv = ym.perp();
-    etrk_dt_[stdt].phi_gv = ym.phi();
-    etrk_dt_[stdt].R_gv = sqrt (ym.x()*ym.x()+ym.y()*ym.y());
-    etrk_dt_[stdt].Z_gv = ym.z();
-    etrk_dt_[stdt].X_gv = ym.x();
-    etrk_dt_[stdt].Y_gv = ym.y();
-    etrk_dt_[stdt].deltaphi_h_g = deltaPhi(hitGp.phi(),  ym.phi());     //This one
-    etrk_dt_[stdt].pt_calculated_dt = (1/(hitGp.phi() - ym.phi()))*1.4025845 + 0.674463;
-
-    if(id.station()==2){
-        int nl1=0;
-        float bestdR = 99.;
-        etrk_dt_[21].has_dt_sh = 1;
-        etrk_dt_[21].nlayerdt  = nsl;
-        etrk_dt_[21].wheel = id.wheel();
-        etrk_dt_[21].station = id.station();
-        etrk_dt_[21].eta_gp = hitGp.eta();
-        etrk_dt_[21].x_gp = hitGp.x();
-        etrk_dt_[21].y_gp = hitGp.y();
-        etrk_dt_[21].z_gp = hitGp.z();
-        etrk_dt_[21].r_gp = hitGp.perp();
-        etrk_dt_[21].phi_gp = hitGp.phi();
-        etrk_dt_[21].eta_gv = ym.eta();
-        etrk_dt_[21].pt_gv = ym.perp();
-        etrk_dt_[21].phi_gv = ym.phi();
-        etrk_dt_[21].R_gv = sqrt (ym.x()*ym.x()+ym.y()*ym.y());
-        etrk_dt_[21].Z_gv = ym.z();
-        etrk_dt_[21].X_gv = ym.x();
-        etrk_dt_[21].Y_gv = ym.y();
-        etrk_dt_[21].deltaphi_h_g = hitGp.phi() - ym.phi();     //This one
-        etrk_dt_[21].pt_calculated_dt = (1/(hitGp.phi() - ym.phi()))*1.4025845 + 0.674463;
-
-        for(std::vector<l1extra::L1MuonParticle>::const_iterator muon=l1p->begin(); muon!=l1p->end(); ++muon)
-        {
-           etrk_dt_[21].L1_pt = muon->pt();
-           etrk_dt_[21].L1_eta = muon->eta();
-           etrk_dt_[21].L1_phi_ = muon->phi();
-           etrk_dt_[21].L1_q = muon->charge();
-           float L1eta = muon->eta();
-           float L1phi = muon->phi();
-           float dp = deltaPhi(L1phi, hitGp.phi());
-           float dr = std::sqrt(dp*dp + (L1eta - hitGp.eta())*(L1eta - hitGp.eta()));
-           if (dr < 0.2 ){
-                  nl1 = nl1 + 1;
-           }
-
-           if (dr < bestdR){
-                bestdR = dr;
-           }
-
-        }
-
-        etrk_dt_[21].has_l1_sh_matched = nl1;
-        etrk_dt_[21].L1_sh_dr = bestdR;
-
-
-    }
-
-    float bestdRl2 = 99.;
-    int nl2sh = 0;
-    for(std::vector<reco::RecoChargedCandidate>::const_iterator muon = hlt_l2_pp->begin(); muon!=hlt_l2_pp->end(); ++muon)
-    {
-
-           auto tracIdd = muon->track()->innerDetId();
-           if(tracIdd != ddt) continue;
-
-           float ptx = muon->track()->innerMomentum().X();
-           float pty = muon->track()->innerMomentum().Y();
-           float pz = muon->track()->innerMomentum().Z();
-
-           auto Xx = muon->track()->innerPosition().eta();
-           auto Xy = muon->track()->innerPosition().phi();
-
-           etrk_dt_[stdt].L2_eta = Xx;
-           etrk_dt_[stdt].L2_phi= Xy;
-           etrk_dt_[stdt].has_l2 = 1;
-           etrk_dt_[21].L2_eta = Xx;
-           etrk_dt_[21].L2_phi= Xy;
-           etrk_dt_[21].has_l2 = 1;
-           etrk_dt_[stdt].L2_pp = pz;
-           etrk_dt_[21].L2_pp = pz;
-           etrk_dt_[stdt].L2_pt = std::sqrt(ptx*ptx+pty*pty);
-           etrk_dt_[21].L2_pt = std::sqrt(ptx*ptx+pty*pty);
-
-           float dX = Xx - hitGp.eta();
-           float dY = deltaPhi(Xy, hitGp.phi());
-
-           float dr = std::sqrt(dX*dX+dY*dY);
-
-           if (dr < 0.2){
-                  nl2sh = nl2sh + 1;
-           }
-
-           if (dr < bestdRl2){
-                    bestdRl2 = dr;
-           }
-
-    }
-
-    etrk_dt_[stdt].L2_sh_dr = bestdRl2;
-    etrk_dt_[21].L2_sh_dr = bestdRl2;
-    etrk_dt_[stdt].has_l2_sh_matched = nl2sh;
-    etrk_dt_[21].has_l2_sh_matched = nl2sh;
-
-
-
-    float bestl2tdR = 99;
-    int nttm = 0;
-
-    for(std::vector<reco::TrackExtra>::const_iterator l2tt = l2_track->begin(); l2tt!=l2_track->end();++l2tt)
-    {
-         auto detIdd = l2tt->innerDetId();
-         if(detIdd != ddt) continue;
-         auto Xx = l2tt->innerPosition().eta();
-         auto Xy = l2tt->innerPosition().phi();
-         float ptx = l2tt->innerMomentum().X();
-         float pty = l2tt->innerMomentum().Y();
-         float pz = l2tt->innerMomentum().Z();
-
-         etrk_dt_[stdt].L2t_eta = Xx;
-         etrk_dt_[stdt].L2t_phi = Xy;
-         etrk_dt_[stdt].L2t_pp = pz;
-         etrk_dt_[stdt].L2t_pt = std::sqrt(ptx*ptx+pty*pty);
-         etrk_dt_[stdt].has_l2t = 1;
-         etrk_dt_[21].L2t_wheel = id.wheel();
-         etrk_dt_[21].L2t_station = id.station();
-         etrk_dt_[21].L2t_eta = Xx;
-         etrk_dt_[21].L2t_phi = Xy;
-         etrk_dt_[21].L2t_pp = pz;
-         etrk_dt_[21].L2t_pt = std::sqrt(ptx*ptx+pty*pty);
-         etrk_dt_[21].has_l2t = 1;
-
-         float dX = Xx - hitGp.eta();
-         float dY = deltaPhi(Xy, hitGp.phi());
-         float dr = std::sqrt(dX*dX+dY*dY);
-         if (dr < 0.2) nttm = nttm + 1;
-
-         if (dr < bestl2tdR) bestl2tdR = dr;
-    }
-
-    etrk_dt_[stdt].L2t_sh_dr = bestl2tdR;
-    etrk_dt_[21].L2t_sh_dr = bestl2tdR;
-    etrk_dt_[21].has_l2t_sh_matched = nttm;
-    etrk_dt_[stdt].has_l2t_sh_matched = nttm;
-
-    float bestSegdR = 99.;
-    float bestSegdEta = 99.;
-    float bestSegdPhi = 99.;
-    float bestDTSegBendingAngle1 = 99.;
-    int DTSegment_fist_station = 0;
-    int segDTm = 0;
-    int has_deta_dphi_dr = 0;
-    int nDTSegments = 0;
-
-    for(edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> >::const_iterator seg = SegmentsDT->begin();  seg!=SegmentsDT->end(); ++seg)
-    {
-
-        auto segdt = seg->chamberId();
-
-        if(segdt.wheel()!=id.wheel()) continue;
-        if(segdt.station()!=id.station()) continue;
-
-        nDTSegments = nDTSegments  + 1;
-        etrk_dt_[21].has_DTSegments = 1;
-        etrk_dt_[stdt].has_DTSegments = 1;
-
-        auto lp = seg->localPosition();
-        GlobalPoint GPp = match_sh.DTSegmentsGlobalPosition(lp, DTChamberId(segdt));
-
-
-        auto gvv = seg->localDirection();
-        GlobalVector GVv = match_sh.DTSegmentsGlobalVector(gvv, DTChamberId(segdt));
-
-        etrk_dt_[21].Seg_wheel = id.wheel();
-        etrk_dt_[21].Seg_station = id.station();
-        etrk_dt_[21].Seg_gp_eta = GPp.eta();
-        etrk_dt_[21].Seg_gp_phi = GPp.phi();
-        etrk_dt_[21].Seg_gp_x = GPp.x();
-        etrk_dt_[21].Seg_gp_y = GPp.y();
-        etrk_dt_[21].Seg_gp_z = GPp.z();
-        etrk_dt_[21].Seg_gv_phi = GVv.phi();
-        etrk_dt_[21].Seg_gv_eta = GVv.eta();
-
-
-        etrk_dt_[stdt].Seg_wheel = id.wheel();
-        etrk_dt_[stdt].Seg_station = id.station();
-        etrk_dt_[stdt].Seg_gp_eta = GPp.eta();
-        etrk_dt_[stdt].Seg_gp_phi = GPp.phi();
-        etrk_dt_[stdt].Seg_gp_x = GPp.x();
-        etrk_dt_[stdt].Seg_gp_y = GPp.y();
-        etrk_dt_[stdt].Seg_gp_z = GPp.z();
-        etrk_dt_[stdt].Seg_gv_phi = GVv.phi();
-        etrk_dt_[stdt].Seg_gv_eta = GVv.eta();
-
-        float deltaeta = std::sqrt( ( GPp.eta() - hitGp.eta()) * ( GPp.eta() - hitGp.eta()));
-        float deltaphi = deltaPhi(GPp.phi(), hitGp.phi());
-        float dr;
-        int has_ddr = 0;
-
-        if(seg->hasPhi()){
-            if(seg->hasZed()){
-                dr = std::sqrt ( deltaeta*deltaeta + deltaphi*deltaphi);
-             //   std::cout<<" First has both "<<std::endl;
-                has_ddr = 3;
-            }else{
-                dr = deltaphi;
-           //     std::cout<<" First only has phi "<<std::endl;
-                has_ddr = 2;
-            }
-        }else {
-            if(seg->hasZed()){
-                dr = deltaeta;
-                has_ddr = 1;
-         //       std::cout<<" First only has eta "<<std::endl;
-            }else{
-                dr = 99;
-       //         std::cout<<" First has none "<<std::endl;
-                has_ddr = 0;
-            }
-        }
-
-        if (dr > 1.0) continue;
-
-     //   std::cout<<"DT Segment on  MB"<<segdt.wheel()<<segdt.station()<<" with deltaR to SimHits: "<<dr<<std::endl;
-        if(std::abs(dr) < std::abs(bestSegdR)){
-            bestDTSegBendingAngle1= GVv.phi();
-            bestSegdR = dr;
-            DTSegment_fist_station = segdt.station();
-            has_deta_dphi_dr = has_ddr;
-        }
-
-        if(std::abs(dr) < 0.01 ) segDTm = segDTm + 1;
-
-        if(deltaeta < bestSegdEta) bestSegdEta = deltaeta;
-        if(deltaphi < bestSegdPhi) bestSegdPhi = deltaphi;
-
-
-    } // End of first loop
-
-//    std::cout<<"Best Bending Angle of the chosen DTSegment: "<<bestDTSegBendingAngle1<<" on with deltar: "<<bestSegdR<<" on station: MBX"<<DTSegment_fist_station<<" with delta: "<<has_deta_dphi_dr<<std::endl;
-    etrk_dt_[21].Seg_dphi_sh = bestSegdPhi;
-    etrk_dt_[stdt].Seg_dphi_sh = bestSegdPhi;
-    etrk_dt_[21].Seg_deta_sh = bestSegdEta;
-    etrk_dt_[stdt].Seg_deta_sh = bestSegdEta;
-    etrk_dt_[21].Seg_dr_sh = bestSegdR;
-    etrk_dt_[stdt].Seg_dr_sh = bestSegdR;
-    etrk_dt_[stdt].has_seg_sh_matched = segDTm;
-    etrk_dt_[21].has_seg_sh_matched = segDTm;
-    etrk_dt_[21].has_eta_phi_dr = has_deta_dphi_dr;
-    etrk_dt_[stdt].has_eta_phi_dr = has_deta_dphi_dr;
-
-
-
-    // Looking for a second station with hits.
-    //
-    for(auto s_ddt: dt_chambers)
-    {
-      const DTChamberId s_iddt(s_ddt);
-      const int s_stdt(detIdToMBStation(s_iddt.wheel(),s_iddt.station()));
-      if (stationsdt_to_use_.count(s_stdt) == 0) continue;
-
-
-      const int s_nlayersdtch(match_sh.nSuperLayersWithHitsInChamberDT(s_iddt.rawId()));
-      const int d_nlayersdtch(match_sh.nSuperLayersWithHitsInChamberDT(id.rawId()));
-
-      if(s_nlayersdtch == 0) continue; // Check to have hits in the secondary chamber
-      if(d_nlayersdtch == 0) continue; //Check that has hits in previous one
-      if(id.wheel()==s_iddt.wheel() and id.station()==s_iddt.station()) continue; //Not to count double hits in the same chamber
-
-      GlobalVector ym2 = match_sh.simHitsMeanMomentum(match_sh.hitsInChamber(s_ddt));
-      GlobalPoint hitGp2 = match_sh.simHitsMeanPosition(match_sh.hitsInChamber(s_ddt));
-
-
-      if(s_iddt.station() == 2){
-            etrk_dt_[stdt].has_second_dtst_hit = 1;
-            etrk_dt_[stdt].deltaphi_first_second_gv= -ym2.phi() + ym.phi();
-            etrk_dt_[stdt].deltaphi_first_second_gp=  hitGp.phi() - hitGp2.phi();
-            etrk_dt_[stdt].pt_calculated_dt_12 = (1/( -ym2.phi() + ym.phi()))*0.160453 + 3.174856;
-            etrk_dt_[stdt].wheel_second = s_iddt.wheel();
-            etrk_dt_[stdt].phi_gp_second = hitGp2.phi();
-            etrk_dt_[stdt].eta_gp_second = hitGp2.eta();
-            etrk_dt_[stdt].phi_gv_second = ym2.phi();
-            etrk_dt_[stdt].eta_gv_second = ym2.eta();
-        }
-
-      if(s_iddt.station() == 3){
-            etrk_dt_[stdt].has_third_dtst_hit = 1;
-            etrk_dt_[stdt].deltaphi_first_third_gv= -ym2.phi() + ym.phi();
-            etrk_dt_[stdt].deltaphi_first_third_gp=  hitGp.phi() - hitGp2.phi();
-            etrk_dt_[stdt].pt_calculated_dt_13 = (1/( -ym2.phi() + ym.phi()))*0.4112057 + 3.599571;
-            etrk_dt_[stdt].wheel_third = s_iddt.wheel();
-            etrk_dt_[stdt].phi_gp_third = hitGp2.phi();
-            etrk_dt_[stdt].eta_gp_third = hitGp2.eta();
-            etrk_dt_[stdt].phi_gv_third = ym2.phi();
-            etrk_dt_[stdt].eta_gv_third = ym2.eta();
-        }
-
-      if(s_iddt.station() == 4){
-            etrk_dt_[stdt].has_fourth_dtst_hit = 1;
-            etrk_dt_[stdt].deltaphi_first_fourth_gv= -ym2.phi() + ym.phi();
-            etrk_dt_[stdt].deltaphi_first_fourth_gp=  hitGp.phi() - hitGp2.phi();
-            etrk_dt_[stdt].pt_calculated_dt_14 = (1/( -ym2.phi() + ym.phi()))*0.656863 + 4.1039583;
-            etrk_dt_[stdt].wheel_fourth = s_iddt.wheel();
-            etrk_dt_[stdt].phi_gp_fourth = hitGp2.phi();
-            etrk_dt_[stdt].eta_gp_fourth = hitGp2.eta();
-            etrk_dt_[stdt].phi_gv_fourth = ym2.phi();
-            etrk_dt_[stdt].eta_gv_fourth = ym2.eta();
-        }
-
-
-       float bestDTSegment_second_BendingAngle = 99.;
-       float bestDeltaRSecondST = 99.;
-       int has_second_seg_matched = 0;
-       int stationsasdf=0;
-
-   if(SegmentsDT.size()!=0){
-       for(edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> >::const_iterator seg2 = SegmentsDT->begin();  seg2!=SegmentsDT->end(); ++seg2)
-       {
-
-            auto segdt2 = seg2->chamberId();
-            if(!(segdt2.wheel()== s_iddt.wheel() and segdt2.station()==s_iddt.station())) continue; // Same location as the hit.
-
-            etrk_dt_[stdt].has_second_dtSegment = 1;
-            etrk_dt_[21].has_second_dtSegment = 1;
-            auto lp2 = seg2->localPosition();
-            GlobalPoint GPp2 = match_sh.DTSegmentsGlobalPosition(lp2, DTChamberId(segdt2));
-            auto gvv2 = seg2->localDirection();
-            GlobalVector GVv2 = match_sh.DTSegmentsGlobalVector(gvv2, DTChamberId(segdt2));
-
-            float deltaEta22 = std::abs(GPp2.eta() - hitGp2.eta());
-            float deltaPhi22 = deltaPhi( GPp2.phi(), hitGp2.phi());
-            float deltar2;
-
-            if(seg2->hasPhi()){
-                if(seg2->hasZed()) {
-                    deltar2 = std::sqrt(deltaEta22*deltaEta22 + deltaPhi22*deltaPhi22);
-                  //  std::cout<<"Has both deltas"<<std::endl;
-                }else{
-                    deltar2 = deltaPhi22;
-                //    std::cout<<" Only has phi "<<std::endl;
-                }
-            }else{
-                if(seg2->hasZed()) {
-                    deltar2 = deltaEta22;
-              //      std::cout<<" Only has eta "<<std::endl;
-                }else{
-                    deltar2 = 99;
-            //        std::cout<<" Has none "<<std::endl;
-                }
-            }
-
-            if (deltar2 > 10) continue;
-
-            if(std::abs(deltar2)<0.01) has_second_seg_matched = has_second_seg_matched + 1;
-            if(std::abs(deltar2)< std::abs(bestDeltaRSecondST)) {
-                bestDeltaRSecondST = deltar2;
-                bestDTSegment_second_BendingAngle = GVv2.phi();
-                stationsasdf = segdt2.station();
-            }
-
-          //  std::cout<<"Second DT Segment on Chamber MB"<<segdt2.wheel()<<segdt2.station()<<" with deltaR: "<<deltar2<<" and DeltaEta: "<<deltaEta22<<" and deltaPhi: "<<deltaPhi22<<std::endl;
-
-            etrk_dt_[stdt].Seg_second_wheel = segdt2.wheel();
-            etrk_dt_[stdt].Seg_second_station = segdt2.station();
-            etrk_dt_[stdt].Seg_second_gp_eta = GPp2.eta();
-            etrk_dt_[stdt].Seg_second_gp_phi = GPp2.phi();
-            etrk_dt_[stdt].Seg_second_gp_z = GPp2.z();
-            etrk_dt_[stdt].Seg_second_gp_y = GPp2.y();
-            etrk_dt_[stdt].Seg_second_gp_x = GPp2.x();
-            etrk_dt_[stdt].Seg_second_gv_eta = GVv2.eta();
-            etrk_dt_[stdt].Seg_second_gv_phi = GVv2.phi();
-
-
-       }
-
-     }
-        if(has_second_seg_matched==0) continue;
-        if(bestDeltaRSecondST == 99) continue;
-
-       etrk_dt_[21].has_second_segment_matched = has_second_seg_matched;
-       etrk_dt_[stdt].has_second_segment_matched = has_second_seg_matched;
-       etrk_dt_[stdt].Seg_second_sh_dr = bestDeltaRSecondST;
-       etrk_dt_[21].Seg_second_sh_dr = bestDeltaRSecondST;
-
-        //std::cout<<"Best Second DTSegment stored, in MBX"<<stationsasdf<<" with delta R: "<<bestDeltaRSecondST<<" and having "<<has_second_seg_matched<<" segment[s]  matched to that chamber"<<std::endl;
-
-        etrk_dt_[21].Seg_deltaphi_gv = deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
-        etrk_dt_[stdt].Seg_deltaphi_gv = deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
-
-       if (DTSegment_fist_station == 1){
-
-            if(stationsasdf==2){
-                 etrk_dt_[21].Seg_deltaphi_12_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
-                 etrk_dt_[stdt].Seg_deltaphi_12_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
-                 etrk_dt_[stdt].has_seg_12 =1;
-                 etrk_dt_[21].has_seg_12 =1;
-            }
-
-            if(stationsasdf==3){
-                 etrk_dt_[stdt].Seg_deltaphi_13_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
-                 etrk_dt_[21].Seg_deltaphi_13_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
-                 etrk_dt_[stdt].has_seg_13 =1;
-                 etrk_dt_[21].has_seg_13 =1;
-            }
-
-            if(stationsasdf==4){
-                 etrk_dt_[stdt].Seg_deltaphi_14_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
-                 etrk_dt_[21].Seg_deltaphi_14_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
-                 etrk_dt_[stdt].has_seg_14 =1;
-                 etrk_dt_[21].has_seg_14 =1;
-                 //std::cout<<"Best Bending Angle MBX1 -  MBX4: "<<bestDTSegment_second_BendingAngle<<" with deltaR: "<<bestDeltaRSecondST<<std::endl;
-            }
-
-       }
-
-
-
-       if( DTSegment_fist_station == 2){
-
-            if(stationsasdf==3){
-                 etrk_dt_[21].Seg_deltaphi_23_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
-                 etrk_dt_[stdt].Seg_deltaphi_23_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
-                 etrk_dt_[stdt].has_seg_23 =1;
-                 etrk_dt_[21].has_seg_23 =1;
-            }
-
-            if(stationsasdf==4){
-                 etrk_dt_[21].Seg_deltaphi_24_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
-                 etrk_dt_[stdt].Seg_deltaphi_24_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
-                 etrk_dt_[stdt].has_seg_24 =1;
-                 etrk_dt_[21].has_seg_24 =1;
-                // std::cout<<"Best Bending Angle MBX2 -  MBX4: "<<bestDTSegment_second_BendingAngle<<" with deltaR: "<<bestDeltaRSecondST<<std::endl;
-            }
-
-       }
-
-       if(DTSegment_fist_station == 3) {
-
-            if(stationsasdf==4){
-                 etrk_dt_[stdt].Seg_deltaphi_34_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
-                 etrk_dt_[21].Seg_deltaphi_34_gv= deltaPhi(bestDTSegment_second_BendingAngle, bestDTSegBendingAngle1);
-                 etrk_dt_[stdt].has_seg_34 =1;
-                 etrk_dt_[21].has_seg_34 =1;
-                // std::cout<<"Best Bending Angle MBX3 -  MBX4: "<<bestDTSegment_second_BendingAngle<<" with deltaR: "<<bestDeltaRSecondST<<std::endl;
-            }
-       }
-
-
-
-
-    } // End of Second DT SimHIt
-
-
-  } // End of DT Sim HIT
-
-
-  // fill the tree for every simtrack 
- for (auto stdt: stationsdt_to_use_)
- {
-   tree_eff_dt_[stdt]->Fill();
- }
+    */
 
 
  //CSC SimHits Start here
@@ -1270,6 +824,22 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
     }
 
 
+    if(id.station()==1){
+        etrk_csc_[12].nlayerscsc = nlayers;
+        etrk_csc_[12].csc_station = 1;
+        etrk_csc_[12].csc_ring = 1;
+        etrk_csc_[12].csc_gp_x = hitGp.x();
+        etrk_csc_[12].csc_gp_y = hitGp.y();
+        etrk_csc_[12].csc_gp_z = hitGp.z();
+        etrk_csc_[12].csc_gp_r = hitGp.perp();
+        etrk_csc_[12].csc_gp_eta = hitGp.eta();
+        etrk_csc_[12].csc_gp_phi = hitGp.phi();
+        etrk_csc_[12].csc_gv_eta = ym.eta();
+        etrk_csc_[12].csc_gv_phi = ym.phi();
+        etrk_csc_[12].csc_gv_pt = ym.perp();
+        etrk_csc_[12].csc_deltaphi = deltaPhi(hitGp.phi(), ym.phi()); 
+    }
+
 
     //Starting look for second hit
     for(auto s_d: csc_simhits)
@@ -1303,7 +873,11 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
         etrk_csc_[st].csc_deltaphi_second = deltaPhi(hitGp2.phi(), ym2.phi());
         etrk_csc_[st].csc_deltaphi_gp = deltaPhi(hitGp2.phi(), hitGp.phi());
         etrk_csc_[st].csc_deltaeta = ym.eta() - ym2.eta();
+        etrk_csc_[st].csc_q_1bending_angle = t.charge()/deltaPhi(ym.phi(), ym2.phi());
 
+
+
+	// Special case for ME11
         if(id.station()==1 and (id.ring()==4 or id.ring()==1)){
             etrk_csc_[1].csc_second_nlayers = s_nlayers;
             etrk_csc_[1].csc_second_ring = s_id.ring();
@@ -1316,18 +890,21 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
             etrk_csc_[1].csc_second_gv_eta = ym2.eta();
             etrk_csc_[1].csc_second_gv_phi = ym2.phi();
             etrk_csc_[1].csc_second_gv_pt = ym2.perp();
-            etrk_csc_[1].csc_bending_angle = deltaPhi(ym.phi(), ym2.phi());
+            etrk_csc_[1].csc_bending_angle = deltaPhi(ym.phi(), ym2.phi());  
             etrk_csc_[1].csc_deltaphi_second = deltaPhi(hitGp2.phi(), ym2.phi());
             etrk_csc_[1].csc_deltaphi_gp = deltaPhi(hitGp2.phi(), hitGp.phi());
             etrk_csc_[1].csc_deltaeta = ym.eta() - ym2.eta();
+            etrk_csc_[1].csc_q_1bending_angle = t.charge()/deltaPhi(ym.phi(), ym2.phi());
 
             if(s_id.station()==2){
                 etrk_csc_[1].csc_bending_angle_12 = deltaPhi(ym.phi(), ym2.phi());
                 etrk_csc_[st].csc_bending_angle_12 = deltaPhi(ym.phi(), ym2.phi());
                 etrk_csc_[1].has_csc_12 = 1;
-                etrk_csc_[st].has_csc_12 = 1;
+                etrk_csc_[st].has_csc_12 = 1;                                                     // Ask for this
                 etrk_csc_[st].csc_deltaeta_12 = ym.eta() - ym2.eta();
                 etrk_csc_[1].csc_deltaeta_12 = ym.eta() - ym2.eta();
+                etrk_csc_[st].csc_q_1bending_angle_12 = t.charge()/deltaPhi(ym.phi(), ym2.phi()); // Use this 
+                etrk_csc_[1].csc_q_1bending_angle_12 = t.charge()/deltaPhi(ym.phi(), ym2.phi());
             }
         
             if(s_id.station()==3){
@@ -1337,6 +914,8 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
                 etrk_csc_[st].has_csc_13 = 1;
                 etrk_csc_[1].csc_deltaeta_13 = ym.eta() - ym2.eta();
                 etrk_csc_[st].csc_deltaeta_13 = ym.eta() - ym2.eta();
+                etrk_csc_[1].csc_q_1bending_angle_13 = t.charge()/deltaPhi(ym.phi(), ym2.phi());
+                etrk_csc_[st].csc_q_1bending_angle_13 = t.charge()/deltaPhi(ym.phi(), ym2.phi());
 
             }
 
@@ -1347,8 +926,66 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no,
                 etrk_csc_[st].csc_bending_angle_14 = deltaPhi(ym.phi(), ym2.phi());
                 etrk_csc_[st].csc_deltaeta_14 = ym.eta() - ym2.eta();
                 etrk_csc_[1].csc_deltaeta_14 = ym.eta() - ym2.eta();
+                etrk_csc_[1].csc_q_1bending_angle_14 = t.charge()/deltaPhi(ym.phi(), ym2.phi());
+                etrk_csc_[st].csc_q_1bending_angle_14 = t.charge()/deltaPhi(ym.phi(), ym2.phi());
             }
         } // End of especial case for ME11
+
+
+
+	// Starting Special Case for ME1
+        if(id.station()==1){
+            etrk_csc_[12].csc_second_nlayers = s_nlayers;
+            etrk_csc_[12].csc_second_ring = s_id.ring();
+            etrk_csc_[12].csc_second_station = s_id.station();
+            etrk_csc_[12].csc_second_gp_x = hitGp2.x();
+            etrk_csc_[12].csc_second_gp_y = hitGp2.y();
+            etrk_csc_[12].csc_second_gp_z = hitGp2.z();
+            etrk_csc_[12].csc_second_gp_eta = hitGp2.eta();
+            etrk_csc_[12].csc_second_gp_phi = hitGp2.phi();
+            etrk_csc_[12].csc_second_gv_eta = ym2.eta();
+            etrk_csc_[12].csc_second_gv_phi = ym2.phi();
+            etrk_csc_[12].csc_second_gv_pt = ym2.perp();
+            etrk_csc_[12].csc_bending_angle = deltaPhi(ym.phi(), ym2.phi()); // Use this and ask for has_csc_1X
+            etrk_csc_[12].csc_deltaphi_second = deltaPhi(hitGp2.phi(), ym2.phi());
+            etrk_csc_[12].csc_deltaphi_gp = deltaPhi(hitGp2.phi(), hitGp.phi());
+            etrk_csc_[12].csc_deltaeta = ym.eta() - ym2.eta();
+            etrk_csc_[12].csc_q_1bending_angle = t.charge()/deltaPhi(ym.phi(), ym2.phi());
+
+            if(s_id.station()==2){
+                etrk_csc_[12].csc_bending_angle_12 = deltaPhi(ym.phi(), ym2.phi());
+                etrk_csc_[st].csc_bending_angle_12 = deltaPhi(ym.phi(), ym2.phi());
+                etrk_csc_[12].has_csc_12 = 1;
+                etrk_csc_[st].has_csc_12 = 1;
+                etrk_csc_[st].csc_deltaeta_12 = ym.eta() - ym2.eta();
+                etrk_csc_[12].csc_deltaeta_12 = ym.eta() - ym2.eta();
+            	etrk_csc_[12].csc_q_1bending_angle_12 = t.charge()/deltaPhi(ym.phi(), ym2.phi());
+            	etrk_csc_[st].csc_q_1bending_angle_12 = t.charge()/deltaPhi(ym.phi(), ym2.phi());
+            }
+
+            if(s_id.station()==3){
+                etrk_csc_[st].csc_bending_angle_13 = deltaPhi(ym.phi(), ym2.phi());
+                etrk_csc_[12].csc_bending_angle_13 = deltaPhi(ym.phi(), ym2.phi());
+                etrk_csc_[12].has_csc_13 = 1;
+                etrk_csc_[st].has_csc_13 = 1;
+                etrk_csc_[12].csc_deltaeta_13 = ym.eta() - ym2.eta();
+                etrk_csc_[st].csc_deltaeta_13 = ym.eta() - ym2.eta();
+            	etrk_csc_[st].csc_q_1bending_angle_13 = t.charge()/deltaPhi(ym.phi(), ym2.phi());
+            	etrk_csc_[12].csc_q_1bending_angle_13 = t.charge()/deltaPhi(ym.phi(), ym2.phi());
+
+            }
+
+            if(s_id.station()==4){
+                etrk_csc_[st].has_csc_14 = 1;
+                etrk_csc_[12].has_csc_14 = 1;
+                etrk_csc_[12].csc_bending_angle_14 = deltaPhi(ym.phi(), ym2.phi()); // Deprecated all *_1X;
+                etrk_csc_[st].csc_bending_angle_14 = deltaPhi(ym.phi(), ym2.phi());
+                etrk_csc_[st].csc_deltaeta_14 = ym.eta() - ym2.eta();
+                etrk_csc_[12].csc_deltaeta_14 = ym.eta() - ym2.eta();
+            	etrk_csc_[st].csc_q_1bending_angle_13 = t.charge()/deltaPhi(ym.phi(), ym2.phi());
+            	etrk_csc_[12].csc_q_1bending_angle_13 = t.charge()/deltaPhi(ym.phi(), ym2.phi());
+            }
+        }  // End of Special Case ME1 
 
 
         //std::cout<<" Second hit in Station ME"<<s_id.station()<<s_id.ring()<<" with nlayers "<<s_nlayers<<std::endl;
@@ -1405,6 +1042,13 @@ void MyTrackEffCSC::init()
  vertex_y = - 9;
  vertex_z = - 9;
 
+ dxy_csc = - 9.;
+ p_SimTrack_csc = - 9;
+ charge_csc = - 9.;
+ p_c_SimTrack_csc = - 9;
+ 
+
+
  csc_second_gp_x = - 9999.;
  csc_second_gp_y = - 9999.;
  csc_second_gp_z = - 9999.;
@@ -1446,6 +1090,11 @@ void MyTrackEffCSC::init()
  csc_deltaphi_gp = - 99;
  csc_deltaphi = - 99;
  csc_deltaphi_second = - 99;
+
+ csc_q_1bending_angle = - 99.;
+ csc_q_1bending_angle_12 = - 99.;
+ csc_q_1bending_angle_13 = - 99.;
+ csc_q_1bending_angle_14 = - 99.;
 
 }
 void MyTrackEffDT::init()
@@ -1570,6 +1219,7 @@ void MyTrackEffDT::init()
  dtvertex_z=-9999;
  dtvertex_r=-9999;
  has_dt_sh= 0;
+ 
  R_gv=-9999.;
  nlayerdt = 0;
  nslayerdt = 0;
@@ -1629,8 +1279,15 @@ TTree*MyTrackEffCSC::book(TTree *t, const std::string & name)
   t->Branch("vertex_x", &vertex_x);
   t->Branch("vertex_y", &vertex_y);
   t->Branch("vertex_z", &vertex_z);
+
+  t->Branch("dxt_csc_", &dxy_csc);
   t->Branch("csc_station", &csc_station);
   t->Branch("csc_ring", &csc_ring);
+
+  t->Branch("p_SimTrack_csc", &p_SimTrack_csc);
+  t->Branch("charge_csc", &charge_csc);
+  t->Branch("p_c_SimTrack_csc", &p_c_SimTrack_csc);
+
 
   t->Branch("csc_gp_y", &csc_gp_y);
   t->Branch("csc_gp_x", &csc_gp_x);
@@ -1670,6 +1327,11 @@ TTree*MyTrackEffCSC::book(TTree *t, const std::string & name)
   t->Branch("csc_bending_angle_13", &csc_bending_angle_13);
   t->Branch("csc_bending_angle_14", &csc_bending_angle_14);
 
+
+  t->Branch("csc_q_1bending_angle", &csc_q_1bending_angle);
+  t->Branch("csc_q_1bending_angle_12", &csc_q_1bending_angle_12);
+  t->Branch("csc_q_1bending_angle_13", &csc_q_1bending_angle_13);
+  t->Branch("csc_q_1bending_angle_14", &csc_q_1bending_angle_14);
 
   t->Branch("csc_deltaeta_14", &csc_deltaeta_14);
   t->Branch("csc_deltaeta", &csc_deltaeta);

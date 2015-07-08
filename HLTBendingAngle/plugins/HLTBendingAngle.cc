@@ -161,12 +161,23 @@ struct MyTrackEffDT
     
   Int_t has_l2_sh_matched;
   Int_t has_l2_st_matched;
-  
-  Float_t st_dxy;
-  Int_t has_matched_TrackExtra;
-  Int_t has_matched_L2MuCandidatesNoVtx;
-  Int_t has_two_DTSegments;
 
+  Int_t has_dt_seg;
+  Int_t has_recoTrackExtra;
+  Float_t recoTrackExtra_pt_inner;
+  Float_t recoTrackExtra_eta_inner;
+  Float_t recoTrackExtra_phi_inner;  
+  Float_t recoTrackExtra_pt_outer;
+  Float_t recoTrackExtra_eta_outer;
+  Float_t recoTrackExtra_phi_outer;
+  Int_t has_recoTrack;
+  Float_t recoTrack_pt_outer;
+  Float_t recoTrack_eta_outer;
+  Float_t recoTrack_phi_outer;
+  Int_t has_recoChargedCandidate;
+  Float_t recoChargedCandidate_pt;
+  Float_t recoChargedCandidate_eta;
+  Float_t recoChargedCandidate_phi;
 };
 
 
@@ -382,22 +393,17 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     const DTChamberId id(ddt);
     const int stdt(detIdToMBStation(id.wheel(),id.station()));
     if (stationsdt_to_use_.count(stdt) == 0) continue;
-    const int nsl(match_sh.nSuperLayersWithHitsInChamberDT(id.rawId()));
 
     // require at least 1 superlayer
+    const int nsl(match_sh.nSuperLayersWithHitsInChamberDT(id.rawId()));
     if (nsl == 0) continue; 
 
-    // count the total number of layers in each superlayer
-    int nltotal(0);
-    for (auto sl: match_sh.superlayerIdsDT()) {
-      nltotal += match_sh.nLayersWithHitsInSuperLayerDT(sl);
-    }
-
     // require at least 3 layers hit per chamber
-    if (nltotal<4) continue;
+    const int nl(match_sh.nLayersWithHitsInChamberDT(id.rawId()));
+    if (nl<3) continue;
 
     etrk_dt_[stdt].nslayerdt  = nsl;
-    etrk_dt_[stdt].nlayerdt  = nltotal;
+    etrk_dt_[stdt].nlayerdt  = nl;
     etrk_dt_[stdt].has_dt_sh = 1;
 
     etrk_dt_[stdt].wheel = id.wheel();
@@ -419,28 +425,63 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     etrk_dt_[stdt].Z_gv = ym.z();
     etrk_dt_[stdt].X_gv = ym.x();
     etrk_dt_[stdt].Y_gv = ym.y();
-    etrk_dt_[stdt].deltaphi_h_g = reco::deltaR(hitGp.phi(), ym.phi());     //This one
+    etrk_dt_[stdt].deltaphi_h_g = reco::deltaPhi(hitGp.phi(), ym.phi());     //This one
     // etrk_dt_[stdt].pt_calculated_dt = (1/(hitGp.phi() - ym.phi()))*1.4025845 + 0.674463;
   } 
 
-  // segments 
-  // simhit information
+  // segments
   for(auto ddt: match_dt.chamberIdsDTRecSegment4D())
   {
     const DTChamberId id(ddt);
     const int stdt(detIdToMBStation(id.wheel(),id.station()));
     if (stationsdt_to_use_.count(stdt) == 0) continue;
-    const int nsl(match_sh.nSuperLayersWithHitsInChamberDT(id.rawId()));
 
-    
+    // require at least 3 layers hit per chamber
+    const int nl(match_sh.nLayersWithHitsInChamberDT(id.rawId()));
+    if (nl<3) continue;
+
+    etrk_dt_[stdt].has_dt_seg = 1;
   }  
 
-  // HLT Tracsk
-  auto dtRecHits(match_dt.nDTRecSegment4Ds());
-  if (dtRecHits>=2) etrk_dt_[0].has_two_DTSegments = 1;
-  
-  // auto trackExtras(match_hlt_track.getMatchedRecoTrackExtras());
-  // if (trackExtras.size()>=1) etrk_dt_[0].has_matched_TrackExtra = 1;
+  // RecoTrackExtra
+  auto recoTrackExtras(match_hlt_track.getMatchedRecoTrackExtras());
+  if (recoTrackExtras.size()) {
+    std::cout << "Number of matched RecoTrackExtras: " << recoTrackExtras.size() << std::endl;
+    etrk_dt_[0].has_recoTrackExtra = 1;
+
+    auto recoTrackExtra(recoTrackExtras[0]);
+    etrk_dt_[0].recoTrackExtra_pt_inner = recoTrackExtra.innerMomentum().Rho();
+    etrk_dt_[0].recoTrackExtra_eta_inner = recoTrackExtra.innerPosition().eta();
+    etrk_dt_[0].recoTrackExtra_phi_inner = recoTrackExtra.innerPosition().phi();
+
+    etrk_dt_[0].recoTrackExtra_pt_outer = recoTrackExtra.outerMomentum().Rho();
+    etrk_dt_[0].recoTrackExtra_eta_outer = recoTrackExtra.outerPosition().eta();
+    etrk_dt_[0].recoTrackExtra_phi_outer = recoTrackExtra.outerPosition().phi();
+  }
+
+  // RecoTrack
+  auto recoTracks(match_hlt_track.getMatchedRecoTracks());
+  if (match_hlt_track.getMatchedRecoTracks().size()) {
+    std::cout << "Number of matched RecoTracks: " << recoTracks.size() << std::endl;
+    etrk_dt_[0].has_recoTrack = 1;
+
+    auto recoTrack(recoTracks[0]);
+    etrk_dt_[0].recoTrack_pt_outer = recoTrack.outerPt();
+    etrk_dt_[0].recoTrack_eta_outer = recoTrack.outerEta();
+    etrk_dt_[0].recoTrack_phi_outer = recoTrack.outerPhi();
+  }
+
+  // RecoChargedCandidate
+  auto recoChargedCandidates(match_hlt_track.getMatchedRecoChargedCandidates());
+  if (recoChargedCandidates.size()) {
+    std::cout << "Number of matched RecoChargedCandidates: " << recoChargedCandidates.size() << std::endl;
+    etrk_dt_[0].has_recoChargedCandidate = 1;
+
+    auto recoChargedCandidate(recoChargedCandidates[0]);
+    etrk_dt_[0].recoChargedCandidate_pt = recoChargedCandidate.pt();
+    etrk_dt_[0].recoChargedCandidate_eta = recoChargedCandidate.eta();
+    etrk_dt_[0].recoChargedCandidate_phi = recoChargedCandidate.phi();
+  }
 
   // fill the tree for every simtrack 
  for (auto stdt: stationsdt_to_use_)
@@ -464,137 +505,150 @@ HLTBendingAngle::isSimTrackGood(const SimTrack &t)
 
 void MyTrackEffDT::init()
 {
- lumi = -99;
- run= -99;
- event = -99;
-
- sim_pt = -9.;
- sim_pt_inv = -9.;
- sim_eta=-9.;
- sim_phi=-9.;
- sim_dxy = -99;
- eta_gp = -9.;
- eta_gv = -9.;
- phi_gv= -9.;
- pt_gv= -9.;
- z_gp = -9900.;
- deltaphi_h_g = -9.;
- apt_SimTrack_dt=-999;
- charge_dt = -99;
-
- Seg_dr_sh = -9.;
- Seg_dr_st = -9.;
- Seg_dr_l2 = -9.;
- has_seg_sh_matched = 0;
- has_seg_st_matched = 0;
- has_seg_l2_matched = 0;
- has_DTSegments = 0;
-
- Seg_wheel = - 9;
- Seg_station = - 9;
- Seg_gp_eta = - 99.;
- Seg_gp_phi = - 99.;
- Seg_gp_x = - 9999.;
- Seg_gp_y = - 9999.;
- Seg_gp_z = - 9999.;
- Seg_gv_phi = - 99.;
- Seg_gv_eta = - 99.;
- Seg_deltaphi_12_gv = - 99.;
- Seg_deltaphi_13_gv = - 99.;
- Seg_deltaphi_14_gv = - 99.;
- Seg_deltaphi_23_gv = - 99.;
- Seg_deltaphi_24_gv = - 99.;
- Seg_deltaphi_34_gv = - 99.;
- has_seg_14 = 0;
-
- L2t_eta = -99.;
- L2t_phi = - 99.;
- L2t_pp = - 99.;
- L2t_pt = - 99.;
- L2t_q = 0;
- has_l2t = 0;
- L2t_st_dr = 99.;
- L2t_sh_dr = 99;
- has_l2t_sh_matched = 0;
- has_l2t_st_matched = 0;
- L2t_wheel = -9;
- L2t_station = -9.;
-
- deltaphi_first_second_gv=-99.;
- deltaphi_first_second_gp=-99.;
- deltaphi_first_third_gv=-99.;
- deltaphi_first_third_gp=-99.;
- deltaphi_first_fourth_gv=-99.;
- deltaphi_first_fourth_gp=-99.;
- has_second_dtst_hit=0;
- has_third_dtst_hit=0;
- has_fourth_dtst_hit=0;
-
- wheel_second = -99;
- phi_gp_second= - 99.;
- eta_gp_second = - 99.;
- phi_gv_second = - 99.;
- eta_gv_second = - 99.;
-
- wheel_third = -99.;
- phi_gp_third =  - 99.;
- eta_gp_third = -99.;
- phi_gv_third = - 99.;
- eta_gv_third = - 99.;
-
- wheel_fourth = -99.;
- phi_gp_fourth = - 9999.;
- eta_gp_fourth = -99.;
- phi_gv_fourth = - 9999.;
- eta_gv_fourth = -99.;
-
- pt_calculated_dt= -9;
- pt_calculated_dt_12=-9;
- pt_calculated_dt_13=-9;
- pt_calculated_dt_14=9;
- x_gp = -9900.;
- y_gp = -9900.;
- r_gp = -9900.;
- phi_gp = -99;
- dt_dxy = -9999;
- vtx_x=-9999;
- vtx_y=-9999;
- vtx_z=-9999;
- vtx_r=-9999;
- has_dt_sh= 0;
- nlayerdt = 0;
- nslayerdt = 0;
- R_gv=-9999.;
- Z_gv=-9999.;
- X_gv=-9999.;
- Y_gv=-9999.;
-
- wheel = -9;
- station = - 9;
- L1_pt = - 99.;
- L1_eta = - 9.;
- L1_q = - 9.;
- L1_phi_ = -99.;
- L1_sh_dr = - 99.;
- L1_st_dr = - 99.;
- has_l1_sh_matched = 0;
- has_l1_st_matched = 0;
-
- has_l2 = 0;
- L2_pp = - 99.;
- L2_pt = - 99.;
- L2_eta = - 9.;
- L2_q = - 9.;
- L2_phi = -99.;
- L2_sh_dr = - 99.;
- L2_st_dr = - 99.;
-
- has_l2_sh_matched = 0;
- has_l2_st_matched = 0;
-
- has_matched_TrackExtra = 0;
- has_matched_L2MuCandidatesNoVtx = 0;
- has_two_DTSegments = 0;
+  lumi = -99;
+  run= -99;
+  event = -99;
+  
+  sim_pt = -9.;
+  sim_pt_inv = -9.;
+  sim_eta=-9.;
+  sim_phi=-9.;
+  sim_dxy = -99;
+  eta_gp = -9.;
+  eta_gv = -9.;
+  phi_gv= -9.;
+  pt_gv= -9.;
+  z_gp = -9900.;
+  deltaphi_h_g = -9.;
+  apt_SimTrack_dt=-999;
+  charge_dt = -99;
+  
+  Seg_dr_sh = -9.;
+  Seg_dr_st = -9.;
+  Seg_dr_l2 = -9.;
+  has_seg_sh_matched = 0;
+  has_seg_st_matched = 0;
+  has_seg_l2_matched = 0;
+  has_DTSegments = 0;
+  
+  Seg_wheel = - 9;
+  Seg_station = - 9;
+  Seg_gp_eta = - 99.;
+  Seg_gp_phi = - 99.;
+  Seg_gp_x = - 9999.;
+  Seg_gp_y = - 9999.;
+  Seg_gp_z = - 9999.;
+  Seg_gv_phi = - 99.;
+  Seg_gv_eta = - 99.;
+  Seg_deltaphi_12_gv = - 99.;
+  Seg_deltaphi_13_gv = - 99.;
+  Seg_deltaphi_14_gv = - 99.;
+  Seg_deltaphi_23_gv = - 99.;
+  Seg_deltaphi_24_gv = - 99.;
+  Seg_deltaphi_34_gv = - 99.;
+  has_seg_14 = 0;
+  
+  L2t_eta = -99.;
+  L2t_phi = - 99.;
+  L2t_pp = - 99.;
+  L2t_pt = - 99.;
+  L2t_q = 0;
+  has_l2t = 0;
+  L2t_st_dr = 99.;
+  L2t_sh_dr = 99;
+  has_l2t_sh_matched = 0;
+  has_l2t_st_matched = 0;
+  L2t_wheel = -9;
+  L2t_station = -9.;
+  
+  deltaphi_first_second_gv=-99.;
+  deltaphi_first_second_gp=-99.;
+  deltaphi_first_third_gv=-99.;
+  deltaphi_first_third_gp=-99.;
+  deltaphi_first_fourth_gv=-99.;
+  deltaphi_first_fourth_gp=-99.;
+  has_second_dtst_hit=0;
+  has_third_dtst_hit=0;
+  has_fourth_dtst_hit=0;
+  
+  wheel_second = -99;
+  phi_gp_second= - 99.;
+  eta_gp_second = - 99.;
+  phi_gv_second = - 99.;
+  eta_gv_second = - 99.;
+  
+  wheel_third = -99.;
+  phi_gp_third =  - 99.;
+  eta_gp_third = -99.;
+  phi_gv_third = - 99.;
+  eta_gv_third = - 99.;
+  
+  wheel_fourth = -99.;
+  phi_gp_fourth = - 9999.;
+  eta_gp_fourth = -99.;
+  phi_gv_fourth = - 9999.;
+  eta_gv_fourth = -99.;
+  
+  pt_calculated_dt= -9;
+  pt_calculated_dt_12=-9;
+  pt_calculated_dt_13=-9;
+  pt_calculated_dt_14=9;
+  x_gp = -9900.;
+  y_gp = -9900.;
+  r_gp = -9900.;
+  phi_gp = -99;
+  dt_dxy = -9999;
+  vtx_x=-9999;
+  vtx_y=-9999;
+  vtx_z=-9999;
+  vtx_r=-9999;
+  has_dt_sh= 0;
+  nlayerdt = 0;
+  nslayerdt = 0;
+  R_gv=-9999.;
+  Z_gv=-9999.;
+  X_gv=-9999.;
+  Y_gv=-9999.;
+  
+  wheel = -9;
+  station = - 9;
+  L1_pt = - 99.;
+  L1_eta = - 9.;
+  L1_q = - 9.;
+  L1_phi_ = -99.;
+  L1_sh_dr = - 99.;
+  L1_st_dr = - 99.;
+  has_l1_sh_matched = 0;
+  has_l1_st_matched = 0;
+  
+  has_l2 = 0;
+  L2_pp = - 99.;
+  L2_pt = - 99.;
+  L2_eta = - 9.;
+  L2_q = - 9.;
+  L2_phi = -99.;
+  L2_sh_dr = - 99.;
+  L2_st_dr = - 99.;
+  
+  has_l2_sh_matched = 0;
+  has_l2_st_matched = 0;
+  
+  has_dt_seg = 0;
+  has_recoTrackExtra = 0;
+  recoTrackExtra_pt_inner = - 99.;
+  recoTrackExtra_eta_inner = - 99.;
+  recoTrackExtra_phi_inner = - 99.;  
+  recoTrackExtra_pt_outer = - 99.;
+  recoTrackExtra_eta_outer = - 99.;
+  recoTrackExtra_phi_outer = - 99.;
+  has_recoTrack = 0;
+  recoTrack_pt_outer = - 99.;
+  recoTrack_eta_outer = - 99.;
+  recoTrack_phi_outer = - 99.;
+  has_recoChargedCandidate = 0;
+  recoChargedCandidate_pt = - 99.;
+  recoChargedCandidate_eta = - 99.;
+  recoChargedCandidate_phi = - 99.;
 }
 
 TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
@@ -733,9 +787,22 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
   t->Branch("has_l1_sh_matched", &has_l1_sh_matched);
   t->Branch("has_l2_sh_matched", &has_l2_sh_matched);
 
-  t->Branch("has_matched_TrackExtra", &has_matched_TrackExtra);
-  t->Branch("has_matched_L2MuCandidatesNoVtx", &has_matched_L2MuCandidatesNoVtx);
-  t->Branch("has_two_DTSegments", &has_two_DTSegments);
+  t->Branch("has_dt_seg", &has_dt_seg);
+  t->Branch("has_recoTrackExtra", &has_recoTrackExtra);
+  t->Branch("recoTrackExtra_pt_inner", &recoTrackExtra_pt_inner);
+  t->Branch("recoTrackExtra_eta_inner", &recoTrackExtra_eta_inner);
+  t->Branch("recoTrackExtra_phi_inner", &recoTrackExtra_phi_inner);
+  t->Branch("recoTrackExtra_pt_outer", &recoTrackExtra_pt_outer);
+  t->Branch("recoTrackExtra_eta_outer", &recoTrackExtra_eta_outer);
+  t->Branch("recoTrackExtra_phi_outer", &recoTrackExtra_phi_outer);
+  t->Branch("has_recoTrack", &has_recoTrack);
+  t->Branch("recoTrack_pt_outer", &recoTrack_pt_outer);
+  t->Branch("recoTrack_eta_outer", &recoTrack_eta_outer);
+  t->Branch("recoTrack_phi_outer", &recoTrack_phi_outer);
+  t->Branch("has_recoChargedCandidate", &has_recoChargedCandidate);
+  t->Branch("recoChargedCandidate_pt", &recoChargedCandidate_pt);
+  t->Branch("recoChargedCandidate_eta", &recoChargedCandidate_eta);
+  t->Branch("recoChargedCandidate_phi", &recoChargedCandidate_phi); 
 
   return t;
 }

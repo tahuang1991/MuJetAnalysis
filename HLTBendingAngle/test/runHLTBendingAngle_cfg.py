@@ -16,7 +16,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'MCRUN2_74_V9', '')
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(3))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000))
 
 """
 process.options = cms.untracked.PSet(

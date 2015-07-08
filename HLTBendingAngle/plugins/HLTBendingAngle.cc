@@ -178,6 +178,8 @@ struct MyTrackEffDT
   Float_t recoChargedCandidate_pt;
   Float_t recoChargedCandidate_eta;
   Float_t recoChargedCandidate_phi;
+  Int_t n_dt_seg;
+  Int_t n_dt_st_sh; // number of dt stations with at least 3 layers
 };
 
 
@@ -405,6 +407,8 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     etrk_dt_[stdt].nslayerdt  = nsl;
     etrk_dt_[stdt].nlayerdt  = nl;
     etrk_dt_[stdt].has_dt_sh = 1;
+    etrk_dt_[0].has_dt_sh = 1;
+    etrk_dt_[0].n_dt_st_sh = match_sh.chamberIdsDT().size();
 
     etrk_dt_[stdt].wheel = id.wheel();
     etrk_dt_[stdt].station = id.station();
@@ -441,12 +445,15 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     if (nl<3) continue;
 
     etrk_dt_[stdt].has_dt_seg = 1;
+    etrk_dt_[0].has_dt_seg = 1;
+    // store total number of segments
+    etrk_dt_[0].n_dt_seg =  match_dt.nDTRecSegment4Ds();
   }  
 
   // RecoTrackExtra
   auto recoTrackExtras(match_hlt_track.getMatchedRecoTrackExtras());
   if (recoTrackExtras.size()) {
-    std::cout << "Number of matched RecoTrackExtras: " << recoTrackExtras.size() << std::endl;
+    if (verbose_) std::cout << "Number of matched RecoTrackExtras: " << recoTrackExtras.size() << std::endl;
     etrk_dt_[0].has_recoTrackExtra = 1;
 
     auto recoTrackExtra(recoTrackExtras[0]);
@@ -462,7 +469,7 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   // RecoTrack
   auto recoTracks(match_hlt_track.getMatchedRecoTracks());
   if (match_hlt_track.getMatchedRecoTracks().size()) {
-    std::cout << "Number of matched RecoTracks: " << recoTracks.size() << std::endl;
+    if (verbose_) std::cout << "Number of matched RecoTracks: " << recoTracks.size() << std::endl;
     etrk_dt_[0].has_recoTrack = 1;
 
     auto recoTrack(recoTracks[0]);
@@ -474,7 +481,7 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   // RecoChargedCandidate
   auto recoChargedCandidates(match_hlt_track.getMatchedRecoChargedCandidates());
   if (recoChargedCandidates.size()) {
-    std::cout << "Number of matched RecoChargedCandidates: " << recoChargedCandidates.size() << std::endl;
+    if (verbose_) std::cout << "Number of matched RecoChargedCandidates: " << recoChargedCandidates.size() << std::endl;
     etrk_dt_[0].has_recoChargedCandidate = 1;
 
     auto recoChargedCandidate(recoChargedCandidates[0]);
@@ -649,6 +656,8 @@ void MyTrackEffDT::init()
   recoChargedCandidate_pt = - 99.;
   recoChargedCandidate_eta = - 99.;
   recoChargedCandidate_phi = - 99.;
+  n_dt_seg = -99;
+  n_dt_st_sh = -99;
 }
 
 TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
@@ -803,6 +812,8 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
   t->Branch("recoChargedCandidate_pt", &recoChargedCandidate_pt);
   t->Branch("recoChargedCandidate_eta", &recoChargedCandidate_eta);
   t->Branch("recoChargedCandidate_phi", &recoChargedCandidate_phi); 
+  t->Branch("n_dt_seg", &n_dt_seg);
+  t->Branch("n_dt_st_sh", &n_dt_st_sh);
 
   return t;
 }

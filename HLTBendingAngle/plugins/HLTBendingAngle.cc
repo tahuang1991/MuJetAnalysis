@@ -726,6 +726,7 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
   t->Branch("sim_pt", &sim_pt);
   t->Branch("sim_pt_inv", &sim_pt_inv);
   t->Branch("eta_gv", &eta_gv);
+  t->Branch("sim_dxy", &sim_dxy);
 
 
   t->Branch("deltaphi_first_second_gv", &deltaphi_first_second_gv);

@@ -14,8 +14,8 @@ ext = ".png"
 class Plotter:
     def __init__(self):
         self.inputDir = inputDir
-        self.inputFile = "out_ana_30062015.root"
-        self.outputDir = "output_ana_20150708/"
+        self.inputFile = "out_ana_mGammaD_20000_ctau100_14TeV_HLT_07092015.root"
+        self.outputDir = "out_ana_mGammaD_20000_ctau100_14TeV_HLT_07092015/"
         self.ext = ext
         self.analyzer = "HLTBendingAngle"
         self.events = "trk_eff_dt_ALL"

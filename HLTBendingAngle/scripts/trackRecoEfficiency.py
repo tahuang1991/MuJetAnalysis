@@ -33,19 +33,19 @@ def recoTrackExtraEfficiency(p):
     sim_pt_dxy_recoTrackExtra = get_1D(p, "title", "sim_pt_dxy_recoTrackExtra", "(50,0,100)", "sim_pt", AND(dxy(20,999),has_trackExtra()))
     sim_pt_dxy_recoTrack = get_1D(p, "title", "sim_pt_dxy_recoTrack", "(50,0,100)", "sim_pt", AND(dxy(20,999),has_track()))
     sim_pt_dxy_recoChargedCandidate = get_1D(p, "title", "sim_pt_dxy_recoChargedCandidate", "(50,0,100)", "sim_pt", AND(dxy(20,999),has_cand()))
-    sim_pt_dxy_dtsh = get_1D(p, "title", "sim_pt_dxy_dtsh", "(50,0,100)", "sim_pt", AND(dxy(20,999),has_dt_sh()))
-    sim_pt_dxy_dtseg = get_1D(p, "title", "sim_pt_dxy_dtseg", "(50,0,100)", "sim_pt", AND(dxy(20,999),has_dt_seg()))
-    sim_pt_dxy_dtseg_recoTrackExtra = get_1D(p, "title", "sim_pt_dxy_dtseg_recoTrackExtra", "(50,0,100)", "sim_pt", AND(dxy(20,999),has_dt_seg(),has_trackExtra()))
-    sim_pt_dxy_dtseg_recoTrack = get_1D(p, "title", "sim_pt_dxy_dtseg_recoTrack", "(50,0,100)", "sim_pt", AND(dxy(20,999),has_dt_seg(),has_track()))
-    sim_pt_dxy_dtseg_recoChargedCandidate = get_1D(p, "title", "sim_pt_dxy_dtseg_recoChargedCandidate", "(50,0,100)", "sim_pt", AND(dxy(20,999),has_dt_seg(),has_cand()))
+    sim_pt_dxy_dtsh = get_1D(p, "title", "sim_pt_dxy_dtsh", "(50,0,100)", "sim_pt", AND(dxy(20,999),n_dt_st_sh(2)))
+    sim_pt_dxy_dtseg = get_1D(p, "title", "sim_pt_dxy_dtseg", "(50,0,100)", "sim_pt", AND(dxy(20,999),n_dt_seg(2)))
+    sim_pt_dxy_dtseg_recoTrackExtra = get_1D(p, "title", "sim_pt_dxy_dtseg_recoTrackExtra", "(50,0,100)", "sim_pt", AND(dxy(20,999),n_dt_seg(2),has_trackExtra()))
+    sim_pt_dxy_dtseg_recoTrack = get_1D(p, "title", "sim_pt_dxy_dtseg_recoTrack", "(50,0,100)", "sim_pt", AND(dxy(20,999),n_dt_seg(2),has_track()))
+    sim_pt_dxy_dtseg_recoChargedCandidate = get_1D(p, "title", "sim_pt_dxy_dtseg_recoChargedCandidate", "(50,0,100)", "sim_pt", AND(dxy(20,999),n_dt_seg(2),has_cand()))
 
     sim_eta = get_1D(p, "title", "sim_eta", "(60,-3.1416,3.1416)", "sim_eta", nocut())
     sim_eta_dxy = get_1D(p, "title", "sim_eta_dxy", "(60,-3.1416,3.1416)", "sim_eta", dxy(20,999))
-    sim_eta_dxy_dtsh = get_1D(p, "title", "sim_eta_dxy_dtsh", "(60,-3.1416,3.1416)", "sim_eta", AND(dxy(20,999),has_dt_sh()))
-    sim_eta_dxy_dtseg = get_1D(p, "title", "sim_eta_dxy_dtseg", "(60,-3.1416,3.1416)", "sim_eta", AND(dxy(20,999),has_dt_seg()))
-    sim_eta_dxy_dtseg_recoTrackExtra = get_1D(p, "title", "sim_eta_dxy_dtseg_recoTrackExtra", "(60,-3.1416,3.1416)", "sim_eta", AND(dxy(20,999),has_dt_seg(),has_trackExtra()))
-    sim_eta_dxy_dtseg_recoTrack = get_1D(p, "title", "sim_eta_dxy_dtseg_recoTrack", "(60,-3.1416,3.1416)", "sim_eta", AND(dxy(20,999),has_dt_seg(),has_track()))
-    sim_eta_dxy_dtseg_recoChargedCandidate = get_1D(p, "title", "sim_eta_dxy_dtseg_recoChargedCandidate", "(60,-3.1416,3.1416)", "sim_eta", AND(dxy(20,999),has_dt_seg(),has_cand()))
+    sim_eta_dxy_dtsh = get_1D(p, "title", "sim_eta_dxy_dtsh", "(60,-3.1416,3.1416)", "sim_eta", AND(dxy(20,999),n_dt_st_sh()))
+    sim_eta_dxy_dtseg = get_1D(p, "title", "sim_eta_dxy_dtseg", "(60,-3.1416,3.1416)", "sim_eta", AND(dxy(20,999),n_dt_seg(2)))
+    sim_eta_dxy_dtseg_recoTrackExtra = get_1D(p, "title", "sim_eta_dxy_dtseg_recoTrackExtra", "(60,-3.1416,3.1416)", "sim_eta", AND(dxy(20,999),n_dt_seg(2),has_trackExtra()))
+    sim_eta_dxy_dtseg_recoTrack = get_1D(p, "title", "sim_eta_dxy_dtseg_recoTrack", "(60,-3.1416,3.1416)", "sim_eta", AND(dxy(20,999),n_dt_seg(2),has_track()))
+    sim_eta_dxy_dtseg_recoChargedCandidate = get_1D(p, "title", "sim_eta_dxy_dtseg_recoChargedCandidate", "(60,-3.1416,3.1416)", "sim_eta", AND(dxy(20,999),n_dt_seg(2),has_cand()))
 
     eff_sim_pt_dxy_recoTrackExtra = clearEmptyBinsEff(TEfficiency(sim_pt_dxy_recoTrackExtra, sim_pt_dxy))
     eff_sim_pt_dxy_recoTrack = clearEmptyBinsEff(TEfficiency(sim_pt_dxy_recoTrack, sim_pt_dxy))
@@ -67,11 +67,10 @@ def recoTrackExtraEfficiency(p):
         gStyle.SetTitleH(0.058);
 #        gStyle.SetTitleXOffset(0.05)
         gStyle.SetTitleBorderSize(0);
-#        gStyle.SetPadLeftMargin(0.3);
-#        gStyle.SetPadLeftMargin(0.126);
-#        gStyle.SetPadRightMargin(0.04);
-#        gStyle.SetPadTopMargin(0.06);
-#        gStyle.SetPadBottomMargin(0.13);
+        gStyle.SetPadLeftMargin(0.126);
+        gStyle.SetPadRightMargin(0.04);
+        gStyle.SetPadTopMargin(0.06);
+        gStyle.SetPadBottomMargin(0.13);
         gStyle.SetOptStat(0);
         gStyle.SetMarkerStyle(1);
         gPad.SetTickx(1)

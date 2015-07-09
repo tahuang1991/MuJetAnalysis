@@ -42,7 +42,8 @@ print eosfiles[label]
 process=useInputDir(process, dir, pattern="outputA")
 
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("out_ana_mGammaD_20000_ctau100_14TeV_HLT_07092015.root"),
+    fileName = cms.string("out_ana.root"),
+#    fileName = cms.string("out_ana_mGammaD_20000_ctau100_14TeV_HLT_07092015.root"),
 	closeFileFast = cms.untracked.bool(True)
 )
 

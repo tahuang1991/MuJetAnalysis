@@ -8,6 +8,14 @@ def nocut():
     return TCut("")
 
 #_______________________________________________________________________________
+def barrel_eta_cut():
+    return TCut("abs(sim_eta)<1.1")
+
+#_______________________________________________________________________________
+def endcap_eta_cut():
+    return TCut("1.1 < abs(sim_eta) && abs(sim_eta) < 2.4")
+
+#_______________________________________________________________________________
 def n_dt_st_sh(n=2):
     return TCut("n_dt_st_sh>=%d"%(n))
 
@@ -95,6 +103,10 @@ def draw_1D(p, to_draw, c_title, title, h_bins, cut="", opt = ""):
     c = TCanvas("c","c",800,600)
     c.Clear()
     gStyle.SetTitleBorderSize(0);    
+    gStyle.SetPadLeftMargin(0.126);
+    gStyle.SetPadRightMargin(0.04);
+    gStyle.SetPadTopMargin(0.06);
+    gStyle.SetPadBottomMargin(0.13);
     p.tree.Draw(to_draw + ">>" + "h_name" + h_bins, cut)
     h = TH1F(gDirectory.Get("h_name").Clone("h_name"))
     if not h:
@@ -106,7 +118,7 @@ def draw_1D(p, to_draw, c_title, title, h_bins, cut="", opt = ""):
     h.GetYaxis().SetLabelSize(0.05)
     h.GetXaxis().SetTitleSize(0.06)
     h.GetYaxis().SetTitleSize(0.06)
-    header = "                                                           PU = 0, 14 TeV"
+    header = "                                                         PU = 0, 14 TeV"
     h.SetTitle(header)
     h.Draw()
     tex2 = applyStupidTdrStyle()
@@ -156,11 +168,13 @@ def to_array(x, fmt="d"):
 
 #_______________________________________________________________________________
 def clearEmptyBinsEff(h):
-    for i in range(0,h.GetTotalHistogram().GetNbinsX()+500):
-        if h.GetEfficiency(i) < 0.005:
-            h.SetPassedEvents(i,0)
-            h.SetTotalEvents(i,0)
     return h
+"""
+for i in range(0,h.GetTotalHistogram().GetNbinsX()+500):
+if h.GetEfficiency(i) < 0.005:
+h.SetPassedEvents(i,0)
+h.SetTotalEvents(i,0)
+"""
 
 #_______________________________________________________________________________
 def error_poisson(total, selected):

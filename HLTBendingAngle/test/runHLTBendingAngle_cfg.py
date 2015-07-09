@@ -31,8 +31,15 @@ process.source = cms.Source("PoolSource",
         #'file:outputA_30062015.root'
         'file:outputA_744_30062015.root'
    )
-   
 )
+
+
+from MuJetAnalysis.HLTBendingAngle.hltSamples import *
+from MuJetAnalysis.HLTBendingAngle.InputFileHelpers import *
+label = "mGammaD_20000_ctau100_14TeV_HLT"
+dir = eosfiles[label]
+print eosfiles[label]
+process=useInputDir(process, dir, pattern="outputA")
 
 process.TFileService = cms.Service("TFileService",
     fileName = cms.string("out_ana_30062015.root"),

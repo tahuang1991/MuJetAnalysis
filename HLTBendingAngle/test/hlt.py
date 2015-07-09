@@ -4,7 +4,7 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process( "TEST" )
 
-process.load("setup_cff")
+process.load("MuJetAnalysis.HLTBendingAngle.setup_cff")
 
 process.HLTConfigVersion = cms.PSet(
   tableName = cms.string('/dev/CMSSW_7_4_0/GRun/V66')

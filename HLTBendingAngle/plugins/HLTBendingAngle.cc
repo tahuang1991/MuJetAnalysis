@@ -178,8 +178,11 @@ struct MyTrackEffDT
   Float_t recoChargedCandidate_pt;
   Float_t recoChargedCandidate_eta;
   Float_t recoChargedCandidate_phi;
+  Int_t n_dt_rh;
   Int_t n_dt_seg;
   Int_t n_dt_st_sh; // number of dt stations with at least 3 layers
+  Int_t n_dt_st_rh; // number of dt stations with at least 3 layers
+  Int_t n_dt_st_seg; // number of dt stations with segments
 };
 
 
@@ -189,7 +192,8 @@ public:
   explicit HLTBendingAngle(const edm::ParameterSet&);
   ~HLTBendingAngle();
   
-  virtual void analyze(const edm::Event&, const edm::EventSetup&) ;
+  virtual void analyze(const edm::Event&, const edm::EventSetup&);
+  virtual void endJob();
   
   static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
   
@@ -208,6 +212,7 @@ private:
   
   float deltaR;
   int does_it_match;
+  int n_sim_trk_;
 
   edm::ParameterSet cfg_;
   int verbose_;
@@ -310,6 +315,8 @@ HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
   dtStationsCo_.push_back(std::make_pair(-2,3));
   dtStationsCo_.push_back(std::make_pair(-1,4));
   dtStationsCo_.push_back(std::make_pair(-2,4));
+
+  n_sim_trk_ = 0;
 };
 
 int HLTBendingAngle::detIdToMBStation(int wh,  int st)
@@ -352,6 +359,7 @@ HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
     SimTrackMatchManager match(t, sim_vert[t.vertIndex()], cfg_, ev, es);
     analyzeTrackEfficiency(match, trk_no);    
     ++trk_no;
+    ++n_sim_trk_;
   }
 }
 
@@ -406,8 +414,6 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
 
     etrk_dt_[stdt].nslayerdt  = nsl;
     etrk_dt_[stdt].nlayerdt  = nl;
-    etrk_dt_[stdt].has_dt_sh = 1;
-    etrk_dt_[0].has_dt_sh = 1;
     etrk_dt_[0].n_dt_st_sh = match_sh.chamberIdsDT().size();
 
     etrk_dt_[stdt].wheel = id.wheel();
@@ -433,6 +439,21 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     // etrk_dt_[stdt].pt_calculated_dt = (1/(hitGp.phi() - ym.phi()))*1.4025845 + 0.674463;
   } 
 
+  // rechits
+  for(auto ddt: match_dt.chamberIdsDTRecHit1DPair())
+  {
+    const DTChamberId id(ddt);
+    const int stdt(detIdToMBStation(id.wheel(),id.station()));
+    if (stationsdt_to_use_.count(stdt) == 0) continue;
+
+    // require at least 3 layers hit per chamber
+    const int nl(match_sh.nLayersWithHitsInChamberDT(id.rawId()));
+    if (nl<3) continue;
+
+    etrk_dt_[0].n_dt_rh =  match_dt.nDTRecHit1DPairs();
+    etrk_dt_[0].n_dt_st_rh = match_dt.chamberIdsDTRecHit1DPair().size();
+  }  
+
   // segments
   for(auto ddt: match_dt.chamberIdsDTRecSegment4D())
   {
@@ -444,10 +465,8 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     const int nl(match_sh.nLayersWithHitsInChamberDT(id.rawId()));
     if (nl<3) continue;
 
-    etrk_dt_[stdt].has_dt_seg = 1;
-    etrk_dt_[0].has_dt_seg = 1;
-    // store total number of segments
     etrk_dt_[0].n_dt_seg =  match_dt.nDTRecSegment4Ds();
+    etrk_dt_[0].n_dt_st_seg = match_dt.chamberIdsDTRecSegment4D().size();
   }  
 
   // RecoTrackExtra
@@ -640,7 +659,6 @@ void MyTrackEffDT::init()
   has_l2_sh_matched = 0;
   has_l2_st_matched = 0;
   
-  has_dt_seg = 0;
   has_recoTrackExtra = 0;
   recoTrackExtra_pt_inner = - 99.;
   recoTrackExtra_eta_inner = - 99.;
@@ -658,67 +676,13 @@ void MyTrackEffDT::init()
   recoChargedCandidate_phi = - 99.;
   n_dt_seg = -99;
   n_dt_st_sh = -99;
+  n_dt_st_seg = -99;
 }
 
 TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
 {
   edm::Service< TFileService > fs;
   t = fs->make<TTree>(name.c_str(),name.c_str());
-  t->Branch("L1_st_dr", &L1_st_dr);
-  t->Branch("L1_sh_dr", &L1_sh_dr);
-  t->Branch("L1_pt", &L1_pt);
-  t->Branch("L1_eta", &L1_eta);
-  t->Branch("L1_q", &L1_q);
-  t->Branch("L1_phi_", &L1_phi_);
-
-
-  t->Branch("Seg_dr_sh", &Seg_dr_sh);
-  t->Branch("Seg_dr_st", &Seg_dr_st);
-  t->Branch("Seg_dr_l2", &Seg_dr_l2);
-  t->Branch("has_seg_sh_matched", &has_seg_sh_matched);
-  t->Branch("has_seg_st_matched", &has_seg_st_matched);
-  t->Branch("has_seg_l2_matched", &has_seg_l2_matched);
-  t->Branch("has_DTSegments", &has_DTSegments);
-
-  t->Branch("Seg_wheel", &Seg_wheel);
-  t->Branch("Seg_station", & Seg_station);
-  t->Branch("Seg_gp_eta", &Seg_gp_eta);
-  t->Branch("Seg_gp_phi", &Seg_gp_phi);
-  t->Branch("Seg_gp_x", &Seg_gp_x);
-  t->Branch("Seg_gp_y", &Seg_gp_y);
-  t->Branch("Seg_gp_z", &Seg_gp_z);
-  t->Branch("Seg_gv_phi", &Seg_gv_phi);
-  t->Branch("Seg_gv_eta", &Seg_gv_eta);
-  t->Branch("Seg_deltaphi_12_gv", &Seg_deltaphi_12_gv);
-  t->Branch("Seg_deltaphi_13_gv", &Seg_deltaphi_13_gv);
-  t->Branch("Seg_deltaphi_14_gv", &Seg_deltaphi_14_gv);
-  t->Branch("Seg_deltaphi_23_gv", &Seg_deltaphi_23_gv);
-  t->Branch("Seg_deltaphi_24_gv", &Seg_deltaphi_24_gv);
-  t->Branch("Seg_deltaphi_34_gv", &Seg_deltaphi_34_gv);
-  t->Branch("has_seg_14", &has_seg_14);
-
-  t->Branch("has_l2", &has_l2);
-  t->Branch("L2_pp", &L2_pp);
-  t->Branch("L2_st_dr", &L2_st_dr);
-  t->Branch("L2_sh_dr", &L2_sh_dr);
-  t->Branch("L2_pt", &L2_pt);
-  t->Branch("L2_eta", &L2_eta);
-  t->Branch("L2_q", &L2_q);
-  t->Branch("L2_phi", &L2_phi);
-
-  t->Branch("L2t_eta", &L2t_eta);
-  t->Branch("L2t_phi", &L2t_phi);
-  t->Branch("L2t_pp", &L2t_pp);
-  t->Branch("L2t_pt", &L2t_pt);
-  t->Branch("L2t_q", &L2t_q);
-  t->Branch("has_l2t", &has_l2t);
-  t->Branch("L2t_st_dr", &L2t_st_dr);
-  t->Branch("L2t_sh_dr", &L2t_sh_dr);
-  t->Branch("has_l2t_sh_matched", &has_l2t_sh_matched);
-  t->Branch("has_l2t_st_matched", &has_l2t_st_matched);
-  t->Branch("L2t_wheel", &L2t_wheel);
-  t->Branch("L2t_station", &L2t_station);
-
   t->Branch("lumi", &lumi);
   t->Branch("run", &run);
   t->Branch("event", &event);
@@ -728,48 +692,12 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
   t->Branch("eta_gv", &eta_gv);
   t->Branch("sim_dxy", &sim_dxy);
 
-
-  t->Branch("deltaphi_first_second_gv", &deltaphi_first_second_gv);
-  t->Branch("deltaphi_first_second_gp", &deltaphi_first_second_gp);
-  t->Branch("deltaphi_first_third_gv", &deltaphi_first_third_gv);
-  t->Branch("deltaphi_first_third_gp", &deltaphi_first_third_gp);
-  t->Branch("deltaphi_first_fourth_gv", &deltaphi_first_fourth_gv);
-  t->Branch("deltaphi_first_fourth_gp", &deltaphi_first_fourth_gp);
-
-  t->Branch("has_second_dtst_hit", &has_second_dtst_hit);
-  t->Branch("has_third_dtst_hit", &has_third_dtst_hit);
-  t->Branch("has_fourth_dtst_hit", &has_fourth_dtst_hit);
-
   t->Branch("wheel", &wheel);
   t->Branch("station", &station);
-  t->Branch("wheel_second", &wheel_second);
-  t->Branch("eta_gv_second", &eta_gv_second);
-  t->Branch("eta_gp_second", &eta_gp_second);
-  t->Branch("phi_gv_second", &phi_gv_second);
-  t->Branch("eta_gv_second", &eta_gv_second);
-
-  t->Branch("wheel_third", &wheel_third);
-  t->Branch("eta_gv_third", &eta_gv_third);
-  t->Branch("eta_gp_third", &eta_gp_third);
-  t->Branch("phi_gv_third", &phi_gv_third);
-  t->Branch("eta_gv_third", &eta_gv_third);
-
-  t->Branch("wheel_fourth", &wheel_fourth);
-  t->Branch("eta_gv_fourth", &eta_gv_fourth);
-  t->Branch("eta_gp_fourth", &eta_gp_fourth);
-  t->Branch("phi_gv_fourth", &phi_gv_fourth);
-  t->Branch("eta_gv_fourth", &eta_gv_fourth);
-
-
-  t->Branch("pt_calculated_dt", &pt_calculated_dt);
-  t->Branch("pt_calculated_dt_12", &pt_calculated_dt_12);
-  t->Branch("pt_calculated_dt_13", &pt_calculated_dt_13);
-  t->Branch("pt_calculated_dt_14", &pt_calculated_dt_14);
 
   t->Branch("pt_gv", &pt_gv);
   t->Branch("phi_gv", &phi_gv);
   t->Branch("eta_gp", &eta_gp);
-  t->Branch("apt_SimTrack_dt", &apt_SimTrack_dt);
   t->Branch("charge_dt", &charge_dt);
   t->Branch("vtx_x", &vtx_x);
   t->Branch("vtx_y", &vtx_y);
@@ -782,22 +710,13 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
   t->Branch("r_gp", &r_gp);
   t->Branch("phi_gp", &phi_gp);
   t->Branch("sim_phi", &sim_phi);
-  t->Branch("has_dt_sh", &has_dt_sh);
   t->Branch("nlayerdt", &nlayerdt);
   t->Branch("nslayerdt", &nslayerdt);
-  t->Branch("R_gv", &R_gv);
-  t->Branch("Z_gv", &Z_gv);
-  t->Branch("X_gv", &X_gv);
-  t->Branch("Y_gv", &Y_gv);
-  t->Branch("dt_dxy", &dt_dxy);
 
-  t->Branch("has_l1_st_matched", &has_l1_st_matched);
-  t->Branch("has_l2_st_matched", &has_l2_st_matched);
+  t->Branch("n_dt_seg", &n_dt_seg);
+  t->Branch("n_dt_st_sh", &n_dt_st_sh);
+  t->Branch("n_dt_st_seg", &n_dt_st_seg);
 
-  t->Branch("has_l1_sh_matched", &has_l1_sh_matched);
-  t->Branch("has_l2_sh_matched", &has_l2_sh_matched);
-
-  t->Branch("has_dt_seg", &has_dt_seg);
   t->Branch("has_recoTrackExtra", &has_recoTrackExtra);
   t->Branch("recoTrackExtra_pt_inner", &recoTrackExtra_pt_inner);
   t->Branch("recoTrackExtra_eta_inner", &recoTrackExtra_eta_inner);
@@ -813,12 +732,16 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
   t->Branch("recoChargedCandidate_pt", &recoChargedCandidate_pt);
   t->Branch("recoChargedCandidate_eta", &recoChargedCandidate_eta);
   t->Branch("recoChargedCandidate_phi", &recoChargedCandidate_phi); 
-  t->Branch("n_dt_seg", &n_dt_seg);
-  t->Branch("n_dt_st_sh", &n_dt_st_sh);
 
   return t;
 }
 
+
+void
+HLTBendingAngle::endJob()
+{
+  std::cout << "Number of simTracks " << n_sim_trk_ << std::endl;
+}
 
 void
 HLTBendingAngle::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {

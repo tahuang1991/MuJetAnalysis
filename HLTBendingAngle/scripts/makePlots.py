@@ -45,10 +45,8 @@ for i in range(0,1):
 	## make the plots
 	plotter = Plotter()
 	print plotter.inputFile
-	trackKinematics(plotter)
-	recoTrackExtraEfficiency(plotter)
+#	trackKinematics(plotter)
 	recoTrackEfficiency(plotter)
-	recoChargedCandidateEfficiency(plotter)
 
 
 

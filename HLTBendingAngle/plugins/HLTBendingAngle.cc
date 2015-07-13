@@ -26,7 +26,7 @@ struct MyTrackEff
 {
   void init();
   
-  TTree*book(TTree *t, const std::string & name = "trk_eff_dt_");
+  TTree*book(TTree *t, const std::string & name = "trk_eff_");
   Int_t lumi;
   Int_t run;
   Int_t event;
@@ -107,12 +107,11 @@ private:
   void analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no);
 
   bool isSimTrackGood(const SimTrack &t);
+  void init();
+  void fill();
   
-  int detIdToMBStation(int wh, int st);
-  int detIdToMEStation(int st, int ri);
-
-  TTree *tree_eff_[56];
-  MyTrackEff etrk_[56];
+  TTree *tree_eff_[68];
+  MyTrackEff etrk_[68];
   
   int n_sim_trk_;
 
@@ -127,12 +126,13 @@ private:
 
   std::vector<string> cscStations_;
   std::vector<string> dtStations_;
+  std::vector<string> rpcStations_;
+  std::vector<string> gemStations_;
 
-  std::set<int> stationscsc_to_use_;
-  std::set<int> stationsdt_to_use_;
-
-  std::vector<std::pair<int,int> > cscStationsCo_;
-  std::vector<std::pair<int,int> > dtStationsCo_;
+  std::vector<int> cscStationsToUse_;
+  std::vector<int> dtStationsToUse_;
+  std::vector<int> rpcStationsToUse_;
+  std::vector<int> gemStationsToUse_;
 };
 
 HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
@@ -141,6 +141,13 @@ HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
 {
   cscStations_ = cfg_.getParameter<std::vector<string> >("cscStations");
   dtStations_ = cfg_.getParameter<std::vector<string> >("dtStations");
+  cscStations_ = cfg_.getParameter<std::vector<string> >("cscStations");
+  dtStations_ = cfg_.getParameter<std::vector<string> >("dtStations");
+
+  cscStationsToUse_ = cfg_.getParameter<std::vector<int> >("cscStationsToUse");
+  dtStationsToUse_ = cfg_.getParameter<std::vector<int> >("dtStationsToUse");
+  cscStationsToUse_ = cfg_.getParameter<std::vector<int> >("cscStationsToUse");
+  dtStationsToUse_ = cfg_.getParameter<std::vector<int> >("dtStationsToUse");
 
   auto simTrack = cfg_.getParameter<edm::ParameterSet>("simTrack");
   verboseSimTrack_ = simTrack.getParameter<int>("verbose");
@@ -150,79 +157,36 @@ HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
   simTrackMaxEta_ = simTrack.getParameter<double>("maxEta");
   simTrackOnlyMuon_ = simTrack.getParameter<bool>("onlyMuon");
 
-  vector<int> cscStations = ps.getParameter<vector<int> >("cscStations");
-  copy(cscStations.begin(), cscStations.end(), inserter(stationscsc_to_use_, stationscsc_to_use_.end()));
-
-  vector<int> dtStations = ps.getParameter<vector<int> >("dtStations");
-  copy(dtStations.begin(), dtStations.end(),inserter(stationsdt_to_use_,stationsdt_to_use_.end()));
-
-  for(auto s: stationscsc_to_use_) {
-    stringstream ss;
-    ss << "trk_eff_"<< cscStations_[s];
-    tree_eff_[s] = etrk_[s].book(tree_eff_[s], ss.str());
-  }
-
-  for (auto m: stationsdt_to_use_) {
-    stringstream ss;
-    ss<< "trk_eff_" << dtStations_[m];
-    tree_eff_[m] = etrk_[m].book(tree_eff_[m], ss.str());    
-  }
-  
-  cscStationsCo_.push_back(std::make_pair(-99,-99));
-  cscStationsCo_.push_back(std::make_pair(1,-99));
-  cscStationsCo_.push_back(std::make_pair(1,4));
-  cscStationsCo_.push_back(std::make_pair(1,1));
-  cscStationsCo_.push_back(std::make_pair(1,2));
-  cscStationsCo_.push_back(std::make_pair(1,3));
-  cscStationsCo_.push_back(std::make_pair(2,1));
-  cscStationsCo_.push_back(std::make_pair(2,2));
-  cscStationsCo_.push_back(std::make_pair(3,1));
-  cscStationsCo_.push_back(std::make_pair(3,2));
-  cscStationsCo_.push_back(std::make_pair(4,1));
-  cscStationsCo_.push_back(std::make_pair(4,2));
-
-  dtStationsCo_.push_back(std::make_pair(-99,-99));
-  dtStationsCo_.push_back(std::make_pair(0,1));
-  dtStationsCo_.push_back(std::make_pair(0,2));
-  dtStationsCo_.push_back(std::make_pair(0,3));
-  dtStationsCo_.push_back(std::make_pair(0,4));
-  dtStationsCo_.push_back(std::make_pair(1,1));
-  dtStationsCo_.push_back(std::make_pair(1,3));
-  dtStationsCo_.push_back(std::make_pair(1,4));
-  dtStationsCo_.push_back(std::make_pair(1,2));
-  dtStationsCo_.push_back(std::make_pair(2,1));
-  dtStationsCo_.push_back(std::make_pair(2,2));
-  dtStationsCo_.push_back(std::make_pair(2,3));
-  dtStationsCo_.push_back(std::make_pair(2,4));
-  dtStationsCo_.push_back(std::make_pair(-1,1));
-  dtStationsCo_.push_back(std::make_pair(-1,2));
-  dtStationsCo_.push_back(std::make_pair(-1,3));
-  dtStationsCo_.push_back(std::make_pair(-1,4));
-  dtStationsCo_.push_back(std::make_pair(-2,1));
-  dtStationsCo_.push_back(std::make_pair(-2,2));
-  dtStationsCo_.push_back(std::make_pair(-2,3));
-  dtStationsCo_.push_back(std::make_pair(-2,4));
-
   n_sim_trk_ = 0;
+
+  init();
 };
 
 HLTBendingAngle::~HLTBendingAngle()
 {
 }
 
-int 
-HLTBendingAngle::detIdToMBStation(int wh,  int st)
+void
+HLTBendingAngle::init()
 {
-  auto p(std::make_pair(wh, st));
-  return std::find(dtStationsCo_.begin(), dtStationsCo_.end(),p) - dtStationsCo_.begin();
+  tree_eff_[0] = etrk_[0].book(tree_eff_[0], "Muon_ALL");    
+  for (auto m: dtStationsToUse_) tree_eff_[m] = etrk_[m].book(tree_eff_[m], "trk_eff_" + dtStations_[m]);    
+  for (auto m: cscStationsToUse_) tree_eff_[m] = etrk_[m].book(tree_eff_[m], "trk_eff_" + cscStations_[m]);    
+  for (auto m: rpcStationsToUse_) tree_eff_[m] = etrk_[m].book(tree_eff_[m], "trk_eff_" + rpcStations_[m]);    
+  for (auto m: gemStationsToUse_) tree_eff_[m] = etrk_[m].book(tree_eff_[m], "trk_eff_" + gemStations_[m]);    
 }
 
-int 
-HLTBendingAngle::detIdToMEStation(int st, int ri)
+
+void
+HLTBendingAngle::fill() 
 {
-  auto p(std::make_pair(st, ri));
-  return std::find(cscStationsCo_.begin(), cscStationsCo_.end(), p) - cscStationsCo_.begin();
+  tree_eff_[0]->Fill();
+  for (auto m: dtStationsToUse_) tree_eff_[m]->Fill();
+  for (auto m: cscStationsToUse_) tree_eff_[m]->Fill();
+  for (auto m: rpcStationsToUse_) tree_eff_[m]->Fill();
+  for (auto m: gemStationsToUse_) tree_eff_[m]->Fill();
 }
+
 
 void
 HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
@@ -269,7 +233,7 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   const SimVertex& vtx = match_sh.vtx();
 
   // information for each chamber
-  for (auto st: stationsdt_to_use_)
+  for (auto st: dtStationsToUse_)
   {
     etrk_[st].init();
     etrk_[st].run = match_sh.event().id().run();
@@ -297,8 +261,8 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   for(auto ddt: match_sh.chamberIdsDT())
   {
     const DTChamberId id(ddt);
-    const int stdt(detIdToMBStation(id.wheel(),id.station()));
-    if (stationsdt_to_use_.count(stdt) == 0) continue;
+    const int stdt(gemvalidation::toDTType(id.wheel(),id.station()));
+    if (std::find(dtStationsToUse_.begin(), dtStationsToUse_.end(), stdt)!=dtStationsToUse_.end()) continue;
 
     // require at least 1 superlayer
     const int nsl(match_sh.nSuperLayersWithHitsInChamberDT(id.rawId()));
@@ -339,8 +303,8 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   for(auto ddt: match_dtrh.chamberIdsDTRecHit1DPair())
   {
     const DTChamberId id(ddt);
-    const int stdt(detIdToMBStation(id.wheel(),id.station()));
-    if (stationsdt_to_use_.count(stdt) == 0) continue;
+    const int stdt(gemvalidation::toDTType(id.wheel(),id.station()));
+    if (std::find(dtStationsToUse_.begin(), dtStationsToUse_.end(), stdt)!=dtStationsToUse_.end()) continue;
 
     // require at least 3 layers hit per chamber
     const int nl(match_sh.nLayersWithHitsInChamberDT(id.rawId()));
@@ -354,8 +318,8 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   for(auto ddt: match_dtrh.chamberIdsDTRecSegment4D())
   {
     const DTChamberId id(ddt);
-    const int stdt(detIdToMBStation(id.wheel(),id.station()));
-    if (stationsdt_to_use_.count(stdt) == 0) continue;
+    const int stdt(gemvalidation::toDTType(id.wheel(),id.station()));
+    if (std::find(dtStationsToUse_.begin(), dtStationsToUse_.end(), stdt)!=dtStationsToUse_.end()) continue;
 
     // require at least 3 layers hit per chamber
     const int nl(match_sh.nLayersWithHitsInChamberDT(id.rawId()));
@@ -369,8 +333,8 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   for(auto ddt: match_cscrh.chamberIdsCSCSegment())
   {
     const CSCDetId id(ddt);
-    const int st(detIdToMEStation(id.station(),id.ring()));
-    if (stationscsc_to_use_.count(st) == 0) continue;
+    const int st(gemvalidation::toCSCType(id.station(),id.ring()));
+    if (std::find(cscStationsToUse_.begin(), cscStationsToUse_.end(), st)!=cscStationsToUse_.end()) continue;
 
     etrk_[0].n_csc_seg =  match_cscrh.nCSCSegments();
     etrk_[0].n_csc_st_seg = match_cscrh.chamberIdsCSCSegment().size();
@@ -417,10 +381,7 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   }
 
   // fill the tree for every simtrack 
- for (auto stdt: stationsdt_to_use_)
- {
-   tree_eff_[stdt]->Fill();
- }
+  fill();
 }
 
 bool 

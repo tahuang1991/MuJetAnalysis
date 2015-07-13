@@ -22,7 +22,7 @@
 
 using namespace std;
 
-struct MyTrackEffDT
+struct MyTrackEff
 {
   void init();
   
@@ -32,48 +32,12 @@ struct MyTrackEffDT
   Int_t event;
   Char_t charge_dt;
   
-  Float_t deltaphi_dt_rpc_gv;
-  Float_t deltaphi_dt_rpc_gp;
-  Float_t deltaphi_first_second_gv;
-  Float_t deltaphi_first_second_gp;
-  Float_t deltaphi_first_third_gv;
-  Float_t deltaphi_first_third_gp;
-  Float_t deltaphi_first_fourth_gv;
-  Float_t deltaphi_first_fourth_gp;
-  
-  Float_t wheel_second;
-  Float_t eta_gv_second;
-  Float_t phi_gv_second;
-  Float_t eta_gp_second;
-  Float_t phi_gp_second;
-  
-  Float_t wheel_third;
-  Float_t eta_gv_third;
-  Float_t phi_gv_third;
-  Float_t phi_gp_third;
-  Float_t eta_gp_third;
-  
-  Float_t wheel_fourth;
-  Float_t eta_gv_fourth;
-  Float_t phi_gv_fourth;
-  Float_t eta_gp_fourth;
-  Float_t phi_gp_fourth;
-  
-  Char_t has_second_dtst_hit;
-  Char_t has_third_dtst_hit;
-  Char_t has_fourth_dtst_hit;
-  
-  Float_t pt_calculated_dt;
-  Float_t pt_calculated_dt_12;
-  Float_t pt_calculated_dt_14;
-  Float_t pt_calculated_dt_13;
-  
   Double_t vtx_x;
   Double_t vtx_y;
   Double_t vtx_z;
   Double_t vtx_r;
-  Float_t dt_dxy;
   Float_t eta_gp;
+  Float_t phi_gp;
   Float_t x_gp;
   Float_t y_gp;
   Float_t z_gp;
@@ -81,11 +45,9 @@ struct MyTrackEffDT
   Float_t deltaphi_t_h;
   Float_t deltaphi_t_g;
   Float_t pt_gv;
-  Float_t apt_SimTrack_dt;
   Float_t phi_gv;
   Float_t eta_gv;
   Float_t r_gp;
-  Float_t phi_gp;
   
   Float_t sim_pt;
   Float_t sim_pt_inv;
@@ -100,69 +62,17 @@ struct MyTrackEffDT
   Float_t X_gv;
   Float_t Y_gv;
   
-  Float_t L1_pt;
-  Float_t L1_eta;
-  Float_t L1_q;
-  Float_t L1_phi_;
-  Float_t L1_sh_dr;
   Int_t wheel;
   Int_t station;
-  Float_t L1_st_dr;
   
-  Int_t has_l1_sh_matched;
-  Int_t has_l1_st_matched;
-  
-  Int_t has_l2;
-  Float_t L2_pp;
-  Float_t L2_pt;
-  Float_t L2_eta;
-  Float_t L2_q;
-  Float_t L2_phi;
-  Float_t L2_sh_dr;
-  Float_t L2_st_dr;
-  
-  Float_t Seg_dr_sh;
-  Float_t Seg_dr_st;
-  Float_t Seg_dr_l2;
-  Int_t has_seg_sh_matched;
-  Int_t has_seg_st_matched;
-  Int_t has_seg_l2_matched;
-  Int_t has_DTSegments;
-  
-  Int_t Seg_wheel;
-  Int_t Seg_station;
-  Float_t Seg_gp_eta;
-  Float_t Seg_gp_phi;
-  Float_t Seg_gp_x;
-  Float_t Seg_gp_y;
-  Float_t Seg_gp_z;
-  Float_t Seg_gv_phi;
-  Float_t Seg_gv_eta;
-  Float_t Seg_deltaphi_12_gv;
-  Float_t Seg_deltaphi_14_gv;
-  Float_t Seg_deltaphi_13_gv;
-  Float_t Seg_deltaphi_23_gv;
-  Float_t Seg_deltaphi_24_gv;
-  Float_t Seg_deltaphi_34_gv;
-  Int_t has_seg_14;
-  
-  Float_t L2t_wheel;
-  Float_t L2t_station;
-  Float_t L2t_eta;
-  Float_t L2t_phi;
-  Float_t L2t_pp;
-  Float_t L2t_pt;
-  Float_t L2t_q;
-  Int_t has_l2t;
-  Float_t L2t_st_dr;
-  Float_t L2t_sh_dr;
-  Int_t has_l2t_sh_matched;
-  Int_t has_l2t_st_matched;
-    
-  Int_t has_l2_sh_matched;
-  Int_t has_l2_st_matched;
+  Int_t n_dt_rh;
+  Int_t n_dt_seg;
+  Int_t n_dt_st_sh; // number of dt stations with at least 3 layers
+  Int_t n_dt_st_rh; // number of dt stations with at least 3 layers
+  Int_t n_dt_st_seg; // number of dt stations with segments
+  Int_t n_csc_seg;
+  Int_t n_csc_st_seg; // number of csc stations with segments
 
-  Int_t has_dt_seg;
   Int_t has_recoTrackExtra;
   Float_t recoTrackExtra_pt_inner;
   Float_t recoTrackExtra_eta_inner;
@@ -178,11 +88,6 @@ struct MyTrackEffDT
   Float_t recoChargedCandidate_pt;
   Float_t recoChargedCandidate_eta;
   Float_t recoChargedCandidate_phi;
-  Int_t n_dt_rh;
-  Int_t n_dt_seg;
-  Int_t n_dt_st_sh; // number of dt stations with at least 3 layers
-  Int_t n_dt_st_rh; // number of dt stations with at least 3 layers
-  Int_t n_dt_st_seg; // number of dt stations with segments
 };
 
 
@@ -204,14 +109,11 @@ private:
   bool isSimTrackGood(const SimTrack &t);
   
   int detIdToMBStation(int wh, int st);
-  std::vector<string> dtStations_;
-  std::set<int> stationsdt_to_use_;
+  int detIdToMEStation(int st, int ri);
+
+  TTree *tree_eff_[56];
+  MyTrackEff etrk_[56];
   
-  TTree *tree_eff_dt_[56];
-  MyTrackEffDT etrk_dt_[56];
-  
-  float deltaR;
-  int does_it_match;
   int n_sim_trk_;
 
   edm::ParameterSet cfg_;
@@ -222,6 +124,14 @@ private:
   double simTrackMinEta_;
   double simTrackMaxEta_;
   double simTrackOnlyMuon_;
+
+  std::vector<string> cscStations_;
+  std::vector<string> dtStations_;
+
+  std::set<int> stationscsc_to_use_;
+  std::set<int> stationsdt_to_use_;
+
+  std::vector<std::pair<int,int> > cscStationsCo_;
   std::vector<std::pair<int,int> > dtStationsCo_;
 };
 
@@ -229,6 +139,9 @@ HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
   : cfg_(ps.getParameterSet("simTrackMatching"))
   , verbose_(ps.getUntrackedParameter<int>("verbose", 0))
 {
+  cscStations_ = cfg_.getParameter<std::vector<string> >("cscStations");
+  dtStations_ = cfg_.getParameter<std::vector<string> >("dtStations");
+
   auto simTrack = cfg_.getParameter<edm::ParameterSet>("simTrack");
   verboseSimTrack_ = simTrack.getParameter<int>("verbose");
   simInputLabel_ = edm::InputTag("g4SimHits");
@@ -237,96 +150,78 @@ HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
   simTrackMaxEta_ = simTrack.getParameter<double>("maxEta");
   simTrackOnlyMuon_ = simTrack.getParameter<bool>("onlyMuon");
 
-  // auto input = cms.InputTag("g4SimHits","MuonDTHits");
-  std::vector<string> stationsDT; 
-  stationsDT.push_back("ALL");
-  stationsDT.push_back("MB01");
-  stationsDT.push_back("MB11");
-  stationsDT.push_back("MB21");
-  stationsDT.push_back("MB02");
-  stationsDT.push_back("MB12");
-  stationsDT.push_back("MB22");
-  stationsDT.push_back("MB03");
-  stationsDT.push_back("MB13");
-  stationsDT.push_back("MB23");
-  stationsDT.push_back("MB04");
-  stationsDT.push_back("MB14");
-  stationsDT.push_back("MB24");
-  stationsDT.push_back("MB11n");
-  stationsDT.push_back("MB21n");
-  stationsDT.push_back("MB12n");
-  stationsDT.push_back("MB22n");
-  stationsDT.push_back("MB13n");
-  stationsDT.push_back("MB23n");
-  stationsDT.push_back("MB14n");
-  stationsDT.push_back("MB24n");
-  stationsDT.push_back("STMB2");  
+  vector<int> cscStations = ps.getParameter<vector<int> >("cscStations");
+  copy(cscStations.begin(), cscStations.end(), inserter(stationscsc_to_use_, stationscsc_to_use_.end()));
 
-  std::vector<int> DtStationsToUse;
-  DtStationsToUse.push_back(0);
-  DtStationsToUse.push_back(1);
-  DtStationsToUse.push_back(2);
-  DtStationsToUse.push_back(3);
-  DtStationsToUse.push_back(4);
-  DtStationsToUse.push_back(5);
-  DtStationsToUse.push_back(6);
-  DtStationsToUse.push_back(7);
-  DtStationsToUse.push_back(8);
-  DtStationsToUse.push_back(9);
-  DtStationsToUse.push_back(10);
-  DtStationsToUse.push_back(11);
-  DtStationsToUse.push_back(12);
-  DtStationsToUse.push_back(13);
-  DtStationsToUse.push_back(14);
-  DtStationsToUse.push_back(15);
-  DtStationsToUse.push_back(16);
-  DtStationsToUse.push_back(17);
-  DtStationsToUse.push_back(18);
-  DtStationsToUse.push_back(19);
-  DtStationsToUse.push_back(20);
-  DtStationsToUse.push_back(21);
+  vector<int> dtStations = ps.getParameter<vector<int> >("dtStations");
+  copy(dtStations.begin(), dtStations.end(),inserter(stationsdt_to_use_,stationsdt_to_use_.end()));
 
-  copy(DtStationsToUse.begin(),DtStationsToUse.end(),inserter(stationsdt_to_use_,stationsdt_to_use_.end()));
-  for (auto m: stationsdt_to_use_)
-  {
+  for(auto s: stationscsc_to_use_) {
     stringstream ss;
-    ss<< "trk_eff_dt_" << stationsDT[m];
-    tree_eff_dt_[m] = etrk_dt_[m].book(tree_eff_dt_[m], ss.str());    
+    ss << "trk_eff_"<< cscStations_[s];
+    tree_eff_[s] = etrk_[s].book(tree_eff_[s], ss.str());
+  }
+
+  for (auto m: stationsdt_to_use_) {
+    stringstream ss;
+    ss<< "trk_eff_" << dtStations_[m];
+    tree_eff_[m] = etrk_[m].book(tree_eff_[m], ss.str());    
   }
   
+  cscStationsCo_.push_back(std::make_pair(-99,-99));
+  cscStationsCo_.push_back(std::make_pair(1,-99));
+  cscStationsCo_.push_back(std::make_pair(1,4));
+  cscStationsCo_.push_back(std::make_pair(1,1));
+  cscStationsCo_.push_back(std::make_pair(1,2));
+  cscStationsCo_.push_back(std::make_pair(1,3));
+  cscStationsCo_.push_back(std::make_pair(2,1));
+  cscStationsCo_.push_back(std::make_pair(2,2));
+  cscStationsCo_.push_back(std::make_pair(3,1));
+  cscStationsCo_.push_back(std::make_pair(3,2));
+  cscStationsCo_.push_back(std::make_pair(4,1));
+  cscStationsCo_.push_back(std::make_pair(4,2));
+
   dtStationsCo_.push_back(std::make_pair(-99,-99));
   dtStationsCo_.push_back(std::make_pair(0,1));
-  dtStationsCo_.push_back(std::make_pair(1,1));
-  dtStationsCo_.push_back(std::make_pair(2,1));
   dtStationsCo_.push_back(std::make_pair(0,2));
-  dtStationsCo_.push_back(std::make_pair(1,2));
-  dtStationsCo_.push_back(std::make_pair(2,2));
   dtStationsCo_.push_back(std::make_pair(0,3));
-  dtStationsCo_.push_back(std::make_pair(1,3));
-  dtStationsCo_.push_back(std::make_pair(2,3));
   dtStationsCo_.push_back(std::make_pair(0,4));
+  dtStationsCo_.push_back(std::make_pair(1,1));
+  dtStationsCo_.push_back(std::make_pair(1,3));
   dtStationsCo_.push_back(std::make_pair(1,4));
+  dtStationsCo_.push_back(std::make_pair(1,2));
+  dtStationsCo_.push_back(std::make_pair(2,1));
+  dtStationsCo_.push_back(std::make_pair(2,2));
+  dtStationsCo_.push_back(std::make_pair(2,3));
   dtStationsCo_.push_back(std::make_pair(2,4));
   dtStationsCo_.push_back(std::make_pair(-1,1));
-  dtStationsCo_.push_back(std::make_pair(-2,1));
   dtStationsCo_.push_back(std::make_pair(-1,2));
-  dtStationsCo_.push_back(std::make_pair(-2,2));
   dtStationsCo_.push_back(std::make_pair(-1,3));
-  dtStationsCo_.push_back(std::make_pair(-2,3));
   dtStationsCo_.push_back(std::make_pair(-1,4));
+  dtStationsCo_.push_back(std::make_pair(-2,1));
+  dtStationsCo_.push_back(std::make_pair(-2,2));
+  dtStationsCo_.push_back(std::make_pair(-2,3));
   dtStationsCo_.push_back(std::make_pair(-2,4));
 
   n_sim_trk_ = 0;
 };
 
-int HLTBendingAngle::detIdToMBStation(int wh,  int st)
+HLTBendingAngle::~HLTBendingAngle()
+{
+}
+
+int 
+HLTBendingAngle::detIdToMBStation(int wh,  int st)
 {
   auto p(std::make_pair(wh, st));
   return std::find(dtStationsCo_.begin(), dtStationsCo_.end(),p) - dtStationsCo_.begin();
-};
+}
 
-HLTBendingAngle::~HLTBendingAngle()
+int 
+HLTBendingAngle::detIdToMEStation(int st, int ri)
 {
+  auto p(std::make_pair(st, ri));
+  return std::find(cscStationsCo_.begin(), cscStationsCo_.end(), p) - cscStationsCo_.begin();
 }
 
 void
@@ -367,7 +262,8 @@ void
 HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
 {
   const SimHitMatcher& match_sh = match.simhits();
-  const DTRecHitMatcher& match_dt = match.dtRecHits();
+  const DTRecHitMatcher& match_dtrh = match.dtRecHits();
+  const CSCRecHitMatcher& match_cscrh = match.cscRecHits();
   const HLTTrackMatcher& match_hlt_track = match.hltTracks();
   const SimTrack& t = match_sh.trk();
   const SimVertex& vtx = match_sh.vtx();
@@ -375,26 +271,26 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   // information for each chamber
   for (auto st: stationsdt_to_use_)
   {
-    etrk_dt_[st].init();
-    etrk_dt_[st].run = match_sh.event().id().run();
-    etrk_dt_[st].lumi = match_sh.event().id().luminosityBlock();
-    etrk_dt_[st].event = match_sh.event().id().event();
-    etrk_dt_[st].charge_dt = t.charge();
+    etrk_[st].init();
+    etrk_[st].run = match_sh.event().id().run();
+    etrk_[st].lumi = match_sh.event().id().luminosityBlock();
+    etrk_[st].event = match_sh.event().id().event();
+    etrk_[st].charge_dt = t.charge();
 
     const double vtx_x = match_sh.vtx().position().x();
     const double vtx_y = match_sh.vtx().position().y();
     const double vtx_z = match_sh.vtx().position().z();
   
-    etrk_dt_[st].vtx_x = vtx_x;
-    etrk_dt_[st].vtx_y = vtx_y;
-    etrk_dt_[st].vtx_z = vtx_z;
-    etrk_dt_[st].vtx_r = sqrt(vtx_x*vtx_x + vtx_y*vtx_y);
+    etrk_[st].vtx_x = vtx_x;
+    etrk_[st].vtx_y = vtx_y;
+    etrk_[st].vtx_z = vtx_z;
+    etrk_[st].vtx_r = sqrt(vtx_x*vtx_x + vtx_y*vtx_y);
 
-    etrk_dt_[st].sim_pt = t.momentum().pt(); 
-    etrk_dt_[st].sim_pt_inv = 1./t.momentum().pt(); 
-    etrk_dt_[st].sim_dxy = (- vtx.position().x() * t.momentum().py() + vtx.position().y() * t.momentum().px() ) / t.momentum().pt();
-    etrk_dt_[st].sim_eta = t.momentum().eta();
-    etrk_dt_[st].sim_phi = t.momentum().phi();
+    etrk_[st].sim_pt = t.momentum().pt(); 
+    etrk_[st].sim_pt_inv = 1./t.momentum().pt(); 
+    etrk_[st].sim_dxy = (- vtx.position().x() * t.momentum().py() + vtx.position().y() * t.momentum().px() ) / t.momentum().pt();
+    etrk_[st].sim_eta = t.momentum().eta();
+    etrk_[st].sim_phi = t.momentum().phi();
   }
 
   // simhit information
@@ -412,35 +308,35 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     const int nl(match_sh.nLayersWithHitsInChamberDT(id.rawId()));
     if (nl<3) continue;
 
-    etrk_dt_[stdt].nslayerdt  = nsl;
-    etrk_dt_[stdt].nlayerdt  = nl;
-    etrk_dt_[0].n_dt_st_sh = match_sh.chamberIdsDT().size();
+    etrk_[stdt].nslayerdt  = nsl;
+    etrk_[stdt].nlayerdt  = nl;
+    etrk_[0].n_dt_st_sh = match_sh.chamberIdsDT().size();
 
-    etrk_dt_[stdt].wheel = id.wheel();
-    etrk_dt_[stdt].station = id.station();
+    etrk_[stdt].wheel = id.wheel();
+    etrk_[stdt].station = id.station();
 
     const GlobalPoint hitGp(match_sh.simHitsMeanPosition(match_sh.hitsInChamber(ddt)));
-    etrk_dt_[stdt].eta_gp = hitGp.eta();
-    etrk_dt_[stdt].x_gp = hitGp.x();
-    etrk_dt_[stdt].y_gp = hitGp.y();
-    etrk_dt_[stdt].z_gp = hitGp.z();
-    etrk_dt_[stdt].r_gp = hitGp.perp();
-    etrk_dt_[stdt].phi_gp = hitGp.phi();
+    etrk_[stdt].eta_gp = hitGp.eta();
+    etrk_[stdt].x_gp = hitGp.x();
+    etrk_[stdt].y_gp = hitGp.y();
+    etrk_[stdt].z_gp = hitGp.z();
+    etrk_[stdt].r_gp = hitGp.perp();
+    etrk_[stdt].phi_gp = hitGp.phi();
 
     const GlobalVector ym(match_sh.simHitsMeanMomentum(match_sh.hitsInChamber(ddt)));
-    etrk_dt_[stdt].eta_gv = ym.eta();
-    etrk_dt_[stdt].pt_gv = ym.perp();
-    etrk_dt_[stdt].phi_gv = ym.phi();
-    etrk_dt_[stdt].R_gv = sqrt (ym.x()*ym.x()+ym.y()*ym.y());
-    etrk_dt_[stdt].Z_gv = ym.z();
-    etrk_dt_[stdt].X_gv = ym.x();
-    etrk_dt_[stdt].Y_gv = ym.y();
-    etrk_dt_[stdt].deltaphi_h_g = reco::deltaPhi(hitGp.phi(), ym.phi());     //This one
-    // etrk_dt_[stdt].pt_calculated_dt = (1/(hitGp.phi() - ym.phi()))*1.4025845 + 0.674463;
+    etrk_[stdt].eta_gv = ym.eta();
+    etrk_[stdt].pt_gv = ym.perp();
+    etrk_[stdt].phi_gv = ym.phi();
+    etrk_[stdt].R_gv = sqrt (ym.x()*ym.x()+ym.y()*ym.y());
+    etrk_[stdt].Z_gv = ym.z();
+    etrk_[stdt].X_gv = ym.x();
+    etrk_[stdt].Y_gv = ym.y();
+    etrk_[stdt].deltaphi_h_g = reco::deltaPhi(hitGp.phi(), ym.phi());     //This one
+    // etrk_[stdt].pt_calculated_dt = (1/(hitGp.phi() - ym.phi()))*1.4025845 + 0.674463;
   } 
 
   // rechits
-  for(auto ddt: match_dt.chamberIdsDTRecHit1DPair())
+  for(auto ddt: match_dtrh.chamberIdsDTRecHit1DPair())
   {
     const DTChamberId id(ddt);
     const int stdt(detIdToMBStation(id.wheel(),id.station()));
@@ -450,12 +346,12 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     const int nl(match_sh.nLayersWithHitsInChamberDT(id.rawId()));
     if (nl<3) continue;
 
-    etrk_dt_[0].n_dt_rh =  match_dt.nDTRecHit1DPairs();
-    etrk_dt_[0].n_dt_st_rh = match_dt.chamberIdsDTRecHit1DPair().size();
+    etrk_[0].n_dt_rh =  match_dtrh.nDTRecHit1DPairs();
+    etrk_[0].n_dt_st_rh = match_dtrh.chamberIdsDTRecHit1DPair().size();
   }  
 
-  // segments
-  for(auto ddt: match_dt.chamberIdsDTRecSegment4D())
+  // DT segments
+  for(auto ddt: match_dtrh.chamberIdsDTRecSegment4D())
   {
     const DTChamberId id(ddt);
     const int stdt(detIdToMBStation(id.wheel(),id.station()));
@@ -465,54 +361,65 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     const int nl(match_sh.nLayersWithHitsInChamberDT(id.rawId()));
     if (nl<3) continue;
 
-    etrk_dt_[0].n_dt_seg =  match_dt.nDTRecSegment4Ds();
-    etrk_dt_[0].n_dt_st_seg = match_dt.chamberIdsDTRecSegment4D().size();
+    etrk_[0].n_dt_seg =  match_dtrh.nDTRecSegment4Ds();
+    etrk_[0].n_dt_st_seg = match_dtrh.chamberIdsDTRecSegment4D().size();
+  }  
+
+  // CSC segments
+  for(auto ddt: match_cscrh.chamberIdsCSCSegment())
+  {
+    const CSCDetId id(ddt);
+    const int st(detIdToMEStation(id.station(),id.ring()));
+    if (stationscsc_to_use_.count(st) == 0) continue;
+
+    etrk_[0].n_csc_seg =  match_cscrh.nCSCSegments();
+    etrk_[0].n_csc_st_seg = match_cscrh.chamberIdsCSCSegment().size();
   }  
 
   // RecoTrackExtra
   auto recoTrackExtras(match_hlt_track.getMatchedRecoTrackExtras());
   if (recoTrackExtras.size()) {
     if (verbose_) std::cout << "Number of matched RecoTrackExtras: " << recoTrackExtras.size() << std::endl;
-    etrk_dt_[0].has_recoTrackExtra = 1;
+    etrk_[0].has_recoTrackExtra = 1;
 
     auto recoTrackExtra(recoTrackExtras[0]);
-    etrk_dt_[0].recoTrackExtra_pt_inner = recoTrackExtra.innerMomentum().Rho();
-    etrk_dt_[0].recoTrackExtra_eta_inner = recoTrackExtra.innerPosition().eta();
-    etrk_dt_[0].recoTrackExtra_phi_inner = recoTrackExtra.innerPosition().phi();
+    etrk_[0].recoTrackExtra_pt_inner = recoTrackExtra.innerMomentum().Rho();
+    etrk_[0].recoTrackExtra_eta_inner = recoTrackExtra.innerPosition().eta();
+    etrk_[0].recoTrackExtra_phi_inner = recoTrackExtra.innerPosition().phi();
 
-    etrk_dt_[0].recoTrackExtra_pt_outer = recoTrackExtra.outerMomentum().Rho();
-    etrk_dt_[0].recoTrackExtra_eta_outer = recoTrackExtra.outerPosition().eta();
-    etrk_dt_[0].recoTrackExtra_phi_outer = recoTrackExtra.outerPosition().phi();
+    etrk_[0].recoTrackExtra_pt_outer = recoTrackExtra.outerMomentum().Rho();
+    etrk_[0].recoTrackExtra_eta_outer = recoTrackExtra.outerPosition().eta();
+    etrk_[0].recoTrackExtra_phi_outer = recoTrackExtra.outerPosition().phi();
   }
 
   // RecoTrack
   auto recoTracks(match_hlt_track.getMatchedRecoTracks());
   if (match_hlt_track.getMatchedRecoTracks().size()) {
     if (verbose_) std::cout << "Number of matched RecoTracks: " << recoTracks.size() << std::endl;
-    etrk_dt_[0].has_recoTrack = 1;
+    etrk_[0].has_recoTrack = 1;
 
     auto recoTrack(recoTracks[0]);
-    etrk_dt_[0].recoTrack_pt_outer = recoTrack.outerPt();
-    etrk_dt_[0].recoTrack_eta_outer = recoTrack.outerEta();
-    etrk_dt_[0].recoTrack_phi_outer = recoTrack.outerPhi();
+    etrk_[0].recoTrack_pt_outer = recoTrack.outerPt();
+    etrk_[0].recoTrack_eta_outer = recoTrack.outerEta();
+    etrk_[0].recoTrack_phi_outer = recoTrack.outerPhi();
   }
 
   // RecoChargedCandidate
   auto recoChargedCandidates(match_hlt_track.getMatchedRecoChargedCandidates());
   if (recoChargedCandidates.size()) {
     if (verbose_) std::cout << "Number of matched RecoChargedCandidates: " << recoChargedCandidates.size() << std::endl;
-    etrk_dt_[0].has_recoChargedCandidate = 1;
+    etrk_[0].has_recoChargedCandidate = 1;
 
     auto recoChargedCandidate(recoChargedCandidates[0]);
-    etrk_dt_[0].recoChargedCandidate_pt = recoChargedCandidate.pt();
-    etrk_dt_[0].recoChargedCandidate_eta = recoChargedCandidate.eta();
-    etrk_dt_[0].recoChargedCandidate_phi = recoChargedCandidate.phi();
+    etrk_[0].recoChargedCandidate_pt = recoChargedCandidate.pt();
+    etrk_[0].recoChargedCandidate_eta = recoChargedCandidate.eta();
+    etrk_[0].recoChargedCandidate_phi = recoChargedCandidate.phi();
   }
 
   // fill the tree for every simtrack 
  for (auto stdt: stationsdt_to_use_)
  {
-   tree_eff_dt_[stdt]->Fill();
+   tree_eff_[stdt]->Fill();
  }
 }
 
@@ -529,7 +436,7 @@ HLTBendingAngle::isSimTrackGood(const SimTrack &t)
   return true;
 }
 
-void MyTrackEffDT::init()
+void MyTrackEff::init()
 {
   lumi = -99;
   run= -99;
@@ -546,84 +453,12 @@ void MyTrackEffDT::init()
   pt_gv= -9.;
   z_gp = -9900.;
   deltaphi_h_g = -9.;
-  apt_SimTrack_dt=-999;
   charge_dt = -99;
   
-  Seg_dr_sh = -9.;
-  Seg_dr_st = -9.;
-  Seg_dr_l2 = -9.;
-  has_seg_sh_matched = 0;
-  has_seg_st_matched = 0;
-  has_seg_l2_matched = 0;
-  has_DTSegments = 0;
-  
-  Seg_wheel = - 9;
-  Seg_station = - 9;
-  Seg_gp_eta = - 99.;
-  Seg_gp_phi = - 99.;
-  Seg_gp_x = - 9999.;
-  Seg_gp_y = - 9999.;
-  Seg_gp_z = - 9999.;
-  Seg_gv_phi = - 99.;
-  Seg_gv_eta = - 99.;
-  Seg_deltaphi_12_gv = - 99.;
-  Seg_deltaphi_13_gv = - 99.;
-  Seg_deltaphi_14_gv = - 99.;
-  Seg_deltaphi_23_gv = - 99.;
-  Seg_deltaphi_24_gv = - 99.;
-  Seg_deltaphi_34_gv = - 99.;
-  has_seg_14 = 0;
-  
-  L2t_eta = -99.;
-  L2t_phi = - 99.;
-  L2t_pp = - 99.;
-  L2t_pt = - 99.;
-  L2t_q = 0;
-  has_l2t = 0;
-  L2t_st_dr = 99.;
-  L2t_sh_dr = 99;
-  has_l2t_sh_matched = 0;
-  has_l2t_st_matched = 0;
-  L2t_wheel = -9;
-  L2t_station = -9.;
-  
-  deltaphi_first_second_gv=-99.;
-  deltaphi_first_second_gp=-99.;
-  deltaphi_first_third_gv=-99.;
-  deltaphi_first_third_gp=-99.;
-  deltaphi_first_fourth_gv=-99.;
-  deltaphi_first_fourth_gp=-99.;
-  has_second_dtst_hit=0;
-  has_third_dtst_hit=0;
-  has_fourth_dtst_hit=0;
-  
-  wheel_second = -99;
-  phi_gp_second= - 99.;
-  eta_gp_second = - 99.;
-  phi_gv_second = - 99.;
-  eta_gv_second = - 99.;
-  
-  wheel_third = -99.;
-  phi_gp_third =  - 99.;
-  eta_gp_third = -99.;
-  phi_gv_third = - 99.;
-  eta_gv_third = - 99.;
-  
-  wheel_fourth = -99.;
-  phi_gp_fourth = - 9999.;
-  eta_gp_fourth = -99.;
-  phi_gv_fourth = - 9999.;
-  eta_gv_fourth = -99.;
-  
-  pt_calculated_dt= -9;
-  pt_calculated_dt_12=-9;
-  pt_calculated_dt_13=-9;
-  pt_calculated_dt_14=9;
   x_gp = -9900.;
   y_gp = -9900.;
   r_gp = -9900.;
   phi_gp = -99;
-  dt_dxy = -9999;
   vtx_x=-9999;
   vtx_y=-9999;
   vtx_z=-9999;
@@ -638,26 +473,6 @@ void MyTrackEffDT::init()
   
   wheel = -9;
   station = - 9;
-  L1_pt = - 99.;
-  L1_eta = - 9.;
-  L1_q = - 9.;
-  L1_phi_ = -99.;
-  L1_sh_dr = - 99.;
-  L1_st_dr = - 99.;
-  has_l1_sh_matched = 0;
-  has_l1_st_matched = 0;
-  
-  has_l2 = 0;
-  L2_pp = - 99.;
-  L2_pt = - 99.;
-  L2_eta = - 9.;
-  L2_q = - 9.;
-  L2_phi = -99.;
-  L2_sh_dr = - 99.;
-  L2_st_dr = - 99.;
-  
-  has_l2_sh_matched = 0;
-  has_l2_st_matched = 0;
   
   has_recoTrackExtra = 0;
   recoTrackExtra_pt_inner = - 99.;
@@ -677,9 +492,11 @@ void MyTrackEffDT::init()
   n_dt_seg = -99;
   n_dt_st_sh = -99;
   n_dt_st_seg = -99;
+  n_csc_seg = -99;
+  n_csc_st_seg = -99;
 }
 
-TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
+TTree*MyTrackEff::book(TTree *t,const std::string & name)
 {
   edm::Service< TFileService > fs;
   t = fs->make<TTree>(name.c_str(),name.c_str());
@@ -716,6 +533,9 @@ TTree*MyTrackEffDT::book(TTree *t,const std::string & name)
   t->Branch("n_dt_seg", &n_dt_seg);
   t->Branch("n_dt_st_sh", &n_dt_st_sh);
   t->Branch("n_dt_st_seg", &n_dt_st_seg);
+
+  t->Branch("n_csc_seg", &n_csc_seg);
+  t->Branch("n_csc_st_seg", &n_csc_st_seg);
 
   t->Branch("has_recoTrackExtra", &has_recoTrackExtra);
   t->Branch("recoTrackExtra_pt_inner", &recoTrackExtra_pt_inner);

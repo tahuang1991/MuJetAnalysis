@@ -30,7 +30,6 @@ struct MyTrackEff
   Int_t lumi;
   Int_t run;
   Int_t event;
-  Char_t charge_dt;
   
   Double_t vtx_x;
   Double_t vtx_y;
@@ -54,6 +53,8 @@ struct MyTrackEff
   Float_t sim_eta;
   Float_t sim_phi;
   Float_t sim_dxy;
+  Float_t sim_charge;
+
   Char_t has_dt_sh;
   Int_t nlayerdt;
   Int_t nslayerdt;
@@ -66,10 +67,12 @@ struct MyTrackEff
   Int_t station;
   
   Int_t n_dt_rh;
+  Int_t n_dt_st_rh; // number of dt stations with at least 3 layers
   Int_t n_dt_seg;
   Int_t n_dt_st_sh; // number of dt stations with at least 3 layers
-  Int_t n_dt_st_rh; // number of dt stations with at least 3 layers
   Int_t n_dt_st_seg; // number of dt stations with segments
+
+  Int_t n_csc_st_sh; // number of dt stations with at least 3 layers
   Int_t n_csc_seg;
   Int_t n_csc_st_seg; // number of csc stations with segments
 
@@ -107,6 +110,7 @@ private:
   void analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no);
 
   bool isSimTrackGood(const SimTrack &t);
+  void book();
   void init();
   void fill();
   
@@ -128,11 +132,18 @@ private:
   std::vector<string> dtStations_;
   std::vector<string> rpcStations_;
   std::vector<string> gemStations_;
+  std::vector<string> muonStations_;
 
   std::vector<int> cscStationsToUse_;
   std::vector<int> dtStationsToUse_;
   std::vector<int> rpcStationsToUse_;
   std::vector<int> gemStationsToUse_;
+  std::vector<int> muonStationsToUse_;
+
+  int nCscStationsToUse_ = cscStationsToUse_.size();
+  int nRpcStationsToUse_ = rpcStationsToUse_.size();
+  int nDtStationsToUse_ = dtStationsToUse_.size();
+  int nGemStationsToUse_ = gemStationsToUse_.size();
 };
 
 HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
@@ -141,13 +152,25 @@ HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
 {
   cscStations_ = cfg_.getParameter<std::vector<string> >("cscStations");
   dtStations_ = cfg_.getParameter<std::vector<string> >("dtStations");
-  cscStations_ = cfg_.getParameter<std::vector<string> >("cscStations");
-  dtStations_ = cfg_.getParameter<std::vector<string> >("dtStations");
+  rpcStations_ = cfg_.getParameter<std::vector<string> >("rpcStations");
+  gemStations_ = cfg_.getParameter<std::vector<string> >("gemStations");
+
+  muonStations_.clear();
+  muonStations_.push_back("MU_ALL");
+  muonStations_.insert(muonStations_.end(), dtStations_.begin(), dtStations_.end());
+  muonStations_.insert(muonStations_.end(), cscStations_.begin(), cscStations_.end());
+  muonStations_.insert(muonStations_.end(), rpcStations_.begin(), rpcStations_.end());
+  muonStations_.insert(muonStations_.end(), gemStations_.begin(), gemStations_.end());
 
   cscStationsToUse_ = cfg_.getParameter<std::vector<int> >("cscStationsToUse");
   dtStationsToUse_ = cfg_.getParameter<std::vector<int> >("dtStationsToUse");
-  cscStationsToUse_ = cfg_.getParameter<std::vector<int> >("cscStationsToUse");
-  dtStationsToUse_ = cfg_.getParameter<std::vector<int> >("dtStationsToUse");
+  rpcStationsToUse_ = cfg_.getParameter<std::vector<int> >("rpcStationsToUse");
+  gemStationsToUse_ = cfg_.getParameter<std::vector<int> >("gemStationsToUse");
+
+  nCscStationsToUse_ = cscStationsToUse_.size();
+  nRpcStationsToUse_ = rpcStationsToUse_.size();
+  nDtStationsToUse_ = dtStationsToUse_.size();
+  nGemStationsToUse_ = gemStationsToUse_.size();
 
   auto simTrack = cfg_.getParameter<edm::ParameterSet>("simTrack");
   verboseSimTrack_ = simTrack.getParameter<int>("verbose");
@@ -159,7 +182,7 @@ HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
 
   n_sim_trk_ = 0;
 
-  init();
+  book();
 };
 
 HLTBendingAngle::~HLTBendingAngle()
@@ -167,24 +190,26 @@ HLTBendingAngle::~HLTBendingAngle()
 }
 
 void
+HLTBendingAngle::book()
+{
+  for (unsigned int i=0; i<muonStations_.size(); ++i) {
+    //std::cout << "trk_eff_" + muonStations_[i] << std::endl;
+    tree_eff_[i] = etrk_[i].book(tree_eff_[i], "trk_eff_" + muonStations_[i]);
+  }
+}
+
+
+void
 HLTBendingAngle::init()
 {
-  tree_eff_[0] = etrk_[0].book(tree_eff_[0], "Muon_ALL");    
-  for (auto m: dtStationsToUse_) tree_eff_[m] = etrk_[m].book(tree_eff_[m], "trk_eff_" + dtStations_[m]);    
-  for (auto m: cscStationsToUse_) tree_eff_[m] = etrk_[m].book(tree_eff_[m], "trk_eff_" + cscStations_[m]);    
-  for (auto m: rpcStationsToUse_) tree_eff_[m] = etrk_[m].book(tree_eff_[m], "trk_eff_" + rpcStations_[m]);    
-  for (auto m: gemStationsToUse_) tree_eff_[m] = etrk_[m].book(tree_eff_[m], "trk_eff_" + gemStations_[m]);    
+  for (unsigned int i=0; i<muonStations_.size(); ++i) etrk_[i].init();
 }
 
 
 void
 HLTBendingAngle::fill() 
 {
-  tree_eff_[0]->Fill();
-  for (auto m: dtStationsToUse_) tree_eff_[m]->Fill();
-  for (auto m: cscStationsToUse_) tree_eff_[m]->Fill();
-  for (auto m: rpcStationsToUse_) tree_eff_[m]->Fill();
-  for (auto m: gemStationsToUse_) tree_eff_[m]->Fill();
+  for (unsigned int i=0; i<muonStations_.size(); ++i) tree_eff_[i]->Fill();
 }
 
 
@@ -225,6 +250,9 @@ HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
 void 
 HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
 {
+  // initialize the tree
+  init();
+
   const SimHitMatcher& match_sh = match.simhits();
   const DTRecHitMatcher& match_dtrh = match.dtRecHits();
   const CSCRecHitMatcher& match_cscrh = match.cscRecHits();
@@ -232,38 +260,35 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   const SimTrack& t = match_sh.trk();
   const SimVertex& vtx = match_sh.vtx();
 
-  // information for each chamber
-  for (auto st: dtStationsToUse_)
-  {
-    etrk_[st].init();
-    etrk_[st].run = match_sh.event().id().run();
-    etrk_[st].lumi = match_sh.event().id().luminosityBlock();
-    etrk_[st].event = match_sh.event().id().event();
-    etrk_[st].charge_dt = t.charge();
-
-    const double vtx_x = match_sh.vtx().position().x();
-    const double vtx_y = match_sh.vtx().position().y();
-    const double vtx_z = match_sh.vtx().position().z();
+  etrk_[0].run = match_sh.event().id().run();
+  etrk_[0].lumi = match_sh.event().id().luminosityBlock();
+  etrk_[0].event = match_sh.event().id().event();
   
-    etrk_[st].vtx_x = vtx_x;
-    etrk_[st].vtx_y = vtx_y;
-    etrk_[st].vtx_z = vtx_z;
-    etrk_[st].vtx_r = sqrt(vtx_x*vtx_x + vtx_y*vtx_y);
-
-    etrk_[st].sim_pt = t.momentum().pt(); 
-    etrk_[st].sim_pt_inv = 1./t.momentum().pt(); 
-    etrk_[st].sim_dxy = (- vtx.position().x() * t.momentum().py() + vtx.position().y() * t.momentum().px() ) / t.momentum().pt();
-    etrk_[st].sim_eta = t.momentum().eta();
-    etrk_[st].sim_phi = t.momentum().phi();
-  }
-
+  const double vtx_x = match_sh.vtx().position().x();
+  const double vtx_y = match_sh.vtx().position().y();
+  const double vtx_z = match_sh.vtx().position().z();
+  
+  etrk_[0].vtx_x = vtx_x;
+  etrk_[0].vtx_y = vtx_y;
+  etrk_[0].vtx_z = vtx_z;
+  etrk_[0].vtx_r = sqrt(vtx_x*vtx_x + vtx_y*vtx_y);
+  
+  etrk_[0].sim_pt = t.momentum().pt(); 
+  etrk_[0].sim_pt_inv = 1./t.momentum().pt(); 
+  etrk_[0].sim_dxy = (- vtx.position().x() * t.momentum().py() + vtx.position().y() * t.momentum().px() ) / t.momentum().pt();
+  etrk_[0].sim_eta = t.momentum().eta();
+  etrk_[0].sim_phi = t.momentum().phi();
+  etrk_[0].sim_charge = t.charge();
+  
   // simhit information
-  for(auto ddt: match_sh.chamberIdsDT())
-  {
+  for(auto ddt: match_sh.chamberIdsDT()) {
+
+    std::cout << "DT Simhits " << ddt << std::endl;
+
     const DTChamberId id(ddt);
     const int stdt(gemvalidation::toDTType(id.wheel(),id.station()));
     if (std::find(dtStationsToUse_.begin(), dtStationsToUse_.end(), stdt)!=dtStationsToUse_.end()) continue;
-
+    
     // require at least 1 superlayer
     const int nsl(match_sh.nSuperLayersWithHitsInChamberDT(id.rawId()));
     if (nsl == 0) continue; 
@@ -272,36 +297,35 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     const int nl(match_sh.nLayersWithHitsInChamberDT(id.rawId()));
     if (nl<3) continue;
 
-    etrk_[stdt].nslayerdt  = nsl;
-    etrk_[stdt].nlayerdt  = nl;
+    etrk_[stdt+1].nslayerdt  = nsl;
+    etrk_[stdt+1].nlayerdt  = nl;
     etrk_[0].n_dt_st_sh = match_sh.chamberIdsDT().size();
 
-    etrk_[stdt].wheel = id.wheel();
-    etrk_[stdt].station = id.station();
+    etrk_[stdt+1].wheel = id.wheel();
+    etrk_[stdt+1].station = id.station();
 
     const GlobalPoint hitGp(match_sh.simHitsMeanPosition(match_sh.hitsInChamber(ddt)));
-    etrk_[stdt].eta_gp = hitGp.eta();
-    etrk_[stdt].x_gp = hitGp.x();
-    etrk_[stdt].y_gp = hitGp.y();
-    etrk_[stdt].z_gp = hitGp.z();
-    etrk_[stdt].r_gp = hitGp.perp();
-    etrk_[stdt].phi_gp = hitGp.phi();
+    etrk_[stdt+1].eta_gp = hitGp.eta();
+    etrk_[stdt+1].x_gp = hitGp.x();
+    etrk_[stdt+1].y_gp = hitGp.y();
+    etrk_[stdt+1].z_gp = hitGp.z();
+    etrk_[stdt+1].r_gp = hitGp.perp();
+    etrk_[stdt+1].phi_gp = hitGp.phi();
 
     const GlobalVector ym(match_sh.simHitsMeanMomentum(match_sh.hitsInChamber(ddt)));
-    etrk_[stdt].eta_gv = ym.eta();
-    etrk_[stdt].pt_gv = ym.perp();
-    etrk_[stdt].phi_gv = ym.phi();
-    etrk_[stdt].R_gv = sqrt (ym.x()*ym.x()+ym.y()*ym.y());
-    etrk_[stdt].Z_gv = ym.z();
-    etrk_[stdt].X_gv = ym.x();
-    etrk_[stdt].Y_gv = ym.y();
-    etrk_[stdt].deltaphi_h_g = reco::deltaPhi(hitGp.phi(), ym.phi());     //This one
+    etrk_[stdt+1].eta_gv = ym.eta();
+    etrk_[stdt+1].pt_gv = ym.perp();
+    etrk_[stdt+1].phi_gv = ym.phi();
+    etrk_[stdt+1].R_gv = sqrt (ym.x()*ym.x()+ym.y()*ym.y());
+    etrk_[stdt+1].Z_gv = ym.z();
+    etrk_[stdt+1].X_gv = ym.x();
+    etrk_[stdt+1].Y_gv = ym.y();
+    etrk_[stdt+1].deltaphi_h_g = reco::deltaPhi(hitGp.phi(), ym.phi());     //This one
     // etrk_[stdt].pt_calculated_dt = (1/(hitGp.phi() - ym.phi()))*1.4025845 + 0.674463;
   } 
 
   // rechits
-  for(auto ddt: match_dtrh.chamberIdsDTRecHit1DPair())
-  {
+  for(auto ddt: match_dtrh.chamberIdsDTRecHit1DPair()) {
     const DTChamberId id(ddt);
     const int stdt(gemvalidation::toDTType(id.wheel(),id.station()));
     if (std::find(dtStationsToUse_.begin(), dtStationsToUse_.end(), stdt)!=dtStationsToUse_.end()) continue;
@@ -315,8 +339,7 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   }  
 
   // DT segments
-  for(auto ddt: match_dtrh.chamberIdsDTRecSegment4D())
-  {
+  for(auto ddt: match_dtrh.chamberIdsDTRecSegment4D()) {
     const DTChamberId id(ddt);
     const int stdt(gemvalidation::toDTType(id.wheel(),id.station()));
     if (std::find(dtStationsToUse_.begin(), dtStationsToUse_.end(), stdt)!=dtStationsToUse_.end()) continue;
@@ -329,9 +352,21 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     etrk_[0].n_dt_st_seg = match_dtrh.chamberIdsDTRecSegment4D().size();
   }  
 
+  // simhit information
+  for(auto ddt: match_sh.chamberIdsCSC()) {
+    const CSCDetId id(ddt);
+    const int st(gemvalidation::toCSCType(id.station(),id.ring()));
+    if (std::find(cscStationsToUse_.begin(), cscStationsToUse_.end(), st)!=cscStationsToUse_.end()) continue;
+
+    // require at least 1 superlayer
+    const int nl(match_sh.nLayersWithHitsInSuperChamber(id.rawId()));
+    if (nl < 4) continue; 
+
+    etrk_[0].n_csc_st_sh = match_sh.chamberIdsCSC().size();
+  }
+
   // CSC segments
-  for(auto ddt: match_cscrh.chamberIdsCSCSegment())
-  {
+  for(auto ddt: match_cscrh.chamberIdsCSCSegment()) {
     const CSCDetId id(ddt);
     const int st(gemvalidation::toCSCType(id.station(),id.ring()));
     if (std::find(cscStationsToUse_.begin(), cscStationsToUse_.end(), st)!=cscStationsToUse_.end()) continue;
@@ -408,13 +443,13 @@ void MyTrackEff::init()
   sim_eta=-9.;
   sim_phi=-9.;
   sim_dxy = -99;
+  sim_charge = -99;
   eta_gp = -9.;
   eta_gv = -9.;
   phi_gv= -9.;
   pt_gv= -9.;
   z_gp = -9900.;
   deltaphi_h_g = -9.;
-  charge_dt = -99;
   
   x_gp = -9900.;
   y_gp = -9900.;
@@ -453,7 +488,9 @@ void MyTrackEff::init()
   n_dt_seg = -99;
   n_dt_st_sh = -99;
   n_dt_st_seg = -99;
+
   n_csc_seg = -99;
+  n_csc_st_sh = -99;
   n_csc_st_seg = -99;
 }
 
@@ -469,6 +506,7 @@ TTree*MyTrackEff::book(TTree *t,const std::string & name)
   t->Branch("sim_pt_inv", &sim_pt_inv);
   t->Branch("eta_gv", &eta_gv);
   t->Branch("sim_dxy", &sim_dxy);
+  t->Branch("sim_charge", &sim_charge);
 
   t->Branch("wheel", &wheel);
   t->Branch("station", &station);
@@ -476,7 +514,6 @@ TTree*MyTrackEff::book(TTree *t,const std::string & name)
   t->Branch("pt_gv", &pt_gv);
   t->Branch("phi_gv", &phi_gv);
   t->Branch("eta_gp", &eta_gp);
-  t->Branch("charge_dt", &charge_dt);
   t->Branch("vtx_x", &vtx_x);
   t->Branch("vtx_y", &vtx_y);
   t->Branch("vtx_z", &vtx_z);
@@ -496,6 +533,7 @@ TTree*MyTrackEff::book(TTree *t,const std::string & name)
   t->Branch("n_dt_st_seg", &n_dt_st_seg);
 
   t->Branch("n_csc_seg", &n_csc_seg);
+  t->Branch("n_csc_st_sh", &n_dt_st_sh);
   t->Branch("n_csc_st_seg", &n_csc_st_seg);
 
   t->Branch("has_recoTrackExtra", &has_recoTrackExtra);

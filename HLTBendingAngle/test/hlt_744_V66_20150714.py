@@ -7484,8 +7484,8 @@ process.HLTSchedule = cms.Schedule( *(process.HLTriggerFirstPath, process.HLT_L1
 
 process.source = cms.Source( "PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:RelVal_Raw_GRun_MC.root',
-    ),
+		"file:/fdata/hepx/store/user/jrdv009/DarkSUSY_mH_125_mGammaD_20000_ctau100_14TeV_madgraph452_bridge224_LHE_pythia8_GEN_SIM_80k_v3/DarkSUSY_mH_125_mGammaD_20000_ctau100_14TeV_madgraph452_bridge224_LHE_pythia8_GEN_SIM_DIGI_RAW/ab067d3ce238cbf980d5842f947c2908/out_digi_1_1_w3i.root"
+	),
     inputCommands = cms.untracked.vstring(
         'keep *'
     )
@@ -7562,11 +7562,10 @@ _customInfo['globalTags']= {}
 _customInfo['globalTags'][True ] = "auto:run2_hlt_GRun"
 _customInfo['globalTags'][False] = "auto:run2_mc_GRun"
 _customInfo['inputFiles']={}
-_customInfo['inputFiles'][True]  = "file:RelVal_Raw_GRun_DATA.root"
-_customInfo['inputFiles'][False] = "file:RelVal_Raw_GRun_MC.root"
+_customInfo['inputFiles'][False]  = "file:RelVal_Raw_GRun_DATA.root"
+_customInfo['inputFile' ]=  ['file:/fdata/hepx/store/user/jrdv009/DarkSUSY_mH_125_mGammaD_20000_ctau100_14TeV_madgraph452_bridge224_LHE_pythia8_GEN_SIM_80k_v3/DarkSUSY_mH_125_mGammaD_20000_ctau100_14TeV_madgraph452_bridge224_LHE_pythia8_GEN_SIM_DIGI_RAW/ab067d3ce238cbf980d5842f947c2908/out_digi_1_1_w3i.root']
 _customInfo['maxEvents' ]=  100
 _customInfo['globalTag' ]= "auto:run2_mc_GRun"
-_customInfo['inputFile' ]=  ['file:RelVal_Raw_GRun_MC.root']
 _customInfo['realData'  ]=  False
 from HLTrigger.Configuration.customizeHLTforALL import customizeHLTforAll
 process = customizeHLTforAll(process,_customInfo)

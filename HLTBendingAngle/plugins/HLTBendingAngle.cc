@@ -287,7 +287,8 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
 
     const DTChamberId id(ddt);
     const int stdt(gemvalidation::toDTType(id.wheel(),id.station()));
-    if (std::find(dtStationsToUse_.begin(), dtStationsToUse_.end(), stdt)!=dtStationsToUse_.end()) continue;
+    //std::cout << "DT station" << stdt << std::endl;
+    //    if (std::find(dtStationsToUse_.begin(), dtStationsToUse_.end(), stdt)!=dtStationsToUse_.end()) continue;
     
     // require at least 1 superlayer
     const int nsl(match_sh.nSuperLayersWithHitsInChamberDT(id.rawId()));
@@ -324,56 +325,44 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     // etrk_[stdt].pt_calculated_dt = (1/(hitGp.phi() - ym.phi()))*1.4025845 + 0.674463;
   } 
 
-  // rechits
-  for(auto ddt: match_dtrh.chamberIdsDTRecHit1DPair()) {
-    const DTChamberId id(ddt);
-    const int stdt(gemvalidation::toDTType(id.wheel(),id.station()));
-    if (std::find(dtStationsToUse_.begin(), dtStationsToUse_.end(), stdt)!=dtStationsToUse_.end()) continue;
+  etrk_[0].n_dt_rh =  match_dtrh.nDTRecHit1DPairs();
+  etrk_[0].n_dt_st_rh = match_dtrh.chamberIdsDTRecHit1DPair().size();
+  etrk_[0].n_dt_seg =  match_dtrh.nDTRecSegment4Ds();
+  etrk_[0].n_dt_st_seg = match_dtrh.chamberIdsDTRecSegment4D().size();
+  etrk_[0].n_csc_st_sh = match_sh.chamberIdsCSC().size();
+  etrk_[0].n_csc_seg =  match_cscrh.nCSCSegments();
+  etrk_[0].n_csc_st_seg = match_cscrh.chamberIdsCSCSegment().size();
+  // // rechits
+  // for(auto ddt: match_dtrh.chamberIdsDTRecHit1DPair()) {
+  //   //const DTChamberId id(ddt);
 
-    // require at least 3 layers hit per chamber
-    const int nl(match_sh.nLayersWithHitsInChamberDT(id.rawId()));
-    if (nl<3) continue;
+  // }  
 
-    etrk_[0].n_dt_rh =  match_dtrh.nDTRecHit1DPairs();
-    etrk_[0].n_dt_st_rh = match_dtrh.chamberIdsDTRecHit1DPair().size();
-  }  
+  // // DT segments
+  // for(auto ddt: match_dtrh.chamberIdsDTRecSegment4D()) {
+  //   //const DTChamberId id(ddt);
 
-  // DT segments
-  for(auto ddt: match_dtrh.chamberIdsDTRecSegment4D()) {
-    const DTChamberId id(ddt);
-    const int stdt(gemvalidation::toDTType(id.wheel(),id.station()));
-    if (std::find(dtStationsToUse_.begin(), dtStationsToUse_.end(), stdt)!=dtStationsToUse_.end()) continue;
+  // }  
 
-    // require at least 3 layers hit per chamber
-    const int nl(match_sh.nLayersWithHitsInChamberDT(id.rawId()));
-    if (nl<3) continue;
+  // // simhit information
+  // for(auto ddt: match_sh.chamberIdsCSC()) {
+  //   //const CSCDetId id(ddt);
+  //   //const int st(gemvalidation::toCSCType(id.station(),id.ring()));
+  //   //if (std::find(cscStationsToUse_.begin(), cscStationsToUse_.end(), st)!=cscStationsToUse_.end()) continue;
 
-    etrk_[0].n_dt_seg =  match_dtrh.nDTRecSegment4Ds();
-    etrk_[0].n_dt_st_seg = match_dtrh.chamberIdsDTRecSegment4D().size();
-  }  
+  //   // require at least 1 superlayer
+  //   //const int nl(match_sh.nLayersWithHitsInSuperChamber(id.rawId()));
+  //   //if (nl < 4) continue; 
 
-  // simhit information
-  for(auto ddt: match_sh.chamberIdsCSC()) {
-    const CSCDetId id(ddt);
-    const int st(gemvalidation::toCSCType(id.station(),id.ring()));
-    if (std::find(cscStationsToUse_.begin(), cscStationsToUse_.end(), st)!=cscStationsToUse_.end()) continue;
+  // }
 
-    // require at least 1 superlayer
-    const int nl(match_sh.nLayersWithHitsInSuperChamber(id.rawId()));
-    if (nl < 4) continue; 
+  // // CSC segments
+  // for(auto ddt: match_cscrh.chamberIdsCSCSegment()) {
+  //   //const CSCDetId id(ddt);
+  //   //const int st(gemvalidation::toCSCType(id.station(),id.ring()));
+  //   //if (std::find(cscStationsToUse_.begin(), cscStationsToUse_.end(), st)!=cscStationsToUse_.end()) continue;
 
-    etrk_[0].n_csc_st_sh = match_sh.chamberIdsCSC().size();
-  }
-
-  // CSC segments
-  for(auto ddt: match_cscrh.chamberIdsCSCSegment()) {
-    const CSCDetId id(ddt);
-    const int st(gemvalidation::toCSCType(id.station(),id.ring()));
-    if (std::find(cscStationsToUse_.begin(), cscStationsToUse_.end(), st)!=cscStationsToUse_.end()) continue;
-
-    etrk_[0].n_csc_seg =  match_cscrh.nCSCSegments();
-    etrk_[0].n_csc_st_seg = match_cscrh.chamberIdsCSCSegment().size();
-  }  
+  // }  
 
   // RecoTrackExtra
   auto recoTrackExtras(match_hlt_track.getMatchedRecoTrackExtras());

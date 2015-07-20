@@ -3,17 +3,6 @@ from ROOT import *
 from Helpers import *
 from ROOT import SetOwnership
 
-def tracefunc(frame, event, arg, indent=[0]):
-      if event == "call":
-          indent[0] += 2
-          print "-" * indent[0] + "> call function", frame.f_code.co_name
-      elif event == "return":
-          print "<" + "-" * indent[0], "exit function", frame.f_code.co_name
-          indent[0] -= 2
-      return tracefunc
-
-import sys
-sys.settrace(tracefunc)
 
 
 def trackKinematics(p):
@@ -75,31 +64,31 @@ def recoTrackEfficiency(p):
 
     ## DT only
     def sim_pt_sh_barrel(n=2):
-        return get_1D(p, "title", "sim_pt_%dsh_barrel"%(n), ptBinning, "sim_pt", AND(n_dt_csc_st_sh(n), barrel_eta_cut()))
+        return get_1D(p, "title", "sim_pt_%dsh_barrel"%(n), ptBinning, "sim_pt", AND(n_dt_st_sh(n), barrel_eta_cut()))
     def sim_pt_seg_barrel(n=2):
-        return get_1D(p, "title", "sim_pt_%dseg_barrel"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), barrel_eta_cut()))
+        return get_1D(p, "title", "sim_pt_%dseg_barrel"%(n), ptBinning, "sim_pt", AND(n_dt_seg(n), barrel_eta_cut()))
     def sim_pt_sh_seg_barrel(n=2,m=2):
-        return get_1D(p, "title", "sim_pt_%dsh_%dseg_barrel"%(n,m), ptBinning, "sim_pt", AND(n_dt_csc_st_sh(n), n_dt_csc_seg(m), barrel_eta_cut()))
+        return get_1D(p, "title", "sim_pt_%dsh_%dseg_barrel"%(n,m), ptBinning, "sim_pt", AND(n_dt_st_sh(n), n_dt_seg(m), barrel_eta_cut()))
     def sim_pt_seg_recoTrackExtra_barrel(n=2):
-        return get_1D(p, "title", "sim_pt_%dseg_recoTrackExtra_barrel"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n),has_trackExtra(), barrel_eta_cut()))
+        return get_1D(p, "title", "sim_pt_%dseg_recoTrackExtra_barrel"%(n), ptBinning, "sim_pt", AND(n_dt_seg(n),has_trackExtra(), barrel_eta_cut()))
     def sim_pt_seg_recoTrack_barrel(n=2):
-        return get_1D(p, "title", "sim_pt_%dseg_recoTrack_barrel"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n),has_track(), barrel_eta_cut()))
+        return get_1D(p, "title", "sim_pt_%dseg_recoTrack_barrel"%(n), ptBinning, "sim_pt", AND(n_dt_seg(n),has_track(), barrel_eta_cut()))
     def sim_pt_seg_recoChargedCandidate_barrel(n=2):
-        return get_1D(p, "title", "sim_pt_%dseg_recoChargedCandidate_barrel"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n),has_cand(), barrel_eta_cut()))
+        return get_1D(p, "title", "sim_pt_%dseg_recoChargedCandidate_barrel"%(n), ptBinning, "sim_pt", AND(n_dt_seg(n),has_cand(), barrel_eta_cut()))
 
     ## CSC only
     def sim_pt_sh_endcap(n=2):
-        return get_1D(p, "title", "sim_pt_%dcscsh_endcap"%(n), ptBinning, "sim_pt", AND(n_dt_csc_st_sh(n), endcap_eta_cut()))
+        return get_1D(p, "title", "sim_pt_%dsh_endcap"%(n), ptBinning, "sim_pt", AND(n_csc_st_sh(n), endcap_eta_cut()))
     def sim_pt_seg_endcap(n=2):
-        return get_1D(p, "title", "sim_pt_%dseg_endcap"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), endcap_eta_cut()))
-    def sim_pt_cscsh_seg_endcap(n=2,m=2):
-        return get_1D(p, "title", "sim_pt_%dcscsh_%dseg_endcap"%(n,m), ptBinning, "sim_pt", AND(n_dt_csc_st_sh(n), n_dt_csc_seg(m), endcap_eta_cut()))
+        return get_1D(p, "title", "sim_pt_%dseg_endcap"%(n), ptBinning, "sim_pt", AND(n_csc_seg(n), endcap_eta_cut()))
+    def sim_pt_sh_seg_endcap(n=2,m=2):
+        return get_1D(p, "title", "sim_pt_%dsh_%dseg_endcap"%(n,m), ptBinning, "sim_pt", AND(n_csc_st_sh(n), n_csc_seg(m), endcap_eta_cut()))
     def sim_pt_seg_recoTrackExtra_endcap(n=2):
-        return get_1D(p, "title", "sim_pt_%dseg_recoTrackExtra_endcap"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n),has_trackExtra(), endcap_eta_cut()))
+        return get_1D(p, "title", "sim_pt_%dseg_recoTrackExtra_endcap"%(n), ptBinning, "sim_pt", AND(n_csc_seg(n),has_trackExtra(), endcap_eta_cut()))
     def sim_pt_seg_recoTrack_endcap(n=2):
-        return get_1D(p, "title", "sim_pt_%dseg_recoTrack_endcap"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n),has_track(), endcap_eta_cut()))
+        return get_1D(p, "title", "sim_pt_%dseg_recoTrack_endcap"%(n), ptBinning, "sim_pt", AND(n_csc_seg(n),has_track(), endcap_eta_cut()))
     def sim_pt_seg_recoChargedCandidate_endcap(n=2):
-        return get_1D(p, "title", "sim_pt_%dseg_recoChargedCandidate_endcap"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n),has_cand(), endcap_eta_cut()))
+        return get_1D(p, "title", "sim_pt_%dseg_recoChargedCandidate_endcap"%(n), ptBinning, "sim_pt", AND(n_csc_seg(n),has_cand(), endcap_eta_cut()))
 
     ## CSC + DT
     def sim_eta():

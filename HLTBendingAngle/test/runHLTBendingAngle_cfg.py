@@ -16,7 +16,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'MCRUN2_74_V9', '')
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000))
 
 """
 process.options = cms.untracked.PSet(
@@ -42,8 +42,8 @@ print eosfiles[label]
 process=useInputDir(process, dir, pattern="outputA")
 
 process.TFileService = cms.Service("TFileService",
-#    fileName = cms.string("out_ana.root"),
-    fileName = cms.string("out_ana_mGammaD_20000_ctau100_14TeV_HLT_07092015.root"),
+    fileName = cms.string("out_ana.root"),
+#    fileName = cms.string("out_ana_mGammaD_20000_ctau100_14TeV_HLT_07132015.root"),
 	closeFileFast = cms.untracked.bool(True)
 )
 

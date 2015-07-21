@@ -3,6 +3,21 @@ import math
 import array
 from math import log10, floor
 
+def has_csc():
+    return TCut("nlayerscsc>4")
+    
+def dxy(dxy_min, dxy_max):
+    return TCut("%f < abs(dxy_csc) && abs(dxy_csc)<%f"%(dxy_min, dxy_max))
+
+def eta_sh_st1(eta_min, eta_max):
+    return TCut("%f < abs(csc_gp_eta) && abs(csc_gp_eta)< %f"%(eta_min, eta_max))
+    
+def same_direction_cut():
+    return TCut("Lxy_csc <0 && pzvz_csc<0")
+    
+def has_reco_pt():
+    return TCut("calculated_p_csc_10_15==0")
+
 #_______________________________________________________________________________
 def get_1D(p, title, h_name, h_bins, to_draw, cut, opt = "", color = kBlue):
     gStyle.SetStatStyle(0)

@@ -3,17 +3,18 @@ import math
 import array
 from math import log10, floor
 
+# this look-up table is *ONLY* for ME11!!!
 # first number is slope; second number if intersept
 slope_inter = {
-    1.5 : {3.69, 1.01}
-    1.6 : {3.127, 4.283} 
-    1.7 : {1.34, 7.131 }
-    1.8 : {5.056, 6.566} 
-    1.9 : {1.439, 7.424  
-    2.0 : {5.368, 3.792} 
-    2.1 : {1.156, 5.511}
-    2.2 : {4.61, -0.3263} 
-    2.3 : {0.6751, -1.342} 
+    1.5 : {3.69, 1.01},
+    1.6 : {3.127, 4.283}, 
+    1.7 : {1.34, 7.131 },
+    1.8 : {5.056, 6.566},
+    1.9 : {1.439, 7.424},
+    2.0 : {5.368, 3.792}, 
+    2.1 : {1.156, 5.511},
+    2.2 : {4.61, -0.3263}, 
+    2.3 : {0.6751, -1.342}, 
     2.4 : {0.687, 1.013}
 }
 
@@ -31,6 +32,11 @@ def same_direction_cut():
     
 def has_reco_pt():
     return TCut("calculated_p_csc_10_15==0")
+    
+def pt_from_povercosh(eta_min, sim_pt, var=12):
+    slope = slope_inter[eta_min][0]
+    inter = slope_inter[eta_min][1]
+    return TCut("(1/abs(csc_bending_angle_%d) + %f) / %f > %f"%(var, inter, slope, sim_pt))
 
 #_______________________________________________________________________________
 def get_1D(p, title, h_name, h_bins, to_draw, cut, opt = "", color = kBlue):

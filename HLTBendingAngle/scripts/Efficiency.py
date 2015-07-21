@@ -29,20 +29,6 @@ def new_den(dxy_min = 0, dxy_max = 5, eta_min = 1.6, eta_max = 1.7):
 
 fabs = ""
 
-# first number is slope; second number if intersept
-slope_inter = {
-    1.5 : {3.69, 1.01}
-    1.6 : {3.127, 4.283} 
-    1.7 : {1.34, 7.131 }
-    1.8 : {5.056, 6.566} 
-    1.9 : {1.439, 7.424  
-    2.0 : {5.368, 3.792} 
-    2.1 : {1.156, 5.511}
-    2.2 : {4.61, -0.3263} 
-    2.3 : {0.6751, -1.342} 
-    2.4 : {0.687, 1.013}
-}
-
 if(sta=="ME11"):
     if(low=="1.5"):
         fabs = " && (1/abs(csc_bending_angle_"+var+") + 3.69 ) / 1.01 > 20"

@@ -36,7 +36,7 @@ process.source = cms.Source("PoolSource",
 
 from MuJetAnalysis.HLTBendingAngle.hltSamples import *
 from MuJetAnalysis.HLTBendingAngle.InputFileHelpers import *
-label = "mGammaD_20000_ctau100_14TeV_HLT"
+label = "mGammaD_20000_ctau0_14TeV_HLT"
 dir = eosfiles[label]
 print eosfiles[label]
 process=useInputDir(process, dir, pattern="outputA")

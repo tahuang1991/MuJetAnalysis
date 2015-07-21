@@ -1,0 +1,3 @@
+hltGetConfiguration /dev/CMSSW_7_4_0/GRun/V66 --full --offline --mc --unprescale --process TEST --globaltag auto:run2_mc_GRun \
+--paths HLTriggerFirstPath,HLT_Mu17_Mu8_DZ_v2,HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v2,HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v2,\
+HLT_TrkMu15_DoubleTrkMu5NoFiltersNoVtx_v2,HLT_TrkMu17_DoubleTrkMu8NoFiltersNoVtx_v2,HLT_L1SingleMuOpen_v2,HLTriggerFinalPath > hlt_744_V66_20150714.py

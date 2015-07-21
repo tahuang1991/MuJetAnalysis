@@ -33,8 +33,8 @@ inputFiles = [
 
 ## because the storage server was really slow - July 20th 2015
 inputFiles = [
-	"DarkSUSY_mH_125_mGammaD_20000_cT_0_14TeV_out_ana.root",
-	"DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_out_ana.root",
+	"DarkSUSY_mH_125_mGammaD_20000_cT_0_14TeV_out_ana.test.root",
+	"DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_out_ana.test.root",
 	"DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_out_ana.root"
 	]
 
@@ -71,7 +71,7 @@ for i in range(0,1):
                   
       ## make the plots
       plotter = Plotter()
-      trackKinematics(plotter)
+      #trackKinematics(plotter)
       recoTrackEfficiency(plotter)
       
 

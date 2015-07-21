@@ -1,5 +1,6 @@
 import ROOT
 from array import array
+from Helpers import *
 c1 = ROOT.TCanvas("a","b",1000,700)
 c1.SetGridx()
 c1.SetGridy()

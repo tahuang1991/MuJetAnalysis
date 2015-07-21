@@ -26,6 +26,8 @@ den4 = "nlayerscsc>4 && abs(dxy_csc)>30 && abs(dxy_csc)<500 && has_csc_"+var+">0
 
 def new_den(dxy_min = 0, dxy_max = 5, eta_min = 1.6, eta_max = 1.7):
     return AND(has_csc(), dxy(dxy_min, dxy_max), eta_sh_st1(eta_min, eta_max), same_direction_cut(), has_reco_pt())
+def new_num(dxy_min = 0, dxy_max = 5, eta_min = 1.6, eta_max = 1.7, sim_pt=10):
+    return AND(new_den(dxy_min, dxy_max, eta_min, eta_max), p_from_povercosh(eta_min, sim_pt))
 
 fabs = ""
 

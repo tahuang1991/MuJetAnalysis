@@ -80,9 +80,9 @@ def recoTrackEfficiency(p):
     def sim_pt_sh_endcap(n=2):
         return get_1D(p, "title", "sim_pt_%dsh_endcap"%(n), ptBinning, "sim_pt", AND(n_csc_st_sh(n), endcap_eta_cut()))
     def sim_pt_seg_endcap(n=2):
-        return get_1D(p, "title", "sim_pt_%dseg_endcap"%(n), ptBinning, "sim_pt", AND(n_csc_st_sh(n), endcap_eta_cut()))
+        return get_1D(p, "title", "sim_pt_%dseg_endcap"%(n), ptBinning, "sim_pt", AND(n_csc_seg(n), endcap_eta_cut()))
     def sim_pt_sh_seg_endcap(n=2,m=2):
-        return get_1D(p, "title", "sim_pt_%dsh_%dseg_endcap"%(n,m), ptBinning, "sim_pt", AND(n_csc_st_sh(n), n_csc_st_sh(m), endcap_eta_cut()))
+        return get_1D(p, "title", "sim_pt_%dsh_%dseg_endcap"%(n,m), ptBinning, "sim_pt", AND(n_csc_st_sh(n), n_csc_seg(m), endcap_eta_cut()))
     def sim_pt_seg_recoTrackExtra_endcap(n=2):
         return get_1D(p, "title", "sim_pt_%dseg_recoTrackExtra_endcap"%(n), ptBinning, "sim_pt", AND(n_csc_seg(n), has_trackExtra(), endcap_eta_cut()))
     def sim_pt_seg_recoTrack_endcap(n=2):
@@ -167,7 +167,7 @@ def recoTrackEfficiency(p):
     def eff_sim_eta_sh_seg(n, m, pt=10):
         return clearEmptyBinsEff(TEfficiency(sim_eta_sh_seg_pt(n,m,pt), sim_eta_sh_pt(n,pt)))
     def eff_sim_eta_seg(n):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg(n), sim_eta(n)))
+        return clearEmptyBinsEff(TEfficiency(sim_eta_seg(n), sim_eta()))
         
     ## track pT efficiencies
     def eff_sim_pt_recoTrackExtra():
@@ -315,7 +315,7 @@ def recoTrackEfficiency(p):
         #gStyle.SetStatStyle(0)
         base = TH1D("base","base", 50, -2.5, 2.5)
         base.SetStats(0)
-        base.SetTitle("                                                                      14 TeV,  PU = %d; SimTrack p_{T} [GeV]; Reconstruction efficiency"%(p.pu))
+        base.SetTitle("                                                                      14 TeV,  PU = %d; SimTrack #eta; Reconstruction efficiency"%(p.pu))
         base.SetMinimum(0)
         base.SetMaximum(1.1)
         base.GetXaxis().SetLabelSize(0.05)
@@ -362,7 +362,6 @@ def recoTrackEfficiency(p):
     makePtEffPlot(eff_sim_pt_sh_endcap(3), "eff_sim_pt_3sh_endcap", "3 CSC Station with SimHits")
     makePtEffPlot(eff_sim_pt_sh_endcap(4), "eff_sim_pt_4sh_endcap", "4 CSC Station with SimHits")
 
-    """
     makePtEffPlot(eff_sim_pt_sh_seg(1,1), "eff_sim_pt_1sh_1seg", "1 DT/CSC Station with Segments")
     makePtEffPlot(eff_sim_pt_sh_seg(2,2), "eff_sim_pt_2sh_2seg", "2 DT/CSC Station with Segments")
     makePtEffPlot(eff_sim_pt_sh_seg(3,3), "eff_sim_pt_3sh_3seg", "3 DT/CSC Station with Segments")
@@ -377,9 +376,8 @@ def recoTrackEfficiency(p):
     makePtEffPlot(eff_sim_pt_sh_seg_endcap(2,2), "eff_sim_pt_2sh_2seg_endcap", "2 CSC Station with Segments")
     makePtEffPlot(eff_sim_pt_sh_seg_endcap(3,3), "eff_sim_pt_3sh_3seg_endcap", "3 CSC Station with Segments")
     makePtEffPlot(eff_sim_pt_sh_seg_endcap(4,4), "eff_sim_pt_4sh_4seg_endcap", "4 CSC Station with Segments")
-    """
 
-    makeSegmentPlotsWithoutHits = False
+    makeSegmentPlotsWithoutHits = True
     if makeSegmentPlotsWithoutHits:
         makePtEffPlot(eff_sim_pt_seg(1), "eff_sim_pt_1seg_endcap", "1 CSC/DT Station with Segments")
         makePtEffPlot(eff_sim_pt_seg(2), "eff_sim_pt_2seg_endcap", "2 CSC/DT Station with Segments")
@@ -397,7 +395,6 @@ def recoTrackEfficiency(p):
         makePtEffPlot(eff_sim_pt_seg_barrel(4), "eff_sim_pt_4seg_barrel", "4 DT Station with Segments")
 
     ## simhits
-    """
     makeEtaEffPlot(eff_sim_eta_sh(1), "eff_sim_eta_1sh", "1 DT/CSC Station with SimHits")
     makeEtaEffPlot(eff_sim_eta_sh(2), "eff_sim_eta_2sh", "2 DT/CSC Station with SimHits")
     makeEtaEffPlot(eff_sim_eta_sh(3), "eff_sim_eta_3sh", "3 DT/CSC Station with SimHits")
@@ -407,52 +404,44 @@ def recoTrackEfficiency(p):
     makeEtaEffPlot(eff_sim_eta_sh_seg(2,2), "eff_sim_eta_2sh_2seg", "2 DT/CSC Station with Segments")
     makeEtaEffPlot(eff_sim_eta_sh_seg(3,3), "eff_sim_eta_3sh_3seg", "3 DT/CSC Station with Segments")
     makeEtaEffPlot(eff_sim_eta_sh_seg(4,4), "eff_sim_eta_4sh_4seg", "4 DT/CSC Station with Segments")
-    """
 
-    makeSegmentPlotsWithoutHits = False
+    makeSegmentPlotsWithoutHits = True
     if makeSegmentPlotsWithoutHits:
-        makeEtaEffPlot(eff_sim_eta_seg(1,1), "eff_sim_eta_1seg", "1 DT/CSC Station with Segments")
-        makeEtaEffPlot(eff_sim_eta_seg(2,2), "eff_sim_eta_2seg", "2 DT/CSC Station with Segments")
-        makeEtaEffPlot(eff_sim_eta_seg(3,3), "eff_sim_eta_3seg", "3 DT/CSC Station with Segments")
-        makeEtaEffPlot(eff_sim_eta_seg(4,4), "eff_sim_eta_4seg", "4 DT/CSC Station with Segments")
+        makeEtaEffPlot(eff_sim_eta_seg(1), "eff_sim_eta_1seg", "1 DT/CSC Station with Segments")
+        makeEtaEffPlot(eff_sim_eta_seg(2), "eff_sim_eta_2seg", "2 DT/CSC Station with Segments")
+        makeEtaEffPlot(eff_sim_eta_seg(3), "eff_sim_eta_3seg", "3 DT/CSC Station with Segments")
+        makeEtaEffPlot(eff_sim_eta_seg(4), "eff_sim_eta_4seg", "4 DT/CSC Station with Segments")
 
     ## tracks
-    for n in range(2,2):
+    for n in range(2,5):
         makePtEffPlot(eff_sim_pt_seg_recoTrackExtra(n), "eff_sim_pt_%dseg_recoTrackExtra"%(n), "L2 TrackExtra with %d segments"%(n))
         makePtEffPlot(eff_sim_pt_seg_recoTrack(n), "eff_sim_pt_%dseg_recoTrack"%(n), "L2 Track with %d segments"%(n))
-        makePtEffPlot(eff_sim_pt_seg_recoChargedCandidate(n), "eff_sim_pt_%dseg_recoChargedCandidate"%(n), "L2 ChargedCandidate with %d segments"%(n))
-
-        makePtEffPlot(eff_sim_pt_seg_recoTrackExtra_barrel(n), "eff_sim_pt_%dseg_recoTrackExtra_barrel"%(n), "L2 TrackExtra with %d segments (barrel)"%(n))
-        makePtEffPlot(eff_sim_pt_seg_recoTrack_barrel(n), "eff_sim_pt_%dseg_recoTrack_barrel"%(n), "L2 Track with %d segments (barrel)"%(n))
-        makePtEffPlot(eff_sim_pt_seg_recoChargedCandidate_barrel(n), "eff_sim_pt_%dseg_recoChargedCandidate_barrel"%(n), "L2 ChargedCandidate with %d segments (barrel)"%(n))
-        
-        makePtEffPlot(eff_sim_pt_seg_recoTrackExtra_endcap(n), "eff_sim_pt_%dseg_recoTrackExtra_endcap"%(n), "L2 TrackExtra with %d segments (endcap)"%(n))
-        makePtEffPlot(eff_sim_pt_seg_recoTrack_endcap(n), "eff_sim_pt_%dseg_recoTrack_endcap"%(n), "L2 Track with %d segments (endcap)"%(n))
-        makePtEffPlot(eff_sim_pt_seg_recoChargedCandidate_endcap(n), "eff_sim_pt_%dseg_recoChargedCandidate_endcap"%(n), "L2 ChargedCandidate with %d segments (endcap)"%(n))
+        makePtEffPlot(eff_sim_pt_seg_recoChargedCandidate(n), "eff_sim_pt_%dseg_recoChargedCandidate"%(n), "L2 Candidate with %d segments"%(n))
 
         makeEtaEffPlot(eff_sim_eta_seg_recoTrackExtra(n), "eff_sim_eta_%dseg_recoTrackExtra"%(n), "L2 TrackExtra with %d segments"%(n))
         makeEtaEffPlot(eff_sim_eta_seg_recoTrack(n), "eff_sim_eta_%dseg_recoTrack"%(n), "L2 Track with %d segments"%(n))
-        makeEtaEffPlot(eff_sim_eta_seg_recoChargedCandidate(n), "eff_sim_eta_%dseg_recoChargedCandidate"%(n), "L2 ChargedCandidate with %d segments"%(n))
+        makeEtaEffPlot(eff_sim_eta_seg_recoChargedCandidate(n), "eff_sim_eta_%dseg_recoChargedCandidate"%(n), "L2 Candidate with %d segments"%(n))
 
-    """
+        makePtEffPlot(eff_sim_pt_seg_recoTrackExtra_barrel(n), "eff_sim_pt_%dseg_recoTrackExtra_barrel"%(n), "L2 TrackExtra with %d segments (barrel)"%(n))
+        makePtEffPlot(eff_sim_pt_seg_recoTrack_barrel(n), "eff_sim_pt_%dseg_recoTrack_barrel"%(n), "L2 Track with %d segments (barrel)"%(n))
+        makePtEffPlot(eff_sim_pt_seg_recoChargedCandidate_barrel(n), "eff_sim_pt_%dseg_recoChargedCandidate_barrel"%(n), "L2 Candidate with %d segments (barrel)"%(n))
+        
+        makePtEffPlot(eff_sim_pt_seg_recoTrackExtra_endcap(n), "eff_sim_pt_%dseg_recoTrackExtra_endcap"%(n), "L2 TrackExtra with %d segments (endcap)"%(n))
+        makePtEffPlot(eff_sim_pt_seg_recoTrack_endcap(n), "eff_sim_pt_%dseg_recoTrack_endcap"%(n), "L2 Track with %d segments (endcap)"%(n))
+        makePtEffPlot(eff_sim_pt_seg_recoChargedCandidate_endcap(n), "eff_sim_pt_%dseg_recoChargedCandidate_endcap"%(n), "L2 Candidate with %d segments (endcap)"%(n))
+
+
+    makeTrackPlotsWithoutSegments = True
+    if makeTrackPlotsWithoutSegments:
     ## tracks
-    makePtEffPlot(eff_sim_pt_recoTrackExtra, "eff_sim_pt_recoTrackExtra", "L2 TrackExtra")
-    makePtEffPlot(eff_sim_pt_recoTrack, "eff_sim_pt_recoTrack", "L2 Track")
-    makePtEffPlot(eff_sim_pt_recoChargedCandidate, "eff_sim_pt_recoChargedCandidate", "L2 ChargedCandidate")
+        makePtEffPlot(eff_sim_pt_recoTrackExtra(), "eff_sim_pt_recoTrackExtra", "L2 TrackExtra")
+        makePtEffPlot(eff_sim_pt_recoTrack(), "eff_sim_pt_recoTrack", "L2 Track")
+        makePtEffPlot(eff_sim_pt_recoChargedCandidate(), "eff_sim_pt_recoChargedCandidate", "L2 Candidate")
+        
+        makePtEffPlot(eff_sim_pt_recoTrackExtra_barrel(), "eff_sim_pt_recoTrackExtra_barrel", "L2 TrackExtra")
+        makePtEffPlot(eff_sim_pt_recoTrack(), "eff_sim_pt_recoTrack_barrel", "L2 Track")
+        makePtEffPlot(eff_sim_pt_recoChargedCandidate(), "eff_sim_pt_recoChargedCandidate_barrel", "L2 Candidate")
 
-    makePtEffPlot(eff_sim_pt_seg_recoTrackExtra, "eff_sim_pt_seg_recoTrackExtra", "L2 TrackExtra")
-    makePtEffPlot(eff_sim_pt_seg_recoTrack, "eff_sim_pt_seg_recoTrack", "L2 Track")
-    makePtEffPlot(eff_sim_pt_seg_recoChargedCandidate, "eff_sim_pt_seg_recoChargedCandidate", "L2 ChargedCandidate")
-
-    makePtEffPlot(eff_sim_pt_recoTrackExtra_barrel, "eff_sim_pt_recoTrackExtra_barrel", "L2 TrackExtra")
-    makePtEffPlot(eff_sim_pt_recoTrack, "eff_sim_pt_recoTrack_barrel", "L2 Track")
-    makePtEffPlot(eff_sim_pt_recoChargedCandidate, "eff_sim_pt_recoChargedCandidate_barrel", "L2 ChargedCandidate")
-
-    makePtEffPlot(eff_sim_pt_seg_recoTrackExtra_barrel, "eff_sim_pt_seg_recoTrackExtra_barrel", "L2 TrackExtra")
-    makePtEffPlot(eff_sim_pt_seg_recoTrack_barrel, "eff_sim_pt_seg_recoTrack_barrel", "L2 Track")
-    makePtEffPlot(eff_sim_pt_seg_recoChargedCandidate_barrel, "eff_sim_pt_seg_recoChargedCandidate_barrel", "L2 ChargedCandidate")
-
-    makePtEffPlot(eff_sim_pt_recoTrackExtra_endcap, "eff_sim_pt_recoTrackExtra_endcap", "L2 TrackExtra")
-    makePtEffPlot(eff_sim_pt_recoTrack, "eff_sim_pt_recoTrack_endcap", "L2 Track")
-    makePtEffPlot(eff_sim_pt_recoChargedCandidate, "eff_sim_pt_recoChargedCandidate_endcap", "L2 ChargedCandidate")
-    """
+        makePtEffPlot(eff_sim_pt_recoTrackExtra_endcap(), "eff_sim_pt_recoTrackExtra_endcap", "L2 TrackExtra")
+        makePtEffPlot(eff_sim_pt_recoTrack(), "eff_sim_pt_recoTrack_endcap", "L2 Track")
+        makePtEffPlot(eff_sim_pt_recoChargedCandidate(), "eff_sim_pt_recoChargedCandidate_endcap", "L2 Candidate")

@@ -3,6 +3,20 @@ import math
 import array
 from math import log10, floor
 
+# first number is slope; second number if intersept
+slope_inter = {
+    1.5 : {3.69, 1.01}
+    1.6 : {3.127, 4.283} 
+    1.7 : {1.34, 7.131 }
+    1.8 : {5.056, 6.566} 
+    1.9 : {1.439, 7.424  
+    2.0 : {5.368, 3.792} 
+    2.1 : {1.156, 5.511}
+    2.2 : {4.61, -0.3263} 
+    2.3 : {0.6751, -1.342} 
+    2.4 : {0.687, 1.013}
+}
+
 def has_csc():
     return TCut("nlayerscsc>4")
     

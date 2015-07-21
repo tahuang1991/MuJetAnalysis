@@ -24,6 +24,9 @@ den = "nlayerscsc>4 && abs(dxy_csc)<5 && has_csc_"+var+">0 && abs(csc_gp_eta)>"+
 den2 = "nlayerscsc>4 && abs(dxy_csc)>10 && abs(dxy_csc)<30 && has_csc_"+var+">0 && abs(csc_gp_eta)>"+low+" && abs(csc_gp_eta)<"+hig+" && Lxy_csc <0 && pzvz_csc<0 && calculated_p_csc_10_15==0"
 den4 = "nlayerscsc>4 && abs(dxy_csc)>30 && abs(dxy_csc)<500 && has_csc_"+var+">0 && abs(csc_gp_eta)>"+low+" && abs(csc_gp_eta)<"+hig+" && Lxy_csc <0 && pzvz_csc<0 && calculated_p_csc_10_15==0"
 
+def new_den(dxy_min = 0, dxy_max = 5, eta_min = 1.6, eta_max = 1.7):
+    return AND(has_csc(), dxy(dxy_min, dxy_max), eta_sh_st1(eta_min, eta_max), same_direction_cut(), has_reco_pt())
+
 fabs = ""
 
 if(sta=="ME11"):

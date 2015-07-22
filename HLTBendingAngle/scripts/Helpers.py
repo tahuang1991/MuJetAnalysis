@@ -52,20 +52,20 @@ def n_dt_csc_seg(n):
     return OR(n_dt_seg(n), n_csc_seg(n))
     
 #_______________________________________________________________________________
-def has_trackExtra():
-    return TCut("has_recoTrackExtra>=1")
+def has_trackExtra(pt=0):
+    return AND(TCut("has_recoTrackExtra>=1"), TCut("recoTrackExtra_pt_outer>%f"%(pt)))
 
 #_______________________________________________________________________________
-def has_track():
-    return TCut("has_recoTrack>=1")
+def has_track(pt=0):
+    return AND(TCut("has_recoTrack>=1"), TCut("recoTrack_pt_outer>%f"%(pt)))
 
 #_______________________________________________________________________________
-def has_cand():
-    return TCut("has_recoChargedCandidate>=1")
+def has_cand(pt=0):
+    return AND(TCut("has_recoChargedCandidate>=1"), TCut("recoChargedCandidate_pt>%f"%(pt)))
 
 #_______________________________________________________________________________
-def dxy(min_dxy, max_dxy):
-    return TCut("%f < sim_dxy && sim_dxy < %f"%(min_dxy, max_dxy))
+def dxy(min_dxy, max_dxy=999):
+    return TCut("%f < abs(sim_dxy) && abs(sim_dxy) < %f"%(min_dxy, max_dxy))
 
 #_______________________________________________________________________________
 def applyStupidTdrStyle():

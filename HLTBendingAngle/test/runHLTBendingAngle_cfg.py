@@ -38,11 +38,11 @@ from MuJetAnalysis.HLTBendingAngle.hltSamples import *
 from MuJetAnalysis.HLTBendingAngle.InputFileHelpers import *
 label = "mGammaD_20000_ctau0_14TeV_HLT"
 dir = eosfiles[label]
-print eosfiles[label]
+#print eosfiles[label]
 process=useInputDir(process, dir, pattern="outputA")
 
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("out_ana.root"),
+    fileName = cms.string("DarkSUSY_mH_125_mGammaD_20000_cT_0_14TeV_out_ana.test.root"),
 #    fileName = cms.string("out_ana_mGammaD_20000_ctau100_14TeV_HLT_07132015.root"),
 	closeFileFast = cms.untracked.bool(True)
 )
@@ -50,7 +50,7 @@ process.TFileService = cms.Service("TFileService",
 process.p = cms.Path(process.HLTBendingAngle)
 
 
-
+"""
 ## messages
 print
 #print 'Input files:'
@@ -61,3 +61,4 @@ print 'Output file:'
 print '----------------------------------------'
 print process.TFileService.fileName
 print
+"""

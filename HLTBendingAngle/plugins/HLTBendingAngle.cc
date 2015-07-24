@@ -17,6 +17,7 @@
 #include "DataFormats/GeometryVector/interface/GlobalPoint.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
+#include "DataFormats/Math/interface/normalizedPhi.h"
 #include "GEMCode/GEMValidation/interface/SimTrackMatchManager.h"
 
 
@@ -31,6 +32,10 @@ struct MyTrackEff
   Int_t run;
   Int_t event;
   
+  Float_t beamSpot_x;
+  Float_t beamSpot_y;
+  Float_t beamSpot_z;
+
   Double_t vtx_x;
   Double_t vtx_y;
   Double_t vtx_z;
@@ -69,11 +74,15 @@ struct MyTrackEff
   Int_t n_dt_seg;
   Int_t n_dt_st_sh; // number of dt stations with at least 3 layers
   Int_t n_dt_st_seg; // number of dt stations with segments
-
   Int_t n_csc_seg;
   Int_t n_csc_st_sh; // number of dt stations with at least 3 layers
   Int_t n_csc_st_seg; // number of csc stations with segments
 
+  Int_t has_l1Extra;
+  Float_t l1Extra_pt;
+  Float_t l1Extra_eta;
+  Float_t l1Extra_phi;
+  Float_t l1Extra_dR;
   Int_t has_recoTrackExtra;
   Float_t recoTrackExtra_pt_inner;
   Float_t recoTrackExtra_eta_inner;
@@ -228,6 +237,12 @@ HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
     std::cout << "Total number of SimVertexs in this event: " << sim_vert.size() << std::endl;
   }
   
+  //****************************************************************************
+  //                              GEN LEVEL                                     
+  //****************************************************************************
+
+  // needs a secion about gen level matching + gen muon matching to sim muon matching
+
   int trk_no=0;
   for (auto& t: *sim_tracks.product()) {
     if(!isSimTrackGood(t)) continue;
@@ -253,6 +268,7 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   const SimHitMatcher& match_sh = match.simhits();
   const DTRecHitMatcher& match_dtrh = match.dtRecHits();
   const CSCRecHitMatcher& match_cscrh = match.cscRecHits();
+  const L1GlobalMuonTriggerMatcher& match_l1_gmt = match.l1GMTCands();
   const HLTTrackMatcher& match_hlt_track = match.hltTracks();
   const SimTrack& t = match_sh.trk();
   const SimVertex& vtx = match_sh.vtx();
@@ -261,6 +277,16 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   etrk_[0].lumi = match_sh.event().id().luminosityBlock();
   etrk_[0].event = match_sh.event().id().event();
   
+  // edm::Handle<reco::BeamSpot> beamSpot;
+  // match_sh.event().getByLabel("offlineBeamSpot",beamSpot);
+  etrk_[0].beamSpot_x = 0;//beamSpot->position().x();
+  etrk_[0].beamSpot_y = 0;//beamSpot->position().y();
+  etrk_[0].beamSpot_z = 0;//beamSpot->position().z();
+
+  //****************************************************************************
+  //                              SIM LEVEL                                     
+  //****************************************************************************
+
   const double vtx_x = match_sh.vtx().position().x();
   const double vtx_y = match_sh.vtx().position().y();
   const double vtx_z = match_sh.vtx().position().z();
@@ -324,10 +350,28 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   etrk_[0].n_dt_st_sh = match_sh.nStationsDT();
   etrk_[0].n_dt_seg =  match_dtrh.nDTRecSegment4Ds();
   etrk_[0].n_dt_st_seg = match_dtrh.chamberIdsDTRecSegment4D().size();
-
   etrk_[0].n_csc_st_sh = match_sh.nStationsCSC();
   etrk_[0].n_csc_seg =  match_cscrh.nCSCSegments();
   etrk_[0].n_csc_st_seg = match_cscrh.chamberIdsCSCSegment().size();
+
+  // L1Extra
+  auto l1Extras(match_l1_gmt.getMatchedL1ExtraMuonParticles());
+  if (l1Extras.size()) {
+    etrk_[0].has_l1Extra = 1;
+
+    auto l1Extra(l1Extras[0].first);
+    etrk_[0].l1Extra_pt = l1Extra.pt();
+    etrk_[0].l1Extra_eta = l1Extra.eta();
+    etrk_[0].l1Extra_phi = l1Extra.phi();
+    etrk_[0].l1Extra_dR = l1Extras[0].second;
+    if (verbose_) {
+      std::cout << "Number of matched L1Extras: " << l1Extras.size() << std::endl;
+      std::cout << "l1Extra_pt " << etrk_[0].l1Extra_pt << std::endl;
+      std::cout << "l1Extra_eta " << etrk_[0].l1Extra_eta << std::endl;
+      std::cout << "l1Extra_phi " << etrk_[0].l1Extra_phi << std::endl;
+      std::cout << "l1Extra_dR " << etrk_[0].l1Extra_dR << std::endl;
+    }
+  }
 
   // RecoTrackExtra
   auto recoTrackExtras(match_hlt_track.getMatchedRecoTrackExtras());
@@ -392,6 +436,10 @@ void MyTrackEff::init()
   run= -99;
   event = -99;
   
+  beamSpot_x = 0;
+  beamSpot_y = 0;
+  beamSpot_z = 0;
+
   sim_pt = -9.;
   sim_pt_inv = -9.;
   sim_eta=-9.;
@@ -424,6 +472,18 @@ void MyTrackEff::init()
   wheel = -9;
   station = - 9;
   
+  n_dt_seg = -99;
+  n_dt_st_sh = -99;
+  n_dt_st_seg = -99;
+  n_csc_seg = -99;
+  n_csc_st_sh = -99;
+  n_csc_st_seg = -99;
+
+  has_l1Extra = 0;
+  l1Extra_pt = -99;
+  l1Extra_eta = -99;
+  l1Extra_phi = -99;
+  l1Extra_dR = -99;
   has_recoTrackExtra = 0;
   recoTrackExtra_pt_inner = - 99.;
   recoTrackExtra_eta_inner = - 99.;
@@ -439,13 +499,6 @@ void MyTrackEff::init()
   recoChargedCandidate_pt = - 99.;
   recoChargedCandidate_eta = - 99.;
   recoChargedCandidate_phi = - 99.;
-  n_dt_seg = -99;
-  n_dt_st_sh = -99;
-  n_dt_st_seg = -99;
-
-  n_csc_seg = -99;
-  n_csc_st_sh = -99;
-  n_csc_st_seg = -99;
 }
 
 TTree*MyTrackEff::book(TTree *t,const std::string & name)
@@ -485,11 +538,15 @@ TTree*MyTrackEff::book(TTree *t,const std::string & name)
   t->Branch("n_dt_seg", &n_dt_seg);
   t->Branch("n_dt_st_sh", &n_dt_st_sh);
   t->Branch("n_dt_st_seg", &n_dt_st_seg);
-
   t->Branch("n_csc_seg", &n_csc_seg);
   t->Branch("n_csc_st_sh", &n_csc_st_sh);
   t->Branch("n_csc_st_seg", &n_csc_st_seg);
 
+  t->Branch("has_l1Extra", &has_l1Extra);
+  t->Branch("l1Extra_pt", &l1Extra_pt);
+  t->Branch("l1Extra_eta", &l1Extra_eta);
+  t->Branch("l1Extra_phi", &l1Extra_phi);
+  t->Branch("l1Extra_dR", &l1Extra_dR);
   t->Branch("has_recoTrackExtra", &has_recoTrackExtra);
   t->Branch("recoTrackExtra_pt_inner", &recoTrackExtra_pt_inner);
   t->Branch("recoTrackExtra_eta_inner", &recoTrackExtra_eta_inner);

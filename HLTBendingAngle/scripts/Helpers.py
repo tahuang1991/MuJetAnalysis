@@ -12,6 +12,14 @@ def pt_cut(pt=10):
     return TCut("sim_pt>%f"%(pt))
 
 #_______________________________________________________________________________
+def sim_lxy(lxy_max = 20, lxy_min = 0.):
+    return TCut("sim_lxy > %f && sim_lxy < %f"%(lxy_min,lxy_max))
+
+#_______________________________________________________________________________
+def sim_vz(vz_max = 30):
+    return TCut("sim_vz < %f"%(vz_max))
+
+#_______________________________________________________________________________
 def barrel_eta_cut():
     return TCut("abs(sim_eta)<1.1")
 

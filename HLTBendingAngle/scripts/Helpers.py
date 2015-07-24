@@ -60,6 +60,10 @@ def n_dt_csc_seg(n):
     return OR(n_dt_seg(n), n_csc_seg(n))
     
 #_______________________________________________________________________________
+def has_L1Extra(deltaR=0.1, pt=0):
+    return AND(TCut("has_l1Extra>=1"), TCut("l1Extra_dR<%f"%(deltaR)), TCut("l1Extra_pt>%f"%(pt))) 
+
+#_______________________________________________________________________________
 def has_trackExtra(pt=0):
     return AND(TCut("has_recoTrackExtra>=1"), TCut("recoTrackExtra_pt_outer>%f"%(pt)))
 

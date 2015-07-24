@@ -33,7 +33,7 @@ inputFiles = [
 
 ## because the storage server was really slow - July 20th 2015
 inputFiles = [
-	"DarkSUSY_mH_125_mGammaD_20000_cT_0_14TeV_out_ana.root",
+	"DarkSUSY_mH_125_mGammaD_20000_cT_0_14TeV_out_ana_newSeed.test.root",
 	"DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_out_ana.root",
 	"DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_out_ana.root"
 	]
@@ -41,9 +41,9 @@ inputFiles = [
 outputDirs = [
 #	"out_ana_mGammaD_20000_ctau0_14TeV_HLT_07092015/",
 #	"out_ana_mGammaD_20000_ctau100_14TeV_HLT_07092015/"
-	"out_ana_mGammaD_20000_ctau0_14TeV_HLT_07202015/",
-	"out_ana_mGammaD_20000_ctau100_14TeV_HLT_07202015/",
-	"out_ana_mGammaD_20000_ctau1000_14TeV_HLT_07202015/"
+	"out_ana_mGammaD_20000_ctau0_14TeV_HLT_07242015/",
+	"out_ana_mGammaD_20000_ctau100_14TeV_HLT_07242015/",
+	"out_ana_mGammaD_20000_ctau1000_14TeV_HLT_07242015/"
 	]
 
 highMassExt = ['_mGammaD_20000_ctau_0_14TeV_PU0',
@@ -54,7 +54,7 @@ highMassExt = ['_mGammaD_20000_ctau_0_14TeV_PU0',
 pu = [0,0,0]
 
 
-for i in range(0,3):
+for i in range(0,1):
       class Plotter:
             def __init__(self):
                   self.inputDir = inputDir

@@ -111,6 +111,8 @@ struct MyTrackEffCSC
  Float_t csc_bending_angle_13;
  Float_t csc_bending_angle_14;
  
+ Float_t csc_p_over_cosh_eta;
+
  Float_t csc_q_1bending_angle;
  Float_t csc_q_1bending_angle_12;
  Float_t csc_q_1bending_angle_13;
@@ -683,9 +685,6 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
       }
     }
 
-
-    //std::cout<<" *****************  SimHit info: CSCDetId: "<<id<<" *************************** "<<std::endl;
-
     etrk_csc_[st].nlayerscsc = nlayers;
     etrk_csc_[st].csc_station = id.station();
     etrk_csc_[st].csc_ring = id.ring();
@@ -703,9 +702,6 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     etrk_csc_[st].csc_gv_phi = ym.phi();
     etrk_csc_[st].csc_gv_pt = ym.perp();
     etrk_csc_[st].csc_deltaphi = deltaPhi(hitGp.phi(), ym.phi());  //Bending Angle Position and Direction
-
-    //std::cout<<"ME"<<id.station()<<id.ring()<<" Which is equal to: "<<st<<" Has "<<nlayers<<"Layers with hits"<<std::endl;
-    //std::cout<<"SimHit position: "<<hitGp.eta()<<" Bending: "<<ym.phi()<<std::endl;
 
 	// Segments
 
@@ -752,6 +748,10 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
         etrk_csc_[1].csc_gv_pt = ym.perp();
         etrk_csc_[1].csc_deltaphi = deltaPhi(hitGp.phi(), ym.phi());  //Bending Angle Position and Direction
         etrk_csc_[1].has_csc_segment = hasseg;
+	
+	auto totalp = std::sqrt( t.momentum().x()*t.momentum().x() + t.momentum().y()*t.momentum().y() + t.momentum().z()*t.momentum().z());
+ 
+	etrk_csc_[1].csc_p_over_cosh_eta = totalp/cosh(hitGp.eta());
     }
 
 
@@ -784,12 +784,13 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
         
         if(s_nlayers == 0) continue; // Check to have hits in the secondary chamber
         if(d_nlayers == 0) continue; //Check that has hits in previous one
-        if(id.station() == s_id.station() and id.ring() == s_id.ring()) continue;  // No double hits in the same station (ME11 a and ME11 need changes)
-    
+        if(id.station() == s_id.station() and id.ring() == s_id.ring()) continue;  // No double hits in the same chamber (st, ring) with ME11 requiring changes
+	if(id.station() == s_id.station()) continue; // no double hits in the same station, ME11 included by default. 
+
         GlobalPoint hitGp2 = match_sh.simHitsMeanPosition(match_sh.hitsInChamber(s_d));
         GlobalVector ym2 = match_sh.simHitsMeanMomentum(match_sh.hitsInChamber(s_d));
  
-
+	//if (s_nlayers < 4) continue; // 4 layers hardcored. 
         etrk_csc_[st].csc_second_nlayers = s_nlayers;
         etrk_csc_[st].csc_second_ring = s_id.ring();
         etrk_csc_[st].csc_second_station = s_id.station();
@@ -1091,6 +1092,7 @@ void MyTrackEffCSC::init()
  csc_q_1bending_angle_13 = - 99.;
  csc_q_1bending_angle_14 = - 99.;
 
+ csc_p_over_cosh_eta = - 99.; 
 }
 void MyTrackEffDT::init()
 {
@@ -1341,6 +1343,7 @@ TTree*MyTrackEffCSC::book(TTree *t, const std::string & name)
   t->Branch("csc_q_1bending_angle_12", &csc_q_1bending_angle_12);
   t->Branch("csc_q_1bending_angle_13", &csc_q_1bending_angle_13);
   t->Branch("csc_q_1bending_angle_14", &csc_q_1bending_angle_14);
+  t->Branch("csc_p_over_cosh_eta", &csc_p_over_cosh_eta);
 
   t->Branch("csc_deltaeta_14", &csc_deltaeta_14);
   t->Branch("csc_deltaeta", &csc_deltaeta);

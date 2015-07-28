@@ -8,6 +8,55 @@ def nocut():
     return TCut("")
 
 #_______________________________________________________________________________
+def Gd_lxy(lxy_max = 20, lxy_min = 0.):
+    return TCut("genGd_lxy > %f && genGd_lxy < %f"%(lxy_min,lxy_max))
+
+#_______________________________________________________________________________
+def GdMu_vz(vz_max=500):
+    """
+    To prevent losses in the endcap
+    """
+    return TCut("abs(genGdMu_vz[0]) < %f"%(vz_max))    
+
+#_______________________________________________________________________________
+def Gd_vz(vz_max = 30):
+    return TCut("abs(genGd_vz) < %f"%(vz_max))
+
+#_______________________________________________________________________________
+def Gd_dR(dRmin = 2):
+    return TCut("genGd0Gd1_dR > %f"%(dRmin))
+
+
+def Gd_fid(i, pt1=5, pt2=5, eta_min1=0, eta_max1=2.4, eta_min2=0, eta_max2=2.4):
+    pt_cut1 = TCut("genGdMu_pt[0] > %f"%(i,pt1))
+    pt_cut2 = TCut("genGdMu_pt[1] > %f"%(i,pt2))
+
+    eta_min_cut1 = TCut("abs(genGdMu_eta[0]) > %f"%(i,eta_min1))
+    eta_min_cut2 = TCut("abs(genGdMu_eta[1]) > %f"%(i,eta_min2))
+
+    eta_max_cut1 = TCut("abs(genGdMu_eta[0]) < %f"%(i,eta_max1))
+    eta_max_cut2 = TCut("abs(genGdMu_eta[1]) < %f"%(i,eta_max2))
+
+    total_cut1 = AND(pt_cut1, eta_min_cut1, eta_max_cut1)
+    total_cut2 = AND(pt_cut2, eta_min_cut2, eta_max_cut2)
+
+    """
+    Make sure the dark photons are reasonably far apart in eta,phi
+    """
+    extra_cut1 = Gd_dR()
+
+    """
+    I think the fiduciality requirement should be updated to have
+    |vz| < 5 m so that for any given lxy the decay vertex is still inside
+    the muon stations with at least two stations available beyond the vertex
+    to be able to make a muon.
+    """
+    extra_cut2 = GdMu_vz(500)
+    extra_cut3 = Gd_lxy(300, 0.) 
+
+    return AND(total_cut1, total_cut2, extra_cut1, extra_cut2, extra_cut3)
+
+#_______________________________________________________________________________
 def pt_cut(pt=10):
     return TCut("sim_pt>%f"%(pt))
 
@@ -61,7 +110,7 @@ def n_dt_csc_seg(n):
     
 #_______________________________________________________________________________
 def has_L1Extra(deltaR=0.1, pt=0):
-    return AND(TCut("has_l1Extra>=1"), TCut("l1Extra_dR<%f"%(deltaR)), TCut("l1Extra_pt>%f"%(pt))) 
+    return AND(TCut("has_l1Extra>=1"))#, TCut("l1Extra_dR<%f"%(deltaR)), TCut("l1Extra_pt>%f"%(pt))) 
 
 #_______________________________________________________________________________
 def has_trackExtra(pt=0):

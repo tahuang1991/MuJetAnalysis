@@ -18,10 +18,38 @@
 #include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
 #include "DataFormats/Math/interface/normalizedPhi.h"
+#include "DataFormats/Math/interface/LorentzVector.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "GEMCode/GEMValidation/interface/SimTrackMatchManager.h"
 
-
 using namespace std;
+
+double dxy(double px, double py, double vx, double vy, double pt)
+{
+  //Source: https://cmssdt.cern.ch/SDT/lxr/source/DataFormats/TrackReco/interface/TrackBase.h#119
+  return (- vx * py + vy * px ) / pt;
+}
+
+double phiHeavyCorr(double pt, double eta, double phi, double q)
+{
+  //  float resEta = eta;
+  float etaProp = std::abs(eta);
+  if (etaProp< 1.1) etaProp = 1.1;
+  float resPhi = phi - 1.464*q*cosh(1.7)/cosh(etaProp)/pt - M_PI/144.;
+  if (resPhi > M_PI) resPhi -= 2.*M_PI;
+  if (resPhi < -M_PI) resPhi += 2.*M_PI;
+  return resPhi;
+}
+
+double
+invariantMass(const reco::Candidate* p1, const reco::Candidate* p2) 
+{
+  return  sqrt((p1->energy() + p2->energy())*(p1->energy() + p2->energy()) -
+               (p1->px() + p2->px())*(p1->px() + p2->px()) -
+               (p1->py() + p2->py())*(p1->py() + p2->py()) -
+               (p1->pz() + p2->pz())*(p1->pz() + p2->pz()) );
+}
 
 struct MyTrackEff
 {
@@ -32,6 +60,44 @@ struct MyTrackEff
   Int_t run;
   Int_t event;
   
+  // Dark photon  
+  Float_t genGd_m;
+  Float_t genGd_E;
+  Float_t genGd_p;
+  Float_t genGd_pt;
+  Float_t genGd_px;
+  Float_t genGd_py;
+  Float_t genGd_pz;
+  Float_t genGd_eta;
+  Float_t genGd_phi;
+  Float_t genGd_vx;
+  Float_t genGd_vy;
+  Float_t genGd_vz;
+  Float_t genGd_vLx;
+  Float_t genGd_vLy;
+  Float_t genGd_vLz;
+  Float_t genGd_lxy;
+  Float_t genGd_l;
+  Float_t genGd_dxy;
+  Float_t genGdMu_dxy_max;
+  Float_t genGd0Gd1_dR;
+  Float_t genGd0Gd1_m;
+
+  // Gen level muon
+  Int_t genGdMu_index;
+  Float_t genGdMu_p[2];
+  Float_t genGdMu_pt[2];
+  Float_t genGdMu_px[2];
+  Float_t genGdMu_py[2];
+  Float_t genGdMu_pz[2];
+  Float_t genGdMu_eta[2];
+  Float_t genGdMu_phi[2];
+  Float_t genGdMu_phi_corr[2];
+  Float_t genGdMu_vx[2];
+  Float_t genGdMu_vy[2];
+  Float_t genGdMu_vz[2];
+  Float_t genGdMu_dxy[2];
+
   Float_t beamSpot_x;
   Float_t beamSpot_y;
   Float_t beamSpot_z;
@@ -224,6 +290,7 @@ HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
 {
   using namespace edm;
   
+
   edm::Handle<edm::SimTrackContainer> sim_tracks;
   ev.getByLabel(simInputLabel_, sim_tracks);
   const edm::SimTrackContainer & sim_track = *sim_tracks.product();
@@ -237,11 +304,6 @@ HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
     std::cout << "Total number of SimVertexs in this event: " << sim_vert.size() << std::endl;
   }
   
-  //****************************************************************************
-  //                              GEN LEVEL                                     
-  //****************************************************************************
-
-  // needs a secion about gen level matching + gen muon matching to sim muon matching
 
   int trk_no=0;
   for (auto& t: *sim_tracks.product()) {
@@ -265,6 +327,7 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   // initialize the tree
   init();
 
+  const DisplacedGENMuonMatcher& match_gen = match.genMuons();
   const SimHitMatcher& match_sh = match.simhits();
   const DTRecHitMatcher& match_dtrh = match.dtRecHits();
   const CSCRecHitMatcher& match_cscrh = match.cscRecHits();
@@ -272,17 +335,77 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   const HLTTrackMatcher& match_hlt_track = match.hltTracks();
   const SimTrack& t = match_sh.trk();
   const SimVertex& vtx = match_sh.vtx();
-
+  
   etrk_[0].run = match_sh.event().id().run();
   etrk_[0].lumi = match_sh.event().id().luminosityBlock();
   etrk_[0].event = match_sh.event().id().event();
-  
-  // edm::Handle<reco::BeamSpot> beamSpot;
-  // match_sh.event().getByLabel("offlineBeamSpot",beamSpot);
-  etrk_[0].beamSpot_x = 0;//beamSpot->position().x();
-  etrk_[0].beamSpot_y = 0;//beamSpot->position().y();
-  etrk_[0].beamSpot_z = 0;//beamSpot->position().z();
 
+  //****************************************************************************
+  //                              GEN LEVEL                                     
+  //****************************************************************************
+
+  //  auto matchedGENMuon(match_gen.getMatchedGENMuon());
+  auto matchedGENMuons(match_gen.getMatchedGENMuons());
+  auto matchedDarkBoson(match_gen.getMatchedGENMuon());
+
+  // Dark photon  
+  etrk_[0].genGd_m = matchedDarkBoson->mass();
+  etrk_[0].genGd_E = matchedDarkBoson->energy();
+  etrk_[0].genGd_p = matchedDarkBoson->p();
+  etrk_[0].genGd_pt = matchedDarkBoson->pt();
+  etrk_[0].genGd_px = matchedDarkBoson->px();
+  etrk_[0].genGd_py = matchedDarkBoson->py();
+  etrk_[0].genGd_pz = matchedDarkBoson->pz();
+  etrk_[0].genGd_eta = matchedDarkBoson->eta();
+  etrk_[0].genGd_phi = matchedDarkBoson->phi();
+  etrk_[0].genGd_vx = matchedDarkBoson->vx();
+  etrk_[0].genGd_vy = matchedDarkBoson->vy();
+  etrk_[0].genGd_vz = matchedDarkBoson->vz();
+
+  etrk_[0].genGdMu_index = 0;
+  etrk_[0].genGdMu_p[0] = matchedGENMuons[0]->p();
+  etrk_[0].genGdMu_pt[0] = matchedGENMuons[0]->pt();
+  etrk_[0].genGdMu_px[0] = matchedGENMuons[0]->px();
+  etrk_[0].genGdMu_py[0] = matchedGENMuons[0]->py();
+  etrk_[0].genGdMu_pz[0] = matchedGENMuons[0]->pz();
+  etrk_[0].genGdMu_eta[0] = matchedGENMuons[0]->eta();
+  etrk_[0].genGdMu_phi[0] = matchedGENMuons[0]->phi();
+  // etrk_[0].genGdMu_phi_corr[0] = matchedGENMuons[0]->phi();
+  etrk_[0].genGdMu_vx[0] = matchedGENMuons[0]->vx();
+  etrk_[0].genGdMu_vy[0] = matchedGENMuons[0]->vy();
+  etrk_[0].genGdMu_vz[0] = matchedGENMuons[0]->vz();
+  etrk_[0].genGdMu_dxy[0] = dxy(etrk_[0].genGdMu_px[0], etrk_[0].genGdMu_py[0], etrk_[0].genGdMu_vx[0], etrk_[0].genGdMu_vy[0], etrk_[0].genGdMu_pt[0]);
+
+  etrk_[0].genGdMu_p[1] = matchedGENMuons[1]->p();
+  etrk_[0].genGdMu_pt[1] = matchedGENMuons[1]->pt();
+  etrk_[0].genGdMu_px[1] = matchedGENMuons[1]->px();
+  etrk_[0].genGdMu_py[1] = matchedGENMuons[1]->py();
+  etrk_[0].genGdMu_pz[1] = matchedGENMuons[1]->pz();
+  etrk_[0].genGdMu_eta[1] = matchedGENMuons[1]->eta();
+  etrk_[0].genGdMu_phi[1] = matchedGENMuons[1]->phi();
+  // etrk_[0].genGdMu_phi_corr[1] = matchedGENMuons[1]->phi();
+  etrk_[0].genGdMu_vx[1] = matchedGENMuons[1]->vx();
+  etrk_[0].genGdMu_vy[1] = matchedGENMuons[1]->vy();
+  etrk_[0].genGdMu_vz[1] = matchedGENMuons[1]->vz();
+  // beamspot!!
+  etrk_[0].genGdMu_dxy[1] = dxy(etrk_[0].genGdMu_px[1], etrk_[0].genGdMu_py[1], etrk_[0].genGdMu_vx[1], etrk_[0].genGdMu_vy[1], etrk_[0].genGdMu_pt[1]);
+
+  etrk_[0].genGd_vLx = etrk_[0].genGdMu_vx[0] - etrk_[0].genGd_vx;
+  etrk_[0].genGd_vLy = etrk_[0].genGdMu_vy[0] - etrk_[0].genGd_vy;
+  etrk_[0].genGd_vLz = etrk_[0].genGdMu_vz[0] - etrk_[0].genGd_vz;
+
+  etrk_[0].genGdMu_dxy_max = std::max(etrk_[0].genGdMu_dxy[0], etrk_[0].genGdMu_dxy[1]);
+  etrk_[0].genGd_lxy = sqrt( etrk_[0].genGd_vLx * etrk_[0].genGd_vLx + etrk_[0].genGd_vLy * etrk_[0].genGd_vLy );
+  etrk_[0].genGd_l = sqrt( etrk_[0].genGd_vLx * etrk_[0].genGd_vLx + etrk_[0].genGd_vLy * etrk_[0].genGd_vLy + etrk_[0].genGd_vLz * etrk_[0].genGd_vLz );
+
+  etrk_[0].genGd0Gd1_dR = match_gen.darkBosonDeltaR();
+  etrk_[0].genGd0Gd1_m = match_gen.darkBosonInvM();
+
+  if (verbose_) {
+    
+  }
+  
+  
   //****************************************************************************
   //                              SIM LEVEL                                     
   //****************************************************************************
@@ -508,6 +631,45 @@ TTree*MyTrackEff::book(TTree *t,const std::string & name)
   t->Branch("lumi", &lumi);
   t->Branch("run", &run);
   t->Branch("event", &event);
+
+  // Bosons
+  t->Branch("genGd_m",   &genGd_m,   "genGd_m/F");
+  t->Branch("genGd_E",   &genGd_E,   "genGd_E/F");
+  t->Branch("genGd_p",   &genGd_p,   "genGd_p/F");
+  t->Branch("genGd_pt",  &genGd_pt,  "genGd_pt/F");
+  t->Branch("genGd_px",  &genGd_px,  "genGd_px/F");
+  t->Branch("genGd_py",  &genGd_py,  "genGd_py/F");
+  t->Branch("genGd_pz",  &genGd_pz,  "genGd_pz/F");
+  t->Branch("genGd_eta", &genGd_eta, "genGd_eta/F");
+  t->Branch("genGd_phi", &genGd_phi, "genGd_phi/F");
+  t->Branch("genGd_vx",  &genGd_vx,  "genGd_vx/F");
+  t->Branch("genGd_vy",  &genGd_vy,  "genGd_vy/F");
+  t->Branch("genGd_vz",  &genGd_vz,  "genGd_vz/F");
+  t->Branch("genGd_vLx",  &genGd_vLx,  "genGd_vLx/F");
+  t->Branch("genGd_vLy",  &genGd_vLy,  "genGd_vLy/F");
+  t->Branch("genGd_vLz",  &genGd_vLz,  "genGd_vLz/F");
+  t->Branch("genGd_lxy",  &genGd_lxy,  "genGd_lxy/F");
+  t->Branch("genGd_l",  &genGd_l,  "genGd_l/F");
+  t->Branch("genGd_dxy",  &genGd_dxy,  "genGd_dxy/F");
+  t->Branch("genGdMu_dxy_max",  &genGdMu_dxy_max,  "genGdMu_dxy_max/F");
+  t->Branch("genGd0Gd1_dR",  &genGd0Gd1_dR,  "genGd0Gd1_dR/F");
+  t->Branch("genGd0Gd1_m",  &genGd0Gd1_m,  "genGd0Gd1_m/F");
+  t->Branch("genGd_dxy",  &genGd_dxy,  "genGd_dxy/F");
+
+  // Dimuons
+  t->Branch("genGdMu_p", genGdMu_p, "genGdMu_p[2]/F");
+  t->Branch("genGdMu_pt", genGdMu_pt, "genGdMu_pt[2]/F");
+  t->Branch("genGdMu_px", genGdMu_px, "genGdMu_px[2]/F");
+  t->Branch("genGdMu_py", genGdMu_py, "genGdMu_py[2]/F");
+  t->Branch("genGdMu_pz", genGdMu_pz, "genGdMu_pz[2]/F");
+  t->Branch("genGdMu_eta", genGdMu_eta, "genGdMu_eta[2]/F");
+  t->Branch("genGdMu_phi", genGdMu_phi, "genGdMu_phi[2]/F");
+  t->Branch("genGdMu_phi_corr", genGdMu_phi_corr, "genGdMu_phi_corr[2]/F");
+  t->Branch("genGdMu_vx", genGdMu_vx, "genGdMu_vx[2]/F");
+  t->Branch("genGdMu_vy", genGdMu_vy, "genGdMu_vy[2]/F");
+  t->Branch("genGdMu_vz", genGdMu_vz, "genGdMu_vz[2]/F");
+  t->Branch("genGdMu_dxy", genGdMu_dxy, "genGdMu_dxy[2]/F");
+
   t->Branch("sim_eta", &sim_eta);
   t->Branch("sim_pt", &sim_pt);
   t->Branch("sim_pt_inv", &sim_pt_inv);

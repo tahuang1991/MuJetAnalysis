@@ -74,6 +74,10 @@ struct MyTrackEffCSC
  Int_t csc_station;
  Int_t csc_ring;
  
+ Float_t Lxy_csc;
+ Float_t pzvz_csc;
+ Float_t pp_SimTrack_csc;
+
  Float_t p_SimTrack_csc;
  Float_t p_c_SimTrack_csc;
  Float_t charge_csc;
@@ -633,6 +637,11 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     
     auto pphi = t.momentum().phi();
     etrk_csc_[st].dxy_csc = vtx_dt*sin(pphi) - vty_dt*cos(pphi);
+    etrk_csc_[st].pp_SimTrack_csc = t.momentum().z();
+
+    etrk_csc_[st].Lxy_csc = vtx_dt*sin(pphi) + vty_dt*cos(pphi);
+    etrk_csc_[st].pzvz_csc = t.momentum().z()*vtz_dt;
+
     auto totalp = std::sqrt( t.momentum().x()*t.momentum().x() + t.momentum().y()*t.momentum().y() + t.momentum().z()*t.momentum().z());
     etrk_csc_[st].p_SimTrack_csc = totalp;
     etrk_csc_[st].charge_csc = t.charge();
@@ -655,6 +664,10 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     auto pphi = t.momentum().phi();
     etrk_csc_[12].dxy_csc = vtx_dt*sin(pphi) - vty_dt*cos(pphi);
 
+    etrk_csc_[12].pp_SimTrack_csc = t.momentum().z();
+
+    etrk_csc_[12].Lxy_csc = vtx_dt*sin(pphi) + vty_dt*cos(pphi);
+    etrk_csc_[12].pzvz_csc = t.momentum().z()*vtz_dt;
 
     auto totalp = std::sqrt( t.momentum().x()*t.momentum().x() + t.momentum().y()*t.momentum().y() + t.momentum().z()*t.momentum().z());
 
@@ -704,6 +717,10 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     etrk_csc_[st].csc_deltaphi = deltaPhi(hitGp.phi(), ym.phi());  //Bending Angle Position and Direction
 
 	// Segments
+	//
+	//
+    auto totalp = std::sqrt( t.momentum().x()*t.momentum().x() + t.momentum().y()*t.momentum().y() + t.momentum().z()*t.momentum().z());
+    etrk_csc_[st].csc_p_over_cosh_eta = totalp/cosh(std::abs(hitGp.eta()));
 
     CSCSegment cscsegment;
     float basechi = 99.;
@@ -750,8 +767,7 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
         etrk_csc_[1].has_csc_segment = hasseg;
 	
 	auto totalp = std::sqrt( t.momentum().x()*t.momentum().x() + t.momentum().y()*t.momentum().y() + t.momentum().z()*t.momentum().z());
- 
-	etrk_csc_[1].csc_p_over_cosh_eta = totalp/cosh(hitGp.eta());
+	etrk_csc_[1].csc_p_over_cosh_eta = totalp/cosh(std::abs(hitGp.eta()));
     }
 
 
@@ -770,6 +786,10 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
         etrk_csc_[12].csc_gv_pt = ym.perp();
         etrk_csc_[12].csc_deltaphi = deltaPhi(hitGp.phi(), ym.phi()); 
         etrk_csc_[12].has_csc_segment = hasseg;
+        auto totalp = std::sqrt( t.momentum().x()*t.momentum().x() + t.momentum().y()*t.momentum().y() + t.momentum().z()*t.momentum().z());
+        etrk_csc_[12].csc_p_over_cosh_eta = totalp/cosh(std::abs(hitGp.eta()));
+
+
     }
 
 
@@ -1032,7 +1052,9 @@ void MyTrackEffCSC::init()
  charge_csc = - 9.;
  p_c_SimTrack_csc = - 9;
  
-
+ Lxy_csc = - 9999.;
+ pzvz_csc = - 999.;
+ pp_SimTrack_csc = - 99.;
 
  csc_second_gp_x = - 9999.;
  csc_second_gp_y = - 9999.;
@@ -1277,9 +1299,13 @@ TTree*MyTrackEffCSC::book(TTree *t, const std::string & name)
   t->Branch("vertex_y", &vertex_y);
   t->Branch("vertex_z", &vertex_z);
 
-  t->Branch("dxt_csc_", &dxy_csc);
+  t->Branch("dxy_csc", &dxy_csc);
   t->Branch("csc_station", &csc_station);
   t->Branch("csc_ring", &csc_ring);
+  t->Branch("Lxy_csc", &Lxy_csc);
+  t->Branch("pzvz_csc", &Lxy_csc);
+  t->Branch("pp_SimTrack_csc", &pp_SimTrack_csc);
+
 
   t->Branch("p_SimTrack_csc", &p_SimTrack_csc);
   t->Branch("charge_csc", &charge_csc);

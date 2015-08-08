@@ -1,39 +1,63 @@
+
 from ROOT import *
 import math
 import array
 #from math import log10, floor
 
 pt_slope_inter = {
-    1.6 : [3.575, 5.873], 
-    1.8 : [4.804, 5.337],
-    2.0 : [5.035, 2.587], 
-    2.2 : [4.322, -5.725], 
+    1.6 : [3.759, 6.235], 
+    1.8 : [6.785, 11.14],
+    2.0 : [9.113, 10.36], 
+    2.2 : [10.12, 8.317], 
 }
 
 pt_pos_slope_inter = {
-    1.6 : [3.623, 5.965], 
-    1.8 : [4.948, 5.476],
-    2.0 : [5.079, 2.854], 
-    2.2 : [4.332, -5.632], 
+    1.6 : [3.786, 6.165], 
+    1.8 : [6.754, 10.67],
+    2.0 : [9.026, 9.432], 
+    2.2 : [10.09, 7.715], 
+}
+
+pt_pos_slope_inter_14 = {
+    1.6 : [1.532, 2.187], 
+    1.8 : [2.193, 3.799],
+    2.0 : [2.974, 4.301], 
+    2.2 : [3.916, 2.989], 
 }
 
 
+pt_slope_inter_14 = {
+    1.6 : [1.523, 2.127], 
+    1.8 : [2.182, 3.754],
+    2.0 : [2.558, 2.52], 
+    2.2 : [3.893, 2.933], 
+}
+
+
+def csc_second_gp_eta(eta_min, eta_max, var = 12):
+
+    if (var == 12):
+        return TCut("%f < abs(csc_gp_second_st2) && abs(csc_gp_second_st2)< %f"%(eta_min, eta_max))
+    if (var == 13):
+        return TCut("%f < abs(csc_gp_second_st3) && abs(csc_gp_second_st3)< %f"%(eta_min, eta_max))
+    if (var == 14):
+        return TCut("%f < abs(csc_gp_second_st4) && abs(csc_gp_second_st4)< %f"%(eta_min, eta_max))
 
 def has_csc():
     return TCut("nlayerscsc>=4")
 
-def has_csc_second():
-    return TCut("csc_second_nlayers>=4")
+def has_csc_second(var=12):
 
+    if (var==12):
+        return TCut("nlayers_st2>=4")
+    if (var==13):
+        return TCut("nlayers_st3>=4")
+    if (var==14):
+        return TCut("nlayers_st4>=4")
 
-def has_csc12():
-    return TCut("has_csc_12>0")
+def has_csc_hits(var):
+    return TCut("has_csc_%d>0"%var)
 
-def has_csc13():
-    return TCut("has_csc_13>0")
-
-def has_csc14():
-    return TCut("has_csc_14>0")
 
 def dxy(dxy_min, dxy_max):
     return TCut("%f <= abs(dxy_csc) && abs(dxy_csc)<%f"%(dxy_min, dxy_max))
@@ -46,15 +70,32 @@ def same_direction_cut():
     return TCut("Lxy_csc >0 && pzvz_csc>0")
     
 
-def pt_cut(eta_min, sim_pt, var=12):
-    slope = pt_slope_inter[eta_min][0]
-    inter = pt_slope_inter[eta_min][1]
+def pt_cut(eta_min, sim_pt, var):
+
+    slope = 0.0
+    inter = 0.0
+    
+    if var ==12:
+        slope = pt_slope_inter[eta_min][0]
+        inter = pt_slope_inter[eta_min][1]
+    if var ==14:
+        slope = pt_slope_inter_14[eta_min][0]
+        inter = pt_slope_inter_14[eta_min][1]
+    
     return TCut("( (1/abs(csc_bending_angle_%d) + %f) / %f ) > %f"%(var, inter, slope, sim_pt))
 
 
-def pt_from_povercosh(eta_min, sim_pt, var=12):
-    slope = pt_pos_slope_inter[eta_min][0]
-    inter = pt_pos_slope_inter[eta_min][1]
+def pt_from_povercosh(eta_min, sim_pt, var):
+    slope = 0.0
+    inter = 0.0
+    
+    if var ==12:
+        slope = pt_pos_slope_inter[eta_min][0]
+        inter = pt_pos_slope_inter[eta_min][1]
+    if var ==14:
+        slope = pt_pos_slope_inter_14[eta_min][0]
+        inter = pt_pos_slope_inter_14[eta_min][1]
+
     return TCut("((1/abs(csc_bending_angle_%d) + %f) / %f ) > %f"%(var, inter, slope, sim_pt))
 
 
@@ -62,64 +103,42 @@ def pt_from_povercosh(eta_min, sim_pt, var=12):
 #_____________________________________________________________
 
 def FitHistoFunction68(b1, xBins, xminBin, xmaxBin, yminBin, ymaxBin, printa): 
-
     
     r1 = TH1F("r1","1/abs(\Delta\phi) vs p^{Sim}",xBins,xminBin,xmaxBin)
-    
     for x in range(xminBin,xmaxBin):
-        printa = 0;
+
         if (printa > 0):
-            print "*********** For bin x: ",x
+            print "*********** For bin x: %d **********************"%x
             
-        firstbin = 0                        # First Bin with hits
-        flag = 0                            # A simple way to tell if it has already been used
-        suma = 0                            # Total number of entries (sum of frequencies) on the vertical axis
 
         # Find the total number of frequencies
-        for y in range (yminBin,ymaxBin):
-            pp = b1.GetBin(x,y)
-            h = b1.GetBinContent(pp)
+        totalfreq = b1.Integral(x,x,0,ymaxBin+1)
 
-            if flag ==0 and h>0:
-                flag =1 
-                firstbin = y                # First bin with hits
-
-            
-            if h>0:
-                suma = suma + h             # Adding the sume
-
-
-
-
-        # Find the median value
+        # Calculate half of the frequencies
+        med = 0
         
-        midbin = 0                          # Bin number of the median entry
-        med = 0                             # Median 
-        temps = 0
+        if (totalfreq%2 ==1) :
+            med = (totalfreq-1)/2 + 1            # Set the value of the median
 
-        if (suma%2 ==1) :
-            med = (suma-1)/2 + 1            # Set the value of the median
+        if (totalfreq%2 ==0):
+            med = (totalfreq/2) + 0.5               # This might need to be added 0.5
 
-        if (suma%2 ==0):
-            med = (suma/2)                  # This might need to be added 0.5
-         
+        temporal = 0
+        midbin = 0
+        
+        for m in range (0,ymaxBin+1):
+                temporal = b1.Integral(x,x,0,m)
 
-        for m in range (0,ymaxBin):
-                pp = b1.GetBin(x,m)
-                h = b1.GetBinContent(pp)
-
-                if h > 0:
-                    temps = temps + h       # Summing the values until I get to the median
-                if temps >= med:
+                if (temporal >= med):
                     midbin = m              # Break once I get to the median
                     break
 
        
         if (printa > 0):
 
-                print "suma: ",suma
+                print "suma: ",totalfreq
                 print "Midbin: ",midbin
-                print "mediana count: ",temps
+                print "mediana count: ",temporal
 
 
         
@@ -129,12 +148,10 @@ def FitHistoFunction68(b1, xBins, xminBin, xmaxBin, yminBin, ymaxBin, printa):
         sumerrup = 0                        # Sum of events up
         binerrup = 0                        # Bin which has the 34% of events
         
-        for k in range (midbin, 10000):     # Looping over the midbin up to 10000 
-            pp = b1.GetBin(x,k)
-            h = b1.GetBinContent(pp)
-            if h>0:
-                sumerrup = h + sumerrup     # Summing the events
-            if (sumerrup >= 0.33*suma):     # If the summ is bigger or equal to 34% of the total number of entries, break
+        for k in range (midbin, ymaxBin+1): # Looping over the midbin up to 10000 
+            sumerrup = b1.Integral(x,x,midbin,k)
+  
+            if (sumerrup >= 0.33*totalfreq):     # If the summ is bigger or equal to 34% of the total number of entries, break
                 binerrup = k
                 break
         
@@ -143,20 +160,18 @@ def FitHistoFunction68(b1, xBins, xminBin, xmaxBin, yminBin, ymaxBin, printa):
 
         
         for r in range (0, midbin):
-            pp = b1.GetBin(x,midbin-r)      # Get the bin starting from midbin, midbin -1 and so on up to 0
-            h = b1.GetBinContent(pp)
-      
-            if h>0:
-                sumerrlow = sumerrlow + h   # Store the value for a valid h
+            sumerrlow = b1.Integral(x,x,midbin,midbin-r)
 
-            if (sumerrlow >= 0.33*suma):
+            if (sumerrlow >= 0.33*totalfreq):
                 binerrlow = midbin-r        # Store the bin which has the 34% value 
                 break
         
         # error is the difference averaged on the bin low and bin up
  
         errorbin = abs(binerrup - binerrlow)/2
-
+        if (totalfreq > 0):
+            errorbin = errorbin / sqrt (totalfreq)
+        
         if (printa > 0):
             print " X position: ",x
             print " Bin y: ",midbin
@@ -172,6 +187,7 @@ def FitHistoFunction68(b1, xBins, xminBin, xmaxBin, yminBin, ymaxBin, printa):
         r1.SetBinError(x, errorbin)
 
     return r1                               #Return the histogram 1D 
+                             #Return the histogram 1D 
 
 
 #_______________________________________________________________________________

@@ -26,16 +26,16 @@ def Gd_vz(vz_max = 30):
 def Gd_dR(dRmin = 2):
     return TCut("genGd0Gd1_dR > %f"%(dRmin))
 
+#_______________________________________________________________________________
+def Gd_fid(pt1=5, pt2=5, eta_min1=0, eta_max1=2.4, eta_min2=0, eta_max2=2.4):
+    pt_cut1 = TCut("genGdMu_pt[0] > %f"%(pt1))
+    pt_cut2 = TCut("genGdMu_pt[1] > %f"%(pt2))
 
-def Gd_fid(i, pt1=5, pt2=5, eta_min1=0, eta_max1=2.4, eta_min2=0, eta_max2=2.4):
-    pt_cut1 = TCut("genGdMu_pt[0] > %f"%(i,pt1))
-    pt_cut2 = TCut("genGdMu_pt[1] > %f"%(i,pt2))
+    eta_min_cut1 = TCut("abs(genGdMu_eta[0]) > %f"%(eta_min1))
+    eta_min_cut2 = TCut("abs(genGdMu_eta[1]) > %f"%(eta_min2))
 
-    eta_min_cut1 = TCut("abs(genGdMu_eta[0]) > %f"%(i,eta_min1))
-    eta_min_cut2 = TCut("abs(genGdMu_eta[1]) > %f"%(i,eta_min2))
-
-    eta_max_cut1 = TCut("abs(genGdMu_eta[0]) < %f"%(i,eta_max1))
-    eta_max_cut2 = TCut("abs(genGdMu_eta[1]) < %f"%(i,eta_max2))
+    eta_max_cut1 = TCut("abs(genGdMu_eta[0]) < %f"%(eta_max1))
+    eta_max_cut2 = TCut("abs(genGdMu_eta[1]) < %f"%(eta_max2))
 
     total_cut1 = AND(pt_cut1, eta_min_cut1, eta_max_cut1)
     total_cut2 = AND(pt_cut2, eta_min_cut2, eta_max_cut2)
@@ -52,9 +52,10 @@ def Gd_fid(i, pt1=5, pt2=5, eta_min1=0, eta_max1=2.4, eta_min2=0, eta_max2=2.4):
     to be able to make a muon.
     """
     extra_cut2 = GdMu_vz(500)
-    extra_cut3 = Gd_lxy(300, 0.) 
+    extra_cut3 = Gd_lxy(300, 0.)
 
-    return AND(total_cut1, total_cut2, extra_cut1, extra_cut2, extra_cut3)
+    return AND(total_cut1)
+#    return AND(total_cut1, total_cut2, extra_cut1, extra_cut2, extra_cut3)
 
 #_______________________________________________________________________________
 def pt_cut(pt=10):
@@ -68,6 +69,9 @@ def sim_lxy(lxy_max = 20, lxy_min = 0.):
 def sim_vz(vz_max = 30):
     return TCut("sim_vz < %f"%(vz_max))
 
+#_______________________________________________________________________________
+def cms_eta():
+    return OR(barrel_eta_cut(), endcap_eta_cut())
 #_______________________________________________________________________________
 def barrel_eta_cut():
     return TCut("abs(sim_eta)<1.1")
@@ -109,8 +113,9 @@ def n_dt_csc_seg(n):
     return OR(n_dt_seg(n), n_csc_seg(n))
     
 #_______________________________________________________________________________
-def has_L1Extra(deltaR=0.1, pt=0):
-    return AND(TCut("has_l1Extra>=1"))#, TCut("l1Extra_dR<%f"%(deltaR)), TCut("l1Extra_pt>%f"%(pt))) 
+def has_L1Extra(l1_pt=0):
+    deltaR = 0.1
+    return AND(TCut("has_l1Extra>=1"), TCut("l1Extra_dR<%f"%(deltaR)), TCut("l1Extra_pt>%f"%(l1_pt)))
 
 #_______________________________________________________________________________
 def has_trackExtra(pt=0):
@@ -379,3 +384,10 @@ def ORtwo(cut1,cut2):
     return TCut("(%s) || (%s)"%(cut1.GetTitle(),cut2.GetTitle()))
 
 
+#_______________________________________________________________________________
+def drawLabel(title, x=0.17, y=0.35, font_size=0.05):
+    tex = TLatex(x, y,"#font[41]{%s}"%(title))
+    tex.SetTextSize(font_size)
+    tex.SetNDC()
+    tex.Draw("same")
+    return tex

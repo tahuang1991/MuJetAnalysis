@@ -16,7 +16,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'MCRUN2_74_V9', '')
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(80000))
 
 """
 process.options = cms.untracked.PSet(
@@ -36,13 +36,15 @@ process.source = cms.Source("PoolSource",
 
 from MuJetAnalysis.HLTBendingAngle.hltSamples import *
 from MuJetAnalysis.HLTBendingAngle.InputFileHelpers import *
-label = "mGammaD_20000_ctau0_14TeV_HLT_v2"
+label = "DarkSUSY_mH_125_mGammaD_20000_ctau0_14TeV_HLT_v2"
 dir = eosfiles[label]
 process=useInputDir(process, dir, pattern="outputA")
 
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("DarkSUSY_mH_125_mGammaD_20000_cT_0_14TeV_out_ana_newSeed.test.root"),
-#    fileName = cms.string("out_ana_mGammaD_20000_ctau100_14TeV_HLT_07132015.root"),
+                                   fileName = cms.string("out_ana.root"),
+                                   
+#                                   fileName = cms.string(label + "_out_ana_L1MuOpen.root"),
+#                                   fileName = cms.string("out_ana_mGammaD_20000_ctau100_14TeV_HLT_07132015.root"),
 	closeFileFast = cms.untracked.bool(True)
 )
 

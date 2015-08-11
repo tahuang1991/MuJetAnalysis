@@ -79,11 +79,14 @@ struct MyTrackEff
   Float_t genGd_lxy;
   Float_t genGd_l;
   Float_t genGd_dxy;
-  Float_t genGdMu_dxy_max;
   Float_t genGd0Gd1_dR;
   Float_t genGd0Gd1_m;
 
+  Float_t genGdMu_dxy_max;
+  Float_t genGdMu_eta_max;
+
   // Gen level muon
+  Int_t genGd_index;
   Int_t genGdMu_index;
   Float_t genGdMu_p[2];
   Float_t genGdMu_pt[2];
@@ -122,6 +125,7 @@ struct MyTrackEff
   Float_t sim_pt;
   Float_t sim_pt_inv;
   Float_t sim_eta;
+  Float_t sim_eta_2ndStation;
   Float_t sim_phi;
   Float_t sim_dxy;
   Float_t sim_charge;
@@ -344,9 +348,8 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   //                              GEN LEVEL                                     
   //****************************************************************************
 
-  //  auto matchedGENMuon(match_gen.getMatchedGENMuon());
   auto matchedGENMuons(match_gen.getMatchedGENMuons());
-  auto matchedDarkBoson(match_gen.getMatchedGENMuon());
+  auto matchedDarkBoson(match_gen.getMatchedDarkBoson());
 
   // Dark photon  
   etrk_[0].genGd_m = matchedDarkBoson->mass();
@@ -362,49 +365,48 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   etrk_[0].genGd_vy = matchedDarkBoson->vy();
   etrk_[0].genGd_vz = matchedDarkBoson->vz();
 
-  etrk_[0].genGdMu_index = 0;
-  etrk_[0].genGdMu_p[0] = matchedGENMuons[0]->p();
-  etrk_[0].genGdMu_pt[0] = matchedGENMuons[0]->pt();
-  etrk_[0].genGdMu_px[0] = matchedGENMuons[0]->px();
-  etrk_[0].genGdMu_py[0] = matchedGENMuons[0]->py();
-  etrk_[0].genGdMu_pz[0] = matchedGENMuons[0]->pz();
-  etrk_[0].genGdMu_eta[0] = matchedGENMuons[0]->eta();
-  etrk_[0].genGdMu_phi[0] = matchedGENMuons[0]->phi();
-  // etrk_[0].genGdMu_phi_corr[0] = matchedGENMuons[0]->phi();
-  etrk_[0].genGdMu_vx[0] = matchedGENMuons[0]->vx();
-  etrk_[0].genGdMu_vy[0] = matchedGENMuons[0]->vy();
-  etrk_[0].genGdMu_vz[0] = matchedGENMuons[0]->vz();
-  etrk_[0].genGdMu_dxy[0] = dxy(etrk_[0].genGdMu_px[0], etrk_[0].genGdMu_py[0], etrk_[0].genGdMu_vx[0], etrk_[0].genGdMu_vy[0], etrk_[0].genGdMu_pt[0]);
+  etrk_[0].genGd_index = match_gen.darkBosonIndex();
+  etrk_[0].genGdMu_index = match_gen.genMuonIndex();
 
-  etrk_[0].genGdMu_p[1] = matchedGENMuons[1]->p();
-  etrk_[0].genGdMu_pt[1] = matchedGENMuons[1]->pt();
-  etrk_[0].genGdMu_px[1] = matchedGENMuons[1]->px();
-  etrk_[0].genGdMu_py[1] = matchedGENMuons[1]->py();
-  etrk_[0].genGdMu_pz[1] = matchedGENMuons[1]->pz();
-  etrk_[0].genGdMu_eta[1] = matchedGENMuons[1]->eta();
-  etrk_[0].genGdMu_phi[1] = matchedGENMuons[1]->phi();
-  // etrk_[0].genGdMu_phi_corr[1] = matchedGENMuons[1]->phi();
-  etrk_[0].genGdMu_vx[1] = matchedGENMuons[1]->vx();
-  etrk_[0].genGdMu_vy[1] = matchedGENMuons[1]->vy();
-  etrk_[0].genGdMu_vz[1] = matchedGENMuons[1]->vz();
-  // beamspot!!
-  etrk_[0].genGdMu_dxy[1] = dxy(etrk_[0].genGdMu_px[1], etrk_[0].genGdMu_py[1], etrk_[0].genGdMu_vx[1], etrk_[0].genGdMu_vy[1], etrk_[0].genGdMu_pt[1]);
+  for (int i=0; i<2; ++i){
+    etrk_[0].genGdMu_p[i] = matchedGENMuons[i]->p();
+    etrk_[0].genGdMu_pt[i] = matchedGENMuons[i]->pt();
+    etrk_[0].genGdMu_px[i] = matchedGENMuons[i]->px();
+    etrk_[0].genGdMu_py[i] = matchedGENMuons[i]->py();
+    etrk_[0].genGdMu_pz[i] = matchedGENMuons[i]->pz();
+    etrk_[0].genGdMu_eta[i] = matchedGENMuons[i]->eta();
+    etrk_[0].genGdMu_phi[i] = matchedGENMuons[i]->phi();
+    // etrk_[0].genGdMu_phi_corr[i] = matchedGENMuons[i]->phi();
+    etrk_[0].genGdMu_vx[i] = matchedGENMuons[i]->vx();
+    etrk_[0].genGdMu_vy[i] = matchedGENMuons[i]->vy();
+    etrk_[0].genGdMu_vz[i] = matchedGENMuons[i]->vz();
+    etrk_[0].genGdMu_dxy[i] = dxy(etrk_[0].genGdMu_px[i], etrk_[0].genGdMu_py[i], etrk_[0].genGdMu_vx[i], etrk_[0].genGdMu_vy[i], etrk_[0].genGdMu_pt[i]);
+  }
 
   etrk_[0].genGd_vLx = etrk_[0].genGdMu_vx[0] - etrk_[0].genGd_vx;
   etrk_[0].genGd_vLy = etrk_[0].genGdMu_vy[0] - etrk_[0].genGd_vy;
   etrk_[0].genGd_vLz = etrk_[0].genGdMu_vz[0] - etrk_[0].genGd_vz;
 
-  etrk_[0].genGdMu_dxy_max = std::max(etrk_[0].genGdMu_dxy[0], etrk_[0].genGdMu_dxy[1]);
+  // std::cout << "genGd_vLx " << etrk_[0].genGd_vLx << std::endl;
+  // std::cout << "genGd_vLy " << etrk_[0].genGd_vLy << std::endl;
+  // std::cout << "genGd_vLz " << etrk_[0].genGd_vLz << std::endl;
+
+  // std::cout << "genGdMu_vx0 " << etrk_[0].genGdMu0_vx << std::endl;
+  // std::cout << "genGdMu_vy0 " << etrk_[0].genGdMu0_vy << std::endl;
+  // std::cout << "genGdMu_vz0 " << etrk_[0].genGdMu0_vz << std::endl;
+
+  // std::cout << "genGdMu_vx1 " << etrk_[0].genGdMu1_vx << std::endl;
+  // std::cout << "genGdMu_vy1 " << etrk_[0].genGdMu1_vy << std::endl;
+  // std::cout << "genGdMu_vz1 " << etrk_[0].genGdMu1_vz << std::endl;
+
+  etrk_[0].genGdMu_dxy_max = std::max(std::abs(etrk_[0].genGdMu_dxy[0]), std::abs(etrk_[0].genGdMu_dxy[1]));
+  etrk_[0].genGdMu_eta_max = std::max(std::abs(etrk_[0].genGdMu_eta[0]), std::abs(etrk_[0].genGdMu_eta[1]));
   etrk_[0].genGd_lxy = sqrt( etrk_[0].genGd_vLx * etrk_[0].genGd_vLx + etrk_[0].genGd_vLy * etrk_[0].genGd_vLy );
   etrk_[0].genGd_l = sqrt( etrk_[0].genGd_vLx * etrk_[0].genGd_vLx + etrk_[0].genGd_vLy * etrk_[0].genGd_vLy + etrk_[0].genGd_vLz * etrk_[0].genGd_vLz );
 
   etrk_[0].genGd0Gd1_dR = match_gen.darkBosonDeltaR();
   etrk_[0].genGd0Gd1_m = match_gen.darkBosonInvM();
 
-  if (verbose_) {
-    
-  }
-  
   
   //****************************************************************************
   //                              SIM LEVEL                                     
@@ -651,10 +653,11 @@ TTree*MyTrackEff::book(TTree *t,const std::string & name)
   t->Branch("genGd_lxy",  &genGd_lxy,  "genGd_lxy/F");
   t->Branch("genGd_l",  &genGd_l,  "genGd_l/F");
   t->Branch("genGd_dxy",  &genGd_dxy,  "genGd_dxy/F");
-  t->Branch("genGdMu_dxy_max",  &genGdMu_dxy_max,  "genGdMu_dxy_max/F");
   t->Branch("genGd0Gd1_dR",  &genGd0Gd1_dR,  "genGd0Gd1_dR/F");
   t->Branch("genGd0Gd1_m",  &genGd0Gd1_m,  "genGd0Gd1_m/F");
   t->Branch("genGd_dxy",  &genGd_dxy,  "genGd_dxy/F");
+  t->Branch("genGdMu_dxy_max",  &genGdMu_dxy_max,  "genGdMu_dxy_max/F");
+  t->Branch("genGdMu_eta_max",  &genGdMu_eta_max,  "genGdMu_eta_max/F");
 
   // Dimuons
   t->Branch("genGdMu_p", genGdMu_p, "genGdMu_p[2]/F");
@@ -669,6 +672,32 @@ TTree*MyTrackEff::book(TTree *t,const std::string & name)
   t->Branch("genGdMu_vy", genGdMu_vy, "genGdMu_vy[2]/F");
   t->Branch("genGdMu_vz", genGdMu_vz, "genGdMu_vz[2]/F");
   t->Branch("genGdMu_dxy", genGdMu_dxy, "genGdMu_dxy[2]/F");
+
+  // t->Branch("genGdMu0_p", &genGdMu0_p, "genGdMu0_p/F");
+  // t->Branch("genGdMu0_pt", &genGdMu0_pt, "genGdMu0_pt/F");
+  // t->Branch("genGdMu0_px", &genGdMu0_px, "genGdMu0_px/F");
+  // t->Branch("genGdMu0_py", &genGdMu0_py, "genGdMu0_py/F");
+  // t->Branch("genGdMu0_pz", &genGdMu0_pz, "genGdMu0_pz/F");
+  // t->Branch("genGdMu0_eta", &genGdMu0_eta, "genGdMu0_eta/F");
+  // t->Branch("genGdMu0_phi", &genGdMu0_phi, "genGdMu0_phi/F");
+  // t->Branch("genGdMu0_phi_corr", &genGdMu0_phi_corr, "genGdMu0_phi_corr/F");
+  // t->Branch("genGdMu0_vx", &genGdMu0_vx, "genGdMu0_vx/F");
+  // t->Branch("genGdMu0_vy", &genGdMu0_vy, "genGdMu0_vy/F");
+  // t->Branch("genGdMu0_vz", &genGdMu0_vz, "genGdMu0_vz/F");
+  // t->Branch("genGdMu0_dxy", &genGdMu0_dxy, "genGdMu0_dxy/F");
+
+  // t->Branch("genGdMu1_p", &genGdMu1_p, "genGdMu1_p/F");
+  // t->Branch("genGdMu1_pt", &genGdMu1_pt, "genGdMu1_pt/F");
+  // t->Branch("genGdMu1_px", &genGdMu1_px, "genGdMu1_px/F");
+  // t->Branch("genGdMu1_py", &genGdMu1_py, "genGdMu1_py/F");
+  // t->Branch("genGdMu1_pz", &genGdMu1_pz, "genGdMu1_pz/F");
+  // t->Branch("genGdMu1_eta", &genGdMu1_eta, "genGdMu1_eta/F");
+  // t->Branch("genGdMu1_phi", &genGdMu1_phi, "genGdMu1_phi/F");
+  // t->Branch("genGdMu1_phi_corr", &genGdMu1_phi_corr, "genGdMu1_phi_corr/F");
+  // t->Branch("genGdMu1_vx", &genGdMu1_vx, "genGdMu1_vx/F");
+  // t->Branch("genGdMu1_vy", &genGdMu1_vy, "genGdMu1_vy/F");
+  // t->Branch("genGdMu1_vz", &genGdMu1_vz, "genGdMu1_vz/F");
+  // t->Branch("genGdMu1_dxy", &genGdMu1_dxy, "genGdMu1_dxy/F");
 
   t->Branch("sim_eta", &sim_eta);
   t->Branch("sim_pt", &sim_pt);

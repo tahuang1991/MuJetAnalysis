@@ -20,42 +20,71 @@ def tracefunc(frame, event, arg, indent=[0]):
 #sys.settrace(tracefunc)
 
 inputDir = "/afs/cern.ch/user/d/dildick/work/GEM/forJose/DisplacedMuHLTStudyPtAssignment/CMSSW_7_4_4/src/"
+inputDir = "/uscms_data/d3/dildick/work/MuonPhaseIIScopeDoc/CMSSW_6_2_0_SLHC26_patch3/src/"
+preOut = "/uscms_data/d3/dildick/work/MuonPhaseIIScopeDoc/CMSSW_6_2_0_SLHC26_patch3/src/OutputDirectoryForScopeDoc/"
 ext = ".png"
 
 inputFiles = [
-      "/fdata/hepx/store/user/dildick/DarkSUSY_mH_125_mGammaD_20000_ctau0_14TeV_madgraph452_bridge224_LHE_pythia8_GEN_SIM_80k_v3/DarkSUSY_mH_125_mGammaD_20000_cT_0_14TeV_ANA_v6/0948fe059a0e71d743b3cbd79e98108d/out_ana.root",
-      "/fdata/hepx/store/user/dildick/DarkSUSY_mH_125_mGammaD_20000_ctau100_14TeV_madgraph452_bridge224_LHE_pythia8_GEN_SIM_80k_v3/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_ANA_v6/0948fe059a0e71d743b3cbd79e98108d/out_ana.root",
-      "/fdata/hepx/store/user/dildick/DarkSUSY_mH_125_mGammaD_20000_ctau1000_14TeV_madgraph452_bridge224_LHE_pythia8_GEN_SIM_80k_v3/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_ANA_v6/0948fe059a0e71d743b3cbd79e98108d/out_ana.root"
+      'out_anaDarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_fullScope.root',
+      'out_anaDarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_fullScopeAging.root',
+      'out_anaDarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_descope235MCHFaging.root',
+      'out_anaDarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_descope200MCHF.root',
+      'out_anaDarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_descope200MCHFaging.root',
+
+      'out_anaDarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_HLT_fullScope.root',
+      'out_anaDarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_HLT_fullScopeAging.root',
+      'out_anaDarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_HLT_descope235MCHFaging.root',
+      'out_anaDarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_HLT_descope200MCHF.root',
+      'out_anaDarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_HLT_descope200MCHFaging.root',
       ]
 
 outputDirs = [
-      "out_ana_mGammaD_20000_ctau0_14TeV_HLT_08102015/",
-      "out_ana_mGammaD_20000_ctau100_14TeV_HLT_08102015/",
-      "out_ana_mGammaD_20000_ctau1000_14TeV_HLT_08102015/"
+      'DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_ANA_fullScope/',
+      'DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_ANA_fullScopeAging/',
+      'DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_ANA_descope235MCHFaging/',
+      'DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_ANA_descope200MCHF/',
+      'DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_ANA_descope200MCHFaging/',
+
+      'DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_ANA_fullScope/',
+      'DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_ANA_fullScopeAging/',
+      'DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_ANA_descope235MCHFaging/',
+      'DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_ANA_descope200MCHF/',
+      'DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_ANA_descope200MCHFaging/',
       ]
 
 highMassExt = [
-      '_mGammaD_20000_ctau_0_14TeV_PU0',
-      '_mGammaD_20000_ctau_100_14TeV_PU0',
-      '_mGammaD_20000_ctau_1000_14TeV_PU0'
+      '_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_fullScope',
+      '_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_fullScopeAging',
+      '_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_descope235MCHFaging',
+      '_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_descope200MCHF',
+      '_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_descope200MCHFaging',
+
+      '_DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_fullScope',
+      '_DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_fullScopeAging',
+      '_DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_descope235MCHFaging',
+      '_DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_descope200MCHF',
+      '_DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_descope200MCHFaging',
       ]
 
-highMassCtau = [0,100,1000]
-highMassPU = [0,0,0]
+highMassCtau = [1000,1000,1000,1000,1000,
+                100,100,100,100,100]
 
-for i in range(0,3):
+highMassPU = [140,140,140,140,140,140,
+              140,140,140,140,140,140]
+
+for i in range(0,10):
       class Plotter:
             def __init__(self):
                   self.inputDir = inputDir
-                  self.inputFile = inputFiles[i]
-                  self.outputDir = outputDirs[i]
+                  self.inputFile = inputDir + inputFiles[i]
+                  self.outputDir = preOut + outputDirs[i]
                   self.ext = highMassExt[i] + ext
                   self.analyzer = "HLTBendingAngle"
                   self.events = "trk_eff_MU_ALL"
                   self.file = TFile.Open(self.inputFile)
                   self.dirAna = (self.file).Get(self.analyzer)
                   self.tree = (self.dirAna).Get(self.events)            
-                  self.pu = highMassPU[i]
+                  self.pu = 140
                   self.symb = "Z_{D}"
                   self.ctau = "c#tau(" + self.symb + ") = %d mm"%(highMassCtau[i])
                   self.mass = 'm(' + self.symb + ') = 20 GeV'
@@ -64,10 +93,10 @@ for i in range(0,3):
                   
       ## make the plots
       plotter = Plotter()
-      genKinematics(plotter)
-      pTCorrelationPlots(plotter)
+      #genKinematics(plotter)
       #trackKinematics(plotter)
-      #recoTrackEfficiency(plotter)
+      recoTrackEfficiency(plotter)
+      #pTCorrelationPlots(plotter)
       
 
 

@@ -3,8 +3,7 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("HLTBending")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
-
-process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
+process.load('Configuration.Geometry.GeometryExtended2023HGCalMuonReco_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.EventContent.EventContent_cff')
@@ -12,11 +11,11 @@ process.load('Configuration.StandardSequences.Services_cff')
 process.load('TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorOpposite_cfi')
 process.load('TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorAlong_cfi')
 process.load("MuJetAnalysis.HLTBendingAngle.HLTBendingAngle_cfi")
-process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
-from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'MCRUN2_74_V9', '')
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, 'PH2_1K_FB_V6::All', '')
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(80000))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1))
 
 """
 process.options = cms.untracked.PSet(
@@ -26,26 +25,23 @@ process.options = cms.untracked.PSet(
 
 process.source = cms.Source("PoolSource",
    fileNames = cms.untracked.vstring(
-        #'file:outputA.root'        
-        #'file:outputA_25062015.root'
-        #'file:outputA_30062015.root'
-        'file:outputA_744_30062015.root'
+        'file:out_hlt_fullScope.root'
    )
 )
 
 
-from MuJetAnalysis.HLTBendingAngle.hltSamples import *
+from MuJetAnalysis.HLTBendingAngle.hltSamples744 import *
+from MuJetAnalysis.HLTBendingAngle.hltSamples62XSLHCTP import *
 from MuJetAnalysis.HLTBendingAngle.InputFileHelpers import *
-label = "DarkSUSY_mH_125_mGammaD_20000_ctau0_14TeV_HLT_v2"
+label = "DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_descope200MCHF"
+label = "DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_fullScopeAging"
+label = "DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_HLT_fullScopeAging"
 dir = eosfiles[label]
-process=useInputDir(process, dir, pattern="outputA")
+process=useInputDir(process, dir, "out_hlt_")
 
 process.TFileService = cms.Service("TFileService",
-                                   fileName = cms.string("out_ana.root"),
-                                   
-#                                   fileName = cms.string(label + "_out_ana_L1MuOpen.root"),
-#                                   fileName = cms.string("out_ana_mGammaD_20000_ctau100_14TeV_HLT_07132015.root"),
-	closeFileFast = cms.untracked.bool(True)
+    fileName = cms.string("out_ana" + label + ".root"),
+    closeFileFast = cms.untracked.bool(True)
 )
 
 process.p = cms.Path(process.HLTBendingAngle)
@@ -53,7 +49,7 @@ process.p = cms.Path(process.HLTBendingAngle)
 
 ## messages
 print
-#print 'Input files:'
+print 'Input files:'
 print '----------------------------------------'
 print process.source.fileNames
 print

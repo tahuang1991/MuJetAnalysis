@@ -148,6 +148,21 @@ struct MyTrackEff
   Int_t n_csc_st_sh; // number of dt stations with at least 3 layers
   Int_t n_csc_st_seg; // number of csc stations with segments
 
+  Int_t n_rpc_rh;
+  Int_t n_gem_rh;
+  Int_t n_rpc_st_sh;
+  Int_t n_gem_st_sh;
+  Int_t n_rpc_st_rh;
+  Int_t n_gem_st_rh;
+
+  Int_t has_ge11_st_sh;
+  Int_t has_ge21_st_sh;
+
+  Int_t has_ge11_st_1rh;
+  Int_t has_ge21_st_1rh;
+  Int_t has_ge11_st_2rh;
+  Int_t has_ge21_st_2rh;
+
   Int_t has_l1Extra;
   Float_t l1Extra_pt;
   Float_t l1Extra_eta;
@@ -225,7 +240,7 @@ private:
 
 HLTBendingAngle::HLTBendingAngle(const edm::ParameterSet& ps)
   : cfg_(ps.getParameterSet("simTrackMatching"))
-  , verbose_(ps.getUntrackedParameter<int>("verbose", 0))
+  , verbose_(ps.getUntrackedParameter<int>("verbose"))
 {
   cscStations_ = cfg_.getParameter<std::vector<string> >("cscStations");
   dtStations_ = cfg_.getParameter<std::vector<string> >("dtStations");
@@ -335,6 +350,8 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   const SimHitMatcher& match_sh = match.simhits();
   const DTRecHitMatcher& match_dtrh = match.dtRecHits();
   const CSCRecHitMatcher& match_cscrh = match.cscRecHits();
+  const GEMRecHitMatcher& match_gemrh = match.gemRecHits();
+  const RPCRecHitMatcher& match_rpcrh = match.rpcRecHits();
   const L1GlobalMuonTriggerMatcher& match_l1_gmt = match.l1GMTCands();
   const HLTTrackMatcher& match_hlt_track = match.hltTracks();
   const SimTrack& t = match_sh.trk();
@@ -407,7 +424,6 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   etrk_[0].genGd0Gd1_dR = match_gen.darkBosonDeltaR();
   etrk_[0].genGd0Gd1_m = match_gen.darkBosonInvM();
 
-  
   //****************************************************************************
   //                              SIM LEVEL                                     
   //****************************************************************************
@@ -473,12 +489,49 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   // } 
 
   etrk_[0].n_dt_st_sh = match_sh.nStationsDT();
+  etrk_[0].n_csc_st_sh = match_sh.nStationsCSC();
+  etrk_[0].n_rpc_st_sh = match_sh.nStationsRPC();
+  etrk_[0].n_gem_st_sh = match_sh.nStationsGEM();
+
+  etrk_[0].has_ge11_st_sh = match_sh.hitStationGEM(1,1);
+  etrk_[0].has_ge21_st_sh = match_sh.hitStationGEM(3,1);
+
   etrk_[0].n_dt_seg =  match_dtrh.nDTRecSegment4Ds();
   etrk_[0].n_dt_st_seg = match_dtrh.chamberIdsDTRecSegment4D().size();
-  etrk_[0].n_csc_st_sh = match_sh.nStationsCSC();
   etrk_[0].n_csc_seg =  match_cscrh.nCSCSegments();
   etrk_[0].n_csc_st_seg = match_cscrh.chamberIdsCSCSegment().size();
 
+  etrk_[0].n_rpc_rh =  match_rpcrh.nRecHits();
+  etrk_[0].n_gem_rh =  match_gemrh.nRecHits();
+  etrk_[0].n_rpc_st_rh = match_rpcrh.chamberIds().size();
+  etrk_[0].n_gem_st_rh = match_gemrh.superChamberIds().size();
+
+  etrk_[0].has_ge11_st_1rh = match_gemrh.nCoincidenceGEMChambers(1,1);
+  etrk_[0].has_ge11_st_2rh = match_gemrh.nCoincidenceGEMChambers(1,2);
+  etrk_[0].has_ge21_st_1rh = match_gemrh.nCoincidenceGEMChambers(3,1);
+  etrk_[0].has_ge21_st_2rh = match_gemrh.nCoincidenceGEMChambers(3,2);
+
+  if (verbose_) {
+    std::cout << "n_dt_seg: " << etrk_[0].n_dt_seg << std::endl;
+    std::cout << "n_dt_st_sh: " << etrk_[0].n_dt_st_sh << std::endl;
+    std::cout << "n_dt_st_seg: " << etrk_[0].n_dt_st_seg << std::endl;
+    std::cout << "n_csc_seg: " << etrk_[0].n_csc_seg << std::endl;
+    std::cout << "n_csc_st_sh: " << etrk_[0].n_csc_st_sh << std::endl;
+    std::cout << "n_csc_st_seg: " << etrk_[0].n_csc_st_seg << std::endl;
+    
+    std::cout << "n_rpc_rh: " << etrk_[0].n_rpc_rh << std::endl;
+    std::cout << "n_gem_rh: " << etrk_[0].n_gem_rh << std::endl;
+    std::cout << "n_rpc_st_sh: " << etrk_[0].n_rpc_st_sh << std::endl;
+    std::cout << "n_gem_st_sh: " << etrk_[0].n_gem_st_sh << std::endl;
+    std::cout << "n_rpc_st_rh: " << etrk_[0].n_rpc_st_rh << std::endl;
+    std::cout << "n_gem_st_rh: " << etrk_[0].n_gem_st_rh << std::endl;
+
+    std::cout << "has_ge11_st_1rh: " << etrk_[0].has_ge11_st_1rh << std::endl;
+    std::cout << "has_ge21_st_1rh: " << etrk_[0].has_ge21_st_1rh << std::endl;
+    std::cout << "has_ge11_st_2rh: " << etrk_[0].has_ge11_st_2rh << std::endl;
+    std::cout << "has_ge21_st_2rh: " << etrk_[0].has_ge21_st_2rh << std::endl;
+    
+  }
   // L1Extra
   auto l1Extras(match_l1_gmt.getMatchedL1ExtraMuonParticles());
   if (l1Extras.size()) {
@@ -597,12 +650,28 @@ void MyTrackEff::init()
   wheel = -9;
   station = - 9;
   
-  n_dt_seg = -99;
   n_dt_st_sh = -99;
-  n_dt_st_seg = -99;
-  n_csc_seg = -99;
   n_csc_st_sh = -99;
+  n_rpc_st_sh = -99;
+  n_gem_st_sh = -99;
+
+  has_ge11_st_sh = -99;
+  has_ge21_st_sh = -99;
+
+  n_dt_seg = -99;
+  n_csc_seg = -99;
+  n_dt_st_seg = -99;
   n_csc_st_seg = -99;
+
+  n_rpc_rh = -99;
+  n_gem_rh = -99;
+  n_rpc_st_rh = -99;
+  n_gem_st_rh = -99;
+
+  has_ge11_st_1rh = 0;
+  has_ge21_st_1rh = 0;
+  has_ge11_st_2rh = 0;
+  has_ge21_st_2rh = 0;
 
   has_l1Extra = 0;
   l1Extra_pt = -99;
@@ -726,12 +795,28 @@ TTree*MyTrackEff::book(TTree *t,const std::string & name)
   t->Branch("nlayerdt", &nlayerdt);
   t->Branch("nslayerdt", &nslayerdt);
 
-  t->Branch("n_dt_seg", &n_dt_seg);
+  t->Branch("has_ge11_st_sh", &has_ge11_st_sh);
+  t->Branch("has_ge21_st_sh", &has_ge21_st_sh);
+
   t->Branch("n_dt_st_sh", &n_dt_st_sh);
+  t->Branch("n_csc_st_sh", &n_csc_st_sh);
+  t->Branch("n_rpc_st_sh", &n_rpc_st_sh);
+  t->Branch("n_gem_st_sh", &n_gem_st_sh);
+
+  t->Branch("n_dt_seg", &n_dt_seg);
   t->Branch("n_dt_st_seg", &n_dt_st_seg);
   t->Branch("n_csc_seg", &n_csc_seg);
-  t->Branch("n_csc_st_sh", &n_csc_st_sh);
   t->Branch("n_csc_st_seg", &n_csc_st_seg);
+
+  t->Branch("n_rpc_rh", &n_rpc_rh);
+  t->Branch("n_gem_rh", &n_gem_rh);
+  t->Branch("n_rpc_st_rh", &n_rpc_st_rh);
+  t->Branch("n_gem_st_rh", &n_gem_st_rh);
+
+  t->Branch("has_ge11_st_1rh", &has_ge11_st_1rh);
+  t->Branch("has_ge21_st_1rh", &has_ge21_st_1rh); 
+  t->Branch("has_ge11_st_2rh", &has_ge11_st_2rh);
+  t->Branch("has_ge21_st_2rh", &has_ge21_st_2rh);
 
   t->Branch("has_l1Extra", &has_l1Extra);
   t->Branch("l1Extra_pt", &l1Extra_pt);
@@ -761,7 +846,7 @@ TTree*MyTrackEff::book(TTree *t,const std::string & name)
 void
 HLTBendingAngle::endJob()
 {
-  std::cout << "Number of simTracks " << n_sim_trk_ << std::endl;
+  //  std::cout << "Number of simTracks " << n_sim_trk_ << std::endl;
 }
 
 void

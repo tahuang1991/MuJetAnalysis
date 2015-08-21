@@ -550,7 +550,7 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     std::cout << "has_ge11_st_2rh: " << etrk_[0].has_ge11_st_2rh << std::endl;
     std::cout << "has_ge21_st_2rh: " << etrk_[0].has_ge21_st_2rh << std::endl;
     
-  }
+OB  }
   // L1Extra
   auto l1Extras(match_l1_gmt.getMatchedL1ExtraMuonParticles());
   if (l1Extras.size()) {

@@ -64,7 +64,11 @@ def trackKinematics(p):
 def recoTrackEfficiency(p):
 
     ptBinning = "(50,0,100)"
+    etaBinning = "(50,-2.5,2.5)"
+
+    
     sim_pt = get_1D(p, "title", "sim_pt", ptBinning, "sim_pt", nocut())
+
     sim_pt_eta = get_1D(p, "title", "sim_pt_eta", ptBinning, "sim_pt", cms_eta())
     sim_pt_barrel = get_1D(p, "title", "sim_pt_barrel", ptBinning, "sim_pt", barrel_eta_cut())
     sim_pt_endcap = get_1D(p, "title", "sim_pt_endcap", ptBinning, "sim_pt", endcap_eta_cut())
@@ -73,20 +77,20 @@ def recoTrackEfficiency(p):
     sim_pt_L1Extra = get_1D(p, "title", "sim_pt_L1Extra", ptBinning, "sim_pt", has_trackExtra())
     sim_pt_recoTrackExtra = get_1D(p, "title", "sim_pt_recoTrackExtra", ptBinning, "sim_pt", has_trackExtra())
     sim_pt_recoTrack = get_1D(p, "title", "sim_pt_recoTrack", ptBinning, "sim_pt", has_track())
-    sim_pt_recoChargedCandidate = get_1D(p, "title", "sim_pt_recoChargedCandidate", ptBinning, "sim_pt", has_cand())
+    sim_pt_recoCand = get_1D(p, "title", "sim_pt_recoCand", ptBinning, "sim_pt", has_cand())
 
     sim_pt_eta_L1Extra = get_1D(p, "title", "sim_pt_eta_L1Extra", ptBinning, "sim_pt", AND(has_trackExtra(), cms_eta()))
     sim_pt_eta_recoTrackExtra = get_1D(p, "title", "sim_pt_eta_recoTrackExtra", ptBinning, "sim_pt", AND(has_trackExtra(), cms_eta()))
     sim_pt_eta_recoTrack = get_1D(p, "title", "sim_pt_eta_recoTrack", ptBinning, "sim_pt", AND(has_track(), cms_eta()))
-    sim_pt_eta_recoChargedCandidate = get_1D(p, "title", "sim_pt_eta_recoChargedCandidate", ptBinning, "sim_pt", AND(has_cand(), cms_eta()))
+    sim_pt_eta_recoCand = get_1D(p, "title", "sim_pt_eta_recoCand", ptBinning, "sim_pt", AND(has_cand(), cms_eta()))
 
     sim_pt_recoTrackExtra_barrel = get_1D(p, "title", "sim_pt_recoTrackExtra_barrel", ptBinning, "sim_pt", AND(has_trackExtra(), barrel_eta_cut()))
     sim_pt_recoTrack_barrel = get_1D(p, "title", "sim_pt_recoTrack_barrel", ptBinning, "sim_pt", AND(has_track(), barrel_eta_cut()))
-    sim_pt_recoChargedCandidate_barrel = get_1D(p, "title", "sim_pt_recoChargedCandidate_barrel", ptBinning, "sim_pt", AND(has_cand(), barrel_eta_cut()))
+    sim_pt_recoCand_barrel = get_1D(p, "title", "sim_pt_recoCand_barrel", ptBinning, "sim_pt", AND(has_cand(), barrel_eta_cut()))
 
     sim_pt_recoTrackExtra_endcap = get_1D(p, "title", "sim_pt_recoTrackExtra_endcap", ptBinning, "sim_pt", AND(has_trackExtra(), endcap_eta_cut()))
     sim_pt_recoTrack_endcap = get_1D(p, "title", "sim_pt_recoTrack_endcap", ptBinning, "sim_pt", AND(has_track(), endcap_eta_cut()))
-    sim_pt_recoChargedCandidate_endcap = get_1D(p, "title", "sim_pt_recoChargedCandidate_endcap", ptBinning, "sim_pt", AND(has_cand(), endcap_eta_cut()))
+    sim_pt_recoCand_endcap = get_1D(p, "title", "sim_pt_recoCand_endcap", ptBinning, "sim_pt", AND(has_cand(), endcap_eta_cut()))
 
     ## no eta cut
     def sim_pt_sh(n=2):
@@ -97,26 +101,24 @@ def recoTrackEfficiency(p):
         return get_1D(p, "title", "sim_pt_eta_%dseg"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta()))
     def sim_pt_eta_seg_L1Extra_fid(n=2):
         return get_1D(p, "title", "sim_pt_eta_%dseg_L1Extra_fid"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid()))
+    def sim_pt_eta_seg_L1Extra_fid_recoCand(n, l2_pt):
+        return get_1D(p, "title", "sim_pt_eta_%dseg_L1Extra_fid_recoCand"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt)))
     def sim_pt_eta_seg_dxy_L1Extra_fid(n, l2_pt):
         return get_1D(p, "title", "sim_pt_eta_%dseg_dxy_L1Extra_fid"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), dxy(20)))
+    def sim_pt_eta_seg_dxy_L1Extra_fid_recoCand(n, l2_pt):
+        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy_L1Extra_fid_recoCand"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), dxy(20)))
     def sim_pt_eta_seg_dxy0to10_L1Extra_fid(n):
         return get_1D(p, "title", "sim_pt_eta_%dseg_dxy0to10_L1Extra_fid"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), dxy(0,10)))
-    def sim_pt_eta_seg_dxy10to50_L1Extra_fid(n):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy10to50_L1Extra_fid"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), dxy(10,50)))
-    def sim_pt_eta_seg_dxy50to100_L1Extra_fid(n):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy50to100_L1Extra_fid"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), dxy(50,100)))
-
-
-    def sim_pt_eta_seg_L1Extra_fid_recoChargedCandidate(n, l2_pt):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_L1Extra_fid_recoChargedCandidate"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt)))
-    def sim_pt_eta_seg_dxy_L1Extra_fid_recoChargedCandidate(n, l2_pt):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy_L1Extra_fid_recoChargedCandidate"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), dxy(20)))
-    def sim_pt_eta_seg_dxy0to10_L1Extra_fid_recoChargedCandidate(n, l2_pt):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy0to10_L1Extra_fid_recoChargedCandidate"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), dxy(0,10)))
-    def sim_pt_eta_seg_dxy10to50_L1Extra_fid_recoChargedCandidate(n, l2_pt):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy10to50_L1Extra_fid_recoChargedCandidate"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), dxy(10,50)))
-    def sim_pt_eta_seg_dxy50to100_L1Extra_fid_recoChargedCandidate(n, l2_pt):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy50to100_L1Extra_fid_recoChargedCandidate"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), dxy(50,100)))
+    def sim_pt_eta_seg_dxy10to30_L1Extra_fid(n):
+        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy10to30_L1Extra_fid"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), dxy(10,30)))
+    def sim_pt_eta_seg_dxy30to500_L1Extra_fid(n):
+        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy30to500_L1Extra_fid"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), dxy(30,500)))
+    def sim_pt_eta_seg_dxy0to10_L1Extra_fid_recoCand(n, l2_pt):
+        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy0to10_L1Extra_fid_recoCand"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), dxy(0,10)))
+    def sim_pt_eta_seg_dxy10to30_L1Extra_fid_recoCand(n, l2_pt):
+        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy10to30_L1Extra_fid_recoCand"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), dxy(10,30)))
+    def sim_pt_eta_seg_dxy30to500_L1Extra_fid_recoCand(n, l2_pt):
+        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy30to500_L1Extra_fid_recoCand"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), dxy(30,500)))
 
     def sim_pt_sh_gem(n=2,m=2):
         return get_1D(p, "title", "sim_pt_%dsh_%dgem"%(n,m), ptBinning, "sim_pt", AND(n_gem_st_sh(n), n_gem_seg(m)))
@@ -126,10 +128,10 @@ def recoTrackEfficiency(p):
         return get_1D(p, "title", "sim_pt_%dseg_recoTrackExtra"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), has_trackExtra(l2_pt)))
     def sim_pt_seg_recoTrack(n=2, l2_pt=0):
         return get_1D(p, "title", "sim_pt_%dseg_recoTrack"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), has_track(l2_pt)))
-    def sim_pt_seg_recoChargedCandidate(n=2, l2_pt=0):
-        return get_1D(p, "title", "sim_pt_%dseg_recoChargedCandidate"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), has_cand(l2_pt)))
-    def sim_pt_eta_seg_recoChargedCandidate(n=2, l2_pt=0):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_recoChargedCandidate"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), has_cand(l2_pt), cms_eta()))
+    def sim_pt_seg_recoCand(n=2, l2_pt=0):
+        return get_1D(p, "title", "sim_pt_%dseg_recoCand"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), has_cand(l2_pt)))
+    def sim_pt_eta_seg_recoCand(n=2, l2_pt=0):
+        return get_1D(p, "title", "sim_pt_eta_%dseg_recoCand"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), has_cand(l2_pt), cms_eta()))
 
     
 
@@ -145,8 +147,8 @@ def recoTrackEfficiency(p):
        return get_1D(p, "title", "sim_pt_%dseg_recoTrackExtra_barrel"%(n), ptBinning, "sim_pt", AND(n_dt_seg(n), has_trackExtra(l2_pt), barrel_eta_cut()))
     def sim_pt_seg_recoTrack_barrel(n=2, l2_pt=0):
         return get_1D(p, "title", "sim_pt_%dseg_recoTrack_barrel"%(n), ptBinning, "sim_pt", AND(n_dt_seg(n), has_track(l2_pt), barrel_eta_cut()))
-    def sim_pt_seg_recoChargedCandidate_barrel(n=2, l2_pt=0):
-        return get_1D(p, "title", "sim_pt_%dseg_recoChargedCandidate_barrel"%(n), ptBinning, "sim_pt", AND(n_dt_seg(n), has_cand(l2_pt), barrel_eta_cut()))
+    def sim_pt_seg_recoCand_barrel(n=2, l2_pt=0):
+        return get_1D(p, "title", "sim_pt_%dseg_recoCand_barrel"%(n), ptBinning, "sim_pt", AND(n_dt_seg(n), has_cand(l2_pt), barrel_eta_cut()))
 
     ## CSC only
     def sim_pt_sh_endcap(n=2):
@@ -159,8 +161,8 @@ def recoTrackEfficiency(p):
         return get_1D(p, "title", "sim_pt_%dseg_recoTrackExtra_endcap"%(n), ptBinning, "sim_pt", AND(n_csc_seg(n), has_trackExtra(l2_pt), endcap_eta_cut()))
     def sim_pt_seg_recoTrack_endcap(n=2, l2_pt=0):
         return get_1D(p, "title", "sim_pt_%dseg_recoTrack_endcap"%(n), ptBinning, "sim_pt", AND(n_csc_seg(n), has_track(l2_pt), endcap_eta_cut()))
-    def sim_pt_seg_recoChargedCandidate_endcap(n=2, l2_pt=0):
-        return get_1D(p, "title", "sim_pt_%dseg_recoChargedCandidate_endcap"%(n), ptBinning, "sim_pt", AND(n_csc_seg(n), has_cand(l2_pt), endcap_eta_cut()))
+    def sim_pt_seg_recoCand_endcap(n=2, l2_pt=0):
+        return get_1D(p, "title", "sim_pt_%dseg_recoCand_endcap"%(n), ptBinning, "sim_pt", AND(n_csc_seg(n), has_cand(l2_pt), endcap_eta_cut()))
 
     ## gem
     def sim_pt_ge11():
@@ -176,167 +178,6 @@ def recoTrackEfficiency(p):
     def sim_pt_rh_ge21():
         return get_1D(p, "title", "sim_pt_rh_ge21", ptBinning, "sim_pt", AND(has_ge21_rh(), ge21_eta_cut(), dxy(0,5)))
 
-    ## CSC + DT
-    def sim_eta():
-        return get_1D(p, "title", "sim_eta", "(100,-2.5.,2.5.)", "sim_eta", nocut())
-    def sim_eta_sh(n=2):
-        return get_1D(p, "title", "sim_eta_%dsh"%(n), "(100,-2.5.,2.5.)", "sim_eta", n_dt_csc_st_sh(n))
-    def sim_eta_sh_ge11():
-        return get_1D(p, "title", "sim_eta_sh_ge11", "(100,-2.5.,2.5.)", "sim_eta", has_ge11_sh())
-    def sim_eta_sh_ge21():
-        return get_1D(p, "title", "sim_eta_sh_ge21", "(100,-2.5.,2.5.)", "sim_eta", has_ge21_sh())
-    def sim_eta_sh_rpc(n=2):
-        return get_1D(p, "title", "sim_eta_%dsh"%(n), "(100,-2.5.,2.5.)", "sim_eta", n_rpc_st_sh(n))
-    def sim_eta_seg(n=2):
-        return get_1D(p, "title", "sim_eta_%dseg"%(n), "(100,-2.5.,2.5.)", "sim_eta", n_dt_csc_seg(n))
-    def sim_eta_seg_dxy(n=2):
-        return get_1D(p, "title", "sim_eta_%dseg_dxy"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), dxy(20)))
-    def sim_eta_sh_seg(n=2,m=2):
-        return get_1D(p, "title", "sim_eta_%dsh_%dseg"%(n,m), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_st_sh(n), n_dt_csc_seg(m)))
-    def sim_eta_pt(sim_pt=10):
-        return get_1D(p, "title", "sim_eta_pt", "(100,-2.5.,2.5.)", "sim_eta", pt_cut(sim_pt))
-    def sim_eta_sh_pt(n=2, sim_pt=10):
-        return get_1D(p, "title", "sim_eta_%dsh_pt"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_st_sh(n), pt_cut(sim_pt)))
-    def sim_eta_sh_gem_pt(n=2, sim_pt=10):
-        return get_1D(p, "title", "sim_eta_%dsh_pt"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_gem_seg(n), pt_cut(sim_pt)))
-    def sim_eta_sh_seg_pt(n=2,m=2, sim_pt=10):
-        return get_1D(p, "title", "sim_eta_%dsh_%dseg_pt"%(n,m), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_st_sh(n), n_dt_csc_seg(m), pt_cut(sim_pt)))
-    def sim_eta_sh_ge11_pt(pt):
-        return get_1D(p, "title", "sim_eta_sh_ge11_pt", "(100,-2.5.,2.5.)", "sim_eta", AND(has_ge11_sh(), pt_cut(sim_pt)))
-    def sim_eta_sh_ge21_pt(pt):
-        return get_1D(p, "title", "sim_eta_sh_ge21_pt", "(100,-2.5.,2.5.)", "sim_eta", AND(has_ge21_sh(), pt_cut(sim_pt)))
-
-    def sim_eta_seg_pt(n=2, sim_pt=20):
-        return get_1D(p, "title", "sim_eta_%dseg_pt"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(sim_pt)))
-    def sim_eta_seg_pt_L1Extra(n=2, sim_pt=20):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_L1Extra"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(sim_pt), has_L1Extra()))
-    def sim_eta_seg_pt_L1Extra_fid(n=2, sim_pt=20):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_L1Extra_fid"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(sim_pt), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy(n=2, sim_pt=20):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(sim_pt), dxy(20)))
-    def sim_eta_seg_pt_dxy_L1Extra(n=2, sim_pt=20):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy_L1Extra"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(sim_pt), dxy(20), has_L1Extra()))
-    def sim_eta_seg_pt_dxy_L1Extra_fid(n=2, sim_pt=20):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy_L1Extra_fid"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(sim_pt), dxy(20), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy0to10_L1Extra(n=2, sim_pt=20):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy0to10_L1Extra"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(sim_pt), dxy(0,10), has_L1Extra()))
-
-    def sim_eta_seg_pt_dxy0to10_L1Extra_fid(n=2, sim_pt=20):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy0to10_L1Extra_fid"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(sim_pt), dxy(0,10), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy10to20_L1Extra_fid(n=2, sim_pt=20):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy10to20_L1Extra_fid"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(sim_pt), dxy(10,20), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy20to30_L1Extra_fid(n=2, sim_pt=20):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy20to30_L1Extra_fid"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(sim_pt), dxy(20,30), has_L1Extra(), Gd_fid()))
-
-    def sim_eta_seg_pt_dxy0to10_L1Extra_gem_fid(n=2, sim_pt=20):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy0to10_L1Extra_fid"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_gem_seg(n), pt_cut(sim_pt), dxy(0,10), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy10to20_L1Extra_gem_fid(n=2, sim_pt=20):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy10to20_L1Extra_fid"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_gem_seg(n), pt_cut(sim_pt), dxy(10,20), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy20to30_L1Extra_gem_fid(n=2, sim_pt=20):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy20to30_L1Extra_fid"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_gem_seg(n), pt_cut(sim_pt), dxy(20,30), has_L1Extra(), Gd_fid()))
-
-    def sim_eta_L1Extra(l1_pt=0):
-        return get_1D(p, "title", "sim_eta_L1Extra", "(100,-2.5.,2.5.)", "sim_eta", has_L1Extra(l1_pt))
-    def sim_eta_recoTrackExtra(l2_pt=0):
-        return get_1D(p, "title", "sim_eta_recoTrackExtra", "(100,-2.5.,2.5.)", "sim_eta", has_trackExtra(l2_pt))
-    def sim_eta_recoTrack(l2_pt=0):
-        return get_1D(p, "title", "sim_eta_recoTrack", "(100,-2.5.,2.5.)", "sim_eta", has_track(l2_pt))
-    def sim_eta_recoChargedCandidate(l2_pt=0):
-        return get_1D(p, "title", "sim_eta_recoChargedCandidate", "(100,-2.5.,2.5.)", "sim_eta", has_cand(l2_pt))
-
-    def sim_eta_seg_recoTrackExtra(n=2, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_recoTrackExtra"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), has_trackExtra(l2_pt)))
-    def sim_eta_seg_recoTrack(n=2, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_recoTrack"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), has_track(l2_pt)))
-    def sim_eta_seg_recoChargedCandidate(n=2, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_recoChargedCandidate"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), has_cand(l2_pt)))
-
-    def sim_eta_seg_pt_recoTrackExtra(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_recoTrackExtra"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_trackExtra(l2_pt)))
-    def sim_eta_seg_pt_recoTrack(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_recoTrack"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_track(l2_pt)))
-    def sim_eta_seg_pt_recoChargedCandidate(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_recoChargedCandidate"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_cand(l2_pt)))
-
-    def sim_eta_seg_pt_L1Extra_recoTrackExtra(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_L1Extra_recoTrackExtra"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_trackExtra(l2_pt), has_L1Extra()))
-    def sim_eta_seg_pt_L1Extra_recoTrack(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_L1Extra_recoTrack"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_track(l2_pt), has_L1Extra()))
-    def sim_eta_seg_pt_L1Extra_recoChargedCandidate(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_L1Extra_recoChargedCandidate"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_cand(l2_pt), has_L1Extra()))
-
-    def sim_eta_seg_pt_dxy_recoTrackExtra(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy_recoTrackExtra"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_trackExtra(l2_pt), dxy(20)))
-    def sim_eta_seg_pt_dxy_recoTrack(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy_recoTrack"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_track(l2_pt), dxy(20)))
-    def sim_eta_seg_pt_dxy_recoChargedCandidate(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy_recoChargedCandidate"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_cand(l2_pt), dxy(20)))
-
-    def sim_eta_seg_pt_dxy_L1Extra_recoTrackExtra(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy_L1Extra_recoTrackExtra"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_trackExtra(l2_pt), dxy(20), has_L1Extra()))
-    def sim_eta_seg_pt_dxy_L1Extra_recoTrack(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy_L1Extra_recoTrack"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_track(l2_pt), dxy(20), has_L1Extra()))
-    def sim_eta_seg_pt_dxy_L1Extra_recoChargedCandidate(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy_L1Extra_recoChargedCandidate"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_cand(l2_pt), dxy(20), has_L1Extra()))
-
-    def sim_eta_seg_pt_dxy_L1Extra_fid_recoTrackExtra(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy_L1Extra_fid_recoTrackExtra"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_trackExtra(l2_pt), dxy(20), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy_L1Extra_fid_recoTrack(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy_L1Extra_fid_recoTrack"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_track(l2_pt), dxy(20), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy_L1Extra_fid_recoChargedCandidate(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy_L1Extra_fid_recoChargedCandidate"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_cand(l2_pt), dxy(20), has_L1Extra(), Gd_fid()))
-
-    def sim_eta_seg_pt_L1Extra_fid_recoTrackExtra(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_L1Extra_fid_recoTrackExtra"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_trackExtra(l2_pt), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_L1Extra_fid_recoTrack(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_L1Extra_fid_recoTrack"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_track(l2_pt), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_L1Extra_fid_recoChargedCandidate(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_L1Extra_fid_recoChargedCandidate"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_cand(l2_pt), has_L1Extra(), Gd_fid()))
-
-
-
-    def sim_eta_seg_pt_dxy0to10_L1Extra_fid_recoTrackExtra(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoTrackExtra"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_trackExtra(l2_pt), dxy(0,10), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy0to10_L1Extra_fid_recoTrack(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoTrack"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_track(l2_pt), dxy(0,10), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy0to10_L1Extra_fid_recoChargedCandidate(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoChargedCandidate"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_cand(l2_pt), dxy(0,10), has_L1Extra(), Gd_fid()))
-
-    def sim_eta_seg_pt_dxy10to20_L1Extra_fid_recoTrackExtra(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy10to20_L1Extra_fid_recoTrackExtra"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_trackExtra(l2_pt), dxy(10,20), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy10to20_L1Extra_fid_recoTrack(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy10to20_L1Extra_fid_recoTrack"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_track(l2_pt), dxy(10,20), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy10to20_L1Extra_fid_recoChargedCandidate(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy10to20_L1Extra_fid_recoChargedCandidate"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_cand(l2_pt), dxy(10,20), has_L1Extra(), Gd_fid()))
-
-    def sim_eta_seg_pt_dxy20to30_L1Extra_fid_recoTrackExtra(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy20to30_L1Extra_fid_recoTrackExtra"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_trackExtra(l2_pt), dxy(20,30), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy20to30_L1Extra_fid_recoTrack(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy20to30_L1Extra_fid_recoTrack"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_track(l2_pt), dxy(20,30), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy20to30_L1Extra_fid_recoChargedCandidate(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy20to30_L1Extra_fid_recoChargedCandidate"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_seg(n), pt_cut(pt), has_cand(l2_pt), dxy(20,30), has_L1Extra(), Gd_fid()))
-
-
-    def sim_eta_seg_pt_dxy0to10_L1Extra_fid_gem_recoTrackExtra(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_gem_recoTrackExtra"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_gem_seg(n), pt_cut(pt), has_trackExtra(l2_pt), dxy(0,10), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy0to10_L1Extra_fid_gem_recoTrack(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_gem_recoTrack"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_gem_seg(n), pt_cut(pt), has_track(l2_pt), dxy(0,10), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy0to10_L1Extra_fid_gem_recoChargedCandidate(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_gem_recoChargedCandidate"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_gem_seg(n), pt_cut(pt), has_cand(l2_pt), dxy(0,10), has_L1Extra(), Gd_fid()))
-
-    def sim_eta_seg_pt_dxy10to20_L1Extra_fid_gem_recoTrackExtra(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy10to20_L1Extra_fid_gem_recoTrackExtra"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_gem_seg(n), pt_cut(pt), has_trackExtra(l2_pt), dxy(10,20), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy10to20_L1Extra_fid_gem_recoTrack(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy10to20_L1Extra_fid_gem_recoTrack"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_gem_seg(n), pt_cut(pt), has_track(l2_pt), dxy(10,20), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy10to20_L1Extra_fid_gem_recoChargedCandidate(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy10to20_L1Extra_fid_gem_recoChargedCandidate"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_gem_seg(n), pt_cut(pt), has_cand(l2_pt), dxy(10,20), has_L1Extra(), Gd_fid()))
-
-    def sim_eta_seg_pt_dxy20to30_L1Extra_fid_gem_recoTrackExtra(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy20to30_L1Extra_fid_gem_recoTrackExtra"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_gem_seg(n), pt_cut(pt), has_trackExtra(l2_pt), dxy(20,30), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy20to30_L1Extra_fid_gem_recoTrack(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy20to30_L1Extra_fid_gem_recoTrack"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_gem_seg(n), pt_cut(pt), has_track(l2_pt), dxy(20,30), has_L1Extra(), Gd_fid()))
-    def sim_eta_seg_pt_dxy20to30_L1Extra_fid_gem_recoChargedCandidate(n=2, pt=20, l2_pt=0):
-        return get_1D(p, "title", "sim_eta_%dseg_pt_dxy20to30_L1Extra_fid_gem_recoChargedCandidate"%(n), "(100,-2.5.,2.5.)", "sim_eta", AND(n_dt_csc_gem_seg(n), pt_cut(pt), has_cand(l2_pt), dxy(20,30), has_L1Extra(), Gd_fid()))
 
     """
     sim_pt_dxy = get_1D(p, "title", "sim_pt_dxy", ptBinning, "sim_pt", dxy(20))
@@ -344,17 +185,17 @@ def recoTrackEfficiency(p):
     sim_pt_dxy_seg = get_1D(p, "title", "sim_pt_dxy_seg", ptBinning, "sim_pt", AND(dxy(20),n_dt_csc_seg(2)))
     sim_pt_dxy_recoTrackExtra = get_1D(p, "title", "sim_pt_dxy_recoTrackExtra", ptBinning, "sim_pt", AND(dxy(20),has_trackExtra()))
     sim_pt_dxy_recoTrack = get_1D(p, "title", "sim_pt_dxy_recoTrack", ptBinning, "sim_pt", AND(dxy(20),has_track()))
-    sim_pt_dxy_recoChargedCandidate = get_1D(p, "title", "sim_pt_dxy_recoChargedCandidate", ptBinning, "sim_pt", AND(dxy(20),has_cand()))
+    sim_pt_dxy_recoCand = get_1D(p, "title", "sim_pt_dxy_recoCand", ptBinning, "sim_pt", AND(dxy(20),has_cand()))
     sim_pt_dxy_seg_recoTrackExtra = get_1D(p, "title", "sim_pt_dxy_seg_recoTrackExtra", ptBinning, "sim_pt", AND(dxy(20),n_dt_csc_seg(2),has_trackExtra()))
     sim_pt_dxy_seg_recoTrack = get_1D(p, "title", "sim_pt_dxy_seg_recoTrack", ptBinning, "sim_pt", AND(dxy(20),n_dt_csc_seg(2),has_track()))
-    sim_pt_dxy_seg_recoChargedCandidate = get_1D(p, "title", "sim_pt_dxy_seg_recoChargedCandidate", ptBinning, "sim_pt", AND(dxy(20),n_dt_csc_seg(2),has_cand()))
+    sim_pt_dxy_seg_recoCand = get_1D(p, "title", "sim_pt_dxy_seg_recoCand", ptBinning, "sim_pt", AND(dxy(20),n_dt_csc_seg(2),has_cand()))
 
-    sim_eta_dxy = get_1D(p, "title", "sim_eta_dxy", "(100,-2.5.,2.5.)", "sim_eta", dxy(20))
-    sim_eta_dxy_sh = get_1D(p, "title", "sim_eta_dxy_sh", "(100,-2.5.,2.5.)", "sim_eta", AND(dxy(20),n_dt_csc_st_sh()))
-    sim_eta_dxy_seg = get_1D(p, "title", "sim_eta_dxy_seg", "(100,-2.5.,2.5.)", "sim_eta", AND(dxy(20),n_dt_csc_seg(2)))
-    sim_eta_dxy_seg_recoTrackExtra = get_1D(p, "title", "sim_eta_dxy_seg_recoTrackExtra", "(100,-2.5.,2.5.)", "sim_eta", AND(dxy(20),n_dt_csc_seg(2),has_trackExtra()))
-    sim_eta_dxy_seg_recoTrack = get_1D(p, "title", "sim_eta_dxy_seg_recoTrack", "(100,-2.5.,2.5.)", "sim_eta", AND(dxy(20),n_dt_csc_seg(2),has_track()))
-    sim_eta_dxy_seg_recoChargedCandidate = get_1D(p, "title", "sim_eta_dxy_seg_recoChargedCandidate", "(100,-2.5.,2.5.)", "sim_eta", AND(dxy(20),n_dt_csc_seg(2),has_cand()))
+    sim_eta_dxy = get_1D(p, "title", "sim_eta_dxy", etaBinning, "sim_eta", dxy(20))
+    sim_eta_dxy_sh = get_1D(p, "title", "sim_eta_dxy_sh", etaBinning, "sim_eta", AND(dxy(20),n_dt_csc_st_sh()))
+    sim_eta_dxy_seg = get_1D(p, "title", "sim_eta_dxy_seg", etaBinning, "sim_eta", AND(dxy(20),n_dt_csc_seg(2)))
+    sim_eta_dxy_seg_recoTrackExtra = get_1D(p, "title", "sim_eta_dxy_seg_recoTrackExtra", etaBinning, "sim_eta", AND(dxy(20),n_dt_csc_seg(2),has_trackExtra()))
+    sim_eta_dxy_seg_recoTrack = get_1D(p, "title", "sim_eta_dxy_seg_recoTrack", etaBinning, "sim_eta", AND(dxy(20),n_dt_csc_seg(2),has_track()))
+    sim_eta_dxy_seg_recoCand = get_1D(p, "title", "sim_eta_dxy_seg_recoCand", etaBinning, "sim_eta", AND(dxy(20),n_dt_csc_seg(2),has_cand()))
     """
 
     ## simhit pT efficiencies
@@ -382,18 +223,7 @@ def recoTrackEfficiency(p):
     def eff_sim_pt_sh_ge21():
         return clearEmptyBinsEff(TEfficiency(sim_pt_sh_ge21(), sim_pt_ge21()))
 
-    ## simhit eta efficiencies
-    def eff_sim_eta_sh(n, pt=10):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_sh_pt(n,pt), sim_eta_pt(pt)))
-    def eff_sim_eta_sh_seg(n, m, pt=10):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_sh_seg_pt(n,m,pt), sim_eta_sh_pt(n,pt)))
-    def eff_sim_eta_seg(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt(n,pt), sim_eta_pt(pt)))
-    def eff_sim_eta_sh_ge11():
-        return clearEmptyBinsEff(TEfficiency(sim_eta_sh_ge11(), sim_eta()))
-    def eff_sim_eta_sh_ge21():
-        return clearEmptyBinsEff(TEfficiency(sim_eta_sh_ge21(), sim_eta()))
-        
+
     ## track pT efficiencies
     def eff_sim_pt_L1Extra():
         return clearEmptyBinsEff(TEfficiency(sim_pt_L1Extra, sim_pt))
@@ -401,8 +231,8 @@ def recoTrackEfficiency(p):
         return clearEmptyBinsEff(TEfficiency(sim_pt_recoTrackExtra, sim_pt))
     def eff_sim_pt_recoTrack():
         return clearEmptyBinsEff(TEfficiency(sim_pt_recoTrack, sim_pt))
-    def eff_sim_pt_recoChargedCandidate():
-        return clearEmptyBinsEff(TEfficiency(sim_pt_recoChargedCandidate, sim_pt))
+    def eff_sim_pt_recoCand():
+        return clearEmptyBinsEff(TEfficiency(sim_pt_recoCand, sim_pt))
 
     def eff_sim_pt_eta_L1Extra():
         return clearEmptyBinsEff(TEfficiency(sim_pt_eta_L1Extra, sim_pt_eta))
@@ -410,165 +240,73 @@ def recoTrackEfficiency(p):
         return clearEmptyBinsEff(TEfficiency(sim_pt_eta_recoTrackExtra, sim_pt_eta))
     def eff_sim_pt_eta_recoTrack():
         return clearEmptyBinsEff(TEfficiency(sim_pt_eta_recoTrack, sim_pt_eta))
-    def eff_sim_pt_eta_recoChargedCandidate():
-        return clearEmptyBinsEff(TEfficiency(sim_pt_eta_recoChargedCandidate, sim_pt_eta))
+    def eff_sim_pt_eta_recoCand():
+        return clearEmptyBinsEff(TEfficiency(sim_pt_eta_recoCand, sim_pt_eta))
 
     def eff_sim_pt_recoTrackExtra_barrel(): 
         return clearEmptyBinsEff(TEfficiency(sim_pt_recoTrackExtra_barrel, sim_pt_barrel))
     def eff_sim_pt_recoTrack_barrel(): 
         return clearEmptyBinsEff(TEfficiency(sim_pt_recoTrack_barrel, sim_pt_barrel))
-    def eff_sim_pt_recoChargedCandidate_barrel(): 
-        return clearEmptyBinsEff(TEfficiency(sim_pt_recoChargedCandidate_barrel, sim_pt_barrel))
+    def eff_sim_pt_recoCand_barrel(): 
+        return clearEmptyBinsEff(TEfficiency(sim_pt_recoCand_barrel, sim_pt_barrel))
 
     def eff_sim_pt_recoTrackExtra_endcap(): 
         return clearEmptyBinsEff(TEfficiency(sim_pt_recoTrackExtra_endcap, sim_pt_endcap))
     def eff_sim_pt_recoTrack_endcap(): 
         return clearEmptyBinsEff(TEfficiency(sim_pt_recoTrack_endcap, sim_pt_endcap))
-    def eff_sim_pt_recoChargedCandidate_endcap(): 
-        return clearEmptyBinsEff(TEfficiency(sim_pt_recoChargedCandidate_endcap, sim_pt_endcap))
+    def eff_sim_pt_recoCand_endcap(): 
+        return clearEmptyBinsEff(TEfficiency(sim_pt_recoCand_endcap, sim_pt_endcap))
     
     def eff_sim_pt_seg_recoTrackExtra(n, l2_pt):
         return clearEmptyBinsEff(TEfficiency(sim_pt_seg_recoTrackExtra(n, l2_pt), sim_pt_seg(n)))
     def eff_sim_pt_seg_recoTrack(n, l2_pt):
         return clearEmptyBinsEff(TEfficiency(sim_pt_seg_recoTrack(n, l2_pt), sim_pt_seg(n)))
-    def eff_sim_pt_seg_recoChargedCandidate(n, l2_pt):
-        return clearEmptyBinsEff(TEfficiency(sim_pt_seg_recoChargedCandidate(n, l2_pt), sim_pt_seg(n)))
-    def eff_sim_pt_eta_seg_L1Extra_fid_recoChargedCandidate(n, l2_pt):
-        return clearEmptyBinsEff(TEfficiency(sim_pt_eta_seg_L1Extra_fid_recoChargedCandidate(n, l2_pt), sim_pt_eta_seg_L1Extra_fid(n)))
-
-
-    def sim_pt_eta_seg_L1Extra_fid_recoChargedCandidate(n, l2_pt):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_L1Extra_fid_recoChargedCandidate"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt)))
-    def sim_pt_eta_seg_dxy_L1Extra_fid_recoChargedCandidate(n, l2_pt):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy_L1Extra_fid_recoChargedCandidate"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), dxy(20)))
-    def sim_pt_eta_seg_dxy0to10_L1Extra_fid_recoChargedCandidate(n, l2_pt):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy0to10_L1Extra_fid_recoChargedCandidate"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), dxy(0,10)))
-    def sim_pt_eta_seg_dxy10to50_L1Extra_fid_recoChargedCandidate(n, l2_pt):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy10to50_L1Extra_fid_recoChargedCandidate"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), dxy(10,50)))
-    def sim_pt_eta_seg_dxy50to100_L1Extra_fid_recoChargedCandidate(n, l2_pt):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy50to100_L1Extra_fid_recoChargedCandidate"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), dxy(50,100)))
+    def eff_sim_pt_seg_recoCand(n, l2_pt):
+        return clearEmptyBinsEff(TEfficiency(sim_pt_seg_recoCand(n, l2_pt), sim_pt_seg(n)))
+    def eff_sim_pt_eta_seg_L1Extra_fid_recoCand(n, l2_pt):
+        return clearEmptyBinsEff(TEfficiency(sim_pt_eta_seg_L1Extra_fid_recoCand(n, l2_pt), sim_pt_eta_seg_L1Extra_fid(n)))
+    def eff_sim_pt_eta_seg_dxy_L1Extra_fid_recoCand(n, l2_pt):
+        return clearEmptyBinsEff(TEfficiency(sim_pt_eta_seg_L1Extra_fid_recoCand(n, l2_pt), sim_pt_eta_seg_L1Extra_fid(n)))
+    def eff_sim_pt_eta_seg_dxy0to10_L1Extra_fid_recoCand(n, l2_pt):
+        return clearEmptyBinsEff(TEfficiency(sim_pt_eta_seg_dxy0to10_L1Extra_fid_recoCand(n, l2_pt), sim_pt_eta_seg_dxy0to10_L1Extra_fid(n)))
+    def eff_sim_pt_eta_seg_dxy10to30_L1Extra_fid_recoCand(n, l2_pt):
+        return clearEmptyBinsEff(TEfficiency(sim_pt_eta_seg_dxy10to30_L1Extra_fid_recoCand(n, l2_pt), sim_pt_eta_seg_dxy10to30_L1Extra_fid(n)))
+    def eff_sim_pt_eta_seg_dxy30to500_L1Extra_fid_recoCand(n, l2_pt):
+        return clearEmptyBinsEff(TEfficiency(sim_pt_eta_seg_dxy30to500_L1Extra_fid_recoCand(n, l2_pt), sim_pt_eta_seg_dxy30to500_L1Extra_fid(n)))
 
 
     def eff_sim_pt_seg_recoTrackExtra_barrel(n, l2_pt):
         return clearEmptyBinsEff(TEfficiency(sim_pt_seg_recoTrackExtra_barrel(n, l2_pt), sim_pt_seg_barrel(n)))
     def eff_sim_pt_seg_recoTrack_barrel(n, l2_pt):
         return clearEmptyBinsEff(TEfficiency(sim_pt_seg_recoTrack_barrel(n, l2_pt), sim_pt_seg_barrel(n)))
-    def eff_sim_pt_seg_recoChargedCandidate_barrel(n, l2_pt):
-        return clearEmptyBinsEff(TEfficiency(sim_pt_seg_recoChargedCandidate_barrel(n, l2_pt), sim_pt_seg_barrel(n)))
+    def eff_sim_pt_seg_recoCand_barrel(n, l2_pt):
+        return clearEmptyBinsEff(TEfficiency(sim_pt_seg_recoCand_barrel(n, l2_pt), sim_pt_seg_barrel(n)))
 
     def eff_sim_pt_seg_recoTrackExtra_endcap(n, l2_pt):
         return clearEmptyBinsEff(TEfficiency(sim_pt_seg_recoTrackExtra_endcap(n, l2_pt), sim_pt_seg_endcap(n)))
     def eff_sim_pt_seg_recoTrack_endcap(n, l2_pt):
         return clearEmptyBinsEff(TEfficiency(sim_pt_seg_recoTrack_endcap(n, l2_pt), sim_pt_seg_endcap(n)))
-    def eff_sim_pt_seg_recoChargedCandidate_endcap(n, l2_pt):
-        return clearEmptyBinsEff(TEfficiency(sim_pt_seg_recoChargedCandidate_endcap(n, l2_pt), sim_pt_seg_endcap(n)))
+    def eff_sim_pt_seg_recoCand_endcap(n, l2_pt):
+        return clearEmptyBinsEff(TEfficiency(sim_pt_seg_recoCand_endcap(n, l2_pt), sim_pt_seg_endcap(n)))
 
     def eff_sim_pt_seg_recoTrackExtra_ge11(n, l2_pt):
         return clearEmptyBinsEff(TEfficiency(sim_pt_seg_recoTrackExtra_ge11(n, l2_pt), sim_pt_seg_ge11(n)))
     def eff_sim_pt_seg_recoTrack_ge11(n, l2_pt):
         return clearEmptyBinsEff(TEfficiency(sim_pt_seg_recoTrack_ge11(n, l2_pt), sim_pt_seg_ge11(n)))
-    def eff_sim_pt_seg_recoChargedCandidate_ge11(n, l2_pt):
-        return clearEmptyBinsEff(TEfficiency(sim_pt_seg_recoChargedCandidate_ge11(n, l2_pt), sim_pt_seg_ge11(n)))
-
-    ## track eta efficiencies
-    def eff_sim_eta_L1Extra():
-        return clearEmptyBinsEff(TEfficiency(sim_eta_L1Extra(), sim_eta()))
-    def eff_sim_eta_recoTrackExtra():
-        return clearEmptyBinsEff(TEfficiency(sim_eta_recoTrackExtra(), sim_eta()))
-    def eff_sim_eta_recoTrack():
-        return clearEmptyBinsEff(TEfficiency(sim_eta_recoTrack(), sim_eta()))
-    def eff_sim_eta_recoChargedCandidate():
-        return clearEmptyBinsEff(TEfficiency(sim_eta_recoChargedCandidate(), sim_eta()))
-
-    def eff_sim_eta_seg_recoTrackExtra(n, l2_pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_recoTrackExtra(n, l2_pt), sim_eta_seg(n)))
-    def eff_sim_eta_seg_recoTrack(n, l2_pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_recoTrack(n, l2_pt), sim_eta_seg(n)))
-    def eff_sim_eta_seg_recoChargedCandidate(n, l2_pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_recoChargedCandidate(n, l2_pt), sim_eta_seg(n)))
-
-    def eff_sim_eta_seg_pt_L1Extra_recoTrackExtra(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_L1Extra_recoTrackExtra(n,pt), sim_eta_seg_pt_L1Extra(n, pt)))
-    def eff_sim_eta_seg_pt_L1Extra_recoTrack(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_L1Extra_recoTrack(n,pt), sim_eta_seg_pt_L1Extra(n, pt)))
-    def eff_sim_eta_seg_pt_L1Extra_recoChargedCandidate(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_L1Extra_recoChargedCandidate(n,pt), sim_eta_seg_pt_L1Extra(n, pt)))
-
-    def eff_sim_eta_seg_pt_dxy_recoTrackExtra(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy_recoTrackExtra(n,pt), sim_eta_seg_pt_dxy(n, pt)))
-    def eff_sim_eta_seg_pt_dxy_recoTrack(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy_recoTrack(n,pt), sim_eta_seg_pt_dxy(n, pt)))
-    def eff_sim_eta_seg_pt_dxy_recoChargedCandidate(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy_recoChargedCandidate(n,pt), sim_eta_seg_pt_dxy(n, pt)))
-
-    def eff_sim_eta_seg_pt_dxy_L1Extra_recoTrackExtra(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy_L1Extra_recoTrackExtra(n,pt), sim_eta_seg_pt_dxy_L1Extra(n, pt)))
-    def eff_sim_eta_seg_pt_dxy_L1Extra_recoTrack(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy_L1Extra_recoTrack(n,pt), sim_eta_seg_pt_dxy_L1Extra(n, pt)))
-    def eff_sim_eta_seg_pt_dxy_L1Extra_recoChargedCandidate(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy_L1Extra_recoChargedCandidate(n,pt), sim_eta_seg_pt_dxy_L1Extra(n, pt)))
-
-    def eff_sim_eta_seg_pt_dxy_L1Extra_fid_recoTrackExtra(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy_L1Extra_fid_recoTrackExtra(n,pt), sim_eta_seg_pt_dxy_L1Extra_fid(n, pt)))
-    def eff_sim_eta_seg_pt_dxy_L1Extra_fid_recoTrack(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy_L1Extra_fid_recoTrack(n,pt), sim_eta_seg_pt_dxy_L1Extra_fid(n, pt)))
-    def eff_sim_eta_seg_pt_dxy_L1Extra_fid_recoChargedCandidate(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy_L1Extra_fid_recoChargedCandidate(n,pt), sim_eta_seg_pt_dxy_L1Extra_fid(n, pt)))
-
-    def eff_sim_eta_seg_pt_L1Extra_fid_recoTrackExtra(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_L1Extra_fid_recoTrackExtra(n,pt), sim_eta_seg_pt_L1Extra_fid(n, pt)))
-    def eff_sim_eta_seg_pt_L1Extra_fid_recoTrack(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_L1Extra_fid_recoTrack(n,pt), sim_eta_seg_pt_L1Extra_fid(n, pt)))
-    def eff_sim_eta_seg_pt_L1Extra_fid_recoChargedCandidate(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_L1Extra_fid_recoChargedCandidate(n,pt), sim_eta_seg_pt_L1Extra_fid(n, pt)))
+    def eff_sim_pt_seg_recoCand_ge11(n, l2_pt):
+        return clearEmptyBinsEff(TEfficiency(sim_pt_seg_recoCand_ge11(n, l2_pt), sim_pt_seg_ge11(n)))
 
 
-    def eff_sim_eta_seg_pt_dxy0to10_L1Extra_fid_recoTrackExtra(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy0to10_L1Extra_fid_recoTrackExtra(n,pt), sim_eta_seg_pt_dxy0to10_L1Extra_fid(n, pt)))
-    def eff_sim_eta_seg_pt_dxy0to10_L1Extra_fid_recoTrack(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy0to10_L1Extra_fid_recoTrack(n,pt), sim_eta_seg_pt_dxy0to10_L1Extra_fid(n, pt)))
-    def eff_sim_eta_seg_pt_dxy0to10_L1Extra_fid_recoChargedCandidate(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy0to10_L1Extra_fid_recoChargedCandidate(n,pt), sim_eta_seg_pt_dxy0to10_L1Extra_fid(n, pt)))
-
-    def eff_sim_eta_seg_pt_dxy10to20_L1Extra_fid_recoTrackExtra(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy10to20_L1Extra_fid_recoTrackExtra(n,pt), sim_eta_seg_pt_dxy10to20_L1Extra_fid(n, pt)))
-    def eff_sim_eta_seg_pt_dxy10to20_L1Extra_fid_recoTrack(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy10to20_L1Extra_fid_recoTrack(n,pt), sim_eta_seg_pt_dxy10to20_L1Extra_fid(n, pt)))
-    def eff_sim_eta_seg_pt_dxy10to20_L1Extra_fid_recoChargedCandidate(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy10to20_L1Extra_fid_recoChargedCandidate(n,pt), sim_eta_seg_pt_dxy10to20_L1Extra_fid(n, pt)))
-
-    def eff_sim_eta_seg_pt_dxy20to30_L1Extra_fid_recoTrackExtra(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy20to30_L1Extra_fid_recoTrackExtra(n,pt), sim_eta_seg_pt_dxy20to30_L1Extra_fid(n, pt)))
-    def eff_sim_eta_seg_pt_dxy20to30_L1Extra_fid_recoTrack(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy20to30_L1Extra_fid_recoTrack(n,pt), sim_eta_seg_pt_dxy20to30_L1Extra_fid(n, pt)))
-    def eff_sim_eta_seg_pt_dxy20to30_L1Extra_fid_recoChargedCandidate(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy20to30_L1Extra_fid_recoChargedCandidate(n,pt), sim_eta_seg_pt_dxy20to30_L1Extra_fid(n, pt)))
-
-    def eff_sim_eta_seg_pt_dxy0to10_L1Extra_fid_gem_recoChargedCandidate(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy0to10_L1Extra_fid_gem_recoChargedCandidate(n,pt), sim_eta_seg_pt_dxy0to10_L1Extra_fid(n, pt)))
-    def eff_sim_eta_seg_pt_dxy10to20_L1Extra_fid_gem_recoChargedCandidate(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy10to20_L1Extra_fid_gem_recoChargedCandidate(n,pt), sim_eta_seg_pt_dxy10to20_L1Extra_fid(n, pt)))
-    def eff_sim_eta_seg_pt_dxy20to30_L1Extra_fid_gem_recoChargedCandidate(n, pt):
-        return clearEmptyBinsEff(TEfficiency(sim_eta_seg_pt_dxy20to30_L1Extra_fid_gem_recoChargedCandidate(n,pt), sim_eta_seg_pt_dxy20to30_L1Extra_fid(n, pt)))
     """
     eff_sim_pt_dxy_recoTrackExtra = clearEmptyBinsEff(TEfficiency(sim_pt_dxy_recoTrackExtra, sim_pt_dxy))
     eff_sim_pt_dxy_recoTrack = clearEmptyBinsEff(TEfficiency(sim_pt_dxy_recoTrack, sim_pt_dxy))
-    eff_sim_pt_dxy_recoChargedCandidate = clearEmptyBinsEff(TEfficiency(sim_pt_dxy_recoChargedCandidate, sim_pt_dxy))
+    eff_sim_pt_dxy_recoCand = clearEmptyBinsEff(TEfficiency(sim_pt_dxy_recoCand, sim_pt_dxy))
 
     eff_sim_pt_dxy_seg_recoTrackExtra = clearEmptyBinsEff(TEfficiency(sim_pt_dxy_seg_recoTrackExtra, sim_pt_dxy_seg))
     eff_sim_pt_dxy_seg_recoTrack = clearEmptyBinsEff(TEfficiency(sim_pt_dxy_seg_recoTrack, sim_pt_dxy_seg))
-    eff_sim_pt_dxy_seg_recoChargedCandidate = clearEmptyBinsEff(TEfficiency(sim_pt_dxy_seg_recoChargedCandidate, sim_pt_dxy_seg))
+    eff_sim_pt_dxy_seg_recoCand = clearEmptyBinsEff(TEfficiency(sim_pt_dxy_seg_recoCand, sim_pt_dxy_seg))
     """
 
-    """
-    eff_sim_eta_dxy_recoTrackExtra = clearEmptyBinsEff(TEfficiency(sim_eta_dxy_recoTrackExtra, sim_eta_dxy))
-    eff_sim_eta_dxy_recoTrack = clearEmptyBinsEff(TEfficiency(sim_eta_dxy_recoTrack, sim_eta_dxy))
-    eff_sim_eta_dxy_recoChargedCandidate = clearEmptyBinsEff(TEfficiency(sim_eta_dxy_recoChargedCandidate, sim_eta_dxy))
-
-    eff_sim_eta_dxy_seg_recoTrackExtra = clearEmptyBinsEff(TEfficiency(sim_eta_dxy_seg_recoTrackExtra, sim_eta_dxy_seg))
-    eff_sim_eta_dxy_seg_recoTrack = clearEmptyBinsEff(TEfficiency(sim_eta_dxy_seg_recoTrack, sim_eta_dxy_seg))
-    eff_sim_eta_dxy_seg_recoChargedCandidate = clearEmptyBinsEff(TEfficiency(sim_eta_dxy_seg_recoChargedCandidate, sim_eta_dxy_seg))
-	"""
 
     ## plotmaker
     def makePtEffPlot(h, plotTitle, legTitle):
@@ -644,7 +382,7 @@ def recoTrackEfficiency(p):
         gPad.SetTickx(1)
         gPad.SetTicky(1)
         #gStyle.SetStatStyle(0)
-        base = TH1D("base","base", 50, -2.5, 2.5)
+        base = TH1D("base","base", 25, 0, 2.5)
         base.SetStats(0)
         base.SetTitle("                                                                      14 TeV,  PU = %d; SimTrack #eta; Reconstruction efficiency"%(p.pu))
         base.SetMinimum(0)
@@ -668,203 +406,82 @@ def recoTrackEfficiency(p):
         leg.SetTextSize(0.05)
         leg.AddEntry(h,legTitle,"l")
         leg.Draw("same")
-        tex = drawLabel(p.ctau + ", " + p.mass,0.45,0.55,0.05)
+        #tex = drawLabel(p.ctau + ", " + p.mass,0.45,0.55,0.05)
         #tex4 = drawLabel(p.mass,0.55,0.47,0.05)
-        tex3 = drawLabel("H #rightarrow 2n_{1} #rightarrow 2n_{D}2Z_{D} #rightarrow 2n_{D}4#mu",0.45,0.65,0.05)
+        #tex3 = drawLabel("H #rightarrow 2n_{1} #rightarrow 2n_{D}2Z_{D} #rightarrow 2n_{D}4#mu",0.45,0.65,0.05)
         tex2 = applyStupidTdrStyle()
 
         c.SaveAs(p.outputDir + plotTitle + p.ext)
 
-    ## rewrite this script
-    ## function that takes as input: variable, binning, denom cut, num cuts, title
+    reco_pts = [0]
+    for reco_pt in reco_pts:
 
-    ## simhits
-    makeSimHitsPlots = False
-    if makeSimHitsPlots:
-        makePtEffPlot(eff_sim_pt_sh(1), "eff_sim_pt_1sh", "1 DT/CSC Station with SimHits")
-        makePtEffPlot(eff_sim_pt_sh(2), "eff_sim_pt_2sh", "2 DT/CSC Station with SimHits")
-        makePtEffPlot(eff_sim_pt_sh(3), "eff_sim_pt_3sh", "3 DT/CSC Station with SimHits")
-        makePtEffPlot(eff_sim_pt_sh(4), "eff_sim_pt_4sh", "4 DT/CSC Station with SimHits")
-    
-        makePtEffPlot(eff_sim_pt_sh_barrel(1), "eff_sim_pt_1sh_barrel", "1 DT Station with SimHits")
-        makePtEffPlot(eff_sim_pt_sh_barrel(2), "eff_sim_pt_2sh_barrel", "2 DT Station with SimHits")
-        makePtEffPlot(eff_sim_pt_sh_barrel(3), "eff_sim_pt_3sh_barrel", "3 DT Station with SimHits")
-        makePtEffPlot(eff_sim_pt_sh_barrel(4), "eff_sim_pt_4sh_barrel", "4 DT Station with SimHits")
-
-        makePtEffPlot(eff_sim_pt_sh_endcap(1), "eff_sim_pt_1sh_endcap", "1 CSC Station with SimHits")
-        makePtEffPlot(eff_sim_pt_sh_endcap(2), "eff_sim_pt_2sh_endcap", "2 CSC Station with SimHits")
-        makePtEffPlot(eff_sim_pt_sh_endcap(3), "eff_sim_pt_3sh_endcap", "3 CSC Station with SimHits")
-        makePtEffPlot(eff_sim_pt_sh_endcap(4), "eff_sim_pt_4sh_endcap", "4 CSC Station with SimHits")
-
-        makePtEffPlot(eff_sim_pt_sh_ge11(), "eff_sim_pt_sh_ge11", "SimHits in GE11")
-        makePtEffPlot(eff_sim_pt_sh_ge21(), "eff_sim_pt_sh_ge21", "SimHits in GE21")
-
-        makeEtaEffPlot(eff_sim_eta_sh(1), "eff_sim_eta_1sh", "1 DT/CSC Station with SimHits")
-        makeEtaEffPlot(eff_sim_eta_sh(2), "eff_sim_eta_2sh", "2 DT/CSC Station with SimHits")
-        makeEtaEffPlot(eff_sim_eta_sh(3), "eff_sim_eta_3sh", "3 DT/CSC Station with SimHits")
-        makeEtaEffPlot(eff_sim_eta_sh(4), "eff_sim_eta_4sh", "4 DT/CSC Station with SimHits")
-
-        makeEtaEffPlot(eff_sim_eta_sh_ge11(), "eff_sim_eta_sh_ge11", "SimHits in GE11")
-        makeEtaEffPlot(eff_sim_eta_sh_ge21(), "eff_sim_eta_sh_ge21", "SimHits in GE21")
-
-        sim_pts = [15]
-        for pt in sim_pts:
-            makeEtaEffPlot(eff_sim_eta_sh(1,pt), "eff_sim_eta_1sh_pt%d"%(pt), "1 DT/CSC Station with SimHits (pT>%d GeV)"%(pt))
-            makeEtaEffPlot(eff_sim_eta_sh(2,pt), "eff_sim_eta_2sh_pt%d"%(pt), "2 DT/CSC Station with SimHits (pT>%d GeV)"%(pt))
-            makeEtaEffPlot(eff_sim_eta_sh(3,pt), "eff_sim_eta_3sh_pt%d"%(pt), "3 DT/CSC Station with SimHits (pT>%d GeV)"%(pt))
-            makeEtaEffPlot(eff_sim_eta_sh(4,pt), "eff_sim_eta_4sh_pt%d"%(pt), "4 DT/CSC Station with SimHits (pT>%d GeV)"%(pt))
-
-    makeSegmentPlotsWithHits = False
-    if makeSegmentPlotsWithHits:
-        makePtEffPlot(eff_sim_pt_sh_seg(1,1), "eff_sim_pt_1sh_1seg", "1 DT/CSC Station with Segments")
-        makePtEffPlot(eff_sim_pt_sh_seg(2,2), "eff_sim_pt_2sh_2seg", "2 DT/CSC Station with Segments")
-        makePtEffPlot(eff_sim_pt_sh_seg(3,3), "eff_sim_pt_3sh_3seg", "3 DT/CSC Station with Segments")
-        makePtEffPlot(eff_sim_pt_sh_seg(4,4), "eff_sim_pt_4sh_4seg", "4 DT/CSC Station with Segments")
-                      
-        makePtEffPlot(eff_sim_pt_sh_seg_barrel(1,1), "eff_sim_pt_1sh_1seg_barrel", "1 DT Station with Segments")
-        makePtEffPlot(eff_sim_pt_sh_seg_barrel(2,2), "eff_sim_pt_2sh_2seg_barrel", "2 DT Station with Segments")
-        makePtEffPlot(eff_sim_pt_sh_seg_barrel(3,3), "eff_sim_pt_3sh_3seg_barrel", "3 DT Station with Segments")
-        makePtEffPlot(eff_sim_pt_sh_seg_barrel(4,4), "eff_sim_pt_4sh_4seg_barrel", "4 DT Station with Segments")
-
-        makePtEffPlot(eff_sim_pt_sh_seg_endcap(1,1), "eff_sim_pt_1sh_1seg_endcap", "1 CSC Station with Segments")
-        makePtEffPlot(eff_sim_pt_sh_seg_endcap(2,2), "eff_sim_pt_2sh_2seg_endcap", "2 CSC Station with Segments")
-        makePtEffPlot(eff_sim_pt_sh_seg_endcap(3,3), "eff_sim_pt_3sh_3seg_endcap", "3 CSC Station with Segments")
-        makePtEffPlot(eff_sim_pt_sh_seg_endcap(4,4), "eff_sim_pt_4sh_4seg_endcap", "4 CSC Station with Segments")
-
-        #        makePtEffPlot(eff_sim_pt_sh_seg_ge11(1,1), "eff_sim_pt_1sh_1seg_ge11", "1 GEM Station with Segments")
-        #        makePtEffPlot(eff_sim_pt_sh_seg_ge11(2,2), "eff_sim_pt_2sh_2seg_ge11", "2 GEM Station with Segments")
-
-        makeEtaEffPlot(eff_sim_eta_sh_seg(1,1), "eff_sim_eta_1sh_1seg", "1 DT/CSC Station with Segments")
-        makeEtaEffPlot(eff_sim_eta_sh_seg(2,2), "eff_sim_eta_2sh_2seg", "2 DT/CSC Station with Segments")
-        makeEtaEffPlot(eff_sim_eta_sh_seg(3,3), "eff_sim_eta_3sh_3seg", "3 DT/CSC Station with Segments")
-        makeEtaEffPlot(eff_sim_eta_sh_seg(4,4), "eff_sim_eta_4sh_4seg", "4 DT/CSC Station with Segments")
-
-        sim_pts = [15]
-        for pt in sim_pts:
-            makeEtaEffPlot(eff_sim_eta_sh_seg(1,1,pt), "eff_sim_eta_1sh_1seg_pt%d"%(pt), "1 DT/CSC Station with Segments (pT>%d GeV)"%(pt))
-            makeEtaEffPlot(eff_sim_eta_sh_seg(2,2,pt), "eff_sim_eta_2sh_2seg_pt%d"%(pt), "2 DT/CSC Station with Segments (pT>%d GeV)"%(pt))
-            makeEtaEffPlot(eff_sim_eta_sh_seg(3,3,pt), "eff_sim_eta_3sh_3seg_pt%d"%(pt), "3 DT/CSC Station with Segments (pT>%d GeV)"%(pt))
-            makeEtaEffPlot(eff_sim_eta_sh_seg(4,4,pt), "eff_sim_eta_4sh_4seg_pt%d"%(pt), "4 DT/CSC Station with Segments (pT>%d GeV)"%(pt))
-
-    makeSegmentPlotsWithoutHits = False
-    if makeSegmentPlotsWithoutHits:
-        makePtEffPlot(eff_sim_pt_seg(1), "eff_sim_pt_1seg_endcap", "1 CSC/DT Station with Segments")
-        makePtEffPlot(eff_sim_pt_seg(2), "eff_sim_pt_2seg_endcap", "2 CSC/DT Station with Segments")
-        makePtEffPlot(eff_sim_pt_seg(3), "eff_sim_pt_3seg_endcap", "3 CSC/DT Station with Segments")
-        makePtEffPlot(eff_sim_pt_seg(4), "eff_sim_pt_4seg_endcap", "4 CSC/DT Station with Segments")
-        
-        makePtEffPlot(eff_sim_pt_seg_endcap(1), "eff_sim_pt_1seg_endcap", "1 CSC Station with Segments")
-        makePtEffPlot(eff_sim_pt_seg_endcap(2), "eff_sim_pt_2seg_endcap", "2 CSC Station with Segments")
-        makePtEffPlot(eff_sim_pt_seg_endcap(3), "eff_sim_pt_3seg_endcap", "3 CSC Station with Segments")
-        makePtEffPlot(eff_sim_pt_seg_endcap(4), "eff_sim_pt_4seg_endcap", "4 CSC Station with Segments")
-        
-        makePtEffPlot(eff_sim_pt_seg_barrel(1), "eff_sim_pt_1seg_barrel", "1 DT Station with Segments")
-        makePtEffPlot(eff_sim_pt_seg_barrel(2), "eff_sim_pt_2seg_barrel", "2 DT Station with Segments")
-        makePtEffPlot(eff_sim_pt_seg_barrel(3), "eff_sim_pt_3seg_barrel", "3 DT Station with Segments")
-        makePtEffPlot(eff_sim_pt_seg_barrel(4), "eff_sim_pt_4seg_barrel", "4 DT Station with Segments")
-
-        makeEtaEffPlot(eff_sim_eta_seg(1), "eff_sim_eta_1seg", "1 DT/CSC Station with Segments")
-        makeEtaEffPlot(eff_sim_eta_seg(2), "eff_sim_eta_2seg", "2 DT/CSC Station with Segments")
-        makeEtaEffPlot(eff_sim_eta_seg(3), "eff_sim_eta_3seg", "3 DT/CSC Station with Segments")
-        makeEtaEffPlot(eff_sim_eta_seg(4), "eff_sim_eta_4seg", "4 DT/CSC Station with Segments")
-
-    ## tracks 
-    pt=0
-    #makeEtaEffPlot(eff_sim_eta_L1Extra(), "eff_sim_eta_L1Extra", "L1 Extra")
-    #makeEtaEffPlot(eff_sim_eta_recoTrackExtra(), "eff_sim_eta_recoTrackExtra", "L2 TrackExtra")
-    #makeEtaEffPlot(eff_sim_eta_recoTrack(), "eff_sim_eta_recoTrack", "L2 Track")
-    #makeEtaEffPlot(eff_sim_eta_recoChargedCandidate(), "eff_sim_eta_recoChargedCandidate", "L2 Candidate")
-
-    #makePtEffPlot(eff_sim_pt_L1Extra(), "eff_sim_pt_L1Extra", "L1 Extra")
-    #makePtEffPlot(eff_sim_pt_recoTrackExtra(), "eff_sim_pt_recoTrackExtra", "L2 TrackExtra")
-    #makePtEffPlot(eff_sim_pt_recoTrack(), "eff_sim_pt_recoTrack", "L2 Track")
-    #makePtEffPlot(eff_sim_pt_recoChargedCandidate(), "eff_sim_pt_recoChargedCandidate", "L2 Candidate")
-
-    #makePtEffPlot(eff_sim_pt_eta_L1Extra(), "eff_sim_pt_eta_L1Extra", "L1 Extra (|#eta^{SIM}| < 2.4)")
-    #makePtEffPlot(eff_sim_pt_eta_recoTrackExtra(), "eff_sim_pt_eta_recoTrackExtra", "L2 TrackExtra (|#eta^{SIM}| < 2.4)")
-    #makePtEffPlot(eff_sim_pt_eta_recoTrack(), "eff_sim_pt_eta_recoTrack", "L2 Track (|#eta^{SIM}| < 2.4)")
-    #makePtEffPlot(eff_sim_pt_eta_recoChargedCandidate(), "eff_sim_pt_eta_recoChargedCandidate", "L2 Candidate (|#eta^{SIM}| < 2.4)")
-    '''
-    makePtEffPlot(eff_sim_pt_recoTrackExtra(), "eff_sim_pt_recoTrackExtra_pt%d"%(pt), "L2 TrackExtra, pT > %d GeV"%(pt))
-    makePtEffPlot(eff_sim_pt_recoTrack(), "eff_sim_pt_recoTrack_pt%d"%(pt), "L2 Track, pT > %d GeV"%(pt))
-    makePtEffPlot(eff_sim_pt_recoChargedCandidate(), "eff_sim_pt_recoChargedCandidate_pt%d"%(pt), "L2 Candidate, pT > %d GeV"%(pt))
-    '''
-
-    sim_pts = [15]
-    for pt in sim_pts:
-
-        for n in range(2,3):
+        for n in range(1,2):
             #makePtEffPlot(eff_sim_pt_seg_recoTrackExtra(n, pt), "eff_sim_pt_%dseg_recoTrackExtra_pt%d"%(n, pt), "L2 TrackExtra with %d segments, pT > %d GeV"%(n,pt))
             #makePtEffPlot(eff_sim_pt_seg_recoTrack(n, pt), "eff_sim_pt_%dseg_recoTrack_pt%d"%(n, pt), "L2 Track with %d segments, pT > %d GeV"%(n,pt))
-            #makePtEffPlot(eff_sim_pt_seg_recoChargedCandidate(n, pt), "eff_sim_pt_%dseg_recoChargedCandidate_pt%d"%(n, pt), "L2 Candidate with %d segments, pT > %d GeV"%(n,pt))
-            makePtEffPlot(eff_sim_pt_eta_seg_L1Extra_fid_recoChargedCandidate(n, pt), "eff_sim_pt_eta_%dseg_L1Extra_fid_recoChargedCandidate_pt%d"%(n, pt), "L2 Candidate with %d segments, pT > %d GeV, (|#eta^{SIM}| < 2.4)"%(n,pt))
+            #makePtEffPlot(eff_sim_pt_seg_recoCand(n, pt), "eff_sim_pt_%dseg_recoCand_pt%d"%(n, pt), "L2Mu with %d segments, pT > %d GeV"%(n,pt))
+            #makePtEffPlot(eff_sim_pt_eta_seg_L1Extra_fid_recoCand(n, pt), "eff_sim_pt_eta_%dseg_L1Extra_fid_recoCand_pt%d"%(n, pt), "L2Mu with %d segments, pT > %d GeV, (|#eta^{SIM}| < 2.4)"%(n,pt))
+
+            #makePtEffPlot(eff_sim_pt_eta_seg_dxy0to10_L1Extra_fid_recoCand(n, pt), "eff_sim_pt_eta_%dseg_dxy0to10_L1Extra_fid_recoCand_pt%d"%(n, pt), "L2Mu with %d segments, pT > %d GeV, (|#eta^{SIM}| < 2.4)"%(n,pt))
+            #makePtEffPlot(eff_sim_pt_eta_seg_dxy10to30_L1Extra_fid_recoCand(n, pt), "eff_sim_pt_eta_%dseg_dxy10to30_L1Extra_fid_recoCand_pt%d"%(n, pt), "L2Mu with %d segments, pT > %d GeV, (|#eta^{SIM}| < 2.4)"%(n,pt))
+            #makePtEffPlot(eff_sim_pt_eta_seg_dxy30to500_L1Extra_fid_recoCand(n, pt), "eff_sim_pt_eta_%dseg_dxy30to500_L1Extra_fid_recoCand_pt%d"%(n, pt), "L2Mu with %d segments, pT > %d GeV, (|#eta^{SIM}| < 2.4)"%(n,pt))
             
             #makePtEffPlot(eff_sim_pt_seg_recoTrackExtra_barrel(n, pt), "eff_sim_pt_%dseg_recoTrackExtra_barrel_pt%d"%(n, pt), "L2 TrackExtra with %d segments, pT > %d GeV (barrel)"%(n,pt))
             #makePtEffPlot(eff_sim_pt_seg_recoTrack_barrel(n, pt), "eff_sim_pt_%dseg_recoTrack_barrel_pt%d"%(n, pt), "L2 Track with %d segments, pT > %d GeV (barrel)"%(n,pt))
-            #makePtEffPlot(eff_sim_pt_seg_recoChargedCandidate_barrel(n, pt), "eff_sim_pt_%dseg_recoChargedCandidate_barrel_pt%d"%(n, pt), "L2 Candidate with %d segments, pT > %d GeV (barrel)"%(n,pt))
+            #makePtEffPlot(eff_sim_pt_seg_recoCand_barrel(n, pt), "eff_sim_pt_%dseg_recoCand_barrel_pt%d"%(n, pt), "L2Mu with %d segments, pT > %d GeV (barrel)"%(n,pt))
             
             #makePtEffPlot(eff_sim_pt_seg_recoTrackExtra_endcap(n, pt), "eff_sim_pt_%dseg_recoTrackExtra_endcap_pt%d"%(n, pt), "L2 TrackExtra with %d segments, pT > %d GeV (endcap)"%(n,pt))
             #makePtEffPlot(eff_sim_pt_seg_recoTrack_endcap(n, pt), "eff_sim_pt_%dseg_recoTrack_endcap_pt%d"%(n, pt), "L2 Track with %d segments, pT > %d GeV (endcap)"%(n,pt))
-            #makePtEffPlot(eff_sim_pt_seg_recoChargedCandidate_endcap(n, pt), "eff_sim_pt_%dseg_recoChargedCandidate_endcap_pt%d"%(n, pt), "L2 Candidate with %d segments, pT > %d GeV (endcap)"%(n,pt))
-
-            #makeEtaEffPlot(eff_sim_eta_seg_recoTrackExtra(n, pt), "eff_sim_eta_%dseg_recoTrackExtra_pt%d"%(n, pt), "L2 TrackExtra with %d segments, pT > %d GeV"%(n,pt))
-            #makeEtaEffPlot(eff_sim_eta_seg_recoTrack(n, pt), "eff_sim_eta_%dseg_recoTrack_pt%d"%(n, pt), "L2 Track with %d segments, pT > %d GeV"%(n,pt))
-            #makeEtaEffPlot(eff_sim_eta_seg_recoChargedCandidate(n, pt), "eff_sim_eta_%dseg_recoChargedCandidate_pt%d"%(n, pt), "L2 Candidate with %d segments, pT > %d GeV"%(n,pt))
+            #makePtEffPlot(eff_sim_pt_seg_recoCand_endcap(n, pt), "eff_sim_pt_%dseg_recoCand_endcap_pt%d"%(n, pt), "L2Mu with %d segments, pT > %d GeV (endcap)"%(n,pt))
             
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_dxy_recoTrackExtra(n, pt), "eff_sim_eta_%dseg_pt%d_dxy_recoTrackExtra"%(n, pt), "L2 TrackExtra with %d segments"%(n))
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_dxy_recoTrack(n, pt), "eff_sim_eta_%dseg_pt%d_dxy_recoTrack"%(n, pt), "L2 Track with %d segments"%(n))
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_dxy_recoChargedCandidate(n, pt), "eff_sim_eta_%dseg_pt%d_dxy_recoChargedCandidate"%(n, pt), "L2 Candidate with %d segments"%(n))
-            
-            ##L1Extra 
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_L1Extra_recoTrackExtra(n, pt), "eff_sim_eta_%dseg_pt%d_L1Extra_recoTrackExtra"%(n, pt), "L2 TrackExtra with %d segments and L1Extra"%(n))
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_L1Extra_recoTrack(n, pt), "eff_sim_eta_%dseg_pt%d_L1Extra_recoTrack"%(n, pt), "L2 Track with %d segments and L1Extra"%(n))
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_L1Extra_recoChargedCandidate(n, pt), "eff_sim_eta_%dseg_pt%d_L1Extra_recoChargedCandidate"%(n, pt), "L2 Candidate with %d segments and L1Extra"%(n))
+            def denom_cut(n, sim_pt, dxy_min, dxy_max):
+                return AND(n_dt_csc_seg(n), pt_cut(sim_pt), dxy(dxy_min, dxy_max), has_L1Extra(), Gd_fid())
 
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_L1Extra_fid_recoTrackExtra(n, pt), "eff_sim_eta_%dseg_pt%d_L1Extra_fid_recoTrackExtra"%(n, pt), "L2 TrackExtra with %d segments and L1Extra"%(n))
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_L1Extra_fid_recoTrack(n, pt), "eff_sim_eta_%dseg_pt%d_L1Extra_fid_recoTrack"%(n, pt), "L2 Track with %d segments and L1Extra"%(n))
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_L1Extra_fid_recoChargedCandidate(n, pt), "eff_sim_eta_%dseg_pt%d_L1Extra_fid_recoChargedCandidate"%(n, pt), "L2 Candidate with %d segments and L1Extra"%(n))
+            sim_pt = reco_pt*1.1
+            etaBinning = "(25,0,2.5)"
+            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(n, sim_pt, 0, 10), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
+            #            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(n, sim_pt, 10, 30), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy10to30_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
+            #            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(n, sim_pt, 30, 500), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy30to500_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
 
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_dxy_L1Extra_recoTrackExtra(n, pt), "eff_sim_eta_%dseg_pt%d_dxy_L1Extra_recoTrackExtra"%(n, pt), "L2 TrackExtra with %d segments and L1Extra"%(n))
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_dxy_L1Extra_recoTrack(n, pt), "eff_sim_eta_%dseg_pt%d_dxy_L1Extra_recoTrack"%(n, pt), "L2 Track with %d segments and L1Extra"%(n))
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_dxy_L1Extra_recoChargedCandidate(n, pt), "eff_sim_eta_%dseg_pt%d_dxy_L1Extra_recoChargedCandidate"%(n, pt), "L2 Candidate with %d segments and L1Extra"%(n))
+#        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 0, 10), AND(n_dt_csc_gem_rpc_seg(3), has_cand(reco_pt))), "eff_sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d_3st"%(1, reco_pt), "L2Mu")
+#        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 0, 10), AND(has_cand(reco_pt))), "eff_sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d"%(1, reco_pt), "L2Mu")
+#        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(dxy(0, 10), Gd_fid()), n_dt_csc_gem_rpc_seg(3)), "eff_sim_eta_3seg", "")
+        
+        #        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 10, 30), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy10to30_L1Extra_fid_recoCand_pt%d_3st"%(1, reco_pt), "L2Mu")
+        #        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 30, 500), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy30to500_L1Extra_fid_recoCand_pt%d_3st"%(, reco_pt), "L2Mu")
 
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_dxy_L1Extra_fid_recoTrackExtra(n, pt), "eff_sim_eta_%dseg_pt%d_dxy_L1Extra_fid_recoTrackExtra"%(n, pt), "L2 TrackExtra with %d segments and L1Extra (fid)"%(n))
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_dxy_L1Extra_fid_recoTrack(n, pt), "eff_sim_eta_%dseg_pt%d_dxy_L1Extra_fid_recoTrack"%(n, pt), "L2 Track with %d segments and L1Extra (fid)"%(n))
-            makeEtaEffPlot(eff_sim_eta_seg_pt_dxy_L1Extra_fid_recoChargedCandidate(n, pt), "eff_sim_eta_%dseg_pt%d_dxy_L1Extra_fid_recoChargedCandidate"%(n, pt), "L2 Candidate with %d segments and L1Extra (fid)"%(n))
-
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_dxy0to10_L1Extra_fid_recoTrackExtra(n, pt), "eff_sim_eta_%dseg_pt%d_dxy0to10_L1Extra_fid_recoTrackExtra"%(n, pt), "L2 TrackExtra with %d segments and L1Extra (fid)"%(n))
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_dxy0to10_L1Extra_fid_recoTrack(n, pt), "eff_sim_eta_%dseg_pt%d_dxy0to10_L1Extra_fid_recoTrack"%(n, pt), "L2 Track with %d segments and L1Extra (fid)"%(n))
-            makeEtaEffPlot(eff_sim_eta_seg_pt_dxy0to10_L1Extra_fid_recoChargedCandidate(n, pt), "eff_sim_eta_%dseg_pt%d_dxy0to10_L1Extra_fid_recoChargedCandidate"%(n, pt), "L2 Candidate with %d segments and L1Extra (fid)"%(n))
-
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_dxy10to20_L1Extra_fid_recoTrackExtra(n, pt), "eff_sim_eta_%dseg_pt%d_dxy10to20_L1Extra_fid_recoTrackExtra"%(n, pt), "L2 TrackExtra with %d segments and L1Extra (fid)"%(n))
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_dxy10to20_L1Extra_fid_recoTrack(n, pt), "eff_sim_eta_%dseg_pt%d_dxy10to20_L1Extra_fid_recoTrack"%(n, pt), "L2 Track with %d segments and L1Extra (fid)"%(n))
-            makeEtaEffPlot(eff_sim_eta_seg_pt_dxy10to20_L1Extra_fid_recoChargedCandidate(n, pt), "eff_sim_eta_%dseg_pt%d_dxy10to20_L1Extra_fid_recoChargedCandidate"%(n, pt), "L2 Candidate with %d segments and L1Extra (fid)"%(n))
-
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_dxy20to30_L1Extra_fid_recoTrackExtra(n, pt), "eff_sim_eta_%dseg_pt%d_dxy20to30_L1Extra_fid_recoTrackExtra"%(n, pt), "L2 TrackExtra with %d segments and L1Extra (fid)"%(n))
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_dxy20to30_L1Extra_fid_recoTrack(n, pt), "eff_sim_eta_%dseg_pt%d_dxy20to30_L1Extra_fid_recoTrack"%(n, pt), "L2 Track with %d segments and L1Extra (fid)"%(n))
-            makeEtaEffPlot(eff_sim_eta_seg_pt_dxy20to30_L1Extra_fid_recoChargedCandidate(n, pt), "eff_sim_eta_%dseg_pt%d_dxy20to30_L1Extra_fid_recoChargedCandidate"%(n, pt), "L2 Candidate with %d segments and L1Extra (fid)"%(n))
-
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_dxy0to10_L1Extra_fid_gem_recoChargedCandidate(n, pt), "eff_sim_eta_%dseg_pt%d_dxy0to10_L1Extra_fid_gem_recoChargedCandidate"%(n, pt), "L2 Candidate with %d segments and L1Extra (fid), gem"%(n))
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_dxy10to20_L1Extra_fid_gem_recoChargedCandidate(n, pt), "eff_sim_eta_%dseg_pt%d_dxy10to20_L1Extra_fid_gem_recoChargedCandidate"%(n, pt), "L2 Candidate with %d segments and L1Extra (fid), gem"%(n))
-            #makeEtaEffPlot(eff_sim_eta_seg_pt_dxy20to30_L1Extra_fid_gem_recoChargedCandidate(n, pt), "eff_sim_eta_%dseg_pt%d_dxy20to30_L1Extra_fid_gem_recoChargedCandidate"%(n, pt), "L2 Candidate with %d segments and L1Extra (fid), gem"%(n))
-
-            
-
+        """
+        h1 = getEffObject(p, "sim_eta", etaBinning, denom_cut(n, sim_pt, 0, 10), has_cand(reco_pt))
+        h2 = getEffObject(p, "sim_eta", etaBinning, denom_cut(n, sim_pt, 10, 30), has_cand(reco_pt))
+        h3 = getEffObject(p, "sim_eta", etaBinning, denom_cut(n, sim_pt, 30, 500), has_cand(reco_pt))#, "eff_sim_eta_%dseg_pt_dxy30to500_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
+        """
+    
     makeTrackPlotsWithoutSegments = False
     if makeTrackPlotsWithoutSegments:
     ## tracks
         makePtEffPlot(eff_sim_pt_recoTrackExtra(), "eff_sim_pt_recoTrackExtra", "L2 TrackExtra")
         makePtEffPlot(eff_sim_pt_recoTrack(), "eff_sim_pt_recoTrack", "L2 Track")
-        makePtEffPlot(eff_sim_pt_recoChargedCandidate(), "eff_sim_pt_recoChargedCandidate", "L2 Candidate")
-        
+        makePtEffPlot(eff_sim_pt_recoCand(), "eff_sim_pt_recoCand", "L2Mu")
+
         makePtEffPlot(eff_sim_pt_recoTrackExtra_barrel(), "eff_sim_pt_recoTrackExtra_barrel", "L2 TrackExtra")
         makePtEffPlot(eff_sim_pt_recoTrack(), "eff_sim_pt_recoTrack_barrel", "L2 Track")
-        makePtEffPlot(eff_sim_pt_recoChargedCandidate(), "eff_sim_pt_recoChargedCandidate_barrel", "L2 Candidate")
+        makePtEffPlot(eff_sim_pt_recoCand(), "eff_sim_pt_recoCand_barrel", "L2Mu")
 
         makePtEffPlot(eff_sim_pt_recoTrackExtra_endcap(), "eff_sim_pt_recoTrackExtra_endcap", "L2 TrackExtra")
         makePtEffPlot(eff_sim_pt_recoTrack(), "eff_sim_pt_recoTrack_endcap", "L2 Track")
-        makePtEffPlot(eff_sim_pt_recoChargedCandidate(), "eff_sim_pt_recoChargedCandidate_endcap", "L2 Candidate")
+        makePtEffPlot(eff_sim_pt_recoCand(), "eff_sim_pt_recoCand_endcap", "L2Mu")
         
+
+def recoTrackEfficiency_2(p, reco_pt):
+    
+    def denom_cut(n, sim_pt, dxy_min, dxy_max):
+        return AND(n_dt_csc_seg(n), pt_cut(sim_pt), dxy(dxy_min, dxy_max), has_L1Extra(), Gd_fid())
+
+    sim_pt = reco_pt*1.1
+    etaBinning = "(25,0,2.5)"
+    #, "eff_sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
+    return getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 0, 10), has_cand(reco_pt))
+    
 
 def pTCorrelationPlots(p):
     
@@ -872,6 +489,7 @@ def pTCorrelationPlots(p):
     num = 0.
     tree = p.tree
     corr  = TH2F( 'corr', 'pT cand vs pT simtrack', 50, 0, 50, 50, 0, 50 )
+    diff  = TH1F( 'corr', 'pT cand vs pT simtrack', 50, -5, 5 )
     #print "entries", tree.GetEntries()
     for k in range(0, tree.GetEntries()):
         tree.GetEntry(k)
@@ -886,13 +504,29 @@ def pTCorrelationPlots(p):
             tree.genGd_lxy < 300 and
             abs(tree.genGd_vz) < 500 and
             tree.genGd0Gd1_dR > 2 and 
-            abs(tree.sim_dxy) > 25 and 
-            (tree.n_dt_seg + tree.n_csc_seg >=2) and
+            abs(tree.sim_dxy) < 10 and 
+            (tree.n_dt_seg + tree.n_csc_seg >=1) and
             (tree.has_l1Extra>=1 and tree.l1Extra_dR<0.1 and tree.l1Extra_pt>0) and
-            (tree.has_recoChargedCandidate>=1 and tree.recoChargedCandidate_pt>5)):
+            (tree.has_recoChargedCandidate>=1 and tree.recoChargedCandidate_pt>0)):
             corr.Fill(tree.sim_pt, tree.recoChargedCandidate_pt)
+            diff.Fill((tree.sim_pt - tree.recoChargedCandidate_pt)/tree.sim_pt)
+
     c = TCanvas("c","c",800,600)
     c.Clear()
+    c.SetHighLightColor(2);
+    c.Range(0,0,1,1);
+    c.SetFillColor(0);
+    c.SetBorderMode(0);
+    c.SetBorderSize(2);
+    c.SetTickx(1);
+    c.SetTicky(1);
+    c.SetLeftMargin(0.126);
+    c.SetRightMargin(0.04);
+    c.SetTopMargin(0.06);
+    c.SetBottomMargin(0.13);
+    c.SetFrameBorderMode(0);
+
+
     gStyle.SetTitleStyle(0)
     gStyle.SetTitleAlign(13) ##coord in top left
     gStyle.SetTitleX(0.)
@@ -911,7 +545,8 @@ def pTCorrelationPlots(p):
     gPad.SetTickx(1)
     gPad.SetTicky(1)
 
-    corr.SetTitle("pT correlation                                                                                     14 TeV; pT simtrack; pT cand")
+    corr.SetTitle("                                                                      14 TeV,  PU = %d; p_{T}^{SIM} [GeV]; p_{T}^{RECO} [GeV]"%(p.pu))
+    #corr.SetTitle("p_{T} correlation                                                                                     14 TeV; p_{T}^{SIM} [GeV]; p_{T}^{RECO} [GeV]")
     corr.GetXaxis().SetLabelSize(0.05)
     corr.GetYaxis().SetLabelSize(0.05)
     corr.GetXaxis().SetTitleSize(0.06)
@@ -921,12 +556,65 @@ def pTCorrelationPlots(p):
     corr.SetMarkerSize(15)
 #    corr.SetMarkerColor(kBlue)        
     corr.Draw()
-    #corr.Draw("COLZ")
+#    corr.Draw("COLZ")
     tex = drawLabel(p.ctau + ", " + p.mass,0.25,0.75,0.05)
     tex3 = drawLabel("H #rightarrow 2n_{1} #rightarrow 2n_{D}2Z_{D} #rightarrow 2n_{D}4#mu",0.25,0.65,0.05)
     tex2 = applyStupidTdrStyle()
 
     c.SaveAs(p.outputDir + "simPtVsCandPt" + p.ext)
+
+
+    c = TCanvas("c","c",800,600)
+    c.Clear()
+    c.SetHighLightColor(2);
+    c.Range(0,0,1,1);
+    c.SetFillColor(0);
+    c.SetBorderMode(0);
+    c.SetBorderSize(2);
+    c.SetTickx(1);
+    c.SetTicky(1);
+    c.SetLeftMargin(0.126);
+    c.SetRightMargin(0.04);
+    c.SetTopMargin(0.06);
+    c.SetBottomMargin(0.13);
+    c.SetFrameBorderMode(0);
+
+
+    gStyle.SetTitleStyle(0)
+    gStyle.SetTitleAlign(13) ##coord in top left
+    gStyle.SetTitleX(0.)
+    gStyle.SetTitleY(1.)
+    gStyle.SetTitleW(1)
+    gStyle.SetTitleH(0.058)
+    #        gStyle.SetTitleXOffset(0.05)
+    gStyle.SetTitleBorderSize(0)
+    #        gStyle.SetPadLeftMargin(0.3)
+    gStyle.SetPadLeftMargin(0.126)
+    gStyle.SetPadRightMargin(0.04)
+    gStyle.SetPadTopMargin(0.06)
+    gStyle.SetPadBottomMargin(0.13)
+    gStyle.SetOptStat(1111111)
+    gStyle.SetMarkerStyle(1)
+    gPad.SetTickx(1)
+    gPad.SetTicky(1)
+
+    diff.SetTitle("                                                                      14 TeV,  PU = %d; p_{T}^{SIM} [GeV]; p_{T}^{RECO} [GeV]"%(p.pu))
+    #diff.SetTitle("p_{T} diffelation                                                                                     14 TeV; p_{T}^{SIM} [GeV]; p_{T}^{RECO} [GeV]")
+    diff.GetXaxis().SetLabelSize(0.05)
+    diff.GetYaxis().SetLabelSize(0.05)
+    diff.GetXaxis().SetTitleSize(0.06)
+    diff.GetYaxis().SetTitleSize(0.06)        
+    diff.SetLineWidth(2)
+    diff.SetMarkerStyle(1)
+    diff.SetMarkerSize(15)
+#    diff.SetMarkerColor(kBlue)        
+    diff.Draw()
+#    diff.Draw("COLZ")
+    tex = drawLabel(p.ctau + ", " + p.mass,0.25,0.75,0.05)
+    tex3 = drawLabel("H #rightarrow 2n_{1} #rightarrow 2n_{D}2Z_{D} #rightarrow 2n_{D}4#mu",0.25,0.65,0.05)
+    tex2 = applyStupidTdrStyle()
+
+    c.SaveAs(p.outputDir + "DiffsimPtVsCandPt" + p.ext)
 
             
 

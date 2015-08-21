@@ -126,11 +126,11 @@ def n_csc_seg(n=2):
 
 #_______________________________________________________________________________
 def n_dt_csc_seg(n):
-    return OR(n_dt_seg(n), n_csc_seg(n))
+    return TCut("n_dt_seg + n_csc_seg>=%d"%(n))
     
 #_______________________________________________________________________________
-def n_dt_csc_gem_seg(n):
-    return OR(n_dt_seg(n), n_csc_seg(n), has_ge11_rh(2), has_ge21_rh(2))
+def n_dt_csc_gem_rpc_seg(n):
+    return TCut("n_dt_st_seg + n_csc_st_seg + n_gem_st_rh >=%d"%(n))
 
 #_______________________________________________________________________________
 def n_rpc_st_rh(n):
@@ -178,6 +178,19 @@ def has_cand(pt=0):
 #_______________________________________________________________________________
 def dxy(min_dxy, max_dxy=999):
     return TCut("%f < abs(sim_dxy) && abs(sim_dxy) < %f"%(min_dxy, max_dxy))
+
+#_______________________________________________________________________________
+def getEffObject(p, variable, binning, denom_cut, extra_num_cut):
+
+    denom = get_1D(p, "denom", "denom", binning, variable, denom_cut)
+    num = get_1D(p, "num", "num", binning, variable, AND(denom_cut, extra_num_cut))
+    h = TEfficiency(num, denom)
+    h = clearEmptyBinsEff(h)
+    h1 = h.GetPaintedGraph()
+#    p.outputFile = TFile("output.root","update")
+#    p.outputFile.WriteTObject(h1)
+    SetOwnership(h, False)
+    return h
 
 #_______________________________________________________________________________
 def applyStupidTdrStyle():

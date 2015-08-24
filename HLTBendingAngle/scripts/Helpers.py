@@ -129,7 +129,7 @@ def n_dt_csc_seg(n):
     return TCut("n_dt_seg + n_csc_seg>=%d"%(n))
     
 #_______________________________________________________________________________
-def n_dt_csc_gem_rpc_seg(n):
+def n_dt_csc_gem_seg(n):
     return TCut("n_dt_st_seg + n_csc_st_seg + n_gem_st_rh >=%d"%(n))
 
 #_______________________________________________________________________________
@@ -174,7 +174,171 @@ def has_track(pt=0):
 #_______________________________________________________________________________
 def has_cand(pt=0):
     return AND(TCut("has_recoChargedCandidate>=1"), TCut("recoChargedCandidate_pt>%f"%(pt)))
+"""
+#_______________________________________________________________________________
+def cand_st(n):
+    return TCut("recoChargedCandidate_st%d>0"%(n))
+    
+#_______________________________________________________________________________
+def cand_st_valid(n):
+    return TCut("recoChargedCandidate_st%d_valid>0"%(n))
+"""
 
+"""
+#_______________________________________________________________________________
+def cand_n_st(n):
+    if n==4:
+        return AND(cand_st(1), cand_st(2), cand_st(3), cand_st(4))
+    elif n==3:
+        return OR(AND(cand_st(1), cand_st(2), cand_st(3)),           
+                  AND(cand_st(1), cand_st(2), cand_st(4)),
+                  AND(cand_st(1), cand_st(3), cand_st(4)),
+                  AND(cand_st(2), cand_st(3), cand_st(4))
+                  )
+    elif n==2:
+        return OR(AND(cand_st(1), cand_st(2)),
+                  AND(cand_st(1), cand_st(4)),
+                  AND(cand_st(1), cand_st(3)),
+                  AND(cand_st(2), cand_st(3)),
+                  AND(cand_st(2), cand_st(4)),
+                  AND(cand_st(3), cand_st(4))
+                  )        
+    elif n==1:
+        return OR(cand_st(1), cand_st(2), cand_st(3), cand_st(4))
+"""
+
+#_______________________________________________________________________________
+def cand_rpcb_st(n):
+    return TCut("cand_rpcb_st_%d>0"%(n))
+
+#_______________________________________________________________________________
+def cand_rpcb_n_st(n):
+    if n==4:
+        return AND(cand_rpcb_st(1), cand_rpcb_st(2), cand_rpcb_st(3), cand_rpcb_st(4))
+    elif n==3:
+        return OR(AND(cand_rpcb_st(1), cand_rpcb_st(2), cand_rpcb_st(3)),           
+                  AND(cand_rpcb_st(1), cand_rpcb_st(2), cand_rpcb_st(4)),
+                  AND(cand_rpcb_st(1), cand_rpcb_st(3), cand_rpcb_st(4)),
+                  AND(cand_rpcb_st(2), cand_rpcb_st(3), cand_rpcb_st(4))
+                  )
+    elif n==2:
+        return OR(AND(cand_rpcb_st(1), cand_rpcb_st(2)),
+                  AND(cand_rpcb_st(1), cand_rpcb_st(4)),
+                  AND(cand_rpcb_st(1), cand_rpcb_st(3)),
+                  AND(cand_rpcb_st(2), cand_rpcb_st(3)),
+                  AND(cand_rpcb_st(2), cand_rpcb_st(4)),
+                  AND(cand_rpcb_st(3), cand_rpcb_st(4))
+                  )        
+    elif n==1:
+        return OR(cand_rpcb_st(1), cand_rpcb_st(2), cand_rpcb_st(3), cand_rpcb_st(4))
+
+#_______________________________________________________________________________
+def cand_rpcf_st(n):
+    return TCut("cand_rpcf_st_%d>0"%(n))
+
+#_______________________________________________________________________________
+def cand_rpcf_n_st(n):
+    if n==4:
+        return AND(cand_rpcf_st(1), cand_rpcf_st(2), cand_rpcf_st(3), cand_rpcf_st(4))
+    elif n==3:
+        return OR(AND(cand_rpcf_st(1), cand_rpcf_st(2), cand_rpcf_st(3)),           
+                  AND(cand_rpcf_st(1), cand_rpcf_st(2), cand_rpcf_st(4)),
+                  AND(cand_rpcf_st(1), cand_rpcf_st(3), cand_rpcf_st(4)),
+                  AND(cand_rpcf_st(2), cand_rpcf_st(3), cand_rpcf_st(4))
+                  )
+    elif n==2:
+        return OR(AND(cand_rpcf_st(1), cand_rpcf_st(2)),
+                  AND(cand_rpcf_st(1), cand_rpcf_st(4)),
+                  AND(cand_rpcf_st(1), cand_rpcf_st(3)),
+                  AND(cand_rpcf_st(2), cand_rpcf_st(3)),
+                  AND(cand_rpcf_st(2), cand_rpcf_st(4)),
+                  AND(cand_rpcf_st(3), cand_rpcf_st(4))
+                  )        
+    elif n==1:
+        return OR(cand_rpcf_st(1), cand_rpcf_st(2), cand_rpcf_st(3), cand_rpcf_st(4))
+
+#_______________________________________________________________________________
+def cand_csc_st(n):
+    return TCut("cand_csc_st_%d>0"%(n))
+
+#_______________________________________________________________________________
+def cand_csc_n_st(n):
+    if n==4:
+        return AND(cand_csc_st(1), cand_csc_st(2), cand_csc_st(3), cand_csc_st(4))
+    elif n==3:
+        return OR(AND(cand_csc_st(1), cand_csc_st(2), cand_csc_st(3)),           
+                  AND(cand_csc_st(1), cand_csc_st(2), cand_csc_st(4)),
+                  AND(cand_csc_st(1), cand_csc_st(3), cand_csc_st(4)),
+                  AND(cand_csc_st(2), cand_csc_st(3), cand_csc_st(4))
+                  )
+    elif n==2:
+        return OR(AND(cand_csc_st(1), cand_csc_st(2)),
+                  AND(cand_csc_st(1), cand_csc_st(4)),
+                  AND(cand_csc_st(1), cand_csc_st(3)),
+                  AND(cand_csc_st(2), cand_csc_st(3)),
+                  AND(cand_csc_st(2), cand_csc_st(4)),
+                  AND(cand_csc_st(3), cand_csc_st(4))
+                  )        
+    elif n==1:
+        return OR(cand_csc_st(1), cand_csc_st(2), cand_csc_st(3), cand_csc_st(4))
+
+#_______________________________________________________________________________
+def cand_dt_st(n):
+    return TCut("cand_dt_st_%d>0"%(n))
+
+#_______________________________________________________________________________
+def cand_dt_n_st(n):
+    if n==4:
+        return AND(cand_dt_st(1), cand_dt_st(2), cand_dt_st(3), cand_dt_st(4))
+    elif n==3:
+        return OR(AND(cand_dt_st(1), cand_dt_st(2), cand_dt_st(3)),           
+                  AND(cand_dt_st(1), cand_dt_st(2), cand_dt_st(4)),
+                  AND(cand_dt_st(1), cand_dt_st(3), cand_dt_st(4)),
+                  AND(cand_dt_st(2), cand_dt_st(3), cand_dt_st(4))
+                  )
+    elif n==2:
+        return OR(AND(cand_dt_st(1), cand_dt_st(2)),
+                  AND(cand_dt_st(1), cand_dt_st(4)),
+                  AND(cand_dt_st(1), cand_dt_st(3)),
+                  AND(cand_dt_st(2), cand_dt_st(3)),
+                  AND(cand_dt_st(2), cand_dt_st(4)),
+                  AND(cand_dt_st(3), cand_dt_st(4))
+                  )        
+    elif n==1:
+        return OR(cand_dt_st(1), cand_dt_st(2), cand_dt_st(3), cand_dt_st(4))
+
+#_______________________________________________________________________________
+def cand_gem_st(n):
+    return TCut("cand_gem_st_%d>0"%(n))
+
+#_______________________________________________________________________________
+def cand_gem_n_st(n):
+    if n==2:
+        return AND(cand_gem_st(1), cand_gem_st(2))
+    elif n==1:
+        return OR(cand_gem_st(1), cand_gem_st(2))          
+
+#_______________________________________________________________________________
+def cand_barrel_st(n):
+    return OR(cand_dt_st(n), cand_rpcb_st(n))
+
+#_______________________________________________________________________________
+def cand_endcap_st(n):
+    return OR(cand_csc_st(n), cand_rpcf_st(n), cand_gem_st(n))
+
+#_______________________________________________________________________________
+def cand_n_st(n):
+    ## case for n=3
+    return OR(AND(cand_barrel_st(1), cand_barrel_st(2), cand_barrel_st(3)),
+              AND(cand_barrel_st(1), cand_barrel_st(2), cand_barrel_st(4)),
+              AND(cand_barrel_st(1), cand_barrel_st(3), cand_barrel_st(4)),
+              AND(cand_barrel_st(2), cand_barrel_st(3), cand_barrel_st(4)),
+
+              AND(cand_endcap_st(1), cand_endcap_st(2), cand_endcap_st(3)),
+              AND(cand_endcap_st(1), cand_endcap_st(2), cand_endcap_st(4)),
+              AND(cand_endcap_st(1), cand_endcap_st(3), cand_endcap_st(4)),
+              AND(cand_endcap_st(2), cand_endcap_st(3), cand_endcap_st(4)))
+              
 #_______________________________________________________________________________
 def dxy(min_dxy, max_dxy=999):
     return TCut("%f < abs(sim_dxy) && abs(sim_dxy) < %f"%(min_dxy, max_dxy))

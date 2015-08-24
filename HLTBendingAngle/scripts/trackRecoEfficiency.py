@@ -3,6 +3,26 @@ from ROOT import *
 from Helpers import *
 from ROOT import SetOwnership
 
+def recoHits(p):
+    def draw_occ(target_dir, c_title, ext, t, title, h_name, h_bins, to_draw, cut="", opt = ""):
+        gStyle.SetStatStyle(0)
+        gStyle.SetOptStat(1110)
+        c = TCanvas("c","c",600,600)
+        c.Clear()
+        t.Draw(to_draw + ">>" + h_name + h_bins, cut)
+        h = TH2F(gDirectory.Get(h_name))
+        if not h:
+            sys.exit('h does not exist')
+        h = TH2F(h.Clone(h_name))
+        h.SetTitle(title)
+        h.SetLineWidth(2)
+        h.SetLineColor(kBlue)
+        h.Draw(opt)
+        c.SaveAs(target_dir + c_title + ext)
+
+        #draw_occ("./", "hits_eta", ".png", p.hlt, "Reco hit;eta;hit", "h_", "(50,-2.5,2.5,10,0,10)", "eta:nHits")#, nocut(), "COLZ")
+
+
 def genKinematics(p):
     print p
     draw_1D(p,"genGdMu_eta_max", "genGdMu_eta_max",  "GEN muon eta^{max}; GEN muon eta^{max}; Entries", "(100,-5,5)")
@@ -437,19 +457,41 @@ def recoTrackEfficiency(p):
             def denom_cut(n, sim_pt, dxy_min, dxy_max):
                 return AND(n_dt_csc_seg(n), pt_cut(sim_pt), dxy(dxy_min, dxy_max), has_L1Extra(), Gd_fid())
 
+            def denom_cut2(n, sim_pt, dxy_min, dxy_max):
+                return AND(pt_cut(sim_pt), dxy(dxy_min, dxy_max), Gd_fid())
+
             sim_pt = reco_pt*1.1
             etaBinning = "(25,0,2.5)"
             makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(n, sim_pt, 0, 10), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
-            #            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(n, sim_pt, 10, 30), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy10to30_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
+            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut2(n, 5, 0, 10), has_ge11_rh(2)), "eff_sim_eta_gemseg_st1", "GE11 segment")
+            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut2(n, 5, 0, 10), has_ge21_rh(2)), "eff_sim_eta_gemseg_st2", "GE11 segment")
+            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut2(n, 5, 0, 10), OR(has_ge11_rh(2), has_ge21_rh(2))), "eff_sim_eta_gemseg_st12", "GEM segment")
+
+            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(denom_cut2(n, 5, 0, 10), n_rpc_st_sh(1)), n_rpc_st_rh(1)), "eff_sim_eta_rpcseg1", "1 RPC segment")
+            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(denom_cut2(n, 5, 0, 10), n_rpc_st_sh(2)), n_rpc_st_rh(2)), "eff_sim_eta_rpcseg2", "2 RPC segments")
+            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(denom_cut2(n, 5, 0, 10), n_rpc_st_sh(3)), n_rpc_st_rh(3)), "eff_sim_eta_rpcseg3", "3 RPC segments") 
+            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(denom_cut2(n, 5, 0, 10), n_rpc_st_sh(4)), n_rpc_st_rh(4)), "eff_sim_eta_rpcseg4", "4 RPC segments") 
+
+            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(denom_cut2(n, 5, 0, 10), n_dt_csc_st_sh(1)), n_dt_csc_seg(1)), "eff_sim_eta_dtcscseg1", "1 DT/CSC segment")
+            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(denom_cut2(n, 5, 0, 10), n_dt_csc_st_sh(2)), n_dt_csc_seg(2)), "eff_sim_eta_dtcscseg2", "2 DT/CSC segments")
+            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(denom_cut2(n, 5, 0, 10), n_dt_csc_st_sh(3)), n_dt_csc_seg(3)), "eff_sim_eta_dtcscseg3", "3 DT/CSC segments") 
+            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(denom_cut2(n, 5, 0, 10), n_dt_csc_st_sh(4)), n_dt_csc_seg(4)), "eff_sim_eta_dtcscseg4", "4 DT/CSC segments") 
+
+            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(denom_cut2(n, 5, 0, 10), n_dt_csc_st_sh(1)), n_dt_csc_gem_seg(1)), "eff_sim_eta_dtcscgemseg1", "1 DT/CSC/GEM segment")
+            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(denom_cut2(n, 5, 0, 10), n_dt_csc_st_sh(2)), n_dt_csc_gem_seg(2)), "eff_sim_eta_dtcscgemseg2", "2 DT/CSC/GEM segments")
+            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(denom_cut2(n, 5, 0, 10), n_dt_csc_st_sh(3)), n_dt_csc_gem_seg(3)), "eff_sim_eta_dtcscgemseg3", "3 DT/CSC/GEM segments") 
+            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(denom_cut2(n, 5, 0, 10), n_dt_csc_st_sh(4)), n_dt_csc_gem_seg(4)), "eff_sim_eta_dtcscgemseg4", "4 DT/CSC/GEM segments") 
+
+           #            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(n, sim_pt, 10, 30), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy10to30_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
             #            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(n, sim_pt, 30, 500), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy30to500_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
-
-#        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 0, 10), AND(n_dt_csc_gem_rpc_seg(3), has_cand(reco_pt))), "eff_sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d_3st"%(1, reco_pt), "L2Mu")
-#        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 0, 10), AND(has_cand(reco_pt))), "eff_sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d"%(1, reco_pt), "L2Mu")
-#        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(dxy(0, 10), Gd_fid()), n_dt_csc_gem_rpc_seg(3)), "eff_sim_eta_3seg", "")
-        
-        #        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 10, 30), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy10to30_L1Extra_fid_recoCand_pt%d_3st"%(1, reco_pt), "L2Mu")
-        #        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 30, 500), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy30to500_L1Extra_fid_recoCand_pt%d_3st"%(, reco_pt), "L2Mu")
-
+            
+            #        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 0, 10), AND(n_dt_csc_gem_rpc_seg(3), has_cand(reco_pt))), "eff_sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d_3st"%(1, reco_pt), "L2Mu")
+            #        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 0, 10), AND(has_cand(reco_pt))), "eff_sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d"%(1, reco_pt), "L2Mu")
+            #        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(dxy(0, 10), Gd_fid()), n_dt_csc_gem_rpc_seg(3)), "eff_sim_eta_3seg", "")
+            
+            #        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 10, 30), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy10to30_L1Extra_fid_recoCand_pt%d_3st"%(1, reco_pt), "L2Mu")
+            #        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 30, 500), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy30to500_L1Extra_fid_recoCand_pt%d_3st"%(, reco_pt), "L2Mu")
+            
         """
         h1 = getEffObject(p, "sim_eta", etaBinning, denom_cut(n, sim_pt, 0, 10), has_cand(reco_pt))
         h2 = getEffObject(p, "sim_eta", etaBinning, denom_cut(n, sim_pt, 10, 30), has_cand(reco_pt))
@@ -475,12 +517,12 @@ def recoTrackEfficiency(p):
 def recoTrackEfficiency_2(p, reco_pt):
     
     def denom_cut(n, sim_pt, dxy_min, dxy_max):
-        return AND(n_dt_csc_seg(n), pt_cut(sim_pt), dxy(dxy_min, dxy_max), has_L1Extra(), Gd_fid())
+        return AND(n_dt_csc_gem_seg(n), pt_cut(sim_pt), dxy(dxy_min, dxy_max), has_L1Extra(), Gd_fid())
 
     sim_pt = reco_pt*1.1
     etaBinning = "(25,0,2.5)"
     #, "eff_sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
-    return getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 0, 10), has_cand(reco_pt))
+    return getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(2, sim_pt, 0, 10), AND(has_cand(reco_pt), cand_n_st(3)))
     
 
 def pTCorrelationPlots(p):

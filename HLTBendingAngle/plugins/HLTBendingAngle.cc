@@ -26,7 +26,7 @@
 using namespace std;
 
 double dxy(double px, double py, double vx, double vy, double pt)
-{OB
+{
   //Source: https://cmssdt.cern.ch/SDT/lxr/source/DataFormats/TrackReco/interface/TrackBase.h#119
   return (- vx * py + vy * px ) / pt;
 }
@@ -47,8 +47,8 @@ invariantMass(const reco::Candidate* p1, const reco::Candidate* p2)
 {
   return  sqrt((p1->energy() + p2->energy())*(p1->energy() + p2->energy()) -
                (p1->px() + p2->px())*(p1->px() + p2->px()) -
-               (p1->pyOB() + p2->py())*(p1->py() + p2->py()) -
-               (p1->OBpz() + p2->pz())*(p1->pz() + p2->pz()) );
+               (p1->py() + p2->py())*(p1->py() + p2->py()) -
+               (p1->pz() + p2->pz())*(p1->pz() + p2->pz()) );
 }
 
 struct MyHLTEff 
@@ -56,14 +56,15 @@ struct MyHLTEff
   void init();
   
   TTree*book(TTree *t, const std::string & name = "trk_hlt_");
-  Int_t pt;
-  Int_t eta;
-  Int_t phi;
+  Float_t pt;
+  Float_t eta;
+  Float_t phi;
+  Int_t nHits;
   Int_t nRPCHits;
   Int_t nGEMHits;
   Int_t nDTHits;
   Int_t nCSCHits;
-}
+};
 
 struct MyTrackEff
 {
@@ -199,6 +200,54 @@ struct MyTrackEff
   Float_t recoChargedCandidate_pt;
   Float_t recoChargedCandidate_eta;
   Float_t recoChargedCandidate_phi;
+
+  Int_t recoChargedCandidate_st1;
+  Int_t recoChargedCandidate_st2;
+  Int_t recoChargedCandidate_st3;
+  Int_t recoChargedCandidate_st4;
+
+  Int_t recoChargedCandidate_st1_Valid;
+  Int_t recoChargedCandidate_st2_Valid;
+  Int_t recoChargedCandidate_st3_Valid;
+  Int_t recoChargedCandidate_st4_Valid;
+
+  Int_t recoChargedCandidate_nHits;
+  Int_t recoChargedCandidate_nHitsGEM;
+  Int_t recoChargedCandidate_nHitsCSC;
+  Int_t recoChargedCandidate_nHitsDT;
+  Int_t recoChargedCandidate_nHitsRPC;
+
+  Int_t recoChargedCandidate_nHitsValid;
+  Int_t recoChargedCandidate_nHitsGEMValid;
+  Int_t recoChargedCandidate_nHitsCSCValid;
+  Int_t recoChargedCandidate_nHitsDTValid;
+  Int_t recoChargedCandidate_nHitsRPCValid;
+
+  // per subsystem and per station (rpcb, rpcf, gem, csc, dt)
+  // 
+
+  Char_t cand_rpcb_st_1;
+  Char_t cand_rpcb_st_2;
+  Char_t cand_rpcb_st_3;
+  Char_t cand_rpcb_st_4;
+
+  Char_t cand_rpcf_st_1;
+  Char_t cand_rpcf_st_2;
+  Char_t cand_rpcf_st_3;
+  Char_t cand_rpcf_st_4;
+
+  Char_t cand_csc_st_1;
+  Char_t cand_csc_st_2;
+  Char_t cand_csc_st_3;
+  Char_t cand_csc_st_4;
+
+  Char_t cand_dt_st_1;
+  Char_t cand_dt_st_2;
+  Char_t cand_dt_st_3;
+  Char_t cand_dt_st_4;
+
+  Char_t cand_gem_st_1;
+  Char_t cand_gem_st_2;
 };
 
 
@@ -216,14 +265,14 @@ public:
 private:
   
   void analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no);
-
+  void analyzeHLTEfficiency(const reco::TrackExtraCollection& tracks);
   bool isSimTrackGood(const SimTrack &t);
   void book();
   void init();
   void fill();
   
-  TTree *tree_hlt_[7];
-  MyHLT etrk_[7];
+  TTree *tree_hlt_;
+  MyHLTEff ehlt_;
   
   TTree *tree_eff_[68];
   MyTrackEff etrk_[68];
@@ -306,6 +355,7 @@ HLTBendingAngle::book()
   for (unsigned int i=0; i<muonStations_.size(); ++i) {
     tree_eff_[i] = etrk_[i].book(tree_eff_[i], "trk_eff_" + muonStations_[i]);
   }
+  tree_hlt_ = ehlt_.book(tree_hlt_, "trk_hlt");
 }
 
 
@@ -342,6 +392,13 @@ HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
     std::cout << "Total number of SimVertexs in this event: " << sim_vert.size() << std::endl;
   }
   
+  auto recoTrackExtra = cfg_.getParameter<edm::ParameterSet>("recoTrackExtra");
+  std::vector<edm::InputTag> recoTrackExtraInputLabel_ = recoTrackExtra.getParameter<std::vector<edm::InputTag>>("validInputTags");
+  
+  // RecoTrackExtra 
+  edm::Handle<reco::TrackExtraCollection> recoTrackExtras;
+  if (gemvalidation::getByLabel(recoTrackExtraInputLabel_, recoTrackExtras, ev)) 
+    analyzeHLTEfficiency(*recoTrackExtras.product());
 
   int trk_no=0;
   for (auto& t: *sim_tracks.product()) {
@@ -358,6 +415,30 @@ HLTBendingAngle::analyze(const edm::Event& ev, const edm::EventSetup& es)
     ++n_sim_trk_;
   }
 }
+
+
+void 
+HLTBendingAngle::analyzeHLTEfficiency(const reco::TrackExtraCollection& tracks)
+{
+  ehlt_.init();
+  
+  for(auto& track: tracks) {
+    ehlt_.pt = track.outerMomentum().Rho();
+    ehlt_.eta = track.outerMomentum().eta();
+    ehlt_.phi = track.outerMomentum().phi();
+    for(auto rh = track.recHitsBegin(); rh != track.recHitsEnd(); rh++) {
+      auto id((**rh).rawId());
+      if (!(**rh).isValid()) continue;      
+      if (gemvalidation::is_dt(id))  ehlt_.nDTHits++;
+      if (gemvalidation::is_rpc(id)) ehlt_.nRPCHits++;
+      if (gemvalidation::is_gem(id)) ehlt_.nGEMHits++;
+      if (gemvalidation::is_csc(id)) ehlt_.nCSCHits++;
+      ehlt_.nHits++;
+    }
+    tree_hlt_->Fill();
+  }
+}
+
 
 void 
 HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
@@ -608,6 +689,144 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     etrk_[0].recoChargedCandidate_pt = recoChargedCandidate.pt();
     etrk_[0].recoChargedCandidate_eta = recoChargedCandidate.eta();
     etrk_[0].recoChargedCandidate_phi = recoChargedCandidate.phi();
+
+    // recoChargedCandidate_st1 = ;
+    // recoChargedCandidate_st2 = ;
+    // recoChargedCandidate_st3 = ;
+    // recoChargedCandidate_st4 = ;
+    auto track(*(recoChargedCandidate.track()));
+    int hits_st_1 = 0;
+    int hits_st_2 = 0;
+    int hits_st_3 = 0;
+    int hits_st_4 = 0;
+
+    int hitsValid_st_1 = 0;
+    int hitsValid_st_2 = 0;
+    int hitsValid_st_3 = 0;
+    int hitsValid_st_4 = 0;
+
+
+    for(auto rh = track.recHitsBegin(); rh != track.recHitsEnd(); rh++) {
+      auto id((**rh).rawId());
+      // all hits
+      etrk_[0].recoChargedCandidate_nHits++;
+      if (gemvalidation::is_dt(id)) {
+        etrk_[0].recoChargedCandidate_nHitsDT++;
+        DTChamberId detId(id);
+        if (detId.station()==1)      {
+          hits_st_1++;
+          etrk_[0].cand_dt_st_1 |= 1;
+        }
+        else if (detId.station()==2) {
+          hits_st_2++;
+          etrk_[0].cand_dt_st_2 |= 1;
+        }
+        else if (detId.station()==3) {
+          hits_st_3++;
+          etrk_[0].cand_dt_st_3 |= 1;
+        }
+        else if (detId.station()==4) {
+          hits_st_4++;
+          etrk_[0].cand_dt_st_4 |= 1;
+        }
+      }
+      if (gemvalidation::is_rpc(id)) {
+        etrk_[0].recoChargedCandidate_nHitsRPC++;
+        RPCDetId detId(id);
+
+        if (detId.region()==0){
+          if (detId.station()==1)      etrk_[0].cand_rpcb_st_1 |= 1;
+          else if (detId.station()==2) etrk_[0].cand_rpcb_st_2 |= 1;
+          else if (detId.station()==3) etrk_[0].cand_rpcb_st_3 |= 1;
+          else if (detId.station()==4) etrk_[0].cand_rpcb_st_4 |= 1;
+        }
+        else {
+          if (detId.station()==1)      etrk_[0].cand_rpcf_st_1 |= 1;
+          else if (detId.station()==2) etrk_[0].cand_rpcf_st_1 |= 1;
+          else if (detId.station()==3) etrk_[0].cand_rpcf_st_1 |= 1;
+          else if (detId.station()==4) etrk_[0].cand_rpcf_st_1 |= 1;
+        }
+        if (detId.station()==1)      hits_st_1++;
+        else if (detId.station()==2) hits_st_2++;
+        else if (detId.station()==3) hits_st_3++;
+        else if (detId.station()==4) hits_st_4++;
+      }
+      if (gemvalidation::is_gem(id)) {
+        etrk_[0].recoChargedCandidate_nHitsGEM++;
+        GEMDetId detId(id);
+        if (detId.station()==1) {
+          hits_st_1++;
+          etrk_[0].cand_gem_st_1 |= 1;
+        }
+        if (detId.station()==3) {
+          hits_st_2++;
+          etrk_[0].cand_gem_st_2 |= 1;
+        }
+      }
+      if (gemvalidation::is_csc(id)) {
+        etrk_[0].recoChargedCandidate_nHitsCSC++;
+        CSCDetId detId(id);
+        if (detId.station()==1) { 
+          hits_st_1++;
+          etrk_[0].cand_csc_st_1 |= 1;
+        }
+        if (detId.station()==2) {
+          hits_st_2++;
+          etrk_[0].cand_csc_st_2 |= 1;
+        }
+        if (detId.station()==3) {
+          hits_st_3++;
+          etrk_[0].cand_csc_st_3 |= 1;
+        }
+        if (detId.station()==4) {
+          hits_st_4++;
+          etrk_[0].cand_csc_st_4 |= 1;
+        }
+      }      
+      // valid hits
+      if ((**rh).isValid()) {
+        etrk_[0].recoChargedCandidate_nHitsValid++;
+        if (gemvalidation::is_dt(id)) {
+          etrk_[0].recoChargedCandidate_nHitsDTValid++;
+          DTChamberId detId(id);
+          if (detId.station()==1)      hitsValid_st_1++;
+          else if (detId.station()==2) hitsValid_st_2++;
+          else if (detId.station()==3) hitsValid_st_3++;
+          else if (detId.station()==4) hitsValid_st_4++;
+        }
+        if (gemvalidation::is_rpc(id)) {
+          etrk_[0].recoChargedCandidate_nHitsRPCValid++;
+          RPCDetId detId(id);
+          if (detId.station()==1)      hitsValid_st_1++;
+          else if (detId.station()==2) hitsValid_st_2++;
+          else if (detId.station()==3) hitsValid_st_3++;
+          else if (detId.station()==4) hitsValid_st_4++;
+        }
+        if (gemvalidation::is_gem(id)) {
+          etrk_[0].recoChargedCandidate_nHitsGEMValid++;
+          GEMDetId detId(id);
+          if (detId.station()==1) hitsValid_st_1++;
+          if (detId.station()==3) hitsValid_st_2++;
+        }
+        if (gemvalidation::is_csc(id)) {
+          etrk_[0].recoChargedCandidate_nHitsCSCValid++;
+          CSCDetId detId(id);
+          if (detId.station()==1) hitsValid_st_1++;
+          if (detId.station()==2) hitsValid_st_2++;
+          if (detId.station()==3) hitsValid_st_3++;
+          if (detId.station()==4) hitsValid_st_4++;
+        }
+      }
+    }
+    etrk_[0].recoChargedCandidate_st1 = hits_st_1;
+    etrk_[0].recoChargedCandidate_st2 = hits_st_2;
+    etrk_[0].recoChargedCandidate_st3 = hits_st_3;
+    etrk_[0].recoChargedCandidate_st4 = hits_st_4; 
+    
+    etrk_[0].recoChargedCandidate_st1_Valid = hitsValid_st_1;
+    etrk_[0].recoChargedCandidate_st2_Valid = hitsValid_st_2;
+    etrk_[0].recoChargedCandidate_st3_Valid = hitsValid_st_3;
+    etrk_[0].recoChargedCandidate_st4_Valid = hitsValid_st_4;            
   }
 
   // fill the tree for every simtrack 
@@ -633,10 +852,11 @@ void MyHLTEff::init()
   pt = -99;
   eta = -99;
   phi = -99;
-  nRPCHits = -99;
-  nGEMHits = -99;
-  nDTHits = -99;
-  nCSCHits = -99;
+  nRPCHits = 0;
+  nGEMHits = 0;
+  nDTHits = 0;
+  nCSCHits = 0;
+  nHits = 0;
 }
 
 void MyTrackEff::init()
@@ -724,16 +944,67 @@ void MyTrackEff::init()
   recoChargedCandidate_pt = - 99.;
   recoChargedCandidate_eta = - 99.;
   recoChargedCandidate_phi = - 99.;
+  
+  recoChargedCandidate_st1 = 0;
+  recoChargedCandidate_st2 = 0;
+  recoChargedCandidate_st3 = 0;
+  recoChargedCandidate_st4 = 0;
+
+  recoChargedCandidate_st1_Valid = 0;
+  recoChargedCandidate_st2_Valid = 0;
+  recoChargedCandidate_st3_Valid = 0;
+  recoChargedCandidate_st4_Valid = 0;
+
+  recoChargedCandidate_nHits = 0;
+  recoChargedCandidate_nHitsGEM = 0;
+  recoChargedCandidate_nHitsCSC = 0;
+  recoChargedCandidate_nHitsDT = 0;
+  recoChargedCandidate_nHitsRPC = 0;
+
+  recoChargedCandidate_nHitsValid = 0;
+  recoChargedCandidate_nHitsGEMValid = 0;
+  recoChargedCandidate_nHitsCSCValid = 0;
+  recoChargedCandidate_nHitsDTValid = 0;
+  recoChargedCandidate_nHitsRPCValid = 0;
+
+  cand_rpcb_st_1 = 0;
+  cand_rpcb_st_2 = 0;
+  cand_rpcb_st_3 = 0;
+  cand_rpcb_st_4 = 0;
+
+  cand_rpcf_st_1 = 0;
+  cand_rpcf_st_2 = 0;
+  cand_rpcf_st_3 = 0;
+  cand_rpcf_st_4 = 0;
+
+  cand_csc_st_1 = 0;
+  cand_csc_st_2 = 0;
+  cand_csc_st_3 = 0;
+  cand_csc_st_4 = 0;
+
+  cand_dt_st_1 = 0;
+  cand_dt_st_2 = 0;
+  cand_dt_st_3 = 0;
+  cand_dt_st_4 = 0;
+
+  cand_gem_st_1 = 0;
+  cand_gem_st_2 = 0;
 }
 
 
-TTree*MyTrackEff::book(TTree *t,const std::string & name)
+TTree*MyHLTEff::book(TTree *t,const std::string & name)
 {
   edm::Service< TFileService > fs;
   t = fs->make<TTree>(name.c_str(),name.c_str());
-  t->Branch("lumi", &lumi);
-  t->Branch("run", &run);
-  t->Branch("event", &event);
+  t->Branch("eta", &eta);
+  t->Branch("pt", &pt);
+  t->Branch("phi", &phi);
+  t->Branch("nRPCHits", &nRPCHits);
+  t->Branch("nGEMHits", &nGEMHits);
+  t->Branch("nDTHits", &nDTHits);
+  t->Branch("nCSCHits", &nCSCHits);
+  t->Branch("nHits", &nHits);
+  return t;
 }
 
 TTree*MyTrackEff::book(TTree *t,const std::string & name)
@@ -879,6 +1150,51 @@ TTree*MyTrackEff::book(TTree *t,const std::string & name)
   t->Branch("recoChargedCandidate_pt", &recoChargedCandidate_pt);
   t->Branch("recoChargedCandidate_eta", &recoChargedCandidate_eta);
   t->Branch("recoChargedCandidate_phi", &recoChargedCandidate_phi); 
+
+  t->Branch("recoChargedCandidate_st1", &recoChargedCandidate_st1); 
+  t->Branch("recoChargedCandidate_st2", &recoChargedCandidate_st2); 
+  t->Branch("recoChargedCandidate_st3", &recoChargedCandidate_st3); 
+  t->Branch("recoChargedCandidate_st4", &recoChargedCandidate_st4); 
+
+  t->Branch("recoChargedCandidate_st1_Valid", &recoChargedCandidate_st1_Valid); 
+  t->Branch("recoChargedCandidate_st2_Valid", &recoChargedCandidate_st2_Valid); 
+  t->Branch("recoChargedCandidate_st3_Valid", &recoChargedCandidate_st3_Valid); 
+  t->Branch("recoChargedCandidate_st4_Valid", &recoChargedCandidate_st4_Valid); 
+
+  t->Branch("recoChargedCandidate_nHits", &recoChargedCandidate_nHits); 
+  t->Branch("recoChargedCandidate_nHitsGEM", &recoChargedCandidate_nHitsGEM); 
+  t->Branch("recoChargedCandidate_nHitsCSC", &recoChargedCandidate_nHitsCSC); 
+  t->Branch("recoChargedCandidate_nHitsDT", &recoChargedCandidate_nHitsDT); 
+  t->Branch("recoChargedCandidate_nHitsRPC", &recoChargedCandidate_nHitsRPC); 
+  
+  t->Branch("recoChargedCandidate_nHitsValid", &recoChargedCandidate_nHitsValid); 
+  t->Branch("recoChargedCandidate_nHitsGEMValid", &recoChargedCandidate_nHitsGEMValid); 
+  t->Branch("recoChargedCandidate_nHitsCSCValid", &recoChargedCandidate_nHitsCSCValid); 
+  t->Branch("recoChargedCandidate_nHitsDTValid", &recoChargedCandidate_nHitsDTValid); 
+  t->Branch("recoChargedCandidate_nHitsRPCValid", &recoChargedCandidate_nHitsRPCValid); 
+
+  t->Branch("cand_rpcb_st_1", &cand_rpcb_st_1);
+  t->Branch("cand_rpcb_st_2", &cand_rpcb_st_2);
+  t->Branch("cand_rpcb_st_3", &cand_rpcb_st_3);
+  t->Branch("cand_rpcb_st_4", &cand_rpcb_st_4);
+
+  t->Branch("cand_rpcf_st_1", &cand_rpcf_st_1);
+  t->Branch("cand_rpcf_st_2", &cand_rpcf_st_2);
+  t->Branch("cand_rpcf_st_3", &cand_rpcf_st_3);
+  t->Branch("cand_rpcf_st_4", &cand_rpcf_st_4);
+
+  t->Branch("cand_csc_st_1", &cand_csc_st_1);
+  t->Branch("cand_csc_st_2", &cand_csc_st_2);
+  t->Branch("cand_csc_st_3", &cand_csc_st_3);
+  t->Branch("cand_csc_st_4", &cand_csc_st_4);
+
+  t->Branch("cand_dt_st_1", &cand_dt_st_1);
+  t->Branch("cand_dt_st_2", &cand_dt_st_2);
+  t->Branch("cand_dt_st_3", &cand_dt_st_3);
+  t->Branch("cand_dt_st_4", &cand_dt_st_4);
+
+  t->Branch("cand_dt_st_1", &cand_gem_st_1);
+  t->Branch("cand_dt_st_2", &cand_gem_st_2);
 
   return t;
 }

@@ -517,12 +517,12 @@ def recoTrackEfficiency(p):
 def recoTrackEfficiency_2(p, reco_pt):
     
     def denom_cut(n, sim_pt, dxy_min, dxy_max):
-        return AND(n_dt_csc_gem_seg(n), pt_cut(sim_pt), dxy(dxy_min, dxy_max), has_L1Extra(), Gd_fid())
+        return AND(n_dt_csc_seg(n), pt_cut(sim_pt), dxy(dxy_min, dxy_max), has_L1Extra(), Gd_fid())
 
     sim_pt = reco_pt*1.1
     etaBinning = "(25,0,2.5)"
     #, "eff_sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
-    return getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(2, sim_pt, 0, 10), AND(has_cand(reco_pt), cand_n_st(3)))
+    return getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 0, 10), AND(has_cand(reco_pt), cand_n_st(3)))
     
 
 def pTCorrelationPlots(p):

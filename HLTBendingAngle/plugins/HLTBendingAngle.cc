@@ -742,9 +742,9 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
         }
         else {
           if (detId.station()==1)      etrk_[0].cand_rpcf_st_1 |= 1;
-          else if (detId.station()==2) etrk_[0].cand_rpcf_st_1 |= 1;
-          else if (detId.station()==3) etrk_[0].cand_rpcf_st_1 |= 1;
-          else if (detId.station()==4) etrk_[0].cand_rpcf_st_1 |= 1;
+          else if (detId.station()==2) etrk_[0].cand_rpcf_st_2 |= 1;
+          else if (detId.station()==3) etrk_[0].cand_rpcf_st_3 |= 1;
+          else if (detId.station()==4) etrk_[0].cand_rpcf_st_4 |= 1;
         }
         if (detId.station()==1)      hits_st_1++;
         else if (detId.station()==2) hits_st_2++;
@@ -1193,8 +1193,8 @@ TTree*MyTrackEff::book(TTree *t,const std::string & name)
   t->Branch("cand_dt_st_3", &cand_dt_st_3);
   t->Branch("cand_dt_st_4", &cand_dt_st_4);
 
-  t->Branch("cand_dt_st_1", &cand_gem_st_1);
-  t->Branch("cand_dt_st_2", &cand_gem_st_2);
+  t->Branch("cand_gem_st_1", &cand_gem_st_1);
+  t->Branch("cand_gem_st_2", &cand_gem_st_2);
 
   return t;
 }

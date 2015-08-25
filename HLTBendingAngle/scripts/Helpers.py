@@ -219,16 +219,14 @@ def cand_rpcb_n_st(n):
         return OR(AND(cand_rpcb_st(1), cand_rpcb_st(2), cand_rpcb_st(3)),           
                   AND(cand_rpcb_st(1), cand_rpcb_st(2), cand_rpcb_st(4)),
                   AND(cand_rpcb_st(1), cand_rpcb_st(3), cand_rpcb_st(4)),
-                  AND(cand_rpcb_st(2), cand_rpcb_st(3), cand_rpcb_st(4))
-                  )
+                  AND(cand_rpcb_st(2), cand_rpcb_st(3), cand_rpcb_st(4)))
     elif n==2:
         return OR(AND(cand_rpcb_st(1), cand_rpcb_st(2)),
                   AND(cand_rpcb_st(1), cand_rpcb_st(4)),
                   AND(cand_rpcb_st(1), cand_rpcb_st(3)),
                   AND(cand_rpcb_st(2), cand_rpcb_st(3)),
                   AND(cand_rpcb_st(2), cand_rpcb_st(4)),
-                  AND(cand_rpcb_st(3), cand_rpcb_st(4))
-                  )        
+                  AND(cand_rpcb_st(3), cand_rpcb_st(4)))        
     elif n==1:
         return OR(cand_rpcb_st(1), cand_rpcb_st(2), cand_rpcb_st(3), cand_rpcb_st(4))
 
@@ -244,16 +242,14 @@ def cand_rpcf_n_st(n):
         return OR(AND(cand_rpcf_st(1), cand_rpcf_st(2), cand_rpcf_st(3)),           
                   AND(cand_rpcf_st(1), cand_rpcf_st(2), cand_rpcf_st(4)),
                   AND(cand_rpcf_st(1), cand_rpcf_st(3), cand_rpcf_st(4)),
-                  AND(cand_rpcf_st(2), cand_rpcf_st(3), cand_rpcf_st(4))
-                  )
+                  AND(cand_rpcf_st(2), cand_rpcf_st(3), cand_rpcf_st(4)))
     elif n==2:
         return OR(AND(cand_rpcf_st(1), cand_rpcf_st(2)),
                   AND(cand_rpcf_st(1), cand_rpcf_st(4)),
                   AND(cand_rpcf_st(1), cand_rpcf_st(3)),
                   AND(cand_rpcf_st(2), cand_rpcf_st(3)),
                   AND(cand_rpcf_st(2), cand_rpcf_st(4)),
-                  AND(cand_rpcf_st(3), cand_rpcf_st(4))
-                  )        
+                  AND(cand_rpcf_st(3), cand_rpcf_st(4)))        
     elif n==1:
         return OR(cand_rpcf_st(1), cand_rpcf_st(2), cand_rpcf_st(3), cand_rpcf_st(4))
 
@@ -269,16 +265,14 @@ def cand_csc_n_st(n):
         return OR(AND(cand_csc_st(1), cand_csc_st(2), cand_csc_st(3)),           
                   AND(cand_csc_st(1), cand_csc_st(2), cand_csc_st(4)),
                   AND(cand_csc_st(1), cand_csc_st(3), cand_csc_st(4)),
-                  AND(cand_csc_st(2), cand_csc_st(3), cand_csc_st(4))
-                  )
+                  AND(cand_csc_st(2), cand_csc_st(3), cand_csc_st(4)))
     elif n==2:
         return OR(AND(cand_csc_st(1), cand_csc_st(2)),
                   AND(cand_csc_st(1), cand_csc_st(4)),
                   AND(cand_csc_st(1), cand_csc_st(3)),
                   AND(cand_csc_st(2), cand_csc_st(3)),
                   AND(cand_csc_st(2), cand_csc_st(4)),
-                  AND(cand_csc_st(3), cand_csc_st(4))
-                  )        
+                  AND(cand_csc_st(3), cand_csc_st(4)))
     elif n==1:
         return OR(cand_csc_st(1), cand_csc_st(2), cand_csc_st(3), cand_csc_st(4))
 
@@ -294,21 +288,21 @@ def cand_dt_n_st(n):
         return OR(AND(cand_dt_st(1), cand_dt_st(2), cand_dt_st(3)),           
                   AND(cand_dt_st(1), cand_dt_st(2), cand_dt_st(4)),
                   AND(cand_dt_st(1), cand_dt_st(3), cand_dt_st(4)),
-                  AND(cand_dt_st(2), cand_dt_st(3), cand_dt_st(4))
-                  )
+                  AND(cand_dt_st(2), cand_dt_st(3), cand_dt_st(4)))
     elif n==2:
         return OR(AND(cand_dt_st(1), cand_dt_st(2)),
                   AND(cand_dt_st(1), cand_dt_st(4)),
                   AND(cand_dt_st(1), cand_dt_st(3)),
                   AND(cand_dt_st(2), cand_dt_st(3)),
                   AND(cand_dt_st(2), cand_dt_st(4)),
-                  AND(cand_dt_st(3), cand_dt_st(4))
-                  )        
+                  AND(cand_dt_st(3), cand_dt_st(4)))        
     elif n==1:
         return OR(cand_dt_st(1), cand_dt_st(2), cand_dt_st(3), cand_dt_st(4))
 
 #_______________________________________________________________________________
 def cand_gem_st(n):
+    if n==3 or n==4:
+        return nocut()
     return TCut("cand_gem_st_%d>0"%(n))
 
 #_______________________________________________________________________________
@@ -327,18 +321,38 @@ def cand_endcap_st(n):
     return OR(cand_csc_st(n), cand_rpcf_st(n), cand_gem_st(n))
 
 #_______________________________________________________________________________
+def cand_overlap_st(n):
+    return OR(cand_dt_st(n), cand_rpcb_st(n), cand_csc_st(n), cand_rpcf_st(n))
+
+#_______________________________________________________________________________
 def cand_n_st(n):
     ## case for n=3
-    return OR(AND(cand_barrel_st(1), cand_barrel_st(2), cand_barrel_st(3)),
-              AND(cand_barrel_st(1), cand_barrel_st(2), cand_barrel_st(4)),
-              AND(cand_barrel_st(1), cand_barrel_st(3), cand_barrel_st(4)),
-              AND(cand_barrel_st(2), cand_barrel_st(3), cand_barrel_st(4)),
+    cut = OR(AND(cand_barrel_st(1), cand_barrel_st(2), cand_barrel_st(3)),
+             AND(cand_barrel_st(1), cand_barrel_st(2), cand_barrel_st(4)),
+             AND(cand_barrel_st(1), cand_barrel_st(3), cand_barrel_st(4)),
+             AND(cand_barrel_st(2), cand_barrel_st(3), cand_barrel_st(4)),
+             
+             AND(cand_endcap_st(1), cand_endcap_st(2), cand_endcap_st(3)),
+             AND(cand_endcap_st(1), cand_endcap_st(2), cand_endcap_st(4)),
+             AND(cand_endcap_st(1), cand_endcap_st(3), cand_endcap_st(4)),
+             AND(cand_endcap_st(2), cand_endcap_st(3), cand_endcap_st(4)),
+             
+             AND(cand_barrel_st(1), cand_barrel_st(2),cand_endcap_st(1)),
+             AND(cand_barrel_st(1), cand_barrel_st(2),cand_endcap_st(2)),
 
-              AND(cand_endcap_st(1), cand_endcap_st(2), cand_endcap_st(3)),
-              AND(cand_endcap_st(1), cand_endcap_st(2), cand_endcap_st(4)),
-              AND(cand_endcap_st(1), cand_endcap_st(3), cand_endcap_st(4)),
-              AND(cand_endcap_st(2), cand_endcap_st(3), cand_endcap_st(4)))
-              
+             AND(cand_barrel_st(1), cand_endcap_st(1),cand_endcap_st(2)),
+             AND(cand_barrel_st(1), cand_endcap_st(1),cand_endcap_st(3)),
+             AND(cand_barrel_st(1), cand_endcap_st(1),cand_endcap_st(4)),
+
+             AND(cand_barrel_st(1), cand_endcap_st(2),cand_endcap_st(3)),
+             AND(cand_barrel_st(1), cand_endcap_st(2),cand_endcap_st(4)),
+
+             AND(cand_barrel_st(1), cand_endcap_st(3),cand_endcap_st(4)),
+
+             AND(cand_barrel_st(2), cand_endcap_st(1),cand_endcap_st(2)),
+             )
+    return cut
+
 #_______________________________________________________________________________
 def dxy(min_dxy, max_dxy=999):
     return TCut("%f < abs(sim_dxy) && abs(sim_dxy) < %f"%(min_dxy, max_dxy))

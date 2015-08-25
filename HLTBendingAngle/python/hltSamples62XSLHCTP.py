@@ -32,3 +32,12 @@ eosfiles["DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_descope235MCHFag
 eosfiles["DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_descope200MCHF_v3"] = pre + ctau1000 + "DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_descope200MCHF_v3/150824_142531/0000/"
 eosfiles["DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_descope200MCHFaging_v3"] = pre + ctau1000 + "DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_descope200MCHFaging_v3/150824_142559/0000/"
 
+
+eosfiles["DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU200_HLT_fullScope_v3"] = pre + ctau1000 + "DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU200_HLT_fullScope_v3/150825_025049/0000/"
+eosfiles["DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU200_HLT_fullScopeAging_v3"] = pre + ctau1000 + "DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU200_HLT_fullScopeAging_v3/150825_025204/0000/"
+eosfiles["DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU200_HLT_descope235MCHF_v3"] = pre + ctau1000 + "DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU200_HLT_descope235MCHF_v3/150825_025114/0000/"
+eosfiles["DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU200_HLT_descope235MCHFaging_v3"] = pre + ctau1000 + "DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU200_HLT_descope235MCHFaging_v3/150825_025300/0000/"
+eosfiles["DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU200_HLT_descope200MCHF_v3"] = pre + ctau1000 + "DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU200_HLT_descope200MCHF_v3/150825_025137/0000/"
+eosfiles["DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU200_HLT_descope200MCHFaging_v3"] = pre + ctau1000 + "DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU200_HLT_descope200MCHFaging_v3/150825_025326/0000/"
+
+

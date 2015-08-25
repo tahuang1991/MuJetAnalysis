@@ -23,13 +23,14 @@ inputDir = "/afs/cern.ch/user/d/dildick/work/GEM/forJose/DisplacedMuHLTStudyPtAs
 inputDir = "/uscms_data/d3/dildick/work/MuonPhaseIIScopeDoc/CMSSW_6_2_0_SLHC26_patch3/src/"
 preOut = "/uscms_data/d3/dildick/work/MuonPhaseIIScopeDoc/CMSSW_6_2_0_SLHC26_patch3/src/OutputDirectoryForScopeDoc_20150819/"
 ext = ".png"
+pu=140
 
 inputFiles = [
       'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_fullScope_v3.root',
       'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_fullScopeAging_v3.root',
-      'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_descope235MCHF_v2.root',
+      'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_descope235MCHF_v3.root',
       'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_descope235MCHFaging_v3.root',
-      'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_descope200MCHF_v2.root',
+      'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_descope200MCHF_v3.root',
       'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_descope200MCHFaging_v3.root',
 
       'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_HLT_fullScope.root',
@@ -42,9 +43,9 @@ inputFiles = [
 highMassExt = [
       '_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_fullScope_v3',
       '_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_fullScopeAging_v3',
-      '_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_descope235MCHF_v2',
+      '_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_descope235MCHF_v3',
       '_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_descope235MCHFaging_v3',
-      '_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_descope200MCHF_v2',
+      '_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_descope200MCHF_v3',
       '_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_descope200MCHFaging_v3',
 
       '_DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_fullScope',
@@ -74,12 +75,15 @@ my_efficiencies.append([])
 my_efficiencies.append([])
 my_efficiencies.append([])
 
-my_colors = [kBlue, kBlack, kGreen+1, kOrange+1, kMagenta+1, kRed]
+my_colors = [kBlue, kBlack, kOrange+1, kGreen+1, kMagenta+1, kRed]
 my_markers = [2,5,20,21,22,23]
-pts = [0,15,20,25]
-my_titles = ["Full scope", "Full scope + aging", "235MCHF", "235MCHF + aging", "200MCHF", "200MCHF + aging"]
+pts = [0,0,15,20,25]
+my_titles = ["Full scope", "Full scope + CSC/RPC aging", "235MCHF", "235MCHF + CSC/RPC aging", "200MCHF", "200MCHF + CSC/RPC/DT aging"]
+#my_titles = ["Full scope", "Full scope + CSC/RPC aging", "235MCHF + CSC/RPC aging", "200MCHF + CSC/RPC/DT aging"]
 
 for i in range(0,6):
+      if i is 2 or i is 4:
+            pass
       class Plotter:
             def __init__(self):
                   self.inputDir = inputDir
@@ -107,14 +111,15 @@ for i in range(0,6):
       #genKinematics(plotter)
       #trackKinematics(plotter)
       my_efficiencies[0].append(recoTrackEfficiency_2(plotter, 0))
-      my_efficiencies[1].append(recoTrackEfficiency_2(plotter, 15))
-      my_efficiencies[2].append(recoTrackEfficiency_2(plotter, 20))
-      my_efficiencies[3].append(recoTrackEfficiency_2(plotter, 25))
-      recoTrackEfficiency(plotter)
+      my_efficiencies[1].append(recoTrackEfficiency_2(plotter, 0))
+      my_efficiencies[2].append(recoTrackEfficiency_2(plotter, 15))
+      my_efficiencies[3].append(recoTrackEfficiency_2(plotter, 20))
+      my_efficiencies[4].append(recoTrackEfficiency_2(plotter, 25))
+      #recoTrackEfficiency(plotter)
       #pTCorrelationPlots(plotter)
    
 if True:
-      for i in range(0,4):
+      for i in range(0,5):
             c = TCanvas("c","c",800,600)
             c.Clear()
             gStyle.SetTitleStyle(0);
@@ -154,7 +159,6 @@ if True:
 
             for j in range(0,6):
                   if j is 2 or j is 4:
-                      #pass
                       continue
                   h = my_efficiencies[i][j]
                   h.SetMarkerColor(my_colors[j])
@@ -167,13 +171,12 @@ if True:
 
 
             leg.Draw("same")
-            #      tex55 = drawLabel("#font[41]{c#tau(Z_{D}) = 1000 mm, m(Z_{D}) = 20 GeV}",0.45,0.55,0.05)
-            
-      #tex4 = drawLabel(p.mass,0.55,0.47,0.05)
-      #      tex3 = drawLabel("H #rightarrow 2n_{1} #rightarrow 2n_{D}2Z_{D} #rightarrow 2n_{D}4#mu",0.45,0.65,0.05)
+            # tex55 = drawLabel("#font[41]{c#tau(Z_{D}) = 1000 mm, m(Z_{D}) = 20 GeV}",0.45,0.55,0.05)
+            #tex4 = drawLabel(p.mass,0.55,0.47,0.05)
+            # tex3 = drawLabel("H #rightarrow 2n_{1} #rightarrow 2n_{D}2Z_{D} #rightarrow 2n_{D}4#mu",0.45,0.65,0.05)
             tex2 = applyStupidTdrStyle()
-            tex555 = drawLabel("#font[41]{p_{T}^{RECO} > %d GeV}"%(pts[i]), 0.6,0.28,0.04)            
-            tex = drawLabel("#font[41]{|d_{xy}| < 10 cm}",0.6,0.35,0.04)            
+            tex555 = drawLabel("#font[41]{p_{T}^{RECO} > %d GeV}"%(pts[i]), 0.7,0.28,0.04)            
+            tex = drawLabel("#font[41]{|d_{xy}| < 10 cm}",0.7,0.35,0.04)            
             c.SaveAs("eff_sim_eta_1seg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d_combi_v3.png"%(pts[i]))
 
 

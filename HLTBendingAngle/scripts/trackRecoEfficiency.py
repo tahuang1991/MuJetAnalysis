@@ -520,6 +520,8 @@ def recoTrackEfficiency_2(p, reco_pt):
         return AND(n_dt_csc_seg(n), pt_cut(sim_pt), dxy(dxy_min, dxy_max), has_L1Extra(), Gd_fid())
 
     sim_pt = reco_pt*1.1
+    if reco_pt is 0:
+        sim_pt = 7
     etaBinning = "(25,0,2.5)"
     #, "eff_sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
     return getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 0, 10), AND(has_cand(reco_pt), cand_n_st(3)))
@@ -547,12 +549,81 @@ def pTCorrelationPlots(p):
             abs(tree.genGd_vz) < 500 and
             tree.genGd0Gd1_dR > 2 and 
             abs(tree.sim_dxy) < 10 and 
-            (tree.n_dt_seg + tree.n_csc_seg >=1) and
+            ## 3 station requirement
+            (  ## barrel
+              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and 
+                (tree.cand_dt_st2>0 or tree.cand_rpcb_st2>0) and 
+                (tree.cand_dt_st3>0 or tree.cand_rpcb_st3>0) ) 
+              or
+              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and 
+                (tree.cand_dt_st2>0 or tree.cand_rpcb_st2>0) and 
+                (tree.cand_dt_st4>0 or tree.cand_rpcb_st4>0) )
+              or
+              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and 
+                (tree.cand_dt_st3>0 or tree.cand_rpcb_st3>0) and 
+                (tree.cand_dt_st4>0 or tree.cand_rpcb_st4>0) )
+              or
+              ( (tree.cand_dt_st2>0 or tree.cand_rpcb_st2>0) and 
+                (tree.cand_dt_st3>0 or tree.cand_rpcb_st3>0) and 
+                (tree.cand_dt_st4>0 or tree.cand_rpcb_st4>0) )
+              or ## endcap
+              ( (tree.cand_csc_st1>0 or tree.cand_rpcf_st1>0 or tree.cand_gem_st1>0) and 
+                (tree.cand_csc_st2>0 or tree.cand_rpcf_st2>0 or tree.cand_gem_st2>0) and 
+                (tree.cand_csc_st3>0 or tree.cand_rpcf_st3>0) )
+              or
+              ( (tree.cand_csc_st1>0 or tree.cand_rpcf_st1>0 or tree.cand_gem_st1>0) and 
+                (tree.cand_csc_st2>0 or tree.cand_rpcf_st2>0 or tree.cand_gem_st2>0) and 
+                (tree.cand_csc_st4>0 or tree.cand_rpcf_st4>0) )              
+              or
+              ( (tree.cand_csc_st1>0 or tree.cand_rpcf_st1>0 or tree.cand_gem_st1>0) and 
+                (tree.cand_csc_st3>0 or tree.cand_rpcf_st3>0) and 
+                (tree.cand_csc_st4>0 or tree.cand_rpcf_st4>0) )
+              or
+              ( (tree.cand_csc_st2>0 or tree.cand_rpcf_st2>0 or tree.cand_gem_st2>0) and 
+                (tree.cand_csc_st3>0 or tree.cand_rpcf_st3>0) and 
+                (tree.cand_csc_st4>0 or tree.cand_rpcf_st4>0) )
+              or ## barrel-endcap
+              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and 
+                (tree.cand_dt_st2>0 or tree.cand_rpcb_st2>0) and
+                (tree.cand_csc_st1>0 or tree.cand_rpcf_st1>0 or tree.cand_gem_st1>0) )
+              or 
+              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and 
+                (tree.cand_dt_st2>0 or tree.cand_rpcb_st2>0) and
+                (tree.cand_csc_st2>0 or tree.cand_rpcf_st2>0 or tree.cand_gem_st2>0) )
+              or 
+              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and
+                (tree.cand_csc_st1>0 or tree.cand_rpcf_st1>0 or tree.cand_gem_st1>0) and 
+                (tree.cand_csc_st2>0 or tree.cand_rpcf_st2>0 or tree.cand_gem_st2>0) )
+              or 
+              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and
+                (tree.cand_csc_st1>0 or tree.cand_rpcf_st1>0 or tree.cand_gem_st1>0) and 
+                (tree.cand_csc_st3>0 or tree.cand_rpcf_st3>0) )
+              or 
+              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and
+                (tree.cand_csc_st1>0 or tree.cand_rpcf_st1>0 or tree.cand_gem_st1>0) and 
+                (tree.cand_csc_st4>0 or tree.cand_rpcf_st4>0) )
+              or
+              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and
+                (tree.cand_csc_st2>0 or tree.cand_rpcf_st2>0 or tree.cand_gem_st2>0) and 
+                (tree.cand_csc_st3>0 or tree.cand_rpcf_st3>0) )
+              or 
+              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and
+                (tree.cand_csc_st2>0 or tree.cand_rpcf_st2>0 or tree.cand_gem_st2>0) and 
+                (tree.cand_csc_st4>0 or tree.cand_rpcf_st4>0) )
+              or
+              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and
+                (tree.cand_csc_st3>0 or tree.cand_rpcf_st3>0) and 
+                (tree.cand_csc_st4>0 or tree.cand_rpcf_st4>0) )
+              or 
+              ( (tree.cand_dt_st2>0 or tree.cand_rpcb_st2>0) and
+                (tree.cand_csc_st1>0 or tree.cand_rpcf_st1>0 or tree.cand_gem_st1>0) and 
+                (tree.cand_csc_st2>0 or tree.cand_rpcf_st2>0 or tree.cand_gem_st2>0) )
+              ) and
             (tree.has_l1Extra>=1 and tree.l1Extra_dR<0.1 and tree.l1Extra_pt>0) and
             (tree.has_recoChargedCandidate>=1 and tree.recoChargedCandidate_pt>0)):
             corr.Fill(tree.sim_pt, tree.recoChargedCandidate_pt)
             diff.Fill((tree.sim_pt - tree.recoChargedCandidate_pt)/tree.sim_pt)
-
+        
     c = TCanvas("c","c",800,600)
     c.Clear()
     c.SetHighLightColor(2);

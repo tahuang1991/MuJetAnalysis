@@ -349,7 +349,7 @@ def cand_n_st(n):
 
              AND(cand_barrel_st(1), cand_endcap_st(3),cand_endcap_st(4)),
 
-             AND(cand_barrel_st(2), cand_endcap_st(1),cand_endcap_st(2)),
+             AND(cand_barrel_st(2), cand_endcap_st(1),cand_endcap_st(2))
              )
     return cut
 

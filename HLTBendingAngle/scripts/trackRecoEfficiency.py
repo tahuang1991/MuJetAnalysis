@@ -124,21 +124,21 @@ def recoTrackEfficiency(p):
     def sim_pt_eta_seg_L1Extra_fid_recoCand(n, l2_pt):
         return get_1D(p, "title", "sim_pt_eta_%dseg_L1Extra_fid_recoCand"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt)))
     def sim_pt_eta_seg_dxy_L1Extra_fid(n, l2_pt):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy_L1Extra_fid"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), dxy(20)))
+        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy_L1Extra_fid"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), sim_dxy(20)))
     def sim_pt_eta_seg_dxy_L1Extra_fid_recoCand(n, l2_pt):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy_L1Extra_fid_recoCand"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), dxy(20)))
+        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy_L1Extra_fid_recoCand"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), sim_dxy(20)))
     def sim_pt_eta_seg_dxy0to10_L1Extra_fid(n):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy0to10_L1Extra_fid"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), dxy(0,10)))
+        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy0to10_L1Extra_fid"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), sim_dxy(0,10)))
     def sim_pt_eta_seg_dxy10to30_L1Extra_fid(n):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy10to30_L1Extra_fid"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), dxy(10,30)))
+        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy10to30_L1Extra_fid"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), sim_dxy(10,30)))
     def sim_pt_eta_seg_dxy30to500_L1Extra_fid(n):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy30to500_L1Extra_fid"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), dxy(30,500)))
+        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy30to500_L1Extra_fid"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), sim_dxy(30,500)))
     def sim_pt_eta_seg_dxy0to10_L1Extra_fid_recoCand(n, l2_pt):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy0to10_L1Extra_fid_recoCand"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), dxy(0,10)))
+        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy0to10_L1Extra_fid_recoCand"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), sim_dxy(0,10)))
     def sim_pt_eta_seg_dxy10to30_L1Extra_fid_recoCand(n, l2_pt):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy10to30_L1Extra_fid_recoCand"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), dxy(10,30)))
+        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy10to30_L1Extra_fid_recoCand"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), sim_dxy(10,30)))
     def sim_pt_eta_seg_dxy30to500_L1Extra_fid_recoCand(n, l2_pt):
-        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy30to500_L1Extra_fid_recoCand"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), dxy(30,500)))
+        return get_1D(p, "title", "sim_pt_eta_%dseg_dxy30to500_L1Extra_fid_recoCand"%(n), ptBinning, "sim_pt", AND(n_dt_csc_seg(n), cms_eta(), has_L1Extra(), Gd_fid(), has_cand(l2_pt), sim_dxy(30,500)))
 
     def sim_pt_sh_gem(n=2,m=2):
         return get_1D(p, "title", "sim_pt_%dsh_%dgem"%(n,m), ptBinning, "sim_pt", AND(n_gem_st_sh(n), n_gem_seg(m)))
@@ -186,36 +186,36 @@ def recoTrackEfficiency(p):
 
     ## gem
     def sim_pt_ge11():
-        return get_1D(p, "title", "sim_pt_ge11", ptBinning, "sim_pt", AND(ge11_eta_cut(), dxy(0,5)))
+        return get_1D(p, "title", "sim_pt_ge11", ptBinning, "sim_pt", AND(ge11_eta_cut(), sim_dxy(0,5)))
     def sim_pt_ge21():
-        return get_1D(p, "title", "sim_pt_ge21", ptBinning, "sim_pt", AND(ge21_eta_cut(), dxy(0,5)))
+        return get_1D(p, "title", "sim_pt_ge21", ptBinning, "sim_pt", AND(ge21_eta_cut(), sim_dxy(0,5)))
     def sim_pt_sh_ge11():
-        return get_1D(p, "title", "sim_pt_sh_ge11", ptBinning, "sim_pt", AND(has_ge11_sh(), ge11_eta_cut(), dxy(0,5)))
+        return get_1D(p, "title", "sim_pt_sh_ge11", ptBinning, "sim_pt", AND(has_ge11_sh(), ge11_eta_cut(), sim_dxy(0,5)))
     def sim_pt_sh_ge21():
-        return get_1D(p, "title", "sim_pt_sh_ge21", ptBinning, "sim_pt", AND(has_ge21_sh(), ge21_eta_cut(), dxy(0,5)))
+        return get_1D(p, "title", "sim_pt_sh_ge21", ptBinning, "sim_pt", AND(has_ge21_sh(), ge21_eta_cut(), sim_dxy(0,5)))
     def sim_pt_rh_ge11():
-        return get_1D(p, "title", "sim_pt_rh_ge11", ptBinning, "sim_pt", AND(has_ge11_rh(), ge11_eta_cut(), dxy(0,5)))
+        return get_1D(p, "title", "sim_pt_rh_ge11", ptBinning, "sim_pt", AND(has_ge11_rh(), ge11_eta_cut(), sim_dxy(0,5)))
     def sim_pt_rh_ge21():
-        return get_1D(p, "title", "sim_pt_rh_ge21", ptBinning, "sim_pt", AND(has_ge21_rh(), ge21_eta_cut(), dxy(0,5)))
+        return get_1D(p, "title", "sim_pt_rh_ge21", ptBinning, "sim_pt", AND(has_ge21_rh(), ge21_eta_cut(), sim_dxy(0,5)))
 
 
     """
-    sim_pt_dxy = get_1D(p, "title", "sim_pt_dxy", ptBinning, "sim_pt", dxy(20))
-    sim_pt_dxy_sh = get_1D(p, "title", "sim_pt_dxy_sh", ptBinning, "sim_pt", AND(dxy(20),n_dt_csc_st_sh(2)))
-    sim_pt_dxy_seg = get_1D(p, "title", "sim_pt_dxy_seg", ptBinning, "sim_pt", AND(dxy(20),n_dt_csc_seg(2)))
-    sim_pt_dxy_recoTrackExtra = get_1D(p, "title", "sim_pt_dxy_recoTrackExtra", ptBinning, "sim_pt", AND(dxy(20),has_trackExtra()))
-    sim_pt_dxy_recoTrack = get_1D(p, "title", "sim_pt_dxy_recoTrack", ptBinning, "sim_pt", AND(dxy(20),has_track()))
-    sim_pt_dxy_recoCand = get_1D(p, "title", "sim_pt_dxy_recoCand", ptBinning, "sim_pt", AND(dxy(20),has_cand()))
-    sim_pt_dxy_seg_recoTrackExtra = get_1D(p, "title", "sim_pt_dxy_seg_recoTrackExtra", ptBinning, "sim_pt", AND(dxy(20),n_dt_csc_seg(2),has_trackExtra()))
-    sim_pt_dxy_seg_recoTrack = get_1D(p, "title", "sim_pt_dxy_seg_recoTrack", ptBinning, "sim_pt", AND(dxy(20),n_dt_csc_seg(2),has_track()))
-    sim_pt_dxy_seg_recoCand = get_1D(p, "title", "sim_pt_dxy_seg_recoCand", ptBinning, "sim_pt", AND(dxy(20),n_dt_csc_seg(2),has_cand()))
+    sim_pt_dxy = get_1D(p, "title", "sim_pt_dxy", ptBinning, "sim_pt", sim_dxy(20))
+    sim_pt_dxy_sh = get_1D(p, "title", "sim_pt_dxy_sh", ptBinning, "sim_pt", AND(sim_dxy(20),n_dt_csc_st_sh(2)))
+    sim_pt_dxy_seg = get_1D(p, "title", "sim_pt_dxy_seg", ptBinning, "sim_pt", AND(sim_dxy(20),n_dt_csc_seg(2)))
+    sim_pt_dxy_recoTrackExtra = get_1D(p, "title", "sim_pt_dxy_recoTrackExtra", ptBinning, "sim_pt", AND(sim_dxy(20),has_trackExtra()))
+    sim_pt_dxy_recoTrack = get_1D(p, "title", "sim_pt_dxy_recoTrack", ptBinning, "sim_pt", AND(sim_dxy(20),has_track()))
+    sim_pt_dxy_recoCand = get_1D(p, "title", "sim_pt_dxy_recoCand", ptBinning, "sim_pt", AND(sim_dxy(20),has_cand()))
+    sim_pt_dxy_seg_recoTrackExtra = get_1D(p, "title", "sim_pt_dxy_seg_recoTrackExtra", ptBinning, "sim_pt", AND(sim_dxy(20),n_dt_csc_seg(2),has_trackExtra()))
+    sim_pt_dxy_seg_recoTrack = get_1D(p, "title", "sim_pt_dxy_seg_recoTrack", ptBinning, "sim_pt", AND(sim_dxy(20),n_dt_csc_seg(2),has_track()))
+    sim_pt_dxy_seg_recoCand = get_1D(p, "title", "sim_pt_dxy_seg_recoCand", ptBinning, "sim_pt", AND(sim_dxy(20),n_dt_csc_seg(2),has_cand()))
 
-    sim_eta_dxy = get_1D(p, "title", "sim_eta_dxy", etaBinning, "sim_eta", dxy(20))
-    sim_eta_dxy_sh = get_1D(p, "title", "sim_eta_dxy_sh", etaBinning, "sim_eta", AND(dxy(20),n_dt_csc_st_sh()))
-    sim_eta_dxy_seg = get_1D(p, "title", "sim_eta_dxy_seg", etaBinning, "sim_eta", AND(dxy(20),n_dt_csc_seg(2)))
-    sim_eta_dxy_seg_recoTrackExtra = get_1D(p, "title", "sim_eta_dxy_seg_recoTrackExtra", etaBinning, "sim_eta", AND(dxy(20),n_dt_csc_seg(2),has_trackExtra()))
-    sim_eta_dxy_seg_recoTrack = get_1D(p, "title", "sim_eta_dxy_seg_recoTrack", etaBinning, "sim_eta", AND(dxy(20),n_dt_csc_seg(2),has_track()))
-    sim_eta_dxy_seg_recoCand = get_1D(p, "title", "sim_eta_dxy_seg_recoCand", etaBinning, "sim_eta", AND(dxy(20),n_dt_csc_seg(2),has_cand()))
+    sim_eta_dxy = get_1D(p, "title", "sim_eta_dxy", etaBinning, "sim_eta", sim_dxy(20))
+    sim_eta_dxy_sh = get_1D(p, "title", "sim_eta_dxy_sh", etaBinning, "sim_eta", AND(sim_dxy(20),n_dt_csc_st_sh()))
+    sim_eta_dxy_seg = get_1D(p, "title", "sim_eta_dxy_seg", etaBinning, "sim_eta", AND(sim_dxy(20),n_dt_csc_seg(2)))
+    sim_eta_dxy_seg_recoTrackExtra = get_1D(p, "title", "sim_eta_dxy_seg_recoTrackExtra", etaBinning, "sim_eta", AND(sim_dxy(20),n_dt_csc_seg(2),has_trackExtra()))
+    sim_eta_dxy_seg_recoTrack = get_1D(p, "title", "sim_eta_dxy_seg_recoTrack", etaBinning, "sim_eta", AND(sim_dxy(20),n_dt_csc_seg(2),has_track()))
+    sim_eta_dxy_seg_recoCand = get_1D(p, "title", "sim_eta_dxy_seg_recoCand", etaBinning, "sim_eta", AND(sim_dxy(20),n_dt_csc_seg(2),has_cand()))
     """
 
     ## simhit pT efficiencies
@@ -437,7 +437,7 @@ def recoTrackEfficiency(p):
     for reco_pt in reco_pts:
 
         for n in range(1,2):
-            #makePtEffPlot(eff_sim_pt_seg_recoTrackExtra(n, pt), "eff_sim_pt_%dseg_recoTrackExtra_pt%d"%(n, pt), "L2 TrackExtra with %d segments, pT > %d GeV"%(n,pt))
+            makePtEffPlot(getEffObject(p, "sim_pt", ptBinning, AND(n_dt_csc_seg(1), Gd_fid()), has_cand(20)), "eff_sim_pt_%dseg_pt_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
             #makePtEffPlot(eff_sim_pt_seg_recoTrack(n, pt), "eff_sim_pt_%dseg_recoTrack_pt%d"%(n, pt), "L2 Track with %d segments, pT > %d GeV"%(n,pt))
             #makePtEffPlot(eff_sim_pt_seg_recoCand(n, pt), "eff_sim_pt_%dseg_recoCand_pt%d"%(n, pt), "L2Mu with %d segments, pT > %d GeV"%(n,pt))
             #makePtEffPlot(eff_sim_pt_eta_seg_L1Extra_fid_recoCand(n, pt), "eff_sim_pt_eta_%dseg_L1Extra_fid_recoCand_pt%d"%(n, pt), "L2Mu with %d segments, pT > %d GeV, (|#eta^{SIM}| < 2.4)"%(n,pt))
@@ -454,15 +454,16 @@ def recoTrackEfficiency(p):
             #makePtEffPlot(eff_sim_pt_seg_recoTrack_endcap(n, pt), "eff_sim_pt_%dseg_recoTrack_endcap_pt%d"%(n, pt), "L2 Track with %d segments, pT > %d GeV (endcap)"%(n,pt))
             #makePtEffPlot(eff_sim_pt_seg_recoCand_endcap(n, pt), "eff_sim_pt_%dseg_recoCand_endcap_pt%d"%(n, pt), "L2Mu with %d segments, pT > %d GeV (endcap)"%(n,pt))
             
-            def denom_cut(n, sim_pt, dxy_min, dxy_max):
-                return AND(n_dt_csc_seg(n), pt_cut(sim_pt), dxy(dxy_min, dxy_max), has_L1Extra(), Gd_fid())
+            def denom_cut(n, simpt, dxy_min, dxy_max):
+                return AND(n_dt_csc_seg(n), sim_pt(simpt), sim_dxy(dxy_min, dxy_max), has_L1Extra(), Gd_fid())
 
-            def denom_cut2(n, sim_pt, dxy_min, dxy_max):
-                return AND(pt_cut(sim_pt), dxy(dxy_min, dxy_max), Gd_fid())
+            def denom_cut2(n, simpt, dxy_min, dxy_max):
+                return AND(sim_pt(simpt), sim_dxy(dxy_min, dxy_max), Gd_fid())
 
-            sim_pt = reco_pt*1.1
+            simpt = reco_pt*1.1
             etaBinning = "(25,0,2.5)"
-            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(n, sim_pt, 0, 10), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
+            """
+            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(n, simpt, 0, 10), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
             makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut2(n, 5, 0, 10), has_ge11_rh(2)), "eff_sim_eta_gemseg_st1", "GE11 segment")
             makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut2(n, 5, 0, 10), has_ge21_rh(2)), "eff_sim_eta_gemseg_st2", "GE11 segment")
             makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut2(n, 5, 0, 10), OR(has_ge11_rh(2), has_ge21_rh(2))), "eff_sim_eta_gemseg_st12", "GEM segment")
@@ -481,50 +482,25 @@ def recoTrackEfficiency(p):
             makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(denom_cut2(n, 5, 0, 10), n_dt_csc_st_sh(2)), n_dt_csc_gem_seg(2)), "eff_sim_eta_dtcscgemseg2", "2 DT/CSC/GEM segments")
             makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(denom_cut2(n, 5, 0, 10), n_dt_csc_st_sh(3)), n_dt_csc_gem_seg(3)), "eff_sim_eta_dtcscgemseg3", "3 DT/CSC/GEM segments") 
             makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(denom_cut2(n, 5, 0, 10), n_dt_csc_st_sh(4)), n_dt_csc_gem_seg(4)), "eff_sim_eta_dtcscgemseg4", "4 DT/CSC/GEM segments") 
-
-           #            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(n, sim_pt, 10, 30), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy10to30_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
-            #            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(n, sim_pt, 30, 500), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy30to500_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
+            """
+           #            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(n, simpt, 10, 30), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy10to30_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
+            #            makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(n, simpt, 30, 500), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy30to500_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
             
-            #        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 0, 10), AND(n_dt_csc_gem_rpc_seg(3), has_cand(reco_pt))), "eff_sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d_3st"%(1, reco_pt), "L2Mu")
-            #        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 0, 10), AND(has_cand(reco_pt))), "eff_sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d"%(1, reco_pt), "L2Mu")
-            #        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(dxy(0, 10), Gd_fid()), n_dt_csc_gem_rpc_seg(3)), "eff_sim_eta_3seg", "")
+            #        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, simpt, 0, 10), AND(n_dt_csc_gem_rpc_seg(3), has_cand(reco_pt))), "eff_sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d_3st"%(1, reco_pt), "L2Mu")
+            #        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, simpt, 0, 10), AND(has_cand(reco_pt))), "eff_sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d"%(1, reco_pt), "L2Mu")
+            #        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, AND(sim_dxy(0, 10), Gd_fid()), n_dt_csc_gem_rpc_seg(3)), "eff_sim_eta_3seg", "")
             
-            #        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 10, 30), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy10to30_L1Extra_fid_recoCand_pt%d_3st"%(1, reco_pt), "L2Mu")
-            #        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 30, 500), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy30to500_L1Extra_fid_recoCand_pt%d_3st"%(, reco_pt), "L2Mu")
+            #        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, simpt, 10, 30), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy10to30_L1Extra_fid_recoCand_pt%d_3st"%(1, reco_pt), "L2Mu")
+            #        makeEtaEffPlot(getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, simpt, 30, 500), has_cand(reco_pt)), "eff_sim_eta_%dseg_pt_dxy30to500_L1Extra_fid_recoCand_pt%d_3st"%(, reco_pt), "L2Mu")
             
         """
-        h1 = getEffObject(p, "sim_eta", etaBinning, denom_cut(n, sim_pt, 0, 10), has_cand(reco_pt))
-        h2 = getEffObject(p, "sim_eta", etaBinning, denom_cut(n, sim_pt, 10, 30), has_cand(reco_pt))
-        h3 = getEffObject(p, "sim_eta", etaBinning, denom_cut(n, sim_pt, 30, 500), has_cand(reco_pt))#, "eff_sim_eta_%dseg_pt_dxy30to500_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
+        h1 = getEffObject(p, "sim_eta", etaBinning, denom_cut(n, simpt, 0, 10), has_cand(reco_pt))
+        h2 = getEffObject(p, "sim_eta", etaBinning, denom_cut(n, simpt, 10, 30), has_cand(reco_pt))
+        h3 = getEffObject(p, "sim_eta", etaBinning, denom_cut(n, simpt, 30, 500), has_cand(reco_pt))#, "eff_sim_eta_%dseg_pt_dxy30to500_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
         """
     
-    makeTrackPlotsWithoutSegments = False
-    if makeTrackPlotsWithoutSegments:
-    ## tracks
-        makePtEffPlot(eff_sim_pt_recoTrackExtra(), "eff_sim_pt_recoTrackExtra", "L2 TrackExtra")
-        makePtEffPlot(eff_sim_pt_recoTrack(), "eff_sim_pt_recoTrack", "L2 Track")
-        makePtEffPlot(eff_sim_pt_recoCand(), "eff_sim_pt_recoCand", "L2Mu")
-
-        makePtEffPlot(eff_sim_pt_recoTrackExtra_barrel(), "eff_sim_pt_recoTrackExtra_barrel", "L2 TrackExtra")
-        makePtEffPlot(eff_sim_pt_recoTrack(), "eff_sim_pt_recoTrack_barrel", "L2 Track")
-        makePtEffPlot(eff_sim_pt_recoCand(), "eff_sim_pt_recoCand_barrel", "L2Mu")
-
-        makePtEffPlot(eff_sim_pt_recoTrackExtra_endcap(), "eff_sim_pt_recoTrackExtra_endcap", "L2 TrackExtra")
-        makePtEffPlot(eff_sim_pt_recoTrack(), "eff_sim_pt_recoTrack_endcap", "L2 Track")
-        makePtEffPlot(eff_sim_pt_recoCand(), "eff_sim_pt_recoCand_endcap", "L2Mu")
-        
-
-def recoTrackEfficiency_2(p, reco_pt):
-    
-    def denom_cut(n, sim_pt, dxy_min, dxy_max):
-        return AND(n_dt_csc_seg(n), pt_cut(sim_pt), dxy(dxy_min, dxy_max), has_L1Extra(), Gd_fid())
-
-    sim_pt = reco_pt*1.1
-    if reco_pt is 0:
-        sim_pt = 7
-    etaBinning = "(25,0,2.5)"
-    #, "eff_sim_eta_%dseg_pt_dxy0to10_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
-    return getEffObject(p, "abs(sim_eta)", etaBinning, denom_cut(1, sim_pt, 0, 10), AND(has_cand(reco_pt), cand_n_st(3)))
+def recoTrackEfficiency_2(p, dxy_min, dxy_max, min_sim_pt, min_l1_pt, min_reco_pt):
+    return getEffObject(p, "abs(sim_eta)", "(25,0,2.5)", AND(n_dt_csc_seg(1), sim_pt(min_sim_pt), sim_dxy(dxy_min, dxy_max), has_L1Extra(min_l1_pt), Gd_fid()), AND(has_cand(min_reco_pt), cand_3_st()))
     
 
 def pTCorrelationPlots(p):
@@ -532,8 +508,12 @@ def pTCorrelationPlots(p):
     fid = 0.
     num = 0.
     tree = p.tree
-    corr  = TH2F( 'corr', 'pT cand vs pT simtrack', 50, 0, 50, 50, 0, 50 )
-    diff  = TH1F( 'corr', 'pT cand vs pT simtrack', 50, -5, 5 )
+    sim_pT = TH1F( 'corr', '', 50, 0, 50 )
+    reco_pT = TH1F( 'corr', '', 50, 0, 50 )
+    rel_pT = TH1F( 'corr', '', 50, 0, 50 )
+    corr  = TH2F( 'corr', 'pT cand vs pT simtrack', 100, -0.5, 0.5, 50, 0, 0.5 )
+    corr  = TH2F( 'corr', '', 100, 0, 2.4, 40, -0.2, 0.2 )
+    diff  = TH1F( 'diff', 'pT cand - pT simtrack/pT simtrack', 50, -5, 5 )
     #print "entries", tree.GetEntries()
     for k in range(0, tree.GetEntries()):
         tree.GetEntry(k)
@@ -548,82 +528,27 @@ def pTCorrelationPlots(p):
             tree.genGd_lxy < 300 and
             abs(tree.genGd_vz) < 500 and
             tree.genGd0Gd1_dR > 2 and 
-            abs(tree.sim_dxy) < 10 and 
+            5 < abs(tree.sim_dxy) and abs(tree.sim_dxy) < 10 and 
             ## 3 station requirement
-            (  ## barrel
-              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and 
-                (tree.cand_dt_st2>0 or tree.cand_rpcb_st2>0) and 
-                (tree.cand_dt_st3>0 or tree.cand_rpcb_st3>0) ) 
-              or
-              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and 
-                (tree.cand_dt_st2>0 or tree.cand_rpcb_st2>0) and 
-                (tree.cand_dt_st4>0 or tree.cand_rpcb_st4>0) )
-              or
-              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and 
-                (tree.cand_dt_st3>0 or tree.cand_rpcb_st3>0) and 
-                (tree.cand_dt_st4>0 or tree.cand_rpcb_st4>0) )
-              or
-              ( (tree.cand_dt_st2>0 or tree.cand_rpcb_st2>0) and 
-                (tree.cand_dt_st3>0 or tree.cand_rpcb_st3>0) and 
-                (tree.cand_dt_st4>0 or tree.cand_rpcb_st4>0) )
-              or ## endcap
-              ( (tree.cand_csc_st1>0 or tree.cand_rpcf_st1>0 or tree.cand_gem_st1>0) and 
-                (tree.cand_csc_st2>0 or tree.cand_rpcf_st2>0 or tree.cand_gem_st2>0) and 
-                (tree.cand_csc_st3>0 or tree.cand_rpcf_st3>0) )
-              or
-              ( (tree.cand_csc_st1>0 or tree.cand_rpcf_st1>0 or tree.cand_gem_st1>0) and 
-                (tree.cand_csc_st2>0 or tree.cand_rpcf_st2>0 or tree.cand_gem_st2>0) and 
-                (tree.cand_csc_st4>0 or tree.cand_rpcf_st4>0) )              
-              or
-              ( (tree.cand_csc_st1>0 or tree.cand_rpcf_st1>0 or tree.cand_gem_st1>0) and 
-                (tree.cand_csc_st3>0 or tree.cand_rpcf_st3>0) and 
-                (tree.cand_csc_st4>0 or tree.cand_rpcf_st4>0) )
-              or
-              ( (tree.cand_csc_st2>0 or tree.cand_rpcf_st2>0 or tree.cand_gem_st2>0) and 
-                (tree.cand_csc_st3>0 or tree.cand_rpcf_st3>0) and 
-                (tree.cand_csc_st4>0 or tree.cand_rpcf_st4>0) )
-              or ## barrel-endcap
-              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and 
-                (tree.cand_dt_st2>0 or tree.cand_rpcb_st2>0) and
-                (tree.cand_csc_st1>0 or tree.cand_rpcf_st1>0 or tree.cand_gem_st1>0) )
-              or 
-              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and 
-                (tree.cand_dt_st2>0 or tree.cand_rpcb_st2>0) and
-                (tree.cand_csc_st2>0 or tree.cand_rpcf_st2>0 or tree.cand_gem_st2>0) )
-              or 
-              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and
-                (tree.cand_csc_st1>0 or tree.cand_rpcf_st1>0 or tree.cand_gem_st1>0) and 
-                (tree.cand_csc_st2>0 or tree.cand_rpcf_st2>0 or tree.cand_gem_st2>0) )
-              or 
-              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and
-                (tree.cand_csc_st1>0 or tree.cand_rpcf_st1>0 or tree.cand_gem_st1>0) and 
-                (tree.cand_csc_st3>0 or tree.cand_rpcf_st3>0) )
-              or 
-              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and
-                (tree.cand_csc_st1>0 or tree.cand_rpcf_st1>0 or tree.cand_gem_st1>0) and 
-                (tree.cand_csc_st4>0 or tree.cand_rpcf_st4>0) )
-              or
-              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and
-                (tree.cand_csc_st2>0 or tree.cand_rpcf_st2>0 or tree.cand_gem_st2>0) and 
-                (tree.cand_csc_st3>0 or tree.cand_rpcf_st3>0) )
-              or 
-              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and
-                (tree.cand_csc_st2>0 or tree.cand_rpcf_st2>0 or tree.cand_gem_st2>0) and 
-                (tree.cand_csc_st4>0 or tree.cand_rpcf_st4>0) )
-              or
-              ( (tree.cand_dt_st1>0 or tree.cand_rpcb_st1>0) and
-                (tree.cand_csc_st3>0 or tree.cand_rpcf_st3>0) and 
-                (tree.cand_csc_st4>0 or tree.cand_rpcf_st4>0) )
-              or 
-              ( (tree.cand_dt_st2>0 or tree.cand_rpcb_st2>0) and
-                (tree.cand_csc_st1>0 or tree.cand_rpcf_st1>0 or tree.cand_gem_st1>0) and 
-                (tree.cand_csc_st2>0 or tree.cand_rpcf_st2>0 or tree.cand_gem_st2>0) )
-              ) and
+            cand_3_st_tree(tree) and
             (tree.has_l1Extra>=1 and tree.l1Extra_dR<0.1 and tree.l1Extra_pt>0) and
             (tree.has_recoChargedCandidate>=1 and tree.recoChargedCandidate_pt>0)):
-            corr.Fill(tree.sim_pt, tree.recoChargedCandidate_pt)
+            sim_pT.Fill(tree.sim_pt)
+            reco_pT.Fill(tree.recoChargedCandidate_pt)
+            
+            corr.Fill(abs(tree.sim_eta), 1/tree.sim_pt - 1/tree.recoChargedCandidate_pt)
             diff.Fill((tree.sim_pt - tree.recoChargedCandidate_pt)/tree.sim_pt)
-        
+
+    ##
+    nBins = sim_pT.GetNbinsX()
+    for bin in range(0,nBins):
+        if sim_pT.GetBinContent(bin) >0:            
+            #print bin
+            #print sim_pT.GetBinContent(bin)
+            #print reco_pT.GetBinContent(bin)
+            #print (sim_pT.GetBinContent(bin)-reco_pT.GetBinContent(bin))/sim_pT.GetBinContent(bin)
+            rel_pT.SetBinContent(bin, (sim_pT.GetBinContent(bin)-reco_pT.GetBinContent(bin))/sim_pT.GetBinContent(bin))
+    
     c = TCanvas("c","c",800,600)
     c.Clear()
     c.SetHighLightColor(2);
@@ -653,26 +578,26 @@ def pTCorrelationPlots(p):
     gStyle.SetPadRightMargin(0.04)
     gStyle.SetPadTopMargin(0.06)
     gStyle.SetPadBottomMargin(0.13)
-    gStyle.SetOptStat(1111111)
+    gStyle.SetOptStat(0)
     gStyle.SetMarkerStyle(1)
     gPad.SetTickx(1)
     gPad.SetTicky(1)
 
-    corr.SetTitle("                                                                      14 TeV,  PU = %d; p_{T}^{SIM} [GeV]; p_{T}^{RECO} [GeV]"%(p.pu))
+    corr.SetTitle("                                                                      14 TeV,  PU = %d; #eta; 1/p_{T}^{SIM} - 1/p_{T}^{RECO}"%(p.pu))
     #corr.SetTitle("p_{T} correlation                                                                                     14 TeV; p_{T}^{SIM} [GeV]; p_{T}^{RECO} [GeV]")
     corr.GetXaxis().SetLabelSize(0.05)
     corr.GetYaxis().SetLabelSize(0.05)
     corr.GetXaxis().SetTitleSize(0.06)
     corr.GetYaxis().SetTitleSize(0.06)        
     corr.SetLineWidth(2)
-    corr.SetMarkerStyle(1)
-    corr.SetMarkerSize(15)
+#    corr.SetMarkerStyle(22)
+    corr.SetMarkerSize(1)
 #    corr.SetMarkerColor(kBlue)        
     corr.Draw()
 #    corr.Draw("COLZ")
-    tex = drawLabel(p.ctau + ", " + p.mass,0.25,0.75,0.05)
-    tex3 = drawLabel("H #rightarrow 2n_{1} #rightarrow 2n_{D}2Z_{D} #rightarrow 2n_{D}4#mu",0.25,0.65,0.05)
-    tex2 = applyStupidTdrStyle()
+#    tex = drawLabel(p.ctau + ", " + p.mass,0.25,0.75,0.05)
+#    tex3 = drawLabel("H #rightarrow 2n_{1} #rightarrow 2n_{D}2Z_{D} #rightarrow 2n_{D}4#mu",0.25,0.65,0.05)
+#    tex2 = applyStupidTdrStyle()
 
     c.SaveAs(p.outputDir + "simPtVsCandPt" + p.ext)
 

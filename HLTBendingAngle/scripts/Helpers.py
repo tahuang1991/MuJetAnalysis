@@ -15,7 +15,7 @@ def getEffObject(p, variable, binning, denom_cut, extra_num_cut):
     return h
 
 #_______________________________________________________________________________
-def applyStupidTdrStyle():
+def applyTdrStyle():
     cmsText     = "CMS PhaseII Simulation"
     cmsTextFont   = 61  ## default is helvetic-bold
 
@@ -97,7 +97,7 @@ def draw_1D(p, to_draw, c_title, title, h_bins, cut="", opt = ""):
     header = "                                                         PU = 0, 14 TeV"
     h.SetTitle(header)
     h.Draw()
-    tex2 = applyStupidTdrStyle()
+    tex2 = applyTdrStyle()
     if opt is "massCtau":
         tex = drawLabel(p.ctau,0.55,0.38,0.05)
         tex4 = drawLabel(p.mass,0.55,0.47,0.05)
@@ -219,3 +219,125 @@ def drawLabel(title, x=0.17, y=0.35, font_size=0.05):
     tex.SetNDC()
     tex.Draw("same")
     return tex
+
+#_______________________________________________________________________________
+def tracefunc(frame, event, arg, indent=[0]):
+      if event == "call":
+          indent[0] += 2
+          print "-" * indent[0] + "> call function", frame.f_code.co_name
+      elif event == "return":
+          print "<" + "-" * indent[0], "exit function", frame.f_code.co_name
+          indent[0] -= 2
+      return tracefunc
+
+#sys.settrace(tracefunc)
+
+#_______________________________________________________________________________
+def makePtEffPlot(p, h, plotTitle, legTitle):
+    c = TCanvas("c","c",800,600)
+    c.Clear()
+    gStyle.SetTitleStyle(0);
+    gStyle.SetTitleAlign(13); ##coord in top left
+    gStyle.SetTitleX(0.);
+    gStyle.SetTitleY(1.);
+    gStyle.SetTitleW(1);
+    gStyle.SetTitleH(0.058);
+    #gStyle.SetTitleXOffset(0.05)
+    gStyle.SetTitleBorderSize(0);
+    gStyle.SetPadLeftMargin(0.126);
+    gStyle.SetPadRightMargin(0.04);
+    gStyle.SetPadTopMargin(0.06);
+    gStyle.SetPadBottomMargin(0.13);
+    gStyle.SetOptStat(0);
+    gStyle.SetMarkerStyle(1);
+    gPad.SetTickx(1)
+    gPad.SetTicky(1)
+    #gStyle.SetStatStyle(0)
+
+    ## base plot
+    base = TH1D("base","base", 50, 0, 100)
+    base.SetStats(0)
+    base.SetTitle("                                                                      14 TeV,  PU = %d; SimTrack p_{T} [GeV]; Reconstruction efficiency"%(p.pu))
+    base.SetMinimum(0)
+    base.SetMaximum(1.1)
+    base.GetXaxis().SetLabelSize(0.05)
+    base.GetYaxis().SetLabelSize(0.05)
+    base.GetXaxis().SetTitleSize(0.06)
+    base.GetYaxis().SetTitleSize(0.06)
+    #base.GetXaxis().SetLimits(0,maxbin)
+    base.Draw()
+
+    ## efficiency object
+    h.SetMarkerColor(kBlue)
+    h.SetLineColor(kBlue)
+    h.SetLineWidth(2)
+    h.SetMarkerStyle(1)
+    h.SetMarkerSize(15)
+    h.Draw("same")
+
+    ## legend
+    leg = TLegend(0.2,0.3,0.75,0.45,"","brNDC")
+    leg.SetFillColor(kWhite)
+    leg.SetBorderSize(0)
+    leg.SetFillStyle(0)
+    leg.SetTextSize(0.05)
+    leg.AddEntry(h,legTitle,"l")
+    leg.Draw("same")
+
+    #tex = drawLabel(p.ctau + ", " + p.mass,0.45,0.55,0.05)
+    #tex4 = drawLabel(p.mass,0.55,0.47,0.05)
+    #tex3 = drawLabel("H #rightarrow 2n_{1} #rightarrow 2n_{D}2Z_{D} #rightarrow 2n_{D}4#mu",0.45,0.65,0.05)
+    tex2 = applyTdrStyle()
+    c.SaveAs(p.outputDir + plotTitle + p.ext)
+    
+
+#_______________________________________________________________________________
+def makeEtaEffPlot(p, h, plotTitle, legTitle):
+    c = TCanvas("c","c",800,600)
+    c.Clear()
+    gStyle.SetTitleStyle(0);
+    gStyle.SetTitleAlign(13); ##coord in top left
+    gStyle.SetTitleX(0.);
+    gStyle.SetTitleY(1.);
+    gStyle.SetTitleW(1);
+    gStyle.SetTitleH(0.058);
+    #gStyle.SetTitleXOffset(0.05)
+    gStyle.SetTitleBorderSize(0);
+    gStyle.SetPadLeftMargin(0.126);
+    gStyle.SetPadRightMargin(0.04);
+    gStyle.SetPadTopMargin(0.06);
+    gStyle.SetPadBottomMargin(0.13);
+    gStyle.SetOptStat(0);
+    gStyle.SetMarkerStyle(1);
+    gPad.SetTickx(1)
+    gPad.SetTicky(1)
+    #gStyle.SetStatStyle(0)
+    base = TH1D("base","base", 25, 0, 2.5)
+    base.SetStats(0)
+    base.SetTitle("                                                                      14 TeV,  PU = %d; SimTrack #eta; Reconstruction efficiency"%(p.pu))
+    base.SetMinimum(0)
+    base.SetMaximum(1.1)
+    base.GetXaxis().SetLabelSize(0.05)
+    base.GetYaxis().SetLabelSize(0.05)
+    base.GetXaxis().SetTitleSize(0.06)
+    base.GetYaxis().SetTitleSize(0.06)
+    #base.GetXaxis().SetLimits(0,maxbin)
+    base.Draw()
+    h.SetMarkerColor(kBlue)
+    h.SetLineColor(kBlue)
+    h.SetLineWidth(2)
+    h.SetMarkerStyle(1)
+    h.SetMarkerSize(15)
+    h.Draw("same")
+    leg = TLegend(0.2,0.3,0.75,0.45,"","brNDC")
+    leg.SetFillColor(kWhite)
+    leg.SetBorderSize(0)
+    leg.SetFillStyle(0)
+    leg.SetTextSize(0.05)
+    leg.AddEntry(h,legTitle,"l")
+    leg.Draw("same")
+    #tex = drawLabel(p.ctau + ", " + p.mass,0.45,0.55,0.05)
+    #tex4 = drawLabel(p.mass,0.55,0.47,0.05)
+    #tex3 = drawLabel("H #rightarrow 2n_{1} #rightarrow 2n_{D}2Z_{D} #rightarrow 2n_{D}4#mu",0.45,0.65,0.05)
+    tex2 = applyTdrStyle()
+    c.SaveAs(p.outputDir + plotTitle + p.ext)

@@ -226,28 +226,32 @@ struct MyTrackEff
   // per subsystem and per station (rpcb, rpcf, gem, csc, dt)
   // 
 
-  Char_t cand_rpcb_st_1;
-  Char_t cand_rpcb_st_2;
-  Char_t cand_rpcb_st_3;
-  Char_t cand_rpcb_st_4;
+  Int_t cand_rpcb_st_1;
+  Int_t cand_rpcb_st_2;
+  Int_t cand_rpcb_st_3;
+  Int_t cand_rpcb_st_4;
 
-  Char_t cand_rpcf_st_1;
-  Char_t cand_rpcf_st_2;
-  Char_t cand_rpcf_st_3;
-  Char_t cand_rpcf_st_4;
+  Int_t cand_rpcf_st_1;
+  Int_t cand_rpcf_st_2;
+  Int_t cand_rpcf_st_3;
+  Int_t cand_rpcf_st_4;
 
-  Char_t cand_csc_st_1;
-  Char_t cand_csc_st_2;
-  Char_t cand_csc_st_3;
-  Char_t cand_csc_st_4;
+  Int_t cand_csc_st_1;
+  Int_t cand_csc_st_2;
+  Int_t cand_csc_st_3;
+  Int_t cand_csc_st_4;
 
-  Char_t cand_dt_st_1;
-  Char_t cand_dt_st_2;
-  Char_t cand_dt_st_3;
-  Char_t cand_dt_st_4;
+  Int_t cand_csc_me11;
+  Int_t cand_csc_me12;
+  Int_t cand_csc_me13;
 
-  Char_t cand_gem_st_1;
-  Char_t cand_gem_st_2;
+  Int_t cand_dt_st_1;
+  Int_t cand_dt_st_2;
+  Int_t cand_dt_st_3;
+  Int_t cand_dt_st_4;
+
+  Int_t cand_gem_st_1;
+  Int_t cand_gem_st_2;
 };
 
 
@@ -715,19 +719,19 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
         DTChamberId detId(id);
         if (detId.station()==1)      {
           hits_st_1++;
-          etrk_[0].cand_dt_st_1 |= 1;
+          etrk_[0].cand_dt_st_1 = 1;
         }
         else if (detId.station()==2) {
           hits_st_2++;
-          etrk_[0].cand_dt_st_2 |= 1;
+          etrk_[0].cand_dt_st_2 = 1;
         }
         else if (detId.station()==3) {
           hits_st_3++;
-          etrk_[0].cand_dt_st_3 |= 1;
+          etrk_[0].cand_dt_st_3 = 1;
         }
         else if (detId.station()==4) {
           hits_st_4++;
-          etrk_[0].cand_dt_st_4 |= 1;
+          etrk_[0].cand_dt_st_4 = 1;
         }
       }
       if (gemvalidation::is_rpc(id)) {
@@ -735,16 +739,16 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
         RPCDetId detId(id);
 
         if (detId.region()==0){
-          if (detId.station()==1)      etrk_[0].cand_rpcb_st_1 |= 1;
-          else if (detId.station()==2) etrk_[0].cand_rpcb_st_2 |= 1;
-          else if (detId.station()==3) etrk_[0].cand_rpcb_st_3 |= 1;
-          else if (detId.station()==4) etrk_[0].cand_rpcb_st_4 |= 1;
+          if (detId.station()==1)      etrk_[0].cand_rpcb_st_1 = 1;
+          else if (detId.station()==2) etrk_[0].cand_rpcb_st_2 = 1;
+          else if (detId.station()==3) etrk_[0].cand_rpcb_st_3 = 1;
+          else if (detId.station()==4) etrk_[0].cand_rpcb_st_4 = 1;
         }
         else {
-          if (detId.station()==1)      etrk_[0].cand_rpcf_st_1 |= 1;
-          else if (detId.station()==2) etrk_[0].cand_rpcf_st_2 |= 1;
-          else if (detId.station()==3) etrk_[0].cand_rpcf_st_3 |= 1;
-          else if (detId.station()==4) etrk_[0].cand_rpcf_st_4 |= 1;
+          if (detId.station()==1)      etrk_[0].cand_rpcf_st_1 = 1;
+          else if (detId.station()==2) etrk_[0].cand_rpcf_st_2 = 1;
+          else if (detId.station()==3) etrk_[0].cand_rpcf_st_3 = 1;
+          else if (detId.station()==4) etrk_[0].cand_rpcf_st_4 = 1;
         }
         if (detId.station()==1)      hits_st_1++;
         else if (detId.station()==2) hits_st_2++;
@@ -756,11 +760,11 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
         GEMDetId detId(id);
         if (detId.station()==1) {
           hits_st_1++;
-          etrk_[0].cand_gem_st_1 |= 1;
+          etrk_[0].cand_gem_st_1 = 1;
         }
         if (detId.station()==3) {
           hits_st_2++;
-          etrk_[0].cand_gem_st_2 |= 1;
+          etrk_[0].cand_gem_st_2 = 1;
         }
       }
       if (gemvalidation::is_csc(id)) {
@@ -768,19 +772,22 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
         CSCDetId detId(id);
         if (detId.station()==1) { 
           hits_st_1++;
-          etrk_[0].cand_csc_st_1 |= 1;
+          etrk_[0].cand_csc_st_1 = 1;
+          if (detId.ring()==1 or detId.ring()==4) etrk_[0].cand_csc_me11 = 1;
+          if (detId.ring()==2)                    etrk_[0].cand_csc_me12 = 1;
+          if (detId.ring()==3)                    etrk_[0].cand_csc_me13 = 1;
         }
         if (detId.station()==2) {
           hits_st_2++;
-          etrk_[0].cand_csc_st_2 |= 1;
+          etrk_[0].cand_csc_st_2 = 1;
         }
         if (detId.station()==3) {
           hits_st_3++;
-          etrk_[0].cand_csc_st_3 |= 1;
+          etrk_[0].cand_csc_st_3 = 1;
         }
         if (detId.station()==4) {
           hits_st_4++;
-          etrk_[0].cand_csc_st_4 |= 1;
+          etrk_[0].cand_csc_st_4 = 1;
         }
       }      
       // valid hits
@@ -982,6 +989,10 @@ void MyTrackEff::init()
   cand_csc_st_3 = 0;
   cand_csc_st_4 = 0;
 
+  cand_csc_me11 = 0;
+  cand_csc_me12 = 0;
+  cand_csc_me13 = 0;
+  
   cand_dt_st_1 = 0;
   cand_dt_st_2 = 0;
   cand_dt_st_3 = 0;
@@ -1187,6 +1198,10 @@ TTree*MyTrackEff::book(TTree *t,const std::string & name)
   t->Branch("cand_csc_st_2", &cand_csc_st_2);
   t->Branch("cand_csc_st_3", &cand_csc_st_3);
   t->Branch("cand_csc_st_4", &cand_csc_st_4);
+
+  t->Branch("cand_csc_me11", &cand_csc_me11);
+  t->Branch("cand_csc_me12", &cand_csc_me12);
+  t->Branch("cand_csc_me13", &cand_csc_me13);
 
   t->Branch("cand_dt_st_1", &cand_dt_st_1);
   t->Branch("cand_dt_st_2", &cand_dt_st_2);

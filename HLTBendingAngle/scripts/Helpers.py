@@ -36,7 +36,7 @@ def draw_2DProfX(p, c_title, title, h_bins, to_draw, cut):
   h.SetLineWidth(2)
   h.SetLineColor(kBlue)
   g = h.ProfileX()
-  g.SetTitle(title)
+  g.SetTitle("RMS " + title)
   g.Draw("s")
   c.SaveAs(p.outputDir + c_title + p.ext)
 

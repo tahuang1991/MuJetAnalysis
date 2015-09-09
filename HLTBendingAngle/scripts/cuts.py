@@ -63,6 +63,10 @@ def sim_pt(min_pt, max_pt=99999):
     return TCut("%f < sim_pt && sim_pt < %f"%(min_pt, max_pt))
 
 #_______________________________________________________________________________
+def sim_eta(min_eta=0, max_eta=2.4):
+    return TCut("%f < abs(sim_eta) && abs(sim_eta) < %f"%(min_eta, max_eta))
+
+#_______________________________________________________________________________
 def cms_eta():
     return TCut("abs(sim_eta)<2.4")
 

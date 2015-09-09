@@ -57,6 +57,78 @@ def makePlot(p, corr, title, oneD=False):
     
 def pTCorrelationPlots(p):
     
+    def base_cut(min_sim_pt=5, max_sim_pt = 999, min_dxy=0, max_dxy=10, min_l1_pt=0):
+        return AND(n_dt_csc_seg(1), sim_pt(min_sim_pt, max_sim_pt), sim_dxy(min_dxy, max_dxy), has_L1Extra(min_l1_pt), Gd_fid())
+
+    draw_2D(p, "simPtVsRecoPt_3st", 'pT correlation; p_{T}^{SIM} [GeV]; p_{T}^{RECO} [GeV]', "(100, 0, 100, 100, 0, 100)", "recoChargedCandidate_pt:sim_pt", AND(base_cut(), has_cand(), cand_3_st()), "COLZ")
+
+    absEtaVsRelPt_axisTitle =  ";|#eta|; |p_{T}^{SIM}-p_{T}^{RECO}|/p_{T}^{SIM}"
+    binning = "(60, 0, 3.0, 100, -1.0, 1.0)"
+    toplot = "(sim_pt-recoChargedCandidate_pt)/sim_pt:abs(sim_eta)"
+
+    draw_2D(p, "absEtaVsRelPt_3st_pt5to10", '5 < p_{T} < 10 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(5,10), has_cand(), cand_3_st()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_3st_pt10to15", '10 < p_{T} < 15 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(10,15), has_cand(), cand_3_st()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_3st_pt15to20", '15 < p_{T} < 20 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(15,20), has_cand(), cand_3_st()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_3st_pt20to40", '20 < p_{T} < 40 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(20,40), has_cand(), cand_3_st()), "COLZ")
+
+    draw_2D(p, "absEtaVsRelPt_3seg_pt5to10", '5 < p_{T} < 10 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(5,10), has_cand(), cand_3_st_3_segments()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_3seg_pt10to15", '10 < p_{T} < 15 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(10,15), has_cand(), cand_3_st_3_segments()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_3seg_pt15to20", '15 < p_{T} < 20 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(15,20), has_cand(), cand_3_st_3_segments()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_3seg_pt20to40", '20 < p_{T} < 40 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(20,40), has_cand(), cand_3_st_3_segments()), "COLZ")
+
+    draw_2D(p, "absEtaVsRelPt_2seg1rh_pt5to10", '5 < p_{T} < 10 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(5,10), has_cand(), cand_3_st_2_segments_1_rechit()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_2seg1rh_pt10to15", '10 < p_{T} < 15 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(10,15), has_cand(), cand_3_st_2_segments_1_rechit()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_2seg1rh_pt15to20", '15 < p_{T} < 20 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(15,20), has_cand(), cand_3_st_2_segments_1_rechit()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_2seg1rh_pt20to40", '20 < p_{T} < 40 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(20,40), has_cand(), cand_3_st_2_segments_1_rechit()), "COLZ")
+
+    draw_2D(p, "absEtaVsRelPt_2seg1rh_gem_pt5to10", '5 < p_{T} < 10 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(5,10), has_cand(), cand_3_st_2_segments_1_rechit_gem_endcap()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_2seg1rh_gem_pt10to15", '10 < p_{T} < 15 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(10,15), has_cand(), cand_3_st_2_segments_1_rechit_gem_endcap()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_2seg1rh_gem_pt15to20", '15 < p_{T} < 20 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(15,20), has_cand(), cand_3_st_2_segments_1_rechit_gem_endcap()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_2seg1rh_gem_pt20to40", '20 < p_{T} < 40 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(20,40), has_cand(), cand_3_st_2_segments_1_rechit_gem_endcap()), "COLZ")
+
+    draw_2D(p, "absEtaVsRelPt_2seg1rh_GE21_pt5to10", '5 < p_{T} < 10 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(5,10), has_cand(), cand_3_st_2_segments_1_rechit_GE21_endcap()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_2seg1rh_GE21_pt10to15", '10 < p_{T} < 15 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(10,15), has_cand(), cand_3_st_2_segments_1_rechit_GE21_endcap()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_2seg1rh_GE21_pt15to20", '15 < p_{T} < 20 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(15,20), has_cand(), cand_3_st_2_segments_1_rechit_GE21_endcap()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_2seg1rh_GE21_pt20to40", '20 < p_{T} < 40 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(20,40), has_cand(), cand_3_st_2_segments_1_rechit_GE21_endcap()), "COLZ")
+
+    draw_2D(p, "absEtaVsRelPt_2seg1rh_GE21_noCSCst2_pt5to10", '5 < p_{T} < 10 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(5,10), has_cand(), cand_3_st_2_segments_1_rechit_GE21_nocscst2_endcap()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_2seg1rh_GE21_noCSCst2_pt10to15", '10 < p_{T} < 15 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(10,15), has_cand(), cand_3_st_2_segments_1_rechit_GE21_nocscst2_endcap()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_2seg1rh_GE21_noCSCst2_pt15to20", '15 < p_{T} < 20 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(15,20), has_cand(), cand_3_st_2_segments_1_rechit_GE21_nocscst2_endcap()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_2seg1rh_GE21_noCSCst2_pt20to40", '20 < p_{T} < 40 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(20,40), has_cand(), cand_3_st_2_segments_1_rechit_GE21_nocscst2_endcap()), "COLZ")
+
+
+    draw_2DProfX(p, "absEtaVsRelPt_3st_pt5to10_ProfX", '5 < p_{T} < 10 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(5,10), has_cand(), cand_3_st()))
+    draw_2DProfX(p, "absEtaVsRelPt_3st_pt10to15_ProfX", '10 < p_{T} < 15 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(10,15), has_cand(), cand_3_st()))
+    draw_2DProfX(p, "absEtaVsRelPt_3st_pt15to20_ProfX", '15 < p_{T} < 20 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(15,20), has_cand(), cand_3_st()))
+    draw_2DProfX(p, "absEtaVsRelPt_3st_pt20to40_ProfX", '20 < p_{T} < 40 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(20,40), has_cand(), cand_3_st()))
+
+    draw_2DProfX(p, "absEtaVsRelPt_3seg_pt5to10_ProfX", '5 < p_{T} < 10 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(5,10), has_cand(), cand_3_st_3_segments()))
+    draw_2DProfX(p, "absEtaVsRelPt_3seg_pt10to15_ProfX", '10 < p_{T} < 15 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(10,15), has_cand(), cand_3_st_3_segments()))
+    draw_2DProfX(p, "absEtaVsRelPt_3seg_pt15to20_ProfX", '15 < p_{T} < 20 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(15,20), has_cand(), cand_3_st_3_segments()))
+    draw_2DProfX(p, "absEtaVsRelPt_3seg_pt20to40_ProfX", '20 < p_{T} < 40 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(20,40), has_cand(), cand_3_st_3_segments()))
+
+    draw_2DProfX(p, "absEtaVsRelPt_2seg1rh_pt5to10_ProfX", '5 < p_{T} < 10 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(5,10), has_cand(), cand_3_st_2_segments_1_rechit()))
+    draw_2DProfX(p, "absEtaVsRelPt_2seg1rh_pt10to15_ProfX", '10 < p_{T} < 15 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(10,15), has_cand(), cand_3_st_2_segments_1_rechit()))
+    draw_2DProfX(p, "absEtaVsRelPt_2seg1rh_pt15to20_ProfX", '15 < p_{T} < 20 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(15,20), has_cand(), cand_3_st_2_segments_1_rechit()))
+    draw_2DProfX(p, "absEtaVsRelPt_2seg1rh_pt20to40_ProfX", '20 < p_{T} < 40 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(20,40), has_cand(), cand_3_st_2_segments_1_rechit()))
+
+    draw_2DProfX(p, "absEtaVsRelPt_2seg1rh_gem_pt5to10_ProfX", '5 < p_{T} < 10 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(5,10), has_cand(), cand_3_st_2_segments_1_rechit_gem_endcap()))
+    draw_2DProfX(p, "absEtaVsRelPt_2seg1rh_gem_pt10to15_ProfX", '10 < p_{T} < 15 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(10,15), has_cand(), cand_3_st_2_segments_1_rechit_gem_endcap()))
+    draw_2DProfX(p, "absEtaVsRelPt_2seg1rh_gem_pt15to20_ProfX", '15 < p_{T} < 20 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(15,20), has_cand(), cand_3_st_2_segments_1_rechit_gem_endcap()))
+    draw_2DProfX(p, "absEtaVsRelPt_2seg1rh_gem_pt20to40_ProfX", '20 < p_{T} < 40 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(20,40), has_cand(), cand_3_st_2_segments_1_rechit_gem_endcap()))
+
+    draw_2DProfX(p, "absEtaVsRelPt_2seg1rh_GE21_pt5to10_ProfX", '5 < p_{T} < 10 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(5,10), has_cand(), cand_3_st_2_segments_1_rechit_GE21_endcap()))
+    draw_2DProfX(p, "absEtaVsRelPt_2seg1rh_GE21_pt10to15_ProfX", '10 < p_{T} < 15 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(10,15), has_cand(), cand_3_st_2_segments_1_rechit_GE21_endcap()))
+    draw_2DProfX(p, "absEtaVsRelPt_2seg1rh_GE21_pt15to20_ProfX", '15 < p_{T} < 20 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(15,20), has_cand(), cand_3_st_2_segments_1_rechit_GE21_endcap()))
+    draw_2DProfX(p, "absEtaVsRelPt_2seg1rh_GE21_pt20to40_ProfX", '20 < p_{T} < 40 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(20,40), has_cand(), cand_3_st_2_segments_1_rechit_GE21_endcap()))
+
+    draw_2DProfX(p, "absEtaVsRelPt_2seg1rh_GE21_noCSCst2_pt5to10_ProfX", '5 < p_{T} < 10 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(5,10), has_cand(), cand_3_st_2_segments_1_rechit_GE21_nocscst2_endcap()))
+    draw_2DProfX(p, "absEtaVsRelPt_2seg1rh_GE21_noCSCst2_pt10to15_ProfX", '10 < p_{T} < 15 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(10,15), has_cand(), cand_3_st_2_segments_1_rechit_GE21_nocscst2_endcap()))
+    draw_2DProfX(p, "absEtaVsRelPt_2seg1rh_GE21_noCSCst2_pt15to20_ProfX", '15 < p_{T} < 20 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(15,20), has_cand(), cand_3_st_2_segments_1_rechit_GE21_nocscst2_endcap()))
+    draw_2DProfX(p, "absEtaVsRelPt_2seg1rh_GE21_noCSCst2_pt20to40_ProfX", '20 < p_{T} < 40 GeV' + absEtaVsRelPt_axisTitle, binning, toplot, AND(base_cut(20,40), has_cand(), cand_3_st_2_segments_1_rechit_GE21_nocscst2_endcap()))
+
+
+    """
     sim_pT = TH1F( 'sim_pT', '', 50, 0, 50 )
     reco_pT = TH1F( 'reco_pT', '', 50, 0, 50 )
     rel_pT = TH1F( 'rel_pT', '', 50, 0, 50 )
@@ -135,13 +207,10 @@ def pTCorrelationPlots(p):
     simPtVsRelPt_eta18to24_2seg_GE21_noCSCst2 = TH2F( 'simPtVsRelPt_eta18to24_2seg_GE21_noCSCst2', '; p_{T}^{SIM}; (p_{T}^{SIM} - p_{T}^{RECO})/p_{T}^{SIM}', 50, 0, 100, 50, -1, 1)
 
     ## updates September 8
-    absEtaVsRelPt_pt5to10 = TH2F( 'absEtaVsRelPt_pt5to10', '5 < p_{T} < 10 GeV; |#eta|; |p_{T}^{SIM} - p_{T}^{RECO}|/p_{T}^{SIM}', 60, 0, 3.0, 100, -1.0, 1.0)
-    absEtaVsRelPt_pt10to15 = TH2F( 'absEtaVsRelPt_pt10to15', '10 < p_{T} < 15 GeV; |#eta|; |p_{T}^{SIM} - p_{T}^{RECO}|/p_{T}^{SIM}', 60, 0, 3.0, 100, -1.0, 1.0)
-    absEtaVsRelPt_pt15to20 = TH2F( 'absEtaVsRelPt_pt15to20', '15 < p_{T} < 20 GeV; |#eta|; |p_{T}^{SIM} - p_{T}^{RECO}|/p_{T}^{SIM}', 60, 0, 3.0, 100, -1.0, 1.0)
-    absEtaVsRelPt_pt20to40 = TH2F( 'absEtaVsRelPt_pt20to40', '20 < p_{T} < 40 GeV; |#eta|; |p_{T}^{SIM} - p_{T}^{RECO}|/p_{T}^{SIM}', 60, 0, 3.0, 100, -1.0, 1.0)
-
     diff  = TH1F( 'diff', 'pT cand - pT simtrack/pT simtrack', 50, -5, 5 )
 
+    
+    
     tree = p.tree
     #print "entries", tree.GetEntries()
     for k in range(0, tree.GetEntries()):
@@ -157,7 +226,7 @@ def pTCorrelationPlots(p):
             tree.genGd_lxy > 0 and
             tree.genGd_lxy < 300 and
             abs(tree.genGd_vz) < 500 and
-            tree.genGd0Gd1_dR > 2 and 
+            (tree.genGd0Gd1_dR > 2) and 
             (tree.n_dt_seg + tree.n_csc_seg >= 1) and 
             0 < abs(tree.sim_dxy) and abs(tree.sim_dxy) < 10 and 
             (tree.has_l1Extra>0 and tree.l1Extra_dR<0.1 and tree.l1Extra_pt>0) ):
@@ -494,3 +563,4 @@ def pTCorrelationPlots(p):
         makePlot(p, delPt_eta18to24_2seg_1rh, "delPt_eta18to24_2seg_1rh", True)
         makePlot(p, delPt_eta18to24_2seg_GE21, "delPt_eta18to24_2seg_GE21", True)
         makePlot(p, delPt_eta18to24_2seg_GE21_noCSCst2, "delPt_eta18to24_2seg_GE21_noCSCst2", True)
+    """

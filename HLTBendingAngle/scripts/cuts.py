@@ -2,6 +2,7 @@ from ROOT import *
 import math
 import array
 from math import log10, floor
+from logic import *
 
 #_______________________________________________________________________________
 def nocut():
@@ -58,8 +59,8 @@ def Gd_fid(pt1=5, pt2=5, eta_min1=0, eta_max1=2.4, eta_min2=0, eta_max2=2.4):
     return AND(total_cut1, total_cut2, extra_cut1, extra_cut2, extra_cut3, extra_cut4)
 
 #_______________________________________________________________________________
-def sim_pt(pt):
-    return TCut("sim_pt>%f"%(pt))
+def sim_pt(min_pt, max_pt=99999):
+    return TCut("%f < sim_pt && sim_pt < %f"%(min_pt, max_pt))
 
 #_______________________________________________________________________________
 def cms_eta():
@@ -475,6 +476,30 @@ def cand_3_st_2_segments_1_rechit_endcap():
         AND(cand_csc_st(3), cand_csc_st(4), cand_rpcgem_e_st(1)) )
         
 #_______________________________________________________________________________
+def cand_3_st_2_segments_1_rechit_gem_endcap():
+    return OR(
+        AND(cand_csc_st(1), cand_csc_st(3), cand_gem_st(2)),
+        AND(cand_csc_st(1), cand_csc_st(4), cand_gem_st(2)),
+        AND(cand_csc_st(3), cand_csc_st(4), cand_gem_st(2)),        
+        AND(cand_csc_st(2), cand_csc_st(3), cand_gem_st(1)),
+        AND(cand_csc_st(3), cand_csc_st(4), cand_gem_st(1)),
+        AND(cand_csc_st(2), cand_csc_st(4), cand_gem_st(1)) )
+
+#_______________________________________________________________________________
+def cand_3_st_2_segments_1_rechit_GE21_endcap():
+    return OR(
+        AND(cand_csc_st(1), cand_csc_st(3), cand_gem_st(2)),
+        AND(cand_csc_st(1), cand_csc_st(4), cand_gem_st(2)),
+        AND(cand_csc_st(3), cand_csc_st(4), cand_gem_st(2)) )
+
+#_______________________________________________________________________________
+def cand_3_st_2_segments_1_rechit_GE21_nocscst2_endcap():
+    return OR(
+        AND(cand_csc_st(1), cand_csc_st(3), cand_gem_st(2), NOT(cand_csc_st(2))),
+        AND(cand_csc_st(1), cand_csc_st(4), cand_gem_st(2), NOT(cand_csc_st(2))),
+        AND(cand_csc_st(3), cand_csc_st(4), cand_gem_st(2), NOT(cand_csc_st(2))) )
+
+#_______________________________________________________________________________
 def cand_3_st_2_segments_1_rechit_nocscst2_endcap():
     return OR(
         AND(cand_csc_st(1), cand_csc_st(3), cand_rpcgem_e_st(2)),
@@ -488,17 +513,23 @@ def cand_3_st_2_segments_1_rechit_nocscst2_endcap():
         AND(cand_csc_st(3), cand_csc_st(4), cand_rpcgem_e_st(1)) )
 
 #_______________________________________________________________________________
+def cand_3_st_2_segments_1_rechit():
+    return OR(cand_3_st_2_segments_1_rechit_barrel(),
+              cand_3_st_2_segments_1_rechit_overlap(),
+              cand_3_st_2_segments_1_rechit_endcap())
+
+#_______________________________________________________________________________
+def cand_3_st_3_segments():
+    return OR(cand_3_st_3_segments_barrel(),
+              cand_3_st_3_segments_endcap(),
+              cand_3_st_3_segments_overlap())
+
+#_______________________________________________________________________________
 def cand_3_st():
     ## 3 segments 
     TFormula.SetMaxima(100000,1000,1000000)
-    return OR( 
-        cand_3_st_2_segments_1_rechit_barrel(),
-        cand_3_st_2_segments_1_rechit_overlap(),
-        cand_3_st_2_segments_1_rechit_endcap(),
-        cand_3_st_3_segments_barrel(),
-        cand_3_st_3_segments_endcap(),
-        cand_3_st_3_segments_overlap()
-        )
+    return OR(cand_3_st_2_segments_1_rechit(),
+              cand_3_st_3_segments())
 
 #_______________________________________________________________________________
 def cand_3_st_tree_3_segments_barrel(tree):
@@ -827,55 +858,3 @@ def cand_3_st_tree_int(tree):
         cand_3_st_tree_2_segments_1_rechit_barrel_int(tree) or
         cand_3_st_tree_2_segments_1_rechit_endcap_int(tree) or
         cand_3_st_tree_2_segments_1_rechit_overlap_int(tree) )
-
-#_______________________________________________________________________________
-def AND(*arg):
-    """AND of any number of TCuts in PyROOT"""
-    length = len(arg)
-    if length == 0:
-        print "ERROR: invalid number of arguments"
-        return
-    if length == 1:
-        return arg[0] 
-    if length==2:
-        return ANDtwo(arg[0],arg[1])
-    if length>2:
-        result = arg[0]
-        for i in range(1,len(arg)):
-            result = ANDtwo(result,arg[i])
-        return result
-
-#_______________________________________________________________________________
-def OR(*arg):
-    """OR of any number of TCuts in PyROOT"""
-    length = len(arg)
-    if length == 0:
-        print "ERROR: invalid number of arguments"
-        return
-    if length == 1:
-        return arg[0] 
-    if length==2:
-        return ORtwo(arg[0],arg[1])
-    if length>2:
-        result = arg[0]
-        for i in range(1,len(arg)):
-            result = ORtwo(result,arg[i])
-        return result
-
-#_______________________________________________________________________________
-def ANDtwo(cut1,cut2):
-    """AND of two TCuts in PyROOT"""
-    if cut1.GetTitle() == "":
-        return cut2
-    if cut2.GetTitle() == "":
-        return cut1
-    return TCut("(%s) && (%s)"%(cut1.GetTitle(),cut2.GetTitle()))
-
-#_______________________________________________________________________________
-def ORtwo(cut1,cut2):
-    """OR of two TCuts in PyROOT"""
-    if cut1.GetTitle() == "":
-        return cut2
-    if cut2.GetTitle() == "":
-        return cut1
-    return TCut("(%s) || (%s)"%(cut1.GetTitle(),cut2.GetTitle()))

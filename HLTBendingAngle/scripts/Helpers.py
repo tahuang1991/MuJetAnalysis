@@ -5,6 +5,57 @@ import array
 from math import log10, floor
 
 #_______________________________________________________________________________
+def draw_2D(p, c_title, title, h_bins, to_draw, cut, opt = ""):
+  gStyle.SetStatStyle(0)
+  gStyle.SetOptStat(1110)
+  c = TCanvas("c","c",800,600)
+  c.Clear()
+  p.tree.Draw(to_draw + ">>h_" + h_bins, cut)
+  h = TH2F(gDirectory.Get("h_"))
+  if not h:
+    sys.exit('h does not exist')
+  h = TH2F(h.Clone("h_"))
+  h.SetTitle(title)
+  h.SetLineWidth(2)
+  h.SetLineColor(kBlue)
+  h.Draw(opt)
+  c.SaveAs(p.outputDir + c_title + p.ext)
+
+#_______________________________________________________________________________
+def draw_2DProfX(p, c_title, title, h_bins, to_draw, cut):
+  gStyle.SetStatStyle(0)
+  gStyle.SetOptStat(1110)
+  c = TCanvas("c","c",800,600)
+  c.Clear()
+  p.tree.Draw(to_draw + ">>h_" + h_bins, cut)
+  h = TH2F(gDirectory.Get("h_"))
+  if not h:
+    sys.exit('h does not exist')
+  h = TH2F(h.Clone("h_"))
+  h.SetTitle(title)
+  h.SetLineWidth(2)
+  h.SetLineColor(kBlue)
+  g = h.ProfileX()
+  g.SetTitle(title)
+  g.Draw("s")
+  c.SaveAs(p.outputDir + c_title + p.ext)
+
+#_______________________________________________________________________________
+def get_2D(p, title, h_bins, to_draw, cut, opt = ""):
+  gStyle.SetStatStyle(0)
+  gStyle.SetOptStat(1110)
+  p.tree.Draw(to_draw + ">>h_" + h_bins, cut)
+  h = TH2F(gDirectory.Get("h_"))
+  if not h:
+    sys.exit('h does not exist')
+  h = TH2F(h.Clone("h_"))
+  h.SetTitle(title)
+  h.SetLineWidth(2)
+  h.SetLineColor(kBlue)
+  SetOwnership(h, False)
+  return h
+
+#_______________________________________________________________________________
 def getEffObject(p, variable, binning, denom_cut, extra_num_cut):
 
     denom = get_1D(p, "denom", "denom", binning, variable, denom_cut)
@@ -180,11 +231,6 @@ def get_1Dmod(p, title, h_name, h_bins, to_draw, cut):
     h.SetMinimum(0.)
     SetOwnership(h, False)
     return h
-
-
-#_______________________________________________________________________________
-def NOT(cut):
-    return TCut("!" + cut.GetTitle())
 
 #_______________________________________________________________________________
 def AddTwo(h1,h2):

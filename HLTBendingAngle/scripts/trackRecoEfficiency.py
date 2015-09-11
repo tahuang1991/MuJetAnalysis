@@ -103,9 +103,9 @@ def special_recoTrackEfficiency(p, min_dxy, max_dxy, sim_pt_cut, min_l1_pt, reco
     tree = p.tree
     denom = 0.
     num = 0.
-    loss_pt = 0
-    loss_missing = 0
-    loss_3seg = 0
+    loss_pt = 0.
+    loss_missing = 0.
+    loss_3seg = 0.
     num_eta = TH1F( 'num_eta', '', 25, 0, 2.4 )
     denom_eta = TH1F( 'denom_eta', '', 25, 0, 2.4 )
 
@@ -167,17 +167,21 @@ def special_recoTrackEfficiency(p, min_dxy, max_dxy, sim_pt_cut, min_l1_pt, reco
                 print
                 """
                 if case_bad_muon_missing_cand:
-                    loss_missing = loss_missing + 1
+                    loss_missing = loss_missing + 1.
                 elif case_bad_muon_no_3_stubs:
-                    loss_3seg = loss_3seg + 1
+                    loss_3seg = loss_3seg + 1.
                 elif case_bad_muon_cand_pt_low:
-                    loss_pt = loss_pt + 1
+                    loss_pt = loss_pt + 1.
                     
-    print "eff", num, denom, float(num)/float(denom)
-    print "losses total", denom - num
-    print "losses missing", loss_missing
-    print "losses pt", loss_pt
-    print "losses seg", loss_3seg
+    print "------------------------------"
+    print "Denominator:", denom
+    print "Numerator:", num
+    print "Total efficiency:", num/denom
+    print "------------------------------"
+    print "Total losses", denom - num
+    print "\tmissing cand:", loss_missing, "% loss", loss_missing/denom*100
+    print "\tpt too low:", loss_pt, "% loss", loss_pt/denom*100
+    print "\ttoo few segments/rechits", loss_3seg, "% loss", loss_3seg/denom*100
 
     #makeEtaEffPlot(p, , "dummy", "")
     h = TEfficiency(num_eta, denom_eta)

@@ -94,15 +94,15 @@ def recoTrackEfficiency(p):
 
 
     
-def recoTrackEfficiency_2(p, min_dxy, max_dxy, min_sim_pt, min_l1_pt, min_reco_pt):
-    return getEffObject(p, "abs(sim_eta)", "(25,0,2.5)", AND(n_dt_csc_seg(1), sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), has_L1Extra(min_l1_pt), Gd_fid()), AND(has_cand(min_reco_pt), cand_3_st()))
+def recoTrackEfficiency_2(p, min_dxy, max_dxy, min_sim_pt, min_l1_pt, min_reco_pt, extra_num_cut=cand_3_st()):
+    return getEffObject(p, "abs(sim_eta)", "(25,0,2.5)", AND(n_dt_csc_seg(1), sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), has_L1Extra(min_l1_pt), Gd_fid()), AND(has_cand(min_reco_pt), extra_num_cut))
     
 
 
 def special_recoTrackEfficiency(p, min_dxy, max_dxy, sim_pt_cut, min_l1_pt, reco_pt_cut):
     tree = p.tree
-    denom = 0
-    num = 0
+    denom = 0.
+    num = 0.
     loss_pt = 0
     loss_missing = 0
     loss_3seg = 0
@@ -111,7 +111,7 @@ def special_recoTrackEfficiency(p, min_dxy, max_dxy, sim_pt_cut, min_l1_pt, reco
 
     for k in range(0, tree.GetEntries()):
         tree.GetEntry(k)
-        if k>10000:
+        if k>1000000000:
             break
         if (tree.sim_pt > sim_pt_cut and
             tree.genGdMu_pt[0] > 5 and
@@ -131,27 +131,49 @@ def special_recoTrackEfficiency(p, min_dxy, max_dxy, sim_pt_cut, min_l1_pt, reco
 
             denom = denom + 1.
             denom_eta.Fill(tree.sim_eta)
-            if (cand_3_st_tree_int(tree) and tree.has_recoChargedCandidate>=1 and tree.recoChargedCandidate_pt>reco_pt_cut):
+
+            ## efficiency loss cases
+            case_bad_muon_missing_cand = False
+            case_bad_muon_no_3_stubs = False
+            case_bad_muon_cand_pt_low = False
+
+            if tree.has_recoChargedCandidate is 0:
+                case_bad_muon_missing_cand = True
+            if not cand_3_st_tree_int(tree):
+                case_bad_muon_no_3_stubs = True
+            if tree.recoChargedCandidate_pt < reco_pt_cut:
+                case_bad_muon_cand_pt_low = True
+
+            ## good muons
+            case_good_muon = ( (not case_bad_muon_missing_cand) and 
+                               (not case_bad_muon_no_3_stubs) and 
+                               (not case_bad_muon_cand_pt_low) )
+
+            if case_good_muon:
                 num = num + 1.
                 num_eta.Fill(tree.sim_eta)
+
+            ## print-outs and counters
             else:
+                """
                 print "Denom!", k
                 print "No Num!"
                 print "sim_pt", tree.sim_pt
                 print "sim_eta", tree.sim_eta
-                print "has_cand", tree.has_recoChargedCandidate>=1
+                print "has_cand", not case_bad_muon_missing_cand
                 print "cand_pt", tree.recoChargedCandidate_pt
                 print "cand_eta", tree.recoChargedCandidate_eta
-                print "has 3 stubs", cand_3_st_tree_int(tree)
+                print "has 3 stubs", not case_bad_muon_no_3_stubs
                 print
-                if tree.has_recoChargedCandidate is 0:
+                """
+                if case_bad_muon_missing_cand:
                     loss_missing = loss_missing + 1
-                elif not cand_3_st_tree(tree):
+                elif case_bad_muon_no_3_stubs:
                     loss_3seg = loss_3seg + 1
-                elif tree.recoChargedCandidate_pt < reco_pt_cut:
+                elif case_bad_muon_cand_pt_low:
                     loss_pt = loss_pt + 1
                     
-    print "eff", num, denom, num/denom
+    print "eff", num, denom, float(num)/float(denom)
     print "losses total", denom - num
     print "losses missing", loss_missing
     print "losses pt", loss_pt

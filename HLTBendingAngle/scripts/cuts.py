@@ -509,18 +509,16 @@ def cand_3_st_2_segments_1_rechit_nocscst2_endcap():
         AND(cand_csc_st(1), cand_csc_st(3), cand_rpcgem_e_st(2)),
         AND(cand_csc_st(1), cand_csc_st(4), cand_rpcgem_e_st(2)),
         AND(cand_csc_st(3), cand_csc_st(4), cand_rpcgem_e_st(2)),
-
         AND(cand_csc_st(1), cand_csc_st(4), cand_rpcgem_e_st(3)),
-
         AND(cand_csc_st(1), cand_csc_st(3), cand_rpcgem_e_st(4)),
-        
         AND(cand_csc_st(3), cand_csc_st(4), cand_rpcgem_e_st(1)) )
 
 #_______________________________________________________________________________
 def cand_3_st_2_segments_1_rechit():
     return OR(cand_3_st_2_segments_1_rechit_barrel(),
-              cand_3_st_2_segments_1_rechit_overlap(),
-              cand_3_st_2_segments_1_rechit_endcap())
+              cand_3_st_2_segments_1_rechit_endcap(),
+              cand_3_st_2_segments_1_rechit_overlap()
+              )
 
 #_______________________________________________________________________________
 def cand_3_st_3_segments():
@@ -532,8 +530,7 @@ def cand_3_st_3_segments():
 def cand_3_st():
     ## 3 segments 
     TFormula.SetMaxima(100000,1000,1000000)
-    return OR(cand_3_st_2_segments_1_rechit(),
-              cand_3_st_3_segments())
+    return OR(cand_3_st_3_segments(), cand_3_st_2_segments_1_rechit())
 
 #_______________________________________________________________________________
 def cand_3_st_tree_3_segments_barrel(tree):
@@ -780,13 +777,13 @@ def cand_3_st_tree_2_segments_1_rechit_endcap_int(tree):
         (tree.cand_csc_st_1>0 and tree.cand_csc_st_3>0 and tree.cand_rpcf_st_4>0) or
         (tree.cand_csc_st_2>0 and tree.cand_csc_st_3>0 and tree.cand_rpcf_st_4>0) or
         
-        (tree.cand_csc_st_1>0 and tree.cand_csc_st_3>0 and tree.cand_gem_st_2>0) or
-        (tree.cand_csc_st_1>0 and tree.cand_csc_st_4>0 and tree.cand_gem_st_2>0) or
-        (tree.cand_csc_st_3>0 and tree.cand_csc_st_4>0 and tree.cand_gem_st_2>0) or
+        (tree.cand_csc_st_1>0 and tree.cand_csc_st_3>0 and (tree.cand_gem_st_2>0 or tree.cand_rpcf_st_2>0)) or
+        (tree.cand_csc_st_1>0 and tree.cand_csc_st_4>0 and (tree.cand_gem_st_2>0 or tree.cand_rpcf_st_2>0)) or
+        (tree.cand_csc_st_3>0 and tree.cand_csc_st_4>0 and (tree.cand_gem_st_2>0 or tree.cand_rpcf_st_2>0)) or
 
-        (tree.cand_csc_st_2>0 and tree.cand_csc_st_3>0 and tree.cand_gem_st_1>0) or
-        (tree.cand_csc_st_3>0 and tree.cand_csc_st_4>0 and tree.cand_gem_st_1>0) or
-        (tree.cand_csc_st_2>0 and tree.cand_csc_st_4>0 and tree.cand_gem_st_1>0) )
+        (tree.cand_csc_st_2>0 and tree.cand_csc_st_3>0 and (tree.cand_gem_st_1>0 or tree.cand_rpcf_st_1>0)) or
+        (tree.cand_csc_st_3>0 and tree.cand_csc_st_4>0 and (tree.cand_gem_st_1>0 or tree.cand_rpcf_st_1>0)) or
+        (tree.cand_csc_st_2>0 and tree.cand_csc_st_4>0 and (tree.cand_gem_st_1>0 or tree.cand_rpcf_st_1>0)) )
 
 #_______________________________________________________________________________
 def cand_3_st_tree_2_segments_1_rechit_gem_endcap_int(tree):
@@ -855,10 +852,10 @@ def cand_3_st_tree_2_segments_1_rechit_overlap_int(tree):
 #_______________________________________________________________________________
 def cand_3_st_tree_int(tree):
     ## 3 segments     
-    return ( 
-        cand_3_st_tree_3_segments_barrel_int(tree) or
-        cand_3_st_tree_3_segments_endcap_int(tree) or
-        cand_3_st_tree_3_segments_overlap_int(tree) or 
-        cand_3_st_tree_2_segments_1_rechit_barrel_int(tree) or
-        cand_3_st_tree_2_segments_1_rechit_endcap_int(tree) or
-        cand_3_st_tree_2_segments_1_rechit_overlap_int(tree) )
+    return (cand_3_st_tree_3_segments_barrel_int(tree)
+            or cand_3_st_tree_3_segments_endcap_int(tree)
+            or cand_3_st_tree_3_segments_overlap_int(tree)
+            or cand_3_st_tree_2_segments_1_rechit_barrel_int(tree)
+            or cand_3_st_tree_2_segments_1_rechit_endcap_int(tree)
+            or cand_3_st_tree_2_segments_1_rechit_overlap_int(tree) 
+            )

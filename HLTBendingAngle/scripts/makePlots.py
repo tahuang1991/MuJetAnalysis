@@ -10,54 +10,13 @@ from trackRecoEfficiency import *
 from trackKinematics import *
 from simKinematics import *
 from ptCorrelation import *
+from inputFiles import *
 
 inputDir = "/afs/cern.ch/user/d/dildick/work/GEM/forJose/DisplacedMuHLTStudyPtAssignment/CMSSW_7_4_4/src/"
 inputDir = "/uscms_data/d3/dildick/work/MuonPhaseIIScopeDoc/CMSSW_6_2_0_SLHC26_patch3/src/"
-preOut = "/uscms_data/d3/dildick/work/MuonPhaseIIScopeDoc/CMSSW_6_2_0_SLHC26_patch3/src/OutputDirectoryForScopeDoc_20150908/"
+preOut = "/uscms_data/d3/dildick/work/MuonPhaseIIScopeDoc/CMSSW_6_2_0_SLHC26_patch3/src/OutputDirectoryForScopeDoc_20150910/"
 ext = ".png"
 pu=140
-
-inputFiles = [
-      'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_fullScope_v3.root',
-      'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_fullScopeAging_v3.root',
-      'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_descope235MCHF_v3.root',
-      'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_descope235MCHFaging_v3.root',
-      'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_descope200MCHF_v3.root',
-      'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_HLT_descope200MCHFaging_v3.root',
-
-      'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_HLT_fullScope.root',
-      'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_HLT_fullScopeAging.root',
-      'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_HLT_descope235MCHFaging.root',
-      'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_HLT_descope200MCHF.root',
-      'out_ana_DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_HLT_descope200MCHFaging.root',
-      ]
-
-inputFiles_80k_pu140 = [
-      '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_ANA_fullScope_v3/150825_133549/0000/out_ana.root',
-      '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_ANA_fullScopeAging_v3/150825_134302/0000/out_ana.root',
-      '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_ANA_descope235MCHF_v3/150825_133955/0000/out_ana.root',
-      '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_ANA_descope235MCHFaging_v3/150825_134339/0000/out_ana.root',
-      '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_ANA_descope200MCHF_v3/150825_133623/0000/out_ana.root',
-      '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_ANA_descope200MCHFaging_v3/150825_134321/0000/out_ana.root',
-      ]
-
-inputFiles_80k_pu140_ctau100 = [
-      '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_ANA_fullScope/150904_181534/0000/out_ana.root',
-      '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_ANA_fullScopeAging/150904_195025/0000/out_ana.root',
-      '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_ANA_descope235MCHF/150904_181550/0000/out_ana.root',
-      '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_ANA_descope235MCHFaging/150904_195041/0000/out_ana.root',
-      '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_ANA_descope200MCHF/150904_181611/0000/out_ana.root',
-      '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_ANA_descope200MCHFaging/150904_195057/0000/out_ana.root',
-      ]
-
-inputFiles_80k_pu200 = [
-      '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU200_ANA_fullScope/150825_134011/0000/out_ana.root',
-      '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU200_ANA_fullScopeAging/150825_134358/0000/out_ana.root',
-      '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU200_ANA_descope235MCHF/150825_134044/0000/out_ana.root',
-      '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU200_ANA_descope235MCHFaging/150825_134430/0000/out_ana.root',
-      '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU200_ANA_descope200MCHF/150825_134028/0000/out_ana.root',
-      '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU200_ANA_descope200MCHFaging/150825_134414/0000/out_ana.root',
-      ]
 
 highMassExt = [
       '_DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_fullScope_v3',
@@ -91,18 +50,32 @@ highMassPU = [140,140,140,140,140,140,
 
 #outputFile = TFile("output.root","NEW")
 
-my_efficiencies = []
+efficiencies_3st = []
+efficiencies_3seg = []
+efficiencies_2seg1rh = []
+efficiencies_2seg1rh_gem_endcap = []
+efficiencies_2seg1rh_ge21_endcap = []
+efficiencies_2seg1rh_ge21_noCSCst2_endcap = []
+
 scenarios = ["Full scope", "Full scope + CSC/RPC aging", "235MCHF", "235MCHF + CSC/RPC aging", "200MCHF", "200MCHF + CSC/RPC/DT aging"]
 my_colors = [kBlue, kBlack, kOrange+1, kGreen+1, kMagenta+1, kRed]
 my_markers = [2,5,20,21,22,23]
+
 for sc in scenarios:
-      my_efficiencies.append([])
+      efficiencies_3st.append([])
+      efficiencies_3seg.append([])
+      efficiencies_2seg1rh.append([])
+      efficiencies_2seg1rh_gem_endcap.append([])
+      efficiencies_2seg1rh_ge21_endcap.append([])
+      efficiencies_2seg1rh_ge21_noCSCst2_endcap.append([])
 
 pts = [0,0,5,10,15]
+pts = [0]
 dxy_min = 0
 dxy_max = 10
+
 ## loop on scenarios
-for i in range(0,len(scenarios)):
+for i in range(0,1):
       if i is 2 or i is 4:
             continue
       class Plotter:
@@ -138,15 +111,24 @@ for i in range(0,len(scenarios)):
                   if reco_pt is 0:
                         sim_pt = 7
                   print "sim_pt, reco_pt", sim_pt, reco_pt
-                  my_efficiencies[i].append(recoTrackEfficiency_2(plotter, dxy_min, dxy_max, sim_pt, 0, reco_pt))
-                  #my_efficiencies[i].append(special_recoTrackEfficiency(plotter, dxy_min, dxy_max, sim_pt, 0, pts[i]))
+                  efficiencies_3st[i].append(recoTrackEfficiency_2(plotter, dxy_min, dxy_max, sim_pt, 0, reco_pt))
+                  """
+                  efficiencies_3seg[i].append(recoTrackEfficiency_2(plotter, dxy_min, dxy_max, sim_pt, 0, reco_pt, cand_3_st_3_segments()))
+                  efficiencies_2seg1rh[i].append(recoTrackEfficiency_2(plotter, dxy_min, dxy_max, sim_pt, 0, reco_pt, cand_3_st_2_segments_1_rechit()))
+                  """
+#                  efficiencies_2seg1rh_gem_endcap[i].append()
+#                  efficiencies_2seg1rh_ge21_endcap[i].append()
+#                  efficiencies_2seg1rh_ge21_noCSCst2_endcap[i].append()
+
+
+                  special_recoTrackEfficiency(plotter, dxy_min, dxy_max, sim_pt, 0, reco_pt)
       #recoTrackEfficiency(plotter)
       #l1ExtraTrackEfficiency(plotter)
       #trackKinematics(plotter)
       #simKinematics(plotter)
-      pTCorrelationPlots(plotter)
+      #pTCorrelationPlots(plotter)
    
-if True:
+if False:
       for i in range(0,len(pts)):
             reco_pt = pts[i]
             c = TCanvas("c","c",800,600)
@@ -189,7 +171,7 @@ if True:
             for j in range(0,6):
                   if j is 2 or j is 4:
                       continue
-                  h = my_efficiencies[j][i]
+                  h = efficiencies_3seg[j][i]
                   h.SetMarkerColor(my_colors[j])
                   h.SetLineColor(my_colors[j])
                   h.SetLineWidth(2)
@@ -212,7 +194,7 @@ if True:
             if reco_pt is 0:
                   sim_pt = 7
             tex554 = drawLabel("#font[41]{p_{T}^{SIM} > %d GeV}"%(sim_pt), 0.7,0.21,0.04)
-            c.SaveAs("eff_sim_eta_1seg_pt%d_dxy%dto%d_L1Extra_fid_recoCand_pt%d_combi_DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU%d_v1.png"%(sim_pt, dxy_min, dxy_max, reco_pt, pu))
+            c.SaveAs("%seff_sim_eta_1seg_pt%d_dxy%dto%d_L1Extra_fid_recoCand_pt%d_3seg_combi_DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU%d_v1%s" %(preOut, sim_pt, dxy_min, dxy_max, reco_pt, pu, ext))
 
 
 

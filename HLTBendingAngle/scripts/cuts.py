@@ -2,7 +2,6 @@ from ROOT import *
 import math
 import array
 from math import log10, floor
-from logic import *
 from simpleCuts import *
 
 #_______________________________________________________________________________
@@ -558,7 +557,11 @@ def cand_3_st_tree_2_segments_1_rechit_overlap_int(tree):
         (tree.cand_rpcb_st_1>0 and tree.cand_csc_st_1>0 and tree.cand_csc_st_4>0) or 
         (tree.cand_rpcb_st_1>0 and tree.cand_csc_st_2>0 and tree.cand_csc_st_3>0) or 
         (tree.cand_rpcb_st_1>0 and tree.cand_csc_st_2>0 and tree.cand_csc_st_4>0) or 
-        (tree.cand_rpcb_st_1>0 and tree.cand_csc_st_3>0 and tree.cand_csc_st_4>0) )
+        (tree.cand_rpcb_st_1>0 and tree.cand_csc_st_3>0 and tree.cand_csc_st_4>0) or
+
+        (tree.cand_dt_st_2>0 and tree.cand_csc_st_1>0 and tree.cand_rpcf_st_2>0) or
+        (tree.cand_dt_st_2>0 and tree.cand_csc_st_2>0 and tree.cand_rpcf_st_1>0) or 
+        (tree.cand_dt_st_2>0 and tree.cand_csc_st_1>0 and tree.cand_rpcb_st_3>0) )
 
 #_______________________________________________________________________________
 def cand_3_st_tree_int(tree):

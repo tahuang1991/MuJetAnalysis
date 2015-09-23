@@ -90,14 +90,22 @@ def recoTrackEfficiency(p):
     h2 = getEffObject(p, "sim_eta", etaBinning, denom_cut(n, min_sim_pt, 10, 30), has_cand(reco_pt))
     h3 = getEffObject(p, "sim_eta", etaBinning, denom_cut(n, min_sim_pt, 30, 500), has_cand(reco_pt))#, "eff_sim_eta_%dseg_pt_dxy30to500_L1Extra_fid_recoCand_pt%d"%(n, reco_pt), "L2Mu")
     """
+
+        
+def L1TrackEfficiency(p, min_dxy, max_dxy, min_sim_pt, min_l1_pt):
+    ## vs eta
+    efficiency = getEffObject(p, "abs(sim_eta)", "(25,0,2.5)", AND(sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), Gd_fid()), has_L1Extra(min_l1_pt))
+    makeEtaEffPlot(p, efficiency, "eff_sim_eta_pt%d_dxy%dto%d_fid_L1_pt%d"%(min_sim_pt, min_dxy, max_dxy, min_l1_pt), "p_{T}^{SIM} > %.1f, p_{T}^{L1}>%.1f, |d_{xy}|<%.1f"%(min_sim_pt, min_l1_pt, max_dxy))
     
-
-
+    ## vs dxy
+    efficiency = getEffObject(p, "abs(sim_dxy)", "(50,0.1,30)", AND(sim_pt(min_sim_pt), cms_eta(), Gd_fid()), has_L1Extra(min_l1_pt))
+    makeEffPlot(p, efficiency, 50, 0.1, 30, "eff_sim_dxy_pt%d_fid_L1_pt%d"%(min_sim_pt, min_l1_pt), "; SIM d_{xy}; reconstruction Efficiency", "p_{T}^{SIM} > %.1f, p_{T}^{L1}>%.1f, |#eta|<2.4"%(min_sim_pt, min_l1_pt))
     
 def recoTrackEfficiency_2(p, min_dxy, max_dxy, min_sim_pt, min_l1_pt, min_reco_pt, extra_num_cut=cand_3_st()):
     return getEffObject(p, "abs(sim_eta)", "(25,0,2.5)", AND(n_dt_csc_seg(1), sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), has_L1Extra(min_l1_pt), Gd_fid()), AND(has_cand(min_reco_pt), extra_num_cut))
-    
 
+def recoTrackEfficiency_3(p, min_dxy, max_dxy, min_sim_pt, min_l1_pt, min_reco_pt, pattern_cut=cand_3_st()):
+    return getEffObject(p, "abs(sim_eta)", "(25,0,2.5)", AND(TCut("abs(sim_eta)>1.6"), n_dt_csc_seg(1), sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), has_L1Extra(min_l1_pt), Gd_fid(), has_cand2(), pattern_cut), cand_pt(min_reco_pt))
 
 def special_recoTrackEfficiency(p, min_dxy, max_dxy, sim_pt_cut, min_l1_pt, reco_pt_cut):
     tree = p.tree
@@ -108,10 +116,11 @@ def special_recoTrackEfficiency(p, min_dxy, max_dxy, sim_pt_cut, min_l1_pt, reco
     loss_3seg = 0.
     num_eta = TH1F( 'num_eta', '', 25, 0, 2.4 )
     denom_eta = TH1F( 'denom_eta', '', 25, 0, 2.4 )
+    offset = TH2F( 'offset', '', 25, 0, 2.4, 100, -5, 3)
 
     for k in range(0, tree.GetEntries()):
         tree.GetEntry(k)
-        if k>1000000000:
+        if k>10000000:
             break
         if (tree.sim_pt > sim_pt_cut and
             tree.genGdMu_pt[0] > 5 and
@@ -155,24 +164,64 @@ def special_recoTrackEfficiency(p, min_dxy, max_dxy, sim_pt_cut, min_l1_pt, reco
 
             ## print-outs and counters
             else:
-                """
-                print "Denom!", k
-                print "No Num!"
-                print "sim_pt", tree.sim_pt
-                print "sim_eta", tree.sim_eta
-                print "has_cand", not case_bad_muon_missing_cand
-                print "cand_pt", tree.recoChargedCandidate_pt
-                print "cand_eta", tree.recoChargedCandidate_eta
-                print "has 3 stubs", not case_bad_muon_no_3_stubs
-                print
-                """
                 if case_bad_muon_missing_cand:
                     loss_missing = loss_missing + 1.
                 elif case_bad_muon_no_3_stubs:
                     loss_3seg = loss_3seg + 1.
+                    """
+                    print "Denom!", k
+                    print "No Num!"
+                    print "sim_pt", tree.sim_pt
+                    print "sim_eta", tree.sim_eta
+                    if tree.cand_dt_st_1>0:
+                        print "dt st1", tree.cand_dt_st_1>0
+                    if tree.cand_dt_st_2>0:
+                        print "dt st2", tree.cand_dt_st_2>0
+                    if tree.cand_dt_st_3>0:
+                        print "dt st3", tree.cand_dt_st_3>0
+                    if tree.cand_dt_st_4>0:
+                        print "dt st4", tree.cand_dt_st_4>0
+                    if tree.cand_csc_st_1>0:
+                        print "csc st1", tree.cand_csc_st_1>0
+                    if tree.cand_csc_st_2>0:
+                        print "csc st2", tree.cand_csc_st_2>0
+                    if tree.cand_csc_st_3>0:
+                        print "csc st3", tree.cand_csc_st_3>0
+                    if tree.cand_csc_st_4>0:
+                        print "csc st4", tree.cand_csc_st_4>0
+                    if tree.cand_rpcf_st_1>0:
+                        print "rpcf st1", tree.cand_rpcf_st_1>0
+                    if tree.cand_rpcf_st_2>0:
+                        print "rpcf st2", tree.cand_rpcf_st_2>0
+                    if tree.cand_rpcf_st_3>0:
+                        print "rpcf st3", tree.cand_rpcf_st_3>0
+                    if tree.cand_rpcf_st_4>0:
+                        print "rpcf st4", tree.cand_rpcf_st_4>0
+                    if  tree.cand_rpcb_st_1>0:
+                        print "rpcb st1", tree.cand_rpcb_st_1>0
+                    if tree.cand_rpcb_st_2>0:
+                        print "rpcb st2", tree.cand_rpcb_st_2>0
+                    if tree.cand_rpcb_st_3>0:                        
+                        print "rpcb st3", tree.cand_rpcb_st_3>0
+                    if tree.cand_rpcb_st_4>0:
+                        print "rpcb st4", tree.cand_rpcb_st_4>0
+                    if tree.cand_gem_st_1>0:
+                        print "gem st1", tree.cand_gem_st_1>0
+                    if tree.cand_gem_st_2>0:
+                        print "gem st2", tree.cand_gem_st_2>0
+                    """
                 elif case_bad_muon_cand_pt_low:
                     loss_pt = loss_pt + 1.
+                if not case_bad_muon_no_3_stubs and case_bad_muon_cand_pt_low:
+                    offset.Fill(abs(tree.sim_eta), (tree.sim_pt-tree.recoChargedCandidate_pt)/tree.sim_pt)
                     
+                    """
+                    print "reco_pt", tree.recoChargedCandidate_pt
+                    print "reco_eta", tree.recoChargedCandidate_eta
+                    print "sim_eta", tree.sim_eta
+                    print "sim_pt", tree.sim_pt
+                    print "(sim_pt-reco_pt)/sim_pt", (tree.sim_pt-tree.recoChargedCandidate_pt)/tree.sim_pt
+                    """
     print "------------------------------"
     print "Denominator:", denom
     print "Numerator:", num
@@ -182,11 +231,34 @@ def special_recoTrackEfficiency(p, min_dxy, max_dxy, sim_pt_cut, min_l1_pt, reco
     print "\tmissing cand:", loss_missing, "% loss", loss_missing/denom*100
     print "\tpt too low:", loss_pt, "% loss", loss_pt/denom*100
     print "\ttoo few segments/rechits", loss_3seg, "% loss", loss_3seg/denom*100
+    print "------------------------------"
+
+    c = TCanvas("c","c",800,600)
+    c.cd()
+    offset.Draw("COLZ")
+    offset.GetYaxis().SetTitle("(p_{T}^{SIM}-p_{T}^{RECO})/p_{T}^{SIM}")
+    offset.GetXaxis().SetTitle("|#eta|")
+    l = TLine(0, 1./6, 2.5, 1./6)
+    l.SetLineColor(kRed)
+    l.Draw("same")
+    c.SaveAs("test.png")
+
+    c = TCanvas("c","c",800,600)
+    c.cd()
+    offset_ProfX = offset.ProfileX()
+    offset_ProfX.GetYaxis().SetTitle("(p_{T}^{SIM}-p_{T}^{RECO})/p_{T}^{SIM}")
+    offset_ProfX.GetXaxis().SetTitle("|#eta|")
+    offset_ProfX.Draw("s")
+    l = TLine(0, 1./6, 2.5, 1./6)
+    l.SetLineColor(kRed)
+    l.Draw("same")
+    c.SaveAs("test2.png")
 
     #makeEtaEffPlot(p, , "dummy", "")
     h = TEfficiency(num_eta, denom_eta)
     h = clearEmptyBinsEff(h)
     SetOwnership(h, False)
     return h
-            
+
+
 

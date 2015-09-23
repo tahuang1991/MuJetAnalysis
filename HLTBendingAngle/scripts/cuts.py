@@ -25,10 +25,6 @@ def cand_seg_st(n):
     return OR(cand_dt_st(n), cand_csc_st(n))
 
 #_______________________________________________________________________________
-def cand_rpcgem_st(n):
-    return OR(cand_rpcf_st(n), cand_rpcb_st(n), cand_gem_st(n))
-
-#_______________________________________________________________________________
 def cand_rpcgem_e_st(n):
     return OR(cand_rpcf_st(n), cand_gem_st(n))
 
@@ -168,7 +164,11 @@ def cand_3_st_2_segments_1_rechit_overlap():
         AND(cand_rpcb_st(1), cand_csc_st(1), cand_csc_st(4)), 
         AND(cand_rpcb_st(1), cand_csc_st(2), cand_csc_st(3)), 
         AND(cand_rpcb_st(1), cand_csc_st(2), cand_csc_st(4)), 
-        AND(cand_rpcb_st(1), cand_csc_st(3), cand_csc_st(4)) )
+        AND(cand_rpcb_st(1), cand_csc_st(3), cand_csc_st(4)),
+
+        AND(cand_dt_st(2), cand_csc_st(1), cand_rpcf_st(2)), 
+        AND(cand_dt_st(2), cand_csc_st(2), cand_rpcf_st(1)), 
+        AND(cand_dt_st(2), cand_csc_st(1), cand_rpcb_st(3)) )
         
 #_______________________________________________________________________________
 def cand_3_st_2_segments_1_rechit_endcap():
@@ -187,14 +187,13 @@ def cand_3_st_2_segments_1_rechit_endcap():
         
         AND(cand_csc_st(2), cand_csc_st(3), cand_rpcgem_e_st(1)),
         AND(cand_csc_st(2), cand_csc_st(4), cand_rpcgem_e_st(1)),
-        AND(cand_csc_st(3), cand_csc_st(4), cand_rpcgem_e_st(1)) )
+        AND(cand_csc_st(3), cand_csc_st(4), cand_rpcgem_e_st(1)),
+        
+        )
         
 #_______________________________________________________________________________
-def cand_3_st_2_segments_1_rechit_gem_endcap():
+def cand_3_st_2_segments_1_rechit_GE11_endcap():
     return OR(
-        AND(cand_csc_st(1), cand_csc_st(3), cand_gem_st(2)),
-        AND(cand_csc_st(1), cand_csc_st(4), cand_gem_st(2)),
-        AND(cand_csc_st(3), cand_csc_st(4), cand_gem_st(2)),        
         AND(cand_csc_st(2), cand_csc_st(3), cand_gem_st(1)),
         AND(cand_csc_st(3), cand_csc_st(4), cand_gem_st(1)),
         AND(cand_csc_st(2), cand_csc_st(4), cand_gem_st(1)) )
@@ -207,7 +206,27 @@ def cand_3_st_2_segments_1_rechit_GE21_endcap():
         AND(cand_csc_st(3), cand_csc_st(4), cand_gem_st(2)) )
 
 #_______________________________________________________________________________
-def cand_3_st_2_segments_1_rechit_GE21_nocscst2_endcap():
+def cand_3_st_2_segments_1_rechit_gem_endcap():
+    return OR(
+        cand_3_st_2_segments_1_rechit_GE11_endcap(),
+        cand_3_st_2_segments_1_rechit_GE21_endcap())
+
+#_______________________________________________________________________________
+def cand_3_st_2_segments_1_rechit_GE11_no_GE21_endcap():
+    return OR(
+        AND(cand_csc_st(2), cand_csc_st(3), cand_gem_st(1), NOT(cand_gem_st(2))),
+        AND(cand_csc_st(3), cand_csc_st(4), cand_gem_st(1), NOT(cand_gem_st(2))),
+        AND(cand_csc_st(2), cand_csc_st(4), cand_gem_st(1), NOT(cand_gem_st(2))) )
+
+#_______________________________________________________________________________
+def cand_3_st_2_segments_1_rechit_GE21_no_GE11_endcap():
+    return OR(
+        AND(cand_csc_st(1), cand_csc_st(3), cand_gem_st(2), NOT(cand_gem_st(1))),
+        AND(cand_csc_st(1), cand_csc_st(4), cand_gem_st(2), NOT(cand_gem_st(1))),
+        AND(cand_csc_st(3), cand_csc_st(4), cand_gem_st(2), NOT(cand_gem_st(1))) )
+
+#_______________________________________________________________________________
+def cand_3_st_2_segments_1_rechit_GE21_no_ME21_endcap():
     return OR(
         AND(cand_csc_st(1), cand_csc_st(3), cand_gem_st(2), NOT(cand_csc_st(2))),
         AND(cand_csc_st(1), cand_csc_st(4), cand_gem_st(2), NOT(cand_csc_st(2))),
@@ -407,6 +426,20 @@ def cand_3_st_tree(tree):
         cand_3_st_tree_2_segments_1_rechit_overlap(tree) )
 
 #_______________________________________________________________________________
+def cand_4_st():
+    """
+    return OR(
+        AND(cand_csc_st(1), cand_csc_st(2), cand_csc_st(3), cand_csc_st(4), 
+            cand_rpc_st(1), cand_rpc_st(1), cand_rpc_st(1), cand_rpc_st(1),
+            cand_gem_st(1), cand_rpc_st(1), 
+            sim_eta(1.6, 2.4))
+        AND(cand_csc_st(1), cand_csc_st(2), cand_csc_st(2), cand_csc_st(2), sim_eta(0, 2.4))
+        
+        )
+    """
+
+
+#_______________________________________________________________________________
 def cand_3_st_tree_3_segments_barrel_int(tree):
     return ( 
         (tree.cand_dt_st_1>0 and tree.cand_dt_st_2>0 and tree.cand_dt_st_3>0) or
@@ -507,11 +540,32 @@ def cand_3_st_tree_2_segments_1_rechit_gem_endcap_int(tree):
         (tree.cand_csc_st_2>0 and tree.cand_csc_st_4>0 and tree.cand_gem_st_1>0) )
 
 #_______________________________________________________________________________
+def cand_3_st_tree_2_segments_1_rechit_GE11_endcap_int(tree):
+    return (
+        (tree.cand_csc_st_2>0 and tree.cand_csc_st_3>0 and tree.cand_gem_st_1>0) or
+        (tree.cand_csc_st_2>0 and tree.cand_csc_st_4>0 and tree.cand_gem_st_1>0) or
+        (tree.cand_csc_st_3>0 and tree.cand_csc_st_4>0 and tree.cand_gem_st_1>0) )
+
+#_______________________________________________________________________________
+def cand_3_st_tree_2_segments_1_rechit_GE11_noGE21_endcap_int(tree):
+    return (
+        (tree.cand_csc_st_2>0 and tree.cand_csc_st_3>0 and tree.cand_gem_st_1>0 and tree.cand_gem_st_2<1) or
+        (tree.cand_csc_st_2>0 and tree.cand_csc_st_4>0 and tree.cand_gem_st_1>0 and tree.cand_gem_st_2<1) or
+        (tree.cand_csc_st_3>0 and tree.cand_csc_st_4>0 and tree.cand_gem_st_1>0 and tree.cand_gem_st_2<1) )
+
+#_______________________________________________________________________________
 def cand_3_st_tree_2_segments_1_rechit_GE21_endcap_int(tree):
     return (
         (tree.cand_csc_st_1>0 and tree.cand_csc_st_3>0 and tree.cand_gem_st_2>0) or
         (tree.cand_csc_st_1>0 and tree.cand_csc_st_4>0 and tree.cand_gem_st_2>0) or
         (tree.cand_csc_st_3>0 and tree.cand_csc_st_4>0 and tree.cand_gem_st_2>0) )
+
+#_______________________________________________________________________________
+def cand_3_st_tree_2_segments_1_rechit_GE21_no_GE11_endcap_int(tree):
+    return (
+        (tree.cand_csc_st_1>0 and tree.cand_csc_st_3>0 and tree.cand_gem_st_2>0 and tree.cand_gem_st_1<0) or
+        (tree.cand_csc_st_1>0 and tree.cand_csc_st_4>0 and tree.cand_gem_st_2>0 and tree.cand_gem_st_1<0) or
+        (tree.cand_csc_st_3>0 and tree.cand_csc_st_4>0 and tree.cand_gem_st_2>0 and tree.cand_gem_st_1<0) )
 
 #_______________________________________________________________________________
 def cand_3_st_tree_2_segments_1_rechit_GE21_nocscst2_endcap_int(tree):

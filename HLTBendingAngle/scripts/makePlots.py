@@ -14,7 +14,7 @@ from inputFiles import *
 
 inputDir = "/afs/cern.ch/user/d/dildick/work/GEM/forJose/DisplacedMuHLTStudyPtAssignment/CMSSW_7_4_4/src/"
 inputDir = "/uscms_data/d3/dildick/work/MuonPhaseIIScopeDoc/CMSSW_6_2_0_SLHC26_patch3/src/"
-preOut = "/uscms_data/d3/dildick/work/MuonPhaseIIScopeDoc/CMSSW_6_2_0_SLHC26_patch3/src/OutputDirectoryForScopeDoc_20150910/"
+preOut = "/uscms_data/d3/dildick/work/MuonPhaseIIScopeDoc/CMSSW_6_2_0_SLHC26_patch3/src/OutputDirectoryForScopeDoc_20150922/"
 ext = ".png"
 pu=140
 
@@ -58,6 +58,11 @@ efficiencies_2seg1rh_ge21_endcap = []
 efficiencies_2seg1rh_ge21_noCSCst2_endcap = []
 
 scenarios = ["Full scope", "Full scope + CSC/RPC aging", "235MCHF", "235MCHF + CSC/RPC aging", "200MCHF", "200MCHF + CSC/RPC/DT aging"]
+patterns = ["3 stations", "3seg", "2seg+1rh", "2seg+gem", "2seg+GE21", "2seg+GE21, no ME2/1"]
+patterns = ["3 stations", "3seg", "2seg+1rh", "2seg+GE11", "2seg+GE11, no GE21", "2seg+GE21"]
+patterns = ["3 stations", "2seg+1rh", "2seg+gem", "2seg+GE11", "2seg+GE11, no GE21", "2seg+GE21, no GE11"]
+patterns = ["3 stations", "2seg+1rh", "2seg+gem", "2seg+GE11, no GE21", "2seg+GE21", "2seg+GE21, no ME21"]
+
 my_colors = [kBlue, kBlack, kOrange+1, kGreen+1, kMagenta+1, kRed]
 my_markers = [2,5,20,21,22,23]
 
@@ -69,10 +74,10 @@ for sc in scenarios:
       efficiencies_2seg1rh_ge21_endcap.append([])
       efficiencies_2seg1rh_ge21_noCSCst2_endcap.append([])
 
-pts = [0,0,5,10,15]
-pts = [0]
+pts = [0,0,5,10,15, 20]
+#pts = [10]
 dxy_min = 0
-dxy_max = 10
+dxy_max = 5
 
 ## loop on scenarios
 for i in range(0,1):
@@ -104,30 +109,50 @@ for i in range(0,1):
       #recoHits(plotter)
       #genKinematics(plotter)
       #trackKinematics(plotter)
-      if True:
+      L1TrackEfficiency(plotter, 0, 5, 0, 0)
+      L1TrackEfficiency(plotter, 0, 5, 0, 0)
+      L1TrackEfficiency(plotter, 0, 5, 5.5, 5)
+      L1TrackEfficiency(plotter, 0, 5, 11, 10)
+      L1TrackEfficiency(plotter, 0, 5, 16.5, 15)
+
+      L1TrackEfficiency(plotter, 0, 0.1, 0, 0)
+      L1TrackEfficiency(plotter, 0, 0.1, 0, 0)
+      L1TrackEfficiency(plotter, 0, 0.1, 5.5, 5)
+      L1TrackEfficiency(plotter, 0, 0.1, 11, 10)
+      L1TrackEfficiency(plotter, 0, 0.1, 16.5, 15)
+
+      if False:
             for j in range(0,len(pts)):
                   reco_pt = pts[j]
                   sim_pt = reco_pt*1.2
                   if reco_pt is 0:
                         sim_pt = 7
                   print "sim_pt, reco_pt", sim_pt, reco_pt
-                  efficiencies_3st[i].append(recoTrackEfficiency_2(plotter, dxy_min, dxy_max, sim_pt, 0, reco_pt))
-                  """
-                  efficiencies_3seg[i].append(recoTrackEfficiency_2(plotter, dxy_min, dxy_max, sim_pt, 0, reco_pt, cand_3_st_3_segments()))
-                  efficiencies_2seg1rh[i].append(recoTrackEfficiency_2(plotter, dxy_min, dxy_max, sim_pt, 0, reco_pt, cand_3_st_2_segments_1_rechit()))
-                  """
-#                  efficiencies_2seg1rh_gem_endcap[i].append()
-#                  efficiencies_2seg1rh_ge21_endcap[i].append()
-#                  efficiencies_2seg1rh_ge21_noCSCst2_endcap[i].append()
+                  efficiencies_3st[i].append(recoTrackEfficiency_3(plotter, dxy_min, dxy_max, sim_pt, 0, reco_pt))
+                  efficiencies_3seg[i].append(recoTrackEfficiency_3(plotter, dxy_min, dxy_max, sim_pt, 0, reco_pt, cand_3_st_2_segments_1_rechit()))
+                  efficiencies_2seg1rh[i].append(recoTrackEfficiency_3(plotter, dxy_min, dxy_max, sim_pt, 0, reco_pt, cand_3_st_2_segments_1_rechit_gem_endcap()))
+                  efficiencies_2seg1rh_gem_endcap[i].append(recoTrackEfficiency_3(plotter, dxy_min, dxy_max, sim_pt, 0, reco_pt, cand_3_st_2_segments_1_rechit_GE11_no_GE21_endcap()))
+                  efficiencies_2seg1rh_ge21_endcap[i].append(recoTrackEfficiency_3(plotter, dxy_min, dxy_max, sim_pt, 0, reco_pt, cand_3_st_2_segments_1_rechit_GE21_endcap()))
+                  efficiencies_2seg1rh_ge21_noCSCst2_endcap[i].append(recoTrackEfficiency_3(plotter, dxy_min, dxy_max, sim_pt, 0, reco_pt, cand_3_st_2_segments_1_rechit_GE21_no_ME21_endcap()))
 
 
-                  special_recoTrackEfficiency(plotter, dxy_min, dxy_max, sim_pt, 0, reco_pt)
+                  #special_recoTrackEfficiency(plotter, dxy_min, dxy_max, sim_pt, 0, reco_pt)
       #recoTrackEfficiency(plotter)
       #l1ExtraTrackEfficiency(plotter)
-      #trackKinematics(plotter)
+      trackKinematics(plotter)
       #simKinematics(plotter)
       #pTCorrelationPlots(plotter)
    
+all_efficiencies = []
+all_efficiencies.append(efficiencies_3st)
+all_efficiencies.append(efficiencies_3seg)
+all_efficiencies.append(efficiencies_2seg1rh)
+all_efficiencies.append(efficiencies_2seg1rh_gem_endcap)
+all_efficiencies.append(efficiencies_2seg1rh_ge21_endcap)
+all_efficiencies.append(efficiencies_2seg1rh_ge21_noCSCst2_endcap)
+
+print all_efficiencies
+
 if False:
       for i in range(0,len(pts)):
             reco_pt = pts[i]
@@ -169,16 +194,17 @@ if False:
             leg.SetTextSize(0.04)
 
             for j in range(0,6):
-                  if j is 2 or j is 4:
-                      continue
-                  h = efficiencies_3seg[j][i]
+                  #if j is 2 or j is 4:
+                  #      continue
+                  h = all_efficiencies[j][1][i]
                   h.SetMarkerColor(my_colors[j])
                   h.SetLineColor(my_colors[j])
                   h.SetLineWidth(2)
                   h.SetMarkerStyle(my_markers[j])
                   h.SetMarkerSize(0.5)
                   h.Draw("same")
-                  leg.AddEntry(h,scenarios[j],"lep")
+                  #leg.AddEntry(h,scenarios[j],"lep")
+                  leg.AddEntry(h,patterns[j],"lep")
 
             leg.Draw("same")
             # tex55 = drawLabel("#font[41]{c#tau(Z_{D}) = 1000 mm, m(Z_{D}) = 20 GeV}",0.45,0.55,0.05)
@@ -194,7 +220,7 @@ if False:
             if reco_pt is 0:
                   sim_pt = 7
             tex554 = drawLabel("#font[41]{p_{T}^{SIM} > %d GeV}"%(sim_pt), 0.7,0.21,0.04)
-            c.SaveAs("%seff_sim_eta_1seg_pt%d_dxy%dto%d_L1Extra_fid_recoCand_pt%d_3seg_combi_DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU%d_v1%s" %(preOut, sim_pt, dxy_min, dxy_max, reco_pt, pu, ext))
+            c.SaveAs("%seff_sim_eta_1seg_pt%d_dxy%dto%d_L1Extra_fid_recoCand_pt%d_fullScopeAging_combi_DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU%d_v1%s" %(preOut, sim_pt, dxy_min, dxy_max, reco_pt, pu, ext))
 
 
 

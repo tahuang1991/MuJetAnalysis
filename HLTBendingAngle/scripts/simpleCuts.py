@@ -1,4 +1,5 @@
 from ROOT import *
+from logic import *
 
 #_______________________________________________________________________________
 def nocut():
@@ -178,5 +179,20 @@ def has_track(pt=0):
     return AND(TCut("has_recoTrack>=1"), TCut("recoTrack_pt_outer>%f"%(pt)))
 
 #_______________________________________________________________________________
-def has_cand(pt=0):
-    return AND(TCut("has_recoChargedCandidate>=1"), TCut("recoChargedCandidate_pt>%f"%(pt)))
+def has_cand(pt_min=0, pt_max=9999):
+    return AND(TCut("has_recoChargedCandidate>=1"), 
+               TCut("recoChargedCandidate_pt>%f"%(pt_min)), 
+               TCut("recoChargedCandidate_pt<%f"%(pt_max)))
+
+#_______________________________________________________________________________
+def has_cand2():
+    return TCut("has_recoChargedCandidate>=1")
+
+#_______________________________________________________________________________
+def cand_pt(pt_min=0):
+    return TCut("recoChargedCandidate_pt>%f"%(pt_min))
+                
+#_______________________________________________________________________________
+def has_cand_too_low():
+    return AND(TCut("has_recoChargedCandidate>=1"), 
+               TCut("recoChargedCandidate_pt<0.8*sim_pt"))

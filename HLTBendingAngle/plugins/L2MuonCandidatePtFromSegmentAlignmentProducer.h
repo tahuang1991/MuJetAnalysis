@@ -9,16 +9,16 @@
    Original Author:  "Sven Dildick", "Jose Dimas Valle"
 */
 
-#include "FWCore/Framework/interface/global/EDProducer.h"
+#include "FWCore/Framework/interface/EDProducer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/RecoCandidate/interface/RecoChargedCandidate.h"
 #include "DataFormats/RecoCandidate/interface/RecoChargedCandidateFwd.h"
 
 namespace edm {class ParameterSet; class Event; class EventSetup;}
 
-class L2MuonCandidatePtFromSegmentAlignmentProducer : public edm::global::EDProducer<> {
-
-public:
+class L2MuonCandidatePtFromSegmentAlignmentProducer : public edm::EDProducer 
+{
+ public:
   /// constructor with config
   L2MuonCandidatePtFromSegmentAlignmentProducer(const edm::ParameterSet&);
   
@@ -26,13 +26,12 @@ public:
   virtual ~L2MuonCandidatePtFromSegmentAlignmentProducer(); 
   
   /// produce candidates
-  virtual void produce(edm::StreamID, edm::Event&, const edm::EventSetup&) const override;
-
-private:
+  virtual void produce(edm::Event&, const edm::EventSetup&) const;
+  
+ private:
   // L2 Collection Label
   edm::InputTag theL2CollectionLabel_; 
   edm::EDGetTokenT<reco::RecoChargedCandidateCollection> trackToken_;
-
 };
 
 #endif

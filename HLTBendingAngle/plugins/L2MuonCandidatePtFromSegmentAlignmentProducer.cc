@@ -3,6 +3,7 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DataFormats/Common/interface/Handle.h"
+#include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 #include "MuJetAnalysis/HLTBendingAngle/plugins/L2MuonCandidatePtFromSegmentAlignmentProducer.h"
@@ -15,6 +16,10 @@
 
 #include "DataFormats/DTRecHit/interface/DTRecSegment4DCollection.h"
 #include "DataFormats/CSCRecHit/interface/CSCSegmentCollection.h"
+
+#include "Geometry/Records/interface/MuonGeometryRecord.h"
+#include "Geometry/CSCGeometry/interface/CSCGeometry.h"
+#include "Geometry/DTGeometry/interface/DTGeometry.h"
 
 #include <string>
 
@@ -35,7 +40,8 @@ is_csc(unsigned int detId)
 }
 
 /// constructor with config
-L2MuonCandidatePtFromSegmentAlignmentProducer::L2MuonCandidatePtFromSegmentAlignmentProducer(const ParameterSet& parameterSet){
+L2MuonCandidatePtFromSegmentAlignmentProducer::L2MuonCandidatePtFromSegmentAlignmentProducer(const ParameterSet& parameterSet)
+{
   LogTrace("Muon|RecoMuon|L2MuonCandidatePtFromSegmentAlignmentProducer")<<" constructor called";
 
   // StandAlone Collection Label
@@ -45,12 +51,32 @@ L2MuonCandidatePtFromSegmentAlignmentProducer::L2MuonCandidatePtFromSegmentAlign
 }
   
 /// destructor
-L2MuonCandidatePtFromSegmentAlignmentProducer::~L2MuonCandidatePtFromSegmentAlignmentProducer(){
+L2MuonCandidatePtFromSegmentAlignmentProducer::~L2MuonCandidatePtFromSegmentAlignmentProducer()
+{
   LogTrace("Muon|RecoMuon|L2MuonCandidatePtFromSegmentAlignmentProducer")<<" L2MuonCandidatePtFromSegmentAlignmentProducer destructor called";
 }
 
+void L2MuonCandidatePtFromSegmentAlignmentProducer::beginRun(edm::Run &run, const edm::EventSetup &eventSetup)
+{
+  // get the geometries
+  try {
+    eventSetup.get<MuonGeometryRecord>().get(csc_geom);
+    csc_geometry_ = &*csc_geom;
+  } catch (edm::eventsetup::NoProxyException<CSCGeometry>& e) {
+    LogDebug("L2MuonCandidatePtFromSegmentAlignmentProducer") << "+++ Info: CSC geometry is unavailable. +++\n";
+  }
+
+  try {
+    eventSetup.get<MuonGeometryRecord>().get(dt_geom);
+    dt_geometry_ = &*dt_geom;
+  } catch (edm::eventsetup::NoProxyException<DTGeometry>& e) {
+    LogDebug("L2MuonCandidatePtFromSegmentAlignmentProducer") << "+++ Info: DT geometry is unavailable. +++\n";
+  }
+}  
+
 /// reconstruct muons
-void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(Event& event, const EventSetup& eventSetup) const {
+void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup) const 
+{
   const string metname = "Muon|RecoMuon|L2MuonCandidatePtFromSegmentAlignmentProducer";
   
   // Take the SA container
@@ -90,22 +116,153 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(Event& event, const 
                 << ", phi_outer: "<<recoTrackExtra.outerPosition().phi()
                 <<std::endl;  
     }
+
+
+    // double deltaPhi_gp_ME1_ME2; 
+    // double deltaPhi_gp_ME2_ME3;
+
+    // double deltaPhi_gp_ME1_ME2_oo; 
+    // double deltaPhi_gp_ME2_ME3_oo;
+
+
     // load the segments
     for(auto rh = recoTrackExtra.recHitsBegin(); rh != recoTrackExtra.recHitsEnd(); rh++) {
-    
+  
+      double phi_gp_MB1; 
+      double phi_gp_MB2;
+      double phi_gp_MB3;
+      
+      double x_gp_MB1; 
+      double x_gp_MB2;
+      double x_gp_MB3;
+      
+      double y_gp_MB1; 
+      double y_gp_MB2;
+      double y_gp_MB3;
+
+      double z_gp_MB1; 
+      double z_gp_MB2;
+      double z_gp_MB3;
+
+      
+      double phi_gp_ME1; 
+      double phi_gp_ME2;
+      double phi_gp_ME3;
+      
+      double x_gp_ME1; 
+      double x_gp_ME2;
+      double x_gp_ME3;
+      
+      double y_gp_ME1; 
+      double y_gp_ME2;
+      double y_gp_ME3;
+
+      double z_gp_ME1; 
+      double z_gp_ME2;
+      double z_gp_ME3;
+
       auto id((**rh).rawId());
       if (is_dt(id)) {
         const DTRecSegment4D *seg = dynamic_cast<const DTRecSegment4D*>(rh->get());
+        DTChamberId detId(id);
+        
         if (verbose) {
           std::cout << "\t\tDT  :: id :: " << DTChamberId(id) << std::endl;
           std::cout << "\t\t    :: segment :: " << *seg << std::endl;
         }
+
+        const LocalPoint lp_seg(seg->localPosition());
+        const GlobalPoint gp_seg(dt_geom->idToDet((**rh).rawId())->surface().toGlobal(lp_seg));
+        
+        if (detId.station() == 1) {
+          x_gp_MB1 = gp_seg.x(); 
+          y_gp_MB1 = gp_seg.y(); 
+          z_gp_MB1 = gp_seg.z(); 
+          phi_gp_MB1 = gp_seg.phi(); 
+
+          if (verbose) {
+            std::cout << "phi_gp_MB1 " << phi_gp_MB1 << std::endl;
+            std::cout << "x_gp_MB1 " << x_gp_MB1 << std::endl;
+            std::cout << "y_gp_MB1 " << y_gp_MB1 << std::endl;
+            std::cout << "z_gp_MB1 " << z_gp_MB1 << std::endl;
+          }
+        }
+        else if (detId.station() == 2) {
+          x_gp_MB2 = gp_seg.x(); 
+          y_gp_MB2 = gp_seg.y(); 
+          z_gp_MB2 = gp_seg.z(); 
+          phi_gp_MB2 = gp_seg.phi(); 
+
+          if (verbose) {
+            std::cout << "phi_gp_MB2 " << phi_gp_MB2 << std::endl;
+            std::cout << "x_gp_MB2 " << x_gp_MB2 << std::endl;
+            std::cout << "y_gp_MB2 " << y_gp_MB2 << std::endl;
+            std::cout << "z_gp_MB2 " << z_gp_MB2 << std::endl;
+          }
+        }
+        else if (detId.station() == 3) {
+          x_gp_MB3 = gp_seg.x(); 
+          y_gp_MB3 = gp_seg.y(); 
+          z_gp_MB3 = gp_seg.z(); 
+          phi_gp_MB3 = gp_seg.phi(); 
+        }
+        
+        if (verbose) {
+          std::cout << "phi_gp_MB3 " << phi_gp_MB3 << std::endl;
+          std::cout << "x_gp_MB3 " << x_gp_MB3 << std::endl;
+          std::cout << "y_gp_MB3 " << y_gp_MB3 << std::endl;
+          std::cout << "z_gp_MB3 " << z_gp_MB3 << std::endl;
+        }
       }
       if (is_csc(id)) {
         const CSCSegment *seg = dynamic_cast<const CSCSegment*>(rh->get());
+        CSCDetId detId(id);
         if (verbose) {
           std::cout << "\t\tCSC :: id :: " << CSCDetId(id) << std::endl;
           std::cout << "\t\t    :: segment :: " << *seg << std::endl;
+        }
+        
+        const LocalPoint lp_seg(seg->localPosition());
+        const GlobalPoint gp_seg(csc_geom->idToDet((**rh).rawId())->surface().toGlobal(lp_seg));
+
+        if (detId.station() == 1) {
+          x_gp_ME1 = gp_seg.x(); 
+          y_gp_ME1 = gp_seg.y(); 
+          z_gp_ME1 = gp_seg.z(); 
+          phi_gp_ME1 = gp_seg.phi(); 
+
+          if (verbose) {
+            std::cout << "phi_gp_ME1 " << phi_gp_ME1 << std::endl;
+            std::cout << "x_gp_ME1 " << x_gp_ME1 << std::endl;
+            std::cout << "y_gp_ME1 " << y_gp_ME1 << std::endl;
+            std::cout << "z_gp_ME1 " << z_gp_ME1 << std::endl;
+          }
+        }
+        else if (detId.station() == 2) {
+          x_gp_ME2 = gp_seg.x(); 
+          y_gp_ME2 = gp_seg.y(); 
+          z_gp_ME2 = gp_seg.z(); 
+          phi_gp_ME2 = gp_seg.phi(); 
+
+          if (verbose) {
+            std::cout << "phi_gp_ME2 " << phi_gp_ME2 << std::endl;
+            std::cout << "x_gp_ME2 " << x_gp_ME2 << std::endl;
+            std::cout << "y_gp_ME2 " << y_gp_ME2 << std::endl;
+            std::cout << "z_gp_ME2 " << z_gp_ME2 << std::endl;
+          }
+        }
+        else if (detId.station() == 3) {
+          x_gp_ME3 = gp_seg.x(); 
+          y_gp_ME3 = gp_seg.y(); 
+          z_gp_ME3 = gp_seg.z(); 
+          phi_gp_ME3 = gp_seg.phi(); 
+
+          if (verbose) {
+            std::cout << "phi_gp_ME3 " << phi_gp_ME3 << std::endl;
+            std::cout << "x_gp_ME3 " << x_gp_ME3 << std::endl;
+            std::cout << "y_gp_ME3 " << y_gp_ME3 << std::endl;
+            std::cout << "z_gp_ME3 " << z_gp_ME3 << std::endl;
+          }
         }
       }
     }

@@ -5,9 +5,8 @@
 #include "DataFormats/Common/interface/Handle.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
-
-#include "MuJetAnalysis/HLTBendingAngle/plugins/L2MuonCandidatePtFromSegmentAlignmentProducer.h"
-
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
 
 #include "DataFormats/TrackReco/interface/TrackExtra.h"
 #include "DataFormats/TrackReco/interface/TrackExtraFwd.h"
@@ -20,6 +19,8 @@
 #include "Geometry/Records/interface/MuonGeometryRecord.h"
 #include "Geometry/CSCGeometry/interface/CSCGeometry.h"
 #include "Geometry/DTGeometry/interface/DTGeometry.h"
+
+#include "MuJetAnalysis/HLTBendingAngle/plugins/L2MuonCandidatePtFromSegmentAlignmentProducer.h"
 
 #include <string>
 
@@ -75,7 +76,7 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::beginRun(edm::Run &run, cons
 }  
 
 /// reconstruct muons
-void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup) const 
+void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup)
 {
   const string metname = "Muon|RecoMuon|L2MuonCandidatePtFromSegmentAlignmentProducer";
   
@@ -89,7 +90,6 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
   LogTrace(metname)<<" Creating the RecoChargedCandidate::PtFromSegmentAlignment collection";
   auto_ptr<RecoChargedCandidateCollection> candidates( new RecoChargedCandidateCollection());
 
-  // add here the pT assignment algorithm
   bool verbose = true;
   for (unsigned int i=0; i<cands.size(); i++) {
 
@@ -117,50 +117,9 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
                 <<std::endl;  
     }
 
-
-    // double deltaPhi_gp_ME1_ME2; 
-    // double deltaPhi_gp_ME2_ME3;
-
-    // double deltaPhi_gp_ME1_ME2_oo; 
-    // double deltaPhi_gp_ME2_ME3_oo;
-
-
     // load the segments
     for(auto rh = recoTrackExtra.recHitsBegin(); rh != recoTrackExtra.recHitsEnd(); rh++) {
   
-      double phi_gp_MB1; 
-      double phi_gp_MB2;
-      double phi_gp_MB3;
-      
-      double x_gp_MB1; 
-      double x_gp_MB2;
-      double x_gp_MB3;
-      
-      double y_gp_MB1; 
-      double y_gp_MB2;
-      double y_gp_MB3;
-
-      double z_gp_MB1; 
-      double z_gp_MB2;
-      double z_gp_MB3;
-
-      
-      double phi_gp_ME1; 
-      double phi_gp_ME2;
-      double phi_gp_ME3;
-      
-      double x_gp_ME1; 
-      double x_gp_ME2;
-      double x_gp_ME3;
-      
-      double y_gp_ME1; 
-      double y_gp_ME2;
-      double y_gp_ME3;
-
-      double z_gp_ME1; 
-      double z_gp_ME2;
-      double z_gp_ME3;
-
       auto id((**rh).rawId());
       if (is_dt(id)) {
         const DTRecSegment4D *seg = dynamic_cast<const DTRecSegment4D*>(rh->get());
@@ -173,45 +132,54 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
 
         const LocalPoint lp_seg(seg->localPosition());
         const GlobalPoint gp_seg(dt_geom->idToDet((**rh).rawId())->surface().toGlobal(lp_seg));
+
+        const LocalVector lv_seg(seg->localDirection());
+        const GlobalVector gv_seg(dt_geom->idToDet((**rh).rawId())->surface().toGlobal(lv_seg));
         
         if (detId.station() == 1) {
-          x_gp_MB1 = gp_seg.x(); 
-          y_gp_MB1 = gp_seg.y(); 
-          z_gp_MB1 = gp_seg.z(); 
-          phi_gp_MB1 = gp_seg.phi(); 
-
+          my_track_.x_gp_MB1 = gp_seg.x(); 
+          my_track_.y_gp_MB1 = gp_seg.y(); 
+          my_track_.z_gp_MB1 = gp_seg.z(); 
+          my_track_.phi_gp_MB1 = gp_seg.phi(); 
+          my_track_.phi_gv_MB1 = gv_seg.phi(); 
+          
           if (verbose) {
-            std::cout << "phi_gp_MB1 " << phi_gp_MB1 << std::endl;
-            std::cout << "x_gp_MB1 " << x_gp_MB1 << std::endl;
-            std::cout << "y_gp_MB1 " << y_gp_MB1 << std::endl;
-            std::cout << "z_gp_MB1 " << z_gp_MB1 << std::endl;
+            std::cout << "phi_gp_MB1 " << my_track_.phi_gp_MB1 << std::endl;
+            std::cout << "phi_gv_MB1 " << my_track_.phi_gv_MB1 << std::endl;
+            std::cout << "x_gp_MB1 " << my_track_.x_gp_MB1 << std::endl;
+            std::cout << "y_gp_MB1 " << my_track_.y_gp_MB1 << std::endl;
+            std::cout << "z_gp_MB1 " << my_track_.z_gp_MB1 << std::endl;
           }
         }
         else if (detId.station() == 2) {
-          x_gp_MB2 = gp_seg.x(); 
-          y_gp_MB2 = gp_seg.y(); 
-          z_gp_MB2 = gp_seg.z(); 
-          phi_gp_MB2 = gp_seg.phi(); 
+          my_track_.x_gp_MB2 = gp_seg.x(); 
+          my_track_.y_gp_MB2 = gp_seg.y(); 
+          my_track_.z_gp_MB2 = gp_seg.z(); 
+          my_track_.phi_gp_MB2 = gp_seg.phi(); 
+          my_track_.phi_gv_MB2 = gv_seg.phi(); 
 
           if (verbose) {
-            std::cout << "phi_gp_MB2 " << phi_gp_MB2 << std::endl;
-            std::cout << "x_gp_MB2 " << x_gp_MB2 << std::endl;
-            std::cout << "y_gp_MB2 " << y_gp_MB2 << std::endl;
-            std::cout << "z_gp_MB2 " << z_gp_MB2 << std::endl;
+            std::cout << "phi_gp_MB2 " << my_track_.phi_gp_MB2 << std::endl;
+            std::cout << "phi_gv_MB2 " << my_track_.phi_gv_MB2 << std::endl;
+            std::cout << "x_gp_MB2 " << my_track_.x_gp_MB2 << std::endl;
+            std::cout << "y_gp_MB2 " << my_track_.y_gp_MB2 << std::endl;
+            std::cout << "z_gp_MB2 " << my_track_.z_gp_MB2 << std::endl;
           }
         }
         else if (detId.station() == 3) {
-          x_gp_MB3 = gp_seg.x(); 
-          y_gp_MB3 = gp_seg.y(); 
-          z_gp_MB3 = gp_seg.z(); 
-          phi_gp_MB3 = gp_seg.phi(); 
-        }
-        
-        if (verbose) {
-          std::cout << "phi_gp_MB3 " << phi_gp_MB3 << std::endl;
-          std::cout << "x_gp_MB3 " << x_gp_MB3 << std::endl;
-          std::cout << "y_gp_MB3 " << y_gp_MB3 << std::endl;
-          std::cout << "z_gp_MB3 " << z_gp_MB3 << std::endl;
+          my_track_.x_gp_MB3 = gp_seg.x(); 
+          my_track_.y_gp_MB3 = gp_seg.y(); 
+          my_track_.z_gp_MB3 = gp_seg.z(); 
+          my_track_.phi_gp_MB3 = gp_seg.phi(); 
+          my_track_.phi_gv_MB3 = gv_seg.phi(); 
+
+          if (verbose) {
+            std::cout << "phi_gp_MB3 " << my_track_.phi_gp_MB3 << std::endl;
+            std::cout << "phi_gv_MB3 " << my_track_.phi_gv_MB3 << std::endl;
+            std::cout << "x_gp_MB3 " << my_track_.x_gp_MB3 << std::endl;
+            std::cout << "y_gp_MB3 " << my_track_.y_gp_MB3 << std::endl;
+            std::cout << "z_gp_MB3 " << my_track_.z_gp_MB3 << std::endl;
+          }
         }
       }
       if (is_csc(id)) {
@@ -224,48 +192,76 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
         
         const LocalPoint lp_seg(seg->localPosition());
         const GlobalPoint gp_seg(csc_geom->idToDet((**rh).rawId())->surface().toGlobal(lp_seg));
-
+        
+        const LocalVector lv_seg(seg->localDirection());
+        const GlobalVector gv_seg(csc_geom->idToDet((**rh).rawId())->surface().toGlobal(lv_seg));
+        
         if (detId.station() == 1) {
-          x_gp_ME1 = gp_seg.x(); 
-          y_gp_ME1 = gp_seg.y(); 
-          z_gp_ME1 = gp_seg.z(); 
-          phi_gp_ME1 = gp_seg.phi(); 
-
+          my_track_.x_gp_ME1 = gp_seg.x(); 
+          my_track_.y_gp_ME1 = gp_seg.y(); 
+          my_track_.z_gp_ME1 = gp_seg.z(); 
+          my_track_.phi_gp_ME1 = gp_seg.phi(); 
+          my_track_.phi_gv_ME1 = gv_seg.phi(); 
+          
           if (verbose) {
-            std::cout << "phi_gp_ME1 " << phi_gp_ME1 << std::endl;
-            std::cout << "x_gp_ME1 " << x_gp_ME1 << std::endl;
-            std::cout << "y_gp_ME1 " << y_gp_ME1 << std::endl;
-            std::cout << "z_gp_ME1 " << z_gp_ME1 << std::endl;
+            std::cout << "phi_gp_ME1 " << my_track_.phi_gp_ME1 << std::endl;
+            std::cout << "phi_gv_ME1 " << my_track_.phi_gv_ME1 << std::endl;
+            std::cout << "x_gp_ME1 " << my_track_.x_gp_ME1 << std::endl;
+            std::cout << "y_gp_ME1 " << my_track_.y_gp_ME1 << std::endl;
+            std::cout << "z_gp_ME1 " << my_track_.z_gp_ME1 << std::endl;
           }
         }
         else if (detId.station() == 2) {
-          x_gp_ME2 = gp_seg.x(); 
-          y_gp_ME2 = gp_seg.y(); 
-          z_gp_ME2 = gp_seg.z(); 
-          phi_gp_ME2 = gp_seg.phi(); 
+          my_track_.x_gp_ME2 = gp_seg.x(); 
+          my_track_.y_gp_ME2 = gp_seg.y(); 
+          my_track_.z_gp_ME2 = gp_seg.z(); 
+          my_track_.phi_gp_ME2 = gp_seg.phi(); 
+          my_track_.phi_gv_ME2 = gv_seg.phi(); 
 
           if (verbose) {
-            std::cout << "phi_gp_ME2 " << phi_gp_ME2 << std::endl;
-            std::cout << "x_gp_ME2 " << x_gp_ME2 << std::endl;
-            std::cout << "y_gp_ME2 " << y_gp_ME2 << std::endl;
-            std::cout << "z_gp_ME2 " << z_gp_ME2 << std::endl;
+            std::cout << "phi_gp_ME2 " << my_track_.phi_gp_ME2 << std::endl;
+            std::cout << "phi_gv_ME2 " << my_track_.phi_gv_ME2 << std::endl;
+            std::cout << "x_gp_ME2 " << my_track_.x_gp_ME2 << std::endl;
+            std::cout << "y_gp_ME2 " << my_track_.y_gp_ME2 << std::endl;
+            std::cout << "z_gp_ME2 " << my_track_.z_gp_ME2 << std::endl;
           }
         }
         else if (detId.station() == 3) {
-          x_gp_ME3 = gp_seg.x(); 
-          y_gp_ME3 = gp_seg.y(); 
-          z_gp_ME3 = gp_seg.z(); 
-          phi_gp_ME3 = gp_seg.phi(); 
-
+          my_track_.x_gp_ME3 = gp_seg.x(); 
+          my_track_.y_gp_ME3 = gp_seg.y(); 
+          my_track_.z_gp_ME3 = gp_seg.z(); 
+          my_track_.phi_gp_ME3 = gp_seg.phi(); 
+          my_track_.phi_gv_ME3 = gv_seg.phi(); 
+          
           if (verbose) {
-            std::cout << "phi_gp_ME3 " << phi_gp_ME3 << std::endl;
-            std::cout << "x_gp_ME3 " << x_gp_ME3 << std::endl;
-            std::cout << "y_gp_ME3 " << y_gp_ME3 << std::endl;
-            std::cout << "z_gp_ME3 " << z_gp_ME3 << std::endl;
+            std::cout << "phi_gp_ME3 " << my_track_.phi_gp_ME3 << std::endl;
+            std::cout << "phi_gv_ME3 " << my_track_.phi_gv_ME3 << std::endl;
+            std::cout << "x_gp_ME3 " << my_track_.x_gp_ME3 << std::endl;
+            std::cout << "y_gp_ME3 " << my_track_.y_gp_ME3 << std::endl;
+            std::cout << "z_gp_ME3 " << my_track_.z_gp_ME3 << std::endl;
           }
         }
       }
     }
+
+    my_track_.dx_gp_MB1_MB2 = my_track_.x_gp_MB2 - my_track_.x_gp_MB1;
+    my_track_.dx_gp_MB2_MB3 = my_track_.x_gp_MB3 - my_track_.x_gp_MB2;
+    
+    my_track_.dy_gp_MB1_MB2 = my_track_.y_gp_MB2 - my_track_.y_gp_MB1;
+    my_track_.dy_gp_MB2_MB3 = my_track_.y_gp_MB3 - my_track_.y_gp_MB2;
+    
+    my_track_.dz_gp_MB1_MB2 = my_track_.z_gp_MB2 - my_track_.z_gp_MB1;
+    my_track_.dz_gp_MB2_MB3 = my_track_.z_gp_MB3 - my_track_.z_gp_MB2;
+
+
+    my_track_.dx_gp_ME1_ME2 = my_track_.x_gp_ME2 - my_track_.x_gp_ME1;
+    my_track_.dx_gp_ME2_ME3 = my_track_.x_gp_ME3 - my_track_.x_gp_ME2;
+    
+    my_track_.dy_gp_ME1_ME2 = my_track_.y_gp_ME2 - my_track_.y_gp_ME1;
+    my_track_.dy_gp_ME2_ME3 = my_track_.y_gp_ME3 - my_track_.y_gp_ME2;
+    
+    my_track_.dz_gp_ME1_ME2 = my_track_.z_gp_ME2 - my_track_.z_gp_ME1;
+    my_track_.dz_gp_ME2_ME3 = my_track_.z_gp_ME3 - my_track_.z_gp_ME2;
   }
   
      //     some stuff from the original L2MuonCandidateProducer
@@ -287,3 +283,60 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
                    <<"================================";
 }
 
+void L2MuonCandidatePtFromSegmentAlignmentProducer::bookTree()
+{
+  edm::Service<TFileService> fs;
+  track_tree_ = fs->make<TTree>("Tracks", "Tracks");
+  track_tree_->Branch("x_gp_MB1",&my_track_.x_gp_MB1);
+  track_tree_->Branch("y_gp_MB1",&my_track_.y_gp_MB1);
+  track_tree_->Branch("z_gp_MB1",&my_track_.z_gp_MB1);
+  track_tree_->Branch("x_gp_MB2",&my_track_.x_gp_MB2);
+  track_tree_->Branch("y_gp_MB2",&my_track_.y_gp_MB2);
+  track_tree_->Branch("z_gp_MB2",&my_track_.z_gp_MB2);
+  track_tree_->Branch("x_gp_MB3",&my_track_.x_gp_MB3);
+  track_tree_->Branch("y_gp_MB3",&my_track_.y_gp_MB3);
+  track_tree_->Branch("z_gp_MB3",&my_track_.z_gp_MB3);
+
+  track_tree_->Branch("x_gp_ME1",&my_track_.x_gp_ME1);
+  track_tree_->Branch("y_gp_ME1",&my_track_.y_gp_ME1);
+  track_tree_->Branch("z_gp_ME1",&my_track_.z_gp_ME1);
+  track_tree_->Branch("x_gp_ME2",&my_track_.x_gp_ME2);
+  track_tree_->Branch("y_gp_ME2",&my_track_.y_gp_ME2);
+  track_tree_->Branch("z_gp_ME2",&my_track_.z_gp_ME2);
+  track_tree_->Branch("x_gp_ME3",&my_track_.x_gp_ME3);
+  track_tree_->Branch("y_gp_ME3",&my_track_.y_gp_ME3);
+  track_tree_->Branch("z_gp_ME3",&my_track_.z_gp_ME3);
+
+  track_tree_->Branch("phi_gp_MB1",&my_track_.phi_gp_MB1);
+  track_tree_->Branch("phi_gp_MB2",&my_track_.phi_gp_MB2);
+  track_tree_->Branch("phi_gp_MB3",&my_track_.phi_gp_MB3);
+  track_tree_->Branch("phi_gv_MB1",&my_track_.phi_gv_MB1);
+  track_tree_->Branch("phi_gv_MB2",&my_track_.phi_gv_MB2);
+  track_tree_->Branch("phi_gv_MB3",&my_track_.phi_gv_MB3);
+
+  track_tree_->Branch("phi_gp_ME1",&my_track_.phi_gp_ME1);
+  track_tree_->Branch("phi_gp_ME2",&my_track_.phi_gp_ME2);
+  track_tree_->Branch("phi_gp_ME3",&my_track_.phi_gp_ME3);
+  track_tree_->Branch("phi_gv_ME1",&my_track_.phi_gv_ME1);
+  track_tree_->Branch("phi_gv_ME2",&my_track_.phi_gv_ME2);
+  track_tree_->Branch("phi_gv_ME3",&my_track_.phi_gv_ME3);
+
+  track_tree_->Branch("dx_gp_MB1_MB2",&my_track_.dx_gp_MB1_MB2);
+  track_tree_->Branch("dy_gp_MB1_MB2",&my_track_.dy_gp_MB1_MB2);
+  track_tree_->Branch("dz_gp_MB1_MB2",&my_track_.dz_gp_MB1_MB2);
+  track_tree_->Branch("dx_gp_MB2_MB3",&my_track_.dx_gp_MB2_MB3);
+  track_tree_->Branch("dy_gp_MB2_MB3",&my_track_.dy_gp_MB2_MB3);
+  track_tree_->Branch("dz_gp_MB2_MB3",&my_track_.dz_gp_MB2_MB3);
+
+  track_tree_->Branch("dx_gp_ME1_ME2",&my_track_.dx_gp_ME1_ME2);
+  track_tree_->Branch("dy_gp_ME1_ME2",&my_track_.dy_gp_ME1_ME2);
+  track_tree_->Branch("dz_gp_ME1_ME2",&my_track_.dz_gp_ME1_ME2);
+  track_tree_->Branch("dx_gp_ME2_ME3",&my_track_.dx_gp_ME2_ME3);
+  track_tree_->Branch("dy_gp_ME2_ME3",&my_track_.dy_gp_ME2_ME3);
+  track_tree_->Branch("dz_gp_ME2_ME3",&my_track_.dz_gp_ME2_ME3);
+
+  track_tree_->Branch("dphi_gp_MB1_MB2",&my_track_.dphi_gp_MB1_MB2);
+  track_tree_->Branch("dphi_gp_MB2_MB3",&my_track_.dphi_gp_MB2_ME3);
+  track_tree_->Branch("dphi_gp_ME1_ME2",&my_track_.dphi_gp_ME1_ME2);
+  track_tree_->Branch("dphi_gp_ME2_ME3",&my_track_.dphi_gp_ME2_ME3);
+}

@@ -181,6 +181,22 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
             std::cout << "z_gp_MB3 " << my_track_.z_gp_MB3 << std::endl;
           }
         }
+        else if (detId.station() == 4) {
+          // my_track_.x_gp_MB4 = gp_seg.x(); 
+          // my_track_.y_gp_MB4 = gp_seg.y(); 
+          // my_track_.z_gp_MB4 = gp_seg.z(); 
+          // my_track_.phi_gp_MB4 = gp_seg.phi(); 
+          my_track_.phi_gv_MB4 = gv_seg.phi(); 
+
+          if (verbose) {
+            // std::cout << "phi_gp_MB4 " << my_track_.phi_gp_MB4 << std::endl;
+            std::cout << "phi_gv_MB4 " << my_track_.phi_gv_MB4 << std::endl;
+            // std::cout << "x_gp_MB4 " << my_track_.x_gp_MB4 << std::endl;
+            // std::cout << "y_gp_MB4 " << my_track_.y_gp_MB4 << std::endl;
+            // std::cout << "z_gp_MB4 " << my_track_.z_gp_MB4 << std::endl;
+          }
+        }
+
       }
       if (is_csc(id)) {
         const CSCSegment *seg = dynamic_cast<const CSCSegment*>(rh->get());
@@ -242,7 +258,7 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
           }
         }
       }
-    }
+    }// end loop on segments
 
     my_track_.dx_gp_MB1_MB2 = my_track_.x_gp_MB2 - my_track_.x_gp_MB1;
     my_track_.dx_gp_MB2_MB3 = my_track_.x_gp_MB3 - my_track_.x_gp_MB2;
@@ -262,9 +278,23 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
     
     my_track_.dz_gp_ME1_ME2 = my_track_.z_gp_ME2 - my_track_.z_gp_ME1;
     my_track_.dz_gp_ME2_ME3 = my_track_.z_gp_ME3 - my_track_.z_gp_ME2;
-  }
+
+    // barrel
+    if (std::abs(recoTrackExtra.innerPosition().eta())<0.9){
+      float pt(PtFromSegmentBending(my_track_.phi_gv_MB1, my_track_.phi_gv_MB2, 
+                                    my_track_.phi_gv_MB3, my_track_.phi_gv_MB4));
+      std::cout << "pt" << pt << std::endl;
+    }
+    // endcap
+    if (std::abs(recoTrackExtra.innerPosition().eta())>1.1){
+    }
+    // overlap
+    if (std::abs(recoTrackExtra.innerPosition().eta())>0.9 and std::abs(recoTrackExtra.innerPosition().eta())<1.1){
+    }
+    // rescale the values in the innermost station (using a muon trackloader)
+    // we don't want to change the direction of the muon, only the pT
   
-     //     some stuff from the original L2MuonCandidateProducer
+    //     some stuff from the original L2MuonCandidateProducer
     //   TrackRef tkref(input_cands,i);
     //   Particle::Charge q = tkref->charge();
     //   Particle::LorentzVector p4(tkref->px(), tkref->py(), tkref->pz(), tkref->p());
@@ -275,12 +305,23 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
     //   RecoChargedCandidate cand(q, p4, vtx, pid);
     //   cand.setTrack(tkref);
     //   candidates->push_back(cand);
-    // }
+
+  } // end loop on muons
 
   event.put(candidates);
   
   LogTrace(metname)<<" Event loaded"
                    <<"================================";
+}
+
+float L2MuonCandidatePtFromSegmentAlignmentProducer::PtFromSegmentBending(float phi1, float phi2, float phi3, float phi4)
+{
+  return 0;
+}
+
+float L2MuonCandidatePtFromSegmentAlignmentProducer::PtFromSegmentPosition(float phi1, float phi2, float phi3, float phi4)
+{  
+  return 0;
 }
 
 void L2MuonCandidatePtFromSegmentAlignmentProducer::bookTree()
@@ -313,6 +354,7 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::bookTree()
   track_tree_->Branch("phi_gv_MB1",&my_track_.phi_gv_MB1);
   track_tree_->Branch("phi_gv_MB2",&my_track_.phi_gv_MB2);
   track_tree_->Branch("phi_gv_MB3",&my_track_.phi_gv_MB3);
+  track_tree_->Branch("phi_gv_MB4",&my_track_.phi_gv_MB4);
 
   track_tree_->Branch("phi_gp_ME1",&my_track_.phi_gp_ME1);
   track_tree_->Branch("phi_gp_ME2",&my_track_.phi_gp_ME2);

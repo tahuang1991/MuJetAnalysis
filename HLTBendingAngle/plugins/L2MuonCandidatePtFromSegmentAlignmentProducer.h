@@ -52,6 +52,7 @@ struct MyTrack
   double phi_gv_MB1; 
   double phi_gv_MB2;
   double phi_gv_MB3;
+  double phi_gv_MB4;
   
   double x_gp_MB1; 
   double x_gp_MB2;
@@ -89,6 +90,9 @@ struct MyTrack
   double dphi_gp_MB2_ME3;
   double dphi_gp_ME1_ME2;
   double dphi_gp_ME2_ME3;
+
+  double dY_gp_ME12_ME23;
+  double dY_gp_MB12_MB23;
 };
 
 class L2MuonCandidatePtFromSegmentAlignmentProducer : public edm::EDProducer 
@@ -103,7 +107,9 @@ class L2MuonCandidatePtFromSegmentAlignmentProducer : public edm::EDProducer
   /// produce candidates
   virtual void beginRun(edm::Run &iRun, const edm::EventSetup &iSetup);  
   virtual void produce(edm::Event&, const edm::EventSetup&);
-  
+  float PtFromSegmentBending(float, float, float, float);
+  float PtFromSegmentPosition(float, float, float, float);
+
  private:
   // L2 Collection Label
   edm::InputTag theL2CollectionLabel_; 

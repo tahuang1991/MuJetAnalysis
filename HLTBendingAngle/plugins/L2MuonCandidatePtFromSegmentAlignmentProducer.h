@@ -48,6 +48,7 @@ struct MyTrack
   double phi_gp_MB1; 
   double phi_gp_MB2;
   double phi_gp_MB3;
+  double phi_gp_MB4; 
   
   double phi_gv_MB1; 
   double phi_gv_MB2;
@@ -87,7 +88,9 @@ struct MyTrack
   double z_gp_ME3;
 
   double dphi_gp_MB1_MB2;
-  double dphi_gp_MB2_ME3;
+  double dphi_gp_MB1_MB4;
+  double dphi_gp_MB2_MB3;
+
   double dphi_gp_ME1_ME2;
   double dphi_gp_ME2_ME3;
 
@@ -124,6 +127,8 @@ class L2MuonCandidatePtFromSegmentAlignmentProducer : public edm::EDProducer
   void bookTree();
   TTree* track_tree_;
   MyTrack my_track_;
+
+  float pt_from_segment_alignment_;
 };
 
 #endif

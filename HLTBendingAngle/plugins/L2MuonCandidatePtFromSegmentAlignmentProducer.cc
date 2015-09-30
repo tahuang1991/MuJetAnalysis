@@ -186,11 +186,11 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
           // my_track_.y_gp_MB4 = gp_seg.y(); 
           // my_track_.z_gp_MB4 = gp_seg.z(); 
           // my_track_.phi_gp_MB4 = gp_seg.phi(); 
-          my_track_.phi_gv_MB4 = gv_seg.phi(); 
+          my_track_.phi_gp_MB4 = gp_seg.phi(); 
 
           if (verbose) {
             // std::cout << "phi_gp_MB4 " << my_track_.phi_gp_MB4 << std::endl;
-            std::cout << "phi_gv_MB4 " << my_track_.phi_gv_MB4 << std::endl;
+            std::cout << "phi_gp_MB4 " << my_track_.phi_gp_MB4 << std::endl;
             // std::cout << "x_gp_MB4 " << my_track_.x_gp_MB4 << std::endl;
             // std::cout << "y_gp_MB4 " << my_track_.y_gp_MB4 << std::endl;
             // std::cout << "z_gp_MB4 " << my_track_.z_gp_MB4 << std::endl;
@@ -279,11 +279,16 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
     my_track_.dz_gp_ME1_ME2 = my_track_.z_gp_ME2 - my_track_.z_gp_ME1;
     my_track_.dz_gp_ME2_ME3 = my_track_.z_gp_ME3 - my_track_.z_gp_ME2;
 
+    my_track_.dphi_gp_MB1_MB4 = my_track_.phi_gp_MB1 - my_track_.phi_gp_MB4;
+
     // barrel
     if (std::abs(recoTrackExtra.innerPosition().eta())<0.9){
       float pt(PtFromSegmentBending(my_track_.phi_gv_MB1, my_track_.phi_gv_MB2, 
                                     my_track_.phi_gv_MB3, my_track_.phi_gv_MB4));
-      std::cout << "pt" << pt << std::endl;
+      std::cout << "pt" << pt << std::endl;      
+      std::cout << "dphi(MB1,MB4) " << my_track_.dphi_gp_MB1_MB4 << std::endl;
+      pt_from_segment_alignment_ = 1./my_track_.dphi_gp_MB1_MB4;
+  
     }
     // endcap
     if (std::abs(recoTrackExtra.innerPosition().eta())>1.1){
@@ -307,7 +312,7 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
     //   candidates->push_back(cand);
 
   } // end loop on muons
-
+  
   event.put(candidates);
   
   LogTrace(metname)<<" Event loaded"
@@ -378,7 +383,7 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::bookTree()
   track_tree_->Branch("dz_gp_ME2_ME3",&my_track_.dz_gp_ME2_ME3);
 
   track_tree_->Branch("dphi_gp_MB1_MB2",&my_track_.dphi_gp_MB1_MB2);
-  track_tree_->Branch("dphi_gp_MB2_MB3",&my_track_.dphi_gp_MB2_ME3);
+  track_tree_->Branch("dphi_gp_MB1_MB4",&my_track_.dphi_gp_MB1_MB4);
   track_tree_->Branch("dphi_gp_ME1_ME2",&my_track_.dphi_gp_ME1_ME2);
   track_tree_->Branch("dphi_gp_ME2_ME3",&my_track_.dphi_gp_ME2_ME3);
 }

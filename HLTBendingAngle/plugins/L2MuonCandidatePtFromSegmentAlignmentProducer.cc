@@ -20,6 +20,11 @@
 #include "Geometry/CSCGeometry/interface/CSCGeometry.h"
 #include "Geometry/DTGeometry/interface/DTGeometry.h"
 
+#include "RecoMuon/TrackingTools/interface/MuonTrackLoader.h"
+#include "RecoMuon/TrackingTools/interface/MuonServiceProxy.h"
+#include "TrackingTools/PatternTools/interface/TrajTrackAssociation.h"
+#include "TrackingTools/PatternTools/interface/TrajectoryBuilder.h"
+#include "TrackingTools/PatternTools/interface/Trajectory.h"
 #include "MuJetAnalysis/HLTBendingAngle/plugins/L2MuonCandidatePtFromSegmentAlignmentProducer.h"
 
 #include <string>
@@ -41,12 +46,23 @@ is_csc(unsigned int detId)
 }
 
 /// constructor with config
-L2MuonCandidatePtFromSegmentAlignmentProducer::L2MuonCandidatePtFromSegmentAlignmentProducer(const ParameterSet& parameterSet)
+L2MuonCandidatePtFromSegmentAlignmentProducer::L2MuonCandidatePtFromSegmentAlignmentProducer(const ParameterSet& iConfig)
 {
   LogTrace("Muon|RecoMuon|L2MuonCandidatePtFromSegmentAlignmentProducer")<<" constructor called";
 
+  // service parameters
+  ParameterSet serviceParameters = iConfig.getParameter<ParameterSet>("ServiceParameters");
+  
+  // TrackLoader parameters
+  ParameterSet trackLoaderParameters = iConfig.getParameter<ParameterSet>("TrackLoaderParameters");
+
+  // the services
+  service_ = new MuonServiceProxy(serviceParameters);
+
+  muonTrackLoader_ = new MuonTrackLoader(trackLoaderParameters, service_);
+  
   // StandAlone Collection Label
-  theL2CollectionLabel_ = parameterSet.getParameter<InputTag>("InputObjects");
+  theL2CollectionLabel_ = iConfig.getParameter<InputTag>("InputObjects");
   trackToken_ = consumes<reco::RecoChargedCandidateCollection>(theL2CollectionLabel_);
   produces<RecoChargedCandidateCollection>("PtFromSegmentAlignment");
 }
@@ -88,7 +104,15 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
 
   // Create an output RecoChargedCandidate collection
   LogTrace(metname)<<" Creating the RecoChargedCandidate::PtFromSegmentAlignment collection";
-  auto_ptr<RecoChargedCandidateCollection> candidates( new RecoChargedCandidateCollection());
+  std::auto_ptr<RecoChargedCandidateCollection> candidates(new RecoChargedCandidateCollection());
+  
+  // load the trajectories
+  edm::Handle<std::vector<Trajectory> > trajectoryCollection;
+  event.getByLabel("hltL2Muons", trajectoryCollection);
+  
+  // load the association map
+  edm::Handle<TrajTrackAssociationCollection> trajectoryAssociationMap;
+  event.getByLabel("hltL2Muons", trajectoryAssociationMap);
 
   bool verbose = true;
   for (unsigned int i=0; i<cands.size(); i++) {
@@ -116,6 +140,41 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
                 << ", phi_outer: "<<recoTrackExtra.outerPosition().phi()
                 <<std::endl;  
     }
+
+
+    // get the associated trajectory
+    TrajTrackAssociationCollection::const_iterator anAssociation;  
+    TrajTrackAssociationCollection::const_iterator lastAssociation;
+    anAssociation = trajectoryAssociationMap->begin();
+    lastAssociation = trajectoryAssociationMap->end();
+     
+    for ( ; anAssociation != lastAssociation; ++anAssociation ) { 
+      edm::Ref<vector<Trajectory> > aTrajectoryRef = anAssociation->key;
+      edm::Ref<TrackCollection> trkRef = anAssociation->val;
+      if (trkRef ==recoTrack)
+        std::cout << "ok" << std::endl;
+      // reco::TrackRef aTrackRef = ;
+      
+      // // A copy of the track
+      // reco::Track aRecoTrack(*aTrackRef);
+
+      // the trackref
+      
+      // if aRecoTrack corresponds to recoTrack, get the trajectory
+      // get the trackref for the target, if the trackref is the same for the original trackref then get the trajectories
+      
+      
+    }
+
+    // 
+    // // load the trajectories in the trackloader
+    // auto trackCollection(muonTrackLoader_->(trajectories, event, miniMap, , *tTopo, theRefits[ww]));
+    // // muonTrackLoader_->buildTrackAtPCA
+    // //    loadTracks
+
+    // propagate the muon tracks to PCA
+
+    // adjust pT with pT found from bending angle
 
     // load the segments
     for(auto rh = recoTrackExtra.recHitsBegin(); rh != recoTrackExtra.recHitsEnd(); rh++) {
@@ -288,7 +347,6 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
       std::cout << "pt" << pt << std::endl;      
       std::cout << "dphi(MB1,MB4) " << my_track_.dphi_gp_MB1_MB4 << std::endl;
       pt_from_segment_alignment_ = 1./my_track_.dphi_gp_MB1_MB4;
-  
     }
     // endcap
     if (std::abs(recoTrackExtra.innerPosition().eta())>1.1){

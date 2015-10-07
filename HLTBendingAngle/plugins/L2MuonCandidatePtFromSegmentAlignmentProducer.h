@@ -25,6 +25,9 @@ namespace edm {
 class CSCGeometry;
 class DTGeometry;
 
+class MuonServiceProxy;
+class MuonTrackLoader;
+
 struct MyTrack
 {  
   double dx_gp_ME1_ME2; 
@@ -129,6 +132,9 @@ class L2MuonCandidatePtFromSegmentAlignmentProducer : public edm::EDProducer
   MyTrack my_track_;
 
   float pt_from_segment_alignment_;
+
+  MuonServiceProxy* service_;
+  MuonTrackLoader* muonTrackLoader_;
 };
 
 #endif

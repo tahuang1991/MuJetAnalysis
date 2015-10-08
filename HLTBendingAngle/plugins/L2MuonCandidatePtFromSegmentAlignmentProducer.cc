@@ -28,7 +28,7 @@
 #include "MuJetAnalysis/HLTBendingAngle/plugins/L2MuonCandidatePtFromSegmentAlignmentProducer.h"
 
 #include <string>
-
+#include <typeinfo>
 using namespace edm;
 using namespace std;
 using namespace reco;
@@ -109,17 +109,18 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
   // load the trajectories
   edm::Handle<std::vector<Trajectory> > trajectoryCollection;
   event.getByLabel("hltL2Muons", trajectoryCollection);
-  
-  // load the association map
-  edm::Handle<TrajTrackAssociationCollection> trajectoryAssociationMap;
-  event.getByLabel("hltL2Muons", trajectoryAssociationMap);
+  const std::vector<Trajectory>& trajectories(*trajectoryCollection.product());
 
+
+  
+  
+  // Loop on all candidates
   bool verbose = true;
   for (unsigned int i=0; i<cands.size(); i++) {
-
+    
     // get the associated recotrack
     auto recoTrack(*(cands[i].track()));
-
+    
     // print some relevant information
     if (verbose) {
       std::cout << "RecoTrack p" << recoTrack.outerMomentum() << "\n" 
@@ -128,6 +129,7 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
     
     // get the associated recotrack extra object
     auto recoTrackExtra(*(recoTrack.extra()));
+    std::cout << "type of recoTrackextra" << typeid(recoTrackExtra).name() << std::endl;
     
     // print some relevant information
     if (verbose) {
@@ -140,41 +142,6 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
                 << ", phi_outer: "<<recoTrackExtra.outerPosition().phi()
                 <<std::endl;  
     }
-
-
-    // get the associated trajectory
-    TrajTrackAssociationCollection::const_iterator anAssociation;  
-    TrajTrackAssociationCollection::const_iterator lastAssociation;
-    anAssociation = trajectoryAssociationMap->begin();
-    lastAssociation = trajectoryAssociationMap->end();
-     
-    for ( ; anAssociation != lastAssociation; ++anAssociation ) { 
-      edm::Ref<vector<Trajectory> > aTrajectoryRef = anAssociation->key;
-      edm::Ref<TrackCollection> trkRef = anAssociation->val;
-      if (trkRef ==recoTrack)
-        std::cout << "ok" << std::endl;
-      // reco::TrackRef aTrackRef = ;
-      
-      // // A copy of the track
-      // reco::Track aRecoTrack(*aTrackRef);
-
-      // the trackref
-      
-      // if aRecoTrack corresponds to recoTrack, get the trajectory
-      // get the trackref for the target, if the trackref is the same for the original trackref then get the trajectories
-      
-      
-    }
-
-    // 
-    // // load the trajectories in the trackloader
-    // auto trackCollection(muonTrackLoader_->(trajectories, event, miniMap, , *tTopo, theRefits[ww]));
-    // // muonTrackLoader_->buildTrackAtPCA
-    // //    loadTracks
-
-    // propagate the muon tracks to PCA
-
-    // adjust pT with pT found from bending angle
 
     // load the segments
     for(auto rh = recoTrackExtra.recHitsBegin(); rh != recoTrackExtra.recHitsEnd(); rh++) {
@@ -356,8 +323,100 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
     }
     // rescale the values in the innermost station (using a muon trackloader)
     // we don't want to change the direction of the muon, only the pT
+
+    // get the reco::Track' PCA track    
+    auto id(cands[i].track().key());
+    //reco::Track pcaTrack(pcaTrackCollection[id]);
+    //const reco::TrackCollection& (*orphanHandleTracks.product());
+    Trajectory trajectory(trajectories[id]);
+    
+    // get the propagation direction
+    PropagationDirection direc(trajectory.direction());
+    if (direc==PropagationDirection::oppositeToMomentum){
+      std::cout << "opposite" << std::endl;
+      TrajectoryMeasurement oldMeas(trajectory.lastMeasurement());
+      TrajectoryStateOnSurface tsos(oldMeas.updatedState());
+
+      // get the local trajectory parameters
+      LocalTrajectoryParameters oldParams(tsos.localParameters());
+
+
+      // update the pT
+      LocalVector oldMomentum(oldParams.momentum());
+      float newPt = 5; //dummy value for now
+      LocalVector newMomentum(oldMomentum.theta(), oldMomentum.phi(), newPt);
+
+      LocalPoint oldPosition(oldParams.position());
+      TrackCharge oldCharge(oldParams.charge());
+      LocalTrajectoryParameters newParams(oldPosition, newMomentum, oldCharge);
+      
+      // update the TSOS with the new pT
+      tsos.update(newParams, tsos.surface(), tsos.magneticField());
+
+      // // make a new measurement
+      TrajectoryMeasurement newMeas(oldMeas.forwardPredictedState(),
+                                    oldMeas.backwardPredictedState(),
+                                    tsos,
+                                    oldMeas.recHit(),
+                                    oldMeas.estimate());
+      
+      // replace the old measurment by the new measurement
+      trajectory.pop();
+      trajectory.push(newMeas);
+    }
+    else if (direc==PropagationDirection::alongMomentum){
+      std::cout << "along" << std::endl;
+      TrajectoryMeasurement oldMeas(trajectory.firstMeasurement());
+      TrajectoryStateOnSurface tsos(oldMeas.updatedState());
+      
+      // get the local trajectory parameters
+      LocalTrajectoryParameters oldParams(tsos.localParameters());
+
+
+      // update the pT
+      LocalVector oldMomentum(oldParams.momentum());
+      float newPt = 5; //dummy value for now
+      LocalVector newMomentum(oldMomentum.theta(), oldMomentum.phi(), newPt);
+
+      LocalPoint oldPosition(oldParams.position());
+      TrackCharge oldCharge(oldParams.charge());
+      LocalTrajectoryParameters newParams(oldPosition, newMomentum, oldCharge);
+      
+      // update the TSOS with the new pT
+      tsos.update(newParams, tsos.surface(), tsos.magneticField());
+
+      // // make a new measurement
+      TrajectoryMeasurement newMeas(oldMeas.forwardPredictedState(),
+                                    oldMeas.backwardPredictedState(),
+                                    tsos,
+                                    oldMeas.recHit(),
+                                    oldMeas.estimate());
+      
+      // replace the old measurment by the new measurement
+      trajectory.reverse();
+      trajectory.pop();
+      trajectory.push(newMeas);
+      trajectory.reverse();
+    }
+  } // end loop on muons
   
-    //     some stuff from the original L2MuonCandidateProducer
+  // make a new vector
+  TrajectoryContainer newTrajVector;
+  for (auto t: trajectories) {       
+    Trajectory* tt = new Trajectory(t);
+    newTrajVector.push_back(tt);
+  }
+
+  // load the trajectories in the trackloader
+  OrphanHandle<reco::TrackCollection>
+    orphanHandleTracks(muonTrackLoader_->loadTracks(newTrajVector, event));
+  
+  // get the PCA track collection
+  const reco::TrackCollection& pcaTrackCollection(*orphanHandleTracks.product());
+  std::cout << "pcaTrackCollection" << pcaTrackCollection.size() << std::endl;
+
+  // fill the output candidate collection
+  for (auto track: pcaTrackCollection){
     //   TrackRef tkref(input_cands,i);
     //   Particle::Charge q = tkref->charge();
     //   Particle::LorentzVector p4(tkref->px(), tkref->py(), tkref->pz(), tkref->p());
@@ -365,12 +424,11 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
     //   int pid = 13;
     //   if(abs(q)==1) pid = q < 0 ? 13 : -13;
     //   else LogWarning(metname) << "L2MuonCandidate has charge = "<<q;
-    //   RecoChargedCandidate cand(q, p4, vtx, pid);
-    //   cand.setTrack(tkref);
-    //   candidates->push_back(cand);
+    // RecoChargedCandidate cand(q, p4, vtx, pid);
+    // cand.setTrack(tkref);
+    // candidates->push_back(cand);
+  }
 
-  } // end loop on muons
-  
   event.put(candidates);
   
   LogTrace(metname)<<" Event loaded"

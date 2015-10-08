@@ -104,6 +104,8 @@ struct MyTrack
 class L2MuonCandidatePtFromSegmentAlignmentProducer : public edm::EDProducer 
 {
  public:
+  typedef std::vector<Trajectory*> TrajectoryContainer; 
+ public:
   /// constructor with config
   L2MuonCandidatePtFromSegmentAlignmentProducer(const edm::ParameterSet&);
   
@@ -123,9 +125,9 @@ class L2MuonCandidatePtFromSegmentAlignmentProducer : public edm::EDProducer
 
   const CSCGeometry* csc_geometry_;
   const DTGeometry* dt_geometry_;
-  
+ 
   edm::ESHandle<CSCGeometry> csc_geom;
-  edm::ESHandle<DTGeometry> dt_geom;
+  edm::ESHandle<DTGeometry> dt_geom;  
 
   void bookTree();
   TTree* track_tree_;

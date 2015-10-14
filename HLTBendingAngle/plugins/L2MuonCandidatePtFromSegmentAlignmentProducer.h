@@ -99,6 +99,8 @@ struct MyTrack
 
   double dY_gp_ME12_ME23;
   double dY_gp_MB12_MB23;
+
+  double dphi_gv_MB1_MB4;
 };
 
 class L2MuonCandidatePtFromSegmentAlignmentProducer : public edm::EDProducer 
@@ -117,6 +119,10 @@ class L2MuonCandidatePtFromSegmentAlignmentProducer : public edm::EDProducer
   virtual void produce(edm::Event&, const edm::EventSetup&);
   float PtFromSegmentBending(float, float, float, float);
   float PtFromSegmentPosition(float, float, float, float);
+
+  void updateTrajectoryMeasurment(const TrajectoryMeasurement&, 
+                                  TrajectoryMeasurement, 
+                                  double pt);
 
  private:
   // L2 Collection Label

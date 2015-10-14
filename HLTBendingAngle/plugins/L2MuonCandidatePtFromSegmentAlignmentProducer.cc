@@ -111,7 +111,7 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
   event.getByLabel("hltL2Muons", trajectoryCollection);
   const std::vector<Trajectory>& trajectories(*trajectoryCollection.product());
 
-
+  
   
   
   // Loop on all candidates
@@ -145,7 +145,7 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
 
     // load the segments
     for(auto rh = recoTrackExtra.recHitsBegin(); rh != recoTrackExtra.recHitsEnd(); rh++) {
-  
+    
       auto id((**rh).rawId());
       if (is_dt(id)) {
         const DTRecSegment4D *seg = dynamic_cast<const DTRecSegment4D*>(rh->get());
@@ -212,14 +212,14 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
           // my_track_.y_gp_MB4 = gp_seg.y(); 
           // my_track_.z_gp_MB4 = gp_seg.z(); 
           // my_track_.phi_gp_MB4 = gp_seg.phi(); 
-          my_track_.phi_gp_MB4 = gp_seg.phi(); 
+          my_track_.phi_gv_MB4 = gv_seg.phi(); 
 
           if (verbose) {
-            // std::cout << "phi_gp_MB4 " << my_track_.phi_gp_MB4 << std::endl;
-            std::cout << "phi_gp_MB4 " << my_track_.phi_gp_MB4 << std::endl;
-            // std::cout << "x_gp_MB4 " << my_track_.x_gp_MB4 << std::endl;
-            // std::cout << "y_gp_MB4 " << my_track_.y_gp_MB4 << std::endl;
-            // std::cout << "z_gp_MB4 " << my_track_.z_gp_MB4 << std::endl;
+            // std::cout << "phi_gv_MB4 " << my_track_.phi_gv_MB4 << std::endl;
+            std::cout << "phi_gv_MB4 " << my_track_.phi_gv_MB4 << std::endl;
+            // std::cout << "x_gv_MB4 " << my_track_.x_gv_MB4 << std::endl;
+            // std::cout << "y_gv_MB4 " << my_track_.y_gv_MB4 << std::endl;
+            // std::cout << "z_gv_MB4 " << my_track_.z_gv_MB4 << std::endl;
           }
         }
 
@@ -305,7 +305,7 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
     my_track_.dz_gp_ME1_ME2 = my_track_.z_gp_ME2 - my_track_.z_gp_ME1;
     my_track_.dz_gp_ME2_ME3 = my_track_.z_gp_ME3 - my_track_.z_gp_ME2;
 
-    my_track_.dphi_gp_MB1_MB4 = my_track_.phi_gp_MB1 - my_track_.phi_gp_MB4;
+    my_track_.dphi_gv_MB1_MB4 = my_track_.phi_gv_MB1 - my_track_.phi_gv_MB4;
 
     // barrel
     if (std::abs(recoTrackExtra.innerPosition().eta())<0.9){
@@ -336,27 +336,46 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
       std::cout << "opposite" << std::endl;
       TrajectoryMeasurement oldMeas(trajectory.lastMeasurement());
       TrajectoryStateOnSurface tsos(oldMeas.updatedState());
-
-      // get the local trajectory parameters
-      LocalTrajectoryParameters oldParams(tsos.localParameters());
-
-
-      // update the pT
-      LocalVector oldMomentum(oldParams.momentum());
-      float newPt = 5; //dummy value for now
-      LocalVector newMomentum(oldMomentum.theta(), oldMomentum.phi(), newPt);
-
-      LocalPoint oldPosition(oldParams.position());
-      TrackCharge oldCharge(oldParams.charge());
-      LocalTrajectoryParameters newParams(oldPosition, newMomentum, oldCharge);
       
-      // update the TSOS with the new pT
-      tsos.update(newParams, tsos.surface(), tsos.magneticField());
+      GlobalVector oldGlobalMomentum(tsos.globalMomentum());
+      double oldPt(oldGlobalMomentum.perp());
+      double newPt = 1./std::abs(my_track_.dphi_gv_MB1_MB4);
+      double scaleFactor(newPt/oldPt);
+      // make a new global vector with the pT scaled
+      GlobalVector newGlobalMomentum(oldGlobalMomentum.x()*scaleFactor, 
+                                     oldGlobalMomentum.y()*scaleFactor, 
+                                     oldGlobalMomentum.z());
 
-      // // make a new measurement
+      // get the old global parameters
+      GlobalTrajectoryParameters oldGlobalParameters(tsos.globalParameters());
+
+      // make a new GlobalTrajectoryParameters
+      GlobalTrajectoryParameters newGlobalParameters(oldGlobalParameters.position(),
+                                                     newGlobalMomentum,
+                                                     oldGlobalParameters.charge(),
+                                                     &oldGlobalParameters.magneticField());
+
+      // make a new TSOS from   BasicTrajectoryState
+      TrajectoryStateOnSurface newTSOS(newGlobalParameters,
+                                       tsos.cartesianError(),
+                                       tsos.surface());
+
+      /*
+        Comment from V.I.
+        
+        Still if your pt is in global coord and you really want to force  the pt of the momentum of the track at the first measurement w/o any other change (such as error etc)        
+        you need first to get freeTrajectoryState from the tsos (or simply globalMomentum)
+        http://cmslxr.fnal.gov/lxr/source/TrackingTools/TrajectoryState/interface/TrajectoryStateOnSurface.h?v=CMSSW_7_6_0_pre3#0092
+        operate on globalMomentum in cartesian coord and then “update the tsos” (most probably costruct a new tsos from scratch
+        with this constructor for instance
+        http://cmslxr.fnal.gov/lxr/source/TrackingTools/TrajectoryState/interface/BasicTrajectoryState.h?v=CMSSW_7_6_0_pre3#0145
+      */
+      
+
+      // make a new measurement
       TrajectoryMeasurement newMeas(oldMeas.forwardPredictedState(),
                                     oldMeas.backwardPredictedState(),
-                                    tsos,
+                                    newTSOS,
                                     oldMeas.recHit(),
                                     oldMeas.estimate());
       
@@ -375,7 +394,7 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
 
       // update the pT
       LocalVector oldMomentum(oldParams.momentum());
-      float newPt = 5; //dummy value for now
+      float newPt = 1./std::abs(my_track_.dphi_gv_MB1_MB4);
       LocalVector newMomentum(oldMomentum.theta(), oldMomentum.phi(), newPt);
 
       LocalPoint oldPosition(oldParams.position());
@@ -392,7 +411,7 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
                                     oldMeas.recHit(),
                                     oldMeas.estimate());
       
-      // replace the old measurment by the new measurement
+      // replace the old measurement by the new measurement
       trajectory.reverse();
       trajectory.pop();
       trajectory.push(newMeas);
@@ -502,4 +521,56 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::bookTree()
   track_tree_->Branch("dphi_gp_MB1_MB4",&my_track_.dphi_gp_MB1_MB4);
   track_tree_->Branch("dphi_gp_ME1_ME2",&my_track_.dphi_gp_ME1_ME2);
   track_tree_->Branch("dphi_gp_ME2_ME3",&my_track_.dphi_gp_ME2_ME3);
+}
+
+
+void
+L2MuonCandidatePtFromSegmentAlignmentProducer::updateTrajectoryMeasurment(const TrajectoryMeasurement& oldMeas, TrajectoryMeasurement newMeas, double newPt)
+{
+  /*
+    The transverse momentum is in the global coordinate system. We do not wish 
+    to change the other track quantities (errors, surface, charge,...). We need to 
+    extract the global momentum from the old TSOS. We update that momentum and 
+    create a new TSOS using that momentum.
+  */
+  
+  // get the old TSOS 
+  TrajectoryStateOnSurface tsos(oldMeas.updatedState());
+  
+  // get the old global momentum
+  GlobalVector oldGlobalMomentum(tsos.globalMomentum());
+
+
+  // calculate the scale factor by which we scale the pT
+  double oldPt(oldGlobalMomentum.perp());
+  double scaleFactor(newPt/oldPt);
+
+  // make a new global vector with the pT scaled
+  GlobalVector newGlobalMomentum(oldGlobalMomentum.x()*scaleFactor, 
+                                 oldGlobalMomentum.y()*scaleFactor, 
+                                 oldGlobalMomentum.z());
+  
+  // get the old global parameters
+  GlobalTrajectoryParameters oldGlobalParameters(tsos.globalParameters());
+  
+  // make new global parameters using the new momentum
+  // do not change the position, charge or magnetic field
+  GlobalTrajectoryParameters newGlobalParameters(oldGlobalParameters.position(),
+                                                 newGlobalMomentum,
+                                                 oldGlobalParameters.charge(),
+                                                 &oldGlobalParameters.magneticField());
+  
+  // make a new TSOS
+  // do not change the error or the surface
+  TrajectoryStateOnSurface newTSOS(newGlobalParameters,
+                                   tsos.cartesianError(),
+                                   tsos.surface());
+  
+  // make a new measurement
+  // do not change the forward state, backward state, rechit or estimate
+  newMeas = TrajectoryMeasurement(oldMeas.forwardPredictedState(),
+                                  oldMeas.backwardPredictedState(),
+                                  newTSOS,
+                                  oldMeas.recHit(),
+                                  oldMeas.estimate());
 }

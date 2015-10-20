@@ -434,20 +434,20 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
   const reco::TrackCollection& pcaTrackCollection(*orphanHandleTracks.product());
   std::cout << "pcaTrackCollection" << pcaTrackCollection.size() << std::endl;
 
-  // fill the output candidate collection
-  for (auto track: pcaTrackCollection){
-    //   TrackRef tkref(input_cands,i);
-    //   Particle::Charge q = tkref->charge();
-    //   Particle::LorentzVector p4(tkref->px(), tkref->py(), tkref->pz(), tkref->p());
-    //   Particle::Point vtx(tkref->vx(),tkref->vy(), tkref->vz());
-    //   int pid = 13;
-    //   if(abs(q)==1) pid = q < 0 ? 13 : -13;
-    //   else LogWarning(metname) << "L2MuonCandidate has charge = "<<q;
-    // RecoChargedCandidate cand(q, p4, vtx, pid);
-    // cand.setTrack(tkref);
-    // candidates->push_back(cand);
+  // Fill the output candidate collection
+  for (unsigned int i=0; i<pcaTrackCollection.size(); i++) {
+    TrackRef tkref(orphanHandleTracks,i);
+    Particle::Charge q = tkref->charge();
+    Particle::LorentzVector p4(tkref->px(), tkref->py(), tkref->pz(), tkref->p());
+    Particle::Point vtx(tkref->vx(),tkref->vy(), tkref->vz());
+    int pid = 13;
+    if(abs(q)==1) pid = q < 0 ? 13 : -13;
+    else LogWarning(metname) << "L2MuonCandidate has charge = "<<q;
+    RecoChargedCandidate cand(q, p4, vtx, pid);
+    cand.setTrack(tkref);
+    candidates->push_back(cand);
   }
-
+ 
   event.put(candidates);
   
   LogTrace(metname)<<" Event loaded"
@@ -574,3 +574,7 @@ L2MuonCandidatePtFromSegmentAlignmentProducer::updateTrajectoryMeasurment(const 
                                   oldMeas.recHit(),
                                   oldMeas.estimate());
 }
+
+//define this as a plug-in
+#include "FWCore/Framework/interface/MakerMacros.h"
+DEFINE_FWK_MODULE(L2MuonCandidatePtFromSegmentAlignmentProducer);

@@ -32,6 +32,7 @@
 <use name="SimDataFormats/TrackingHit"/>
 <use name="SimGeneral/HepPDTRecord"/>
 <use name="Utilities/General"/>
+<use name="RecoMuon/TrackingTools"/>
 <use name="Geometry/Records"/>
 <use name="Geometry/TrackingGeometryAligner"/>
 <use name="Geometry/DTGeometryBuilder"/>

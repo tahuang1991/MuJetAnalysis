@@ -4,7 +4,7 @@ from RecoMuon.TrackingTools.MuonServiceProxy_cff import *
 from RecoMuon.TrackingTools.MuonTrackLoader_cff import *
 
 L2MuonCandidatesPtFromSegmentAlignment = cms.EDProducer("L2MuonCandidatePtFromSegmentAlignmentProducer",
-    InputObjects = cms.InputTag("L2MuonCandidatesNoVtx"),
+    InputObjects = cms.InputTag("hltL2MuonCandidatesNoVtx"),
     ServiceParameters = MuonServiceProxy.ServiceParameters,
     TrackLoaderParameters = MuonTrackLoaderForL2.TrackLoaderParameters
 )

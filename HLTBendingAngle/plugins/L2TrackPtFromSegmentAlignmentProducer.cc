@@ -26,9 +26,12 @@
 #include "TrackingTools/PatternTools/interface/TrajectoryBuilder.h"
 #include "TrackingTools/PatternTools/interface/Trajectory.h"
 #include "MuJetAnalysis/HLTBendingAngle/plugins/L2TrackPtFromSegmentAlignmentProducer.h"
+#include "DataFormats/TrackReco/interface/TrackToTrackMap.h"
+#include "DataFormats/MuonSeed/interface/L2MuonTrajectorySeedCollection.h"
 
 #include <string>
 #include <typeinfo>
+
 using namespace edm;
 using namespace std;
 using namespace reco;
@@ -66,6 +69,16 @@ L2TrackPtFromSegmentAlignmentProducer::L2TrackPtFromSegmentAlignmentProducer(con
   trackToken_ = consumes<reco::TrackCollection>(theL2CollectionLabel_);
 
   produces<reco::TrackCollection>();
+  produces<reco::TrackCollection>("UpdatedAtVtx");
+  produces<TrackingRecHitCollection>();
+  produces<reco::TrackExtraCollection>();
+  produces<reco::TrackToTrackMap>();
+
+  produces<std::vector<Trajectory> >();
+  produces<TrajTrackAssociationCollection>();
+
+  produces<edm::AssociationMap<edm::OneToMany<std::vector<L2MuonTrajectorySeed>, std::vector<L2MuonTrajectorySeed> > > >();
+
 }
   
 /// destructor
@@ -395,7 +408,7 @@ void L2TrackPtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm
     output_tracks->push_back(std::move(t));
   }
   
-  event.put(output_tracks);
+  //  event.put(output_tracks);
   
   LogTrace(metname)<<" Event loaded"
                    <<"================================";

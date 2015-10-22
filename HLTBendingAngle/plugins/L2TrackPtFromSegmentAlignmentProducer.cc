@@ -64,7 +64,7 @@ L2TrackPtFromSegmentAlignmentProducer::L2TrackPtFromSegmentAlignmentProducer(con
   // StandAlone Collection Label
   theL2CollectionLabel_ = iConfig.getParameter<InputTag>("InputObjects");
   trackToken_ = consumes<reco::TrackCollection>(theL2CollectionLabel_);
-  //produces<RecoChargedCandidateCollection>("PtFromSegmentAlignment");
+
   produces<reco::TrackCollection>();
 }
   
@@ -75,6 +75,11 @@ L2TrackPtFromSegmentAlignmentProducer::~L2TrackPtFromSegmentAlignmentProducer()
 }
 
 void L2TrackPtFromSegmentAlignmentProducer::beginRun(edm::Run &run, const edm::EventSetup &eventSetup)
+{
+}  
+
+/// reconstruct muons
+void L2TrackPtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup)
 {
   // get the geometries
   try {
@@ -90,11 +95,7 @@ void L2TrackPtFromSegmentAlignmentProducer::beginRun(edm::Run &run, const edm::E
   } catch (edm::eventsetup::NoProxyException<DTGeometry>& e) {
     LogDebug("L2TrackPtFromSegmentAlignmentProducer") << "+++ Info: DT geometry is unavailable. +++\n";
   }
-}  
 
-/// reconstruct muons
-void L2TrackPtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup)
-{
   const string metname = "Muon|RecoMuon|L2TrackPtFromSegmentAlignmentProducer";
   
   // Take the SA container
@@ -129,13 +130,12 @@ void L2TrackPtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm
     // print some relevant information
     if (verbose) {
       std::cout << "RecoTrackExtra " << std::endl
-                << "\tpT_inner: "<<recoTrackExtra.innerMomentum().Rho()
-                << ", eta_inner: "<<recoTrackExtra.innerPosition().eta()
-                << ", phi_inner: "<<recoTrackExtra.innerPosition().phi()
-                << "\tpT_outer: "<<recoTrackExtra.outerMomentum().Rho()
-                << ", eta_outer: "<<recoTrackExtra.outerPosition().eta()
-                << ", phi_outer: "<<recoTrackExtra.outerPosition().phi()
-                <<std::endl;  
+		<< "\tpT_inner: "<<recoTrackExtra.innerMomentum().Rho() << std::endl
+		<< "\teta_inner: "<<recoTrackExtra.innerPosition().eta() << std::endl
+		<< "\tphi_inner: "<<recoTrackExtra.innerPosition().phi() << std::endl
+                << "\tpT_outer: "<<recoTrackExtra.outerMomentum().Rho() << std::endl
+                << "\teta_outer: "<<recoTrackExtra.outerPosition().eta() << std::endl
+                << "\tphi_outer: "<<recoTrackExtra.outerPosition().phi() <<std::endl;  
     }
 
     // load the segments
@@ -154,12 +154,16 @@ void L2TrackPtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm
           std::cout << "\t\t    :: segment :: " << *seg << std::endl;
         }
 
+	std::cout << "Getting global directions" << std::endl;
+
         const LocalPoint lp_seg(seg->localPosition());
         const GlobalPoint gp_seg(dt_geom->idToDet((**rh).rawId())->surface().toGlobal(lp_seg));
 
         const LocalVector lv_seg(seg->localDirection());
         const GlobalVector gv_seg(dt_geom->idToDet((**rh).rawId())->surface().toGlobal(lv_seg));
         
+	std::cout << "Found global directions" << std::endl;
+
         if (detId.station() == 1) {
           my_track_.x_gp_MB1 = gp_seg.x(); 
           my_track_.y_gp_MB1 = gp_seg.y(); 
@@ -230,12 +234,16 @@ void L2TrackPtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm
           std::cout << "\t\t    :: segment :: " << *seg << std::endl;
         }
         
+	std::cout << "Getting global directions" << std::endl;
+
         const LocalPoint lp_seg(seg->localPosition());
         const GlobalPoint gp_seg(csc_geom->idToDet((**rh).rawId())->surface().toGlobal(lp_seg));
         
         const LocalVector lv_seg(seg->localDirection());
         const GlobalVector gv_seg(csc_geom->idToDet((**rh).rawId())->surface().toGlobal(lv_seg));
         
+	std::cout << "Found global directions" << std::endl;
+
         if (detId.station() == 1) {
           my_track_.x_gp_ME1 = gp_seg.x(); 
           my_track_.y_gp_ME1 = gp_seg.y(); 
@@ -305,6 +313,9 @@ void L2TrackPtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm
 
     my_track_.dphi_gv_MB1_MB4 = my_track_.phi_gv_MB1 - my_track_.phi_gv_MB4;
 
+    
+    std::cout << "Calculate Pt" << std::endl;
+
     // barrel
     if (std::abs(recoTrackExtra.innerPosition().eta())<0.9){
       float pt(PtFromSegmentBending(my_track_.phi_gv_MB1, my_track_.phi_gv_MB2, 
@@ -322,6 +333,9 @@ void L2TrackPtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm
     // rescale the values in the innermost station (using a muon trackloader)
     // we don't want to change the direction of the muon, only the pT
 
+
+    std::cout << "Assign Pt" << std::endl;
+    
     // get the reco::Track' PCA track    
     //auto id(recoTrack.key());
     //reco::Track pcaTrack(pcaTrackCollection[id]);
@@ -335,7 +349,7 @@ void L2TrackPtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm
     if (direc==PropagationDirection::oppositeToMomentum){
       std::cout << "opposite" << std::endl;
       TrajectoryMeasurement newMeas;
-      updateTrajectoryMeasurement(trajectory.lastMeasurement(), newMeas, 1./std::abs(my_track_.dphi_gv_MB1_MB4));
+      updateTrajectoryMeasurement(trajectory.lastMeasurement(), newMeas, 5); //1./std::abs(my_track_.dphi_gv_MB1_MB4
 
       // replace the old measurement by the new measurement
       trajectory.pop();
@@ -344,7 +358,7 @@ void L2TrackPtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm
     else if (direc==PropagationDirection::alongMomentum){
       std::cout << "along" << std::endl;
       TrajectoryMeasurement newMeas;
-      updateTrajectoryMeasurement(trajectory.lastMeasurement(), newMeas, 1./std::abs(my_track_.dphi_gv_MB1_MB4));
+      updateTrajectoryMeasurement(trajectory.firstMeasurement(), newMeas, 5);
 
       // replace the old measurement by the new measurement
       trajectory.reverse();
@@ -354,7 +368,8 @@ void L2TrackPtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm
     }
   } // end loop on muons
   
-  // make a new vector
+  // make a new vector				
+  std::cout << "Construct a new TrajectoryContainer" << std::endl; 
   TrajectoryContainer newTrajVector;
   for (auto t: trajectories) {       
     Trajectory* tt = new Trajectory(t);
@@ -362,6 +377,7 @@ void L2TrackPtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm
   }
 
   // load the trajectories in the trackloader
+  std::cout << "load the trajectories in the trackloader" << std::endl;
   OrphanHandle<reco::TrackCollection>
     orphanHandleTracks(muonTrackLoader_->loadTracks(newTrajVector, event));
   
@@ -373,6 +389,7 @@ void L2TrackPtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm
   // Create an output RecoChargedCandidate collection
   LogTrace(metname)<<" Creating the RecoTrack::PtFromSegmentAlignment collection";
   std::auto_ptr<reco::TrackCollection> output_tracks(new reco::TrackCollection);
+
   output_tracks->reserve(pcaTrackCollection.size());
   for (auto t: pcaTrackCollection){
     output_tracks->push_back(std::move(t));
@@ -455,7 +472,7 @@ void L2TrackPtFromSegmentAlignmentProducer::bookTree()
 
 
 void
-L2TrackPtFromSegmentAlignmentProducer::updateTrajectoryMeasurement(const TrajectoryMeasurement& oldMeas, TrajectoryMeasurement newMeas, double newPt)
+L2TrackPtFromSegmentAlignmentProducer::updateTrajectoryMeasurement(const TrajectoryMeasurement& oldMeas, TrajectoryMeasurement& newMeas, double newPt)
 {
   /*
     The transverse momentum is in the global coordinate system. We do not wish 
@@ -465,16 +482,20 @@ L2TrackPtFromSegmentAlignmentProducer::updateTrajectoryMeasurement(const Traject
   */
   
   // get the old TSOS 
+  std::cout << "get the old TSOS" << std::endl;
   TrajectoryStateOnSurface tsos(oldMeas.updatedState());
   
   // get the old global momentum
+  std::cout << "get the old global momentum" << std::endl;
   GlobalVector oldGlobalMomentum(tsos.globalMomentum());
 
   // calculate the scale factor by which we scale the pT
+  std::cout << "calculate the scale factor by which we scale the pT" << std::endl;
   double oldPt(oldGlobalMomentum.perp());
   double scaleFactor(newPt/oldPt);
 
-  // make a new global vector with the pT scaled, but p unchanged
+  // make a new global vector with the pT scaled
+  std::cout << "make a new global vector with the pT scaled" << std::endl;
   double newPx(oldGlobalMomentum.x()*scaleFactor);
   double newPy(oldGlobalMomentum.y()*scaleFactor);
   double newPz(oldGlobalMomentum.z()*scaleFactor);
@@ -482,10 +503,12 @@ L2TrackPtFromSegmentAlignmentProducer::updateTrajectoryMeasurement(const Traject
   GlobalVector newGlobalMomentum(newPx, newPy, newPz);
   
   // get the old global parameters
+  std::cout << "get the old global parameters" << std::endl;
   GlobalTrajectoryParameters oldGlobalParameters(tsos.globalParameters());
   
   // make new global parameters using the new momentum
   // do not change the position, charge or magnetic field
+  std::cout << "make new global parameters using the new momentum" << std::endl;
   GlobalTrajectoryParameters newGlobalParameters(oldGlobalParameters.position(),
                                                  newGlobalMomentum,
                                                  oldGlobalParameters.charge(),
@@ -493,17 +516,20 @@ L2TrackPtFromSegmentAlignmentProducer::updateTrajectoryMeasurement(const Traject
   
   // make a new TSOS
   // do not change the error or the surface
+  std::cout << "make a new TSOS" << std::endl;
   TrajectoryStateOnSurface newTSOS(newGlobalParameters,
                                    tsos.cartesianError(),
                                    tsos.surface());
   
   // make a new measurement
   // do not change the forward state, backward state, rechit or estimate
+  std::cout << "make a new measurement" << std::endl;
   newMeas = TrajectoryMeasurement(oldMeas.forwardPredictedState(),
                                   oldMeas.backwardPredictedState(),
                                   newTSOS,
                                   oldMeas.recHit(),
                                   oldMeas.estimate());
+  std::cout << "End" << std::endl;
 }
 
 //define this as a plug-in

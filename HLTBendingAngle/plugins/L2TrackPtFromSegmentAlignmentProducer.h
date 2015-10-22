@@ -121,7 +121,7 @@ class L2TrackPtFromSegmentAlignmentProducer : public edm::EDProducer
   float PtFromSegmentPosition(float, float, float, float);
 
   void updateTrajectoryMeasurement(const TrajectoryMeasurement&, 
-                                   TrajectoryMeasurement, 
+                                   TrajectoryMeasurement&, 
                                    double pt);
 
  private:

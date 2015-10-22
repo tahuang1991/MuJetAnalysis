@@ -1,5 +1,5 @@
-#ifndef L2MuonCandidatePtFromSegmentAlignmentProducer_H
-#define L2MuonCandidatePtFromSegmentAlignmentProducer_H
+#ifndef L2TrackPtFromSegmentAlignmentProducer_H
+#define L2TrackPtFromSegmentAlignmentProducer_H
 
 /**
    \class L2MuPtFromStubAlignment
@@ -11,8 +11,8 @@
 
 #include "FWCore/Framework/interface/EDProducer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
-#include "DataFormats/RecoCandidate/interface/RecoChargedCandidate.h"
-#include "DataFormats/RecoCandidate/interface/RecoChargedCandidateFwd.h"
+#include "DataFormats/TrackReco/interface/Track.h"
+#include "DataFormats/TrackReco/interface/TrackFwd.h"
 
 #include "TTree.h"
 
@@ -103,16 +103,16 @@ struct MyTrack
   double dphi_gv_MB1_MB4;
 };
 
-class L2MuonCandidatePtFromSegmentAlignmentProducer : public edm::EDProducer 
+class L2TrackPtFromSegmentAlignmentProducer : public edm::EDProducer 
 {
  public:
   typedef std::vector<Trajectory*> TrajectoryContainer; 
  public:
   /// constructor with config
-  L2MuonCandidatePtFromSegmentAlignmentProducer(const edm::ParameterSet&);
+  L2TrackPtFromSegmentAlignmentProducer(const edm::ParameterSet&);
   
   /// destructor
-  virtual ~L2MuonCandidatePtFromSegmentAlignmentProducer(); 
+  virtual ~L2TrackPtFromSegmentAlignmentProducer(); 
   
   /// produce candidates
   virtual void beginRun(edm::Run &iRun, const edm::EventSetup &iSetup);  
@@ -120,14 +120,14 @@ class L2MuonCandidatePtFromSegmentAlignmentProducer : public edm::EDProducer
   float PtFromSegmentBending(float, float, float, float);
   float PtFromSegmentPosition(float, float, float, float);
 
-  void updateTrajectoryMeasurment(const TrajectoryMeasurement&, 
-                                  TrajectoryMeasurement, 
-                                  double pt);
+  void updateTrajectoryMeasurement(const TrajectoryMeasurement&, 
+                                   TrajectoryMeasurement, 
+                                   double pt);
 
  private:
   // L2 Collection Label
   edm::InputTag theL2CollectionLabel_; 
-  edm::EDGetTokenT<reco::RecoChargedCandidateCollection> trackToken_;
+  edm::EDGetTokenT<reco::TrackCollection> trackToken_;
 
   const CSCGeometry* csc_geometry_;
   const DTGeometry* dt_geometry_;

@@ -25,7 +25,7 @@
 #include "TrackingTools/PatternTools/interface/TrajTrackAssociation.h"
 #include "TrackingTools/PatternTools/interface/TrajectoryBuilder.h"
 #include "TrackingTools/PatternTools/interface/Trajectory.h"
-#include "MuJetAnalysis/HLTBendingAngle/plugins/L2MuonCandidatePtFromSegmentAlignmentProducer.h"
+#include "MuJetAnalysis/HLTBendingAngle/plugins/L2TrackPtFromSegmentAlignmentProducer.h"
 
 #include <string>
 #include <typeinfo>
@@ -46,9 +46,9 @@ is_csc(unsigned int detId)
 }
 
 /// constructor with config
-L2MuonCandidatePtFromSegmentAlignmentProducer::L2MuonCandidatePtFromSegmentAlignmentProducer(const ParameterSet& iConfig)
+L2TrackPtFromSegmentAlignmentProducer::L2TrackPtFromSegmentAlignmentProducer(const ParameterSet& iConfig)
 {
-  LogTrace("Muon|RecoMuon|L2MuonCandidatePtFromSegmentAlignmentProducer")<<" constructor called";
+  LogTrace("Muon|RecoMuon|L2TrackPtFromSegmentAlignmentProducer")<<" constructor called";
 
   // service parameters
   ParameterSet serviceParameters = iConfig.getParameter<ParameterSet>("ServiceParameters");
@@ -63,48 +63,45 @@ L2MuonCandidatePtFromSegmentAlignmentProducer::L2MuonCandidatePtFromSegmentAlign
   
   // StandAlone Collection Label
   theL2CollectionLabel_ = iConfig.getParameter<InputTag>("InputObjects");
-  trackToken_ = consumes<reco::RecoChargedCandidateCollection>(theL2CollectionLabel_);
-  produces<RecoChargedCandidateCollection>("PtFromSegmentAlignment");
+  trackToken_ = consumes<reco::TrackCollection>(theL2CollectionLabel_);
+  //produces<RecoChargedCandidateCollection>("PtFromSegmentAlignment");
+  produces<reco::TrackCollection>();
 }
   
 /// destructor
-L2MuonCandidatePtFromSegmentAlignmentProducer::~L2MuonCandidatePtFromSegmentAlignmentProducer()
+L2TrackPtFromSegmentAlignmentProducer::~L2TrackPtFromSegmentAlignmentProducer()
 {
-  LogTrace("Muon|RecoMuon|L2MuonCandidatePtFromSegmentAlignmentProducer")<<" L2MuonCandidatePtFromSegmentAlignmentProducer destructor called";
+  LogTrace("Muon|RecoMuon|L2TrackPtFromSegmentAlignmentProducer")<<" L2TrackPtFromSegmentAlignmentProducer destructor called";
 }
 
-void L2MuonCandidatePtFromSegmentAlignmentProducer::beginRun(edm::Run &run, const edm::EventSetup &eventSetup)
+void L2TrackPtFromSegmentAlignmentProducer::beginRun(edm::Run &run, const edm::EventSetup &eventSetup)
 {
   // get the geometries
   try {
     eventSetup.get<MuonGeometryRecord>().get(csc_geom);
     csc_geometry_ = &*csc_geom;
   } catch (edm::eventsetup::NoProxyException<CSCGeometry>& e) {
-    LogDebug("L2MuonCandidatePtFromSegmentAlignmentProducer") << "+++ Info: CSC geometry is unavailable. +++\n";
+    LogDebug("L2TrackPtFromSegmentAlignmentProducer") << "+++ Info: CSC geometry is unavailable. +++\n";
   }
 
   try {
     eventSetup.get<MuonGeometryRecord>().get(dt_geom);
     dt_geometry_ = &*dt_geom;
   } catch (edm::eventsetup::NoProxyException<DTGeometry>& e) {
-    LogDebug("L2MuonCandidatePtFromSegmentAlignmentProducer") << "+++ Info: DT geometry is unavailable. +++\n";
+    LogDebug("L2TrackPtFromSegmentAlignmentProducer") << "+++ Info: DT geometry is unavailable. +++\n";
   }
 }  
 
 /// reconstruct muons
-void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup)
+void L2TrackPtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm::EventSetup& eventSetup)
 {
-  const string metname = "Muon|RecoMuon|L2MuonCandidatePtFromSegmentAlignmentProducer";
+  const string metname = "Muon|RecoMuon|L2TrackPtFromSegmentAlignmentProducer";
   
   // Take the SA container
-  LogTrace(metname)<<" Taking the StandAlone muons: "<<theL2CollectionLabel_;
-  Handle<RecoChargedCandidateCollection> input_cands; 
-  event.getByToken(trackToken_,input_cands);
-  const reco::RecoChargedCandidateCollection& cands(*input_cands.product());
-
-  // Create an output RecoChargedCandidate collection
-  LogTrace(metname)<<" Creating the RecoChargedCandidate::PtFromSegmentAlignment collection";
-  std::auto_ptr<RecoChargedCandidateCollection> candidates(new RecoChargedCandidateCollection());
+  LogTrace(metname)<<" Taking the RecoTracks: "<<theL2CollectionLabel_;
+  edm::Handle<reco::TrackCollection> input_tracksH; 
+  event.getByToken(trackToken_,input_tracksH);
+  const reco::TrackCollection& input_tracks(*input_tracksH.product());
   
   // load the trajectories
   edm::Handle<std::vector<Trajectory> > trajectoryCollection;
@@ -112,14 +109,12 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
   const std::vector<Trajectory>& trajectories(*trajectoryCollection.product());
 
   
-  
-  
   // Loop on all candidates
   bool verbose = true;
-  for (unsigned int i=0; i<cands.size(); i++) {
+  for (unsigned int i=0; i<input_tracks.size(); i++) {
     
     // get the associated recotrack
-    auto recoTrack(*(cands[i].track()));
+    auto recoTrack(input_tracks[i]);
     
     // print some relevant information
     if (verbose) {
@@ -146,6 +141,9 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
     // load the segments
     for(auto rh = recoTrackExtra.recHitsBegin(); rh != recoTrackExtra.recHitsEnd(); rh++) {
     
+      // check if rechit is valid
+      if (!(**rh).isValid()) continue;
+      
       auto id((**rh).rawId());
       if (is_dt(id)) {
         const DTRecSegment4D *seg = dynamic_cast<const DTRecSegment4D*>(rh->get());
@@ -325,92 +323,29 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
     // we don't want to change the direction of the muon, only the pT
 
     // get the reco::Track' PCA track    
-    auto id(cands[i].track().key());
+    //auto id(recoTrack.key());
     //reco::Track pcaTrack(pcaTrackCollection[id]);
     //const reco::TrackCollection& (*orphanHandleTracks.product());
-    Trajectory trajectory(trajectories[id]);
+    Trajectory trajectory(trajectories[i]);
     
     // get the propagation direction
+    // L2Muon defined such that innermost point is where propagation starts
+    // oppositeToMomentum should in principle never occur!
     PropagationDirection direc(trajectory.direction());
     if (direc==PropagationDirection::oppositeToMomentum){
       std::cout << "opposite" << std::endl;
-      TrajectoryMeasurement oldMeas(trajectory.lastMeasurement());
-      TrajectoryStateOnSurface tsos(oldMeas.updatedState());
-      
-      GlobalVector oldGlobalMomentum(tsos.globalMomentum());
-      double oldPt(oldGlobalMomentum.perp());
-      double newPt = 1./std::abs(my_track_.dphi_gv_MB1_MB4);
-      double scaleFactor(newPt/oldPt);
-      // make a new global vector with the pT scaled
-      GlobalVector newGlobalMomentum(oldGlobalMomentum.x()*scaleFactor, 
-                                     oldGlobalMomentum.y()*scaleFactor, 
-                                     oldGlobalMomentum.z());
+      TrajectoryMeasurement newMeas;
+      updateTrajectoryMeasurement(trajectory.lastMeasurement(), newMeas, 1./std::abs(my_track_.dphi_gv_MB1_MB4));
 
-      // get the old global parameters
-      GlobalTrajectoryParameters oldGlobalParameters(tsos.globalParameters());
-
-      // make a new GlobalTrajectoryParameters
-      GlobalTrajectoryParameters newGlobalParameters(oldGlobalParameters.position(),
-                                                     newGlobalMomentum,
-                                                     oldGlobalParameters.charge(),
-                                                     &oldGlobalParameters.magneticField());
-
-      // make a new TSOS from   BasicTrajectoryState
-      TrajectoryStateOnSurface newTSOS(newGlobalParameters,
-                                       tsos.cartesianError(),
-                                       tsos.surface());
-
-      /*
-        Comment from V.I.
-        
-        Still if your pt is in global coord and you really want to force  the pt of the momentum of the track at the first measurement w/o any other change (such as error etc)        
-        you need first to get freeTrajectoryState from the tsos (or simply globalMomentum)
-        http://cmslxr.fnal.gov/lxr/source/TrackingTools/TrajectoryState/interface/TrajectoryStateOnSurface.h?v=CMSSW_7_6_0_pre3#0092
-        operate on globalMomentum in cartesian coord and then “update the tsos” (most probably costruct a new tsos from scratch
-        with this constructor for instance
-        http://cmslxr.fnal.gov/lxr/source/TrackingTools/TrajectoryState/interface/BasicTrajectoryState.h?v=CMSSW_7_6_0_pre3#0145
-      */
-      
-
-      // make a new measurement
-      TrajectoryMeasurement newMeas(oldMeas.forwardPredictedState(),
-                                    oldMeas.backwardPredictedState(),
-                                    newTSOS,
-                                    oldMeas.recHit(),
-                                    oldMeas.estimate());
-      
-      // replace the old measurment by the new measurement
+      // replace the old measurement by the new measurement
       trajectory.pop();
       trajectory.push(newMeas);
     }
     else if (direc==PropagationDirection::alongMomentum){
       std::cout << "along" << std::endl;
-      TrajectoryMeasurement oldMeas(trajectory.firstMeasurement());
-      TrajectoryStateOnSurface tsos(oldMeas.updatedState());
-      
-      // get the local trajectory parameters
-      LocalTrajectoryParameters oldParams(tsos.localParameters());
+      TrajectoryMeasurement newMeas;
+      updateTrajectoryMeasurement(trajectory.lastMeasurement(), newMeas, 1./std::abs(my_track_.dphi_gv_MB1_MB4));
 
-
-      // update the pT
-      LocalVector oldMomentum(oldParams.momentum());
-      float newPt = 1./std::abs(my_track_.dphi_gv_MB1_MB4);
-      LocalVector newMomentum(oldMomentum.theta(), oldMomentum.phi(), newPt);
-
-      LocalPoint oldPosition(oldParams.position());
-      TrackCharge oldCharge(oldParams.charge());
-      LocalTrajectoryParameters newParams(oldPosition, newMomentum, oldCharge);
-      
-      // update the TSOS with the new pT
-      tsos.update(newParams, tsos.surface(), tsos.magneticField());
-
-      // // make a new measurement
-      TrajectoryMeasurement newMeas(oldMeas.forwardPredictedState(),
-                                    oldMeas.backwardPredictedState(),
-                                    tsos,
-                                    oldMeas.recHit(),
-                                    oldMeas.estimate());
-      
       // replace the old measurement by the new measurement
       trajectory.reverse();
       trajectory.pop();
@@ -432,39 +367,34 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::produce(edm::Event& event, c
   
   // get the PCA track collection
   const reco::TrackCollection& pcaTrackCollection(*orphanHandleTracks.product());
-  std::cout << "pcaTrackCollection" << pcaTrackCollection.size() << std::endl;
+  //std::cout << "pcaTrackCollection" << pcaTrackCollection.size() << std::endl;
 
-  // Fill the output candidate collection
-  for (unsigned int i=0; i<pcaTrackCollection.size(); i++) {
-    TrackRef tkref(orphanHandleTracks,i);
-    Particle::Charge q = tkref->charge();
-    Particle::LorentzVector p4(tkref->px(), tkref->py(), tkref->pz(), tkref->p());
-    Particle::Point vtx(tkref->vx(),tkref->vy(), tkref->vz());
-    int pid = 13;
-    if(abs(q)==1) pid = q < 0 ? 13 : -13;
-    else LogWarning(metname) << "L2MuonCandidate has charge = "<<q;
-    RecoChargedCandidate cand(q, p4, vtx, pid);
-    cand.setTrack(tkref);
-    candidates->push_back(cand);
+
+  // Create an output RecoChargedCandidate collection
+  LogTrace(metname)<<" Creating the RecoTrack::PtFromSegmentAlignment collection";
+  std::auto_ptr<reco::TrackCollection> output_tracks(new reco::TrackCollection);
+  output_tracks->reserve(pcaTrackCollection.size());
+  for (auto t: pcaTrackCollection){
+    output_tracks->push_back(std::move(t));
   }
- 
-  event.put(candidates);
+  
+  event.put(output_tracks);
   
   LogTrace(metname)<<" Event loaded"
                    <<"================================";
 }
 
-float L2MuonCandidatePtFromSegmentAlignmentProducer::PtFromSegmentBending(float phi1, float phi2, float phi3, float phi4)
+float L2TrackPtFromSegmentAlignmentProducer::PtFromSegmentBending(float phi1, float phi2, float phi3, float phi4)
 {
   return 0;
 }
 
-float L2MuonCandidatePtFromSegmentAlignmentProducer::PtFromSegmentPosition(float phi1, float phi2, float phi3, float phi4)
+float L2TrackPtFromSegmentAlignmentProducer::PtFromSegmentPosition(float phi1, float phi2, float phi3, float phi4)
 {  
   return 0;
 }
 
-void L2MuonCandidatePtFromSegmentAlignmentProducer::bookTree()
+void L2TrackPtFromSegmentAlignmentProducer::bookTree()
 {
   edm::Service<TFileService> fs;
   track_tree_ = fs->make<TTree>("Tracks", "Tracks");
@@ -525,7 +455,7 @@ void L2MuonCandidatePtFromSegmentAlignmentProducer::bookTree()
 
 
 void
-L2MuonCandidatePtFromSegmentAlignmentProducer::updateTrajectoryMeasurment(const TrajectoryMeasurement& oldMeas, TrajectoryMeasurement newMeas, double newPt)
+L2TrackPtFromSegmentAlignmentProducer::updateTrajectoryMeasurement(const TrajectoryMeasurement& oldMeas, TrajectoryMeasurement newMeas, double newPt)
 {
   /*
     The transverse momentum is in the global coordinate system. We do not wish 
@@ -540,15 +470,16 @@ L2MuonCandidatePtFromSegmentAlignmentProducer::updateTrajectoryMeasurment(const 
   // get the old global momentum
   GlobalVector oldGlobalMomentum(tsos.globalMomentum());
 
-
   // calculate the scale factor by which we scale the pT
   double oldPt(oldGlobalMomentum.perp());
   double scaleFactor(newPt/oldPt);
 
-  // make a new global vector with the pT scaled
-  GlobalVector newGlobalMomentum(oldGlobalMomentum.x()*scaleFactor, 
-                                 oldGlobalMomentum.y()*scaleFactor, 
-                                 oldGlobalMomentum.z());
+  // make a new global vector with the pT scaled, but p unchanged
+  double newPx(oldGlobalMomentum.x()*scaleFactor);
+  double newPy(oldGlobalMomentum.y()*scaleFactor);
+  double newPz(oldGlobalMomentum.z()*scaleFactor);
+                         
+  GlobalVector newGlobalMomentum(newPx, newPy, newPz);
   
   // get the old global parameters
   GlobalTrajectoryParameters oldGlobalParameters(tsos.globalParameters());
@@ -577,4 +508,4 @@ L2MuonCandidatePtFromSegmentAlignmentProducer::updateTrajectoryMeasurment(const 
 
 //define this as a plug-in
 #include "FWCore/Framework/interface/MakerMacros.h"
-DEFINE_FWK_MODULE(L2MuonCandidatePtFromSegmentAlignmentProducer);
+DEFINE_FWK_MODULE(L2TrackPtFromSegmentAlignmentProducer);

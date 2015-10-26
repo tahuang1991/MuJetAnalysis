@@ -381,7 +381,8 @@ void L2TrackPtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm
     }
   } // end loop on muons
   
-  // make a new vector				
+  // make a new vector
+  std::cout << "-----------------------------------" << std::endl;
   std::cout << "Construct a new TrajectoryContainer" << std::endl; 
   TrajectoryContainer newTrajVector;
   for (auto t: trajectories) {       

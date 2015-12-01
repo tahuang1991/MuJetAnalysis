@@ -11,8 +11,6 @@
 
 #include "FWCore/Framework/interface/EDProducer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
-#include "DataFormats/TrackReco/interface/Track.h"
-#include "DataFormats/TrackReco/interface/TrackFwd.h"
 
 #include "TTree.h"
 
@@ -24,9 +22,10 @@ namespace edm {
 
 class CSCGeometry;
 class DTGeometry;
-
 class MuonServiceProxy;
 class MuonTrackLoader;
+class Trajectory;
+class Track;
 
 struct MyTrack
 {  
@@ -117,17 +116,17 @@ class L2TrackPtFromSegmentAlignmentProducer : public edm::EDProducer
   /// produce candidates
   virtual void beginRun(edm::Run &iRun, const edm::EventSetup &iSetup);  
   virtual void produce(edm::Event&, const edm::EventSetup&);
-  float PtFromSegmentBending(float, float, float, float);
-  float PtFromSegmentPosition(float, float, float, float);
 
   void updateTrajectoryMeasurement(const TrajectoryMeasurement&, 
-                                   TrajectoryMeasurement, 
-                                   double pt);
+                                   TrajectoryMeasurement&, 
+                                   double);
+  double ptFromBending(const reco::TrackExtra&);
 
  private:
   // L2 Collection Label
   edm::InputTag theL2CollectionLabel_; 
   edm::EDGetTokenT<reco::TrackCollection> trackToken_;
+  edm::EDGetTokenT<std::vector<Trajectory> > trajectoryToken_;
 
   const CSCGeometry* csc_geometry_;
   const DTGeometry* dt_geometry_;
@@ -138,8 +137,6 @@ class L2TrackPtFromSegmentAlignmentProducer : public edm::EDProducer
   void bookTree();
   TTree* track_tree_;
   MyTrack my_track_;
-
-  float pt_from_segment_alignment_;
 
   MuonServiceProxy* service_;
   MuonTrackLoader* muonTrackLoader_;

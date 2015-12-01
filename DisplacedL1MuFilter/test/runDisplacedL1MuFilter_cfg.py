@@ -31,7 +31,9 @@ Slava's datasets:
 """
 #from Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14 import files
 from SingleMuPlusFlatPt0p2To150_TTI2023Upg14D_PU140bx25_ILT_SLHC14 import files
-#from DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV import files
+from DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV import files
+from DarkSUSY_mH_125_mGammaD_20000_ctau_100_14TeV import files
+from DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV import files
 
 process.source = cms.Source("PoolSource",
                     fileNames = cms.untracked.vstring(*files
@@ -42,8 +44,8 @@ process.source = cms.Source("PoolSource",
 
 
 process.dump=cms.EDAnalyzer('EventContentAnalyzer')
-
-process.p = cms.Path(process.l1extraParticles + process.L1TkMuons + process.dump + process.DisplacedL1MuFilter_PhaseIIGE21)
+#process.l1extraParticles + + process.dump
+process.p = cms.Path(process.l1extraParticles + process.L1TkMuons  + process.DisplacedL1MuFilter_PhaseIIGE21)
 process.p.remove(process.L1TkMuonsDTSequence)
 
 process.out = cms.OutputModule("PoolOutputModule",

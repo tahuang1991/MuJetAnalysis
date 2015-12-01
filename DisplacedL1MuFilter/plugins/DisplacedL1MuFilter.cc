@@ -62,6 +62,17 @@
 // class declaration
 //
 
+double phiHeavyCorr(double pt, double eta, double phi, double q)
+{
+  //  float resEta = eta;
+  float etaProp = std::abs(eta);
+  if (etaProp< 1.1) etaProp = 1.1;
+  float resPhi = phi - 1.464*q*cosh(1.7)/cosh(etaProp)/pt - M_PI/144.;
+  if (resPhi > M_PI) resPhi -= 2.*M_PI;
+  if (resPhi < -M_PI) resPhi += 2.*M_PI;
+  return resPhi;
+}
+
 using namespace std;
 
 class DisplacedL1MuFilter : public edm::EDFilter 
@@ -146,7 +157,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   // Get GMT candidates from all bunch crossings
   auto gmt_records = hl1GmtCands->getRecords();
   for (auto rItr = gmt_records.begin(); rItr!=gmt_records.end() ; ++rItr ){
-    if (rItr->getBxInEvent() < -1 || rItr->getBxInEvent() > 1) continue;
+    if (rItr->getBxInEvent() < 0 || rItr->getBxInEvent() > 0) continue;
     
     auto GMTCands = rItr->getGMTCands();
     for (auto cItr = GMTCands.begin() ; cItr != GMTCands.end() ; ++cItr )
@@ -156,7 +167,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   // L1 Trigger Analysis
   edm::Handle<l1extra::L1MuonParticleCollection> muonsHandle;
   iEvent.getByLabel("l1extraParticles", muonsHandle);
-  const l1extra::L1MuonParticleCollection& muons = *muonsHandle.product();
+  //const l1extra::L1MuonParticleCollection& muons = *muonsHandle.product();
 
   // L1 TrackingTrigger Analysis
   edm::Handle<l1extra::L1TkMuonParticleCollection> tkMuonsHandle;
@@ -169,16 +180,16 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   int nL1MuQuality4 = 0;
   int nL1MuMatched = 0;
   int nL1MuUnMatched = 0;
-  int nL1Mu = muons.size();
+  int nL1Mu = l1GmtCands.size();
   int nL1TkMu = tkMuons.size();
   
   std::cout << "Number of L1Mu candidates " << nL1Mu << std::endl; 
-  for (unsigned int i=0; i<muons.size(); ++i){
-    auto l1Mu = muons[i];
+  for (unsigned int i=0; i<l1GmtCands.size(); ++i){
+    auto l1Mu = l1GmtCands[i];
     // const double l1Mu_pt = l1Mu.pt();
-    const double l1Mu_eta = l1Mu.eta();
-    const double l1Mu_phi = l1Mu.phi();
-    const double l1Mu_quality = l1Mu.gmtMuonCand().quality();
+    const double l1Mu_eta = l1Mu.etaValue();
+    const double l1Mu_phi = l1Mu.phiValue();
+    const double l1Mu_quality = l1Mu.quality();
     std::cout << "l1Mu " << i << std::endl; 
     std::cout << "l1Mu_eta " << l1Mu_eta << std::endl;
     std::cout << "l1Mu_phi " << l1Mu_phi << std::endl;
@@ -187,33 +198,38 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     std::cout << "Number of L1TkMu candidates " << nL1TkMu << std::endl;
     for (unsigned int j=0; j<tkMuons.size(); ++j){
       auto l1TkMu = tkMuons[j];
-      // const double l1TkMu_pt = l1TkMu.pt();
+      const double l1TkMu_pt = l1TkMu.pt();
       const double l1TkMu_eta = l1TkMu.eta();
       const double l1TkMu_phi = l1TkMu.phi();
+      const double l1TkMu_charge = l1TkMu.charge();
+      auto L1Mu_of_L1TkMu(l1TkMu.getMuRef()->gmtMuonCand());
+      const double l1TkMu_phi_corr = phiHeavyCorr(l1TkMu_pt, l1TkMu_eta, l1TkMu_phi, l1TkMu_charge);
       
       std::cout << "\tl1TkMu " << i << std::endl;
+      std::cout << "\tl1TkMu_pt " << l1TkMu_pt << std::endl;
       std::cout << "\tl1TkMu_eta " << l1TkMu_eta << std::endl;
       std::cout << "\tl1TkMu_phi " << l1TkMu_phi << std::endl;
+      std::cout << "\tl1TkMu_phi_corr " << l1TkMu_phi_corr << std::endl;
       
       // calculate dR
-      const double dR(reco::deltaR(l1Mu_eta, l1Mu_phi, l1TkMu_eta, l1TkMu_phi));
+      const double dR(reco::deltaR(l1Mu_eta, l1Mu_phi, l1TkMu_eta, l1TkMu_phi_corr));
       std::cout << "\tdR " << dR << std::endl;
       
       if (dR < dR_L1Mu_L1TkMu){
         nL1MuL1TkMudR012++;
-         std::cout << "\t-- L1Mu matched to L1TkMu" << std::endl;
+        std::cout << "\t-- L1Mu matched to L1TkMu" << std::endl;
       }
       if (l1Mu_quality >= min_L1Mu_Quality){
         nL1MuQuality4++;
-         std::cout << "\t-- L1Mu Q>=4" << std::endl;
+        std::cout << "\t-- L1Mu Q>=4" << std::endl;
       }
       if (dR < dR_L1Mu_L1TkMu and l1Mu_quality >= min_L1Mu_Quality) {
         ++nL1MuMatched;
-         std::cout << "\t-- L1Mu Q>=4 matched to L1TkMu" << std::endl;
+        std::cout << "\t-- L1Mu Q>=4 matched to L1TkMu" << std::endl;
       } 
-      else if(0.12 < dR and dR < dR_L1Mu_noL1TkMu) {        
+      else if(0.12 < dR and dR < dR_L1Mu_noL1TkMu and l1TkMu_pt>4) {        
         ++nL1MuUnMatched;
-         std::cout << "\t-- L1Mu not matched to L1TkMu" << std::endl;
+        std::cout << "\t-- L1Mu not matched to L1TkMu" << std::endl;
       }
     }
   }
@@ -227,9 +243,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
    cout << "nL1TkMu " << nL1TkMu << endl;
    cout << "Filter " << nL1MuMatched + nL1MuUnMatched << endl;
 
-  if (nL1MuMatched + nL1MuUnMatched>0)
+  if (nL1MuMatched>0)
     nFilter++;
-  return (nL1MuMatched + nL1MuUnMatched)==0;
+  return nL1MuMatched==0;
 }
 
 // ------------ method called once each job just before starting event loop  ------------
@@ -241,7 +257,7 @@ DisplacedL1MuFilter::beginJob()
 // ------------ method called once each job just after ending the event loop  ------------
 void 
 DisplacedL1MuFilter::endJob() {
-  cout << "Filter " << nFilter << endl;
+  cout << "Events with at least 1 prompt muon " << nFilter << endl;
 }
 
 // ------------ method called when starting to processes a run  ------------

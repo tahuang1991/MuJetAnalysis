@@ -54,35 +54,41 @@
 #include "DataFormats/L1TrackTrigger/interface/L1TkMuonParticle.h"
 #include "DataFormats/L1TrackTrigger/interface/L1TkMuonParticleFwd.h"
 
-
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
-#include "CondFormats/L1TObjects/interface/L1MuTriggerScales.h"
-#include "CondFormats/DataRecord/interface/L1MuTriggerScalesRcd.h"
-#include "CondFormats/L1TObjects/interface/L1MuTriggerPtScale.h"
-#include "CondFormats/DataRecord/interface/L1MuTriggerPtScaleRcd.h"
-
+#include "DataFormats/Math/interface/deltaR.h"
 //
 // class declaration
 //
 
-class DisplacedL1MuFilter : public edm::EDFilter {
-   public:
-      explicit DisplacedL1MuFilter(const edm::ParameterSet&);
-      ~DisplacedL1MuFilter();
+using namespace std;
 
-      static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-
-   private:
-      virtual void beginJob() override;
-      virtual bool filter(edm::Event&, const edm::EventSetup&) override;
-      virtual void endJob() override;
-      
-      //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
-      //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
-      //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
-      //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+class DisplacedL1MuFilter : public edm::EDFilter 
+{
+public:
+  explicit DisplacedL1MuFilter(const edm::ParameterSet&);
+  ~DisplacedL1MuFilter();
+  
+  static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+  
+private:
+  virtual void beginJob() override;
+  virtual bool filter(edm::Event&, const edm::EventSetup&) override;
+  virtual void endJob() override;
+  
+  //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
+  //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
+  //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+  //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+  
+  int min_L1Mu_Quality;
+  double dR_L1Mu_L1TkMu;
+  double dR_L1Mu_noL1TkMu;
+  double min_pT_L1TkMu;
+  double max_pT_L1TkMu;
+  int nFilter;
+  int verbose;
 
   edm::InputTag L1Mu_input;
   edm::InputTag L1TkMu_input;
@@ -103,7 +109,13 @@ class DisplacedL1MuFilter : public edm::EDFilter {
 //
 DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig)
 {
-   //now do what ever initialization is needed
+  //now do what ever initialization is needed
+  min_L1Mu_Quality = iConfig.getParameter<int>("L1MuQuality");
+  dR_L1Mu_L1TkMu = iConfig.getParameter<double>("dR_L1Mu_L1TkMu");
+  dR_L1Mu_noL1TkMu = iConfig.getParameter<double>("dR_L1Mu_noL1TkMu");
+  min_pT_L1TkMu = iConfig.getParameter<double>("min_pT_L1TkMu");
+  max_pT_L1TkMu = iConfig.getParameter<double>("max_pT_L1TkMu");
+  verbose = iConfig.getParameter<int>("verbose");
   
   L1Mu_input = iConfig.getParameter<edm::InputTag>("L1Mu_input");
   L1TkMu_input = iConfig.getParameter<edm::InputTag>("L1TkMu_input");
@@ -141,17 +153,83 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       if (!cItr->empty()) l1GmtCands.push_back(*cItr);
   }
 
+  // L1 Trigger Analysis
+  edm::Handle<l1extra::L1MuonParticleCollection> muonsHandle;
+  iEvent.getByLabel("l1extraParticles", muonsHandle);
+  const l1extra::L1MuonParticleCollection& muons = *muonsHandle.product();
+
   // L1 TrackingTrigger Analysis
   edm::Handle<l1extra::L1TkMuonParticleCollection> tkMuonsHandle;
   // use both barrel+endcap muons
   iEvent.getByLabel(L1TkMu_input, tkMuonsHandle);
   const l1extra::L1TkMuonParticleCollection& tkMuons = *tkMuonsHandle.product();
-
+  
   // 1) count the number of muons with 
-  int nMuons = 0;
-  for (auto& cand: l1GmtCands){
+  int nL1MuL1TkMudR012 = 0;
+  int nL1MuQuality4 = 0;
+  int nL1MuMatched = 0;
+  int nL1MuUnMatched = 0;
+  int nL1Mu = muons.size();
+  int nL1TkMu = tkMuons.size();
+  
+  std::cout << "Number of L1Mu candidates " << nL1Mu << std::endl; 
+  for (unsigned int i=0; i<muons.size(); ++i){
+    auto l1Mu = muons[i];
+    // const double l1Mu_pt = l1Mu.pt();
+    const double l1Mu_eta = l1Mu.eta();
+    const double l1Mu_phi = l1Mu.phi();
+    const double l1Mu_quality = l1Mu.gmtMuonCand().quality();
+    std::cout << "l1Mu " << i << std::endl; 
+    std::cout << "l1Mu_eta " << l1Mu_eta << std::endl;
+    std::cout << "l1Mu_phi " << l1Mu_phi << std::endl;
+    std::cout << "l1Mu_quality " << l1Mu_quality << std::endl;
     
+    std::cout << "Number of L1TkMu candidates " << nL1TkMu << std::endl;
+    for (unsigned int j=0; j<tkMuons.size(); ++j){
+      auto l1TkMu = tkMuons[j];
+      // const double l1TkMu_pt = l1TkMu.pt();
+      const double l1TkMu_eta = l1TkMu.eta();
+      const double l1TkMu_phi = l1TkMu.phi();
+      
+      std::cout << "\tl1TkMu " << i << std::endl;
+      std::cout << "\tl1TkMu_eta " << l1TkMu_eta << std::endl;
+      std::cout << "\tl1TkMu_phi " << l1TkMu_phi << std::endl;
+      
+      // calculate dR
+      const double dR(reco::deltaR(l1Mu_eta, l1Mu_phi, l1TkMu_eta, l1TkMu_phi));
+      std::cout << "\tdR " << dR << std::endl;
+      
+      if (dR < dR_L1Mu_L1TkMu){
+        nL1MuL1TkMudR012++;
+         std::cout << "\t-- L1Mu matched to L1TkMu" << std::endl;
+      }
+      if (l1Mu_quality >= min_L1Mu_Quality){
+        nL1MuQuality4++;
+         std::cout << "\t-- L1Mu Q>=4" << std::endl;
+      }
+      if (dR < dR_L1Mu_L1TkMu and l1Mu_quality >= min_L1Mu_Quality) {
+        ++nL1MuMatched;
+         std::cout << "\t-- L1Mu Q>=4 matched to L1TkMu" << std::endl;
+      } 
+      else if(0.12 < dR and dR < dR_L1Mu_noL1TkMu) {        
+        ++nL1MuUnMatched;
+         std::cout << "\t-- L1Mu not matched to L1TkMu" << std::endl;
+      }
+    }
   }
+   cout << endl << "--------------------------------" << endl;
+   cout << "event report" << endl;
+   cout << "nL1MuL1TkMudR012 " << nL1MuL1TkMudR012 << endl;
+   cout << "nL1MuQuality4 " << nL1MuQuality4 << endl;
+   cout << "nL1MuMatched " << nL1MuMatched << endl;
+   cout << "nL1MuUnMatched " << nL1MuUnMatched << endl;
+   cout << "nL1Mu " << nL1Mu << endl;
+   cout << "nL1TkMu " << nL1TkMu << endl;
+   cout << "Filter " << nL1MuMatched + nL1MuUnMatched << endl;
+
+  if (nL1MuMatched + nL1MuUnMatched>0)
+    nFilter++;
+  return (nL1MuMatched + nL1MuUnMatched)==0;
 }
 
 // ------------ method called once each job just before starting event loop  ------------
@@ -163,6 +241,7 @@ DisplacedL1MuFilter::beginJob()
 // ------------ method called once each job just after ending the event loop  ------------
 void 
 DisplacedL1MuFilter::endJob() {
+  cout << "Filter " << nFilter << endl;
 }
 
 // ------------ method called when starting to processes a run  ------------

@@ -70,7 +70,7 @@
 #include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
 #include "SimDataFormats/Track/interface/SimTrackContainer.h"
-#include "SimDataFormats/Vertex/interface/SimVertex.h"
+#include "SimDataFormats/Vertex/interface/SimVertexContainer.h"
 #include "DataFormats/Math/interface/normalizedPhi.h"
 
 //
@@ -89,8 +89,8 @@ struct MyL1Mu
   Int_t isMatched;
   Int_t isUnMatched;
   Float_t pt_L1Tk, eta_L1Tk, phi_L1Tk;
-  Float_t dEta_L1Tk, dPhi_L1Tk, dR_L1Tk;
-  Float_t dPhi_L1Tk_corr, dR_L1Tk_corr;
+  Float_t dEta_L1Tk_corr, dPhi_L1Tk_corr, dR_L1Tk_corr;
+  Float_t dEta_L1Tk_prop, dPhi_L1Tk_prop, dR_L1Tk_prop;
 };
 
 double 
@@ -213,11 +213,12 @@ void DisplacedL1MuFilter::bookL1MuTree()
   track_tree_->Branch("pt_L1Tk", &track_.pt_L1Tk);
   track_tree_->Branch("eta_L1Tk", &track_.eta_L1Tk);
   track_tree_->Branch("phi_L1Tk", &track_.phi_L1Tk);
-  track_tree_->Branch("dEta_L1Tk", &track_.dEta_L1Tk);
-  track_tree_->Branch("dPhi_L1Tk", &track_.dPhi_L1Tk);
-  track_tree_->Branch("dR_L1Tk", &track_.dR_L1Tk);
+  track_tree_->Branch("dEta_L1Tk_corr", &track_.dEta_L1Tk_corr);
   track_tree_->Branch("dPhi_L1Tk_corr", &track_.dPhi_L1Tk_corr);
   track_tree_->Branch("dR_L1Tk_corr", &track_.dR_L1Tk_corr);
+  track_tree_->Branch("dEta_L1Tk_prop", &track_.dEta_L1Tk_prop);
+  track_tree_->Branch("dPhi_L1Tk_prop", &track_.dPhi_L1Tk_prop);
+  track_tree_->Branch("dR_L1Tk_prop", &track_.dR_L1Tk_prop);
 }
 
 
@@ -343,19 +344,22 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     double sim_muon_eta_prop;
     double sim_muon_phi_prop;
 
+    GlobalPoint inner_point(sim_vertex.position().x(), sim_vertex.position().y(), sim_vertex.position().z());
+    GlobalVector inner_vec (sim_muon.momentum().x(), sim_muon.momentum().y(), sim_muon.momentum().z());
+
     // propagate the sim muon 
-    if (std::abs(sim_muon.momentum().eta())<1.1){
-      GlobalPoint loc_barrel(propagateToR(sim_vertex, sim_muon.momentum().pt(), sim_muon.charge(), 500.));
+    if (std::abs(sim_muon.momentum().eta())<1.1) {
+      GlobalPoint loc_barrel(propagateToR(inner_point, inner_vec, sim_muon.charge(), 500.));
       sim_muon_eta_prop = loc_barrel.eta();
       sim_muon_phi_prop = loc_barrel.phi();
     } 
     else if (1.1 < sim_muon.momentum().eta() and sim_muon.momentum().eta() < 2.5) {
-      GlobalPoint loc_endcap_pos(propagateToZ(sim_vertex, sim_muon.momentum().pt(), sim_muon.charge(), 850.));
+      GlobalPoint loc_endcap_pos(propagateToZ(inner_point, inner_vec, sim_muon.charge(), 850.));
       sim_muon_eta_prop = loc_endcap_pos.eta();
       sim_muon_phi_prop = loc_endcap_pos.phi();
     }
     else if (-1.1 > sim_muon.momentum().eta() and sim_muon.momentum().eta() > -2.5) {
-      GlobalPoint loc_endcap_neg(propagateToZ(sim_vertex, sim_muon.momentum().pt(), sim_muon.charge(), -850.));
+      GlobalPoint loc_endcap_neg(propagateToZ(inner_point, inner_vec, sim_muon.charge(), -850.));
       sim_muon_eta_prop = loc_endcap_neg.eta();
       sim_muon_phi_prop = loc_endcap_neg.phi();
     }
@@ -363,23 +367,21 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       sim_muon_eta_prop = 99.;
       sim_muon_phi_prop = 99.;
     }
-    
-    
+       
     double sim_phi_corrected = phiHeavyCorr(sim_muon.momentum().pt(), 
                                             sim_muon.momentum().eta(), 
                                             sim_muon.momentum().phi(), 
-                                            sim_muon.charge() );
+                                            sim_muon.charge());
     
     track_.dEta_sim_corr = std::abs(sim_muon.momentum().eta() - l1Mu_eta);
     track_.dPhi_sim_corr = reco::deltaPhi(sim_phi_corrected, l1Mu_phi);
     track_.dR_sim_corr = reco::deltaR(sim_muon.momentum().eta(), sim_phi_corrected, l1Mu_eta, l1Mu_phi);
     std::cout << "track_.dEta_sim_corr " << track_.dEta_sim_corr << " track_.dPhi_sim_corr " << track_.dPhi_sim_corr << " track_.dR_sim_corr " << track_.dR_sim_corr << std::endl;
-      
+    
     track_.dEta_sim_prop = std::abs(sim_muon_eta_prop - l1Mu_eta);
     track_.dPhi_sim_prop = reco::deltaPhi(sim_muon_phi_prop, l1Mu_phi);
     track_.dR_sim_prop = reco::deltaR(sim_muon_eta_prop, sim_muon_phi_prop, l1Mu_eta, l1Mu_phi);
     std::cout << "track_.dEta_sim_prop " << track_.dEta_sim_prop << " track_.dPhi_sim_prop " << track_.dPhi_sim_prop << " track_.dR_sim_prop " << track_.dR_sim_prop << std::endl;
-
 
     bool isMatched = false;
     bool isUnMatched = false;
@@ -423,6 +425,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       std::cout << "pt L1Tk " << l1Tk_pt << std::endl;
       std::cout << "eta L1Tk " << l1Tk_eta << " eta L1Tk prop " << l1Tk_eta_prop << std::endl;
       std::cout << "phi L1Tk " << l1Tk_phi << " phi L1Tk prop " << l1Tk_phi_prop << " phi L1Tk corr " << l1Tk_phi_corr << std::endl;
+
       std::cout << "dEta L1Tk prop " << std::abs(l1Tk_eta - l1Tk_eta_prop) << std::endl;
       std::cout << "dPhi L1Tk prop " << reco::deltaPhi(l1Tk_phi_prop, l1Tk_phi) << std::endl;
       std::cout << "dPhi L1Tk corr " << reco::deltaPhi(l1Tk_phi_corr, l1Tk_phi) << std::endl;
@@ -435,19 +438,21 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       //if(verbose) std::cout << "\tl1Tk_phi_corr " << l1Tk_phi_corr << std::endl;
       
       // calculate dR
-      const double dR(reco::deltaR(l1Mu_eta, l1Mu_phi, l1Tk_eta_prop, l1Tk_phi_prop));
+      const double dR_prop(reco::deltaR(l1Mu_eta, l1Mu_phi, l1Tk_eta_prop, l1Tk_phi_prop));
       const double dR_corr(reco::deltaR(l1Mu_eta, l1Mu_phi, l1Tk_eta, l1Tk_phi_corr));
-      std::cout << "dR prop " << dR << " dR corr " << dR_corr << std::endl;
+      std::cout << "dR_prop " << dR_prop << " dR_corr " << dR_corr << std::endl;
 
       track_.pt_L1Tk = l1Tk_pt;
       track_.eta_L1Tk = l1Tk_eta_prop;
       track_.phi_L1Tk = l1Tk_phi_prop;
-      track_.dEta_L1Tk = std::abs(l1Tk_eta_prop - l1Mu_eta);
-      track_.dPhi_L1Tk = reco::deltaPhi(l1Tk_phi_prop, l1Mu_phi);
-      track_.dR_L1Tk = dR;
-      track_.dPhi_L1Tk_corr = reco::deltaPhi(l1Tk_phi_corr, l1Tk_phi);
-      track_.dR_L1Tk_corr = dR_corr;
+
+      track_.dEta_L1Tk_prop = std::abs(l1Tk_eta_prop - l1Mu_eta);
+      track_.dPhi_L1Tk_prop = reco::deltaPhi(l1Tk_phi_prop, l1Mu_phi);
+      track_.dR_L1Tk_prop = dR_prop;
       
+      track_.dEta_L1Tk_corr = std::abs(l1Tk_eta - l1Mu_eta);
+      track_.dPhi_L1Tk_corr = reco::deltaPhi(l1Tk_phi_corr, l1Mu_phi);
+      track_.dR_L1Tk_corr = dR_corr;
 
       // if(verbose) std::cout << "\tdRL1Mu " << dRL1Mu << std::endl;
       
@@ -460,7 +465,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       //   nL1MuQuality4++;
       //   std::cout << "\t-- L1Mu Q>=4" << std::endl;
       // }
-      if (dR < dR_L1Mu_L1Tk and l1Mu_quality >= min_L1Mu_Quality) {
+      if (dR_prop < dR_L1Mu_L1Tk and l1Mu_quality >= min_L1Mu_Quality) {
         track_.isMatched = 1;
         ++nL1MuMatched;
         std::cout << "\t-- L1Mu Q>=4 matched to L1Tk" << std::endl;
@@ -472,11 +477,11 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         
         if(verbose) std::cout << "\tl1Tk_eta_prop " << l1Tk_eta_prop << std::endl;
         if(verbose) std::cout << "\tl1Tk_phi_prop " << l1Tk_phi_prop << std::endl;
-        if(verbose) std::cout << "\tdR " << dR << std::endl;
+        if(verbose) std::cout << "\tdR_prop " << dR_prop << std::endl;
         isMatched = true;
         break;
       } 
-      if (dR < dR_L1Mu_noL1Tk and l1Tk_pt>4) {        
+      if (dR_prop < dR_L1Mu_noL1Tk and l1Tk_pt>4) {        
         track_.isUnMatched = 1;
         ++nL1MuUnMatched;
         std::cout << "\t-- L1Mu not matched to L1Tk" << std::endl;
@@ -488,7 +493,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         
         if(verbose) std::cout << "\tl1Tk_eta_prop " << l1Tk_eta_prop << std::endl;
         if(verbose) std::cout << "\tl1Tk_phi_prop " << l1Tk_phi_prop << std::endl;
-        if(verbose) std::cout << "\tdR " << dR << std::endl;
+        if(verbose) std::cout << "\tdR_prop " << dR_prop << std::endl;
         isUnMatched = true;
         break;
       }
@@ -616,23 +621,23 @@ DisplacedL1MuFilter::clearBranches()
   track_.charge = -10;
   track_.has_sim = -10;
   track_.quality = -10;
-  track_.dEta_sim_corr = -10;
-  track_.dPhi_sim_corr = -10;
-  track_.dR_sim_corr = -10;
-  track_.dEta_sim_prop = -10;
-  track_.dPhi_sim_prop = -10;
-  track_.dR_sim_prop = -10;
-  track_.isMatched = -10;
-  track_.isUnMatched = -10;
-  track_.pt_L1Tk = -10;
-  track_.eta_L1Tk = -10;
-  track_.phi_L1Tk = -10;
-  track_.dEta_L1Tk = -10;
-  track_.dPhi_L1Tk = -10;
-  track_.dR_L1Tk = -10;
-  track_.dPhi_L1Tk_corr = -10;
-  track_.dR_L1Tk_corr = -10;
-
+  track_.dEta_sim_corr = 99;
+  track_.dPhi_sim_corr = 99;
+  track_.dR_sim_corr = 99;
+  track_.dEta_sim_prop = 99;
+  track_.dPhi_sim_prop = 99;
+  track_.dR_sim_prop = 99;
+  track_.isMatched = -99;
+  track_.isUnMatched = -99;
+  track_.pt_L1Tk = -99;
+  track_.eta_L1Tk = -99;
+  track_.phi_L1Tk = -99;
+  track_.dEta_L1Tk_corr = 99;
+  track_.dPhi_L1Tk_corr = 99;
+  track_.dR_L1Tk_corr = 99;
+  track_.dEta_L1Tk_prop = 99;
+  track_.dPhi_L1Tk_prop = 99;
+  track_.dR_L1Tk_prop = 99;
 }
 
 //define this as a plug-in

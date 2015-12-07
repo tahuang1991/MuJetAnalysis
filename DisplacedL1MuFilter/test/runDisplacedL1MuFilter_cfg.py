@@ -19,7 +19,7 @@ process.load('Configuration.StandardSequences.L1Reco_cff')
 #process.pMuons = cms.Path( process.l1extraParticles + process.L1TkMuons )
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(1000)
 )
 
 """

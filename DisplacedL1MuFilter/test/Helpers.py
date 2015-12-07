@@ -120,6 +120,8 @@ def getEffObject(p, variable, binning, denom_cut, extra_num_cut):
 
     denom = get_1D(p, "denom", "denom", binning, variable, denom_cut)
     num = get_1D(p, "num", "num", binning, variable, AND(denom_cut, extra_num_cut))
+    print "denom", denom.GetEntries()
+    print "num", num.GetEntries()
     h = TEfficiency(num, denom)
 #    h = clearEmptyBinsEff(h)
     SetOwnership(h, False)

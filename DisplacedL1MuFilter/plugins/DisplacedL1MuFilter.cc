@@ -84,6 +84,7 @@ struct MyL1Mu
   Int_t endcap;
   Int_t has_sim;
   Int_t quality;
+  Float_t pt_sim, eta_sim, phi_sim;
   Float_t dEta_sim_corr, dPhi_sim_corr, dR_sim_corr;
   Float_t dEta_sim_prop, dPhi_sim_prop, dR_sim_prop;
   Int_t isMatched;
@@ -199,6 +200,9 @@ void DisplacedL1MuFilter::bookL1MuTree()
   track_tree_->Branch("pt", &track_.pt);
   track_tree_->Branch("eta", &track_.eta);
   track_tree_->Branch("phi", &track_.phi);
+  track_tree_->Branch("pt_sim", &track_.pt_sim);
+  track_tree_->Branch("eta_sim", &track_.eta_sim);
+  track_tree_->Branch("phi_sim", &track_.phi_sim);
   track_tree_->Branch("charge", &track_.charge);
   track_tree_->Branch("has_sim", &track_.has_sim);
   track_tree_->Branch("quality", &track_.quality);
@@ -291,7 +295,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   int nL1Mu = l1GmtCands.size();
   int nL1Tk = TTTracks.size();
   
-  bool verbose = true;
+  bool verbose = false;
   if(verbose) std::cout << "Number of L1Mu candidates before selections " << nL1Mu << std::endl; 
 
   nTotalMuons= nTotalMuons + nL1Mu;
@@ -368,6 +372,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       sim_muon_phi_prop = 99.;
     }
        
+    track_.pt_sim = sim_muon.momentum().pt();
+    track_.eta_sim = sim_muon.momentum().eta();
+    track_.phi_sim = sim_muon.momentum().phi();
+
     double sim_phi_corrected = phiHeavyCorr(sim_muon.momentum().pt(), 
                                             sim_muon.momentum().eta(), 
                                             sim_muon.momentum().phi(), 
@@ -621,6 +629,9 @@ DisplacedL1MuFilter::clearBranches()
   track_.charge = -10;
   track_.has_sim = -10;
   track_.quality = -10;
+  track_.pt_sim = -10;
+  track_.eta_sim = -10;
+  track_.phi_sim = -10;
   track_.dEta_sim_corr = 99;
   track_.dPhi_sim_corr = 99;
   track_.dR_sim_corr = 99;

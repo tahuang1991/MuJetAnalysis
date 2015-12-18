@@ -4,8 +4,9 @@ process = cms.Process("HLTBending")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 
-process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 #process.load('Configuration.Geometry.GeometrySimDB_cff')
+process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
+#process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.EventContent.EventContent_cff')

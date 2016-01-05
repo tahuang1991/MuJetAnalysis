@@ -5,6 +5,16 @@ import array
 from math import log10, floor
 from logic import *
 
+#
+def set_style():
+   gStyle.SetStatStyle(0)
+   gStyle.SetOptStat(11111111)
+   gStyle.SetTitleBorderSize(0);
+   gStyle.SetPadLeftMargin(0.126);
+   gStyle.SetPadRightMargin(0.04);
+   gStyle.SetPadTopMargin(0.06);
+   gStyle.SetPadBottomMargin(0.13);
+   
 #______________________________________________________________________________
 def draw_1D(p, to_draw, c_title, title, h_bins, cut="", opt = ""):
    gStyle.SetStatStyle(0)
@@ -28,21 +38,43 @@ def draw_1D(p, to_draw, c_title, title, h_bins, cut="", opt = ""):
    h.GetYaxis().SetLabelSize(0.05)
    h.GetXaxis().SetTitleSize(0.06)
    h.GetYaxis().SetTitleSize(0.06)
-   header = "                                                         PU = 0, 14 TeV"
-   h.SetTitle(header)
+   header = "                                                         PU = 140, 14 TeV"
+#   h.SetTitle(header)
    h.Draw()
-   tex2 = applyTdrStyle()
    h.SetMinimum(0.)
    h.SetMaximum(h.GetMaximum()*1.2)
    c.SaveAs("" + c_title + ".png")
       
 
+#______________________________________________________________________________
+def draw_1D_root(p, to_draw, c_title, title, h_bins, cut="", opt = ""):
+   p.Draw(to_draw + ">>" + "h_name" + h_bins, cut)
+   h = TH1F(gDirectory.Get("h_name").Clone("h_name"))
+   if not h:
+      sys.exit('h does not exist')
+   h.SetTitle(title)
+   h.SetLineWidth(2)
+   h.SetLineColor(kBlue)
+   h.GetXaxis().SetLabelSize(0.05)
+   h.GetYaxis().SetLabelSize(0.05)
+   h.GetXaxis().SetTitleSize(0.06)
+   h.GetYaxis().SetTitleSize(0.06)
+   h.Draw()
+   h.SetMinimum(0.)
+   h.SetMaximum(h.GetMaximum()*1.2)
+   h.SaveAs("" + c_title + ".root")
+
+
 #_______________________________________________________________________________
-def draw_2D(p, c_title, title, h_bins, to_draw, cut, opt = ""):
+def draw_2D(p, to_draw, c_title, title, h_bins, cut="", opt = ""):
   gStyle.SetStatStyle(0)
   gStyle.SetOptStat(1110)
   c = TCanvas("c","c",800,600)
   c.Clear()
+  gStyle.SetPadLeftMargin(0.126);
+  gStyle.SetPadRightMargin(0.04);
+  gStyle.SetPadTopMargin(0.06);
+  gStyle.SetPadBottomMargin(0.13);
   p.Draw(to_draw + ">>h_" + h_bins, cut)
   h = TH2F(gDirectory.Get("h_"))
   if not h:
@@ -51,12 +83,9 @@ def draw_2D(p, c_title, title, h_bins, to_draw, cut, opt = ""):
   h.SetTitle(title)
   h.SetLineWidth(2)
   h.SetLineColor(kBlue)
-  h.Draw(opt)
-
-  l = TLine(0, 1./6, 2.4, 1./6)
-  l.SetLineColor(kRed)
-  l.Draw("same")
-  
+  header = "                                                         PU = 140, 14 TeV"
+#  h.SetTitle(header)
+  h.Draw(opt) 
   c.SaveAs("" + c_title + ".png")
 
 
@@ -77,7 +106,7 @@ def applyTdrStyle():
     ## ratio of "CMS" and extra text size
     extraOverCmsTextSize  = 0.76
 
-    lumi_14TeV = "PU = 0"
+    lumi_14TeV = "PU = 140"
 
     """
     H = pad.GetWh();
@@ -150,7 +179,7 @@ def makeEtaEffPlot(h, plotTitle, legTitle):
     #gStyle.SetStatStyle(0)
     base = TH1D("base","base", 25, 0, 2.5)
     base.SetStats(0)
-    base.SetTitle("                                                                      14 TeV,  PU = 140; L1Mu #eta; Efficiency")
+    base.SetTitle("                                                                      14 TeV,  PU = 140; #eta; Efficiency")
     base.SetMinimum(0)
     base.SetMaximum(1.1)
     base.GetXaxis().SetLabelSize(0.05)
@@ -165,11 +194,11 @@ def makeEtaEffPlot(h, plotTitle, legTitle):
     h.SetMarkerStyle(1)
     h.SetMarkerSize(15)
     h.Draw("same")
-    leg = TLegend(0.2,0.3,0.75,0.45,"","brNDC")
+    leg = TLegend(0.1,0.3,0.75,0.45,"","brNDC")
     leg.SetFillColor(kWhite)
     leg.SetBorderSize(0)
     leg.SetFillStyle(0)
-    leg.SetTextSize(0.05)
+    leg.SetTextSize(0.04)
     leg.AddEntry(h,legTitle,"l")
     leg.Draw("same")
     #tex = drawLabel(p.ctau + ", " + p.mass,0.45,0.55,0.05)

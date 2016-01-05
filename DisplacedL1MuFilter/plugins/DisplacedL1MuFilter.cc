@@ -79,19 +79,26 @@
 
 struct MyL1Mu
 {
+  Int_t lumi, run, event;
   Float_t pt, eta, phi;
   Int_t charge;
   Int_t endcap;
   Int_t has_sim;
   Int_t quality;
-  Float_t pt_sim, eta_sim, phi_sim;
+  Float_t pt_sim, eta_sim, phi_sim, charge_sim;
+  Float_t eta_sim_prop, phi_sim_prop;
+  Float_t eta_sim_corr, phi_sim_corr;
   Float_t dEta_sim_corr, dPhi_sim_corr, dR_sim_corr;
   Float_t dEta_sim_prop, dPhi_sim_prop, dR_sim_prop;
   Int_t isMatched;
   Int_t isUnMatched;
-  Float_t pt_L1Tk, eta_L1Tk, phi_L1Tk;
+  Int_t isUnMatchedL1TkPt4;
+  Float_t pt_L1Tk, eta_L1Tk, phi_L1Tk, charge_L1Tk;
+  Float_t eta_L1Tk_corr, phi_L1Tk_corr;
+  Float_t eta_L1Tk_prop, phi_L1Tk_prop;
   Float_t dEta_L1Tk_corr, dPhi_L1Tk_corr, dR_L1Tk_corr;
   Float_t dEta_L1Tk_prop, dPhi_L1Tk_prop, dR_L1Tk_prop;
+  Float_t dEta_sim_L1Tk, dPhi_sim_L1Tk, dR_sim_L1Tk;
 };
 
 double 
@@ -106,6 +113,13 @@ phiHeavyCorr(double pt, double eta, double phi, double q)
   return resPhi;
 }
 
+double dRWeighted(double eta1, double phi1, double eta2, double phi2, double sigma_eta=2., double sigma_phi=1.)
+{
+  double dEta = std::abs(eta1 - eta2);
+  double dPhi = reco::deltaPhi(phi1, phi2);
+  double dR = std::sqrt((dEta*dEta)/(sigma_eta*sigma_eta) + (dPhi*dPhi)/(sigma_phi*sigma_phi));
+  return dR;
+}
 
 bool 
 isSimTrackGood(const SimTrack &t)
@@ -152,8 +166,11 @@ private:
   double min_pT_L1Tk;
   double max_pT_L1Tk;
   int nTotalMuons = 0;
-  int nPromptMuons = 0;
+  // int nPromptMuons = 0;
+  int eventPassing = 0;
   int verbose;
+  int eventsWithMuons = 0;
+  int eventsWithDisplacedMuons = 0;
 
   edm::InputTag L1Mu_input;
   edm::InputTag L1TkMu_input;
@@ -197,6 +214,9 @@ void DisplacedL1MuFilter::bookL1MuTree()
 {
   edm::Service< TFileService > fs;
   track_tree_ = fs->make<TTree>("L1MuTree", "L1MuTree");
+  track_tree_->Branch("lumi", &track_.lumi);
+  track_tree_->Branch("run", &track_.run);
+  track_tree_->Branch("event", &track_.event);
   track_tree_->Branch("pt", &track_.pt);
   track_tree_->Branch("eta", &track_.eta);
   track_tree_->Branch("phi", &track_.phi);
@@ -204,8 +224,13 @@ void DisplacedL1MuFilter::bookL1MuTree()
   track_tree_->Branch("eta_sim", &track_.eta_sim);
   track_tree_->Branch("phi_sim", &track_.phi_sim);
   track_tree_->Branch("charge", &track_.charge);
+  track_tree_->Branch("charge_sim", &track_.charge_sim);
   track_tree_->Branch("has_sim", &track_.has_sim);
   track_tree_->Branch("quality", &track_.quality);
+  track_tree_->Branch("eta_sim_prop", &track_.eta_sim_prop);
+  track_tree_->Branch("phi_sim_prop", &track_.phi_sim_prop);
+  track_tree_->Branch("eta_sim_corr", &track_.eta_sim_corr);
+  track_tree_->Branch("phi_sim_corr", &track_.phi_sim_corr);
   track_tree_->Branch("dEta_sim_corr", &track_.dEta_sim_corr);
   track_tree_->Branch("dPhi_sim_corr", &track_.dPhi_sim_corr);
   track_tree_->Branch("dR_sim_corr", &track_.dR_sim_corr);
@@ -214,15 +239,24 @@ void DisplacedL1MuFilter::bookL1MuTree()
   track_tree_->Branch("dR_sim_prop", &track_.dR_sim_prop);
   track_tree_->Branch("isMatched", &track_.isMatched);
   track_tree_->Branch("isUnMatched", &track_.isUnMatched);
+  track_tree_->Branch("isUnMatchedL1TkPt4", &track_.isUnMatchedL1TkPt4);
   track_tree_->Branch("pt_L1Tk", &track_.pt_L1Tk);
   track_tree_->Branch("eta_L1Tk", &track_.eta_L1Tk);
   track_tree_->Branch("phi_L1Tk", &track_.phi_L1Tk);
+  track_tree_->Branch("charge_L1Tk", &track_.charge_L1Tk);
+  track_tree_->Branch("eta_L1Tk_prop", &track_.eta_L1Tk_prop);
+  track_tree_->Branch("phi_L1Tk_prop", &track_.phi_L1Tk_prop);
+  track_tree_->Branch("eta_L1Tk_corr", &track_.eta_L1Tk_corr);
+  track_tree_->Branch("phi_L1Tk_corr", &track_.phi_L1Tk_corr);
   track_tree_->Branch("dEta_L1Tk_corr", &track_.dEta_L1Tk_corr);
   track_tree_->Branch("dPhi_L1Tk_corr", &track_.dPhi_L1Tk_corr);
   track_tree_->Branch("dR_L1Tk_corr", &track_.dR_L1Tk_corr);
   track_tree_->Branch("dEta_L1Tk_prop", &track_.dEta_L1Tk_prop);
   track_tree_->Branch("dPhi_L1Tk_prop", &track_.dPhi_L1Tk_prop);
   track_tree_->Branch("dR_L1Tk_prop", &track_.dR_L1Tk_prop);
+  track_tree_->Branch("dEta_sim_L1Tk", &track_.dEta_sim_L1Tk);
+  track_tree_->Branch("dPhi_sim_L1Tk", &track_.dPhi_sim_L1Tk);
+  track_tree_->Branch("dR_sim_L1Tk", &track_.dR_sim_L1Tk);
 }
 
 
@@ -279,27 +313,32 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByLabel(L1TkMu_input, tkMuonsHandle);
   //const l1extra::L1TkMuonParticleCollection& tkMuons = *tkMuonsHandle.product();
 
-  edm::Handle<edm::SimTrackContainer> sim_tracks;
-  iEvent.getByLabel("g4SimHits", sim_tracks);
-  const edm::SimTrackContainer & sim_trks = *sim_tracks.product();
+  // edm::Handle<edm::SimTrackContainer> sim_tracks;
+  // iEvent.getByLabel("g4SimHits", sim_tracks);
+  // const edm::SimTrackContainer & sim_trks = *sim_tracks.product();
 
-  edm::Handle<edm::SimVertexContainer> sim_vertices;
-  iEvent.getByLabel("g4SimHits", sim_vertices);
-  const edm::SimVertexContainer & sim_vtxs = *sim_vertices.product();
+  // edm::Handle<edm::SimVertexContainer> sim_vertices;
+  // iEvent.getByLabel("g4SimHits", sim_vertices);
+  // const edm::SimVertexContainer & sim_vtxs = *sim_vertices.product();
   
   // 1) count the number of muons with 
-  int nL1MuL1TkdR012 = 0;
-  int nL1MuQuality4 = 0;
-  int nL1MuMatched = 0;
-  int nL1MuUnMatched = 0;
+  // int nL1MuL1TkdR012 = 0;
+  // int nL1MuQuality4 = 0;
+  // int nL1MuMatched = 0;
+  // int nL1MuUnMatched = 0;
   int nL1Mu = l1GmtCands.size();
-  int nL1Tk = TTTracks.size();
+  // int nL1Tk = TTTracks.size();
+  
+  if (nL1Mu>=1)
+    eventsWithMuons++;
   
   bool verbose = false;
   if(verbose) std::cout << "Number of L1Mu candidates before selections " << nL1Mu << std::endl; 
 
-  nTotalMuons= nTotalMuons + nL1Mu;
-  
+  nTotalMuons = nTotalMuons + nL1Mu;
+
+  int nMatchedMuons = 0;
+  int nUnMatchedMuons = 0;
   for (unsigned int i=0; i<l1GmtCands.size(); ++i){
     auto l1Mu = l1GmtCands[i];
     const double l1Mu_pt = l1Mu.ptValue();
@@ -307,209 +346,443 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     const double l1Mu_phi =  normalizedPhi(l1Mu.phiValue());
     const double l1Mu_quality = l1Mu.quality();
 
-    // pt cut
-    //    if (l1Mu_pt<15) continue;
-
-    // eta cut
-    //    if (std::abs(l1Mu_eta) > 2.5) continue;
-
-    if(verbose) std::cout << "l1Mu " << i << std::endl; 
-    if(verbose) std::cout << "l1Mu_pt " << l1Mu_pt << std::endl;
-    if(verbose) std::cout << "l1Mu_eta " << l1Mu_eta << std::endl;
-    if(verbose) std::cout << "l1Mu_phi " << l1Mu_phi << std::endl;
-    if(verbose) std::cout << "l1Mu_quality " << l1Mu_quality << std::endl;
-    if(verbose) std::cout << "Number of L1Tk candidates " << nL1Tk << std::endl;
-
-
     track_.pt = l1Mu_pt;
     track_.eta = l1Mu_eta;
     track_.phi = l1Mu_phi;
     track_.charge = l1Mu.charge();
     track_.quality = l1Mu_quality;
 
-
-    // propagate the sim track using Slava's formula
-    // calculate the deltaR
-    std::cout << "Number of simtracks in this bx " << sim_trks.size() << std::endl;
-
-    int nSimMu = 0;
-    int index;
-    int indexFound = 0;
-    for (auto& t: sim_trks) {
-      index++;
-      if (!isSimTrackGood(t)) continue;
-      nSimMu++;
-      indexFound = index;
+    if(verbose) {
+    cout << "l1Mu " << i << endl; 
+    cout << "l1Mu_pt " << l1Mu_pt << endl;
+    cout << "l1Mu_eta " << l1Mu_eta << endl;
+    cout << "l1Mu_phi " << l1Mu_phi << endl;
+    cout << "l1Mu_quality " << l1Mu_quality << endl;
     }
-    auto sim_muon = sim_trks[indexFound];
-    auto sim_vertex = sim_vtxs[sim_muon.vertIndex()];
-    std::cout << "Number of sim muons in this bx " << nSimMu << std::endl;
-
-    double sim_muon_eta_prop;
-    double sim_muon_phi_prop;
-
-    GlobalPoint inner_point(sim_vertex.position().x(), sim_vertex.position().y(), sim_vertex.position().z());
-    GlobalVector inner_vec (sim_muon.momentum().x(), sim_muon.momentum().y(), sim_muon.momentum().z());
-
-    // propagate the sim muon 
-    if (std::abs(sim_muon.momentum().eta())<1.1) {
-      GlobalPoint loc_barrel(propagateToR(inner_point, inner_vec, sim_muon.charge(), 500.));
-      sim_muon_eta_prop = loc_barrel.eta();
-      sim_muon_phi_prop = loc_barrel.phi();
-    } 
-    else if (1.1 < sim_muon.momentum().eta() and sim_muon.momentum().eta() < 2.5) {
-      GlobalPoint loc_endcap_pos(propagateToZ(inner_point, inner_vec, sim_muon.charge(), 850.));
-      sim_muon_eta_prop = loc_endcap_pos.eta();
-      sim_muon_phi_prop = loc_endcap_pos.phi();
-    }
-    else if (-1.1 > sim_muon.momentum().eta() and sim_muon.momentum().eta() > -2.5) {
-      GlobalPoint loc_endcap_neg(propagateToZ(inner_point, inner_vec, sim_muon.charge(), -850.));
-      sim_muon_eta_prop = loc_endcap_neg.eta();
-      sim_muon_phi_prop = loc_endcap_neg.phi();
-    }
-    else{
-      sim_muon_eta_prop = 99.;
-      sim_muon_phi_prop = 99.;
-    }
-       
-    track_.pt_sim = sim_muon.momentum().pt();
-    track_.eta_sim = sim_muon.momentum().eta();
-    track_.phi_sim = sim_muon.momentum().phi();
-
-    double sim_phi_corrected = phiHeavyCorr(sim_muon.momentum().pt(), 
-                                            sim_muon.momentum().eta(), 
-                                            sim_muon.momentum().phi(), 
-                                            sim_muon.charge());
-    
-    track_.dEta_sim_corr = std::abs(sim_muon.momentum().eta() - l1Mu_eta);
-    track_.dPhi_sim_corr = reco::deltaPhi(sim_phi_corrected, l1Mu_phi);
-    track_.dR_sim_corr = reco::deltaR(sim_muon.momentum().eta(), sim_phi_corrected, l1Mu_eta, l1Mu_phi);
-    std::cout << "track_.dEta_sim_corr " << track_.dEta_sim_corr << " track_.dPhi_sim_corr " << track_.dPhi_sim_corr << " track_.dR_sim_corr " << track_.dR_sim_corr << std::endl;
-    
-    track_.dEta_sim_prop = std::abs(sim_muon_eta_prop - l1Mu_eta);
-    track_.dPhi_sim_prop = reco::deltaPhi(sim_muon_phi_prop, l1Mu_phi);
-    track_.dR_sim_prop = reco::deltaR(sim_muon_eta_prop, sim_muon_phi_prop, l1Mu_eta, l1Mu_phi);
-    std::cout << "track_.dEta_sim_prop " << track_.dEta_sim_prop << " track_.dPhi_sim_prop " << track_.dPhi_sim_prop << " track_.dR_sim_prop " << track_.dR_sim_prop << std::endl;
-
-    bool isMatched = false;
-    bool isUnMatched = false;
-
+    // calculate the number of L1Tk within 0.12
     for (unsigned int j=0; j<TTTracks.size(); ++j){
       auto l1Tk = TTTracks[j];
       const double l1Tk_pt = l1Tk.getMomentum().perp();
       const double l1Tk_eta = l1Tk.getMomentum().eta();
       const double l1Tk_phi = l1Tk.getMomentum().phi();
-      double l1Tk_charge = l1Tk.getRInv()>0? 1: -1;
-      const double l1Tk_phi_corr = phiHeavyCorr(l1Tk_pt, 
-                                                l1Tk_eta, 
-                                                l1Tk_phi, 
-                                                l1Tk_charge);
-
-      // propagate the L1Tk to the second station
-      
-      double l1Tk_eta_prop;
-      double l1Tk_phi_prop;
-      
-      if (std::abs(l1Tk_eta)<1.1){
-        GlobalPoint loc_barrel(propagateToR(l1Tk.getPOCA(), l1Tk.getMomentum(), l1Tk_charge, 500.));
-        l1Tk_eta_prop = loc_barrel.eta();
-        l1Tk_phi_prop = loc_barrel.phi();
-      } 
-      else if (1.1 < l1Tk_eta and l1Tk_eta < 2.5) {
-        GlobalPoint loc_endcap_pos(propagateToZ(l1Tk.getPOCA(), l1Tk.getMomentum(), l1Tk_charge, 850.));
-        l1Tk_eta_prop = loc_endcap_pos.eta();
-        l1Tk_phi_prop = loc_endcap_pos.phi();
+      const double l1Tk_charge = l1Tk.getRInv()>0? 1: -1;
+      const double l1Tk_phi_corr = phiHeavyCorr(l1Tk_pt, l1Tk_eta, l1Tk_phi, l1Tk_charge);
+      const double dR_l1Mu_l1Tk = reco::deltaR(l1Tk_eta, l1Tk_phi_corr, l1Mu_eta, l1Mu_phi);
+      if (dR_l1Mu_l1Tk > 0.4)
+        continue;
+      if(verbose) std::cout << "\tL1Tk candidate " << j << " dR " << dR_l1Mu_l1Tk << " L1Tk pt " << l1Tk_pt << std::endl;
+      if (true) {
+        if (dR_l1Mu_l1Tk <=0.12 and track_.quality>=4) { 
+          nMatchedMuons++;
+          track_.isMatched = 1;
+          if(verbose) std::cout << "\t\tMatched!!!" << std::endl;
+          //          break;
+        }
+        else if (dR_l1Mu_l1Tk <=0.4) { //0.12 < dR_l1Mu_l1Tk and 
+          nUnMatchedMuons++;
+          track_.isUnMatched = 1;
+          if(verbose) std::cout << "\t\tUnMatched!!!" << std::endl;
+          if (l1Tk_pt>=4) {
+            track_.isUnMatchedL1TkPt4 = 1;
+          }
+          //          break;
+        }
       }
-      else if (-1.1 > l1Tk_eta and l1Tk_eta > -2.5) {
-        GlobalPoint loc_endcap_neg(propagateToZ(l1Tk.getPOCA(), l1Tk.getMomentum(), l1Tk_charge, -850.));
-        l1Tk_eta_prop = loc_endcap_neg.eta();
-        l1Tk_phi_prop = loc_endcap_neg.phi();
+    }
+    // if (nL1MuQ4_With_L1TkWithinDR012>=1) {         
+    //   nMatchedMuons++;    
+    // }
+  }
+  if(verbose)std::cout << "Total number of muons in this event: " << nL1Mu << std::endl;
+  if(verbose)std::cout << "Number of matched muons: " << nMatchedMuons << std::endl;
+  if(verbose)std::cout << "Number of unmatched muons: " << nUnMatchedMuons << std::endl;
+  int displacedMuons = nL1Mu - nMatchedMuons - nUnMatchedMuons;
+  if(verbose)std::cout << "Number of displaced muons: " << displacedMuons << std::endl;
+  if (displacedMuons >=1) 
+    eventsWithDisplacedMuons++;
+  return true;
+  /*
+    // get the SIM muon in this event
+    // for a muon gun there is only 1 muon
+    // this needs to be adjusted in order to work
+    // for a 4-muon event
+    int nSimMu = 0;
+    int indexFound = 0;
+    for (unsigned int i=0; i<sim_trks.size(); ++i) {
+      if (!isSimTrackGood(sim_trks[i])) continue;
+      nSimMu++;
+      indexFound = i;
+    }
+   
+    auto sim_muon = sim_trks[indexFound];
+    auto sim_vertex = sim_vtxs[sim_muon.vertIndex()];
+    track_.pt_sim = sim_muon.momentum().pt();
+    track_.eta_sim = sim_muon.momentum().eta();
+    track_.phi_sim = sim_muon.momentum().phi();
+    track_.charge_sim = sim_muon.charge();
+    
+    // first loop on tracker tracks to get the best matching TTTrack
+    double dR_SIM_L1Tk_min = 9999;
+    int i_SIM_L1Tk_min = -1;
+    for (unsigned int j=0; j<TTTracks.size(); ++j){
+      auto l1Tk = TTTracks[j];
+      const double l1Tk_eta = l1Tk.getMomentum().eta();
+      const double l1Tk_phi = l1Tk.getMomentum().phi();
+      const double dR_SIM_L1Tk(reco::deltaR(track_.eta_sim, track_.phi_sim, l1Tk_eta, l1Tk_phi));
+      if (dR_SIM_L1Tk < dR_SIM_L1Tk_min) {
+        dR_SIM_L1Tk_min = dR_SIM_L1Tk;
+        i_SIM_L1Tk_min = j;
       }
-      else{
-        l1Tk_eta_prop = 99.;
-        l1Tk_phi_prop = 99.;
-      }
+    }
 
-      std::cout << "pt L1Tk " << l1Tk_pt << std::endl;
-      std::cout << "eta L1Tk " << l1Tk_eta << " eta L1Tk prop " << l1Tk_eta_prop << std::endl;
-      std::cout << "phi L1Tk " << l1Tk_phi << " phi L1Tk prop " << l1Tk_phi_prop << " phi L1Tk corr " << l1Tk_phi_corr << std::endl;
-
-      std::cout << "dEta L1Tk prop " << std::abs(l1Tk_eta - l1Tk_eta_prop) << std::endl;
-      std::cout << "dPhi L1Tk prop " << reco::deltaPhi(l1Tk_phi_prop, l1Tk_phi) << std::endl;
-      std::cout << "dPhi L1Tk corr " << reco::deltaPhi(l1Tk_phi_corr, l1Tk_phi) << std::endl;
+    // L1Tk properties
+    auto l1Tk = TTTracks[i_SIM_L1Tk_min];
+    track_.pt_L1Tk = l1Tk.getMomentum().perp();
+    track_.eta_L1Tk = l1Tk.getMomentum().eta();
+    track_.phi_L1Tk = l1Tk.getMomentum().phi();
+    track_.charge_L1Tk = l1Tk.getRInv()>0? 1: -1;
   
-      // calculate the dR between the two L1Mus
-      // const double dRL1Mu(reco::deltaR(l1Mu_eta, l1Mu_phi, L1Mu_of_L1TkMu.etaValue(), L1Mu_of_L1TkMu.phiValue()));
+    // only keep the L1Mu which is associated to a SIM muon
+    // propagate the SIM muon to the outer stations
+    double sim_muon_eta_prop;
+    double sim_muon_phi_prop;
+    
+    GlobalPoint inner_point(sim_vertex.position().x(), sim_vertex.position().y(), sim_vertex.position().z());
+    GlobalVector inner_vec (sim_muon.momentum().x(), sim_muon.momentum().y(), sim_muon.momentum().z());
+    if (std::abs(sim_muon.momentum().eta())<1.1) {
+      GlobalPoint loc_barrel(propagateToR(inner_point, inner_vec, sim_muon.charge(), 500.));
+       sim_muon_eta_prop = loc_barrel.eta();
+       sim_muon_phi_prop = loc_barrel.phi();
+     } 
+     else if (1.1 < sim_muon.momentum().eta() and sim_muon.momentum().eta() < 2.5) {
+       GlobalPoint loc_endcap_pos(propagateToZ(inner_point, inner_vec, sim_muon.charge(), 850.));
+       sim_muon_eta_prop = loc_endcap_pos.eta();
+       sim_muon_phi_prop = loc_endcap_pos.phi();
+     }
+     else if (-1.1 > sim_muon.momentum().eta() and sim_muon.momentum().eta() > -2.5) {
+       GlobalPoint loc_endcap_neg(propagateToZ(inner_point, inner_vec, sim_muon.charge(), -850.));
+       sim_muon_eta_prop = loc_endcap_neg.eta();
+       sim_muon_phi_prop = loc_endcap_neg.phi();
+     }
+     else {
+       sim_muon_eta_prop = 99.;
+       sim_muon_phi_prop = 99.;
+     }
+    
+    // propagate the muon with steppinghelixpropagators
+    track_.eta_sim_prop = sim_muon_eta_prop;
+    track_.phi_sim_prop = sim_muon_phi_prop -  M_PI/144.; // do a phi correction after the propagation of PI/144 as suggested by Slava
 
-      // const double l1TkMu_phi_corr = phiHeavyCorr(l1TkMu_pt, l1TkMu_eta, l1TkMu_phi, l1TkMu_charge);
-      
-      //if(verbose) std::cout << "\tl1Tk_phi_corr " << l1Tk_phi_corr << std::endl;
-      
-      // calculate dR
-      const double dR_prop(reco::deltaR(l1Mu_eta, l1Mu_phi, l1Tk_eta_prop, l1Tk_phi_prop));
-      const double dR_corr(reco::deltaR(l1Mu_eta, l1Mu_phi, l1Tk_eta, l1Tk_phi_corr));
-      std::cout << "dR_prop " << dR_prop << " dR_corr " << dR_corr << std::endl;
+    track_.dEta_sim_prop = std::abs(track_.eta_sim_prop - l1Mu_eta);
+    track_.dPhi_sim_prop = reco::deltaPhi(track_.phi_sim_prop, l1Mu_phi);
+    track_.dR_sim_prop = reco::deltaR(track_.eta_sim_prop, track_.phi_sim_prop, l1Mu_eta, l1Mu_phi);
 
-      track_.pt_L1Tk = l1Tk_pt;
-      track_.eta_L1Tk = l1Tk_eta_prop;
-      track_.phi_L1Tk = l1Tk_phi_prop;
-
-      track_.dEta_L1Tk_prop = std::abs(l1Tk_eta_prop - l1Mu_eta);
-      track_.dPhi_L1Tk_prop = reco::deltaPhi(l1Tk_phi_prop, l1Mu_phi);
-      track_.dR_L1Tk_prop = dR_prop;
-      
-      track_.dEta_L1Tk_corr = std::abs(l1Tk_eta - l1Mu_eta);
-      track_.dPhi_L1Tk_corr = reco::deltaPhi(l1Tk_phi_corr, l1Mu_phi);
-      track_.dR_L1Tk_corr = dR_corr;
-
-      // if(verbose) std::cout << "\tdRL1Mu " << dRL1Mu << std::endl;
-      
-      // if (dR < dR_L1Mu_L1Tk){
-      //   nL1MuL1TkdR012++;
-      //   if(verbose) std::cout << "\t-- L1Mu matched to L1Tk" << std::endl;
-      //   continue;
-      // }
-      // if (l1Mu_quality >= min_L1Mu_Quality){
-      //   nL1MuQuality4++;
-      //   std::cout << "\t-- L1Mu Q>=4" << std::endl;
-      // }
-      if (dR_prop < dR_L1Mu_L1Tk and l1Mu_quality >= min_L1Mu_Quality) {
-        track_.isMatched = 1;
-        ++nL1MuMatched;
-        std::cout << "\t-- L1Mu Q>=4 matched to L1Tk" << std::endl;
-        if(verbose) std::cout << "\tl1Tk " << i << std::endl;
-        if(verbose) std::cout << "\tl1Tk_pt " << l1Tk_pt << std::endl;
-        if(verbose) std::cout << "\tl1Tk_eta " << l1Tk_eta << std::endl;
-        if(verbose) std::cout << "\tl1Tk_phi " << l1Tk_phi << std::endl;
-        if(verbose) std::cout << "\tl1Tk_charge " << l1Tk_charge << std::endl;
-        
-        if(verbose) std::cout << "\tl1Tk_eta_prop " << l1Tk_eta_prop << std::endl;
-        if(verbose) std::cout << "\tl1Tk_phi_prop " << l1Tk_phi_prop << std::endl;
-        if(verbose) std::cout << "\tdR_prop " << dR_prop << std::endl;
-        isMatched = true;
-        break;
-      } 
-      if (dR_prop < dR_L1Mu_noL1Tk and l1Tk_pt>4) {        
-        track_.isUnMatched = 1;
-        ++nL1MuUnMatched;
-        std::cout << "\t-- L1Mu not matched to L1Tk" << std::endl;
-        if(verbose) std::cout << "\tl1Tk " << i << std::endl;
-        if(verbose) std::cout << "\tl1Tk_pt " << l1Tk_pt << std::endl;
-        if(verbose) std::cout << "\tl1Tk_eta " << l1Tk_eta << std::endl;
-        if(verbose) std::cout << "\tl1Tk_phi " << l1Tk_phi << std::endl;
-        if(verbose) std::cout << "\tl1Tk_charge " << l1Tk_charge << std::endl;
-        
-        if(verbose) std::cout << "\tl1Tk_eta_prop " << l1Tk_eta_prop << std::endl;
-        if(verbose) std::cout << "\tl1Tk_phi_prop " << l1Tk_phi_prop << std::endl;
-        if(verbose) std::cout << "\tdR_prop " << dR_prop << std::endl;
-        isUnMatched = true;
-        break;
-      }
-      std::cout << std::endl;
+    // propagate the muon using the phi correction formula that slava provided
+    track_.eta_sim_corr = track_.eta_sim;
+    track_.phi_sim_corr = phiHeavyCorr(track_.pt_sim,
+                                       track_.eta_sim,
+                                       track_.phi_sim,
+                                       track_.charge_sim);
+    
+    track_.dEta_sim_corr = std::abs(track_.eta_sim_corr - l1Mu_eta);
+    track_.dPhi_sim_corr = reco::deltaPhi(track_.phi_sim_corr, l1Mu_phi);
+    track_.dR_sim_corr = reco::deltaR(track_.eta_sim_corr, track_.phi_sim_corr, l1Mu_eta, l1Mu_phi);
+    
+    // propagate the L1Tk object to the muon station with steppinghelixpropagator
+    double eta_L1Tk_prop;
+    double phi_L1Tk_prop;    
+    if (std::abs(track_.eta_L1Tk)<1.1) {
+      GlobalPoint loc_barrel(propagateToR(l1Tk.getPOCA(), l1Tk.getMomentum(), track_.charge_L1Tk, 500.));
+      eta_L1Tk_prop = loc_barrel.eta();
+      phi_L1Tk_prop = loc_barrel.phi();
+    } 
+    else if (1.1 < track_.eta_L1Tk and track_.eta_L1Tk < 2.5) {
+      GlobalPoint loc_endcap_pos(propagateToZ(l1Tk.getPOCA(), l1Tk.getMomentum(), track_.charge_L1Tk, 850.));
+      eta_L1Tk_prop = loc_endcap_pos.eta();
+      phi_L1Tk_prop = loc_endcap_pos.phi();
     }
-    if (isUnMatched or isMatched) {
-      nPromptMuons++;
+    else if (-1.1 > track_.eta_L1Tk and track_.eta_L1Tk > -2.5) {
+      GlobalPoint loc_endcap_neg(propagateToZ(l1Tk.getPOCA(), l1Tk.getMomentum(), track_.charge_L1Tk, -850.));
+      eta_L1Tk_prop = loc_endcap_neg.eta();
+      phi_L1Tk_prop = loc_endcap_neg.phi();
     }
+    else{
+      eta_L1Tk_prop = 99.;
+      phi_L1Tk_prop = 99.;
+    }
+
+    // propagate the muon with steppinghelixpropagator
+    track_.eta_L1Tk_prop = eta_L1Tk_prop; 
+    track_.phi_L1Tk_prop = phi_L1Tk_prop - M_PI/144.;
+
+    track_.dEta_L1Tk_prop = std::abs(track_.eta_L1Tk_prop - l1Mu_eta);
+    track_.dPhi_L1Tk_prop = reco::deltaPhi(track_.phi_L1Tk_prop, l1Mu_phi);
+    track_.dR_L1Tk_prop = reco::deltaR(track_.eta_L1Tk_prop, track_.phi_L1Tk_prop, l1Mu_eta, l1Mu_phi);
+
+    // propagate the muon with the phi correction formula that slava provided
+    track_.eta_L1Tk_corr = track_.eta_L1Tk;
+    track_.phi_L1Tk_corr = phiHeavyCorr(track_.pt_L1Tk,
+                                        track_.eta_L1Tk,
+                                        track_.phi_L1Tk,
+                                        track_.charge_L1Tk);
+
+    track_.dEta_L1Tk_corr = std::abs(track_.eta_L1Tk_corr - l1Mu_eta);
+    track_.dPhi_L1Tk_corr = reco::deltaPhi(track_.phi_L1Tk_corr, l1Mu_phi);
+    track_.dR_L1Tk_corr = reco::deltaR(track_.eta_L1Tk_corr, track_.phi_L1Tk_corr, l1Mu_eta, l1Mu_phi);
+
+    if(verbose) {  
+      cout << "l1Mu " << i << endl; 
+      cout << "l1Mu_pt " << l1Mu_pt << endl;
+      cout << "l1Mu_eta " << l1Mu_eta << endl;
+      cout << "l1Mu_phi " << l1Mu_phi << endl;
+      cout << "l1Mu_quality " << l1Mu_quality << endl;
+      
+      cout << "SIM " << indexFound << endl;
+      cout << "SIM_pt " << track_.pt_sim << endl;
+      cout << "SIM_eta " << track_.eta_sim << endl;
+      cout << "SIM_phi " << track_.phi_sim << endl;
+      cout << "SIM_eta_corr " << track_.eta_sim_corr << endl;
+      cout << "SIM_phi_corr " << track_.phi_sim_corr << endl;
+      cout << "SIM_eta_prop " << track_.eta_sim_prop << endl;
+      cout << "SIM_phi_prop " << track_.phi_sim_prop << endl;
+      cout << "SIM_charge " << track_.charge_sim << endl;
+    
+      cout << "l1Tk " << i_SIM_L1Tk_min << endl;
+      cout << "l1Tk_pt " << track_.pt_L1Tk << endl;
+      cout << "l1Tk_eta " << track_.eta_L1Tk << endl;
+      cout << "l1Tk_phi " << track_.phi_L1Tk << endl;
+      cout << "l1Tk_charge " << track_.charge_L1Tk << endl;
+      cout << "dR_SIM_L1Tk_min " << dR_SIM_L1Tk_min << endl;
+
+      cout << "track_.dEta_sim_prop " << track_.dEta_sim_prop << endl
+           << "track_.dPhi_sim_prop " << track_.dPhi_sim_prop << endl
+           << "track_.dR_sim_prop " << track_.dR_sim_prop << endl;
+
+      cout << "track_.dEta_sim_corr " << track_.dEta_sim_corr << endl
+           << "track_.dPhi_sim_corr " << track_.dPhi_sim_corr << endl
+           << "track_.dR_sim_corr " << track_.dR_sim_corr << endl;
+
+      cout << "track_.dEta_L1Tk_prop " << track_.dEta_L1Tk_prop << endl
+           << "track_.dPhi_L1Tk_prop " << track_.dPhi_L1Tk_prop << endl
+           << "track_.dR_L1Tk_prop " << track_.dR_L1Tk_prop << endl;
+
+      cout << "track_.dEta_L1Tk_corr " << track_.dEta_L1Tk_corr << endl
+           << "track_.dPhi_L1Tk_corr " << track_.dPhi_L1Tk_corr << endl
+           << "track_.dR_L1Tk_corr " << track_.dR_L1Tk_corr << endl;
+    }
+    
+
+    //   // calculate the dR between the two L1Mus
+    //   // const double dRL1Mu(reco::deltaR(l1Mu_eta, l1Mu_phi, L1Mu_of_L1TkMu.etaValue(), L1Mu_of_L1TkMu.phiValue()));
+
+    //   // const double l1TkMu_phi_corr = phiHeavyCorr(l1TkMu_pt, l1TkMu_eta, l1TkMu_phi, l1TkMu_charge);
+      
+    //   //if(verbose) std::cout << "\tl1Tk_phi_corr " << l1Tk_phi_corr << std::endl;
+      
+    //   // calculate dR
+    //   const double dR_prop(reco::deltaR(l1Mu_eta, l1Mu_phi, l1Tk_eta_prop, l1Tk_phi_prop));
+    //   const double dR_corr(reco::deltaR(l1Mu_eta, l1Mu_phi, l1Tk_eta, l1Tk_phi_corr));
+    //   const double dR_SIM_L1Tk(reco::deltaR(sim_muon.momentum().eta(), sim_muon.momentum().phi(), l1Tk_eta, l1Tk_phi));
+    //   //std::cout << "dR_prop " << dR_prop << " dR_corr " << dR_corr << std::endl;
+    //   if (dR_SIM_L1Tk < dR_SIM_L1Tk_min) {
+    //     dR_SIM_L1Tk_min = dR_SIM_L1Tk;
+    //     i_SIM_L1Tk_min = j;
+    //   }
+    
+    //   track_.pt_L1Tk = l1Tk_pt;
+    //   track_.eta_L1Tk = l1Tk_eta_prop;
+    //   track_.phi_L1Tk = l1Tk_phi_prop;
+
+    //   track_.dEta_L1Tk_prop = std::abs(l1Tk_eta_prop - l1Mu_eta);
+    //   track_.dPhi_L1Tk_prop = reco::deltaPhi(l1Tk_phi_prop, l1Mu_phi);
+    //   track_.dR_L1Tk_prop = dR_prop;
+      
+    //   track_.dEta_L1Tk_corr = std::abs(l1Tk_eta - l1Mu_eta);
+    //   track_.dPhi_L1Tk_corr = reco::deltaPhi(l1Tk_phi_corr, l1Mu_phi);
+    //   track_.dR_L1Tk_corr = dR_corr;
+
+    // std::cout << "\tSIM " << i << std::endl;
+    // std::cout << "\tSIM_pt " << sim_muon.momentum().pt() << std::endl;
+    // std::cout << "\tSIM_eta " << sim_muon.momentum().eta() << std::endl;
+    // std::cout << "\tSIM_phi " << sim_muon.momentum().phi() << std::endl;
+    // std::cout << "\tSIM_charge " << sim_muon.charge() << std::endl;
+    // // std::cout << "Number of sim muons in this bx " << nSimMu << std::endl;
+    // // std::cout << "Pt " << track_.pt_sim << endl
+    // //           << "Eta " << track_.eta_sim<< endl
+    // //           << "Phi " << track_.phi_sim<< endl
+    
+    // double sim_muon_eta_prop;
+    // double sim_muon_phi_prop;
+
+    // GlobalPoint inner_point(sim_vertex.position().x(), sim_vertex.position().y(), sim_vertex.position().z());
+    // GlobalVector inner_vec (sim_muon.momentum().x(), sim_muon.momentum().y(), sim_muon.momentum().z());
+     
+    // double sim_phi_corrected = phiHeavyCorr(sim_muon.momentum().pt(), 
+    //                                         sim_muon.momentum().eta(), 
+    //                                         sim_muon.momentum().phi(), 
+    //                                         sim_muon.charge());
+    
+    // track_.dEta_sim_corr = std::abs(sim_muon.momentum().eta() - l1Mu_eta);
+    // track_.dPhi_sim_corr = reco::deltaPhi(sim_phi_corrected, l1Mu_phi);
+    // track_.dR_sim_corr = reco::deltaR(sim_muon.momentum().eta(), sim_phi_corrected, l1Mu_eta, l1Mu_phi);
+    // std::cout << "track_.dEta_sim_corr " << track_.dEta_sim_corr << " track_.dPhi_sim_corr " << track_.dPhi_sim_corr << " track_.dR_sim_corr " << track_.dR_sim_corr << std::endl;
+    
+    // track_.dEta_sim_prop = std::abs(sim_muon_eta_prop - l1Mu_eta);
+    // track_.dPhi_sim_prop = reco::deltaPhi(sim_muon_phi_prop, l1Mu_phi);
+    // track_.dR_sim_prop = reco::deltaR(sim_muon_eta_prop, sim_muon_phi_prop, l1Mu_eta, l1Mu_phi);
+    // std::cout << "track_.dEta_sim_prop " << track_.dEta_sim_prop << " track_.dPhi_sim_prop " << track_.dPhi_sim_prop << " track_.dR_sim_prop " << track_.dR_sim_prop << std::endl;
+
+    // bool isMatched = false;
+    // bool isUnMatched = false;
+
+    // if(verbose) std::cout << "Number of L1Tk candidates " << nL1Tk << std::endl;
+    // double dR_SIM_L1Tk_min = 9999;
+    // double i_SIM_L1Tk_min = -1;
+
+    // for (unsigned int j=0; j<TTTracks.size(); ++j){
+    //   auto l1Tk = TTTracks[j];
+    //   const double l1Tk_pt = l1Tk.getMomentum().perp();
+    //   const double l1Tk_eta = l1Tk.getMomentum().eta();
+    //   const double l1Tk_phi = l1Tk.getMomentum().phi();
+    //   double l1Tk_charge = l1Tk.getRInv()>0? 1: -1;
+    //   const double l1Tk_phi_corr = phiHeavyCorr(l1Tk_pt, 
+    //                                             l1Tk_eta, 
+    //                                             l1Tk_phi, 
+    //                                             l1Tk_charge);
+    //   if (std::abs(l1Tk_eta - sim_muon.momentum().eta()) < track_.dEta_sim_L1Tk)
+    //     track_.dEta_sim_L1Tk = std::abs(l1Tk_eta - sim_muon.momentum().eta());
+
+    //   if ( reco::deltaPhi(sim_muon.momentum().phi(), l1Tk_phi) < track_.dPhi_sim_L1Tk)
+    //     track_.dPhi_sim_L1Tk = reco::deltaPhi(sim_muon.momentum().phi(), l1Tk_phi);
+
+    //   if (reco::deltaR(l1Tk_eta, l1Tk_phi, sim_muon.momentum().eta(), sim_muon.momentum().phi()) < track_.dR_sim_L1Tk)
+    //     track_.dR_sim_L1Tk = reco::deltaR(l1Tk_eta, l1Tk_phi, sim_muon.momentum().eta(), sim_muon.momentum().phi());      
+
+    //   //
+      
+    //   // propagate the L1Tk to the second station
+      
+    //   double l1Tk_eta_prop;
+    //   double l1Tk_phi_prop;
+      
+    //   if (std::abs(l1Tk_eta)<1.1){
+    //     GlobalPoint loc_barrel(propagateToR(l1Tk.getPOCA(), l1Tk.getMomentum(), l1Tk_charge, 500.));
+    //     l1Tk_eta_prop = loc_barrel.eta();
+    //     l1Tk_phi_prop = loc_barrel.phi();
+    //   } 
+    //   else if (1.1 < l1Tk_eta and l1Tk_eta < 2.5) {
+    //     GlobalPoint loc_endcap_pos(propagateToZ(l1Tk.getPOCA(), l1Tk.getMomentum(), l1Tk_charge, 850.));
+    //     l1Tk_eta_prop = loc_endcap_pos.eta();
+    //     l1Tk_phi_prop = loc_endcap_pos.phi();
+    //   }
+    //   else if (-1.1 > l1Tk_eta and l1Tk_eta > -2.5) {
+    //     GlobalPoint loc_endcap_neg(propagateToZ(l1Tk.getPOCA(), l1Tk.getMomentum(), l1Tk_charge, -850.));
+    //     l1Tk_eta_prop = loc_endcap_neg.eta();
+    //     l1Tk_phi_prop = loc_endcap_neg.phi();
+    //   }
+    //   else{
+    //     l1Tk_eta_prop = 99.;
+    //     l1Tk_phi_prop = 99.;
+    //   }
+
+    //   // std::cout << "pt L1Tk " << l1Tk_pt << std::endl;
+    //   // std::cout << "eta L1Tk " << l1Tk_eta << " eta L1Tk prop " << l1Tk_eta_prop << std::endl;
+    //   // std::cout << "phi L1Tk " << l1Tk_phi << " phi L1Tk prop " << l1Tk_phi_prop << " phi L1Tk corr " << l1Tk_phi_corr << std::endl;
+
+    //   // std::cout << "dEta L1Tk prop " << std::abs(l1Tk_eta - l1Tk_eta_prop) << std::endl;
+    //   // std::cout << "dPhi L1Tk prop " << reco::deltaPhi(l1Tk_phi_prop, l1Tk_phi) << std::endl;
+    //   // std::cout << "dPhi L1Tk corr " << reco::deltaPhi(l1Tk_phi_corr, l1Tk_phi) << std::endl;
+  
+    //   // calculate the dR between the two L1Mus
+    //   // const double dRL1Mu(reco::deltaR(l1Mu_eta, l1Mu_phi, L1Mu_of_L1TkMu.etaValue(), L1Mu_of_L1TkMu.phiValue()));
+
+    //   // const double l1TkMu_phi_corr = phiHeavyCorr(l1TkMu_pt, l1TkMu_eta, l1TkMu_phi, l1TkMu_charge);
+      
+    //   //if(verbose) std::cout << "\tl1Tk_phi_corr " << l1Tk_phi_corr << std::endl;
+      
+    //   // calculate dR
+    //   const double dR_prop(reco::deltaR(l1Mu_eta, l1Mu_phi, l1Tk_eta_prop, l1Tk_phi_prop));
+    //   const double dR_corr(reco::deltaR(l1Mu_eta, l1Mu_phi, l1Tk_eta, l1Tk_phi_corr));
+    //   const double dR_SIM_L1Tk(reco::deltaR(sim_muon.momentum().eta(), sim_muon.momentum().phi(), l1Tk_eta, l1Tk_phi));
+    //   //std::cout << "dR_prop " << dR_prop << " dR_corr " << dR_corr << std::endl;
+    //   if (dR_SIM_L1Tk < dR_SIM_L1Tk_min) {
+    //     dR_SIM_L1Tk_min = dR_SIM_L1Tk;
+    //     i_SIM_L1Tk_min = j;
+    //   }
+    
+    //   track_.pt_L1Tk = l1Tk_pt;
+    //   track_.eta_L1Tk = l1Tk_eta_prop;
+    //   track_.phi_L1Tk = l1Tk_phi_prop;
+
+    //   track_.dEta_L1Tk_prop = std::abs(l1Tk_eta_prop - l1Mu_eta);
+    //   track_.dPhi_L1Tk_prop = reco::deltaPhi(l1Tk_phi_prop, l1Mu_phi);
+    //   track_.dR_L1Tk_prop = dR_prop;
+      
+    //   track_.dEta_L1Tk_corr = std::abs(l1Tk_eta - l1Mu_eta);
+    //   track_.dPhi_L1Tk_corr = reco::deltaPhi(l1Tk_phi_corr, l1Mu_phi);
+    //   track_.dR_L1Tk_corr = dR_corr;
+
+    //   // if(verbose) std::cout << "\tdRL1Mu " << dRL1Mu << std::endl;
+      
+    //   // if (dR < dR_L1Mu_L1Tk){
+    //   //   nL1MuL1TkdR012++;
+    //   //   if(verbose) std::cout << "\t-- L1Mu matched to L1Tk" << std::endl;
+    //   //   continue;
+    //   // }
+    //   // if (l1Mu_quality >= min_L1Mu_Quality){
+    //   //   nL1MuQuality4++;
+    //   //   std::cout << "\t-- L1Mu Q>=4" << std::endl;
+    //   // }
+      
+      
+    //   //cout << "dR_SIM_L1Tk " << dR_SIM_L1Tk << endl;
+      
+    //   // if (dR_prop < dR_L1Mu_L1Tk and l1Mu_quality >= min_L1Mu_Quality) {
+    //   //   track_.isMatched = 1;
+    //   //   ++nL1MuMatched;
+    //   //   // std::cout << "\t-- L1Mu Q>=4 matched to L1Tk" << std::endl;
+    //   //   if(verbose) std::cout << "\tl1Tk " << i << std::endl;
+    //   //   if(verbose) std::cout << "\tl1Tk_pt " << l1Tk_pt << std::endl;
+    //   //   if(verbose) std::cout << "\tl1Tk_eta " << l1Tk_eta << std::endl;
+    //   //   if(verbose) std::cout << "\tl1Tk_phi " << l1Tk_phi << std::endl;
+    //   //   if(verbose) std::cout << "\tl1Tk_charge " << l1Tk_charge << std::endl;
+        
+    //   //   if(verbose) std::cout << "\tl1Tk_eta_prop " << l1Tk_eta_prop << std::endl;
+    //   //   if(verbose) std::cout << "\tl1Tk_phi_prop " << l1Tk_phi_prop << std::endl;
+    //   //   if(verbose) std::cout << "\tdR_prop " << dR_prop << std::endl;
+    //   //   isMatched = true;
+    //   //   break;
+    //   // } 
+    //   // if (dR_prop < dR_L1Mu_noL1Tk and l1Tk_pt>4) {        
+    //   //   track_.isUnMatched = 1;
+    //   //   ++nL1MuUnMatched;
+    //   //   // std::cout << "\t-- L1Mu not matched to L1Tk" << std::endl;
+    //   //   if(verbose) std::cout << "\tl1Tk " << i << std::endl;
+    //   //   if(verbose) std::cout << "\tl1Tk_pt " << l1Tk_pt << std::endl;
+    //   //   if(verbose) std::cout << "\tl1Tk_eta " << l1Tk_eta << std::endl;
+    //   //   if(verbose) std::cout << "\tl1Tk_phi " << l1Tk_phi << std::endl;
+    //   //   if(verbose) std::cout << "\tl1Tk_charge " << l1Tk_charge << std::endl;
+        
+    //   //   if(verbose) std::cout << "\tl1Tk_eta_prop " << l1Tk_eta_prop << std::endl;
+    //   //   if(verbose) std::cout << "\tl1Tk_phi_prop " << l1Tk_phi_prop << std::endl;
+    //   //   if(verbose) std::cout << "\tdR_prop " << dR_prop << std::endl;
+    //   //   isUnMatched = true;
+    //   //   break;
+    //   // }
+    //   // std::cout << std::endl;
+    // }
+    
+    // std::cout << "\tl1Tk " << i_SIM_L1Tk_min << std::endl;
+    // std::cout << "\tl1Tk_pt " << TTTracks[i_SIM_L1Tk_min].getMomentum().perp() << std::endl;
+    // std::cout << "\tl1Tk_eta " << TTTracks[i_SIM_L1Tk_min].getMomentum().eta() << std::endl;
+    // std::cout << "\tl1Tk_phi " << TTTracks[i_SIM_L1Tk_min].getMomentum().phi() << std::endl;
+    // double charge = TTTracks[i_SIM_L1Tk_min].getRInv()>0? 1: -1;
+    // std::cout << "\tl1Tk_charge " << charge << std::endl;
+    // std::cout << "dR_SIM_L1Tk_min " << dR_SIM_L1Tk_min << std::endl;
+    
+    // if (isUnMatched or isMatched) {
+    //   nPromptMuons++;
+    // }
 
     track_tree_->Fill();  
   }
@@ -530,7 +803,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   // use the central bunch crossing instead of +- 1
   
   // use pt>20, plot the dEta, dPhi for the (SIM,L1) mapping
-  
+  */  
 }
 
 // ------------ method called once each job just before starting event loop  ------------
@@ -542,9 +815,11 @@ DisplacedL1MuFilter::beginJob()
 // ------------ method called once each job just after ending the event loop  ------------
 void 
 DisplacedL1MuFilter::endJob()
- {
-   cout << "Total number of total muons " << nTotalMuons << endl;
-   cout << "Total number of prompt muons " << nPromptMuons << endl;
+{
+  // cout << "Total number of total muons " << nTotalMuons << endl;
+  // cout << "Total number of prompt muons " << nPromptMuons << endl;
+  cout << "Events with at least 1 muon: " << eventsWithMuons << std::endl;
+  cout << "Events with at least 1 displaced muon: " << eventsWithDisplacedMuons << std::endl;
 }
 
 // ------------ method called when starting to processes a run  ------------
@@ -623,6 +898,11 @@ DisplacedL1MuFilter::propagateToR(const GlobalPoint &inner_point, const GlobalVe
 void 
 DisplacedL1MuFilter::clearBranches()
 {
+  track_.lumi = -99;
+  track_.run = -99;
+  track_.event = -99;
+
+
   track_.pt = -10;
   track_.eta = -10;
   track_.phi = -10;
@@ -630,8 +910,12 @@ DisplacedL1MuFilter::clearBranches()
   track_.has_sim = -10;
   track_.quality = -10;
   track_.pt_sim = -10;
-  track_.eta_sim = -10;
-  track_.phi_sim = -10;
+  track_.eta_sim = -99;
+  track_.phi_sim = -99;
+  track_.eta_sim_prop = -99;
+  track_.phi_sim_prop = -99;
+  track_.eta_sim_corr = -99;
+  track_.phi_sim_corr = -99;
   track_.dEta_sim_corr = 99;
   track_.dPhi_sim_corr = 99;
   track_.dR_sim_corr = 99;
@@ -649,6 +933,9 @@ DisplacedL1MuFilter::clearBranches()
   track_.dEta_L1Tk_prop = 99;
   track_.dPhi_L1Tk_prop = 99;
   track_.dR_L1Tk_prop = 99;
+  track_.dEta_sim_L1Tk = 99;
+  track_.dPhi_sim_L1Tk = 99;
+  track_.dR_sim_L1Tk = 99;
 }
 
 //define this as a plug-in

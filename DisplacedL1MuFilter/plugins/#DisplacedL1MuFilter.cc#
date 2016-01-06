@@ -344,7 +344,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   int nMatchedMuons = 0;
   int nUnMatchedMuons = 0;
   int nUnMatchedMuonsPt = 0;
-  for (unsigned int i=0; i<l1GmtCands.size(); ++i){
+  for (unsigned int i=0; i<l1GmtCands.size(); ++i) {
     auto l1Mu = l1GmtCands[i];
     const double l1Mu_pt = l1Mu.ptValue();
     const double l1Mu_eta = l1Mu.etaValue();
@@ -371,7 +371,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     cout << "l1Mu_quality " << l1Mu_quality << endl;
     }
     // calculate the number of L1Tk within 0.12
-    for (unsigned int j=0; j<TTTracks.size(); ++j){
+    for (unsigned int j=0; j<TTTracks.size(); ++j) {
       auto l1Tk = TTTracks[j];
       const double l1Tk_pt = l1Tk.getMomentum().perp();
       const double l1Tk_eta = l1Tk.getMomentum().eta();

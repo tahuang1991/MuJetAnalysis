@@ -19,7 +19,7 @@ process.load('Configuration.StandardSequences.L1Reco_cff')
 #process.pMuons = cms.Path( process.l1extraParticles + process.L1TkMuons )
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000)
+    input = cms.untracked.int32(10000)
 )
 
 """
@@ -47,7 +47,7 @@ process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 #process.l1extraParticles + + process.dump
 #process.p = cms.Path(process.l1extraParticles + process.L1TkMuons  + process.dump + process.DisplacedL1MuFilter_PhaseIIGE21)
 process.TFileService = cms.Service("TFileService",
-  fileName = cms.string("out_filter_ana.test100.root")
+  fileName = cms.string("out_filter_ana.test10000.root")
 )
 
 

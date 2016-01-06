@@ -4,8 +4,49 @@ import math
 import array
 from math import log10, floor
 from logic import *
+import numpy as np
 
-#
+ptbin = [2.0,   2.5,   3.0,   3.5,   4.0, 4.5,   5.0,   6.0,   7.0,   8.0,  10.0,  12.0,  14.0, 16.0,  18.0,  20.0,  25.0,  30.0,  35.0,  40.0,  45.0, 50.0,  60.0,  70.0,  80.0,  90.0, 100.0, 120.0, 140.0, 200.0]
+myptbin = np.asarray(ptbin)
+
+#______________________________________________________________________________
+def getRatecount(tree, todraw, cut):
+    htemp = TH1F("htemp"," ",29,myptbin)
+    tree.Draw(todraw+">>htemp",cut)
+    return htemp.GetEntries()
+
+#___________________________________________________
+def getEventsNum(tree):
+    eventList = []
+    for k in range(0,tree.GetEntries()):
+        tree.GetEntry(k)
+        eventList.append(tree.event)
+    return len(set(eventList))
+
+#______________________________________________________________________________
+def getRate(tree, cut):
+   
+    #f = ROOT.TFile(file)
+    #t = f.Get(dir)
+    h = TH1F("h"," ",29,myptbin)
+    n=1
+    for x in ptbin:
+       #print "cut ",cut+" && pt>=%f"%x
+       content = getRatecount(tree,"pt",cut+"&& pt>=%f"%x)
+       #content = tree.GetEntries(cut+"&& pt>=%f"%x)
+       print "bin n ",n,"pt ",x ,"  content ",content
+       h.SetBinContent(n, content)
+       n= n+1
+    h.Sumw2()
+    #print "before scale "
+    #h.Print("all")
+    ntotalEvents = getEventsNum(tree)
+    print "ntotalEvents", ntotalEvents
+    h.Scale(40000./ntotalEvents/3.*0.795)
+    SetOwnership(h, False)
+    return h
+
+#______________________________________________________________________________
 def set_style():
    gStyle.SetStatStyle(0)
    gStyle.SetOptStat(11111111)

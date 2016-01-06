@@ -19,6 +19,7 @@ if __name__ == "__main__":
   inputFile = 'out_filter_ana_SingleMuPlusFlatPt0p2To150_TTI2023Upg14D_PU140bx25_ILT_SLHC14.root'
   inputFile = 'out_filter_ana.10k.root'
   inputFile = 'out_filter_ana.test10k.root'
+  inputFile = 'out_filter_ana.test10000.root'
   targetDir = './'
   
   ## extension for figures - add more?
@@ -49,6 +50,7 @@ if __name__ == "__main__":
 
   set_style()
 
+  """
   ### fits to get the sigma
   c = TCanvas("c","c",800,600)
   c.Clear()
@@ -136,10 +138,86 @@ if __name__ == "__main__":
   h.Fit("gaus","L")
   h.Draw()
   h.SaveAs("dPhi_L1Tk_corr_fit.root")
+  """
 
+  ## calculate the trigger rate
+  print "number of muons in event: ", treeHits.GetEntries() 
+  c = TCanvas("c","c",800,600)
+  c.Clear()
 
+  gStyle.SetTitleBorderSize(0);
+  gStyle.SetPadLeftMargin(0.126);
+  gStyle.SetPadRightMargin(0.04);
+  gStyle.SetPadTopMargin(0.06);
+  gStyle.SetPadBottomMargin(0.13);
 
-  #exit()
+  b1 = TH1F("b1","b1",29,myptbin)
+  b1.GetYaxis().SetRangeUser(0.1,500)
+  b1.GetYaxis().SetTitleOffset(1.2)
+  b1.GetYaxis().SetNdivisions(520)
+  b1.GetYaxis().SetTitle("L1 Trigger Rate [kHz]")
+  b1.GetXaxis().SetTitle("L1 muon p_{T} threshold [GeV]")
+  b1.GetXaxis().SetTitleFont(62)
+  b1.GetXaxis().SetTitleOffset(1.2)
+  b1.GetXaxis().SetTitleSize(0.045)
+  b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" PU140, 14TeV")
+  b1.SetStats(0)
+
+  e0 = getRate(treeHits, "nL1Mu>0")
+  e0.SetFillColor(kRed)
+
+  e1 = getRate(treeHits, "nL1Mu>0 && !(isMatched==1 || isUnMatched==1)")
+  e1.SetFillColor(kGreen+2)
+  
+  e2 = getRate(treeHits, "nL1Mu>0 && !(isMatched==1 || isUnMatchedL1TkPt4==1)")
+  e2.SetFillColor(kBlue)
+
+  b1.Draw()
+  e0.Draw("e3same")
+  e1.Draw("e3same")
+  e2.Draw("e3same")
+
+  c.SaveAs("h_L1_pt.png")
+ 
+  nEntry = 0
+  nMuTotal = 0
+  nMuPass = 0
+  nMuPt30 = 0
+  events= [] 
+  
+  for k in range(0,treeHits.GetEntries()):
+    treeHits.GetEntry(k)
+
+    if (treeHits.nL1Mu==0):
+      continue
+
+    nMuTotal += 1
+
+    if treeHits.pt>=30:
+      nMuPt30 += 1
+      events.append(treeHits.event)
+      #    if ((treeHits.nL1Mu > 0) and ((treeHits.isMatched == 1) or (treeHits.isUnMatched == 1))):
+      #      continue
+
+      print nMuTotal, treeHits.event, "nL1Mu", treeHits.nL1Mu, "Pt", treeHits.pt, "Eta", treeHits.eta, "Phi", treeHits.phi, "isMatched", treeHits.isMatched, "isUnMatched", treeHits.isUnMatched, "isUnMatchedL1TkPt4", treeHits.isUnMatchedL1TkPt4
+    nMuPass += 1
+  print events
+  print nMuTotal, nMuPass, nMuPt30, len(set(events))
+  """
+  #h_L1_pt = TH1F("h_L1_pt", "trigger rate; pt cut; entries", 10, 0, 50)
+  for k in range(0,treeHits.GetEntries()):
+    treeHits.GetEntry(k)
+    print "nL1Mu", treeHits.nL1Mu, "Pt", treeHits.pt, "Eta", treeHits.eta, "Phi", treeHits.phi, "isMatched", treeHits.isMatched, "isUnMatched", treeHits.isUnMatched, "isUnMatchedL1TkPt4", treeHits.isUnMatchedL1TkPt4
+    #if (treeHits.isMatched or treeHits.isUnMatched):
+    #continue
+    #pass
+
+    #h_L1_pt.Fill(treeHits.pt)
+  #h_L1_pt.Sumw2()
+  #h_L1_pt.Draw()
+  """
+
+  exit()
 
   ### regular plots
   draw_1D(treeHits,"abs(dEta_sim_corr)",  "dEta_sim_corr",  "PU = 140, 14 TeV; |d#eta_{corr}(L1Mu,SIM)|; Entries", "(100,0,1)")

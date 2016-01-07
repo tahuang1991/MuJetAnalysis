@@ -19,7 +19,7 @@ process.load('Configuration.StandardSequences.L1Reco_cff')
 #process.pMuons = cms.Path( process.l1extraParticles + process.L1TkMuons )
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100000)
+    input = cms.untracked.int32(10000)
 )
 
 """
@@ -31,24 +31,23 @@ Slava's datasets:
 """
 from MuJetAnalysis.DisplacedL1MuFilter.Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14 import files
 #from MuJetAnalysis.DisplacedL1MuFilter.SingleMuPlusFlatPt0p2To150_TTI2023Upg14D_PU140bx25_ILT_SLHC14 import files
-from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV import files
-from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV_PU140 import files
+#from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV import files
+#from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV_PU140 import files
 #from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_100_14TeV import files
 #from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV import files
 
-process.source = cms.Source("PoolSource",
-                    fileNames = cms.untracked.vstring(*files
-        #'/store/user/slava77/SingleMuMinusFlatPt0p2To150/TTI2023Upg14D-PU140bx25-ILT_SLHC14/6a6577f18a9b70d924bea399af3ff625/2023TTIUpg14D_1000_1_uFi.root'
-        #'/store/user/slava77/Neutrino_Pt2to20_gun/TTI2023Upg14D-PU140bx25-ILT_SLHC14/6a6577f18a9b70d924bea399af3ff625/2023TTIUpg14D_1000_2_Eiv.root'
-        )
-                    )
+process.source = cms.Source(
+    "PoolSource",
+    fileNames = cms.untracked.vstring(*files)
+)
 
 
 process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 #process.l1extraParticles + + process.dump
 #process.p = cms.Path(process.l1extraParticles + process.L1TkMuons  + process.dump + process.DisplacedL1MuFilter_PhaseIIGE21)
-process.TFileService = cms.Service("TFileService",
-  fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV_PU140.test.root")
+process.TFileService = cms.Service(
+    "TFileService",
+    fileName = cms.string("out_filter_ana_Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14.test.root")
 )
 
 

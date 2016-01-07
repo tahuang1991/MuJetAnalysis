@@ -6,21 +6,30 @@ from math import log10, floor
 from logic import *
 import numpy as np
 
-ptbin = [2.0,   2.5,   3.0,   3.5,   4.0, 4.5,   5.0,   6.0,   7.0,   8.0,  10.0,  12.0,  14.0, 16.0,  18.0,  20.0,  25.0,  30.0,  35.0,  40.0,  45.0, 50.0,  60.0,  70.0,  80.0,  90.0, 100.0, 120.0, 140.0, 200.0]
+ptbin = [
+    2.0,   2.5,   3.0,   3.5,   4.0,   4.5,   5.0,   6.0,   7.0,   8.0,  
+    10.0,  12.0,  14.0,  16.0,  18.0,  20.0,  25.0,  30.0,  35.0,  40.0,  
+    45.0,  50.0,  60.0,  70.0,  80.0,  90.0, 100.0, 120.0, 140.0, 200.0]
 myptbin = np.asarray(ptbin)
 
 #______________________________________________________________________________
+def getBackwardCumulative(h):
+    htemp = TH1F("htemp"," ",len(myptbin)-1, myptbin)
+    ## keep the underflow
+    htemp.SetBinContent(0,h.GetBinContent(0))
+    for i in range(1,len(myptbin)+1):        
+        sum = 0
+        for j in range(i,len(myptbin)+1):
+            sum += h.GetBinContent(j)
+        htemp.SetBinContent(i, sum)
+    SetOwnership(htemp, False)
+    return htemp
+
+#______________________________________________________________________________
 def getRatecount(tree, todraw, cut):
-    htemp = TH1F("htemp"," ",29,myptbin)
+    htemp = TH1F("htemp"," ",len(myptbin)-1, myptbin)
     tree.Draw(todraw+">>htemp",cut)
-    entries = htemp.GetEntries()
-    #return htemp.GetEntries()
-    
-    
-    for k in range(0,treeHits.GetEntries()):
-    treeHits.GetEntry(k)
-    
-    return entries
+    return htemp.GetEntries()
 
 
 #___________________________________________________
@@ -36,7 +45,7 @@ def getRate(treecut):
    
     #f = ROOT.TFile(file)
     #t = f.Get(dir)
-    h = TH1F("h"," ",29,myptbin)
+    h = TH1F("h"," ",len(myptbin)-1, myptbin)
     n=1
     for x in ptbin:
        #print "cut ",cut+" && pt>=%f"%x

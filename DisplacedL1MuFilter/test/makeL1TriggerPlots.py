@@ -1,5 +1,4 @@
 import sys
-
 from ROOT import *
 
 ## run quiet mode
@@ -20,8 +19,9 @@ if __name__ == "__main__":
   inputFile = 'out_filter_ana.10k.root'
   inputFile = 'out_filter_ana.test10k.root'
   inputFile = 'out_filter_ana.test10000.root'
+  inputFile = 'out_filter_ana.test100000.root'
   targetDir = './'
-  
+
   ## extension for figures - add more?
   ext = ".png"
   
@@ -50,159 +50,187 @@ if __name__ == "__main__":
 
   set_style()
 
-  """
-  ### fits to get the sigma
-  c = TCanvas("c","c",800,600)
-  c.Clear()
-  gStyle.SetTitleBorderSize(0);
-  gStyle.SetPadLeftMargin(0.126);
-  gStyle.SetPadRightMargin(0.04);
-  gStyle.SetPadTopMargin(0.06);
-  gStyle.SetPadBottomMargin(0.13);
-  treeHits.Draw("abs(dEta_sim_corr)>>h_name(100,0,0.1)")
-  h = TH1F(gDirectory.Get("h_name").Clone("h_name"))
-  if not h:
-    sys.exit('h does not exist')
-  h.SetTitle("PU = 140, 14 TeV; |d#eta_{corr}(L1Mu,SIM)|; Entries")
-  h.SetLineWidth(2)
-  h.SetLineColor(kBlue)
-  h.GetXaxis().SetLabelSize(0.05)
-  h.GetYaxis().SetLabelSize(0.05)
-  h.GetXaxis().SetTitleSize(0.06)
-  h.GetYaxis().SetTitleSize(0.06)
-  h.Draw()
-  h.SaveAs("dEta_sim_corr_fit.root")
+  def fitSigma():
+    ### fits to get the sigma
+    c = TCanvas("c","c",800,600)
+    c.Clear()
+    gStyle.SetTitleBorderSize(0);
+    gStyle.SetPadLeftMargin(0.126);
+    gStyle.SetPadRightMargin(0.04);
+    gStyle.SetPadTopMargin(0.06);
+    gStyle.SetPadBottomMargin(0.13);
+    treeHits.Draw("abs(dEta_sim_corr)>>h_name(100,0,0.1)")
+    h = TH1F(gDirectory.Get("h_name").Clone("h_name"))
+    if not h:
+      sys.exit('h does not exist')
+    h.SetTitle("PU = 140, 14 TeV; |d#eta_{corr}(L1Mu,SIM)|; Entries")
+    h.SetLineWidth(2)
+    h.SetLineColor(kBlue)
+    h.GetXaxis().SetLabelSize(0.05)
+    h.GetYaxis().SetLabelSize(0.05)
+    h.GetXaxis().SetTitleSize(0.06)
+    h.GetYaxis().SetTitleSize(0.06)
+    h.Draw()
+    h.SaveAs("dEta_sim_corr_fit.root")
   
-  c = TCanvas("c","c",800,600)
-  c.Clear()
-  gStyle.SetTitleBorderSize(0);
-  gStyle.SetPadLeftMargin(0.126);
-  gStyle.SetPadRightMargin(0.04);
-  gStyle.SetPadTopMargin(0.06);
-  gStyle.SetPadBottomMargin(0.13);
-  treeHits.Draw("abs(dPhi_sim_corr)>>h_name(100,0,0.1")
-  h = TH1F(gDirectory.Get("h_name").Clone("h_name"))
-  if not h:
-    sys.exit('h does not exist')
-  h.SetTitle("PU = 140, 14 TeV; |d#phi_{corr}(L1Mu,SIM)|; Entries")
-  h.SetLineWidth(2)
-  h.SetLineColor(kBlue)
-  h.GetXaxis().SetLabelSize(0.05)
-  h.GetYaxis().SetLabelSize(0.05)
-  h.GetXaxis().SetTitleSize(0.06)
-  h.GetYaxis().SetTitleSize(0.06)
-  h.Fit("gaus","L")
-  h.Draw()
-  h.SaveAs("dPhi_sim_corr_fit.root")
+    c = TCanvas("c","c",800,600)
+    c.Clear()
+    gStyle.SetTitleBorderSize(0);
+    gStyle.SetPadLeftMargin(0.126);
+    gStyle.SetPadRightMargin(0.04);
+    gStyle.SetPadTopMargin(0.06);
+    gStyle.SetPadBottomMargin(0.13);
+    treeHits.Draw("abs(dPhi_sim_corr)>>h_name(100,0,0.1")
+    h = TH1F(gDirectory.Get("h_name").Clone("h_name"))
+    if not h:
+      sys.exit('h does not exist')
+    h.SetTitle("PU = 140, 14 TeV; |d#phi_{corr}(L1Mu,SIM)|; Entries")
+    h.SetLineWidth(2)
+    h.SetLineColor(kBlue)
+    h.GetXaxis().SetLabelSize(0.05)
+    h.GetYaxis().SetLabelSize(0.05)
+    h.GetXaxis().SetTitleSize(0.06)
+    h.GetYaxis().SetTitleSize(0.06)
+    h.Fit("gaus","L")
+    h.Draw()
+    h.SaveAs("dPhi_sim_corr_fit.root")
 
-
-  c = TCanvas("c","c",800,600)
-  c.Clear()
-  gStyle.SetTitleBorderSize(0);
-  gStyle.SetPadLeftMargin(0.126);
-  gStyle.SetPadRightMargin(0.04);
-  gStyle.SetPadTopMargin(0.06);
-  gStyle.SetPadBottomMargin(0.13);
-  treeHits.Draw("abs(dEta_L1Tk_corr)>>h_name(100,0,0.1)")
-  h = TH1F(gDirectory.Get("h_name").Clone("h_name"))
-  if not h:
-    sys.exit('h does not exist')
-  h.SetTitle("PU = 140, 14 TeV; |d#eta_{corr}(L1Mu,L1TK)|; Entries")
-  h.SetLineWidth(2)
-  h.SetLineColor(kBlue)
-  h.GetXaxis().SetLabelSize(0.05)
-  h.GetYaxis().SetLabelSize(0.05)
-  h.GetXaxis().SetTitleSize(0.06)
-  h.GetYaxis().SetTitleSize(0.06)
-  h.Draw()
-  h.SaveAs("dEta_L1Tk_corr_fit.root")
+    c = TCanvas("c","c",800,600)
+    c.Clear()
+    gStyle.SetTitleBorderSize(0);
+    gStyle.SetPadLeftMargin(0.126);
+    gStyle.SetPadRightMargin(0.04);
+    gStyle.SetPadTopMargin(0.06);
+    gStyle.SetPadBottomMargin(0.13);
+    treeHits.Draw("abs(dEta_L1Tk_corr)>>h_name(100,0,0.1)")
+    h = TH1F(gDirectory.Get("h_name").Clone("h_name"))
+    if not h:
+      sys.exit('h does not exist')
+    h.SetTitle("PU = 140, 14 TeV; |d#eta_{corr}(L1Mu,L1TK)|; Entries")
+    h.SetLineWidth(2)
+    h.SetLineColor(kBlue)
+    h.GetXaxis().SetLabelSize(0.05)
+    h.GetYaxis().SetLabelSize(0.05)
+    h.GetXaxis().SetTitleSize(0.06)
+    h.GetYaxis().SetTitleSize(0.06)
+    h.Draw()
+    h.SaveAs("dEta_L1Tk_corr_fit.root")
   
-  c = TCanvas("c","c",800,600)
-  c.Clear()
-  gStyle.SetTitleBorderSize(0);
-  gStyle.SetPadLeftMargin(0.126);
-  gStyle.SetPadRightMargin(0.04);
-  gStyle.SetPadTopMargin(0.06);
-  gStyle.SetPadBottomMargin(0.13);
-  treeHits.Draw("abs(dPhi_L1Tk_corr)>>h_name(100,0,0.1")
-  h = TH1F(gDirectory.Get("h_name").Clone("h_name"))
-  if not h:
-    sys.exit('h does not exist')
-  h.SetTitle("PU = 140, 14 TeV; |d#phi_{corr}(L1Mu,L1TK)|; Entries")
-  h.SetLineWidth(2)
-  h.SetLineColor(kBlue)
-  h.GetXaxis().SetLabelSize(0.05)
-  h.GetYaxis().SetLabelSize(0.05)
-  h.GetXaxis().SetTitleSize(0.06)
-  h.GetYaxis().SetTitleSize(0.06)
-  h.Fit("gaus","L")
-  h.Draw()
-  h.SaveAs("dPhi_L1Tk_corr_fit.root")
-  """
+    c = TCanvas("c","c",800,600)
+    c.Clear()
+    gStyle.SetTitleBorderSize(0);
+    gStyle.SetPadLeftMargin(0.126);
+    gStyle.SetPadRightMargin(0.04);
+    gStyle.SetPadTopMargin(0.06);
+    gStyle.SetPadBottomMargin(0.13);
+    treeHits.Draw("abs(dPhi_L1Tk_corr)>>h_name(100,0,0.1")
+    h = TH1F(gDirectory.Get("h_name").Clone("h_name"))
+    if not h:
+      sys.exit('h does not exist')
+    h.SetTitle("PU = 140, 14 TeV; |d#phi_{corr}(L1Mu,L1TK)|; Entries")
+    h.SetLineWidth(2)
+    h.SetLineColor(kBlue)
+    h.GetXaxis().SetLabelSize(0.05)
+    h.GetYaxis().SetLabelSize(0.05)
+    h.GetXaxis().SetTitleSize(0.06)
+    h.GetYaxis().SetTitleSize(0.06)
+    h.Fit("gaus","L")
+    h.Draw()
+    h.SaveAs("dPhi_L1Tk_corr_fit.root")
 
-  ## calculate the trigger rate
-  print "number of muons in event: ", treeHits.GetEntries() 
-  c = TCanvas("c","c",800,600)
-  c.Clear()
+  def ratePlots():
+    ## Calculate the trigger rate
 
-  gStyle.SetTitleBorderSize(0);
-  gStyle.SetPadLeftMargin(0.126);
-  gStyle.SetPadRightMargin(0.04);
-  gStyle.SetPadTopMargin(0.06);
-  gStyle.SetPadBottomMargin(0.13);
+    c = TCanvas("c","c",800,600)
+    c.Clear()    
+    gStyle.SetTitleBorderSize(0);
+    gStyle.SetPadLeftMargin(0.126);
+    gStyle.SetPadRightMargin(0.04);
+    gStyle.SetPadTopMargin(0.06);
+    gStyle.SetPadBottomMargin(0.13);
+    gPad.SetLogy(1)
 
-  b1 = TH1F("b1","b1",29,myptbin)
-  b1.GetYaxis().SetRangeUser(0.1,500)
-  b1.GetYaxis().SetTitleOffset(1.2)
-  b1.GetYaxis().SetNdivisions(520)
-  b1.GetYaxis().SetTitle("L1 Trigger Rate [kHz]")
-  b1.GetXaxis().SetTitle("L1 muon p_{T} threshold [GeV]")
-  b1.GetXaxis().SetTitleFont(62)
-  b1.GetXaxis().SetTitleOffset(1.2)
-  b1.GetXaxis().SetTitleSize(0.045)
-  b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" PU140, 14TeV")
-  b1.SetStats(0)
+    b1 = TH1F("b1","b1",29,myptbin)
+    b1.GetYaxis().SetRangeUser(.1,10000)
+    b1.GetYaxis().SetTitleOffset(1.2)
+    b1.GetYaxis().SetNdivisions(520)
+    b1.GetYaxis().SetTitle("L1 Trigger Rate [kHz]")
+    b1.GetXaxis().SetTitle("L1 muon p_{T} threshold [GeV]")
+    b1.GetXaxis().SetTitleFont(62)
+    b1.GetXaxis().SetTitleOffset(1.2)
+    b1.GetXaxis().SetTitleSize(0.045)
+    b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" PU140, 14TeV")
+    b1.SetStats(0)
 
-  e0 = getRate(treeHits, "nL1Mu>0")
-  e0.SetFillColor(kRed)
-
-  e1 = getRate(treeHits, "nL1Mu>0 && !(isMatched==1 || isUnMatched==1)")
-  e1.SetFillColor(kGreen+2)
+    e0 = getRate(treeHits, "bx==0 && nL1Mu>0 && quality >=4")
+    e0.SetFillColor(kRed)
+    e1 = getRate(treeHits, "bx==0 && nL1Mu>0 && quality >=4 && !(isMatched==1 || isUnMatched==1)")
+    e1.SetFillColor(kGreen+2)
+    e2 = getRate(treeHits, "bx==0 && nL1Mu>0 && quality >=4 && !(isMatched==1 || isUnMatchedL1TkPt4==1)")
+    e2.SetFillColor(kBlue)
   
-  e2 = getRate(treeHits, "nL1Mu>0 && !(isMatched==1 || isUnMatchedL1TkPt4==1)")
-  e2.SetFillColor(kBlue)
+    b1.Draw()
+    e0.Draw("e3same")
+    e1.Draw("e3same")
+    e2.Draw("e3same")
 
-  b1.Draw()
-  e0.Draw("e3same")
-  e1.Draw("e3same")
-  e2.Draw("e3same")
-
-  c.SaveAs("h_L1_pt.png")
+    leg = TLegend(0.2,0.7,0.9,0.9,"","brNDC")
+    leg.SetFillColor(kWhite)
+    leg.SetBorderSize(0)
+    leg.SetFillStyle(0)
+    leg.SetTextSize(0.03)
+    leg.AddEntry(e0,"Single L1Mu", "f")
+    leg.AddEntry(e1,"Displaced L1Mu (p_{T} #geq 0 GeV on non-matching L1Tk)", "f")
+    leg.AddEntry(e2,"Displaced L1Mu (p_{T} #geq 4 GeV on non-matching L1Tk)", "f")
+    leg.Draw("same")
+    
+    c.SaveAs("L1Mu_trigger_rate_PU140_14TeV.png")
  
+  ratePlots()
+  exit()
+
   nEntry = 0
+  m = 0
   nMuTotal = 0
   nMuPass = 0
-  nMuPt30 = 0
-  events= [] 
+  nMuPt20 = 0
+  events = [] 
+  eventsWithMu = [] 
+  eventsWithMuThreshold = [] 
+  eventsWithDisplacedMu = []
   
   for k in range(0,treeHits.GetEntries()):
     treeHits.GetEntry(k)
 
+    m += 1
+    events.append(treeHits.event)
+
+    
+    #, "isMatched", treeHits.isMatched, "isUnMatched", treeHits.isUnMatched, "isUnMatchedL1TkPt4", treeHits.isUnMatchedL1TkPt4
+
     if (treeHits.nL1Mu==0):
       continue
 
+    if treeHits.bx!=0 :
+      #continue
+      pass
+
+    #print nMuTotal, treeHits.event, "nL1Mu", treeHits.nL1Mu, "Pt", treeHits.pt, "Eta", treeHits.eta, "Phi", treeHits.phi, "BX", treeHits.bx
+
     nMuTotal += 1
+    eventsWithMu.append(treeHits.event)
 
-    if treeHits.pt>=30:
-      nMuPt30 += 1
-      events.append(treeHits.event)
-      #    if ((treeHits.nL1Mu > 0) and ((treeHits.isMatched == 1) or (treeHits.isUnMatched == 1))):
-      #      continue
 
-      print nMuTotal, treeHits.event, "nL1Mu", treeHits.nL1Mu, "Pt", treeHits.pt, "Eta", treeHits.eta, "Phi", treeHits.phi, "isMatched", treeHits.isMatched, "isUnMatched", treeHits.isUnMatched, "isUnMatchedL1TkPt4", treeHits.isUnMatchedL1TkPt4
+    if treeHits.pt>=20 and treeHits.quality >=4: # and abs(treeHits.eta) >= 1.6
+      nMuPt20 += 1
+      eventsWithMuThreshold.append(treeHits.event)
+
+    if (treeHits.pt>=20 and treeHits.quality >=4 and treeHits.isMatched != 1 and treeHits.isUnMatched != 1):
+      eventsWithDisplacedMu.append(treeHits.event)
+
     nMuPass += 1
-  print events
-  print nMuTotal, nMuPass, nMuPt30, len(set(events))
+
+  print m, nMuTotal, nMuPass, nMuPt20, len(set(events)), len(set(eventsWithMu)), len(set(eventsWithMuThreshold)), len(set(eventsWithDisplacedMu))
   """
   #h_L1_pt = TH1F("h_L1_pt", "trigger rate; pt cut; entries", 10, 0, 50)
   for k in range(0,treeHits.GetEntries()):

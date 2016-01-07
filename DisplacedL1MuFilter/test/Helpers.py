@@ -13,10 +13,18 @@ myptbin = np.asarray(ptbin)
 def getRatecount(tree, todraw, cut):
     htemp = TH1F("htemp"," ",29,myptbin)
     tree.Draw(todraw+">>htemp",cut)
-    return htemp.GetEntries()
+    entries = htemp.GetEntries()
+    #return htemp.GetEntries()
+    
+    
+    for k in range(0,treeHits.GetEntries()):
+    treeHits.GetEntry(k)
+    
+    return entries
+
 
 #___________________________________________________
-def getEventsNum(tree):
+def getTotalEventNumber(tree):
     eventList = []
     for k in range(0,tree.GetEntries()):
         tree.GetEntry(k)
@@ -24,7 +32,7 @@ def getEventsNum(tree):
     return len(set(eventList))
 
 #______________________________________________________________________________
-def getRate(tree, cut):
+def getRate(treecut):
    
     #f = ROOT.TFile(file)
     #t = f.Get(dir)
@@ -40,9 +48,11 @@ def getRate(tree, cut):
     h.Sumw2()
     #print "before scale "
     #h.Print("all")
-    ntotalEvents = getEventsNum(tree)
-    print "ntotalEvents", ntotalEvents
-    h.Scale(40000./ntotalEvents/3.*0.795)
+    ntotalEvents = getTotalEventNumber(tree)
+    averageRate = 30000. #[kHz]
+    bunchCrossingWindow = 1.
+#    h.Scale(40000./ntotalEvents/3.*0.795)
+    h.Scale(averageRate/bunchCrossingWindow/ntotalEvents)
     SetOwnership(h, False)
     return h
 

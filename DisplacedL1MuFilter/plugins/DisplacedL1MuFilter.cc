@@ -47,6 +47,8 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
+#include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/Math/interface/LorentzVector.h"
@@ -78,23 +80,95 @@
 //
 
 const Int_t kMaxL1Mu = 50;
+const int nGlu = 2;
+const int nGd = 2;
+const int nGdMu = 2;
+
 
 struct MyEvent
 {
-  Int_t nL1Mu;
   Int_t lumi, run, event;
-  Float_t pt[kMaxL1Mu], eta[kMaxL1Mu], phi[kMaxL1Mu];
-  Int_t charge[kMaxL1Mu], bx[kMaxL1Mu];
+
+  Float_t beamSpot_x;
+  Float_t beamSpot_y;
+  Float_t beamSpot_z;
+
+  Float_t genGlu_p[2];
+  Float_t genGlu_pt[2];
+  Float_t genGlu_px[2];
+  Float_t genGlu_py[2];
+  Float_t genGlu_pz[2];
+  Float_t genGlu_eta[2];
+  Float_t genGlu_phi[2];
+
+  Float_t genH_m;
+  Float_t genH_p;
+  Float_t genH_pt;
+  Float_t genH_px;
+  Float_t genH_py;
+  Float_t genH_pz;
+  Float_t genH_eta;
+  Float_t genH_phi;
+  Float_t genH_vx;
+  Float_t genH_vy;
+  Float_t genH_vz;
+
+  // Dark photon  
+  Float_t genGd_m[2];
+  Float_t genGd_E[2];
+  Float_t genGd_p[2];
+  Float_t genGd_pt[2];
+  Float_t genGd_px[2];
+  Float_t genGd_py[2];
+  Float_t genGd_pz[2];
+  Float_t genGd_eta[2];
+  Float_t genGd_phi[2];
+  Float_t genGd_vx[2];
+  Float_t genGd_vy[2];
+  Float_t genGd_vz[2];
+  Float_t genGd_vLx[2];
+  Float_t genGd_vLy[2];
+  Float_t genGd_vLz[2];
+  Float_t genGd_lxy[2];
+  Float_t genGd_l[2];
+  Float_t genGd_dxy[2];
+  Float_t genGdMu_dxy_max[2];
+
+  // Gen level muon
+  Float_t genGdMu_q[2][2];
+  Float_t genGdMu_p[2][2];
+  Float_t genGdMu_pt[2][2];
+  Float_t genGdMu_px[2][2];
+  Float_t genGdMu_py[2][2];
+  Float_t genGdMu_pz[2][2];
+  Float_t genGdMu_eta[2][2];
+  Float_t genGdMu_phi[2][2];
+  Float_t genGdMu_phi_corr[2][2];
+  Float_t genGdMu_vx[2][2];
+  Float_t genGdMu_vy[2][2];
+  Float_t genGdMu_vz[2][2];
+  Float_t genGdMu_dxy[2][2];
+
+
+  Int_t nL1Mu;
+  Float_t L1Mu_pt[kMaxL1Mu], L1Mu_eta[kMaxL1Mu], L1Mu_phi[kMaxL1Mu];
+  Int_t L1Mu_charge[kMaxL1Mu], L1Mu_bx[kMaxL1Mu];
+  Int_t L1Mu_quality[kMaxL1Mu];
+  Int_t L1Mu_isMatched[kMaxL1Mu];
+  Int_t L1Mu_isUnMatched[kMaxL1Mu];
+  Int_t L1Mu_isUnMatchedL1TkPt2[kMaxL1Mu];
+  Int_t L1Mu_isUnMatchedL1TkPt3[kMaxL1Mu];
+  Int_t L1Mu_isUnMatchedL1TkPt4[kMaxL1Mu];
+
+  Float_t genGdMu_L1Mu_dR_corr[2][2];
+  Int_t genGdMu_L1Mu_index_corr[2][2];
+
   Int_t has_sim;
-  Int_t quality[kMaxL1Mu];
   Float_t pt_sim, eta_sim, phi_sim, charge_sim;
   Float_t eta_sim_prop, phi_sim_prop;
   Float_t eta_sim_corr, phi_sim_corr;
   Float_t dEta_sim_corr, dPhi_sim_corr, dR_sim_corr;
   Float_t dEta_sim_prop, dPhi_sim_prop, dR_sim_prop;
-  Int_t isMatched[kMaxL1Mu];
-  Int_t isUnMatched[kMaxL1Mu];
-  Int_t isUnMatchedL1TkPt4[kMaxL1Mu];
   Float_t pt_L1Tk, eta_L1Tk, phi_L1Tk, charge_L1Tk;
   Float_t eta_L1Tk_corr, phi_L1Tk_corr;
   Float_t eta_L1Tk_prop, phi_L1Tk_prop;
@@ -102,6 +176,17 @@ struct MyEvent
   Float_t dEta_L1Tk_prop, dPhi_L1Tk_prop, dR_L1Tk_prop;
   Float_t dEta_sim_L1Tk, dPhi_sim_L1Tk, dR_sim_L1Tk;
 };
+
+bool PtOrder (const reco::GenParticle* p1, const reco::GenParticle* p2) 
+{ 
+  return (p1->pt() > p2->pt() ); 
+}
+
+double dxy(double px, double py, double vx, double vy, double pt)
+{
+  //Source: https://cmssdt.cern.ch/SDT/lxr/source/DataFormats/TrackReco/interface/TrackBase.h#119
+  return (- vx * py + vy * px ) / pt;
+}
 
 double 
 phiHeavyCorr(double pt, double eta, double phi, double q)
@@ -183,7 +268,9 @@ private:
   edm::ESHandle<Propagator> propagatorOpposite_;
   MyEvent event_;
   TTree* event_tree_;
-      // ----------member data ---------------------------
+  // ----------member data ---------------------------
+
+  
 };
 
 //
@@ -213,60 +300,6 @@ DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig)
   bookL1MuTree();
 }
 
-void DisplacedL1MuFilter::bookL1MuTree()
-{
-  edm::Service< TFileService > fs;
-  event_tree_ = fs->make<TTree>("L1MuTree", "L1MuTree");
-  event_tree_->Branch("nL1Mu", &event_.nL1Mu);
-  event_tree_->Branch("lumi", &event_.lumi);
-  event_tree_->Branch("run", &event_.run);
-  event_tree_->Branch("event", &event_.event);
-
-  event_tree_->Branch("pt",event_.pt,"pt[nL1Mu]/F");
-  event_tree_->Branch("eta", event_.eta,"eta[nL1Mu]/F");
-  event_tree_->Branch("phi", event_.phi,"phi[nL1Mu]/F");
-  event_tree_->Branch("bx", event_.bx,"bx[nL1Mu]/I");
-  event_tree_->Branch("charge", event_.charge,"charge[nL1Mu]/I");
-  event_tree_->Branch("quality", event_.quality,"quality[nL1Mu]/I");
-  event_tree_->Branch("isMatched", event_.isMatched,"isMatched[nL1Mu]/I");
-  event_tree_->Branch("isUnMatched", event_.isUnMatched,"isUnMatched[nL1Mu]/I");
-  event_tree_->Branch("isUnMatchedL1TkPt4", event_.isUnMatchedL1TkPt4,"isUnMatchedL1TkPt4[nL1Mu]/I");
-
-  event_tree_->Branch("pt_sim", &event_.pt_sim);
-  event_tree_->Branch("eta_sim", &event_.eta_sim);
-  event_tree_->Branch("phi_sim", &event_.phi_sim);
-  event_tree_->Branch("charge_sim", &event_.charge_sim);
-  event_tree_->Branch("has_sim", &event_.has_sim);
-  event_tree_->Branch("eta_sim_prop", &event_.eta_sim_prop);
-  event_tree_->Branch("phi_sim_prop", &event_.phi_sim_prop);
-  event_tree_->Branch("eta_sim_corr", &event_.eta_sim_corr);
-  event_tree_->Branch("phi_sim_corr", &event_.phi_sim_corr);
-  event_tree_->Branch("dEta_sim_corr", &event_.dEta_sim_corr);
-  event_tree_->Branch("dPhi_sim_corr", &event_.dPhi_sim_corr);
-  event_tree_->Branch("dR_sim_corr", &event_.dR_sim_corr);
-  event_tree_->Branch("dEta_sim_prop", &event_.dEta_sim_prop);
-  event_tree_->Branch("dPhi_sim_prop", &event_.dPhi_sim_prop);
-  event_tree_->Branch("dR_sim_prop", &event_.dR_sim_prop);
-  event_tree_->Branch("pt_L1Tk", &event_.pt_L1Tk);
-  event_tree_->Branch("eta_L1Tk", &event_.eta_L1Tk);
-  event_tree_->Branch("phi_L1Tk", &event_.phi_L1Tk);
-  event_tree_->Branch("charge_L1Tk", &event_.charge_L1Tk);
-  event_tree_->Branch("eta_L1Tk_prop", &event_.eta_L1Tk_prop);
-  event_tree_->Branch("phi_L1Tk_prop", &event_.phi_L1Tk_prop);
-  event_tree_->Branch("eta_L1Tk_corr", &event_.eta_L1Tk_corr);
-  event_tree_->Branch("phi_L1Tk_corr", &event_.phi_L1Tk_corr);
-  event_tree_->Branch("dEta_L1Tk_corr", &event_.dEta_L1Tk_corr);
-  event_tree_->Branch("dPhi_L1Tk_corr", &event_.dPhi_L1Tk_corr);
-  event_tree_->Branch("dR_L1Tk_corr", &event_.dR_L1Tk_corr);
-  event_tree_->Branch("dEta_L1Tk_prop", &event_.dEta_L1Tk_prop);
-  event_tree_->Branch("dPhi_L1Tk_prop", &event_.dPhi_L1Tk_prop);
-  event_tree_->Branch("dR_L1Tk_prop", &event_.dR_L1Tk_prop);
-  event_tree_->Branch("dEta_sim_L1Tk", &event_.dEta_sim_L1Tk);
-  event_tree_->Branch("dPhi_sim_L1Tk", &event_.dPhi_sim_L1Tk);
-  event_tree_->Branch("dR_sim_L1Tk", &event_.dR_sim_L1Tk);
-}
-
-
 DisplacedL1MuFilter::~DisplacedL1MuFilter()
 {
  
@@ -284,6 +317,8 @@ DisplacedL1MuFilter::~DisplacedL1MuFilter()
 bool
 DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+  double eq = 0.000001;
+
   clearBranches();
   
   // propagator
@@ -340,6 +375,254 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   event_.nL1Mu = nL1Mu;
   // int nL1Tk = TTTracks.size();
   
+  event_.beamSpot_x = 0;
+  event_.beamSpot_y = 0;
+  event_.beamSpot_z = 0;
+
+  //////////////////
+  // GEN analysis //
+  //////////////////
+
+  edm::Handle<reco::GenParticleCollection> genParticles;
+  iEvent.getByLabel("genParticles", genParticles);
+  
+  // Loop over all genParticles and save prompt muons from particles with codes 36 (a1) or 3000022 (gammaD) in vector genMuons
+  std::vector<const reco::GenParticle*> genGlu_unsorted;
+  std::vector<const reco::GenParticle*> genGlu;
+  std::vector<const reco::GenParticle*> genH;
+  std::vector<const reco::GenParticle*> genGd_unsorted;
+  std::vector<const reco::GenParticle*> genGd;
+  std::vector<const reco::GenParticle*> genMuons;
+  std::vector<const reco::Candidate*>   genMuonMothers;
+  // Loop over all gen particles
+  int counterGenParticle = 0;
+  for(reco::GenParticleCollection::const_iterator iGenParticle = genParticles->begin();  iGenParticle != genParticles->end();  ++iGenParticle) {
+    counterGenParticle++;
+    //    cout << counterGenParticle << " " << iGenParticle->status() << " " << iGenParticle->pdgId() << " " << iGenParticle->vx() << " " << iGenParticle->vy() << " " << iGenParticle->vz() << endl;
+    // Check if gen particle is muon (pdgId = +/-13) and stable (status = 1)
+    if ( fabs( iGenParticle->pdgId() ) == 13 and iGenParticle->status() == 1 ) {
+      // Mother of the muon can be muon. Find the last muon in this chain: genMuonCand
+      // Example: a1 -> mu+ (status = 3) mu- (status = 3)
+      //          mu- (status = 3) -> mu- (status = 2) -> mu- (status = 1)
+      const reco::Candidate *genMuonCand = &(*iGenParticle);
+      bool isMuonMother = true;
+      while(isMuonMother) {
+        isMuonMother = false;
+        for ( size_t iMother = 0; iMother < genMuonCand->numberOfMothers(); iMother++ ) {
+          if ( fabs( genMuonCand->mother(iMother)->pdgId() ) == 13 ) {
+            isMuonMother = true;
+            genMuonCand = genMuonCand->mother(iMother);
+          }
+        }
+      }
+      // Loop over all real (non-muon) mothers of the muon (here we use genMuonCand)
+      for ( size_t iMother = 0; iMother < genMuonCand->numberOfMothers(); iMother++ ) {
+        // Check if mother is CP-odd Higgs (PdgId = 36) or gamma_Dark (PdgId = 3000022)
+        //        if ( genMuonCand->mother(iMother)->pdgId() == 36 || genMuonCand->mother(iMother)->pdgId() == 3000022 || genMuonCand->mother(iMother)->pdgId() == 443 ) {
+        if ( genMuonCand->mother(iMother)->pdgId() == 36 || genMuonCand->mother(iMother)->pdgId() == 3000022 ) {
+          // Store the muon (stable, first in chain) into vector
+          genMuons.push_back(&(*iGenParticle));
+          // Store mother of the muon into vector. We need this to group muons into dimuons later
+          genMuonMothers.push_back(genMuonCand->mother(iMother));
+        }
+      }
+    }
+    // Check if gen particle is
+    if (    ( iGenParticle->status() == 3 and iGenParticle->pdgId() == 25 ) // decaying (status = 3) SM Higgs (pdgId = 25)
+            || ( iGenParticle->status() == 3 and iGenParticle->pdgId() == 35 ) // decaying (status = 3) CP-even Higgs (pdgId = 35)
+            ) {
+      genH.push_back(&(*iGenParticle)); // Store the Higgs into vector
+    }
+    // Check if gen particle is
+    if (    ( iGenParticle->status() == 3 and iGenParticle->pdgId() == 36      ) // decaying (status = 3) CP-odd Higgs (pdgId = 36)
+            || ( iGenParticle->status() == 3 and iGenParticle->pdgId() == 3000022 ) // decaying (status = 3) gamma_Dark (pdgId = 3000022)
+            //         || ( iGenParticle->status() == 2 and iGenParticle->pdgId() == 443   ) // decaying (status = 2) J/psi (pdgId = 443)
+            ) {
+      genGd_unsorted.push_back(&(*iGenParticle));
+    }
+    // Check if gen particle is gluon 
+    if (iGenParticle->status() == 3 and iGenParticle->pdgId() == 21){
+      genGlu_unsorted.push_back(&(*iGenParticle));
+    }
+  }
+
+  if ( genH.size() == 1 ) {
+    event_.genH_m   = genH[0]->mass();
+    event_.genH_p   = genH[0]->p();
+    event_.genH_pt  = genH[0]->pt();
+    event_.genH_px  = genH[0]->px();
+    event_.genH_py  = genH[0]->py();
+    event_.genH_pz  = genH[0]->pz();
+    event_.genH_eta = genH[0]->eta();
+    event_.genH_phi = genH[0]->phi();
+    event_.genH_vx  = genH[0]->vx() - event_.beamSpot_x;
+    event_.genH_vy  = genH[0]->vy() - event_.beamSpot_y;
+    event_.genH_vz  = genH[0]->vz() - event_.beamSpot_z;
+  } else {
+    //    cout << "WARNING! genH.size() != 1" << endl;
+  }
+
+  if ( genGd.size() >= 2 ) {
+    for (int i=0; i<2; ++i){
+      event_.genGd_m[i]   = genGd[i]->mass();
+      event_.genGd_E[i]   = genGd[i]->energy();
+      event_.genGd_p[i]   = genGd[i]->p();
+      event_.genGd_pt[i]  = genGd[i]->pt();
+      event_.genGd_px[i]  = genGd[i]->px();
+      event_.genGd_py[i]  = genGd[i]->py();
+      event_.genGd_pz[i]  = genGd[i]->pz();
+      event_.genGd_eta[i] = genGd[i]->eta();
+      event_.genGd_phi[i] = genGd[i]->phi();
+      event_.genGd_vx[i]  = genGd[i]->vx() - event_.beamSpot_x;
+      event_.genGd_vy[i]  = genGd[i]->vy() - event_.beamSpot_y;
+      event_.genGd_vz[i]  = genGd[i]->vz() - event_.beamSpot_z;
+    }
+  } else {
+    cout << "WARNING! genGd.size() < 2" << endl;
+  }
+
+  if ( genGlu.size() >= 2 ) {    
+    for (int i=0; i<2; ++i){
+      event_.genGlu_p[i] = genGlu[i]->p();
+      event_.genGlu_pt[i]  = genGlu[i]->pt();
+      event_.genGlu_px[i]  = genGlu[i]->px();
+      event_.genGlu_py[i]  = genGlu[i]->py();
+      event_.genGlu_pz[i]  = genGlu[i]->pz();
+      event_.genGlu_eta[i] = genGlu[i]->eta();
+      event_.genGlu_phi[i] = genGlu[i]->phi();
+    }
+  } else {
+    cout << "WARNING! genGlu.size() < 2" << endl;
+  }
+ 
+  // Group muons with the same mother
+  std::vector< std::vector<const reco::GenParticle*> > genMuonGroupsUnsorted;
+  std::vector<const reco::Candidate*> genMuonGroupsUnsortedMothers;
+  std::vector<const reco::GenParticle*> genMuonsTMP1       = genMuons;
+  std::vector<const reco::Candidate*>   genMuonMothersTMP1 = genMuonMothers;
+  unsigned int nMuonGroup = 0;
+  while ( genMuonsTMP1.size() > 0 ) {
+    std::vector<const reco::GenParticle*> genMuonsTMP2;
+    std::vector<const reco::Candidate*>   genMuonMothersTMP2;
+    std::vector<const reco::GenParticle*> genMuonsSameMother;
+    std::vector<const reco::Candidate*>   genMuonMothersSame;
+    for ( unsigned int j = 0; j < genMuonsTMP1.size(); j++ ) {
+      // Check if mothers are the same particle
+      if ( fabs( genMuonMothersTMP1[0]->pt() - genMuonMothersTMP1[j]->pt() ) < eq ) {
+        genMuonsSameMother.push_back( genMuonsTMP1[j] );
+      } else {
+        genMuonsTMP2.push_back( genMuonsTMP1[j] );
+        genMuonMothersTMP2.push_back( genMuonMothersTMP1[j] );
+      }
+    }
+    genMuonGroupsUnsorted.push_back(genMuonsSameMother);
+    genMuonGroupsUnsortedMothers.push_back(genMuonMothersTMP1[0]);
+    genMuonsTMP1       = genMuonsTMP2;
+    genMuonMothersTMP1 = genMuonMothersTMP2;
+    nMuonGroup++;
+  }
+
+
+  // Sort muon groups to match order of genGd vector
+  std::vector< std::vector<const reco::GenParticle*> > genMuonGroups;
+  std::vector<const reco::Candidate*> genMuonGroupsMothers;
+  for (unsigned int iA = 0; iA < genGd.size(); iA++ ) {
+    bool isMuGroupMatchedToA = false;
+    int  nMuGroup = -1;
+    for ( unsigned int iMuGroup = 0; iMuGroup < genMuonGroupsUnsortedMothers.size(); iMuGroup++ ) {
+      if ( fabs ( genGd[iA]->pt() - genMuonGroupsUnsortedMothers[iMuGroup]->pt() ) < 0.000001 ) {
+        isMuGroupMatchedToA = true;
+        nMuGroup = iMuGroup;
+        break;
+      }
+    }
+    if ( isMuGroupMatchedToA and nMuGroup >= 0 ) {
+      genMuonGroups.push_back( genMuonGroupsUnsorted[nMuGroup] );
+      genMuonGroupsMothers.push_back( genMuonGroupsUnsortedMothers[nMuGroup] );
+    } else {
+      cout << "Error! Muon group has no matched boson A" << endl;
+    }
+  }
+
+  if ( genMuonGroups.size() == 2 and genMuonGroups[0].size() == 2 and genMuonGroups[1].size() == 2 ) {
+    std::sort( genMuonGroups[0].begin(), genMuonGroups[0].end(), PtOrder );
+    std::sort( genMuonGroups[1].begin(), genMuonGroups[1].end(), PtOrder );
+    
+    for (int i=0; i<2; ++i){ 
+      for (int j=0; j<2; ++j){
+        event_.genGdMu_q[i][j] = genMuonGroups[i][j]->charge();
+        event_.genGdMu_p[i][j] = genMuonGroups[i][j]->p();
+        event_.genGdMu_pt[i][j] = genMuonGroups[i][j]->pt();
+        event_.genGdMu_px[i][j] = genMuonGroups[i][j]->px();
+        event_.genGdMu_py[i][j] = genMuonGroups[i][j]->py();
+        event_.genGdMu_pz[i][j] = genMuonGroups[i][j]->pz();
+        event_.genGdMu_eta[i][j] = genMuonGroups[i][j]->eta();
+        event_.genGdMu_phi[i][j] = genMuonGroups[i][j]->phi();
+        event_.genGdMu_phi_corr[i][j] = phiHeavyCorr(genMuonGroups[i][j]->pt(), genMuonGroups[i][j]->eta(), genMuonGroups[i][j]->phi(), genMuonGroups[i][j]->charge());
+        event_.genGdMu_vx[i][j] = genMuonGroups[i][j]->vx();
+        event_.genGdMu_vy[i][j] = genMuonGroups[i][j]->vy();
+        event_.genGdMu_vz[i][j] = genMuonGroups[i][j]->vz();
+      }
+    }
+    
+    if (fabs(event_.genGdMu_vx[0][0] - event_.genGdMu_vx[0][1]) < eq and
+        fabs(event_.genGdMu_vx[1][0] - event_.genGdMu_vx[1][1]) < eq and
+        fabs(event_.genGdMu_vy[0][0] - event_.genGdMu_vy[0][1]) < eq and
+        fabs(event_.genGdMu_vy[1][0] - event_.genGdMu_vy[1][1]) < eq and
+        fabs(event_.genGdMu_vz[0][0] - event_.genGdMu_vz[0][1]) < eq and
+        fabs(event_.genGdMu_vz[1][0] - event_.genGdMu_vz[1][1]) < eq) {
+      
+      // Float_t genGd0_vLx = event_.genGd0Mu0_vx - event_.genGd0_vx;
+      // Float_t genGd1_vLx = event_.genGd1Mu0_vx - event_.genGd1_vx;
+      
+      // Float_t genGd0_vLy = event_.genGd0Mu0_vy - event_.genGd0_vy;
+      // Float_t genGd1_vLy = event_.genGd1Mu0_vy - event_.genGd1_vy;
+    
+      // Float_t genGd0_vLz = event_.genGd0Mu0_vz - event_.genGd0_vz;
+      // Float_t genGd1_vLz = event_.genGd1Mu0_vz - event_.genGd1_vz;
+    
+      // event_.genGd0Mu0_dxy = dxy(event_.genGd0Mu0_px, event_.genGd0Mu0_py, event_.genGd0Mu0_vx - event_.beamSpot_x, event_.genGd0Mu0_vy - event_.beamSpot_y, event_.genGd0Mu0_pt);
+      // event_.genGd0Mu1_dxy = dxy(event_.genGd0Mu1_px, event_.genGd0Mu1_py, event_.genGd0Mu1_vx - event_.beamSpot_x, event_.genGd0Mu1_vy - event_.beamSpot_y, event_.genGd0Mu1_pt);
+      // event_.genGd1Mu0_dxy = dxy(event_.genGd1Mu0_px, event_.genGd1Mu0_py, event_.genGd1Mu0_vx - event_.beamSpot_x, event_.genGd1Mu0_vy - event_.beamSpot_y, event_.genGd1Mu0_pt);
+      // event_.genGd1Mu1_dxy = dxy(event_.genGd1Mu1_px, event_.genGd1Mu1_py, event_.genGd1Mu1_vx - event_.beamSpot_x, event_.genGd1Mu1_vy - event_.beamSpot_y, event_.genGd1Mu1_pt);
+
+      // event_.genGd0Mu_dxy_max = std::max(event_.genGd0Mu0_dxy,event_.genGd0Mu1_dxy);
+      // event_.genGd1Mu_dxy_max = std::max(event_.genGd1Mu0_dxy,event_.genGd1Mu1_dxy);
+
+      // event_.genGd0_lxy = sqrt( genGd0_vLx * genGd0_vLx + genGd0_vLy * genGd0_vLy );
+      // event_.genGd1_lxy = sqrt( genGd1_vLx * genGd1_vLx + genGd1_vLy * genGd1_vLy );
+    
+      // event_.genGd0_l = sqrt( genGd0_vLx * genGd0_vLx + genGd0_vLy * genGd0_vLy + genGd0_vLz * genGd0_vLz );
+      // event_.genGd1_l = sqrt( genGd1_vLx * genGd1_vLx + genGd1_vLy * genGd1_vLy + genGd1_vLz * genGd1_vLz );
+
+      for (int i=0; i<2; ++i){         
+        for (int j=0; j<2; ++j){
+          event_.genGdMu_dxy[i][j] = dxy(event_.genGdMu_px[i][j], 
+                                         event_.genGdMu_py[i][j], 
+                                         event_.genGdMu_vx[i][j] - event_.beamSpot_x, 
+                                         event_.genGdMu_vy[i][j] - event_.beamSpot_y, 
+                                         event_.genGdMu_pt[i][j]);
+        }
+        event_.genGd_vLx[i] = event_.genGdMu_vx[i][0] - event_.genGd_vx[i];
+        event_.genGd_vLy[i] = event_.genGdMu_vy[i][0] - event_.genGd_vy[i];
+        event_.genGd_vLz[i] = event_.genGdMu_vz[i][0] - event_.genGd_vz[i];
+        event_.genGd_lxy[i] = sqrt(event_.genGd_vLx[i] * event_.genGd_vLx[i] + 
+                                   event_.genGd_vLy[i] * event_.genGd_vLy[i]);
+        event_.genGd_l[i]   = sqrt(event_.genGd_vLx[i] * event_.genGd_vLx[i] + 
+                                   event_.genGd_vLy[i] * event_.genGd_vLy[i] + 
+                                   event_.genGd_vLz[i] * event_.genGd_vLz[i]);
+        event_.genGdMu_dxy_max[i] = std::max(event_.genGdMu_dxy[i][0], event_.genGdMu_dxy[i][1]);
+      }     
+    } else {
+      cout << "WARNING! Muon vertices are different" << endl;
+    }
+  }
+  
+  
+  /////////////////
+  // L1 analysis //
+  /////////////////
+
   if (nL1Mu>=1)
     eventsWithMuons++;
   
@@ -358,12 +641,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     const double l1Mu_phi =  normalizedPhi(l1Mu.phiValue());
     const double l1Mu_quality = l1Mu.quality();
     
-    event_.pt[i] = l1Mu_pt;
-    event_.eta[i] = l1Mu_eta;
-    event_.phi[i] = l1Mu_phi;
-    event_.charge[i] = l1Mu.charge();
-    event_.quality[i] = l1Mu_quality;
-    event_.bx[i] = l1Mu.bx();
+    event_.L1Mu_pt[i] = l1Mu_pt;
+    event_.L1Mu_eta[i] = l1Mu_eta;
+    event_.L1Mu_phi[i] = l1Mu_phi;
+    event_.L1Mu_charge[i] = l1Mu.charge();
+    event_.L1Mu_quality[i] = l1Mu_quality;
+    event_.L1Mu_bx[i] = l1Mu.bx();
 
     if(verbose) {
       cout << "l1Mu " << i << endl; 
@@ -387,26 +670,80 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       if (true) {
         if (dR_l1Mu_l1Tk <=0.12 and l1Mu_quality >= 4) { 
           nMatchedMuons++;
-          event_.isMatched[i] = 1;
+          event_.L1Mu_isMatched[i] = 1;
           if(verbose) std::cout << "\t\tMatched!!!" << std::endl;
           break;
         }
         else if (dR_l1Mu_l1Tk <=0.4) { //0.12 < dR_l1Mu_l1Tk and 
-          event_.isUnMatched[i] = 1;
+          event_.L1Mu_isUnMatched[i] = 1;
           nUnMatchedMuons++;
           if(verbose) std::cout << "\t\tUnMatched!!!" << std::endl;
+          if (l1Tk_pt>=2) {
+            event_.L1Mu_isUnMatchedL1TkPt2[i] = 1; 
+          }
+          if (l1Tk_pt>=3) {
+            event_.L1Mu_isUnMatchedL1TkPt3[i] = 1; 
+          }
           if (l1Tk_pt>=4) {
             nUnMatchedMuonsPt++;
-            event_.isUnMatchedL1TkPt4[i] = 1; 
+            event_.L1Mu_isUnMatchedL1TkPt4[i] = 1; 
           }
           break;
         }
       }
     }
-    // if (nL1MuQ4_With_L1TkWithinDR012>=1) {         
-    //   nMatchedMuons++;    
-    // }
-  }
+    
+    // match the L1Mu to GEN    
+    double newDR[2][2];
+    for (int i=0; i<2; ++i){ 
+      for (int j=0; j<2; ++j){
+        newDR[i][j] = deltaR(event_.genGdMu_eta[i][j], event_.genGdMu_phi_corr[i][j], l1Mu_eta,l1Mu_phi);        
+        cout << "newDR" << i <<  j << newDR[i][j] << " pt " << event_.genGdMu_pt[i][j]
+             << " eta " << event_.genGdMu_eta[i][j] << " phi " << event_.genGdMu_phi_corr[i][j] << " Q " << event_.genGdMu_q[i][j] << endl;
+      }
+    }
+    
+
+    const std::vector<double> v{newDR[0][0], newDR[0][1], newDR[1][0], newDR[1][1]};
+    auto result(std::min_element(std::begin(v), std::end(v)));
+    auto dis(std::distance(std::begin(v), result));
+    
+    switch (dis){
+    case 0: 
+      if (newDR[0][0] < event_.genGdMu_L1Mu_dR_corr[0][0]) { 
+        event_.genGdMu_L1Mu_index_corr[0][0] = i;
+        event_.genGdMu_L1Mu_dR_corr[0][0] = newDR[0][0];
+        //        if (m_debug>20) 
+        cout << "Muon[0][0] was matched within " << event_.genGdMu_L1Mu_dR_corr[0][0] <<" to L1Mu "<<i<<std::endl;
+      }
+      break;
+    case 1:
+      if (newDR[0][1] < event_.genGdMu_L1Mu_dR_corr[0][1]) { 
+        event_.genGdMu_L1Mu_index_corr[0][1] = i;
+        event_.genGdMu_L1Mu_dR_corr[0][1] = newDR[0][1];
+        //        if (m_debug>20) 
+        cout << "Muon[0][1] was matched within " << event_.genGdMu_L1Mu_dR_corr[0][1] <<" to L1Mu "<<i<< std::endl;
+      }
+      break;
+    case 2:
+      if (newDR[1][0] < event_.genGdMu_L1Mu_dR_corr[1][0]) { 
+        event_.genGdMu_L1Mu_index_corr[1][0] = i;
+        event_.genGdMu_L1Mu_dR_corr[1][0] = newDR[1][0];
+        //        if (m_debug>20) 
+        cout << "Muon[1][0] was matched within " << event_.genGdMu_L1Mu_dR_corr[1][0] <<" to L1Mu "<<i<< std::endl;
+      }
+      break;
+    case 3:
+      if (newDR[1][1] < event_.genGdMu_L1Mu_dR_corr[1][1]) { 
+        event_.genGdMu_L1Mu_index_corr[1][1] = i;
+        event_.genGdMu_L1Mu_dR_corr[1][1] = newDR[1][1];
+        //        if (m_debug>20) 
+        cout << "Muon[1][1] was matched within " << event_.genGdMu_L1Mu_dR_corr[1][1] <<" to L1Mu "<<i<< std::endl;
+      }
+      break;
+    };
+  }  
+  
   if(verbose)std::cout << "Total number of muons in this event: " << nL1Mu << std::endl;
   if(verbose)std::cout << "Number of matched muons: " << nMatchedMuons << std::endl;
   if(verbose)std::cout << "Number of unmatched muons: " << nUnMatchedMuons << std::endl;
@@ -929,23 +1266,197 @@ DisplacedL1MuFilter::propagateToR(const GlobalPoint &inner_point, const GlobalVe
   return GlobalPoint();
 }
 
+void DisplacedL1MuFilter::bookL1MuTree()
+{
+  edm::Service< TFileService > fs;
+  event_tree_ = fs->make<TTree>("L1MuTree", "L1MuTree");
+  event_tree_->Branch("lumi", &event_.lumi);
+  event_tree_->Branch("run", &event_.run);
+  event_tree_->Branch("event", &event_.event);
+
+  // Beam spot
+  event_tree_->Branch("beamSpot_x",    &event_.beamSpot_x,    "beamSpot_x/F");
+  event_tree_->Branch("beamSpot_y",    &event_.beamSpot_y,    "beamSpot_y/F");
+  event_tree_->Branch("beamSpot_z",    &event_.beamSpot_z,    "beamSpot_z/F");
+
+  // Bosons
+  event_tree_->Branch("genGlu_p",    event_.genGlu_p,    "genGlu_p[2]/F");
+  event_tree_->Branch("genGlu_pt",   event_.genGlu_pt,   "genGlu_pt[2]/F");
+  event_tree_->Branch("genGlu_px",   event_.genGlu_px,   "genGlu_px[2]/F");
+  event_tree_->Branch("genGlu_py",   event_.genGlu_py,   "genGlu_py[2]/F");
+  event_tree_->Branch("genGlu_pz",   event_.genGlu_pz,   "genGlu_pz[2]/F");
+  event_tree_->Branch("genGlu_eta",  event_.genGlu_eta,  "genGlu_eta[2]/F");
+  event_tree_->Branch("genGlu_phi",  event_.genGlu_phi,  "genGlu_phi[2]/F");
+
+  event_tree_->Branch("genH_m",    &event_.genH_m,    "genH_m/F");
+  event_tree_->Branch("genH_p",    &event_.genH_p,    "genH_p/F");
+  event_tree_->Branch("genH_pt",   &event_.genH_pt,   "genH_pt/F");
+  event_tree_->Branch("genH_eta",  &event_.genH_eta,  "genH_eta/F");
+  event_tree_->Branch("genH_phi",  &event_.genH_phi,  "genH_phi/F");
+  event_tree_->Branch("genH_vx",   &event_.genH_vx,   "genH_vx/F");
+  event_tree_->Branch("genH_vy",   &event_.genH_vy,   "genH_vy/F");
+  event_tree_->Branch("genH_vz",   &event_.genH_vz,   "genH_vz/F");
+  
+  event_tree_->Branch("genGd_m",   event_.genGd_m,   "genGd_m[2]/F");
+  event_tree_->Branch("genGd_E",   event_.genGd_E,   "genGd_E[2]/F");
+  event_tree_->Branch("genGd_p",   event_.genGd_p,   "genGd_p[2]/F");
+  event_tree_->Branch("genGd_pt",  event_.genGd_pt,  "genGd_pt[2]/F");
+  event_tree_->Branch("genGd_px",  event_.genGd_px,  "genGd_px[2]/F");
+  event_tree_->Branch("genGd_py",  event_.genGd_py,  "genGd_py[2]/F");
+  event_tree_->Branch("genGd_pz",  event_.genGd_pz,  "genGd_pz[2]/F");
+  event_tree_->Branch("genGd_eta", event_.genGd_eta, "genGd_eta[2]/F");
+  event_tree_->Branch("genGd_phi", event_.genGd_phi, "genGd_phi[2]/F");
+  event_tree_->Branch("genGd_vx",  event_.genGd_vx,  "genGd_vx[2]/F");
+  event_tree_->Branch("genGd_vy",  event_.genGd_vy,  "genGd_vy[2]/F");
+  event_tree_->Branch("genGd_vz",  event_.genGd_vz,  "genGd_vz[2]/F");
+
+  // Dimuons
+  event_tree_->Branch("genGdMu_p", event_.genGdMu_p, "genGdMu_p[2][2]/F");
+  event_tree_->Branch("genGdMu_pt", event_.genGdMu_pt, "genGdMu_pt[2][2]/F");
+  event_tree_->Branch("genGdMu_px", event_.genGdMu_px, "genGdMu_px[2][2]/F");
+  event_tree_->Branch("genGdMu_py", event_.genGdMu_py, "genGdMu_py[2][2]/F");
+  event_tree_->Branch("genGdMu_pz", event_.genGdMu_pz, "genGdMu_pz[2][2]/F");
+  event_tree_->Branch("genGdMu_eta", event_.genGdMu_eta, "genGdMu_eta[2][2]/F");
+  event_tree_->Branch("genGdMu_phi", event_.genGdMu_phi, "genGdMu_phi[2][2]/F");
+  event_tree_->Branch("genGdMu_phi_corr", event_.genGdMu_phi_corr, "genGdMu_phi_corr[2][2]/F");
+  event_tree_->Branch("genGdMu_vx", event_.genGdMu_vx, "genGdMu_vx[2][2]/F");
+  event_tree_->Branch("genGdMu_vy", event_.genGdMu_vy, "genGdMu_vy[2][2]/F");
+  event_tree_->Branch("genGdMu_vz", event_.genGdMu_vz, "genGdMu_vz[2][2]/F");
+  event_tree_->Branch("genGdMu_dxy", event_.genGdMu_dxy, "genGdMu_dxy[2][2]/F");
+
+
+  event_tree_->Branch("nL1Mu", &event_.nL1Mu);
+
+  event_tree_->Branch("L1Mu_pt",event_.L1Mu_pt,"L1Mu_pt[nL1Mu]/F");
+  event_tree_->Branch("L1Mu_eta", event_.L1Mu_eta,"L1Mu_eta[nL1Mu]/F");
+  event_tree_->Branch("L1Mu_phi", event_.L1Mu_phi,"L1Mu_phi[nL1Mu]/F");
+  event_tree_->Branch("L1Mu_bx", event_.L1Mu_bx,"L1Mu_bx[nL1Mu]/I");
+  event_tree_->Branch("L1Mu_charge", event_.L1Mu_charge,"L1Mu_charge[nL1Mu]/I");
+  event_tree_->Branch("L1Mu_quality", event_.L1Mu_quality,"L1Mu_quality[nL1Mu]/I");
+  event_tree_->Branch("L1Mu_isMatched", event_.L1Mu_isMatched,"L1Mu_isMatched[nL1Mu]/I");
+  event_tree_->Branch("L1Mu_isUnMatched", event_.L1Mu_isUnMatched,"L1Mu_isUnMatched[nL1Mu]/I");
+  event_tree_->Branch("L1Mu_isUnMatchedL1TkPt2", event_.L1Mu_isUnMatchedL1TkPt2,"L1Mu_isUnMatchedL1TkPt2[nL1Mu]/I");
+  event_tree_->Branch("L1Mu_isUnMatchedL1TkPt3", event_.L1Mu_isUnMatchedL1TkPt3,"L1Mu_isUnMatchedL1TkPt3[nL1Mu]/I");
+  event_tree_->Branch("L1Mu_isUnMatchedL1TkPt4", event_.L1Mu_isUnMatchedL1TkPt4,"L1Mu_isUnMatchedL1TkPt4[nL1Mu]/I");
+
+  event_tree_->Branch("genGdMu_L1Mu_dR_corr",    event_.genGdMu_L1Mu_dR_corr,    "genGdMu_L1Mu_dR_corr[2][2]/F");
+  event_tree_->Branch("genGdMu_L1Mu_index_corr", event_.genGdMu_L1Mu_index_corr, "genGdMu_L1Mu_index_corr[2][2]/F");
+
+  event_tree_->Branch("pt_sim", &event_.pt_sim);
+  event_tree_->Branch("eta_sim", &event_.eta_sim);
+  event_tree_->Branch("phi_sim", &event_.phi_sim);
+  event_tree_->Branch("charge_sim", &event_.charge_sim);
+  event_tree_->Branch("has_sim", &event_.has_sim);
+  event_tree_->Branch("eta_sim_prop", &event_.eta_sim_prop);
+  event_tree_->Branch("phi_sim_prop", &event_.phi_sim_prop);
+  event_tree_->Branch("eta_sim_corr", &event_.eta_sim_corr);
+  event_tree_->Branch("phi_sim_corr", &event_.phi_sim_corr);
+  event_tree_->Branch("dEta_sim_corr", &event_.dEta_sim_corr);
+  event_tree_->Branch("dPhi_sim_corr", &event_.dPhi_sim_corr);
+  event_tree_->Branch("dR_sim_corr", &event_.dR_sim_corr);
+  event_tree_->Branch("dEta_sim_prop", &event_.dEta_sim_prop);
+  event_tree_->Branch("dPhi_sim_prop", &event_.dPhi_sim_prop);
+  event_tree_->Branch("dR_sim_prop", &event_.dR_sim_prop);
+  event_tree_->Branch("pt_L1Tk", &event_.pt_L1Tk);
+  event_tree_->Branch("eta_L1Tk", &event_.eta_L1Tk);
+  event_tree_->Branch("phi_L1Tk", &event_.phi_L1Tk);
+  event_tree_->Branch("charge_L1Tk", &event_.charge_L1Tk);
+  event_tree_->Branch("eta_L1Tk_prop", &event_.eta_L1Tk_prop);
+  event_tree_->Branch("phi_L1Tk_prop", &event_.phi_L1Tk_prop);
+  event_tree_->Branch("eta_L1Tk_corr", &event_.eta_L1Tk_corr);
+  event_tree_->Branch("phi_L1Tk_corr", &event_.phi_L1Tk_corr);
+  event_tree_->Branch("dEta_L1Tk_corr", &event_.dEta_L1Tk_corr);
+  event_tree_->Branch("dPhi_L1Tk_corr", &event_.dPhi_L1Tk_corr);
+  event_tree_->Branch("dR_L1Tk_corr", &event_.dR_L1Tk_corr);
+  event_tree_->Branch("dEta_L1Tk_prop", &event_.dEta_L1Tk_prop);
+  event_tree_->Branch("dPhi_L1Tk_prop", &event_.dPhi_L1Tk_prop);
+  event_tree_->Branch("dR_L1Tk_prop", &event_.dR_L1Tk_prop);
+  event_tree_->Branch("dEta_sim_L1Tk", &event_.dEta_sim_L1Tk);
+  event_tree_->Branch("dPhi_sim_L1Tk", &event_.dPhi_sim_L1Tk);
+  event_tree_->Branch("dR_sim_L1Tk", &event_.dR_sim_L1Tk);
+}
+
+
+
 void 
 DisplacedL1MuFilter::clearBranches()
 {
   event_.lumi = -99;
   event_.run = -99;
   event_.event = -99;
+
+  for (int i=0; i<2; ++i){
+    event_.genGlu_p[i] = -99;
+    event_.genGlu_pt[i] = -99;
+    event_.genGlu_px[i] = -99;
+    event_.genGlu_py[i] = -99;
+    event_.genGlu_pz[i] = -99;
+    event_.genGlu_eta[i] = -99;
+    event_.genGlu_phi[i] = -99;    
+  }
+
+  event_.genH_m = -99;
+  event_.genH_p = -99;
+  event_.genH_pt = -99;
+  event_.genH_px = -99;
+  event_.genH_py = -99;
+  event_.genH_pz = -99;
+  event_.genH_eta = -99;
+  event_.genH_phi = -99;
+  event_.genH_vx = -99;
+  event_.genH_vy = -99;
+  event_.genH_vz = -99;
+
+  for (int i=0; i<2; ++i){
+    event_.genGd_m[i] = -99;
+    event_.genGd_E[i] = -99;
+    event_.genGd_p[i] = -99;
+    event_.genGd_pt[i] = -99;
+    event_.genGd_px[i] = -99;
+    event_.genGd_py[i] = -99;
+    event_.genGd_pz[i] = -99;
+    event_.genGd_eta[i] = -99;
+    event_.genGd_phi[i] = -99;
+    event_.genGd_vx[i] = -99;
+    event_.genGd_vy[i] = -99;
+    event_.genGd_vz[i] = -99;
+  }
+
+  for (int i=0; i<2; ++i){ 
+    for (int j=0; j<2; ++j){
+      event_.genGdMu_q[i][j] = -99;;
+      event_.genGdMu_p[i][j] = -99;;
+      event_.genGdMu_pt[i][j] = -99;;
+      event_.genGdMu_px[i][j] = -99;;
+      event_.genGdMu_py[i][j] = -99;;
+      event_.genGdMu_pz[i][j] = -99;;
+      event_.genGdMu_eta[i][j] = -99;;
+      event_.genGdMu_phi[i][j] = -99;;
+      event_.genGdMu_phi_corr[i][j] = -99;;
+      event_.genGdMu_vx[i][j] = -99;;
+      event_.genGdMu_vy[i][j] = -99;;
+      event_.genGdMu_vz[i][j] = -99;;
+      event_.genGdMu_dxy[i][j] = -99;;
+
+      event_.genGdMu_L1Mu_dR_corr[i][j] = 99.;
+      event_.genGdMu_L1Mu_index_corr[i][j] = 99;
+    }
+  }
   event_.nL1Mu = 0;
+
+
   for (int i=0; i<kMaxL1Mu; ++i){
-    event_.pt[i] = -10;
-    event_.eta[i] = -10;
-    event_.phi[i] = -10;
-    event_.charge[i] = -10;
-    event_.bx[i] = -10;
-    event_.quality[i] = -10;
-    event_.isMatched[i] = 0;
-    event_.isUnMatched[i] = 0;
-    event_.isUnMatchedL1TkPt4[i] = 0;
+    event_.L1Mu_pt[i] = -10;
+    event_.L1Mu_eta[i] = -10;
+    event_.L1Mu_phi[i] = -10;
+    event_.L1Mu_charge[i] = -10;
+    event_.L1Mu_bx[i] = -10;
+    event_.L1Mu_quality[i] = -10;
+    event_.L1Mu_isMatched[i] = 0;
+    event_.L1Mu_isUnMatched[i] = 0;
+    event_.L1Mu_isUnMatchedL1TkPt2[i] = 0;
+    event_.L1Mu_isUnMatchedL1TkPt3[i] = 0;
+    event_.L1Mu_isUnMatchedL1TkPt4[i] = 0;
   }
 
   event_.has_sim = -10;

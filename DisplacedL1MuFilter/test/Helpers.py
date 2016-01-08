@@ -12,6 +12,13 @@ ptbin = [
     45.0,  50.0,  60.0,  70.0,  80.0,  90.0, 100.0, 120.0, 140.0, 200.0]
 myptbin = np.asarray(ptbin)
 
+
+etabin = [
+    0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 
+    1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9,
+    2.0, 2.1, 2.2, 2.3, 2.4, 2.5]
+myetabin = np.asarray(ptbin)
+
 #______________________________________________________________________________
 def getBackwardCumulative(h):
     htemp = TH1F("htemp"," ",len(myptbin)-1, myptbin)
@@ -22,6 +29,7 @@ def getBackwardCumulative(h):
         for j in range(i,len(myptbin)+1):
             sum += h.GetBinContent(j)
         htemp.SetBinContent(i, sum)
+    htemp.Sumw2()
     SetOwnership(htemp, False)
     return htemp
 
@@ -31,7 +39,6 @@ def getRatecount(tree, todraw, cut):
     tree.Draw(todraw+">>htemp",cut)
     return htemp.GetEntries()
 
-
 #___________________________________________________
 def getTotalEventNumber(tree):
     eventList = []
@@ -39,6 +46,25 @@ def getTotalEventNumber(tree):
         tree.GetEntry(k)
         eventList.append(tree.event)
     return len(set(eventList))
+
+#______________________________________________________________________________
+def scaleToRate(tree, h):
+    ntotalEvents = tree.GetEntries()
+    averageRate = 30000. #[kHz]
+    bunchCrossingWindow = 1.
+    h.Scale(averageRate/bunchCrossingWindow/ntotalEvents)
+    return h
+
+#______________________________________________________________________________
+def getRatePtHistogram(tree, h):
+    h = getBackwardCumulative(h)
+    h = scaleToRate(tree, h)
+    return h
+        
+#______________________________________________________________________________
+def getRateEtaHistogram(tree, h):
+    h = scaleToRate(tree, h)
+    return h
 
 #______________________________________________________________________________
 def getRate(treecut):

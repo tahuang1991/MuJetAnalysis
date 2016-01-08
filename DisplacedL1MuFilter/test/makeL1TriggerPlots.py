@@ -23,7 +23,7 @@ if __name__ == "__main__":
   inputFile = 'out_filter_ana.test10000.root'
   inputFile = 'out_filter_ana.test100000.root'
   """
-  inputFile = 'out_filter_ana_Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14.test.root'
+  inputFile = 'out_filter_ana_Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14.root'
   targetDir = './'
 
   ## extension for figures - add more?
@@ -55,8 +55,127 @@ if __name__ == "__main__":
   set_style()
 
 
-  def ratePlots():
-    ## Calculate the trigger rate
+  c = TCanvas("c","c",800,600)
+  c.Clear()    
+  gStyle.SetTitleBorderSize(0);
+  gStyle.SetPadLeftMargin(0.126);
+  gStyle.SetPadRightMargin(0.04);
+  gStyle.SetPadTopMargin(0.06);
+  gStyle.SetPadBottomMargin(0.13);
+  gPad.SetLogy(1)
+
+  b1 = TH1F("b1","b1",29,myptbin)
+  b1.GetYaxis().SetRangeUser(.1,10000)
+  b1.GetYaxis().SetTitleOffset(1.2)
+  b1.GetYaxis().SetNdivisions(520)
+  b1.GetYaxis().SetTitle("L1 Trigger Rate [kHz]")
+  b1.GetXaxis().SetTitle("L1 muon p_{T} threshold [GeV]")
+  b1.GetXaxis().SetTitleFont(62)
+  b1.GetXaxis().SetTitleOffset(1.2)
+  b1.GetXaxis().SetTitleSize(0.045)
+  b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" PU140, 14TeV")
+  b1.SetStats(0)
+  b1.Draw()
+
+  h_single_L1Mu_rate = TH1F("h_single_L1Mu_rate"," ",len(myptbin)-1, myptbin)
+  h_single_displaced_rate = TH1F("h_single_displaced_rate"," ",len(myptbin)-1, myptbin)
+  h_single_displaced_rate_L1Tk_pt3 = TH1F("h_single_displaced_rate_L1Tk_pt3"," ",len(myptbin)-1, myptbin)
+  h_single_displaced_rate_L1Tk_pt4 = TH1F("h_single_displaced_rate_L1Tk_pt4"," ",len(myptbin)-1, myptbin)
+
+  for k in range(0,treeHits.GetEntries()): #
+    treeHits.GetEntry(k)
+
+    ## get the max value of the momentum
+    pts = list(treeHits.pt)
+    if len(pts)>=1:
+      
+      ## single L1Mu trigger rate
+      maxPt = 0.
+      for i in range(0,len(pts)):
+        if treeHits.bx[i]!=0 or treeHits.quality[i]<4:
+          continue
+        
+        ## get the max pt for an event        
+        if treeHits.pt[i]>maxPt:
+          maxPt = treeHits.pt[i]
+
+      if maxPt>0:
+        h_single_L1Mu_rate.Fill(maxPt)
+        
+      ## displaced trigger: at least 1 muon that is not matched or unmatched 
+      maxPt = 0.
+      for i in range(0,len(pts)):
+        if treeHits.bx[i]!=0 or treeHits.isMatched[i]==1 or treeHits.isUnMatched[i]==1 or treeHits.quality[i]<4:
+          continue
+
+        if treeHits.pt[i]>maxPt:
+          maxPt = treeHits.pt[i]
+
+      if maxPt>0:
+        h_single_displaced_rate.Fill(maxPt)
+
+      ## displaced trigger: at least 1 muon that is not matched or unmatched (Pt cut on non-matching L1Tk)
+      maxPt = 0.
+      for i in range(0,len(pts)):
+        if treeHits.bx[i]!=0 or treeHits.isMatched[i]==1 or treeHits.isUnMatchedL1TkPt3[i]==1 or treeHits.quality[i]<4:
+          continue
+
+        if treeHits.pt[i]>maxPt:
+          maxPt = treeHits.pt[i]
+
+      if maxPt>0:
+        h_single_displaced_rate_L1Tk_pt3.Fill(maxPt)
+
+      ## displaced trigger: at least 1 muon that is not matched or unmatched (Pt cut on non-matching L1Tk)
+      maxPt = 0.
+      for i in range(0,len(pts)):
+        if treeHits.bx[i]!=0 or treeHits.isMatched[i]==1 or treeHits.isUnMatchedL1TkPt4[i]==1 or treeHits.quality[i]<4:
+          continue
+
+        if treeHits.pt[i]>maxPt:
+          maxPt = treeHits.pt[i]
+
+      if maxPt>0:
+        h_single_displaced_rate_L1Tk_pt4.Fill(maxPt)
+
+    """
+      print k, len(pts), oneL1MuNotMatchedNotUnMatched, oneL1MuNotMatchedNotUnMatchedPts, oneL1MuNotMatchedNotUnMatchedMaxPt
+    else:
+      print k
+    """
+      
+  h_single_L1Mu_rate = getRatePtHistogram(treeHits, h_single_L1Mu_rate)
+  h_single_L1Mu_rate.SetFillColor(kRed)
+  h_single_L1Mu_rate.Draw("e3same")
+
+  h_single_displaced_rate = getRatePtHistogram(treeHits, h_single_displaced_rate)
+  h_single_displaced_rate.SetFillColor(kGreen+2)
+  h_single_displaced_rate.Draw("e3same")
+
+  h_single_displaced_rate_L1Tk_pt3 = getRatePtHistogram(treeHits, h_single_displaced_rate_L1Tk_pt3)
+  h_single_displaced_rate_L1Tk_pt3.SetFillColor(kBlue)
+  h_single_displaced_rate_L1Tk_pt3.Draw("e3same")
+
+  h_single_displaced_rate_L1Tk_pt4 = getRatePtHistogram(treeHits, h_single_displaced_rate_L1Tk_pt4)
+  h_single_displaced_rate_L1Tk_pt4.SetFillColor(kBlue)
+  h_single_displaced_rate_L1Tk_pt4.Draw("e3same")
+
+  leg = TLegend(0.2,0.7,0.9,0.9,"","brNDC")
+  leg.SetFillColor(kWhite)
+  leg.SetBorderSize(0)
+  leg.SetFillStyle(0)
+  leg.SetTextSize(0.03)
+  leg.AddEntry(h_single_L1Mu_rate,"Single L1Mu", "f")
+  leg.AddEntry(h_single_displaced_rate,"Displaced L1Mu (p_{T} #geq 0 GeV on non-matching L1Tk)", "f")
+  leg.AddEntry(h_single_displaced_rate_L1Tk_pt3,"Displaced L1Mu (p_{T} #geq 3 GeV on non-matching L1Tk)", "f")
+  leg.AddEntry(h_single_displaced_rate_L1Tk_pt4,"Displaced L1Mu (p_{T} #geq 4 GeV on non-matching L1Tk)", "f")
+  leg.Draw("same")
+  c.SaveAs("L1Mu_trigger_rate_pt_PU140_14TeV.png")
+    
+  exit()
+
+
+  def makeRateVsEtaHistogram(ptCut):
 
     c = TCanvas("c","c",800,600)
     c.Clear()    
@@ -72,132 +191,132 @@ if __name__ == "__main__":
     b1.GetYaxis().SetTitleOffset(1.2)
     b1.GetYaxis().SetNdivisions(520)
     b1.GetYaxis().SetTitle("L1 Trigger Rate [kHz]")
-    b1.GetXaxis().SetTitle("L1 muon p_{T} threshold [GeV]")
+    b1.GetXaxis().SetTitle("L1 muon #eta")
     b1.GetXaxis().SetTitleFont(62)
     b1.GetXaxis().SetTitleOffset(1.2)
     b1.GetXaxis().SetTitleSize(0.045)
     b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" PU140, 14TeV")
     b1.SetStats(0)
-
-#    e0 = getRate(treeHits, "bx==0 && nL1Mu>0 && quality >=4")
-#    e0.SetFillColor(kRed)
-#    e1 = getRate(treeHits, "bx==0 && nL1Mu>0 && quality >=4 && !(isMatched==1 || isUnMatched==1)")
-#    e1.SetFillColor(kGreen+2)
- #   e2 = getRate(treeHits, "bx==0 && nL1Mu>0 && quality >=4 && !(isMatched==1 || isUnMatchedL1TkPt4==1)")
- #   e2.SetFillColor(kBlue)
-  
     b1.Draw()
-    treeHits.Draw("Max$(pt)","Sum$(quality[i] >= 4) >= 1")
-    """
-    e0.Draw("e3same")
-    e1.Draw("e3same")
-    e2.Draw("e3same")
+
+    h_single_L1Mu_rate = TH1F("h_single_L1Mu_rate"," ",len(myptbin)-1, myptbin)
+    h_single_displaced_rate = TH1F("h_single_displaced_rate"," ",len(myptbin)-1, myptbin)
+    h_single_displaced_rate_L1Tk_pt3 = TH1F("h_single_displaced_rate_L1Tk_pt3"," ",len(myptbin)-1, myptbin)
+    h_single_displaced_rate_L1Tk_pt4 = TH1F("h_single_displaced_rate_L1Tk_pt4"," ",len(myptbin)-1, myptbin)
+    
+
+    for k in range(0,treeHits.GetEntries()): #
+      treeHits.GetEntry(k)
+
+      ## get the max value of the momentum
+      pts = list(treeHits.pt)
+      if len(pts)>=1:
+      
+        ## single L1Mu trigger rate
+        maxPt = 0.
+        maxPtIndex = -1
+        for i in range(0,len(pts)):
+
+          if treeHits.pt[i]<ptCut:
+            continue
+          
+          if treeHits.bx[i]!=0 or treeHits.quality[i]<4:
+            continue
+        
+          ## get the max pt for an event        
+          if treeHits.pt[i]>maxPt:
+            maxPt = treeHits.pt[i]
+            maxPtIndex = i
+
+        if maxPt>0:
+          h_single_L1Mu_rate.Fill(abs(treeHits.eta[maxPtIndex]))
+        
+        ## displaced trigger: at least 1 muon that is not matched or unmatched 
+        maxPt = 0.
+        maxPtIndex = -1
+        for i in range(0,len(pts)):
+          if treeHits.pt[i]<ptCut:
+            continue
+
+          if treeHits.bx[i]!=0 or treeHits.isMatched[i]==1 or treeHits.isUnMatched[i]==1 or treeHits.quality[i]<4:
+            continue
+
+        if treeHits.pt[i]>maxPt:
+          maxPt = treeHits.pt[i]
+          maxPtIndex = i
+
+        if maxPt>0:
+          h_single_displaced_rate.Fill(abs(treeHits.eta[maxPtIndex]))
+
+        ## displaced trigger: at least 1 muon that is not matched or unmatched (Pt cut on non-matching L1Tk)
+        maxPt = 0.
+        maxPtIndex = -1
+        for i in range(0,len(pts)):
+          if treeHits.pt[i]<ptCut:
+            continue
+
+          if treeHits.bx[i]!=0 or treeHits.isMatched[i]==1 or treeHits.isUnMatchedL1TkPt3[i]==1 or treeHits.quality[i]<4:
+            continue
+
+          if treeHits.pt[i]>maxPt:
+            maxPt = treeHits.pt[i]
+            maxPtIndex = i
+
+        if maxPt>0:
+          h_single_displaced_rate_L1Tk_pt3.Fill(abs(treeHits.eta[maxPtIndex]))
+
+        ## displaced trigger: at least 1 muon that is not matched or unmatched (Pt cut on non-matching L1Tk)
+        maxPt = 0.
+        maxPtIndex = -1
+        for i in range(0,len(pts)):
+          if treeHits.pt[i]<ptCut:
+            continue
+
+          if treeHits.bx[i]!=0 or treeHits.isMatched[i]==1 or treeHits.isUnMatchedL1TkPt4[i]==1 or treeHits.quality[i]<4:
+            continue
+
+          if treeHits.pt[i]>maxPt:
+            maxPt = treeHits.pt[i]
+            maxPtIndex = i
+
+        if maxPt>0:
+          h_single_displaced_rate_L1Tk_pt4.Fill(abs(treeHits.eta[maxPtIndex]))
+
+
+    h_single_L1Mu_rate = getRateEtaHistogram(treeHits, h_single_L1Mu_rate)
+    h_single_L1Mu_rate.SetFillColor(kRed)
+    h_single_L1Mu_rate.Draw("e3same")
+
+    h_single_displaced_rate = getRateEtaHistogram(treeHits, h_single_displaced_rate)
+    h_single_displaced_rate.SetFillColor(kGreen+2)
+    h_single_displaced_rate.Draw("e3same")
+
+    h_single_displaced_rate_L1Tk_pt3 = getRateEtaHistogram(treeHits, h_single_displaced_rate_L1Tk_pt3)
+    h_single_displaced_rate_L1Tk_pt3.SetFillColor(kBlue)
+    h_single_displaced_rate_L1Tk_pt3.Draw("e3same")
+
+    h_single_displaced_rate_L1Tk_pt4 = getRateEtaHistogram(treeHits, h_single_displaced_rate_L1Tk_pt4)
+    h_single_displaced_rate_L1Tk_pt4.SetFillColor(kBlue)
+    h_single_displaced_rate_L1Tk_pt4.Draw("e3same")
+
     leg = TLegend(0.2,0.7,0.9,0.9,"","brNDC")
     leg.SetFillColor(kWhite)
     leg.SetBorderSize(0)
     leg.SetFillStyle(0)
     leg.SetTextSize(0.03)
-    leg.AddEntry(e0,"Single L1Mu", "f")
-    leg.AddEntry(e1,"Displaced L1Mu (p_{T} #geq 0 GeV on non-matching L1Tk)", "f")
-    leg.AddEntry(e2,"Displaced L1Mu (p_{T} #geq 4 GeV on non-matching L1Tk)", "f")
+    leg.AddEntry(h_single_L1Mu_rate,"Single L1Mu", "f")
+    leg.AddEntry(h_single_displaced_rate,"Displaced L1Mu (p_{T} #geq 0 GeV on non-matching L1Tk)", "f")
+    leg.AddEntry(h_single_displaced_rate_L1Tk_pt3,"Displaced L1Mu (p_{T} #geq 3 GeV on non-matching L1Tk)", "f")
+    leg.AddEntry(h_single_displaced_rate_L1Tk_pt4,"Displaced L1Mu (p_{T} #geq 4 GeV on non-matching L1Tk)", "f")
     leg.Draw("same")
-    """
-    c.SaveAs("L1Mu_trigger_rate_PU140_14TeV.png")
- 
-  #ratePlots()
-  #exit()
+    c.SaveAs("L1Mu_trigger_rate_eta_ptCut_%d_PU140_14TeV_.png"%(ptCut))
 
-  nEntry = 0
-  nMuTotal = 0
-  nMuPass = 0
-  nMuPt20 = 0
-  nEventPass = 0
-  nEventPassPt = 0
-  
-
-  c = TCanvas("c","c",800,600)
-  c.Clear()    
-  gStyle.SetTitleBorderSize(0);
-  gStyle.SetPadLeftMargin(0.126);
-  gStyle.SetPadRightMargin(0.04);
-  gStyle.SetPadTopMargin(0.06);
-  gStyle.SetPadBottomMargin(0.13);
-  gPad.SetLogy(1)
-
-  h_single_L1Mu_rate = TH1F("h_single_L1Mu_rate"," ",len(myptbin)-1, myptbin)
-  h_single_displaced_rate = TH1F("h_single_displaced_rate"," ",len(myptbin)-1, myptbin)
-  h_single_displaced_rate_L1Tk_pt = TH1F("h_single_displaced_rate_L1Tk_pt"," ",len(myptbin)-1, myptbin)
-
-  for k in range(0,treeHits.GetEntries()):
-    treeHits.GetEntry(k)
-
-    #print k, "nL1Mu", treeHits.nL1Mu
-    nMuTotal += treeHits.nL1Mu
-    if treeHits.nL1Mu>=1:
-      nEntry += 1
-
-    nMuWithQ4 = 0
-    nMuWithQ4Pt = 0
-    
-    ## get the max value of the momentum
-    pts = list(treeHits.pt)
-    if len(pts)>=1:
-      maxPt = max(pts)
-      indices = [i for i, x in enumerate(pts) if x == maxPt]
-      qualities = []
-      for i in indices:
-        qualities.append(treeHits.quality[i])
-      maxPtQuality = max(qualities)
-      if maxPtQuality>=4:
-        htemp.Fill(maxPt)
-        nEventPassPt += 1
-
-  #htemp_cumul.Draw()
-  htemp.Draw()
-  htemp2 = getBackwardCumulative(htemp)
-  htemp2.SetLineColor(kBlue)
-  htemp2.Draw("same")
-  c.SaveAs("htemp.png")
-  print nEventPassPt
-    
-  """
-    if treeHits.bx!=0 :
-      #continue
-      pass
-
-    #print nMuTotal, treeHits.event, "nL1Mu", treeHits.nL1Mu, "Pt", treeHits.pt, "Eta", treeHits.eta, "Phi", treeHits.phi, "BX", treeHits.bx
-    #, "isMatched", treeHits.isMatched, "isUnMatched", treeHits.isUnMatched, "isUnMatchedL1TkPt4", treeHits.isUnMatchedL1TkPt4
-
-    nMuTotal += 1
-    eventsWithMu.append(treeHits.event)
+  makeRateVsEtaHistogram(10)
+  makeRateVsEtaHistogram(15)
+  makeRateVsEtaHistogram(20)
 
 
-    if treeHits.pt>=20 and treeHits.quality >=4: # and abs(treeHits.eta) >= 1.6
-      nMuPt20 += 1
-      eventsWithMuThreshold.append(treeHits.event)
-
-    if (treeHits.pt>=20 and treeHits.quality >=4 and treeHits.isMatched != 1 and treeHits.isUnMatched != 1):
-      eventsWithDisplacedMu.append(treeHits.event)
-
-    nMuPass += 1
-
-    print m, nMuTotal, nMuPass, nMuPt20, len(set(events)), len(set(eventsWithMu)), len(set(eventsWithMuThreshold)), len(set(eventsWithDisplacedMu))
-    #h_L1_pt = TH1F("h_L1_pt", "trigger rate; pt cut; entries", 10, 0, 50)
-    for k in range(0,treeHits.GetEntries()):
-    treeHits.GetEntry(k)
-    print "nL1Mu", treeHits.nL1Mu, "Pt", treeHits.pt, "Eta", treeHits.eta, "Phi", treeHits.phi, "isMatched", treeHits.isMatched, "isUnMatched", treeHits.isUnMatched, "isUnMatchedL1TkPt4", treeHits.isUnMatchedL1TkPt4
-    #if (treeHits.isMatched or treeHits.isUnMatched):
-    #continue
-    #pass
-
-    #h_L1_pt.Fill(treeHits.pt)
-    #h_L1_pt.Sumw2()
-    #h_L1_pt.Draw()
-  """
-
-  exit()
-
-  def fitSigma():
+def fitSigma():
     ### fits to get the sigma
     c = TCanvas("c","c",800,600)
     c.Clear()

@@ -1386,6 +1386,13 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("genGd_vy",  event_.genGd_vy,  "genGd_vy[2]/F");
   event_tree_->Branch("genGd_vz",  event_.genGd_vz,  "genGd_vz[2]/F");
 
+  event_tree_->Branch("genGd_vLx", event_.genGd_vLx, "genGd_vLx[2]/F");
+  event_tree_->Branch("genGd_vLy", event_.genGd_vLy, "genGd_vLy[2]/F");
+  event_tree_->Branch("genGd_vLz", event_.genGd_vLz, "genGd_vLz[2]/F");
+  event_tree_->Branch("genGd_lxy", event_.genGd_lxy, "genGd_lxy[2]/F");
+  event_tree_->Branch("genGd_l", event_.genGd_l, "genGd_l[2]/F");
+  event_tree_->Branch("genGd_dxy_max", event_.genGd_dxy_max, "genGd_dxy_max[2]/F");
+
   // Dimuons
   event_tree_->Branch("genGdMu_p", event_.genGdMu_p, "genGdMu_p[2][2]/F");
   event_tree_->Branch("genGdMu_pt", event_.genGdMu_pt, "genGdMu_pt[2][2]/F");
@@ -1496,6 +1503,14 @@ DisplacedL1MuFilter::clearBranches()
     event_.genGd_vx[i] = -99;
     event_.genGd_vy[i] = -99;
     event_.genGd_vz[i] = -99;
+
+    event_.genGd_vLx[i] = -99;
+    event_.genGd_vLy[i] = -99;
+    event_.genGd_vLz[i] = -99;
+    event_.genGd_lxy[i] = -99;
+    event_.genGd_l[i] = -99;
+    event_.genGd_dxy_max[i] = -99;
+    
   }
 
   for (int i=0; i<2; ++i){ 

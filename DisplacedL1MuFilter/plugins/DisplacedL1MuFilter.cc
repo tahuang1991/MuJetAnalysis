@@ -2,7 +2,6 @@
 //
 // Package:    DisplacedL1MuFilter
 // Class:      DisplacedL1MuFilter
-// 
 /**\class DisplacedL1MuFilter DisplacedL1MuFilter.cc MuJetAnalysis/DisplacedL1MuFilter/plugins/DisplacedL1MuFilter.cc
 
    We assume that the displacement is reasonable (What is reasonable here? $d_{xy} < 10$ cm) 
@@ -259,6 +258,10 @@ private:
   int eventsWithMuons = 0;
   int eventsWithDisplacedMuons = 0;
   int eventsWithDisplacedMuonsPt = 0;
+  int nEventsWith1MuonWithQuality4Pt20 = 0;
+  int nEventsWith1MuonWithQuality4Pt20p = 0;
+  int nEventsWith1MuonWithQuality4Pt20BX0 = 0;
+  int nEventsWith1MuonWithQuality4Pt20BX0p = 0;
 
   edm::InputTag L1Mu_input;
   edm::InputTag L1TkMu_input;
@@ -318,6 +321,12 @@ bool
 DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   double eq = 0.000001;
+  int hasL1MuWithQ4Pt20 = 0;
+  int hasL1MuWithQ4Pt20p = 0;
+  int hasL1MuWithQ4Pt20BX0 = 0;
+  int hasL1MuWithQ4Pt20BX0p = 0;
+
+  bool verbose = true;
 
   clearBranches();
   
@@ -398,7 +407,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   int counterGenParticle = 0;
   for(reco::GenParticleCollection::const_iterator iGenParticle = genParticles->begin();  iGenParticle != genParticles->end();  ++iGenParticle) {
     counterGenParticle++;
-    //    cout << counterGenParticle << " " << iGenParticle->status() << " " << iGenParticle->pdgId() << " " << iGenParticle->vx() << " " << iGenParticle->vy() << " " << iGenParticle->vz() << endl;
+    //cout << counterGenParticle << " " << iGenParticle->status() << " " << iGenParticle->pdgId() << " " << iGenParticle->vx() << " " << iGenParticle->vy() << " " << iGenParticle->vz() << endl;
     // Check if gen particle is muon (pdgId = +/-13) and stable (status = 1)
     if ( fabs( iGenParticle->pdgId() ) == 13 and iGenParticle->status() == 1 ) {
       // Mother of the muon can be muon. Find the last muon in this chain: genMuonCand
@@ -446,6 +455,31 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
   }
 
+  bool sortGammaDark(false);
+  if (sortGammaDark) {
+    if ( genGd_unsorted.size() >= 2 ) {
+      // Sort genGd by pt (leading pt first)
+      std::sort (genGd_unsorted.begin(), genGd_unsorted.end(), PtOrder);
+      // Remove duplicates from genGd
+      //    Float_t A_pt = genGd_unsorted[0]->pt();
+      //    for ( unsigned int i = 1; i < genGd_unsorted.size(); i++ ) {
+      //      if ( fabs( genGd_unsorted[i]->pt() - A_pt) > eq ) {
+      //        A_pt = genGd_unsorted[i]->pt();
+      //        genGd.push_back( genGd_unsorted[i] );
+      //      }
+      //    }
+    }
+  }
+  genGd = genGd_unsorted;
+  
+  // check again that the gluons are in fact the mother particles
+  if ( genGlu_unsorted.size() >= 2 ) {
+    // Sort genGlu by pt (leading pt first)
+    std::sort (genGlu_unsorted.begin(), genGlu_unsorted.end(), PtOrder);
+  }
+
+  genGlu = genGlu_unsorted;
+
   if ( genH.size() == 1 ) {
     event_.genH_m   = genH[0]->mass();
     event_.genH_p   = genH[0]->p();
@@ -459,7 +493,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     event_.genH_vy  = genH[0]->vy() - event_.beamSpot_y;
     event_.genH_vz  = genH[0]->vz() - event_.beamSpot_z;
   } else {
-    //    cout << "WARNING! genH.size() != 1" << endl;
+    cout << "WARNING! genH.size() != 1" << endl;
   }
 
   if ( genGd.size() >= 2 ) {
@@ -543,7 +577,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       cout << "Error! Muon group has no matched boson A" << endl;
     }
   }
-
+  
   if ( genMuonGroups.size() == 2 and genMuonGroups[0].size() == 2 and genMuonGroups[1].size() == 2 ) {
     std::sort( genMuonGroups[0].begin(), genMuonGroups[0].end(), PtOrder );
     std::sort( genMuonGroups[1].begin(), genMuonGroups[1].end(), PtOrder );
@@ -618,6 +652,17 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
   }
   
+  if(verbose) { 
+    for (int i=0; i<2; ++i){ 
+      for (int j=0; j<2; ++j){
+        cout << "b_genGd"<<i<<"Mu"<<j<<"_pt " << event_.genGdMu_pt[i][j] << endl;
+        cout << "b_genGd"<<i<<"Mu"<<j<<"_eta " << event_.genGdMu_eta[i][j] << endl;
+        cout << "b_genGd"<<i<<"Mu"<<j<<"_phi " << event_.genGdMu_phi[i][j] << endl;
+        cout << "b_genGd"<<i<<"Mu"<<j<<"_phi_corr " << event_.genGdMu_phi_corr[i][j] << endl;
+        cout << "b_genGd"<<i<<"Mu"<<j<<"_dxy " << event_.genGdMu_dxy[i][j] << endl;
+      }
+    }
+  }
   
   /////////////////
   // L1 analysis //
@@ -626,7 +671,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   if (nL1Mu>=1)
     eventsWithMuons++;
   
-  bool verbose = false;
   if(verbose) std::cout << "Number of L1Mu candidates before selections " << nL1Mu << std::endl; 
 
   nTotalMuons = nTotalMuons + nL1Mu;
@@ -647,6 +691,19 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     event_.L1Mu_charge[i] = l1Mu.charge();
     event_.L1Mu_quality[i] = l1Mu_quality;
     event_.L1Mu_bx[i] = l1Mu.bx();
+
+    if (l1Mu_pt >= 20 and l1Mu_quality >= 4) {
+      hasL1MuWithQ4Pt20 = 1;
+    }
+    if (l1Mu_pt > 20 and l1Mu_quality >= 4) {
+      hasL1MuWithQ4Pt20p = 1;
+    }
+    if (l1Mu_pt >= 20 and l1Mu_quality >= 4 and l1Mu.bx()==0) {
+      hasL1MuWithQ4Pt20BX0 = 1;
+    }
+    if (l1Mu_pt > 20 and l1Mu_quality >= 4 and l1Mu.bx()==0) {
+      hasL1MuWithQ4Pt20BX0p = 1;
+    }
 
     if(verbose) {
       cout << "l1Mu " << i << endl; 
@@ -695,11 +752,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     
     // match the L1Mu to GEN    
     double newDR[2][2];
-    for (int i=0; i<2; ++i){ 
+    for (int k=0; k<2; ++k){ 
       for (int j=0; j<2; ++j){
-        newDR[i][j] = deltaR(event_.genGdMu_eta[i][j], event_.genGdMu_phi_corr[i][j], l1Mu_eta,l1Mu_phi);        
-        cout << "newDR" << i <<  j << newDR[i][j] << " pt " << event_.genGdMu_pt[i][j]
-             << " eta " << event_.genGdMu_eta[i][j] << " phi " << event_.genGdMu_phi_corr[i][j] << " Q " << event_.genGdMu_q[i][j] << endl;
+        newDR[k][j] = deltaR(event_.genGdMu_eta[k][j], event_.genGdMu_phi_corr[k][j], l1Mu_eta,l1Mu_phi);        
+        if(verbose) cout << "newDR " << k <<  j << " " << newDR[k][j] << " pt " << event_.genGdMu_pt[k][j]
+                         << " eta " << event_.genGdMu_eta[k][j] << " phi " << event_.genGdMu_phi_corr[k][j] 
+                         << " Q " << event_.genGdMu_q[k][j] << endl;
       }
     }
     
@@ -714,7 +772,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         event_.genGdMu_L1Mu_index_corr[0][0] = i;
         event_.genGdMu_L1Mu_dR_corr[0][0] = newDR[0][0];
         //        if (m_debug>20) 
-        cout << "Muon[0][0] was matched within " << event_.genGdMu_L1Mu_dR_corr[0][0] <<" to L1Mu "<<i<<std::endl;
+        if(verbose) cout << "Muon[0][0] was matched within " << event_.genGdMu_L1Mu_dR_corr[0][0] <<" to L1Mu "<<i<<std::endl;
       }
       break;
     case 1:
@@ -722,7 +780,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         event_.genGdMu_L1Mu_index_corr[0][1] = i;
         event_.genGdMu_L1Mu_dR_corr[0][1] = newDR[0][1];
         //        if (m_debug>20) 
-        cout << "Muon[0][1] was matched within " << event_.genGdMu_L1Mu_dR_corr[0][1] <<" to L1Mu "<<i<< std::endl;
+        if(verbose) cout << "Muon[0][1] was matched within " << event_.genGdMu_L1Mu_dR_corr[0][1] <<" to L1Mu "<<i<< std::endl;
       }
       break;
     case 2:
@@ -730,7 +788,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         event_.genGdMu_L1Mu_index_corr[1][0] = i;
         event_.genGdMu_L1Mu_dR_corr[1][0] = newDR[1][0];
         //        if (m_debug>20) 
-        cout << "Muon[1][0] was matched within " << event_.genGdMu_L1Mu_dR_corr[1][0] <<" to L1Mu "<<i<< std::endl;
+        if(verbose) cout << "Muon[1][0] was matched within " << event_.genGdMu_L1Mu_dR_corr[1][0] <<" to L1Mu "<<i<< std::endl;
       }
       break;
     case 3:
@@ -738,7 +796,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         event_.genGdMu_L1Mu_index_corr[1][1] = i;
         event_.genGdMu_L1Mu_dR_corr[1][1] = newDR[1][1];
         //        if (m_debug>20) 
-        cout << "Muon[1][1] was matched within " << event_.genGdMu_L1Mu_dR_corr[1][1] <<" to L1Mu "<<i<< std::endl;
+        if(verbose) cout << "Muon[1][1] was matched within " << event_.genGdMu_L1Mu_dR_corr[1][1] <<" to L1Mu "<<i<< std::endl;
       }
       break;
     };
@@ -758,6 +816,19 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   if (displacedMuonsPt >=1) 
     eventsWithDisplacedMuonsPt++;
+
+  if (hasL1MuWithQ4Pt20 == 1) {
+    nEventsWith1MuonWithQuality4Pt20++;
+  }
+  if (hasL1MuWithQ4Pt20p == 1) {
+    nEventsWith1MuonWithQuality4Pt20p++;
+  }
+  if (hasL1MuWithQ4Pt20BX0 == 1) {
+    nEventsWith1MuonWithQuality4Pt20BX0++;
+  }
+  if (hasL1MuWithQ4Pt20BX0p == 1) {
+    nEventsWith1MuonWithQuality4Pt20BX0p++;
+  }
 
   // no L1Mu in event, still fill with default values
   event_tree_->Fill();  
@@ -1187,8 +1258,13 @@ void
 DisplacedL1MuFilter::endJob()
 {
   // cout << "Total number of total muons " << nTotalMuons << endl;
-  // cout << "Total number of prompt muons " << nPromptMuons << endl;
+  //cout << "Total number of prompt muons " << nPromptMuons << endl;
+  
   cout << "Events with at least 1 muon: " << eventsWithMuons << std::endl;
+  cout << "nEventsWith1MuonWithQuality4Pt20: " << nEventsWith1MuonWithQuality4Pt20 << std::endl;
+  cout << "nEventsWith1MuonWithQuality4Pt20p: " << nEventsWith1MuonWithQuality4Pt20p << std::endl;
+  cout << "nEventsWith1MuonWithQuality4Pt20: " << nEventsWith1MuonWithQuality4Pt20BX0 << std::endl;
+  cout << "nEventsWith1MuonWithQuality4Pt20p: " << nEventsWith1MuonWithQuality4Pt20BX0p << std::endl;
   cout << "Events with at least 1 displaced muon: " << eventsWithDisplacedMuons << std::endl;
   cout << "Events with at least 1 displaced muon Pt4: " << eventsWithDisplacedMuonsPt << std::endl;
 }
@@ -1340,7 +1416,7 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("L1Mu_isUnMatchedL1TkPt4", event_.L1Mu_isUnMatchedL1TkPt4,"L1Mu_isUnMatchedL1TkPt4[nL1Mu]/I");
 
   event_tree_->Branch("genGdMu_L1Mu_dR_corr",    event_.genGdMu_L1Mu_dR_corr,    "genGdMu_L1Mu_dR_corr[2][2]/F");
-  event_tree_->Branch("genGdMu_L1Mu_index_corr", event_.genGdMu_L1Mu_index_corr, "genGdMu_L1Mu_index_corr[2][2]/F");
+  event_tree_->Branch("genGdMu_L1Mu_index_corr", event_.genGdMu_L1Mu_index_corr, "genGdMu_L1Mu_index_corr[2][2]/I");
 
   event_tree_->Branch("pt_sim", &event_.pt_sim);
   event_tree_->Branch("eta_sim", &event_.eta_sim);

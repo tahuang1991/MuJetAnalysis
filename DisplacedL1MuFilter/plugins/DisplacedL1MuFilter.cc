@@ -156,6 +156,7 @@ struct MyEvent
   Int_t L1Mu_isMatched[kMaxL1Mu];
   Int_t L1Mu_isUnMatched[kMaxL1Mu];
   Int_t L1Mu_isUnMatchedL1TkPt2[kMaxL1Mu];
+  Int_t L1Mu_isUnMatchedL1TkPt2p5[kMaxL1Mu];
   Int_t L1Mu_isUnMatchedL1TkPt3[kMaxL1Mu];
   Int_t L1Mu_isUnMatchedL1TkPt4[kMaxL1Mu];
 
@@ -247,8 +248,8 @@ private:
   //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
   
   int min_L1Mu_Quality;
-  double dR_L1Mu_L1Tk;
-  double dR_L1Mu_noL1Tk;
+  double max_dR_L1Mu_L1Tk;
+  double max_dR_L1Mu_noL1Tk;
   double min_pT_L1Tk;
   double max_pT_L1Tk;
   int nTotalMuons = 0;
@@ -290,9 +291,9 @@ private:
 DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig)
 {
   //now do what ever initialization is needed
-  min_L1Mu_Quality = iConfig.getParameter<int>("L1MuQuality");
-  dR_L1Mu_L1Tk = iConfig.getParameter<double>("dR_L1Mu_L1Tk");
-  dR_L1Mu_noL1Tk = iConfig.getParameter<double>("dR_L1Mu_noL1Tk");
+  min_L1Mu_Quality = iConfig.getParameter<int>("min_L1Mu_Quality");
+  max_dR_L1Mu_L1Tk = iConfig.getParameter<double>("max_dR_L1Mu_L1Tk");
+  max_dR_L1Mu_noL1Tk = iConfig.getParameter<double>("max_dR_L1Mu_noL1Tk");
   min_pT_L1Tk = iConfig.getParameter<double>("min_pT_L1Tk");
   max_pT_L1Tk = iConfig.getParameter<double>("max_pT_L1Tk");
   verbose = iConfig.getParameter<int>("verbose");
@@ -325,8 +326,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   int hasL1MuWithQ4Pt20p = 0;
   int hasL1MuWithQ4Pt20BX0 = 0;
   int hasL1MuWithQ4Pt20BX0p = 0;
-
-  bool verbose = true;
 
   clearBranches();
   
@@ -721,22 +720,25 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       const double l1Tk_charge = l1Tk.getRInv()>0? 1: -1;
       const double l1Tk_phi_corr = phiHeavyCorr(l1Tk_pt, l1Tk_eta, l1Tk_phi, l1Tk_charge);
       const double dR_l1Mu_l1Tk = reco::deltaR(l1Tk_eta, l1Tk_phi_corr, l1Mu_eta, l1Mu_phi);
-      if (dR_l1Mu_l1Tk > 0.4)
+      if (dR_l1Mu_l1Tk > max_dR_L1Mu_noL1Tk)
         continue;
       if(verbose) std::cout << "\tL1Tk candidate " << j << " dR " << dR_l1Mu_l1Tk << " L1Tk pt " << l1Tk_pt << std::endl;
       if (true) {
-        if (dR_l1Mu_l1Tk <=0.12 and l1Mu_quality >= 4) { 
+        if (dR_l1Mu_l1Tk <= max_dR_L1Mu_L1Tk and l1Mu_quality >= min_L1Mu_Quality) { 
           nMatchedMuons++;
           event_.L1Mu_isMatched[i] = 1;
           if(verbose) std::cout << "\t\tMatched!!!" << std::endl;
           break;
         }
-        else if (dR_l1Mu_l1Tk <=0.4) { //0.12 < dR_l1Mu_l1Tk and 
+        else if (dR_l1Mu_l1Tk <= max_dR_L1Mu_noL1Tk) { //0.12 < dR_l1Mu_l1Tk and 
           event_.L1Mu_isUnMatched[i] = 1;
           nUnMatchedMuons++;
           if(verbose) std::cout << "\t\tUnMatched!!!" << std::endl;
           if (l1Tk_pt>=2) {
             event_.L1Mu_isUnMatchedL1TkPt2[i] = 1; 
+          }
+          if (l1Tk_pt>=2.5) {
+            event_.L1Mu_isUnMatchedL1TkPt2p5[i] = 1; 
           }
           if (l1Tk_pt>=3) {
             event_.L1Mu_isUnMatchedL1TkPt3[i] = 1; 
@@ -1391,7 +1393,7 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("genGd_vLz", event_.genGd_vLz, "genGd_vLz[2]/F");
   event_tree_->Branch("genGd_lxy", event_.genGd_lxy, "genGd_lxy[2]/F");
   event_tree_->Branch("genGd_l", event_.genGd_l, "genGd_l[2]/F");
-  event_tree_->Branch("genGd_dxy_max", event_.genGd_dxy_max, "genGd_dxy_max[2]/F");
+  event_tree_->Branch("genGdMu_dxy_max", event_.genGdMu_dxy_max, "genGdMu_dxy_max[2]/F");
 
   // Dimuons
   event_tree_->Branch("genGdMu_p", event_.genGdMu_p, "genGdMu_p[2][2]/F");
@@ -1419,6 +1421,7 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("L1Mu_isMatched", event_.L1Mu_isMatched,"L1Mu_isMatched[nL1Mu]/I");
   event_tree_->Branch("L1Mu_isUnMatched", event_.L1Mu_isUnMatched,"L1Mu_isUnMatched[nL1Mu]/I");
   event_tree_->Branch("L1Mu_isUnMatchedL1TkPt2", event_.L1Mu_isUnMatchedL1TkPt2,"L1Mu_isUnMatchedL1TkPt2[nL1Mu]/I");
+  event_tree_->Branch("L1Mu_isUnMatchedL1TkPt2p5", event_.L1Mu_isUnMatchedL1TkPt2p5,"L1Mu_isUnMatchedL1TkPt2p5[nL1Mu]/I");
   event_tree_->Branch("L1Mu_isUnMatchedL1TkPt3", event_.L1Mu_isUnMatchedL1TkPt3,"L1Mu_isUnMatchedL1TkPt3[nL1Mu]/I");
   event_tree_->Branch("L1Mu_isUnMatchedL1TkPt4", event_.L1Mu_isUnMatchedL1TkPt4,"L1Mu_isUnMatchedL1TkPt4[nL1Mu]/I");
 
@@ -1509,7 +1512,7 @@ DisplacedL1MuFilter::clearBranches()
     event_.genGd_vLz[i] = -99;
     event_.genGd_lxy[i] = -99;
     event_.genGd_l[i] = -99;
-    event_.genGd_dxy_max[i] = -99;
+    event_.genGdMu_dxy_max[i] = -99;
     
   }
 
@@ -1546,6 +1549,7 @@ DisplacedL1MuFilter::clearBranches()
     event_.L1Mu_isMatched[i] = 0;
     event_.L1Mu_isUnMatched[i] = 0;
     event_.L1Mu_isUnMatchedL1TkPt2[i] = 0;
+    event_.L1Mu_isUnMatchedL1TkPt2p5[i] = 0;
     event_.L1Mu_isUnMatchedL1TkPt3[i] = 0;
     event_.L1Mu_isUnMatchedL1TkPt4[i] = 0;
   }

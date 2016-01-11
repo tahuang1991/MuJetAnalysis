@@ -1,9 +1,9 @@
 import FWCore.ParameterSet.Config as cms
 
 DisplacedL1MuFilter_PhaseIIGE21 = cms.EDFilter("DisplacedL1MuFilter",
-    L1MuQuality = cms.int32(4),
-    dR_L1Mu_L1Tk = cms.double(0.12),
-    dR_L1Mu_noL1Tk = cms.double(0.4),
+    min_L1Mu_Quality = cms.int32(4),
+    max_dR_L1Mu_L1Tk = cms.double(0.12),
+    max_dR_L1Mu_noL1Tk = cms.double(0.4),
     min_pT_L1Tk = cms.double(4),
     max_pT_L1Tk = cms.double(9999),
     verbose = cms.int32(0),

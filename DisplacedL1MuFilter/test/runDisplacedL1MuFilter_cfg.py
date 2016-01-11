@@ -32,33 +32,35 @@ Slava's datasets:
 """
 #from MuJetAnalysis.DisplacedL1MuFilter.Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14 import files
 #from MuJetAnalysis.DisplacedL1MuFilter.SingleMuPlusFlatPt0p2To150_TTI2023Upg14D_PU140bx25_ILT_SLHC14 import files
-#from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV import files
-#from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV_PU140 import files
+from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV import files
 #from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_100_14TeV import files
 #from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV import files
+#from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV_PU140 import files
+#from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_100_14TeV_PU140 import files
+#from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140 import files
 
 process.source = cms.Source(
     "PoolSource",
-#    fileNames = cms.untracked.vstring(*files)
+    fileNames = cms.untracked.vstring(*files)
     #fileNames = cms.untracked.vstring('/store/mc/TP2023HGCALDR/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/GEN-SIM-DIGI-RAW/HGCALForMUO_PU140BX25_newsplit_PH2_1K_FB_V6-v2/40000/0097F2D6-523D-E511-BA2B-0025907254C8.root')
-    fileNames = cms.untracked.vstring("file:filter.root")
+#    fileNames = cms.untracked.vstring("file:filter.root")
 )
 
 
 process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 #process.l1extraParticles + + process.dump
 #process.p = cms.Path(process.l1extraParticles + process.L1TkMuons  + process.dump + process.DisplacedL1MuFilter_PhaseIIGE21)
-"""
+
 process.TFileService = cms.Service(
     "TFileService",
 #    fileName = cms.string("out_filter_ana_Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14.test10.root")
-#    fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV_PU140.root")
-    fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140.test.root")
+    fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV_PU140_L1TkdR0p4.root")
+#    fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140.test.root")
 )
 
-"""
-process.p = cms.Path(process.TrackTriggerClustersStubs * process.TrackTriggerTTTracks)
-#process.p = cms.Path(process.DisplacedL1MuFilter_PhaseIIGE21)
+
+#process.p = cms.Path(process.TrackTriggerClustersStubs * process.TrackTriggerTTTracks)
+process.p = cms.Path(process.DisplacedL1MuFilter_PhaseIIGE21)
 # * process.dump * process.DisplacedL1MuFilter_PhaseIIGE21
 #process.p.remove(process.L1TkMuonsDTSequence)
 
@@ -67,4 +69,4 @@ process.out = cms.OutputModule("PoolOutputModule",
 #                               SelectEvents = cms.untracked.PSet(SelectEvents = cms.vstring('p')),
 )
 
-process.endpath1 = cms.EndPath(process.out)
+#process.endpath1 = cms.EndPath(process.out)

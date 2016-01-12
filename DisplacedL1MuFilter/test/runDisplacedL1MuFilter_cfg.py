@@ -41,7 +41,7 @@ from MuJetAnalysis.DisplacedL1MuFilter.Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140b
 process.DisplacedL1MuFilter_PhaseIIGE21 = cms.EDFilter("DisplacedL1MuFilter",
     min_L1Mu_Quality = cms.int32(4),
     max_dR_L1Mu_L1Tk = cms.double(0.12),
-    max_dR_L1Mu_noL1Tk = cms.double(0.4),
+    max_dR_L1Mu_noL1Tk = cms.double(0.3),
     min_pT_L1Tk = cms.double(4),
     max_pT_L1Tk = cms.double(9999),
     verbose = cms.int32(0),
@@ -63,7 +63,7 @@ process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 
 process.TFileService = cms.Service(
     "TFileService",
-    fileName = cms.string("out_filter_ana_Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_L1TkdR0p4.root")
+    fileName = cms.string("out_filter_ana_Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_L1TkdR0p3.root")
 #    fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_L1TkdR0p12.root")
 #    fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140.test.root")
 )

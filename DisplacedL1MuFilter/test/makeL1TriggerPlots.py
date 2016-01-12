@@ -16,23 +16,16 @@ def exit():
 if __name__ == "__main__":  
 
   #inputFile = 'out_filter_ana_Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14.root'
-  #  inputFile = 'out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV_PU140.test10.root'
-  #inputFile = 'out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV_PU140.root'
-  #inputFile = 'out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV.root'
-  #inputFile = 'out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV_PU140.root'
 
-  #inputFile = 'out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU0_L1TkdR0p12.root'
-  #inputFile = 'out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU0_L1TkdR0p2.root'
-  #inputFile = 'out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU0_L1TkdR0p4.root'
-  #inputFile = 'out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_L1TkdR0p12.root'
-  #inputFile = 'out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_L1TkdR0p2.root'
-  #inputFile = 'out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_L1TkdR0p3.root'
-  #inputFile = 'out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_L1TkdR0p4.root'
+  label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU0_L1TkdR0p4"; pu = 'PU0'
+  label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU0_L1TkdR0p3"; pu = 'PU0'
+  label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU0_L1TkdR0p2"; pu = 'PU0'
+  label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU0_L1TkdR0p12"; pu = 'PU0'
 
-  label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU0_L1TkdR0p4"
-  label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU0_L1TkdR0p3"
-  #label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU0_L1TkdR0p2"
-  #label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU0_L1TkdR0p12"
+  label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_L1TkdR0p4"; pu = 'PU140'
+  label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_L1TkdR0p3"; pu = 'PU140'
+  label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_L1TkdR0p2"; pu = 'PU140'
+  label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_L1TkdR0p12"; pu = 'PU140'
 
   inputFile = label + ".root"
   targetDir = label + "/"
@@ -40,6 +33,7 @@ if __name__ == "__main__":
   ## extension for figures - add more?
   ext = ".png"
   
+
   ## Trees
   analyzer = "DisplacedL1MuFilter_PhaseIIGE21"
   recHits = "L1MuTree"
@@ -86,7 +80,7 @@ if __name__ == "__main__":
     b1.GetXaxis().SetTitleFont(62)
     b1.GetXaxis().SetTitleOffset(1.2)
     b1.GetXaxis().SetTitleSize(0.045)
-    b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" PU140, 14TeV")
+    b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" " + pu + ", 14TeV")
     b1.SetStats(0)
     b1.Draw()
 
@@ -238,7 +232,7 @@ if __name__ == "__main__":
     b1.GetXaxis().SetTitleFont(62)
     b1.GetXaxis().SetTitleOffset(1.2)
     b1.GetXaxis().SetTitleSize(0.045)
-    b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" PU140, 14TeV")
+    b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" " + pu + ", 14TeV")
     b1.SetStats(0)
     b1.Draw()
 
@@ -546,11 +540,11 @@ if __name__ == "__main__":
             trigL1TkPt3 = False
             trigL1TkPt4 = False
 
-            if L1Mu_isMatched != 1 and L1Mu_isUnMatched != 1 and abs(L1Mu_bx) !=1:          trigL1TkPt0 = True
+            if L1Mu_isMatched != 1 and L1Mu_isUnMatched != 1          and abs(L1Mu_bx) !=1: trigL1TkPt0 = True
+            if L1Mu_isMatched != 1 and L1Mu_isUnMatchedL1TkPt2 != 1   and abs(L1Mu_bx) !=1: trigL1TkPt2 = True
             if L1Mu_isMatched != 1 and L1Mu_isUnMatchedL1TkPt2p5 != 1 and abs(L1Mu_bx) !=1: trigL1TkPt2p5 = True
-            if L1Mu_isMatched != 1 and L1Mu_isUnMatchedL1TkPt2 != 1 and abs(L1Mu_bx) !=1:   trigL1TkPt2 = True
-            if L1Mu_isMatched != 1 and L1Mu_isUnMatchedL1TkPt3 != 1 and abs(L1Mu_bx) !=1:   trigL1TkPt3 = True
-            if L1Mu_isMatched != 1 and L1Mu_isUnMatchedL1TkPt4 != 1 and abs(L1Mu_bx) !=1:   trigL1TkPt4 = True
+            if L1Mu_isMatched != 1 and L1Mu_isUnMatchedL1TkPt3 != 1   and abs(L1Mu_bx) !=1: trigL1TkPt3 = True
+            if L1Mu_isMatched != 1 and L1Mu_isUnMatchedL1TkPt4 != 1   and abs(L1Mu_bx) !=1: trigL1TkPt4 = True
               
           eta = abs(treeHits.genGdMu_eta[ij])
           dxy = abs(treeHits.genGdMu_dxy[ij])
@@ -570,32 +564,32 @@ if __name__ == "__main__":
           if dxy_range1 and eta_fid:
             genMu_pt_dxy0to0p1_fid.Fill(pt)
             if trigL1TkPt0:   L1Mu_genMu_pt_dxy0to0p1_fid_L1TkPt0.Fill(pt)
-            if trigL1TkPt2p5: L1Mu_genMu_pt_dxy0to0p1_fid_L1TkPt2p5.Fill(pt)
             if trigL1TkPt2:   L1Mu_genMu_pt_dxy0to0p1_fid_L1TkPt2.Fill(pt)
+            if trigL1TkPt2p5: L1Mu_genMu_pt_dxy0to0p1_fid_L1TkPt2p5.Fill(pt)
             if trigL1TkPt3:   L1Mu_genMu_pt_dxy0to0p1_fid_L1TkPt3.Fill(pt)
             if trigL1TkPt4:   L1Mu_genMu_pt_dxy0to0p1_fid_L1TkPt4.Fill(pt)
 
           if dxy_range2 and eta_fid:
             genMu_pt_dxy1to5_fid.Fill(pt)
             if trigL1TkPt0:   L1Mu_genMu_pt_dxy1to5_fid_L1TkPt0.Fill(pt)
-            if trigL1TkPt2p5: L1Mu_genMu_pt_dxy1to5_fid_L1TkPt2p5.Fill(pt)
             if trigL1TkPt2:   L1Mu_genMu_pt_dxy1to5_fid_L1TkPt2.Fill(pt)
+            if trigL1TkPt2p5: L1Mu_genMu_pt_dxy1to5_fid_L1TkPt2p5.Fill(pt)
             if trigL1TkPt3:   L1Mu_genMu_pt_dxy1to5_fid_L1TkPt3.Fill(pt)
             if trigL1TkPt4:   L1Mu_genMu_pt_dxy1to5_fid_L1TkPt4.Fill(pt)
 
           if dxy_range3 and eta_fid:
             genMu_pt_dxy5to10_fid.Fill(pt)
             if trigL1TkPt0:   L1Mu_genMu_pt_dxy5to10_fid_L1TkPt0.Fill(pt)
-            if trigL1TkPt2p5: L1Mu_genMu_pt_dxy5to10_fid_L1TkPt2p5.Fill(pt)
             if trigL1TkPt2:   L1Mu_genMu_pt_dxy5to10_fid_L1TkPt2.Fill(pt)
+            if trigL1TkPt2p5: L1Mu_genMu_pt_dxy5to10_fid_L1TkPt2p5.Fill(pt)
             if trigL1TkPt3:   L1Mu_genMu_pt_dxy5to10_fid_L1TkPt3.Fill(pt)
             if trigL1TkPt4:   L1Mu_genMu_pt_dxy5to10_fid_L1TkPt4.Fill(pt)
 
           if dxy_range4 and eta_fid:
             genMu_pt_dxy10_fid.Fill(pt)
             if trigL1TkPt0:   L1Mu_genMu_pt_dxy10_fid_L1TkPt0.Fill(pt)
-            if trigL1TkPt2p5: L1Mu_genMu_pt_dxy10_fid_L1TkPt2p5.Fill(pt)
             if trigL1TkPt2:   L1Mu_genMu_pt_dxy10_fid_L1TkPt2.Fill(pt)
+            if trigL1TkPt2p5: L1Mu_genMu_pt_dxy10_fid_L1TkPt2p5.Fill(pt)
             if trigL1TkPt3:   L1Mu_genMu_pt_dxy10_fid_L1TkPt3.Fill(pt)
             if trigL1TkPt4:   L1Mu_genMu_pt_dxy10_fid_L1TkPt4.Fill(pt)
              
@@ -604,32 +598,32 @@ if __name__ == "__main__":
           if dxy_range1 and pt_fid:
             genMu_eta_dxy0to0p1_fid.Fill(eta)
             if trigL1TkPt0:   L1Mu_genMu_eta_dxy0to0p1_fid_L1TkPt0.Fill(eta)
-            if trigL1TkPt2:   L1Mu_genMu_eta_dxy0to0p1_fid_L1TkPt2p5.Fill(eta)
-            if trigL1TkPt2p5: L1Mu_genMu_eta_dxy0to0p1_fid_L1TkPt2.Fill(eta)
+            if trigL1TkPt2:   L1Mu_genMu_eta_dxy0to0p1_fid_L1TkPt2.Fill(eta)
+            if trigL1TkPt2p5: L1Mu_genMu_eta_dxy0to0p1_fid_L1TkPt2p5.Fill(eta)
             if trigL1TkPt3:   L1Mu_genMu_eta_dxy0to0p1_fid_L1TkPt3.Fill(eta)
             if trigL1TkPt4:   L1Mu_genMu_eta_dxy0to0p1_fid_L1TkPt4.Fill(eta)
 
           if dxy_range2 and pt_fid:
             genMu_eta_dxy1to5_fid.Fill(eta)
             if trigL1TkPt0:   L1Mu_genMu_eta_dxy1to5_fid_L1TkPt0.Fill(eta)
-            if trigL1TkPt2:   L1Mu_genMu_eta_dxy1to5_fid_L1TkPt2p5.Fill(eta)
-            if trigL1TkPt2p5: L1Mu_genMu_eta_dxy1to5_fid_L1TkPt2.Fill(eta)
+            if trigL1TkPt2:   L1Mu_genMu_eta_dxy1to5_fid_L1TkPt2.Fill(eta)
+            if trigL1TkPt2p5: L1Mu_genMu_eta_dxy1to5_fid_L1TkPt2p5.Fill(eta)
             if trigL1TkPt3:   L1Mu_genMu_eta_dxy1to5_fid_L1TkPt3.Fill(eta)
             if trigL1TkPt4:   L1Mu_genMu_eta_dxy1to5_fid_L1TkPt4.Fill(eta)
 
           if dxy_range3 and pt_fid:
             genMu_eta_dxy5to10_fid.Fill(eta)
             if trigL1TkPt0:   L1Mu_genMu_eta_dxy5to10_fid_L1TkPt0.Fill(eta)
-            if trigL1TkPt2:   L1Mu_genMu_eta_dxy5to10_fid_L1TkPt2p5.Fill(eta)
-            if trigL1TkPt2p5: L1Mu_genMu_eta_dxy5to10_fid_L1TkPt2.Fill(eta)
+            if trigL1TkPt2:   L1Mu_genMu_eta_dxy5to10_fid_L1TkPt2.Fill(eta)
+            if trigL1TkPt2p5: L1Mu_genMu_eta_dxy5to10_fid_L1TkPt2p5.Fill(eta)
             if trigL1TkPt3:   L1Mu_genMu_eta_dxy5to10_fid_L1TkPt3.Fill(eta)
             if trigL1TkPt4:   L1Mu_genMu_eta_dxy5to10_fid_L1TkPt4.Fill(eta)
 
           if dxy_range4 and pt_fid:
             genMu_eta_dxy10_fid.Fill(eta)
             if trigL1TkPt0:   L1Mu_genMu_eta_dxy10_fid_L1TkPt0.Fill(eta)
-            if trigL1TkPt2:   L1Mu_genMu_eta_dxy10_fid_L1TkPt2p5.Fill(eta)
-            if trigL1TkPt2p5: L1Mu_genMu_eta_dxy10_fid_L1TkPt2.Fill(eta)
+            if trigL1TkPt2:   L1Mu_genMu_eta_dxy10_fid_L1TkPt2.Fill(eta)
+            if trigL1TkPt2p5: L1Mu_genMu_eta_dxy10_fid_L1TkPt2p5.Fill(eta)
             if trigL1TkPt3:   L1Mu_genMu_eta_dxy10_fid_L1TkPt3.Fill(eta)
             if trigL1TkPt4:   L1Mu_genMu_eta_dxy10_fid_L1TkPt4.Fill(eta)
 
@@ -657,20 +651,20 @@ if __name__ == "__main__":
       b1.GetXaxis().SetTitleFont(62)
       b1.GetXaxis().SetTitleOffset(1.2)
       b1.GetXaxis().SetTitleSize(0.045)
-      b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" PU140, 14TeV")
+      b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" " + pu + ", 14TeV")
       b1.SetStats(0)
       b1.Draw()
 
       eff1.SetLineColor(kRed)
       eff1.Draw("same")
-      eff2.SetLineColor(kBlue)
+      eff2.SetLineColor(kMagenta+1)
       eff2.Draw("same")
       eff3.SetLineColor(kGreen+1)
       eff3.Draw("same")
-      eff4.SetLineColor(kOrange+1)
+      eff4.SetLineColor(kBlue)
       eff4.Draw("same")
       
-      leg = TLegend(0.7,0.2,0.9,0.5,"","brNDC")
+      leg = TLegend(0.7,0.4,0.9,0.6,"","brNDC")
       leg.SetFillColor(kWhite)
       leg.SetBorderSize(0)
       leg.SetFillStyle(0)
@@ -678,9 +672,41 @@ if __name__ == "__main__":
       leg.AddEntry(eff1,"|dxy| #leq 0.1", "l")
       leg.AddEntry(eff2,"1 < |dxy| #leq 5", "l")
       leg.AddEntry(eff3,"5 < |dxy| #leq 10", "l")
-      leg.AddEntry(eff3,"|dxy| > 10", "l")
+      leg.AddEntry(eff4,"|dxy| > 10", "l")
       leg.Draw("same")
       c.SaveAs(title)
+
+    ## eta effciency plots
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_L1TkPt0, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_L1TkPt0,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_L1TkPt0,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_L1TkPt0,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_L1TkPt0.png", True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_L1TkPt2, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_L1TkPt2,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_L1TkPt2,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_L1TkPt2,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_L1TkPt2.png", True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_L1TkPt2p5, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_L1TkPt2p5,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_L1TkPt2p5,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_L1TkPt2p5,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_L1TkPt2p5.png", True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_L1TkPt3, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_L1TkPt3,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_L1TkPt3,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_L1TkPt3,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_L1TkPt3.png", True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_L1TkPt4, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_L1TkPt4,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_L1TkPt4,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_L1TkPt4,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_L1TkPt4.png", True)
+
 
     ## eta effciency plots
     makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_L1TkPt0, genMu_eta_dxy0to0p1_fid),

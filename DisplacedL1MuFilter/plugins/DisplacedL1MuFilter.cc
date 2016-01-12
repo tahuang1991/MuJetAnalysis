@@ -334,19 +334,26 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iSetup.get<TrackingComponentsRecord>().get("SteppingHelixPropagatorAlong", propagator_);
   iSetup.get<TrackingComponentsRecord>().get("SteppingHelixPropagatorOpposite", propagatorOpposite_);
 
-  edm::Handle<L1MuGMTReadoutCollection> hl1GmtCands;
-  iEvent.getByLabel(L1Mu_input, hl1GmtCands );
-  std::vector<L1MuGMTExtendedCand> l1GmtCands;
+  typedef std::vector<L1MuGMTCand> GMTs;
+  edm::Handle<GMTs> aH;
+  iEvent.getByLabel("simGmtDigis", aH);
+  const GMTs& l1GmtCands(*aH.product());
+
+
+  // edm::Handle<L1MuGMTReadoutCollection> hl1GmtCands;
+  // iEvent.getByLabel(L1Mu_input, hl1GmtCands );
+  
+  //  std::vector<L1MuGMTExtendedCand> l1GmtCands;
 
   // Get GMT candidates from all bunch crossings
-  auto gmt_records = hl1GmtCands->getRecords();
-  for (auto rItr = gmt_records.begin(); rItr!=gmt_records.end() ; ++rItr ){
-    if (rItr->getBxInEvent() < -1 || rItr->getBxInEvent() > 1) continue;
+  // auto gmt_records = hl1GmtCands->getRecords();
+  // for (auto rItr = gmt_records.begin(); rItr!=gmt_records.end() ; ++rItr ){
+  //   if (rItr->getBxInEvent() < -1 || rItr->getBxInEvent() > 1) continue;
     
-    auto GMTCands = rItr->getGMTCands();
-    for (auto cItr = GMTCands.begin() ; cItr != GMTCands.end() ; ++cItr )
-      if (!cItr->empty()) l1GmtCands.push_back(*cItr);
-  }
+  //   auto GMTCands = rItr->getGMTCands();
+  //   for (auto cItr = GMTCands.begin() ; cItr != GMTCands.end() ; ++cItr )
+  //     if (!cItr->empty()) l1GmtCands.push_back(*cItr);
+  // }
 
   // // L1 Trigger Analysis
   // edm::Handle<l1extra::L1MuonParticleCollection> muonsHandle;

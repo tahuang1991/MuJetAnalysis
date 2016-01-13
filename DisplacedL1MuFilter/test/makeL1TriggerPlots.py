@@ -32,6 +32,8 @@ if __name__ == "__main__":
 
   label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV"; pu = 'PU0'; eff = True#.root
   label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140"; pu = 'PU140'; eff = True#.root
+  label = 'out_filter_ana_Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14'; pu = 'PU140'; eff = False
+
   inputFile = label + ".root"
   targetDir = label + "/"
 
@@ -65,10 +67,25 @@ if __name__ == "__main__":
 
     h_single_L1Mu_rate = TH1F("h_single_L1Mu_rate"," ",len(myptbin)-1, myptbin)
     h_single_displaced_rate = TH1F("h_single_displaced_rate"," ",len(myptbin)-1, myptbin)
-    h_single_displaced_rate_L1TkPt2 = TH1F("h_single_displaced_rate_L1TkPt2"," ",len(myptbin)-1, myptbin)
-    h_single_displaced_rate_L1TkPt2p5 = TH1F("h_single_displaced_rate_L1TkPt2p5"," ",len(myptbin)-1, myptbin)
-    h_single_displaced_rate_L1TkPt3 = TH1F("h_single_displaced_rate_L1TkPt3"," ",len(myptbin)-1, myptbin)
-    h_single_displaced_rate_L1TkPt4 = TH1F("h_single_displaced_rate_L1TkPt4"," ",len(myptbin)-1, myptbin)
+    h_single_displaced_rate_dR0p4_L1TkPt2 = TH1F("h_single_displaced_rate_dR0p4_L1TkPt2"," ",len(myptbin)-1, myptbin)
+    h_single_displaced_rate_dR0p4_L1TkPt2p5 = TH1F("h_single_displaced_rate_dR0p4_L1TkPt2p5"," ",len(myptbin)-1, myptbin)
+    h_single_displaced_rate_dR0p4_L1TkPt3 = TH1F("h_single_displaced_rate_dR0p4_L1TkPt3"," ",len(myptbin)-1, myptbin)
+    h_single_displaced_rate_dR0p4_L1TkPt4 = TH1F("h_single_displaced_rate_dR0p4_L1TkPt4"," ",len(myptbin)-1, myptbin)
+
+    h_single_displaced_rate_dR0p3_L1TkPt2 = TH1F("h_single_displaced_rate_dR0p3_L1TkPt2"," ",len(myptbin)-1, myptbin)
+    h_single_displaced_rate_dR0p3_L1TkPt2p5 = TH1F("h_single_displaced_rate_dR0p3_L1TkPt2p5"," ",len(myptbin)-1, myptbin)
+    h_single_displaced_rate_dR0p3_L1TkPt3 = TH1F("h_single_displaced_rate_dR0p3_L1TkPt3"," ",len(myptbin)-1, myptbin)
+    h_single_displaced_rate_dR0p3_L1TkPt4 = TH1F("h_single_displaced_rate_dR0p3_L1TkPt4"," ",len(myptbin)-1, myptbin)
+
+    h_single_displaced_rate_dR0p2_L1TkPt2 = TH1F("h_single_displaced_rate_dR0p2_L1TkPt2"," ",len(myptbin)-1, myptbin)
+    h_single_displaced_rate_dR0p2_L1TkPt2p5 = TH1F("h_single_displaced_rate_dR0p2_L1TkPt2p5"," ",len(myptbin)-1, myptbin)
+    h_single_displaced_rate_dR0p2_L1TkPt3 = TH1F("h_single_displaced_rate_dR0p2_L1TkPt3"," ",len(myptbin)-1, myptbin)
+    h_single_displaced_rate_dR0p2_L1TkPt4 = TH1F("h_single_displaced_rate_dR0p2_L1TkPt4"," ",len(myptbin)-1, myptbin)
+
+    h_single_displaced_rate_dR0p12_L1TkPt2 = TH1F("h_single_displaced_rate_dR0p12_L1TkPt2"," ",len(myptbin)-1, myptbin)
+    h_single_displaced_rate_dR0p12_L1TkPt2p5 = TH1F("h_single_displaced_rate_dR0p12_L1TkPt2p5"," ",len(myptbin)-1, myptbin)
+    h_single_displaced_rate_dR0p12_L1TkPt3 = TH1F("h_single_displaced_rate_dR0p12_L1TkPt3"," ",len(myptbin)-1, myptbin)
+    h_single_displaced_rate_dR0p12_L1TkPt4 = TH1F("h_single_displaced_rate_dR0p12_L1TkPt4"," ",len(myptbin)-1, myptbin)
     
     for k in range(0,treeHits.GetEntries()): #
       treeHits.GetEntry(k)
@@ -79,6 +96,27 @@ if __name__ == "__main__":
               
         def getMaxPts():
           maxPt1, maxPt2, maxPt3, maxPt4, maxPt5 = 0., 0., 0., 0., 0., 
+
+          maxPt_trig_dR0p4_L1TkPt4 = 0.
+          maxPt_trig_dR0p4_L1TkPt3 = 0.
+          maxPt_trig_dR0p4_L1TkPt2p5 = 0.
+          maxPt_trig_dR0p4_L1TkPt2 = 0.
+          
+          maxPt_trig_dR0p3_L1TkPt4 = 0.
+          maxPt_trig_dR0p3_L1TkPt3 = 0.
+          maxPt_trig_dR0p3_L1TkPt2p5 = 0.
+          maxPt_trig_dR0p3_L1TkPt2 = 0.
+
+          maxPt_trig_dR0p2_L1TkPt4 = 0.
+          maxPt_trig_dR0p2_L1TkPt3 = 0.
+          maxPt_trig_dR0p2_L1TkPt2p5 = 0.
+          maxPt_trig_dR0p2_L1TkPt2 = 0.
+          
+          maxPt_trig_dR0p12_L1TkPt4 = 0.
+          maxPt_trig_dR0p12_L1TkPt3 = 0.
+          maxPt_trig_dR0p12_L1TkPt2p5 = 0.
+          maxPt_trig_dR0p12_L1TkPt2 = 0.
+
           for i in range(0,len(pts)):
             L1Mu_pt = treeHits.L1Mu_pt[i]
             L1Mu_bx = treeHits.L1Mu_bx[i]
@@ -89,141 +127,277 @@ if __name__ == "__main__":
             L1Mu_isUnMatchedL1TkPt2p5 = treeHits.L1Mu_isUnMatchedL1TkPt2p5[i]
             L1Mu_isUnMatchedL1TkPt3 = treeHits.L1Mu_isUnMatchedL1TkPt3[i]
             L1Mu_isUnMatchedL1TkPt4 = treeHits.L1Mu_isUnMatchedL1TkPt4[i]
+            L1Mu_L1Tk_dR_min = treeHits.L1Mu_L1Tk_dR_min[i]
+            L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt[i]
+            
+            matched = False
+            unMatched_dR0p4_L1TkPt4 = False
+            unMatched_dR0p4_L1TkPt3 = False
+            unMatched_dR0p4_L1TkPt2p5 = False
+            unMatched_dR0p4_L1TkPt2 = False
 
-            if L1Mu_bx==0 and L1Mu_quality >= 4                                                        and L1Mu_pt>maxPt1: maxPt1 = L1Mu_pt
+            unMatched_dR0p3_L1TkPt4 = False
+            unMatched_dR0p3_L1TkPt3 = False
+            unMatched_dR0p3_L1TkPt2p5 = False
+            unMatched_dR0p3_L1TkPt2 = False
+
+            unMatched_dR0p2_L1TkPt4 = False
+            unMatched_dR0p2_L1TkPt3 = False
+            unMatched_dR0p2_L1TkPt2p5 = False
+            unMatched_dR0p2_L1TkPt2 = False
+
+            unMatched_dR0p12_L1TkPt4 = False
+            unMatched_dR0p12_L1TkPt3 = False
+            unMatched_dR0p12_L1TkPt2p5 = False
+            unMatched_dR0p12_L1TkPt2 = False
+
+            ## matched 
+            if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_quality >= 4: matched
+            
+            ## unmatched 
+            if L1Mu_L1Tk_dR_min <= 0.4 and L1Mu_L1Tk_pt>=4: unMatched_dR0p4_L1TkPt4 = True
+            if L1Mu_L1Tk_dR_min <= 0.4 and L1Mu_L1Tk_pt>=3: unMatched_dR0p4_L1TkPt3 = True
+            if L1Mu_L1Tk_dR_min <= 0.4 and L1Mu_L1Tk_pt>=2.5: unMatched_dR0p4_L1TkPt2p5 = True
+            if L1Mu_L1Tk_dR_min <= 0.4 and L1Mu_L1Tk_pt>=2: unMatched_dR0p4_L1TkPt2 = True
+
+            if L1Mu_L1Tk_dR_min <= 0.3 and L1Mu_L1Tk_pt>=4: unMatched_dR0p3_L1TkPt4 = True
+            if L1Mu_L1Tk_dR_min <= 0.3 and L1Mu_L1Tk_pt>=3: unMatched_dR0p3_L1TkPt3 = True
+            if L1Mu_L1Tk_dR_min <= 0.3 and L1Mu_L1Tk_pt>=2.5: unMatched_dR0p3_L1TkPt2p5 = True
+            if L1Mu_L1Tk_dR_min <= 0.3 and L1Mu_L1Tk_pt>=2: unMatched_dR0p3_L1TkPt2 = True
+
+            if L1Mu_L1Tk_dR_min <= 0.2 and L1Mu_L1Tk_pt>=4: unMatched_dR0p2_L1TkPt4 = True
+            if L1Mu_L1Tk_dR_min <= 0.2 and L1Mu_L1Tk_pt>=3: unMatched_dR0p2_L1TkPt3 = True
+            if L1Mu_L1Tk_dR_min <= 0.2 and L1Mu_L1Tk_pt>=2.5: unMatched_dR0p2_L1TkPt2p5 = True
+            if L1Mu_L1Tk_dR_min <= 0.2 and L1Mu_L1Tk_pt>=2: unMatched_dR0p2_L1TkPt2 = True
+
+            if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_L1Tk_pt>=4: unMatched_dR0p12_L1TkPt4 = True
+            if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_L1Tk_pt>=3: unMatched_dR0p12_L1TkPt3 = True
+            if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_L1Tk_pt>=2.5: unMatched_dR0p12_L1TkPt2p5 = True
+            if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_L1Tk_pt>=2: unMatched_dR0p12_L1TkPt2 = True
+
+            common = (abs(L1Mu_bx) == 0) and (L1Mu_quality >= 4) and L1Mu_pt>=0
+            trig_dR0p4_L1TkPt4 =   (not matched) and (not unMatched_dR0p4_L1TkPt4) and common
+            trig_dR0p4_L1TkPt3 =   (not matched) and (not unMatched_dR0p4_L1TkPt3) and common
+            trig_dR0p4_L1TkPt2p5 = (not matched) and (not unMatched_dR0p4_L1TkPt2p5) and common
+            trig_dR0p4_L1TkPt2 =   (not matched) and (not unMatched_dR0p4_L1TkPt2) and common
+
+            trig_dR0p3_L1TkPt4 =   (not matched) and (not unMatched_dR0p3_L1TkPt4) and common
+            trig_dR0p3_L1TkPt3 =   (not matched) and (not unMatched_dR0p3_L1TkPt3) and common
+            trig_dR0p3_L1TkPt2p5 = (not matched) and (not unMatched_dR0p3_L1TkPt2p5) and common
+            trig_dR0p3_L1TkPt2 =   (not matched) and (not unMatched_dR0p3_L1TkPt2) and common
+
+            trig_dR0p2_L1TkPt4 =   (not matched) and (not unMatched_dR0p2_L1TkPt4) and common
+            trig_dR0p2_L1TkPt3 =   (not matched) and (not unMatched_dR0p2_L1TkPt3) and common
+            trig_dR0p2_L1TkPt2p5 = (not matched) and (not unMatched_dR0p2_L1TkPt2p5) and common
+            trig_dR0p2_L1TkPt2 =   (not matched) and (not unMatched_dR0p2_L1TkPt2) and common
+
+            trig_dR0p12_L1TkPt4 =   (not matched) and (not unMatched_dR0p12_L1TkPt4) and common
+            trig_dR0p12_L1TkPt3 =   (not matched) and (not unMatched_dR0p12_L1TkPt3) and common
+            trig_dR0p12_L1TkPt2p5 = (not matched) and (not unMatched_dR0p12_L1TkPt2p5) and common
+            trig_dR0p12_L1TkPt2 =   (not matched) and (not unMatched_dR0p12_L1TkPt2) and common
+
+            if L1Mu_bx==0 and L1Mu_quality >= 4 and L1Mu_pt > maxPt1:                                     maxPt1 = L1Mu_pt
+            if trig_dR0p4_L1TkPt4               and L1Mu_pt > maxPt_trig_dR0p4_L1TkPt4: maxPt_trig_dR0p4_L1TkPt4 = L1Mu_pt
+            if trig_dR0p3_L1TkPt4               and L1Mu_pt > maxPt_trig_dR0p3_L1TkPt4: maxPt_trig_dR0p3_L1TkPt4 = L1Mu_pt
+            if trig_dR0p2_L1TkPt4               and L1Mu_pt > maxPt_trig_dR0p2_L1TkPt4: maxPt_trig_dR0p2_L1TkPt4 = L1Mu_pt
+            if trig_dR0p12_L1TkPt4              and L1Mu_pt > maxPt_trig_dR0p12_L1TkPt4: maxPt_trig_dR0p12_L1TkPt4 = L1Mu_pt
+
+            if trig_dR0p4_L1TkPt3               and L1Mu_pt > maxPt_trig_dR0p4_L1TkPt3: maxPt_trig_dR0p4_L1TkPt3 = L1Mu_pt
+            if trig_dR0p3_L1TkPt3               and L1Mu_pt > maxPt_trig_dR0p3_L1TkPt3: maxPt_trig_dR0p3_L1TkPt3 = L1Mu_pt
+            if trig_dR0p2_L1TkPt3               and L1Mu_pt > maxPt_trig_dR0p2_L1TkPt3: maxPt_trig_dR0p2_L1TkPt3 = L1Mu_pt
+            if trig_dR0p12_L1TkPt3              and L1Mu_pt > maxPt_trig_dR0p12_L1TkPt3: maxPt_trig_dR0p12_L1TkPt3 = L1Mu_pt
+
+            if trig_dR0p4_L1TkPt2p5               and L1Mu_pt > maxPt_trig_dR0p4_L1TkPt2p5: maxPt_trig_dR0p4_L1TkPt2p5 = L1Mu_pt
+            if trig_dR0p3_L1TkPt2p5               and L1Mu_pt > maxPt_trig_dR0p3_L1TkPt2p5: maxPt_trig_dR0p3_L1TkPt2p5 = L1Mu_pt
+            if trig_dR0p2_L1TkPt2p5               and L1Mu_pt > maxPt_trig_dR0p2_L1TkPt2p5: maxPt_trig_dR0p2_L1TkPt2p5 = L1Mu_pt
+            if trig_dR0p12_L1TkPt2p5              and L1Mu_pt > maxPt_trig_dR0p12_L1TkPt2p5: maxPt_trig_dR0p12_L1TkPt2p5 = L1Mu_pt
+
+            if trig_dR0p4_L1TkPt2               and L1Mu_pt > maxPt_trig_dR0p4_L1TkPt2: maxPt_trig_dR0p4_L1TkPt2 = L1Mu_pt
+            if trig_dR0p3_L1TkPt2               and L1Mu_pt > maxPt_trig_dR0p3_L1TkPt2: maxPt_trig_dR0p3_L1TkPt2 = L1Mu_pt
+            if trig_dR0p2_L1TkPt2               and L1Mu_pt > maxPt_trig_dR0p2_L1TkPt2: maxPt_trig_dR0p2_L1TkPt2 = L1Mu_pt
+            if trig_dR0p12_L1TkPt2              and L1Mu_pt > maxPt_trig_dR0p12_L1TkPt2: maxPt_trig_dR0p12_L1TkPt2 = L1Mu_pt
+            """
             if L1Mu_bx==0 and L1Mu_quality >= 0 and L1Mu_isMatched==0 and L1Mu_isUnMatchedL1TkPt2==0   and L1Mu_pt>maxPt2: maxPt2 = L1Mu_pt
             if L1Mu_bx==0 and L1Mu_quality >= 0 and L1Mu_isMatched==0 and L1Mu_isUnMatchedL1TkPt2p5==0 and L1Mu_pt>maxPt3: maxPt3 = L1Mu_pt
             if L1Mu_bx==0 and L1Mu_quality >= 0 and L1Mu_isMatched==0 and L1Mu_isUnMatchedL1TkPt3==0   and L1Mu_pt>maxPt4: maxPt4 = L1Mu_pt
             if L1Mu_bx==0 and L1Mu_quality >= 0 and L1Mu_isMatched==0 and L1Mu_isUnMatchedL1TkPt4==0   and L1Mu_pt>maxPt5: maxPt5 = L1Mu_pt
+            """
 
-          return maxPt1, maxPt2, maxPt3, maxPt4, maxPt5
+          return maxPt1, maxPt_trig_dR0p4_L1TkPt4, maxPt_trig_dR0p4_L1TkPt3, maxPt_trig_dR0p4_L1TkPt2p5, maxPt_trig_dR0p4_L1TkPt2, maxPt_trig_dR0p3_L1TkPt4, maxPt_trig_dR0p3_L1TkPt3, maxPt_trig_dR0p3_L1TkPt2p5, maxPt_trig_dR0p3_L1TkPt2, maxPt_trig_dR0p2_L1TkPt4, maxPt_trig_dR0p2_L1TkPt3, maxPt_trig_dR0p2_L1TkPt2p5, maxPt_trig_dR0p2_L1TkPt2, maxPt_trig_dR0p12_L1TkPt4, maxPt_trig_dR0p12_L1TkPt3, maxPt_trig_dR0p12_L1TkPt2p5, maxPt_trig_dR0p12_L1TkPt2
+
         
-        maxPt1, maxPt2, maxPt3, maxPt4, maxPt5 = getMaxPts()
+        maxPt1, maxPt_trig_dR0p4_L1TkPt4, maxPt_trig_dR0p4_L1TkPt3, maxPt_trig_dR0p4_L1TkPt2p5, maxPt_trig_dR0p4_L1TkPt2, maxPt_trig_dR0p3_L1TkPt4, maxPt_trig_dR0p3_L1TkPt3, maxPt_trig_dR0p3_L1TkPt2p5, maxPt_trig_dR0p3_L1TkPt2, maxPt_trig_dR0p2_L1TkPt4, maxPt_trig_dR0p2_L1TkPt3, maxPt_trig_dR0p2_L1TkPt2p5, maxPt_trig_dR0p2_L1TkPt2, maxPt_trig_dR0p12_L1TkPt4, maxPt_trig_dR0p12_L1TkPt3, maxPt_trig_dR0p12_L1TkPt2p5, maxPt_trig_dR0p12_L1TkPt2 = getMaxPts()
+        
         if (maxPt1>0): h_single_L1Mu_rate.Fill(maxPt1)
+        if (maxPt_trig_dR0p4_L1TkPt4>0): h_single_displaced_rate_dR0p4_L1TkPt4.Fill(maxPt_trig_dR0p4_L1TkPt4)
+        if (maxPt_trig_dR0p4_L1TkPt3>0): h_single_displaced_rate_dR0p4_L1TkPt3.Fill(maxPt_trig_dR0p4_L1TkPt3)
+        if (maxPt_trig_dR0p4_L1TkPt2p5>0): h_single_displaced_rate_dR0p4_L1TkPt2p5.Fill(maxPt_trig_dR0p4_L1TkPt2p5)
+        if (maxPt_trig_dR0p4_L1TkPt2>0): h_single_displaced_rate_dR0p4_L1TkPt2.Fill(maxPt_trig_dR0p4_L1TkPt2)
+
+        if (maxPt_trig_dR0p3_L1TkPt4>0): h_single_displaced_rate_dR0p3_L1TkPt4.Fill(maxPt_trig_dR0p3_L1TkPt4)
+        if (maxPt_trig_dR0p3_L1TkPt3>0): h_single_displaced_rate_dR0p3_L1TkPt3.Fill(maxPt_trig_dR0p3_L1TkPt3)
+        if (maxPt_trig_dR0p3_L1TkPt2p5>0): h_single_displaced_rate_dR0p3_L1TkPt2p5.Fill(maxPt_trig_dR0p3_L1TkPt2p5)
+        if (maxPt_trig_dR0p3_L1TkPt2>0): h_single_displaced_rate_dR0p3_L1TkPt2.Fill(maxPt_trig_dR0p3_L1TkPt2)
+
+        if (maxPt_trig_dR0p2_L1TkPt4>0): h_single_displaced_rate_dR0p2_L1TkPt4.Fill(maxPt_trig_dR0p2_L1TkPt4)
+        if (maxPt_trig_dR0p2_L1TkPt3>0): h_single_displaced_rate_dR0p2_L1TkPt3.Fill(maxPt_trig_dR0p2_L1TkPt3)
+        if (maxPt_trig_dR0p2_L1TkPt2p5>0): h_single_displaced_rate_dR0p2_L1TkPt2p5.Fill(maxPt_trig_dR0p2_L1TkPt2p5)
+        if (maxPt_trig_dR0p2_L1TkPt2>0): h_single_displaced_rate_dR0p2_L1TkPt2.Fill(maxPt_trig_dR0p2_L1TkPt2)
+
+        if (maxPt_trig_dR0p12_L1TkPt4>0): h_single_displaced_rate_dR0p12_L1TkPt4.Fill(maxPt_trig_dR0p12_L1TkPt4)
+        if (maxPt_trig_dR0p12_L1TkPt3>0): h_single_displaced_rate_dR0p12_L1TkPt3.Fill(maxPt_trig_dR0p12_L1TkPt3)
+        if (maxPt_trig_dR0p12_L1TkPt2p5>0): h_single_displaced_rate_dR0p12_L1TkPt2p5.Fill(maxPt_trig_dR0p12_L1TkPt2p5)
+        if (maxPt_trig_dR0p12_L1TkPt2>0): h_single_displaced_rate_dR0p12_L1TkPt2.Fill(maxPt_trig_dR0p12_L1TkPt2)
+        """
         if (maxPt2>0): h_single_displaced_rate_L1TkPt2.Fill(maxPt2)
         if (maxPt3>0): h_single_displaced_rate_L1TkPt2p5.Fill(maxPt3)
         if (maxPt4>0): h_single_displaced_rate_L1TkPt3.Fill(maxPt4)
         if (maxPt5>0): h_single_displaced_rate_L1TkPt4.Fill(maxPt5)
+        """
 
-    c = TCanvas("c","c",800,600)
-    c.Clear()    
-    gStyle.SetTitleBorderSize(0);
-    gStyle.SetPadLeftMargin(0.126);
-    gStyle.SetPadRightMargin(0.04);
-    gStyle.SetPadTopMargin(0.06);
-    gStyle.SetPadBottomMargin(0.13);
-    gPad.SetLogy(1)
+    def makePlots(h1, h2, h3, h4, h5, title):
+      c = TCanvas("c","c",800,600)
+      c.Clear()    
+      gStyle.SetTitleBorderSize(0);
+      gStyle.SetPadLeftMargin(0.126);
+      gStyle.SetPadRightMargin(0.04);
+      gStyle.SetPadTopMargin(0.06);
+      gStyle.SetPadBottomMargin(0.13);
+      gPad.SetLogy(1)
 
-    b1 = TH1F("b1","b1",29,myptbin)
-    b1.GetYaxis().SetRangeUser(.1,10000)
-    b1.GetYaxis().SetTitleOffset(1.2)
-    b1.GetYaxis().SetNdivisions(520)
-    b1.GetYaxis().SetTitle("L1Mu Trigger Rate [kHz]")
-    b1.GetXaxis().SetTitle("L1Mu p_{T} cut [GeV]")
-    b1.GetXaxis().SetTitleFont(62)
-    b1.GetXaxis().SetTitleOffset(1.2)
-    b1.GetXaxis().SetTitleSize(0.045)
-    b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" " + pu + ", 14TeV")
-    b1.SetStats(0)
-    b1.Draw()
+      b1 = TH1F("b1","b1",29,myptbin)
+      b1.GetYaxis().SetRangeUser(.1,10000)
+      b1.GetYaxis().SetTitleOffset(1.2)
+      b1.GetYaxis().SetNdivisions(520)
+      b1.GetYaxis().SetTitle("L1Mu Trigger Rate [kHz]")
+      b1.GetXaxis().SetTitle("L1Mu p_{T} cut [GeV]")
+      b1.GetXaxis().SetTitleFont(62)
+      b1.GetXaxis().SetTitleOffset(1.2)
+      b1.GetXaxis().SetTitleSize(0.045)
+      b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" " + pu + ", 14TeV")
+      b1.SetStats(0)
+      b1.Draw()
 
-    h_single_L1Mu_rate = getRatePtHistogram(treeHits, h_single_L1Mu_rate)
-    h_single_L1Mu_rate.SetFillColor(kRed)
-    h_single_L1Mu_rate.Draw("e3same")
+      h1 = getRatePtHistogram(treeHits, h1)
+      h1.SetFillColor(kRed)
+      h1.Draw("e3same")
     
-    h_single_displaced_rate_L1TkPt2 = getRatePtHistogram(treeHits, h_single_displaced_rate_L1TkPt2)
-    h_single_displaced_rate_L1TkPt2.SetFillColor(kMagenta)
-    h_single_displaced_rate_L1TkPt2.Draw("e3same")
+      h2 = getRatePtHistogram(treeHits, h2)
+      h2.SetFillColor(kMagenta)
+      h2.Draw("e3same")
 
-    h_single_displaced_rate_L1TkPt2p5 = getRatePtHistogram(treeHits, h_single_displaced_rate_L1TkPt2p5)
-    h_single_displaced_rate_L1TkPt2p5.SetFillColor(kBlue)
-    h_single_displaced_rate_L1TkPt2p5.Draw("e3same")
-
-    h_single_displaced_rate_L1TkPt3 = getRatePtHistogram(treeHits, h_single_displaced_rate_L1TkPt3)
-    h_single_displaced_rate_L1TkPt3.SetFillColor(kGreen+1)
-    h_single_displaced_rate_L1TkPt3.Draw("e3same")
+      h3 = getRatePtHistogram(treeHits, h3)
+      h3.SetFillColor(kBlue)
+      h3.Draw("e3same")
+      
+      h4 = getRatePtHistogram(treeHits, h4)
+      h4.SetFillColor(kGreen+1)
+      h4.Draw("e3same")
     
-    h_single_displaced_rate_L1TkPt4 = getRatePtHistogram(treeHits, h_single_displaced_rate_L1TkPt4)
-    h_single_displaced_rate_L1TkPt4.SetFillColor(kOrange+1)
-    h_single_displaced_rate_L1TkPt4.Draw("e3same")
+      h5 = getRatePtHistogram(treeHits, h5)
+      h5.SetFillColor(kOrange+1)
+      h5.Draw("e3same")
+      
+      leg = TLegend(0.2,0.7,0.9,0.9,"","brNDC")
+      leg.SetFillColor(kWhite)
+      leg.SetBorderSize(0)
+      leg.SetFillStyle(0)
+      leg.SetTextSize(0.03)
+      leg.AddEntry(h1,"Single L1Mu", "f")
+      leg.AddEntry(h5,"Displaced L1Mu (p_{T} #geq 4 GeV on non-matching L1Tk)", "f")
+      leg.AddEntry(h4,"Displaced L1Mu (p_{T} #geq 3 GeV on non-matching L1Tk)", "f")
+      leg.AddEntry(h3,"Displaced L1Mu (p_{T} #geq 2.5 GeV on non-matching L1Tk)", "f")
+      leg.AddEntry(h2,"Displaced L1Mu (p_{T} #geq 2 GeV on non-matching L1Tk)", "f")
+      leg.Draw("same")
+      c.SaveAs(targetDir + title + ".png")
 
-    leg = TLegend(0.2,0.7,0.9,0.9,"","brNDC")
-    leg.SetFillColor(kWhite)
-    leg.SetBorderSize(0)
-    leg.SetFillStyle(0)
-    leg.SetTextSize(0.03)
-    leg.AddEntry(h_single_L1Mu_rate,"Single L1Mu", "f")
-    leg.AddEntry(h_single_displaced_rate_L1TkPt4,"Displaced L1Mu (p_{T} #geq 4 GeV on non-matching L1Tk)", "f")
-    leg.AddEntry(h_single_displaced_rate_L1TkPt3,"Displaced L1Mu (p_{T} #geq 3 GeV on non-matching L1Tk)", "f")
-    leg.AddEntry(h_single_displaced_rate_L1TkPt2p5,"Displaced L1Mu (p_{T} #geq 2.5 GeV on non-matching L1Tk)", "f")
-    leg.AddEntry(h_single_displaced_rate_L1TkPt2,"Displaced L1Mu (p_{T} #geq 2 GeV on non-matching L1Tk)", "f")
-    leg.Draw("same")
-    c.SaveAs(targetDir + "L1Mu_trigger_rate_pt.png")
 
 
-
-    ## ratios 
-    c = TCanvas("c","c",800,600)
-    c.Clear()    
-    gStyle.SetTitleBorderSize(0);
-    gStyle.SetPadLeftMargin(0.126);
-    gStyle.SetPadRightMargin(0.04);
-    gStyle.SetPadTopMargin(0.06);
-    gStyle.SetPadBottomMargin(0.13);
-    gPad.SetLogy(1)
-
-    b1 = TH1F("b1","b1",29,myptbin)
-    b1.GetYaxis().SetRangeUser(0.001,1)
-    b1.GetYaxis().SetTitleOffset(1.2)
-    b1.GetYaxis().SetNdivisions(520)
-    b1.GetYaxis().SetTitle("Ratio (normalized to prompt L1Mu)")
-    b1.GetXaxis().SetTitle("L1Mu p_{T} cut [GeV]")
-    b1.GetXaxis().SetTitleFont(62)
-    b1.GetXaxis().SetTitleOffset(1.2)
-    b1.GetXaxis().SetTitleSize(0.045)
-    b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" " + pu + ", 14TeV")
-    b1.SetStats(0)
-    b1.Draw()
-
-    h_single_displaced_rate_L1TkPt2.SetLineColor(kMagenta)
-    h_single_displaced_rate_L1TkPt2.Divide(h_single_L1Mu_rate)
-    h_single_displaced_rate_L1TkPt2.Draw("same")
-
-    h_single_displaced_rate_L1TkPt2p5.SetLineColor(kBlue)
-    h_single_displaced_rate_L1TkPt2p5.Divide(h_single_L1Mu_rate)
-    h_single_displaced_rate_L1TkPt2p5.Draw("same")
-
-    h_single_displaced_rate_L1TkPt3.SetLineColor(kGreen+1)
-    h_single_displaced_rate_L1TkPt3.Divide(h_single_L1Mu_rate)
-    h_single_displaced_rate_L1TkPt3.Draw("same")
+      ## ratios 
+      c = TCanvas("c","c",800,600)
+      c.Clear()    
+      gStyle.SetTitleBorderSize(0);
+      gStyle.SetPadLeftMargin(0.126);
+      gStyle.SetPadRightMargin(0.04);
+      gStyle.SetPadTopMargin(0.06);
+      gStyle.SetPadBottomMargin(0.13);
+      gPad.SetLogy(1)
+      
+      b1 = TH1F("b1","b1",29,myptbin)
+      b1.GetYaxis().SetRangeUser(0.001,1)
+      b1.GetYaxis().SetTitleOffset(1.2)
+      b1.GetYaxis().SetNdivisions(520)
+      b1.GetYaxis().SetTitle("Ratio (normalized to prompt L1Mu)")
+      b1.GetXaxis().SetTitle("L1Mu p_{T} cut [GeV]")
+      b1.GetXaxis().SetTitleFont(62)
+      b1.GetXaxis().SetTitleOffset(1.2)
+      b1.GetXaxis().SetTitleSize(0.045)
+      b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" " + pu + ", 14TeV")
+      b1.SetStats(0)
+      b1.Draw()
     
-    h_single_displaced_rate_L1TkPt4.SetLineColor(kOrange+1)
-    h_single_displaced_rate_L1TkPt4.Divide(h_single_L1Mu_rate)
-    h_single_displaced_rate_L1TkPt4.Draw("same")
+      h2.SetLineColor(kMagenta)
+      h2.Divide(h1)
+      h2.Draw("same")
+      
+      h3.SetLineColor(kBlue)
+      h3.Divide(h1)
+      h3.Draw("same")
+      
+      h4.SetLineColor(kGreen+1)
+      h4.Divide(h1)
+      h4.Draw("same")
+      
+      h5.SetLineColor(kOrange+1)
+      h5.Divide(h1)
+      h5.Draw("same")
+      
+      leg = TLegend(0.2,0.2,0.9,0.4,"","brNDC")
+      leg.SetFillColor(kWhite)
+      leg.SetBorderSize(0)
+      leg.SetFillStyle(0)
+      leg.SetTextSize(0.03)
+      leg.AddEntry(h2,"Displaced L1Mu (p_{T} #geq 2 GeV on non-matching L1Tk)", "l")
+      leg.AddEntry(h3,"Displaced L1Mu (p_{T} #geq 2.5 GeV on non-matching L1Tk)", "l")
+      leg.AddEntry(h4,"Displaced L1Mu (p_{T} #geq 3 GeV on non-matching L1Tk)", "l")
+      leg.AddEntry(h5,"Displaced L1Mu (p_{T} #geq 4 GeV on non-matching L1Tk)", "l")
+      leg.Draw("same")
+      c.SaveAs(targetDir + title + "_ratio.png")
 
-    leg = TLegend(0.2,0.2,0.9,0.4,"","brNDC")
-    leg.SetFillColor(kWhite)
-    leg.SetBorderSize(0)
-    leg.SetFillStyle(0)
-    leg.SetTextSize(0.03)
-    leg.AddEntry(h_single_displaced_rate_L1TkPt4,"Displaced L1Mu (p_{T} #geq 4 GeV on non-matching L1Tk)", "l")
-    leg.AddEntry(h_single_displaced_rate_L1TkPt3,"Displaced L1Mu (p_{T} #geq 3 GeV on non-matching L1Tk)", "l")
-    leg.AddEntry(h_single_displaced_rate_L1TkPt2p5,"Displaced L1Mu (p_{T} #geq 2.5 GeV on non-matching L1Tk)", "l")
-    leg.AddEntry(h_single_displaced_rate_L1TkPt2,"Displaced L1Mu (p_{T} #geq 2 GeV on non-matching L1Tk)", "l")
-    leg.Draw("same")
-    c.SaveAs(targetDir + "L1Mu_trigger_rate_pt_ratio.png")
+    ## trigger rate plots vs pt
+    makePlots(h_single_L1Mu_rate, h_single_displaced_rate_dR0p4_L1TkPt2, h_single_displaced_rate_dR0p4_L1TkPt2p5, h_single_displaced_rate_dR0p4_L1TkPt3, h_single_displaced_rate_dR0p4_L1TkPt4, "L1Mu_trigger_rate_pt_dR0p4")
+    makePlots(h_single_L1Mu_rate, h_single_displaced_rate_dR0p3_L1TkPt2, h_single_displaced_rate_dR0p3_L1TkPt2p5, h_single_displaced_rate_dR0p3_L1TkPt3, h_single_displaced_rate_dR0p3_L1TkPt4, "L1Mu_trigger_rate_pt_dR0p3")
+    makePlots(h_single_L1Mu_rate, h_single_displaced_rate_dR0p2_L1TkPt2, h_single_displaced_rate_dR0p2_L1TkPt2p5, h_single_displaced_rate_dR0p2_L1TkPt3, h_single_displaced_rate_dR0p2_L1TkPt4, "L1Mu_trigger_rate_pt_dR0p2")
+    makePlots(h_single_L1Mu_rate, h_single_displaced_rate_dR0p12_L1TkPt2, h_single_displaced_rate_dR0p12_L1TkPt2p5, h_single_displaced_rate_dR0p12_L1TkPt3, h_single_displaced_rate_dR0p12_L1TkPt4, "L1Mu_trigger_rate_pt_dR0p12")
 
   if not eff:
-    makeRateVsPtHistogram()    
+    #makeRateVsPtHistogram()    
+    pass
 
 
   def makeRateVsEtaHistogram(ptCut):
 
     h_single_L1Mu_rate = TH1F("h_single_L1Mu_rate"," ",len(myetabin)-1, myetabin)
-    h_single_displaced_rate_L1TkPt2 = TH1F("h_single_displaced_rate_L1TkPt2"," ",len(myetabin)-1, myetabin)
-    h_single_displaced_rate_L1TkPt2p5 = TH1F("h_single_displaced_rate_L1TkPt2p5"," ",len(myetabin)-1, myetabin)
-    h_single_displaced_rate_L1TkPt3 = TH1F("h_single_displaced_rate_L1TkPt3"," ",len(myetabin)-1, myetabin)
-    h_single_displaced_rate_L1TkPt4 = TH1F("h_single_displaced_rate_L1TkPt4"," ",len(myetabin)-1, myetabin)
+
+    h_single_displaced_rate_dR0p4_L1TkPt2 = TH1F("h_single_displaced_rate_dR0p4_L1TkPt2"," ",len(myetabin)-1, myetabin)
+    h_single_displaced_rate_dR0p4_L1TkPt2p5 = TH1F("h_single_displaced_rate_dR0p4_L1TkPt2p5"," ",len(myetabin)-1, myetabin)
+    h_single_displaced_rate_dR0p4_L1TkPt3 = TH1F("h_single_displaced_rate_dR0p4_L1TkPt3"," ",len(myetabin)-1, myetabin)
+    h_single_displaced_rate_dR0p4_L1TkPt4 = TH1F("h_single_displaced_rate_dR0p4_L1TkPt4"," ",len(myetabin)-1, myetabin)
+
+    h_single_displaced_rate_dR0p3_L1TkPt2 = TH1F("h_single_displaced_rate_dR0p3_L1TkPt2"," ",len(myetabin)-1, myetabin)
+    h_single_displaced_rate_dR0p3_L1TkPt2p5 = TH1F("h_single_displaced_rate_dR0p3_L1TkPt2p5"," ",len(myetabin)-1, myetabin)
+    h_single_displaced_rate_dR0p3_L1TkPt3 = TH1F("h_single_displaced_rate_dR0p3_L1TkPt3"," ",len(myetabin)-1, myetabin)
+    h_single_displaced_rate_dR0p3_L1TkPt4 = TH1F("h_single_displaced_rate_dR0p3_L1TkPt4"," ",len(myetabin)-1, myetabin)
+
+    h_single_displaced_rate_dR0p2_L1TkPt2 = TH1F("h_single_displaced_rate_dR0p2_L1TkPt2"," ",len(myetabin)-1, myetabin)
+    h_single_displaced_rate_dR0p2_L1TkPt2p5 = TH1F("h_single_displaced_rate_dR0p2_L1TkPt2p5"," ",len(myetabin)-1, myetabin)
+    h_single_displaced_rate_dR0p2_L1TkPt3 = TH1F("h_single_displaced_rate_dR0p2_L1TkPt3"," ",len(myetabin)-1, myetabin)
+    h_single_displaced_rate_dR0p2_L1TkPt4 = TH1F("h_single_displaced_rate_dR0p2_L1TkPt4"," ",len(myetabin)-1, myetabin)
+
+    h_single_displaced_rate_dR0p12_L1TkPt2 = TH1F("h_single_displaced_rate_dR0p12_L1TkPt2"," ",len(myetabin)-1, myetabin)
+    h_single_displaced_rate_dR0p12_L1TkPt2p5 = TH1F("h_single_displaced_rate_dR0p12_L1TkPt2p5"," ",len(myetabin)-1, myetabin)
+    h_single_displaced_rate_dR0p12_L1TkPt3 = TH1F("h_single_displaced_rate_dR0p12_L1TkPt3"," ",len(myetabin)-1, myetabin)
+    h_single_displaced_rate_dR0p12_L1TkPt4 = TH1F("h_single_displaced_rate_dR0p12_L1TkPt4"," ",len(myetabin)-1, myetabin)
 
     for k in range(0,treeHits.GetEntries()): #
       treeHits.GetEntry(k)
@@ -235,6 +409,48 @@ if __name__ == "__main__":
         def getMaxPts():
           maxPt1, maxPt2, maxPt3, maxPt4, maxPt5 = 0., 0., 0., 0., 0., 
           maxPtIndex1, maxPtIndex2, maxPtIndex3, maxPtIndex4, maxPtIndex5 = -1,  -1, -1,  -1, -1 
+
+          maxPt_trig_dR0p4_L1TkPt4 = 0.
+          maxPt_trig_dR0p4_L1TkPt3 = 0.
+          maxPt_trig_dR0p4_L1TkPt2p5 = 0.
+          maxPt_trig_dR0p4_L1TkPt2 = 0.
+          
+          maxPt_trig_dR0p3_L1TkPt4 = 0.
+          maxPt_trig_dR0p3_L1TkPt3 = 0.
+          maxPt_trig_dR0p3_L1TkPt2p5 = 0.
+          maxPt_trig_dR0p3_L1TkPt2 = 0.
+
+          maxPt_trig_dR0p2_L1TkPt4 = 0.
+          maxPt_trig_dR0p2_L1TkPt3 = 0.
+          maxPt_trig_dR0p2_L1TkPt2p5 = 0.
+          maxPt_trig_dR0p2_L1TkPt2 = 0.
+          
+          maxPt_trig_dR0p12_L1TkPt4 = 0.
+          maxPt_trig_dR0p12_L1TkPt3 = 0.
+          maxPt_trig_dR0p12_L1TkPt2p5 = 0.
+          maxPt_trig_dR0p12_L1TkPt2 = 0.
+
+          
+          maxPtIndex_trig_dR0p4_L1TkPt4 = -1
+          maxPtIndex_trig_dR0p4_L1TkPt3 = -1
+          maxPtIndex_trig_dR0p4_L1TkPt2p5 = -1
+          maxPtIndex_trig_dR0p4_L1TkPt2 = -1
+          
+          maxPtIndex_trig_dR0p3_L1TkPt4 = -1
+          maxPtIndex_trig_dR0p3_L1TkPt3 = -1
+          maxPtIndex_trig_dR0p3_L1TkPt2p5 = -1
+          maxPtIndex_trig_dR0p3_L1TkPt2 = -1
+
+          maxPtIndex_trig_dR0p2_L1TkPt4 = -1
+          maxPtIndex_trig_dR0p2_L1TkPt3 = -1
+          maxPtIndex_trig_dR0p2_L1TkPt2p5 = -1
+          maxPtIndex_trig_dR0p2_L1TkPt2 = -1
+          
+          maxPtIndex_trig_dR0p12_L1TkPt4 = -1
+          maxPtIndex_trig_dR0p12_L1TkPt3 = -1
+          maxPtIndex_trig_dR0p12_L1TkPt2p5 = -1
+          maxPtIndex_trig_dR0p12_L1TkPt2 = -1
+
           for i in range(0,len(pts)):
 
             L1Mu_pt = treeHits.L1Mu_pt[i]
@@ -246,129 +462,248 @@ if __name__ == "__main__":
             L1Mu_isUnMatchedL1TkPt2p5 = treeHits.L1Mu_isUnMatchedL1TkPt2p5[i]
             L1Mu_isUnMatchedL1TkPt3 = treeHits.L1Mu_isUnMatchedL1TkPt3[i]
             L1Mu_isUnMatchedL1TkPt4 = treeHits.L1Mu_isUnMatchedL1TkPt4[i]
+            L1Mu_L1Tk_dR_min = treeHits.L1Mu_L1Tk_dR_min[i]
+            L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt[i]
             
-            commonCuts = (L1Mu_pt >= ptCut and L1Mu_bx==0 and L1Mu_quality >=0)
-            if L1Mu_pt >= ptCut and L1Mu_bx==0 and L1Mu_quality >=4              and L1Mu_pt > maxPt1: maxPt1 = L1Mu_pt; maxPtIndex1 = i
+            matched = False
+            unMatched_dR0p4_L1TkPt4 = False
+            unMatched_dR0p4_L1TkPt3 = False
+            unMatched_dR0p4_L1TkPt2p5 = False
+            unMatched_dR0p4_L1TkPt2 = False
+
+            unMatched_dR0p3_L1TkPt4 = False
+            unMatched_dR0p3_L1TkPt3 = False
+            unMatched_dR0p3_L1TkPt2p5 = False
+            unMatched_dR0p3_L1TkPt2 = False
+
+            unMatched_dR0p2_L1TkPt4 = False
+            unMatched_dR0p2_L1TkPt3 = False
+            unMatched_dR0p2_L1TkPt2p5 = False
+            unMatched_dR0p2_L1TkPt2 = False
+
+            unMatched_dR0p12_L1TkPt4 = False
+            unMatched_dR0p12_L1TkPt3 = False
+            unMatched_dR0p12_L1TkPt2p5 = False
+            unMatched_dR0p12_L1TkPt2 = False
+
+            ## matched 
+            if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_quality >= 4: matched
+            
+            ## unmatched 
+            if L1Mu_L1Tk_dR_min <= 0.4 and L1Mu_L1Tk_pt>=4: unMatched_dR0p4_L1TkPt4 = True
+            if L1Mu_L1Tk_dR_min <= 0.4 and L1Mu_L1Tk_pt>=3: unMatched_dR0p4_L1TkPt3 = True
+            if L1Mu_L1Tk_dR_min <= 0.4 and L1Mu_L1Tk_pt>=2.5: unMatched_dR0p4_L1TkPt2p5 = True
+            if L1Mu_L1Tk_dR_min <= 0.4 and L1Mu_L1Tk_pt>=2: unMatched_dR0p4_L1TkPt2 = True
+
+            if L1Mu_L1Tk_dR_min <= 0.3 and L1Mu_L1Tk_pt>=4: unMatched_dR0p3_L1TkPt4 = True
+            if L1Mu_L1Tk_dR_min <= 0.3 and L1Mu_L1Tk_pt>=3: unMatched_dR0p3_L1TkPt3 = True
+            if L1Mu_L1Tk_dR_min <= 0.3 and L1Mu_L1Tk_pt>=2.5: unMatched_dR0p3_L1TkPt2p5 = True
+            if L1Mu_L1Tk_dR_min <= 0.3 and L1Mu_L1Tk_pt>=2: unMatched_dR0p3_L1TkPt2 = True
+
+            if L1Mu_L1Tk_dR_min <= 0.2 and L1Mu_L1Tk_pt>=4: unMatched_dR0p2_L1TkPt4 = True
+            if L1Mu_L1Tk_dR_min <= 0.2 and L1Mu_L1Tk_pt>=3: unMatched_dR0p2_L1TkPt3 = True
+            if L1Mu_L1Tk_dR_min <= 0.2 and L1Mu_L1Tk_pt>=2.5: unMatched_dR0p2_L1TkPt2p5 = True
+            if L1Mu_L1Tk_dR_min <= 0.2 and L1Mu_L1Tk_pt>=2: unMatched_dR0p2_L1TkPt2 = True
+
+            if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_L1Tk_pt>=4: unMatched_dR0p12_L1TkPt4 = True
+            if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_L1Tk_pt>=3: unMatched_dR0p12_L1TkPt3 = True
+            if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_L1Tk_pt>=2.5: unMatched_dR0p12_L1TkPt2p5 = True
+            if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_L1Tk_pt>=2: unMatched_dR0p12_L1TkPt2 = True
+
+            common = (L1Mu_pt >= ptCut) and (abs(L1Mu_bx) == 0) and (L1Mu_quality >= 4)
+            trig_dR0p4_L1TkPt4 =   (not matched) and (not unMatched_dR0p4_L1TkPt4) and common
+            trig_dR0p4_L1TkPt3 =   (not matched) and (not unMatched_dR0p4_L1TkPt3) and common
+            trig_dR0p4_L1TkPt2p5 = (not matched) and (not unMatched_dR0p4_L1TkPt2p5) and common
+            trig_dR0p4_L1TkPt2 =   (not matched) and (not unMatched_dR0p4_L1TkPt2) and common
+
+            trig_dR0p3_L1TkPt4 =   (not matched) and (not unMatched_dR0p3_L1TkPt4) and common
+            trig_dR0p3_L1TkPt3 =   (not matched) and (not unMatched_dR0p3_L1TkPt3) and common
+            trig_dR0p3_L1TkPt2p5 = (not matched) and (not unMatched_dR0p3_L1TkPt2p5) and common
+            trig_dR0p3_L1TkPt2 =   (not matched) and (not unMatched_dR0p3_L1TkPt2) and common
+
+            trig_dR0p2_L1TkPt4 =   (not matched) and (not unMatched_dR0p2_L1TkPt4) and common
+            trig_dR0p2_L1TkPt3 =   (not matched) and (not unMatched_dR0p2_L1TkPt3) and common
+            trig_dR0p2_L1TkPt2p5 = (not matched) and (not unMatched_dR0p2_L1TkPt2p5) and common
+            trig_dR0p2_L1TkPt2 =   (not matched) and (not unMatched_dR0p2_L1TkPt2) and common
+
+            trig_dR0p12_L1TkPt4 =   (not matched) and (not unMatched_dR0p12_L1TkPt4) and common
+            trig_dR0p12_L1TkPt3 =   (not matched) and (not unMatched_dR0p12_L1TkPt3) and common
+            trig_dR0p12_L1TkPt2p5 = (not matched) and (not unMatched_dR0p12_L1TkPt2p5) and common
+            trig_dR0p12_L1TkPt2 =   (not matched) and (not unMatched_dR0p12_L1TkPt2) and common
+
+
+
+            if common             and L1Mu_pt > maxPt1: maxPt1 = L1Mu_pt; maxPtIndex1 = i
+            if trig_dR0p4_L1TkPt4 and L1Mu_pt > maxPt_trig_dR0p4_L1TkPt4: maxPt_trig_dR0p4_L1TkPt4 = L1Mu_pt; maxPtIndex_trig_dR0p4_L1TkPt4 = i
+            if trig_dR0p4_L1TkPt3 and L1Mu_pt > maxPt_trig_dR0p4_L1TkPt3: maxPt_trig_dR0p4_L1TkPt3 = L1Mu_pt; maxPtIndex_trig_dR0p4_L1TkPt3 = i
+            if trig_dR0p4_L1TkPt2p5 and L1Mu_pt > maxPt_trig_dR0p4_L1TkPt2p5: maxPt_trig_dR0p4_L1TkPt2p5 = L1Mu_pt; maxPtIndex_trig_dR0p4_L1TkPt2p5 = i
+            if trig_dR0p4_L1TkPt2 and L1Mu_pt > maxPt_trig_dR0p4_L1TkPt2: maxPt_trig_dR0p4_L1TkPt2 = L1Mu_pt; maxPtIndex_trig_dR0p4_L1TkPt2 = i
+
+            if trig_dR0p3_L1TkPt4 and L1Mu_pt > maxPt_trig_dR0p3_L1TkPt4: maxPt_trig_dR0p3_L1TkPt4 = L1Mu_pt; maxPtIndex_trig_dR0p3_L1TkPt4 = i
+            if trig_dR0p3_L1TkPt3 and L1Mu_pt > maxPt_trig_dR0p3_L1TkPt3: maxPt_trig_dR0p3_L1TkPt3 = L1Mu_pt; maxPtIndex_trig_dR0p3_L1TkPt3 = i
+            if trig_dR0p3_L1TkPt2p5 and L1Mu_pt > maxPt_trig_dR0p3_L1TkPt2p5: maxPt_trig_dR0p3_L1TkPt2p5 = L1Mu_pt; maxPtIndex_trig_dR0p3_L1TkPt2p5 = i
+            if trig_dR0p3_L1TkPt2 and L1Mu_pt > maxPt_trig_dR0p3_L1TkPt2: maxPt_trig_dR0p3_L1TkPt2 = L1Mu_pt; maxPtIndex_trig_dR0p3_L1TkPt2 = i
+
+            if trig_dR0p2_L1TkPt4 and L1Mu_pt > maxPt_trig_dR0p2_L1TkPt4: maxPt_trig_dR0p2_L1TkPt4 = L1Mu_pt; maxPtIndex_trig_dR0p2_L1TkPt4 = i
+            if trig_dR0p2_L1TkPt3 and L1Mu_pt > maxPt_trig_dR0p2_L1TkPt3: maxPt_trig_dR0p2_L1TkPt3 = L1Mu_pt; maxPtIndex_trig_dR0p2_L1TkPt3 = i
+            if trig_dR0p2_L1TkPt2p5 and L1Mu_pt > maxPt_trig_dR0p2_L1TkPt2p5: maxPt_trig_dR0p2_L1TkPt2p5 = L1Mu_pt; maxPtIndex_trig_dR0p2_L1TkPt2p5 = i
+            if trig_dR0p2_L1TkPt2 and L1Mu_pt > maxPt_trig_dR0p2_L1TkPt2: maxPt_trig_dR0p2_L1TkPt2 = L1Mu_pt; maxPtIndex_trig_dR0p2_L1TkPt2 = i
+
+            if trig_dR0p12_L1TkPt4 and L1Mu_pt > maxPt_trig_dR0p12_L1TkPt4: maxPt_trig_dR0p12_L1TkPt4 = L1Mu_pt; maxPtIndex_trig_dR0p12_L1TkPt4 = i
+            if trig_dR0p12_L1TkPt3 and L1Mu_pt > maxPt_trig_dR0p12_L1TkPt3: maxPt_trig_dR0p12_L1TkPt3 = L1Mu_pt; maxPtIndex_trig_dR0p12_L1TkPt3 = i
+            if trig_dR0p12_L1TkPt2p5 and L1Mu_pt > maxPt_trig_dR0p12_L1TkPt2p5: maxPt_trig_dR0p12_L1TkPt2p5 = L1Mu_pt; maxPtIndex_trig_dR0p12_L1TkPt2p5 = i
+            if trig_dR0p12_L1TkPt2 and L1Mu_pt > maxPt_trig_dR0p12_L1TkPt2: maxPt_trig_dR0p12_L1TkPt2 = L1Mu_pt; maxPtIndex_trig_dR0p12_L1TkPt2 = i
+            """
             if commonCuts and L1Mu_isMatched==0 and L1Mu_isUnMatchedL1TkPt2==0   and L1Mu_pt > maxPt2: maxPt2 = L1Mu_pt; maxPtIndex2 = i
             if commonCuts and L1Mu_isMatched==0 and L1Mu_isUnMatchedL1TkPt2p5==0 and L1Mu_pt > maxPt3: maxPt3 = L1Mu_pt; maxPtIndex3 = i
             if commonCuts and L1Mu_isMatched==0 and L1Mu_isUnMatchedL1TkPt3==0   and L1Mu_pt > maxPt4: maxPt4 = L1Mu_pt; maxPtIndex4 = i
             if commonCuts and L1Mu_isMatched==0 and L1Mu_isUnMatchedL1TkPt4==0   and L1Mu_pt > maxPt5: maxPt5 = L1Mu_pt; maxPtIndex5 = i
+            """
 
-          return maxPt1, maxPt2, maxPt3, maxPt4, maxPt5, maxPtIndex1, maxPtIndex2, maxPtIndex3, maxPtIndex4, maxPtIndex5
+          return maxPt1, maxPt_trig_dR0p4_L1TkPt4, maxPt_trig_dR0p4_L1TkPt3, maxPt_trig_dR0p4_L1TkPt2p5, maxPt_trig_dR0p4_L1TkPt2, maxPt_trig_dR0p3_L1TkPt4, maxPt_trig_dR0p3_L1TkPt3, maxPt_trig_dR0p3_L1TkPt2p5, maxPt_trig_dR0p3_L1TkPt2, maxPt_trig_dR0p2_L1TkPt4, maxPt_trig_dR0p2_L1TkPt3, maxPt_trig_dR0p2_L1TkPt2p5, maxPt_trig_dR0p2_L1TkPt2, maxPt_trig_dR0p12_L1TkPt4, maxPt_trig_dR0p12_L1TkPt3, maxPt_trig_dR0p12_L1TkPt2p5, maxPt_trig_dR0p12_L1TkPt2, maxPtIndex_trig_dR0p4_L1TkPt4, maxPtIndex_trig_dR0p4_L1TkPt3, maxPtIndex_trig_dR0p4_L1TkPt2p5, maxPtIndex_trig_dR0p4_L1TkPt2, maxPtIndex_trig_dR0p3_L1TkPt4, maxPtIndex_trig_dR0p3_L1TkPt3, maxPtIndex_trig_dR0p3_L1TkPt2p5, maxPtIndex_trig_dR0p3_L1TkPt2, maxPtIndex_trig_dR0p2_L1TkPt4, maxPtIndex_trig_dR0p2_L1TkPt3, maxPtIndex_trig_dR0p2_L1TkPt2p5, maxPtIndex_trig_dR0p2_L1TkPt2, maxPtIndex_trig_dR0p12_L1TkPt4, maxPtIndex_trig_dR0p12_L1TkPt3, maxPtIndex_trig_dR0p12_L1TkPt2p5, maxPtIndex_trig_dR0p12_L1TkPt2
         
-        maxPt1, maxPt2, maxPt3, maxPt4, maxPt5, maxPtIndex1, maxPtIndex2, maxPtIndex3, maxPtIndex4, maxPtIndex5 = getMaxPts()
+        maxPt1, maxPt_trig_dR0p4_L1TkPt4, maxPt_trig_dR0p4_L1TkPt3, maxPt_trig_dR0p4_L1TkPt2p5, maxPt_trig_dR0p4_L1TkPt2, maxPt_trig_dR0p3_L1TkPt4, maxPt_trig_dR0p3_L1TkPt3, maxPt_trig_dR0p3_L1TkPt2p5, maxPt_trig_dR0p3_L1TkPt2, maxPt_trig_dR0p2_L1TkPt4, maxPt_trig_dR0p2_L1TkPt3, maxPt_trig_dR0p2_L1TkPt2p5, maxPt_trig_dR0p2_L1TkPt2, maxPt_trig_dR0p12_L1TkPt4, maxPt_trig_dR0p12_L1TkPt3, maxPt_trig_dR0p12_L1TkPt2p5, maxPt_trig_dR0p12_L1TkPt2, maxPtIndex_trig_dR0p4_L1TkPt4, maxPtIndex_trig_dR0p4_L1TkPt3, maxPtIndex_trig_dR0p4_L1TkPt2p5, maxPtIndex_trig_dR0p4_L1TkPt2, maxPtIndex_trig_dR0p3_L1TkPt4, maxPtIndex_trig_dR0p3_L1TkPt3, maxPtIndex_trig_dR0p3_L1TkPt2p5, maxPtIndex_trig_dR0p3_L1TkPt2, maxPtIndex_trig_dR0p2_L1TkPt4, maxPtIndex_trig_dR0p2_L1TkPt3, maxPtIndex_trig_dR0p2_L1TkPt2p5, maxPtIndex_trig_dR0p2_L1TkPt2, maxPtIndex_trig_dR0p12_L1TkPt4, maxPtIndex_trig_dR0p12_L1TkPt3, maxPtIndex_trig_dR0p12_L1TkPt2p5, maxPtIndex_trig_dR0p12_L1TkPt2 = getMaxPts()
+
         if (maxPt1>0): h_single_L1Mu_rate.Fill(treeHits.L1Mu_eta[maxPtIndex1])
+
+        if (maxPt_trig_dR0p4_L1TkPt4>0): h_single_displaced_rate_dR0p4_L1TkPt4.Fill(treeHits.L1Mu_eta[maxPtIndex_trig_dR0p4_L1TkPt4])
+        if (maxPt_trig_dR0p4_L1TkPt3>0): h_single_displaced_rate_dR0p4_L1TkPt3.Fill(treeHits.L1Mu_eta[maxPtIndex_trig_dR0p4_L1TkPt3])
+        if (maxPt_trig_dR0p4_L1TkPt2p5>0): h_single_displaced_rate_dR0p4_L1TkPt2p5.Fill(treeHits.L1Mu_eta[maxPtIndex_trig_dR0p4_L1TkPt2p5])
+        if (maxPt_trig_dR0p4_L1TkPt2>0): h_single_displaced_rate_dR0p4_L1TkPt2.Fill(treeHits.L1Mu_eta[maxPtIndex_trig_dR0p4_L1TkPt2])
+
+        if (maxPt_trig_dR0p3_L1TkPt4>0): h_single_displaced_rate_dR0p3_L1TkPt4.Fill(treeHits.L1Mu_eta[maxPtIndex_trig_dR0p3_L1TkPt4])
+        if (maxPt_trig_dR0p3_L1TkPt3>0): h_single_displaced_rate_dR0p3_L1TkPt3.Fill(treeHits.L1Mu_eta[maxPtIndex_trig_dR0p3_L1TkPt3])
+        if (maxPt_trig_dR0p3_L1TkPt2p5>0): h_single_displaced_rate_dR0p3_L1TkPt2p5.Fill(treeHits.L1Mu_eta[maxPtIndex_trig_dR0p3_L1TkPt2p5])
+        if (maxPt_trig_dR0p3_L1TkPt2>0): h_single_displaced_rate_dR0p3_L1TkPt2.Fill(treeHits.L1Mu_eta[maxPtIndex_trig_dR0p3_L1TkPt2])
+
+        if (maxPt_trig_dR0p2_L1TkPt4>0): h_single_displaced_rate_dR0p2_L1TkPt4.Fill(treeHits.L1Mu_eta[maxPtIndex_trig_dR0p2_L1TkPt4])
+        if (maxPt_trig_dR0p2_L1TkPt3>0): h_single_displaced_rate_dR0p2_L1TkPt3.Fill(treeHits.L1Mu_eta[maxPtIndex_trig_dR0p2_L1TkPt3])
+        if (maxPt_trig_dR0p2_L1TkPt2p5>0): h_single_displaced_rate_dR0p2_L1TkPt2p5.Fill(treeHits.L1Mu_eta[maxPtIndex_trig_dR0p2_L1TkPt2p5])
+        if (maxPt_trig_dR0p2_L1TkPt2>0): h_single_displaced_rate_dR0p2_L1TkPt2.Fill(treeHits.L1Mu_eta[maxPtIndex_trig_dR0p2_L1TkPt2])
+
+        if (maxPt_trig_dR0p12_L1TkPt4>0): h_single_displaced_rate_dR0p12_L1TkPt4.Fill(treeHits.L1Mu_eta[maxPtIndex_trig_dR0p12_L1TkPt4])
+        if (maxPt_trig_dR0p12_L1TkPt3>0): h_single_displaced_rate_dR0p12_L1TkPt3.Fill(treeHits.L1Mu_eta[maxPtIndex_trig_dR0p12_L1TkPt3])
+        if (maxPt_trig_dR0p12_L1TkPt2p5>0): h_single_displaced_rate_dR0p12_L1TkPt2p5.Fill(treeHits.L1Mu_eta[maxPtIndex_trig_dR0p12_L1TkPt2p5])
+        if (maxPt_trig_dR0p12_L1TkPt2>0): h_single_displaced_rate_dR0p12_L1TkPt2.Fill(treeHits.L1Mu_eta[maxPtIndex_trig_dR0p12_L1TkPt2])
+        """
         if (maxPt2>0): h_single_displaced_rate_L1TkPt2.Fill(treeHits.L1Mu_eta[maxPtIndex2])
         if (maxPt3>0): h_single_displaced_rate_L1TkPt2p5.Fill(treeHits.L1Mu_eta[maxPtIndex3])
         if (maxPt4>0): h_single_displaced_rate_L1TkPt3.Fill(treeHits.L1Mu_eta[maxPtIndex4])
         if (maxPt5>0): h_single_displaced_rate_L1TkPt4.Fill(treeHits.L1Mu_eta[maxPtIndex5])
+        """
+                                                                                    
+    def makePlots(h1, h2, h3, h4, h5, title):
+      c = TCanvas("c","c",800,600)
+      c.Clear()    
+      gStyle.SetTitleBorderSize(0);
+      gStyle.SetPadLeftMargin(0.126);
+      gStyle.SetPadRightMargin(0.04);
+      gStyle.SetPadTopMargin(0.06);
+      gStyle.SetPadBottomMargin(0.13);
+      gPad.SetLogy(1)
 
+      b1 = TH1F("b1","b1",len(myetabin)-1, myetabin)
+      b1.GetYaxis().SetRangeUser(.001,100)
+      b1.GetYaxis().SetTitleOffset(1.2)
+      b1.GetYaxis().SetNdivisions(520)
+      b1.GetYaxis().SetTitle("L1 Trigger Rate [kHz]")
+      b1.GetXaxis().SetTitle("L1 muon #eta")
+      b1.GetXaxis().SetTitleFont(62)
+      b1.GetXaxis().SetTitleOffset(1.2)
+      b1.GetXaxis().SetTitleSize(0.045)
+      b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" " + pu + ", 14TeV")
+      b1.SetStats(0)
+      b1.Draw()
 
-    c = TCanvas("c","c",800,600)
-    c.Clear()    
-    gStyle.SetTitleBorderSize(0);
-    gStyle.SetPadLeftMargin(0.126);
-    gStyle.SetPadRightMargin(0.04);
-    gStyle.SetPadTopMargin(0.06);
-    gStyle.SetPadBottomMargin(0.13);
-    gPad.SetLogy(1)
+      h1 = getRateEtaHistogram(treeHits, h1)
+      h1.SetLineColor(kRed)
+      h1.Draw("same")
+      
+      h2 = getRateEtaHistogram(treeHits, h2)
+      h2.SetLineColor(kMagenta)
+      h2.Draw("same")
 
-    b1 = TH1F("b1","b1",len(myetabin)-1, myetabin)
-    b1.GetYaxis().SetRangeUser(.001,100)
-    b1.GetYaxis().SetTitleOffset(1.2)
-    b1.GetYaxis().SetNdivisions(520)
-    b1.GetYaxis().SetTitle("L1 Trigger Rate [kHz]")
-    b1.GetXaxis().SetTitle("L1 muon #eta")
-    b1.GetXaxis().SetTitleFont(62)
-    b1.GetXaxis().SetTitleOffset(1.2)
-    b1.GetXaxis().SetTitleSize(0.045)
-    b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" " + pu + ", 14TeV")
-    b1.SetStats(0)
-    b1.Draw()
+      h3 = getRateEtaHistogram(treeHits, h3)
+      h3.SetLineColor(kBlue)
+      h3.Draw("same")
+      
+      h4 = getRateEtaHistogram(treeHits, h4)
+      h4.SetLineColor(kGreen+1)
+      h4.Draw("same")
+      
+      h5 = getRateEtaHistogram(treeHits, h5)
+      h5.SetLineColor(kOrange+1)
+      h5.Draw("same")
+      
+      leg = TLegend(0.2,0.7,0.9,0.9,"","brNDC")
+      leg.SetFillColor(kWhite)
+      leg.SetBorderSize(0)
+      leg.SetFillStyle(0)
+      leg.SetTextSize(0.03)
+      leg.AddEntry(h1,"Single L1Mu", "l")
+      leg.AddEntry(h5,"Displaced L1Mu (p_{T} #geq 4 GeV on non-matching L1Tk)", "l")
+      leg.AddEntry(h4,"Displaced L1Mu (p_{T} #geq 3 GeV on non-matching L1Tk)", "l")
+      leg.AddEntry(h3,"Displaced L1Mu (p_{T} #geq 2.5 GeV on non-matching L1Tk)", "l")
+      leg.AddEntry(h2,"Displaced L1Mu (p_{T} #geq 2 GeV on non-matching L1Tk)", "l")
+      leg.Draw("same")
+      c.SaveAs(targetDir + title + "ptCut%d.png"%(ptCut))
 
-    h_single_L1Mu_rate = getRateEtaHistogram(treeHits, h_single_L1Mu_rate)
-    h_single_L1Mu_rate.SetLineColor(kRed)
-    h_single_L1Mu_rate.Draw("same")
+      ## ratios 
+      c = TCanvas("c","c",800,600)
+      c.Clear()    
+      gStyle.SetTitleBorderSize(0);
+      gStyle.SetPadLeftMargin(0.126);
+      gStyle.SetPadRightMargin(0.04);
+      gStyle.SetPadTopMargin(0.06);
+      gStyle.SetPadBottomMargin(0.13);
+      gPad.SetLogy(1)
 
-    h_single_displaced_rate_L1TkPt2 = getRateEtaHistogram(treeHits, h_single_displaced_rate_L1TkPt2)
-    h_single_displaced_rate_L1TkPt2.SetLineColor(kMagenta)
-    h_single_displaced_rate_L1TkPt2.Draw("same")
+      b1 = TH1F("b1","b1",len(myetabin)-1, myetabin)
+      b1.GetYaxis().SetRangeUser(0.0001,1)
+      b1.GetYaxis().SetTitleOffset(1.2)
+      b1.GetYaxis().SetNdivisions(520)
+      b1.GetYaxis().SetTitle("Ratio (normalized to prompt L1Mu)")
+      b1.GetXaxis().SetTitle("L1 muon #eta")
+      b1.GetXaxis().SetTitleFont(62)
+      b1.GetXaxis().SetTitleOffset(1.2)
+      b1.GetXaxis().SetTitleSize(0.045)
+      b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" " + pu + ", 14TeV")
+      b1.SetStats(0)
+      b1.Draw()
 
-    h_single_displaced_rate_L1TkPt2p5 = getRateEtaHistogram(treeHits, h_single_displaced_rate_L1TkPt2p5)
-    h_single_displaced_rate_L1TkPt2p5.SetLineColor(kBlue)
-    h_single_displaced_rate_L1TkPt2p5.Draw("same")
+      h2.SetLineColor(kMagenta)
+      h2.Divide(h1)
+      h2.Draw("same")
+      
+      h3.SetLineColor(kBlue)
+      h3.Divide(h1)
+      h3.Draw("same")
+      
+      h4.SetLineColor(kGreen+1)
+      h4.Divide(h1)
+      h4.Draw("same")
+      
+      h5.SetLineColor(kOrange+1)
+      h5.Divide(h1)
+      h5.Draw("same")
+      
+      leg = TLegend(0.2,0.2,0.9,0.4,"","brNDC")
+      leg.SetFillColor(kWhite)
+      leg.SetBorderSize(0)
+      leg.SetFillStyle(0)
+      leg.SetTextSize(0.03)
+      leg.AddEntry(h5,"Displaced L1Mu (p_{T} #geq 4 GeV on non-matching L1Tk)", "l")
+      leg.AddEntry(h4,"Displaced L1Mu (p_{T} #geq 3 GeV on non-matching L1Tk)", "l")
+      leg.AddEntry(h3,"Displaced L1Mu (p_{T} #geq 2.5 GeV on non-matching L1Tk)", "l")
+      leg.AddEntry(h2,"Displaced L1Mu (p_{T} #geq 2 GeV on non-matching L1Tk)", "l")
+      leg.Draw("same")
+      c.SaveAs(targetDir + title + "ptCut%d_ratio.png"%(ptCut))
 
-    h_single_displaced_rate_L1TkPt3 = getRateEtaHistogram(treeHits, h_single_displaced_rate_L1TkPt3)
-    h_single_displaced_rate_L1TkPt3.SetLineColor(kGreen+1)
-    h_single_displaced_rate_L1TkPt3.Draw("same")
-
-    h_single_displaced_rate_L1TkPt4 = getRateEtaHistogram(treeHits, h_single_displaced_rate_L1TkPt4)
-    h_single_displaced_rate_L1TkPt4.SetLineColor(kOrange+1)
-    h_single_displaced_rate_L1TkPt4.Draw("same")
-
-    leg = TLegend(0.2,0.7,0.9,0.9,"","brNDC")
-    leg.SetFillColor(kWhite)
-    leg.SetBorderSize(0)
-    leg.SetFillStyle(0)
-    leg.SetTextSize(0.03)
-    leg.AddEntry(h_single_L1Mu_rate,"Single L1Mu", "l")
-    leg.AddEntry(h_single_displaced_rate_L1TkPt4,"Displaced L1Mu (p_{T} #geq 4 GeV on non-matching L1Tk)", "l")
-    leg.AddEntry(h_single_displaced_rate_L1TkPt3,"Displaced L1Mu (p_{T} #geq 3 GeV on non-matching L1Tk)", "l")
-    leg.AddEntry(h_single_displaced_rate_L1TkPt2p5,"Displaced L1Mu (p_{T} #geq 2.5 GeV on non-matching L1Tk)", "l")
-    leg.AddEntry(h_single_displaced_rate_L1TkPt2,"Displaced L1Mu (p_{T} #geq 2 GeV on non-matching L1Tk)", "l")
-    leg.Draw("same")
-    c.SaveAs(targetDir + "L1Mu_trigger_rate_eta_ptCut_%d.png"%(ptCut))
-
-    ## ratios 
-    c = TCanvas("c","c",800,600)
-    c.Clear()    
-    gStyle.SetTitleBorderSize(0);
-    gStyle.SetPadLeftMargin(0.126);
-    gStyle.SetPadRightMargin(0.04);
-    gStyle.SetPadTopMargin(0.06);
-    gStyle.SetPadBottomMargin(0.13);
-    gPad.SetLogy(1)
-
-    b1 = TH1F("b1","b1",len(myetabin)-1, myetabin)
-    b1.GetYaxis().SetRangeUser(0.0001,1)
-    b1.GetYaxis().SetTitleOffset(1.2)
-    b1.GetYaxis().SetNdivisions(520)
-    b1.GetYaxis().SetTitle("Ratio (normalized to prompt L1Mu)")
-    b1.GetXaxis().SetTitle("L1 muon #eta")
-    b1.GetXaxis().SetTitleFont(62)
-    b1.GetXaxis().SetTitleOffset(1.2)
-    b1.GetXaxis().SetTitleSize(0.045)
-    b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" " + pu + ", 14TeV")
-    b1.SetStats(0)
-    b1.Draw()
-
-    h_single_displaced_rate_L1TkPt2.SetLineColor(kMagenta)
-    h_single_displaced_rate_L1TkPt2.Divide(h_single_L1Mu_rate)
-    h_single_displaced_rate_L1TkPt2.Draw("same")
-
-    h_single_displaced_rate_L1TkPt2p5.SetLineColor(kBlue)
-    h_single_displaced_rate_L1TkPt2p5.Divide(h_single_L1Mu_rate)
-    h_single_displaced_rate_L1TkPt2p5.Draw("same")
-
-    h_single_displaced_rate_L1TkPt3.SetLineColor(kGreen+1)
-    h_single_displaced_rate_L1TkPt3.Divide(h_single_L1Mu_rate)
-    h_single_displaced_rate_L1TkPt3.Draw("same")
-    
-    h_single_displaced_rate_L1TkPt4.SetLineColor(kOrange+1)
-    h_single_displaced_rate_L1TkPt4.Divide(h_single_L1Mu_rate)
-    h_single_displaced_rate_L1TkPt4.Draw("same")
-
-    leg = TLegend(0.2,0.2,0.9,0.4,"","brNDC")
-    leg.SetFillColor(kWhite)
-    leg.SetBorderSize(0)
-    leg.SetFillStyle(0)
-    leg.SetTextSize(0.03)
-    leg.AddEntry(h_single_displaced_rate_L1TkPt4,"Displaced L1Mu (p_{T} #geq 4 GeV on non-matching L1Tk)", "l")
-    leg.AddEntry(h_single_displaced_rate_L1TkPt3,"Displaced L1Mu (p_{T} #geq 3 GeV on non-matching L1Tk)", "l")
-    leg.AddEntry(h_single_displaced_rate_L1TkPt2p5,"Displaced L1Mu (p_{T} #geq 2.5 GeV on non-matching L1Tk)", "l")
-    leg.AddEntry(h_single_displaced_rate_L1TkPt2,"Displaced L1Mu (p_{T} #geq 2 GeV on non-matching L1Tk)", "l")
-    leg.Draw("same")
-    c.SaveAs(targetDir + "L1Mu_trigger_rate_eta_ptCut_%d_ratio.png"%(ptCut))
+    ## trigger rate plots vs pt
+    makePlots(h_single_L1Mu_rate, h_single_displaced_rate_dR0p4_L1TkPt2, h_single_displaced_rate_dR0p4_L1TkPt2p5, h_single_displaced_rate_dR0p4_L1TkPt3, h_single_displaced_rate_dR0p4_L1TkPt4, "L1Mu_trigger_rate_pt_dR0p4")
+    makePlots(h_single_L1Mu_rate, h_single_displaced_rate_dR0p3_L1TkPt2, h_single_displaced_rate_dR0p3_L1TkPt2p5, h_single_displaced_rate_dR0p3_L1TkPt3, h_single_displaced_rate_dR0p3_L1TkPt4, "L1Mu_trigger_rate_pt_dR0p3")
+    makePlots(h_single_L1Mu_rate, h_single_displaced_rate_dR0p2_L1TkPt2, h_single_displaced_rate_dR0p2_L1TkPt2p5, h_single_displaced_rate_dR0p2_L1TkPt3, h_single_displaced_rate_dR0p2_L1TkPt4, "L1Mu_trigger_rate_pt_dR0p2")
+    makePlots(h_single_L1Mu_rate, h_single_displaced_rate_dR0p12_L1TkPt2, h_single_displaced_rate_dR0p12_L1TkPt2p5, h_single_displaced_rate_dR0p12_L1TkPt3, h_single_displaced_rate_dR0p12_L1TkPt4, "L1Mu_trigger_rate_pt_dR0p12")
 
   if not eff:
     makeRateVsEtaHistogram(10)

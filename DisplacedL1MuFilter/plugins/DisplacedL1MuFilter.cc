@@ -153,6 +153,8 @@ struct MyEvent
   Float_t L1Mu_pt[kMaxL1Mu], L1Mu_eta[kMaxL1Mu], L1Mu_phi[kMaxL1Mu];
   Int_t L1Mu_charge[kMaxL1Mu], L1Mu_bx[kMaxL1Mu];
   Int_t L1Mu_quality[kMaxL1Mu];
+  Float_t L1Mu_L1Tk_dR_min[kMaxL1Mu];
+  Float_t L1Mu_L1Tk_pt[kMaxL1Mu];
   Int_t L1Mu_isMatched[kMaxL1Mu];
   Int_t L1Mu_isUnMatched[kMaxL1Mu];
   Int_t L1Mu_isUnMatchedL1TkPt2[kMaxL1Mu];
@@ -727,6 +729,11 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       const double l1Tk_charge = l1Tk.getRInv()>0? 1: -1;
       const double l1Tk_phi_corr = phiHeavyCorr(l1Tk_pt, l1Tk_eta, l1Tk_phi, l1Tk_charge);
       const double dR_l1Mu_l1Tk = reco::deltaR(l1Tk_eta, l1Tk_phi_corr, l1Mu_eta, l1Mu_phi);
+      if (dR_l1Mu_l1Tk < event_.L1Mu_L1Tk_dR_min[i]) {
+        event_.L1Mu_L1Tk_dR_min[i] = dR_l1Mu_l1Tk;
+        event_.L1Mu_L1Tk_pt[i] = l1Tk_pt;
+      }
+
       if (dR_l1Mu_l1Tk > max_dR_L1Mu_noL1Tk)
         continue;
       if(verbose) std::cout << "\tL1Tk candidate " << j << " dR " << dR_l1Mu_l1Tk << " L1Tk pt " << l1Tk_pt << std::endl;
@@ -770,7 +777,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
     }
     
-
     const std::vector<double> v{newDR[0][0], newDR[0][1], newDR[1][0], newDR[1][1]};
     auto result(std::min_element(std::begin(v), std::end(v)));
     auto dis(std::distance(std::begin(v), result));
@@ -1425,6 +1431,8 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("L1Mu_bx", event_.L1Mu_bx,"L1Mu_bx[nL1Mu]/I");
   event_tree_->Branch("L1Mu_charge", event_.L1Mu_charge,"L1Mu_charge[nL1Mu]/I");
   event_tree_->Branch("L1Mu_quality", event_.L1Mu_quality,"L1Mu_quality[nL1Mu]/I");
+  event_tree_->Branch("L1Mu_L1Tk_dR_min", event_.L1Mu_L1Tk_dR_min,"L1Mu_L1Tk_dR_min[nL1Mu]/F");
+  event_tree_->Branch("L1Mu_L1Tk_pt", event_.L1Mu_L1Tk_pt,"L1Mu_L1Tk_pt[nL1Mu]/F");
   event_tree_->Branch("L1Mu_isMatched", event_.L1Mu_isMatched,"L1Mu_isMatched[nL1Mu]/I");
   event_tree_->Branch("L1Mu_isUnMatched", event_.L1Mu_isUnMatched,"L1Mu_isUnMatched[nL1Mu]/I");
   event_tree_->Branch("L1Mu_isUnMatchedL1TkPt2", event_.L1Mu_isUnMatchedL1TkPt2,"L1Mu_isUnMatchedL1TkPt2[nL1Mu]/I");
@@ -1553,6 +1561,8 @@ DisplacedL1MuFilter::clearBranches()
     event_.L1Mu_charge[i] = -10;
     event_.L1Mu_bx[i] = -10;
     event_.L1Mu_quality[i] = -10;
+    event_.L1Mu_L1Tk_dR_min[i] = 999.;
+    event_.L1Mu_L1Tk_pt[i] = -10.;
     event_.L1Mu_isMatched[i] = 0;
     event_.L1Mu_isUnMatched[i] = 0;
     event_.L1Mu_isUnMatchedL1TkPt2[i] = 0;

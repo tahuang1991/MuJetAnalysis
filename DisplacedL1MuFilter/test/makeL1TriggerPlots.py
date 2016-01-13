@@ -1062,61 +1062,213 @@ if __name__ == "__main__":
       leg.Draw("same")
       c.SaveAs(title)
     
+    ## pt effciency plots
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt2, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt2,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt2,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p4_L1TkPt2.png", True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt2p5, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2p5,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt2p5,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt2p5,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p4_L1TkPt2p5.png", True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt3, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt3,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt3,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt3,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p4_L1TkPt3.png", True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt4, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt4,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt4,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt4,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p4_L1TkPt4.png", True)
+
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt2, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt2,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt2,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p3_L1TkPt2.png", True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt2p5, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2p5,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt2p5,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt2p5,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p3_L1TkPt2p5.png", True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt3, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt3,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt3,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt3,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p3_L1TkPt3.png", True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt4, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt4,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt4,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt4,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p3_L1TkPt4.png", True)
+
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt2, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt2,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt2,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p2_L1TkPt2.png", True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt2p5, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2p5,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt2p5,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt2p5,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p2_L1TkPt2p5.png", True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt3, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt3,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt3,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt3,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p2_L1TkPt3.png", True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt4, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt4,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt4,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt4,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p2_L1TkPt4.png", True)
+
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt2, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt2,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt2,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt2,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p12_L1TkPt2.png", True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt2p5, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt2p5,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt2p5,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt2p5,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p12_L1TkPt2p5.png", True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt3, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt3,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt3,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt3,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p12_L1TkPt3.png", True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt4, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt4,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt4,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt4,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p12_L1TkPt4.png", True)
+
     ## eta effciency plots
-    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_L1TkPt2, genMu_pt_dxy0to0p1_fid),
-                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_L1TkPt2,   genMu_pt_dxy1to5_fid),
-                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_L1TkPt2,  genMu_pt_dxy5to10_fid),
-                TEfficiency(L1Mu_genMu_pt_dxy10_fid_L1TkPt2,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_L1TkPt2.png", True)
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt2, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt2,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt2,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt2,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p4_L1TkPt2.png", False)
 
-    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_L1TkPt2p5, genMu_pt_dxy0to0p1_fid),
-                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_L1TkPt2p5,   genMu_pt_dxy1to5_fid),
-                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_L1TkPt2p5,  genMu_pt_dxy5to10_fid),
-                TEfficiency(L1Mu_genMu_pt_dxy10_fid_L1TkPt2p5,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_L1TkPt2p5.png", True)
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt2p5, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt2p5,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt2p5,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt2p5,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p4_L1TkPt2p5.png", False)
 
-    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_L1TkPt3, genMu_pt_dxy0to0p1_fid),
-                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_L1TkPt3,   genMu_pt_dxy1to5_fid),
-                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_L1TkPt3,  genMu_pt_dxy5to10_fid),
-                TEfficiency(L1Mu_genMu_pt_dxy10_fid_L1TkPt3,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_L1TkPt3.png", True)
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt3, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt3,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt3,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt3,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p4_L1TkPt3.png", False)
 
-    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_L1TkPt4, genMu_pt_dxy0to0p1_fid),
-                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_L1TkPt4,   genMu_pt_dxy1to5_fid),
-                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_L1TkPt4,  genMu_pt_dxy5to10_fid),
-                TEfficiency(L1Mu_genMu_pt_dxy10_fid_L1TkPt4,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_L1TkPt4.png", True)
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt4, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt4,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt4,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt4,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p4_L1TkPt4.png", False)
 
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt2, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt2,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt2,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt2,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p3_L1TkPt2.png", False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt2p5, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt2p5,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt2p5,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt2p5,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p3_L1TkPt2p5.png", False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt3, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt3,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt3,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt3,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p3_L1TkPt3.png", False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt4, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt4,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt4,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt4,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p3_L1TkPt4.png", False)
+
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt2, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt2,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt2,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt2,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p2_L1TkPt2.png", False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt2p5, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt2p5,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt2p5,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt2p5,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p2_L1TkPt2p5.png", False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt3, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt3,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt3,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt3,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p2_L1TkPt3.png", False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt4, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt4,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt4,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt4,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p2_L1TkPt4.png", False)
+
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt2, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt2,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt2,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt2,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p12_L1TkPt2.png", False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt2p5, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt2p5,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt2p5,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt2p5,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p12_L1TkPt2p5.png", False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt3, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt3,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt3,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt3,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p12_L1TkPt3.png", False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt4, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt4,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt4,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt4,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p12_L1TkPt4.png", False)
+
+
+    ## debug for slava
     makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid, genMu_pt_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy1to5_fid,   genMu_pt_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy5to10_fid,  genMu_pt_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy10_fid,     genMu_pt_dxy10_fid),
                 targetDir + "L1Mu_trigger_efficiency_pt_fid.png", True)
-
-    ## eta effciency plots
-    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_L1TkPt2, genMu_eta_dxy0to0p1_fid),
-                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_L1TkPt2,   genMu_eta_dxy1to5_fid),
-                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_L1TkPt2,  genMu_eta_dxy5to10_fid),
-                TEfficiency(L1Mu_genMu_eta_dxy10_fid_L1TkPt2,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_L1TkPt2.png", False)
-
-    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_L1TkPt2p5, genMu_eta_dxy0to0p1_fid),
-                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_L1TkPt2p5,   genMu_eta_dxy1to5_fid),
-                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_L1TkPt2p5,  genMu_eta_dxy5to10_fid),
-                TEfficiency(L1Mu_genMu_eta_dxy10_fid_L1TkPt2p5,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_L1TkPt2p5.png", False)
-
-    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_L1TkPt3, genMu_eta_dxy0to0p1_fid),
-                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_L1TkPt3,   genMu_eta_dxy1to5_fid),
-                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_L1TkPt3,  genMu_eta_dxy5to10_fid),
-                TEfficiency(L1Mu_genMu_eta_dxy10_fid_L1TkPt3,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_L1TkPt3.png", False)
-
-    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_L1TkPt4, genMu_eta_dxy0to0p1_fid),
-                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_L1TkPt4,   genMu_eta_dxy1to5_fid),
-                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_L1TkPt4,  genMu_eta_dxy5to10_fid),
-                TEfficiency(L1Mu_genMu_eta_dxy10_fid_L1TkPt4,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_L1TkPt4.png", False)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid, genMu_eta_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy1to5_fid,   genMu_eta_dxy1to5_fid),

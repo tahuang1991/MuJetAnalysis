@@ -19,7 +19,7 @@ process.load("SLHCUpgradeSimulations.L1TrackTrigger.L1TkMuonSequence_cfi")
 process.load("L1Trigger.TrackTrigger.TrackTrigger_cff")
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(1000)
 )
 
 """
@@ -33,10 +33,10 @@ from MuJetAnalysis.DisplacedL1MuFilter.Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140b
 #from MuJetAnalysis.DisplacedL1MuFilter.SingleMuPlusFlatPt0p2To150_TTI2023Upg14D_PU140bx25_ILT_SLHC14 import files
 #from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV import files
 #from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_100_14TeV import files
-from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV import files
+#from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV import files
 #from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV_PU140 import files
 #from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_100_14TeV_PU140 import files
-#from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140 import files
+from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140 import files
 
 process.DisplacedL1MuFilter_PhaseIIGE21 = cms.EDFilter("DisplacedL1MuFilter",
     min_L1Mu_Quality = cms.int32(4),
@@ -65,8 +65,8 @@ process.TFileService = cms.Service(
     "TFileService",
 #    fileName = cms.string("out_filter_ana_Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14.root")
 #    fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_L1TkdR0p12.root")
-#    fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140.root")
-    fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV.test.root")
+    fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140.test.root")
+#    fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV.test.root")
 )
 
 

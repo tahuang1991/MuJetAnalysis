@@ -8,6 +8,7 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'PH2_1K_FB_V3::All', '')
 process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
 process.load('TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorOpposite_cfi')
 process.load('TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorAlong_cfi')
+process.load('TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorAny_cfi')
 
 process.load('Configuration.Geometry.GeometryExtended2023TTIReco_cff')
 process.load('Geometry.TrackerGeometryBuilder.StackedTrackerGeometry_cfi')
@@ -19,7 +20,7 @@ process.load("SLHCUpgradeSimulations.L1TrackTrigger.L1TkMuonSequence_cfi")
 process.load("L1Trigger.TrackTrigger.TrackTrigger_cff")
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000)
+    input = cms.untracked.int32(-1)
 )
 
 """
@@ -39,6 +40,12 @@ from MuJetAnalysis.DisplacedL1MuFilter.Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140b
 from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140 import files
 
 process.DisplacedL1MuFilter_PhaseIIGE21 = cms.EDFilter("DisplacedL1MuFilter",
+                                                           useTrack = cms.string("tracker"),  # 'none' to use Candidate P4; or 'tracker', 'muon', 'global'
+    useState = cms.string("atVertex"), # 'innermost' and 'outermost' require the TrackExtra
+    useSimpleGeometry = cms.bool(True), # just use a cylinder plus two disks.
+    fallbackToME1 = cms.bool(True),    # If propagation to ME2 fails, propagate to ME1
+    sortBy = cms.string("pt"),          # among compatible candidates, pick the highest pt one
+
     min_L1Mu_Quality = cms.int32(4),
     max_dR_L1Mu_L1Tk = cms.double(0.12),
     max_dR_L1Mu_noL1Tk = cms.double(0.12),
@@ -65,8 +72,8 @@ process.TFileService = cms.Service(
     "TFileService",
 #    fileName = cms.string("out_filter_ana_Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14.root")
 #    fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_L1TkdR0p12.root")
+#    fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140.test.root")
     fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140.test.root")
-#    fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV.test.root")
 )
 
 

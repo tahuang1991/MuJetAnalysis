@@ -36,12 +36,14 @@
 #include "MuonAnalysis/MuonAssociators/interface/PropagateToMuon.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
-#include "GEMCode/GEMValidation/interface/SimTrackMatchManager.h"
 #include "DataFormats/MuonReco/interface/Muon.h"
 #include "DataFormats/RecoCandidate/interface/RecoCandidate.h"
 #include "DataFormats/RecoCandidate/interface/RecoChargedCandidate.h"
 #include "DataFormats/RecoCandidate/interface/RecoChargedCandidateFwd.h"
 #include <DataFormats/TrackReco/interface/TrackExtra.h>
+
+#include "GEMCode/GEMValidation/interface/SimTrackMatchManager.h"
+#include "GEMCode/GEMValidation/interface/Ptassignment.h"
 
 
 using namespace std;
@@ -75,6 +77,8 @@ struct MyTrackEffCSC
  Int_t csc_ring;
  Int_t csc_chamber;
  Int_t nlayerscsc;
+
+ Char_t has_csc_sh; // #layers with SimHits > minHitsChamber    bit1: in odd, bit2: even
  
  Int_t endcap_st1;
  Int_t endcap_st2;
@@ -100,10 +104,7 @@ struct MyTrackEffCSC
  Float_t csc_gp_phi;
  Float_t csc_deltaphi_gp;
  Float_t csc_deltaphi;
- Int_t has_delta_y;
- Float_t delta_y_23_12;
- Float_t delta_x_23_12;
-
+ 
  Int_t csc_chamber_st4;
  Int_t csc_chamber_st3;
  Int_t csc_chamber_st2;
@@ -157,6 +158,8 @@ struct MyTrackEffCSC
  Int_t has_csc_24;
  Int_t has_csc_34;
 
+ Float_t pt_position_sh,pt_direction_sh;
+ Float_t bending_sh;
 
 };
 
@@ -582,6 +585,8 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
 
  //CSC SimHits Start here
  auto csc_simhits(match_sh.chamberIdsCSC(0));
+  GlobalPoint gp_sh_odd[12];
+  GlobalPoint gp_sh_even[12];
 
  for(auto d: csc_simhits)
  {
@@ -603,10 +608,8 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     if (nlayers < 4) continue;
     etrk_csc_[st].nlayerscsc = nlayers;
     etrk_csc_[st].csc_station = id.station();
-    etrk_csc_[1].csc_station = id.station();
-    etrk_csc_[st].csc_chamber = id.chamber();
     etrk_csc_[st].csc_ring = id.ring();
-    etrk_csc_[1].csc_ring = id.ring();
+    etrk_csc_[st].csc_chamber = id.chamber();
 
     GlobalPoint hitGp = match_sh.simHitsMeanPosition(match_sh.hitsInChamber(d));
     etrk_csc_[st].csc_gp_x = hitGp.x();
@@ -615,7 +618,15 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     etrk_csc_[st].csc_gp_r = hitGp.perp();
     etrk_csc_[st].csc_gp_eta = hitGp.eta();
     etrk_csc_[st].csc_gp_phi = hitGp.phi();
+    etrk_csc_[st].bending_sh = match_sh.LocalBendingInChamber(d);
     
+    const bool odd(id.chamber()%2==1);
+    if (odd) gp_sh_odd[st] = hitGp;
+    else gp_sh_even[st] = hitGp;
+
+    if (odd) etrk_csc_[st].has_csc_sh |= 1;
+    else etrk_csc_[st].has_csc_sh |= 2;
+
     GlobalVector ym = match_sh.simHitsMeanMomentum(match_sh.hitsInChamber(d));
     etrk_csc_[st].csc_gv_eta = ym.eta();
     etrk_csc_[st].csc_gv_phi = ym.phi();
@@ -626,6 +637,8 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     // Case ME11
     if(id.station()==1){
         etrk_csc_[1].nlayerscsc = nlayers;
+        etrk_csc_[1].csc_station = 1;
+        etrk_csc_[1].csc_ring = 1;
         etrk_csc_[1].csc_gp_x = hitGp.x();
         etrk_csc_[1].csc_gp_y = hitGp.y();
         etrk_csc_[1].csc_gp_z = hitGp.z();
@@ -637,9 +650,15 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
         etrk_csc_[1].csc_gv_pt = ym.perp();
         etrk_csc_[1].csc_deltaphi = deltaPhi(hitGp.phi(), ym.phi());  //Bending Angle Position and Direction
 	etrk_csc_[1].csc_chamber = id.chamber();
+    	etrk_csc_[1].bending_sh = match_sh.LocalBendingInChamber(d);
 	auto totalp = std::sqrt( t.momentum().x()*t.momentum().x() + t.momentum().y()*t.momentum().y() + t.momentum().z()*t.momentum().z());
 	etrk_csc_[1].csc_p_over_cosh_eta = totalp/cosh(std::abs(hitGp.eta()));
 	etrk_csc_[1].endcap_st1 = id.endcap();
+    	if (odd) gp_sh_odd[1] = hitGp;
+    	else gp_sh_even[1] = hitGp;
+
+    	if (odd) etrk_csc_[1].has_csc_sh |= 1;
+    	else etrk_csc_[1].has_csc_sh |= 2;
     }
 
 
@@ -699,35 +718,6 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
 		etrk_csc_[1].csc_chamber_st2 = s_id.chamber();
 		etrk_csc_[1].csc_deltaphi_gp_12 = deltaPhi(hitGp.phi(),hitGp2.phi());
 		etrk_csc_[st].csc_deltaphi_gp_12 = deltaPhi(hitGp.phi(),hitGp2.phi());
-
-
-
-
-		for(auto t_d: csc_simhits)
-		{
-	        	CSCDetId t_id(t_d);
-	        	const int t_st(detIdToMEStation(t_id.station(),t_id.ring()));
-        		if (stationscsc_to_use_.count(t_st) == 0) continue;
-		        int t_nlayers(match_sh.nLayersWithHitsInSuperChamber(t_d));
-
-			if (t_nlayers < 4) continue;
-
-			if (t_id.station()==1) continue;
-			if (t_id.station()==2) continue;
-			if (t_id.station()==4) continue;
-
-		        GlobalPoint hitGp3 = match_sh.simHitsMeanPosition(match_sh.hitsInChamber(t_d));
-			float ysst3 = -hitGp3.x()*sin(anglea) + hitGp3.y()*cos(anglea);
-			float xsst3 = hitGp2.x()*cos(anglea) + hitGp3.y()*sin(anglea);
-			
-			etrk_csc_[st].has_delta_y = 1;
-			etrk_csc_[1].has_delta_y = 1;
-
-			etrk_csc_[1].delta_y_23_12 =  ysst3 - newyst2;
-			etrk_csc_[st].delta_y_23_12 =  ysst3 - newyst2;
-			etrk_csc_[st].delta_x_23_12 =  xsst3 - newxst2;
-			etrk_csc_[1].delta_x_23_12 =  xsst3 - newxst2;
-		}
 
 
 
@@ -845,9 +835,35 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
  } // End of CSC Sim Hits
 
 
-
-
-
+  if (etrk_csc_[1].has_csc_sh>0 and etrk_csc_[6].has_csc_sh>0 and etrk_csc_[8].has_csc_sh>0){
+     int npar=-1;
+     GlobalPoint gp1,gp2, gp3;
+     if ((etrk_csc_[1].has_csc_sh&1)>0 and (etrk_csc_[6].has_csc_sh&2)>0 and (etrk_csc_[8].has_csc_sh&2)>0){
+        gp1=gp_sh_odd[1];
+        gp2=gp_sh_even[6];
+        gp3=gp_sh_even[8];
+	npar=0;
+     }else if ((etrk_csc_[1].has_csc_sh&1)>0 and (etrk_csc_[6].has_csc_sh&1)>0 and (etrk_csc_[8].has_csc_sh&1)>0){ 
+        gp1=gp_sh_odd[1];
+        gp2=gp_sh_odd[6];
+        gp3=gp_sh_odd[8];
+	npar=1;
+     }else if ((etrk_csc_[1].has_csc_sh&2)>0 and (etrk_csc_[6].has_csc_sh&2)>0 and (etrk_csc_[8].has_csc_sh&2)>0){ 
+        gp1=gp_sh_even[1];
+        gp2=gp_sh_even[6];
+        gp3=gp_sh_even[8];
+	npar=2;
+     }else if ((etrk_csc_[1].has_csc_sh&2)>0 and (etrk_csc_[6].has_csc_sh&1)>0 and (etrk_csc_[8].has_csc_sh&1)>0){ 
+        gp1=gp_sh_even[1];
+        gp2=gp_sh_odd[6];
+        gp3=gp_sh_odd[8];
+	npar=3;
+     }
+     //std::cout <<" has csc sh st123 npar "<< npar << std::endl;
+     etrk_csc_[1].pt_position_sh=Ptassign_Position_gp(gp1, gp2, gp3, etrk_csc_[1].eta_SimTrack, npar);  
+     etrk_csc_[1].pt_direction_sh=Ptassign_Direction(etrk_csc_[1].csc_bending_angle_12, etrk_csc_[1].eta_SimTrack, npar);  
+  
+  } 
 
  //Filling per station CSC
 
@@ -907,7 +923,7 @@ void MyTrackEffCSC::init()
  pzvz = - 999.;
  pp_SimTrack = - 99.;
 
-
+ has_csc_sh = 0;
  csc_gp_y = - 9999;
  csc_gp_x = - 9999;
  csc_gp_r = - 9999;
@@ -946,9 +962,7 @@ void MyTrackEffCSC::init()
  csc_deltaeta_13 = - 99.;
  csc_deltaeta_12 = - 99.;
 
- has_delta_y = 0;
- delta_y_23_12 = - 9999.;
- delta_x_23_12 = - 9999.;
+
 
  csc_deltaphi_gp_12=-99.;
  csc_deltaphi_gp_13=-99.;
@@ -977,6 +991,10 @@ void MyTrackEffCSC::init()
  csc_deltaphi = - 99;
 
  csc_p_over_cosh_eta = - 99.; 
+
+ pt_position_sh=-99;
+ pt_direction_sh = -99;
+ bending_sh = -10;
 }
 void MyTrackEffDT::init()
 {
@@ -1140,9 +1158,6 @@ TTree*MyTrackEffCSC::book(TTree *t, const std::string & name)
   t->Branch("nlayers_st4", &nlayers_st4);
 
 
-  t->Branch("has_delta_y", &has_delta_y);
-  t->Branch("delta_x_23_from12", &delta_x_23_12);
-  t->Branch("delta_y_23_from12", &delta_y_23_12);
 
   t->Branch("csc_deltaphi_gp_12", &csc_deltaphi_gp_12);
   t->Branch("csc_deltaphi_gp_13", &csc_deltaphi_gp_13);
@@ -1172,6 +1187,10 @@ TTree*MyTrackEffCSC::book(TTree *t, const std::string & name)
   t->Branch("has_csc_23", &has_csc_23);
   t->Branch("has_csc_24", &has_csc_24);
   t->Branch("has_csc_34", &has_csc_34);
+
+  t->Branch("pt_position_sh", &pt_position_sh);
+  t->Branch("pt_direction_sh", &pt_direction_sh);
+  t->Branch("bending_sh", &bending_sh);
   return t;
 }
 

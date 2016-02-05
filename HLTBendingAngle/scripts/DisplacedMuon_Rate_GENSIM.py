@@ -71,7 +71,7 @@ def getRate(filedir, treename, todraw, cut):
     #ntotalEvents = getRatecount(tree,"pt_SimTrack",cut)
     ntotalEvents = getRatecount(tree,"pt_SimTrack","1")
     #h.Scale(40000./ntotalEvents/3./2.*0.795)
-    h.Scale(30000./ntotalEvents)
+    h.Scale(30000.*140/ntotalEvents)
 #    print "after scale "
  #   h.Print("all")
     return h

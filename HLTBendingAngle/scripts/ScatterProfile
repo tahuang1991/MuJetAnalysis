@@ -161,8 +161,8 @@ x_bins = "(80,0,80)"
 y_bins = "(500,0,500)"
 
 
-#DrawProfileAndScatter_pT("../ct%d.root"%ctau,tree,xaxis,yaxis,x_bins,y_bins,sta, 1.8, 2.0)
-#DrawProfileAndScatter_pT_pos("../ct%d.root"%ctau,tree,xaxis_pos,yaxis,x_bins,y_bins,sta, 1.6, 1.8)
+DrawProfileAndScatter_pT("../ct%d.root"%ctau,tree,xaxis,yaxis,x_bins,y_bins,sta, 1.8, 2.0)
+DrawProfileAndScatter_pT_pos("../ct%d.root"%ctau,tree,xaxis_pos,yaxis,x_bins,y_bins,sta, 1.6, 1.8)
 for k in pt_slope_inter:
     DrawProfileAndScatter_pT("../ct%d.root"%ctau,tree,xaxis,yaxis,x_bins,y_bins,sta, k, k+0.2)
 

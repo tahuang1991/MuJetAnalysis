@@ -68,17 +68,24 @@
 #include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
 #include "DataFormats/GeometrySurface/interface/Plane.h"
 #include "DataFormats/GeometrySurface/interface/Cylinder.h"
+#include "DataFormats/GeometrySurface/interface/BoundCylinder.h"
+#include "DataFormats/GeometrySurface/interface/BoundDisk.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
 #include "SimDataFormats/Track/interface/SimTrackContainer.h"
 #include "SimDataFormats/Vertex/interface/SimVertexContainer.h"
 #include "DataFormats/Math/interface/normalizedPhi.h"
+#include "RecoMuon/DetLayers/interface/MuonDetLayerGeometry.h"
+#include "RecoMuon/Records/interface/MuonRecoGeometryRecord.h"
+#include "TrackingTools/DetLayers/interface/DetLayer.h"
+#include "TrackingTools/KalmanUpdators/interface/Chi2MeasurementEstimator.h"
 
 //
 // class declaration
 //
 
 const Int_t kMaxL1Mu = 50;
+const Int_t kMaxL1Tk = 500;
 const int nGlu = 2;
 const int nGd = 2;
 const int nGdMu = 2;
@@ -142,30 +149,60 @@ struct MyEvent
   Float_t genGdMu_pz[2][2];
   Float_t genGdMu_eta[2][2];
   Float_t genGdMu_phi[2][2];
+
+  Float_t genGdMu_eta_corr[2][2];
   Float_t genGdMu_phi_corr[2][2];
+  Float_t genGdMu_deta_corr[2][2];
+  Float_t genGdMu_dphi_corr[2][2];
+  Float_t genGdMu_dR_corr[2][2];
+
+  Float_t genGdMu_eta_prop[2][2];
+  Float_t genGdMu_phi_prop[2][2];
+  Float_t genGdMu_deta_prop[2][2];
+  Float_t genGdMu_dphi_prop[2][2];
+  Float_t genGdMu_dR_prop[2][2];
+
   Float_t genGdMu_vx[2][2];
   Float_t genGdMu_vy[2][2];
   Float_t genGdMu_vz[2][2];
   Float_t genGdMu_dxy[2][2];
+  Float_t genGdMu_L1Tk_dR_prop[2][2];
+  Float_t genGdMu_L1Tk_index_prop[2][2];
+  Float_t genGdMu_L1Tk_dR_corr[2][2];
+  Float_t genGdMu_L1Tk_index_corr[2][2];
 
   Float_t genGd0Gd1_dR;
 
+  Float_t genGd_genMuMu_dEta[2];
+  Float_t genGd_genMuMu_dPhi[2];
+  Float_t genGd_genMuMu_dR[2];
+
+  // Matching the dark photons to GEN-level muons
+  Float_t genGd_genMu_dEta[2][2];
+  Float_t genGd_genMu_dPhi[2][2];
+  Float_t genGd_genMu_dR[2][2];
+
   Int_t nL1Mu;
+  Int_t nL1Tk;
   Float_t L1Mu_pt[kMaxL1Mu], L1Mu_eta[kMaxL1Mu], L1Mu_phi[kMaxL1Mu];
   Int_t L1Mu_charge[kMaxL1Mu], L1Mu_bx[kMaxL1Mu];
   Int_t L1Mu_quality[kMaxL1Mu];
-  Float_t L1Mu_L1Tk_dR_min[kMaxL1Mu];
-  Float_t L1Mu_L1Tk_pt[kMaxL1Mu];
-  Int_t L1Mu_isMatched[kMaxL1Mu];
-  Int_t L1Mu_isUnMatched[kMaxL1Mu];
-  Int_t L1Mu_isUnMatchedL1TkPt2[kMaxL1Mu];
-  Int_t L1Mu_isUnMatchedL1TkPt2p5[kMaxL1Mu];
-  Int_t L1Mu_isUnMatchedL1TkPt3[kMaxL1Mu];
-  Int_t L1Mu_isUnMatchedL1TkPt4[kMaxL1Mu];
+  Float_t L1Mu_L1Tk_dR_corr[kMaxL1Mu];
+  Float_t L1Mu_L1Tk_pt_corr[kMaxL1Mu];
+  Float_t L1Mu_L1Tk_dR_prop[kMaxL1Mu];
+  Float_t L1Mu_L1Tk_dR_prop_true[kMaxL1Mu];
+  Float_t L1Mu_L1Tk_pt_prop[kMaxL1Mu];
+  Float_t L1Tk_pt[kMaxL1Tk], L1Tk_eta[kMaxL1Tk], L1Tk_phi[kMaxL1Tk];
+  Float_t L1Tk_eta_prop[kMaxL1Tk], L1Tk_phi_prop[kMaxL1Tk];
+  Float_t L1Tk_deta_prop[kMaxL1Tk], L1Tk_dphi_prop[kMaxL1Tk], L1Tk_dR_prop[kMaxL1Tk];
+  Float_t L1Tk_eta_corr[kMaxL1Tk], L1Tk_phi_corr[kMaxL1Tk];
+  Float_t L1Tk_deta_corr[kMaxL1Tk], L1Tk_dphi_corr[kMaxL1Tk], L1Tk_dR_corr[kMaxL1Tk];
 
-  Float_t genGdMu_L1Mu_dR_corr[2][2];
   Float_t genGdMu_L1Mu_dR[2][2];
+  Float_t genGdMu_L1Mu_dR_corr[2][2];
   Int_t genGdMu_L1Mu_index_corr[2][2];
+  Float_t genGdMu_L1Mu_dR_prop[2][2];
+  Int_t genGdMu_L1Mu_index_prop[2][2];
 
   Int_t has_sim;
   Float_t pt_sim, eta_sim, phi_sim, charge_sim;
@@ -212,6 +249,13 @@ double dRWeighted(double eta1, double phi1, double eta2, double phi2, double sig
   return dR;
 }
 
+double My_dPhi(double phi1, double phi2) {
+  double dPhi = phi1 - phi2;
+  if (dPhi >  M_PI) dPhi -= 2.*M_PI;
+  if (dPhi < -M_PI) dPhi += 2.*M_PI;
+  return dPhi;
+}
+
 bool 
 isSimTrackGood(const SimTrack &t)
 {
@@ -240,33 +284,59 @@ public:
   
 private:
   void bookL1MuTree();
+  void clearBranches();
+
   virtual void beginJob() override;
   virtual bool filter(edm::Event&, const edm::EventSetup&) override;
   virtual void endJob() override;
+
+  GlobalPoint extrapolateGP(const reco::GenParticle &tk);
+  GlobalPoint extrapolateGP(const TTTrack< Ref_PixelDigi_ > &tk);
   GlobalPoint propagateToZ(const GlobalPoint &inner_point, const GlobalVector &inner_vec, double, double) const;
   GlobalPoint propagateToR(const GlobalPoint &inner_point, const GlobalVector &inner_vec, double, double) const;
-  void clearBranches();
-  //virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
-  //virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
-  //virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
-  //virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+  FreeTrajectoryState startingState(const reco::GenParticle &tk) const;
+  FreeTrajectoryState startingState(const TTTrack< Ref_PixelDigi_ > &tk) const;
+
+  TrajectoryStateOnSurface extrapolate(const FreeTrajectoryState &start) const;
+  /// Extrapolate reco::Candidate to the muon station 2, return an invalid TSOS if it fails
+  TrajectoryStateOnSurface extrapolate(const reco::GenParticle &tk) const { 
+    return extrapolate(startingState(tk)); 
+  }
+  TrajectoryStateOnSurface extrapolate(const TTTrack< Ref_PixelDigi_ > &tk) const { 
+    return extrapolate(startingState(tk)); 
+  }
   
+  /// Get the best TSOS on one of the chambres of this DetLayer, or an invalid TSOS if none match
+  TrajectoryStateOnSurface getBestDet(const TrajectoryStateOnSurface &tsos, const DetLayer *station) const;
+
+  
+  // ----------member data ---------------------------
+
+  enum WhichTrack { None, TrackerTk, MuonTk, GlobalTk };
+  enum WhichState { AtVertex, Innermost, Outermost };
+
+  /// Use simplified geometry (cylinders and disks, not individual chambers)
+  bool useSimpleGeometry_;
+
+  /// Propagate to MB2 (default) instead of MB1
+  bool useMB2_;
+
+  /// Fallback to ME1 if propagation to ME2 fails
+  bool fallbackToME1_;
+
+  /// Labels for input collections
+  WhichTrack whichTrack_;
+  WhichState whichState_;
+
+  /// for cosmics, some things change: the along-opposite is not in-out, nor the innermost/outermost states are in-out really
+  bool cosmicPropagation_;
+
   int min_L1Mu_Quality;
   double max_dR_L1Mu_L1Tk;
   double max_dR_L1Mu_noL1Tk;
   double min_pT_L1Tk;
   double max_pT_L1Tk;
-  int nTotalMuons = 0;
-  // int nPromptMuons = 0;
-  int eventPassing = 0;
   int verbose;
-  int eventsWithMuons = 0;
-  int eventsWithDisplacedMuons = 0;
-  int eventsWithDisplacedMuonsPt = 0;
-  int nEventsWith1MuonWithQuality4Pt20 = 0;
-  int nEventsWith1MuonWithQuality4Pt20p = 0;
-  int nEventsWith1MuonWithQuality4Pt20BX0 = 0;
-  int nEventsWith1MuonWithQuality4Pt20BX0p = 0;
 
   edm::InputTag L1Mu_input;
   edm::InputTag L1TkMu_input;
@@ -274,25 +344,22 @@ private:
   edm::ESHandle<MagneticField> magfield_;
   edm::ESHandle<Propagator> propagator_;
   edm::ESHandle<Propagator> propagatorOpposite_;
+  edm::ESHandle<Propagator> propagatorAny_;
+  edm::ESHandle<MuonDetLayerGeometry> muonGeometry_;
+  const  BoundCylinder *barrelCylinder_;
+  const  BoundDisk *endcapDiskPos_[3], *endcapDiskNeg_[3];
+  double barrelHalfLength_;
+  std::pair<float,float> endcapRadii_[3];
   MyEvent event_;
   TTree* event_tree_;
-  // ----------member data ---------------------------
-
-  
 };
 
-//
-// constants, enums and typedefs
-//
-
-//
-// static data member definitions
-//
-
-//
-// constructors and destructor
-//
-DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig)
+DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) : 
+  useSimpleGeometry_(iConfig.getParameter<bool>("useSimpleGeometry")),
+  useMB2_(iConfig.existsAs<bool>("useStation2") ? iConfig.getParameter<bool>("useStation2") : true),
+  fallbackToME1_(iConfig.existsAs<bool>("fallbackToME1") ? iConfig.getParameter<bool>("fallbackToME1") : false),
+  whichTrack_(None), whichState_(AtVertex),
+  cosmicPropagation_(iConfig.getParameter<bool>("cosmicPropagationHypothesis"))
 {
   //now do what ever initialization is needed
   min_L1Mu_Quality = iConfig.getParameter<int>("min_L1Mu_Quality");
@@ -310,26 +377,13 @@ DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig)
 
 DisplacedL1MuFilter::~DisplacedL1MuFilter()
 {
- 
-   // do anything here that needs to be done at desctruction time
-   // (e.g. close files, deallocate resources etc.)
-
 }
 
 
-//
-// member functions
-//
-
-// ------------ method called on each new Event  ------------
 bool
 DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
   double eq = 0.000001;
-  int hasL1MuWithQ4Pt20 = 0;
-  int hasL1MuWithQ4Pt20p = 0;
-  int hasL1MuWithQ4Pt20BX0 = 0;
-  int hasL1MuWithQ4Pt20BX0p = 0;
 
   clearBranches();
   
@@ -337,6 +391,23 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iSetup.get<IdealMagneticFieldRecord>().get(magfield_);
   iSetup.get<TrackingComponentsRecord>().get("SteppingHelixPropagatorAlong", propagator_);
   iSetup.get<TrackingComponentsRecord>().get("SteppingHelixPropagatorOpposite", propagatorOpposite_);
+  iSetup.get<TrackingComponentsRecord>().get("SteppingHelixPropagatorAny",      propagatorAny_);
+  iSetup.get<MuonRecoGeometryRecord>().get(muonGeometry_);
+
+  // Get the barrel cylinder
+  const DetLayer * dtLay = muonGeometry_->allDTLayers()[useMB2_ ? 1 : 0];
+  barrelCylinder_ = dynamic_cast<const BoundCylinder *>(&dtLay->surface());
+  barrelHalfLength_ = barrelCylinder_->bounds().length()/2;;
+  // std::cout << "L1MuonMatcher: barrel radius = " << barrelCylinder_->radius() << ", half length = " << barrelHalfLength_ << std::endl;
+
+  // Get the endcap disks. Note that ME1 has two disks (ME1/1 and ME2/1-ME3/2-ME4/1), so there's one more index
+  for (size_t i = 0; i <= (useMB2_ ? 2 : 1); ++i) {
+    endcapDiskPos_[i] = dynamic_cast<const BoundDisk *>(& muonGeometry_->forwardCSCLayers()[i]->surface());
+    endcapDiskNeg_[i] = dynamic_cast<const BoundDisk *>(& muonGeometry_->backwardCSCLayers()[i]->surface());
+    endcapRadii_[i] = std::make_pair(endcapDiskPos_[i]->innerRadius(), endcapDiskPos_[i]->outerRadius());
+    // std::cout << "L1MuonMatcher: endcap " << i << " Z = " << endcapDiskPos_[i]->position().z() << ", radii = " << endcapRadii_[i].first << "," << endcapRadii_[i].second << std::endl;
+  }
+
 
   typedef std::vector<L1MuGMTCand> GMTs;
   edm::Handle<GMTs> aH;
@@ -369,11 +440,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByLabel("TTTracksFromPixelDigis", "Level1TTTracks", TTTrackHandle);
   const std::vector< TTTrack< Ref_PixelDigi_ > >& TTTracks = *TTTrackHandle.product();
 
-  edm::Handle<l1extra::L1TkMuonParticleCollection> tkMuonsHandle;
-  // use both barrel+endcap muons
-  iEvent.getByLabel(L1TkMu_input, tkMuonsHandle);
-  //const l1extra::L1TkMuonParticleCollection& tkMuons = *tkMuonsHandle.product();
-
   // edm::Handle<edm::SimTrackContainer> sim_tracks;
   // iEvent.getByLabel("g4SimHits", sim_tracks);
   // const edm::SimTrackContainer & sim_trks = *sim_tracks.product();
@@ -382,17 +448,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   // iEvent.getByLabel("g4SimHits", sim_vertices);
   // const edm::SimVertexContainer & sim_vtxs = *sim_vertices.product();
   
-  // 1) count the number of muons with 
-  // int nL1MuL1TkdR012 = 0;
-  // int nL1MuQuality4 = 0;
-  // int nL1MuMatched = 0;
-  // int nL1MuUnMatched = 0;
-  int nL1Mu = l1GmtCands.size();
   event_.lumi = iEvent.id().luminosityBlock();
   event_.run = iEvent.id().run();
   event_.event = iEvent.id().event();
-  event_.nL1Mu = nL1Mu;
-  // int nL1Tk = TTTracks.size();
+
+  event_.nL1Mu = l1GmtCands.size();
+  event_.nL1Tk = TTTracks.size();
   
   event_.beamSpot_x = 0;
   event_.beamSpot_y = 0;
@@ -608,10 +669,37 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         event_.genGdMu_pz[i][j] = genMuonGroups[i][j]->pz();
         event_.genGdMu_eta[i][j] = genMuonGroups[i][j]->eta();
         event_.genGdMu_phi[i][j] = genMuonGroups[i][j]->phi();
-        event_.genGdMu_phi_corr[i][j] = phiHeavyCorr(genMuonGroups[i][j]->pt(), genMuonGroups[i][j]->eta(), genMuonGroups[i][j]->phi(), genMuonGroups[i][j]->charge());
+        event_.genGdMu_eta_corr[i][j] = genMuonGroups[i][j]->eta();
+        event_.genGdMu_phi_corr[i][j] = phiHeavyCorr(genMuonGroups[i][j]->pt(), genMuonGroups[i][j]->eta(), 
+                                                     genMuonGroups[i][j]->phi(), genMuonGroups[i][j]->charge());
+        event_.genGdMu_deta_corr[i][j] = std::abs(event_.genGdMu_eta[i][j] - event_.genGdMu_eta_corr[i][j]);
+        event_.genGdMu_dphi_corr[i][j] = My_dPhi(event_.genGdMu_phi[i][j], event_.genGdMu_phi_corr[i][j]);
+        event_.genGdMu_dR_corr[i][j] = reco::deltaR(event_.genGdMu_eta[i][j], event_.genGdMu_phi[i][j],
+                                                    event_.genGdMu_eta_corr[i][j], event_.genGdMu_phi_corr[i][j]);
+        
         event_.genGdMu_vx[i][j] = genMuonGroups[i][j]->vx();
         event_.genGdMu_vy[i][j] = genMuonGroups[i][j]->vy();
         event_.genGdMu_vz[i][j] = genMuonGroups[i][j]->vz();
+
+        // TrajectoryStateOnSurface stateAtMB2 = extrapolate(*genMuonGroups[i][j]);
+        // if (stateAtMB2.isValid()) {
+        //   event_.genGdMu_eta_prop[i][j] = stateAtMB2.globalPosition().eta();
+        //   event_.genGdMu_phi_prop[i][j] = stateAtMB2.globalPosition().phi();
+        // }
+        // return FreeTrajectoryState(  GlobalPoint(tk.vx(), tk.vy(), tk.vz()),
+        //                              GlobalVector(tk.px(), tk.py(), tk.pz()),
+        //                              int(tk.charge()),
+        //                              magfield_.product());
+        
+        GlobalPoint ex_point(extrapolateGP(*genMuonGroups[i][j]));
+        if (!(ex_point == GlobalPoint())){
+          event_.genGdMu_eta_prop[i][j] = ex_point.eta();
+          event_.genGdMu_phi_prop[i][j] = ex_point.phi();
+          event_.genGdMu_deta_prop[i][j] = std::abs(event_.genGdMu_eta[i][j] - event_.genGdMu_eta_prop[i][j]);
+          event_.genGdMu_dphi_prop[i][j] = My_dPhi(event_.genGdMu_phi[i][j], event_.genGdMu_phi_prop[i][j]);
+          event_.genGdMu_dR_prop[i][j] = reco::deltaR(event_.genGdMu_eta[i][j], event_.genGdMu_phi[i][j],
+                                                      event_.genGdMu_eta_prop[i][j], event_.genGdMu_phi_prop[i][j]);
+        }
       }
     }
     
@@ -622,29 +710,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         fabs(event_.genGdMu_vz[0][0] - event_.genGdMu_vz[0][1]) < eq and
         fabs(event_.genGdMu_vz[1][0] - event_.genGdMu_vz[1][1]) < eq) {
       
-      // Float_t genGd0_vLx = event_.genGd0Mu0_vx - event_.genGd0_vx;
-      // Float_t genGd1_vLx = event_.genGd1Mu0_vx - event_.genGd1_vx;
-      
-      // Float_t genGd0_vLy = event_.genGd0Mu0_vy - event_.genGd0_vy;
-      // Float_t genGd1_vLy = event_.genGd1Mu0_vy - event_.genGd1_vy;
-    
-      // Float_t genGd0_vLz = event_.genGd0Mu0_vz - event_.genGd0_vz;
-      // Float_t genGd1_vLz = event_.genGd1Mu0_vz - event_.genGd1_vz;
-    
-      // event_.genGd0Mu0_dxy = dxy(event_.genGd0Mu0_px, event_.genGd0Mu0_py, event_.genGd0Mu0_vx - event_.beamSpot_x, event_.genGd0Mu0_vy - event_.beamSpot_y, event_.genGd0Mu0_pt);
-      // event_.genGd0Mu1_dxy = dxy(event_.genGd0Mu1_px, event_.genGd0Mu1_py, event_.genGd0Mu1_vx - event_.beamSpot_x, event_.genGd0Mu1_vy - event_.beamSpot_y, event_.genGd0Mu1_pt);
-      // event_.genGd1Mu0_dxy = dxy(event_.genGd1Mu0_px, event_.genGd1Mu0_py, event_.genGd1Mu0_vx - event_.beamSpot_x, event_.genGd1Mu0_vy - event_.beamSpot_y, event_.genGd1Mu0_pt);
-      // event_.genGd1Mu1_dxy = dxy(event_.genGd1Mu1_px, event_.genGd1Mu1_py, event_.genGd1Mu1_vx - event_.beamSpot_x, event_.genGd1Mu1_vy - event_.beamSpot_y, event_.genGd1Mu1_pt);
-
-      // event_.genGd0Mu_dxy_max = std::max(event_.genGd0Mu0_dxy,event_.genGd0Mu1_dxy);
-      // event_.genGd1Mu_dxy_max = std::max(event_.genGd1Mu0_dxy,event_.genGd1Mu1_dxy);
-
-      // event_.genGd0_lxy = sqrt( genGd0_vLx * genGd0_vLx + genGd0_vLy * genGd0_vLy );
-      // event_.genGd1_lxy = sqrt( genGd1_vLx * genGd1_vLx + genGd1_vLy * genGd1_vLy );
-    
-      // event_.genGd0_l = sqrt( genGd0_vLx * genGd0_vLx + genGd0_vLy * genGd0_vLy + genGd0_vLz * genGd0_vLz );
-      // event_.genGd1_l = sqrt( genGd1_vLx * genGd1_vLx + genGd1_vLy * genGd1_vLy + genGd1_vLz * genGd1_vLz );
-
       for (int i=0; i<2; ++i){         
         for (int j=0; j<2; ++j){
           event_.genGdMu_dxy[i][j] = dxy(event_.genGdMu_px[i][j], 
@@ -666,121 +731,122 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     } else {
       cout << "WARNING! Muon vertices are different" << endl;
     }
-  }
-  
-  if(verbose) { 
-    for (int i=0; i<2; ++i){ 
+    for (int i=0; i<2; ++i){         
+      event_.genGd_genMuMu_dEta[i] = My_dPhi(genMuonGroups[i][0]->eta(), genMuonGroups[i][1]->eta());
+      event_.genGd_genMuMu_dPhi[i] = My_dPhi(genMuonGroups[i][0]->phi(), genMuonGroups[i][1]->phi());
+      event_.genGd_genMuMu_dR[i]   = sqrt(event_.genGd_genMuMu_dEta[i]*event_.genGd_genMuMu_dEta[i] + 
+                                          event_.genGd_genMuMu_dPhi[i]*event_.genGd_genMuMu_dPhi[i]);
       for (int j=0; j<2; ++j){
-        cout << "b_genGd"<<i<<"Mu"<<j<<"_pt " << event_.genGdMu_pt[i][j] << endl;
-        cout << "b_genGd"<<i<<"Mu"<<j<<"_eta " << event_.genGdMu_eta[i][j] << endl;
-        cout << "b_genGd"<<i<<"Mu"<<j<<"_phi " << event_.genGdMu_phi[i][j] << endl;
-        cout << "b_genGd"<<i<<"Mu"<<j<<"_phi_corr " << event_.genGdMu_phi_corr[i][j] << endl;
-        cout << "b_genGd"<<i<<"Mu"<<j<<"_dxy " << event_.genGdMu_dxy[i][j] << endl;
+        event_.genGd_genMu_dEta[i][j] = event_.genGd_eta[i] - event_.genGdMu_eta[i][j];
+        event_.genGd_genMu_dPhi[i][j] = event_.genGd_phi[i] - event_.genGdMu_phi[i][j];
+        event_.genGd_genMu_dR[i][j]   = deltaR(event_.genGd_eta[i], event_.genGd_phi[i], 
+                                               event_.genGdMu_eta[i][j], event_.genGdMu_phi[i][j]);
+      }
+    }
+    if(verbose) { 
+      for (int i=0; i<2; ++i){ 
+        for (int j=0; j<2; ++j){
+          cout << "genGd"<<i<<"Mu"<<j<<"_pt " << event_.genGdMu_pt[i][j] << endl;
+          cout << "genGd"<<i<<"Mu"<<j<<"_eta " << event_.genGdMu_eta[i][j] << endl;
+          cout << "genGd"<<i<<"Mu"<<j<<"_phi " << event_.genGdMu_phi[i][j] << endl;
+          cout << "genGd"<<i<<"Mu"<<j<<"_phi_corr " << event_.genGdMu_phi_corr[i][j] << endl;
+          cout << "genGd"<<i<<"Mu"<<j<<"_eta_prop " << event_.genGdMu_eta_prop[i][j] << endl;
+          cout << "genGd"<<i<<"Mu"<<j<<"_phi_prop " << event_.genGdMu_phi_prop[i][j] << endl;
+          cout << "genGd"<<i<<"Mu"<<j<<"_dxy " << event_.genGdMu_dxy[i][j] << endl;
+        }
       }
     }
   }
 
-  // edm::Handle<edm::SimTrackContainer> sim_tracks;
-  // iEvent.getByLabel("g4SimHits", sim_tracks);
-  // const edm::SimTrackContainer & sim_trks = *sim_tracks.product();
-  // edm::Handle<edm::SimTrackContainer> sim_tracks;
-  // iEvent.getByLabel("g4SimHits", sim_tracks);
-  // const edm::SimTrackContainer & sim_trks = *sim_tracks.product();
   
-  // edm::Handle<edm::SimVertexContainer> sim_vertices;
-  // iEvent.getByLabel("g4SimHits", sim_vertices);
-  // const edm::SimVertexContainer & sim_vtxs = *sim_vertices.product();
+  for (int i=0; i<2; ++i){         
+    for (int j=0; j<2; ++j){
+      for (unsigned int k=0; k<TTTracks.size(); ++k) {
+        auto l1Tk = TTTracks[k];
+        const double l1Tk_eta = l1Tk.getMomentum().eta();
+        const double l1Tk_phi = normalizedPhi(l1Tk.getMomentum().phi());
+        double deltar(reco::deltaR(l1Tk_eta, l1Tk_phi, event_.genGdMu_eta[i][j], event_.genGdMu_phi[i][j]));
+        if (deltar < event_.genGdMu_L1Tk_dR_prop[i][j]) {
+          event_.genGdMu_L1Tk_dR_prop[i][j] = deltar;
+          event_.genGdMu_L1Tk_index_prop[i][j] = k;
+        }
+      }
+    }
+  }
+
+  // store the L1Tk variables
+  for (unsigned int j=0; j<TTTracks.size(); ++j) {
+    auto l1Tk = TTTracks[j];
+    const double l1Tk_pt = l1Tk.getMomentum().perp();
+    const double l1Tk_eta = l1Tk.getMomentum().eta();
+    const double l1Tk_phi = normalizedPhi(l1Tk.getMomentum().phi());
+    const double l1Tk_charge = l1Tk.getRInv()>0? 1: -1;
+    const double l1Tk_eta_corr = l1Tk_eta;
+    const double l1Tk_phi_corr = phiHeavyCorr(l1Tk_pt, l1Tk_eta, l1Tk_phi, l1Tk_charge);
+
+    if(verbose) {
+      cout << "l1Tk " << j << endl; 
+      cout << "l1Tk_pt " << l1Tk_pt << endl;
+      cout << "l1Tk_eta " << l1Tk_eta << endl;
+      cout << "l1Tk_phi " << l1Tk_phi << endl;
+      cout << "l1Tk_phi_corr " << l1Tk_phi_corr << endl;
+      cout << "l1Tk_charge " << l1Tk_charge << endl;
+    }
+      
+    double l1Tk_eta_prop = -99;
+    double l1Tk_phi_prop = -99;
+    GlobalPoint ex_point(extrapolateGP(l1Tk));
+    if (!(ex_point == GlobalPoint())) {
+      l1Tk_eta_prop = ex_point.eta();
+      l1Tk_phi_prop = ex_point.phi();
+      if(verbose) {
+        cout << "l1Tk_eta_prop " << l1Tk_eta_prop << endl;
+        cout << "l1Tk_phi_prop " << l1Tk_phi_prop << endl;
+      }
+    }
+    
+    event_.L1Tk_pt[j] = l1Tk_pt;
+    event_.L1Tk_eta[j] = l1Tk_eta;
+    event_.L1Tk_phi[j] = l1Tk_phi;
+    
+    event_.L1Tk_eta_prop[j] = l1Tk_eta_prop;
+    event_.L1Tk_phi_prop[j] = l1Tk_phi_prop;
+    event_.L1Tk_deta_prop[j] = std::abs(event_.L1Tk_eta_prop[j] - event_.L1Tk_eta[j]);
+    event_.L1Tk_dphi_prop[j] = My_dPhi(event_.L1Tk_phi_prop[j], event_.L1Tk_phi[j]); 
+    event_.L1Tk_dR_prop[j] = reco::deltaR(event_.L1Tk_eta_prop[j], event_.L1Tk_phi_prop[j], event_.L1Tk_eta[j], event_.L1Tk_phi[j]);
+    
+    event_.L1Tk_eta_corr[j] = l1Tk_eta_corr;
+    event_.L1Tk_phi_corr[j] = l1Tk_phi_corr;
+    event_.L1Tk_deta_corr[j] = std::abs(event_.L1Tk_eta_corr[j] - event_.L1Tk_eta[j]);
+    event_.L1Tk_dphi_corr[j] = My_dPhi(event_.L1Tk_phi_corr[j], event_.L1Tk_phi[j]); 
+    event_.L1Tk_dR_corr[j] = reco::deltaR(event_.L1Tk_eta_corr[j], event_.L1Tk_phi_corr[j], event_.L1Tk_eta[j], event_.L1Tk_phi[j]);
+  } // end of loop on TTTracks
   
-  // get the SIM muon in this event
-  // for a muon gun there is only 1 muon
-  // this needs to be adjusted in order to work
-  // for a 4-muon event
-  // int nSimMu = 0;
-  // std::vector< int > indexFounds;
-  // for (unsigned int i=0; i<sim_trks.size(); ++i) {
-  //   if (!isSimTrackGood(sim_trks[i])) continue;
-  //   nSimMu++;
-  //   indexFounds.push_back(i);
-  // }
-  // int i =0;
-  // for (auto indexFound: indexFounds){
-  //   auto sim_muon = sim_trks[indexFound];
-  //   // auto sim_vertex = sim_vtxs[sim_muon.vertIndex()];
-  //   event_.pt_sim = sim_muon.momentum().pt();
-  //   event_.eta_sim = sim_muon.momentum().eta();
-  //   event_.phi_sim = sim_muon.momentum().phi();
-  //   event_.charge_sim = sim_muon.charge();
-
-
-  //   event_.eta_sim_corr = event_.eta_sim;
-  //   event_.phi_sim_corr = phiHeavyCorr(event_.pt_sim,
-  //                                      event_.eta_sim,
-  //                                      event_.phi_sim,
-  //                                      event_.charge_sim);
-  //   for (unsigned int i=0; i<l1GmtCands.size(); ++i) {
-  //     event_.dR_sim_corr = reco::deltaR(event_.eta_sim_corr, event_.phi_sim_corr, l1Mu_eta, l1Mu_phi);
-
-  //   cout << "SIM " << indexFound << endl;
-  //   cout << "SIM_pt " << event_.pt_sim << endl;
-  //   cout << "SIM_eta " << event_.eta_sim << endl;
-  //   cout << "SIM_phi " << event_.phi_sim << endl;
-  //   cout << "SIM_eta_corr " << event_.eta_sim_corr << endl;
-  //   cout << "SIM_phi_corr " << event_.phi_sim_corr << endl;
-  //   // cout << "SIM_eta_prop " << event_.eta_sim_prop << endl;
-  //   // cout << "SIM_phi_prop " << event_.phi_sim_prop << endl;
-  //   cout << "SIM_charge " << event_.charge_sim << endl;
-  //   i++;
-  // }
-
+  
   /////////////////
   // L1 analysis //
   /////////////////
-
-  if (nL1Mu>=1)
-    eventsWithMuons++;
   
-  if(verbose) std::cout << "Number of L1Mu candidates before selections " << nL1Mu << std::endl; 
+  if(verbose) std::cout << "Number of L1Mu candidates before selections " << event_.nL1Mu << std::endl; 
 
-  nTotalMuons = nTotalMuons + nL1Mu;
-
-  int nMatchedMuons = 0;
-  int nUnMatchedMuons = 0;
-  int nUnMatchedMuonsPt = 0;
   for (unsigned int i=0; i<l1GmtCands.size(); ++i) {
     auto l1Mu = l1GmtCands[i];
-    const double l1Mu_pt = l1Mu.ptValue();
-    const double l1Mu_eta = l1Mu.etaValue();
-    const double l1Mu_phi =  normalizedPhi(l1Mu.phiValue());
-    const double l1Mu_quality = l1Mu.quality();
-    
-    event_.L1Mu_pt[i] = l1Mu_pt;
-    event_.L1Mu_eta[i] = l1Mu_eta;
-    event_.L1Mu_phi[i] = l1Mu_phi;
+    event_.L1Mu_pt[i] = l1Mu.ptValue();
+    event_.L1Mu_eta[i] = l1Mu.etaValue();
+    event_.L1Mu_phi[i] = normalizedPhi(l1Mu.phiValue());
     event_.L1Mu_charge[i] = l1Mu.charge();
-    event_.L1Mu_quality[i] = l1Mu_quality;
+    event_.L1Mu_quality[i] = l1Mu.quality();
     event_.L1Mu_bx[i] = l1Mu.bx();
-
-    if (l1Mu_pt >= 20 and l1Mu_quality >= 4) {
-      hasL1MuWithQ4Pt20 = 1;
-    }
-    if (l1Mu_pt > 20 and l1Mu_quality >= 4) {
-      hasL1MuWithQ4Pt20p = 1;
-    }
-    if (l1Mu_pt >= 20 and l1Mu_quality >= 4 and l1Mu.bx()==0) {
-      hasL1MuWithQ4Pt20BX0 = 1;
-    }
-    if (l1Mu_pt > 20 and l1Mu_quality >= 4 and l1Mu.bx()==0) {
-      hasL1MuWithQ4Pt20BX0p = 1;
-    }
 
     if(verbose) {
       cout << "l1Mu " << i << endl; 
-      cout << "l1Mu_pt " << l1Mu_pt << endl;
-      cout << "l1Mu_eta " << l1Mu_eta << endl;
-      cout << "l1Mu_phi " << l1Mu_phi << endl;
-      cout << "l1Mu_quality " << l1Mu_quality << endl;
+      cout << "l1Mu_pt " << event_.L1Mu_pt[i] << endl;
+      cout << "l1Mu_eta " << event_.L1Mu_eta[i] << endl;
+      cout << "l1Mu_phi " << event_.L1Mu_phi[i] << endl;
+      cout << "l1Mu_quality " << event_.L1Mu_quality[i] << endl;
       cout << "l1Mu_charge " << event_.L1Mu_charge[i] << endl;
     }
+
     // calculate the number of L1Tk within 0.12
     for (unsigned int j=0; j<TTTracks.size(); ++j) {
       auto l1Tk = TTTracks[j];
@@ -788,186 +854,173 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       const double l1Tk_eta = l1Tk.getMomentum().eta();
       const double l1Tk_phi = normalizedPhi(l1Tk.getMomentum().phi());
       const double l1Tk_charge = l1Tk.getRInv()>0? 1: -1;
+      const double l1Tk_eta_corr = l1Tk_eta;
       const double l1Tk_phi_corr = phiHeavyCorr(l1Tk_pt, l1Tk_eta, l1Tk_phi, l1Tk_charge);
-      const double dR_l1Mu_l1Tk = reco::deltaR(l1Tk_eta, l1Tk_phi_corr, l1Mu_eta, l1Mu_phi);
-      if (dR_l1Mu_l1Tk < event_.L1Mu_L1Tk_dR_min[i]) {
-        event_.L1Mu_L1Tk_dR_min[i] = dR_l1Mu_l1Tk;
-        event_.L1Mu_L1Tk_pt[i] = l1Tk_pt;
+
+      if(verbose) {
+        cout << "l1Tk " << j << endl; 
+        cout << "l1Tk_pt " << l1Tk_pt << endl;
+        cout << "l1Tk_eta " << l1Tk_eta << endl;
+        cout << "l1Tk_phi " << l1Tk_phi << endl;
+        cout << "l1Tk_phi_corr " << l1Tk_phi_corr << endl;
+        cout << "l1Tk_charge " << l1Tk_charge << endl;
+      }
+      
+      double l1Tk_eta_prop = -99;
+      double l1Tk_phi_prop = -99;
+      GlobalPoint ex_point(extrapolateGP(l1Tk));
+      if (!(ex_point == GlobalPoint())) {
+        l1Tk_eta_prop = ex_point.eta();
+        l1Tk_phi_prop = ex_point.phi();
+        if(verbose) {
+          cout << "l1Tk_eta_prop " << l1Tk_eta_prop << endl;
+          cout << "l1Tk_phi_prop " << l1Tk_phi_prop << endl;
+        }
+        const double dR_l1Mu_l1Tk_prop = reco::deltaR(l1Tk_eta_prop, l1Tk_phi_prop, event_.L1Mu_eta[i], event_.L1Mu_phi[i]);
+        if (dR_l1Mu_l1Tk_prop < event_.L1Mu_L1Tk_dR_prop[i]) {
+          event_.L1Mu_L1Tk_dR_prop[i] = dR_l1Mu_l1Tk_prop;
+          event_.L1Mu_L1Tk_pt_prop[i] = l1Tk_pt;
+        }
       }
 
-      if (dR_l1Mu_l1Tk > max_dR_L1Mu_noL1Tk)
-        continue;
-      if(verbose) std::cout << "\tL1Tk candidate " << j << " dR " << dR_l1Mu_l1Tk << " L1Tk pt " << l1Tk_pt << std::endl;
-      if (true) {
-        if (dR_l1Mu_l1Tk <= max_dR_L1Mu_L1Tk and l1Mu_quality >= min_L1Mu_Quality) { 
-          nMatchedMuons++;
-          event_.L1Mu_isMatched[i] = 1;
-          if(verbose) std::cout << "\t\tMatched!!!" << std::endl;
-          break;
-        }
-        else if (dR_l1Mu_l1Tk <= max_dR_L1Mu_noL1Tk) { //0.12 < dR_l1Mu_l1Tk and 
-          event_.L1Mu_isUnMatched[i] = 1;
-          nUnMatchedMuons++;
-          if(verbose) std::cout << "\t\tUnMatched!!!" << std::endl;
-          if (l1Tk_pt>=2) {
-            event_.L1Mu_isUnMatchedL1TkPt2[i] = 1; 
-          }
-          if (l1Tk_pt>=2.5) {
-            event_.L1Mu_isUnMatchedL1TkPt2p5[i] = 1; 
-          }
-          if (l1Tk_pt>=3) {
-            event_.L1Mu_isUnMatchedL1TkPt3[i] = 1; 
-          }
-          if (l1Tk_pt>=4) {
-            nUnMatchedMuonsPt++;
-            event_.L1Mu_isUnMatchedL1TkPt4[i] = 1; 
-          }
-          break;
-        }
+      // TrajectoryStateOnSurface stateAtMB2 = extrapolate(l1Tk);
+      // if (stateAtMB2.isValid()) {
+      //   // std::cout << ">>>Final State is valid" << std::endl;
+      //   l1Tk_eta_prop = stateAtMB2.globalPosition().eta();
+      //   l1Tk_phi_prop = stateAtMB2.globalPosition().phi();
+      //   if(verbose) {
+      //     cout << "l1Tk_eta_prop " << l1Tk_eta_prop << endl;
+      //     cout << "l1Tk_phi_prop " << l1Tk_phi_prop << endl;
+      //   }
+      //   // cout << endl;
+      //   const double dR_l1Mu_l1Tk_prop = reco::deltaR(l1Tk_eta_prop, l1Tk_phi_prop, event_.L1Mu_eta[i], event_.L1Mu_phi[i]);
+      //   if (dR_l1Mu_l1Tk_prop < event_.L1Mu_L1Tk_dR_prop[i]) {
+      //     event_.L1Mu_L1Tk_dR_prop[i] = dR_l1Mu_l1Tk_prop;
+      //     event_.L1Mu_L1Tk_pt_prop[i] = l1Tk_pt;
+      //   }
+      // }
+      
+      const double dR_l1Mu_l1Tk_corr = reco::deltaR(l1Tk_eta_corr, l1Tk_phi_corr, event_.L1Mu_eta[i], event_.L1Mu_phi[i]);
+      if (dR_l1Mu_l1Tk_corr < event_.L1Mu_L1Tk_dR_corr[i]) {
+        event_.L1Mu_L1Tk_dR_corr[i] = dR_l1Mu_l1Tk_corr;
+        event_.L1Mu_L1Tk_pt_corr[i] = l1Tk_pt;
       }
-    }
+    } // end of loop on TTTracks
    
-    { 
-    // match the L1Mu to GEN    
-    double newDR[2][2];
-    for (int k=0; k<2; ++k){ 
-      for (int j=0; j<2; ++j){
-        newDR[k][j] = deltaR(event_.genGdMu_eta[k][j], event_.genGdMu_phi_corr[k][j], l1Mu_eta, l1Mu_phi);        
-        if(verbose) cout << "newDR " << k <<  j << " " << newDR[k][j] << " pt " << event_.genGdMu_pt[k][j]
-                         << " eta " << event_.genGdMu_eta[k][j] << " phi " << event_.genGdMu_phi_corr[k][j] 
-                         << " Q " << event_.genGdMu_q[k][j] << endl;
+    // match the L1Mu to GEN
+    if (genMuonGroups.size() == 2 and genMuonGroups[0].size() == 2 and genMuonGroups[1].size() == 2) {
+      double newDR[2][2];
+      for (int k=0; k<2; ++k){ 
+        for (int j=0; j<2; ++j){
+          newDR[k][j] = deltaR(event_.genGdMu_eta[k][j], event_.genGdMu_phi_corr[k][j], event_.L1Mu_eta[i], event_.L1Mu_phi[i]);        
+          if(verbose) cout << "newDR " << k <<  j << " " << newDR[k][j] << " pt " << event_.genGdMu_pt[k][j]
+                           << " eta_corr " << event_.genGdMu_eta[k][j] << " phi_corr " << event_.genGdMu_phi_corr[k][j] 
+                           << " Q " << event_.genGdMu_q[k][j] << endl;
+        }
       }
-    }
-    
-    const std::vector<double> v{newDR[0][0], newDR[0][1], newDR[1][0], newDR[1][1]};
-    auto result(std::min_element(std::begin(v), std::end(v)));
-    auto dis(std::distance(std::begin(v), result));
-    
-    switch (dis){
-    case 0: 
-      if (newDR[0][0] < event_.genGdMu_L1Mu_dR_corr[0][0]) { 
-        event_.genGdMu_L1Mu_index_corr[0][0] = i;
-        event_.genGdMu_L1Mu_dR_corr[0][0] = newDR[0][0];
-        //        if (m_debug>20) 
+      
+      const std::vector<double> v{newDR[0][0], newDR[0][1], newDR[1][0], newDR[1][1]};
+      auto result(std::min_element(std::begin(v), std::end(v)));
+      auto dis(std::distance(std::begin(v), result));
+      
+      switch (dis){
+      case 0: 
+        if (newDR[0][0] < event_.genGdMu_L1Mu_dR_corr[0][0]) { 
+          event_.genGdMu_L1Mu_index_corr[0][0] = i;
+          event_.genGdMu_L1Mu_dR_corr[0][0] = newDR[0][0];
         if(verbose) cout << "Muon[0][0] was matched within " << event_.genGdMu_L1Mu_dR_corr[0][0] <<" to L1Mu "<<i<<std::endl;
-      }
-      break;
-    case 1:
-      if (newDR[0][1] < event_.genGdMu_L1Mu_dR_corr[0][1]) { 
-        event_.genGdMu_L1Mu_index_corr[0][1] = i;
-        event_.genGdMu_L1Mu_dR_corr[0][1] = newDR[0][1];
-        //        if (m_debug>20) 
-        if(verbose) cout << "Muon[0][1] was matched within " << event_.genGdMu_L1Mu_dR_corr[0][1] <<" to L1Mu "<<i<< std::endl;
-      }
-      break;
-    case 2:
-      if (newDR[1][0] < event_.genGdMu_L1Mu_dR_corr[1][0]) { 
-        event_.genGdMu_L1Mu_index_corr[1][0] = i;
-        event_.genGdMu_L1Mu_dR_corr[1][0] = newDR[1][0];
-        //        if (m_debug>20) 
-        if(verbose) cout << "Muon[1][0] was matched within " << event_.genGdMu_L1Mu_dR_corr[1][0] <<" to L1Mu "<<i<< std::endl;
-      }
-      break;
-    case 3:
-      if (newDR[1][1] < event_.genGdMu_L1Mu_dR_corr[1][1]) { 
-        event_.genGdMu_L1Mu_index_corr[1][1] = i;
-        event_.genGdMu_L1Mu_dR_corr[1][1] = newDR[1][1];
-        //        if (m_debug>20) 
-        if(verbose) cout << "Muon[1][1] was matched within " << event_.genGdMu_L1Mu_dR_corr[1][1] <<" to L1Mu "<<i<< std::endl;
-      }
-      break;
-    };
-  }
-
-    {
-    // match the L1Mu to GEN     (uncorrected!!!)
-    double newDR[2][2];
-    for (int k=0; k<2; ++k){ 
-      for (int j=0; j<2; ++j){
-        newDR[k][j] = deltaR(event_.genGdMu_eta[k][j], event_.genGdMu_phi[k][j], l1Mu_eta, l1Mu_phi);        
-        if(verbose) cout << "newDR " << k <<  j << " " << newDR[k][j] << " pt " << event_.genGdMu_pt[k][j]
-                         << " eta " << event_.genGdMu_eta[k][j] << " phi " << event_.genGdMu_phi[k][j] 
-                         << " Q " << event_.genGdMu_q[k][j] << endl;
-      }
+        }
+        break;
+      case 1:
+        if (newDR[0][1] < event_.genGdMu_L1Mu_dR_corr[0][1]) { 
+          event_.genGdMu_L1Mu_index_corr[0][1] = i;
+          event_.genGdMu_L1Mu_dR_corr[0][1] = newDR[0][1];
+          if(verbose) cout << "Muon[0][1] was matched within " << event_.genGdMu_L1Mu_dR_corr[0][1] <<" to L1Mu "<<i<< std::endl;
+        }
+        break;
+      case 2:
+        if (newDR[1][0] < event_.genGdMu_L1Mu_dR_corr[1][0]) { 
+          event_.genGdMu_L1Mu_index_corr[1][0] = i;
+          event_.genGdMu_L1Mu_dR_corr[1][0] = newDR[1][0];
+          if(verbose) cout << "Muon[1][0] was matched within " << event_.genGdMu_L1Mu_dR_corr[1][0] <<" to L1Mu "<<i<< std::endl;
+        }
+        break;
+      case 3:
+        if (newDR[1][1] < event_.genGdMu_L1Mu_dR_corr[1][1]) { 
+          event_.genGdMu_L1Mu_index_corr[1][1] = i;
+          event_.genGdMu_L1Mu_dR_corr[1][1] = newDR[1][1];
+          if(verbose) cout << "Muon[1][1] was matched within " << event_.genGdMu_L1Mu_dR_corr[1][1] <<" to L1Mu "<<i<< std::endl;
+        }
+        break;
+      };
     }
     
-    const std::vector<double> v{newDR[0][0], newDR[0][1], newDR[1][0], newDR[1][1]};
-    auto result(std::min_element(std::begin(v), std::end(v)));
-    auto dis(std::distance(std::begin(v), result));
-    
-    switch (dis){
-    case 0: 
-      if (newDR[0][0] < event_.genGdMu_L1Mu_dR[0][0]) { 
-        event_.genGdMu_L1Mu_dR[0][0] = newDR[0][0];
-        //        if (m_debug>20) 
-        if(verbose) cout << "Muon[0][0] was matched within " << event_.genGdMu_L1Mu_dR[0][0] <<" to L1Mu "<<i<<std::endl;
+    // match the L1Mu to GEN    (propagated)
+    if (genMuonGroups.size() == 2 and genMuonGroups[0].size() == 2 and genMuonGroups[1].size() == 2) {
+      double newDR[2][2];
+      for (int k=0; k<2; ++k){ 
+        for (int j=0; j<2; ++j){
+          newDR[k][j] = deltaR(event_.genGdMu_eta_prop[k][j], event_.genGdMu_phi_prop[k][j], event_.L1Mu_eta[i], event_.L1Mu_phi[i]);        
+          if(verbose) cout << "newDR " << k <<  j << " " << newDR[k][j] << " pt " << event_.genGdMu_pt[k][j]
+                           << " eta_prop " << event_.genGdMu_eta_prop[k][j] << " phi_prop " << event_.genGdMu_phi_prop[k][j] 
+                           << " Q " << event_.genGdMu_q[k][j] << endl;
+        }
       }
-      break;
-    case 1:
-      if (newDR[0][1] < event_.genGdMu_L1Mu_dR[0][1]) { 
-        event_.genGdMu_L1Mu_dR[0][1] = newDR[0][1];
-        //        if (m_debug>20) 
-        if(verbose) cout << "Muon[0][1] was matched within " << event_.genGdMu_L1Mu_dR[0][1] <<" to L1Mu "<<i<< std::endl;
+      
+      const std::vector<double> v{newDR[0][0], newDR[0][1], newDR[1][0], newDR[1][1]};
+      auto result(std::min_element(std::begin(v), std::end(v)));
+      auto dis(std::distance(std::begin(v), result));
+      
+      switch (dis){
+      case 0: 
+        if (newDR[0][0] < event_.genGdMu_L1Mu_dR_prop[0][0]) { 
+          event_.genGdMu_L1Mu_index_prop[0][0] = i;
+          event_.genGdMu_L1Mu_dR_prop[0][0] = newDR[0][0];
+          if(verbose) cout << "Muon[0][0] was matched within " << event_.genGdMu_L1Mu_dR_prop[0][0] <<" to L1Mu "<<i<<std::endl;
+        }
+        break;
+      case 1:
+        if (newDR[0][1] < event_.genGdMu_L1Mu_dR_prop[0][1]) { 
+          event_.genGdMu_L1Mu_index_prop[0][1] = i;
+          event_.genGdMu_L1Mu_dR_prop[0][1] = newDR[0][1];
+          if(verbose) cout << "Muon[0][1] was matched within " << event_.genGdMu_L1Mu_dR_prop[0][1] <<" to L1Mu "<<i<< std::endl;
+        }
+        break;
+      case 2:
+        if (newDR[1][0] < event_.genGdMu_L1Mu_dR_prop[1][0]) { 
+          event_.genGdMu_L1Mu_index_prop[1][0] = i;
+          event_.genGdMu_L1Mu_dR_prop[1][0] = newDR[1][0];
+          if(verbose) cout << "Muon[1][0] was matched within " << event_.genGdMu_L1Mu_dR_prop[1][0] <<" to L1Mu "<<i<< std::endl;
+        }
+        break;
+      case 3:
+        if (newDR[1][1] < event_.genGdMu_L1Mu_dR_prop[1][1]) { 
+          event_.genGdMu_L1Mu_index_prop[1][1] = i;
+          event_.genGdMu_L1Mu_dR_prop[1][1] = newDR[1][1];
+          if(verbose) cout << "Muon[1][1] was matched within " << event_.genGdMu_L1Mu_dR_prop[1][1] <<" to L1Mu "<<i<< std::endl;
+        }
+        break;
+      };
+      
+      for (int k=0; k<2; ++k){ 
+        for (int j=0; j<2; ++j){
+          if (event_.genGdMu_L1Tk_index_prop[k][j] != -99) {
+            double deltaRL1MuTrueL1Tk(reco::deltaR(TTTracks[event_.genGdMu_L1Tk_index_prop[k][j]].getMomentum().eta(), 
+                                                   normalizedPhi(TTTracks[event_.genGdMu_L1Tk_index_prop[k][j]].getMomentum().phi()), 
+                                                   event_.L1Mu_eta[i], event_.L1Mu_phi[i]));
+            if (deltaRL1MuTrueL1Tk < event_.L1Mu_L1Tk_dR_prop_true[i]) {
+              event_.L1Mu_L1Tk_dR_prop_true[i] = deltaRL1MuTrueL1Tk;
+            }
+          }
+        }
       }
-      break;
-    case 2:
-      if (newDR[1][0] < event_.genGdMu_L1Mu_dR[1][0]) { 
-        event_.genGdMu_L1Mu_dR[1][0] = newDR[1][0];
-        //        if (m_debug>20) 
-        if(verbose) cout << "Muon[1][0] was matched within " << event_.genGdMu_L1Mu_dR[1][0] <<" to L1Mu "<<i<< std::endl;
-      }
-      break;
-    case 3:
-      if (newDR[1][1] < event_.genGdMu_L1Mu_dR[1][1]) { 
-        event_.genGdMu_L1Mu_dR[1][1] = newDR[1][1];
-        //        if (m_debug>20) 
-        if(verbose) cout << "Muon[1][1] was matched within " << event_.genGdMu_L1Mu_dR[1][1] <<" to L1Mu "<<i<< std::endl;
-      }
-      break;
-    };
-  }
+    }
   }
   
-  if(verbose)std::cout << "Total number of muons in this event: " << nL1Mu << std::endl;
-  if(verbose)std::cout << "Number of matched muons: " << nMatchedMuons << std::endl;
-  if(verbose)std::cout << "Number of unmatched muons: " << nUnMatchedMuons << std::endl;
-  if(verbose)std::cout << "Number of unmatched muons pt: " << nUnMatchedMuonsPt << std::endl;
-  int displacedMuons = nL1Mu - nMatchedMuons - nUnMatchedMuons;
-  int displacedMuonsPt = nL1Mu - nMatchedMuons - nUnMatchedMuonsPt;
-  if(verbose)std::cout << "Number of displaced muons: " << displacedMuons << std::endl;
-  if(verbose)std::cout << "Number of displaced muons pt: " << displacedMuonsPt << std::endl;
-
-  if (displacedMuons >=1) 
-    eventsWithDisplacedMuons++;
-
-  if (displacedMuonsPt >=1) 
-    eventsWithDisplacedMuonsPt++;
-
-  if (hasL1MuWithQ4Pt20 == 1) {
-    nEventsWith1MuonWithQuality4Pt20++;
-  }
-  if (hasL1MuWithQ4Pt20p == 1) {
-    nEventsWith1MuonWithQuality4Pt20p++;
-  }
-  if (hasL1MuWithQ4Pt20BX0 == 1) {
-    nEventsWith1MuonWithQuality4Pt20BX0++;
-  }
-  if (hasL1MuWithQ4Pt20BX0p == 1) {
-    nEventsWith1MuonWithQuality4Pt20BX0p++;
-  }
-
-  // no L1Mu in event, still fill with default values
   event_tree_->Fill();  
-
-  // if (nL1Mu==0) {
-  //   event_.nL1Mu = 0;
-  //   event_.lumi = iEvent.id().luminosityBlock();
-  //   event_.run = iEvent.id().run();
-  //   event_.event = iEvent.id().event();
-  //   event_tree_->Fill();    
-  // }
-
+  
   return true;
+}
   /*
     // get the SIM muon in this event
     // for a muon gun there is only 1 muon
@@ -1371,61 +1424,18 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   
   // use pt>20, plot the dEta, dPhi for the (SIM,L1) mapping
   */  
-}
 
 // ------------ method called once each job just before starting event loop  ------------
-void 
-DisplacedL1MuFilter::beginJob()
-{
+  void 
+    DisplacedL1MuFilter::beginJob()
+  {
 }
-
+ 
 // ------------ method called once each job just after ending the event loop  ------------
-void 
-DisplacedL1MuFilter::endJob()
-{
-  // cout << "Total number of total muons " << nTotalMuons << endl;
-  //cout << "Total number of prompt muons " << nPromptMuons << endl;
-  
-  cout << "Events with at least 1 muon: " << eventsWithMuons << std::endl;
-  cout << "nEventsWith1MuonWithQuality4Pt20: " << nEventsWith1MuonWithQuality4Pt20 << std::endl;
-  cout << "nEventsWith1MuonWithQuality4Pt20p: " << nEventsWith1MuonWithQuality4Pt20p << std::endl;
-  cout << "nEventsWith1MuonWithQuality4Pt20: " << nEventsWith1MuonWithQuality4Pt20BX0 << std::endl;
-  cout << "nEventsWith1MuonWithQuality4Pt20p: " << nEventsWith1MuonWithQuality4Pt20BX0p << std::endl;
-  cout << "Events with at least 1 displaced muon: " << eventsWithDisplacedMuons << std::endl;
-  cout << "Events with at least 1 displaced muon Pt4: " << eventsWithDisplacedMuonsPt << std::endl;
-}
-
-// ------------ method called when starting to processes a run  ------------
-/*
-void
-DisplacedL1MuFilter::beginRun(edm::Run const&, edm::EventSetup const&)
-{ 
-}
-*/
- 
-// ------------ method called when ending the processing of a run  ------------
-/*
-void
-DisplacedL1MuFilter::endRun(edm::Run const&, edm::EventSetup const&)
+ void 
+   DisplacedL1MuFilter::endJob()
 {
 }
-*/
- 
-// ------------ method called when starting to processes a luminosity block  ------------
-/*
-void
-DisplacedL1MuFilter::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
-{
-}
-*/
- 
-// ------------ method called when ending the processing of a luminosity block  ------------
-/*
-void
-DisplacedL1MuFilter::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
-{
-}
-*/
  
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
@@ -1437,6 +1447,47 @@ DisplacedL1MuFilter::fillDescriptions(edm::ConfigurationDescriptions& descriptio
   descriptions.addDefault(desc);
 }
 
+
+GlobalPoint 
+DisplacedL1MuFilter::extrapolateGP(const reco::GenParticle &tk)
+{
+  GlobalPoint inner_point(tk.vx(), tk.vy(), tk.vz());
+  GlobalVector inner_vec (tk.px(), tk.py(), tk.pz());
+  if (std::abs(tk.eta())<1.2) {
+    GlobalPoint loc_barrel(propagateToR(inner_point, inner_vec, tk.charge(), 523.));
+    return loc_barrel;
+  } 
+  else if (tk.eta()>1.2) {
+    GlobalPoint loc_endcap_pos(propagateToZ(inner_point, inner_vec, tk.charge(), 828));
+    return loc_endcap_pos;
+  } 
+  else if (tk.eta()<-1.2) {
+    GlobalPoint loc_endcap_neg(propagateToZ(inner_point, inner_vec, tk.charge(), -828));
+    return loc_endcap_neg;
+  }
+  return GlobalPoint();
+}
+
+GlobalPoint 
+DisplacedL1MuFilter::extrapolateGP(const TTTrack< Ref_PixelDigi_ > &tk)
+{
+  GlobalPoint inner_point(tk.getPOCA());
+  GlobalVector inner_vec (tk.getMomentum());
+  double charge(tk.getRInv()>0? 1: -1);
+  if (std::abs(tk.getMomentum().eta())<1.2) {
+    GlobalPoint loc_barrel(propagateToR(inner_point, inner_vec, charge, 523.));
+    return loc_barrel;
+  } 
+  else if (tk.getMomentum().eta()>1.2) {
+    GlobalPoint loc_endcap_pos(propagateToZ(inner_point, inner_vec, charge, 828));
+    return loc_endcap_pos;
+  } 
+  else if (tk.getMomentum().eta()<-1.2){
+    GlobalPoint loc_endcap_neg(propagateToZ(inner_point, inner_vec, charge, -828));
+    return loc_endcap_neg;
+  }
+  return GlobalPoint();
+}
 
 GlobalPoint
 DisplacedL1MuFilter::propagateToZ(const GlobalPoint &inner_point, const GlobalVector &inner_vec, double charge, double z) const
@@ -1466,6 +1517,112 @@ DisplacedL1MuFilter::propagateToR(const GlobalPoint &inner_point, const GlobalVe
   if (tsos.isValid()) return tsos.globalPosition();
 
   return GlobalPoint();
+}
+
+FreeTrajectoryState 
+DisplacedL1MuFilter::startingState(const reco::GenParticle &tk) const {
+  if (!magfield_.isValid()) throw cms::Exception("NotInitialized") << "PropagateToMuon: You must call init(const edm::EventSetup &iSetup) before using this object.\n"; 
+  return FreeTrajectoryState(  GlobalPoint(tk.vx(), tk.vy(), tk.vz()),
+                               GlobalVector(tk.px(), tk.py(), tk.pz()),
+                               int(tk.charge()),
+                               magfield_.product());
+}
+
+FreeTrajectoryState 
+DisplacedL1MuFilter::startingState(const TTTrack< Ref_PixelDigi_ > &tk) const {
+  if (!magfield_.isValid()) throw cms::Exception("NotInitialized") << "PropagateToMuon: You must call init(const edm::EventSetup &iSetup) before using this object.\n"; 
+  const double l1Tk_charge = tk.getRInv()>0? 1: -1;
+  return FreeTrajectoryState(  tk.getPOCA(),
+                               tk.getMomentum(),      
+                               int(l1Tk_charge),
+                               magfield_.product());
+}
+
+TrajectoryStateOnSurface
+DisplacedL1MuFilter::extrapolate(const FreeTrajectoryState &start) const 
+{
+  if (!magfield_.isValid() || barrelCylinder_ == 0) {
+    throw cms::Exception("NotInitialized") << "PropagateToMuon: You must call init(const edm::EventSetup &iSetup) before using this object.\n"; 
+  }
+
+  TrajectoryStateOnSurface final;
+  if (start.momentum().mag() == 0) return final;
+  double eta = start.momentum().eta();
+
+  const Propagator * propagatorBarrel  = &*propagator_;
+  const Propagator * propagatorEndcaps = &*propagator_;
+  if (whichState_ != AtVertex) { 
+    if (start.position().perp()    > barrelCylinder_->radius())         propagatorBarrel  = &*propagatorOpposite_;
+    if (fabs(start.position().z()) > endcapDiskPos_[useMB2_?2:1]->position().z()) propagatorEndcaps = &*propagatorOpposite_;
+  }
+  if (cosmicPropagation_) {
+    if (start.momentum().dot(GlobalVector(start.position().x(), start.position().y(), start.position().z())) < 0) {
+      // must flip the propagations
+      propagatorBarrel  = (propagatorBarrel  == &*propagator_ ? &*propagatorOpposite_ : &*propagator_);
+      propagatorEndcaps = (propagatorEndcaps == &*propagator_ ? &*propagatorOpposite_ : &*propagator_);
+    }
+  }
+
+  TrajectoryStateOnSurface tsos = propagatorBarrel->propagate(start, *barrelCylinder_);
+  if (tsos.isValid()) {
+    //    std::cout << "TSOS is valid" << std::endl;
+    if (useSimpleGeometry_) {
+      //std::cout << "  propagated to barrel, z = " << tsos.globalPosition().z() << ", bound = " << barrelHalfLength_ << std::endl;
+      if (fabs(tsos.globalPosition().z()) <= barrelHalfLength_){
+        //std::cout << "    acquired final position from TSOS" << std::endl;
+        final = tsos;
+      }
+    } else {
+      final = getBestDet(tsos, muonGeometry_->allDTLayers()[1]);
+      //std::cout << "  obtained final position using DT layer geometry" << std::endl;
+    }
+  }
+  // at this point we have a final state
+  // if valid, return if
+  // if not, check the endcap
+  if (final.isValid()) {
+    //std::cout << "Valid barrel TSOS" << std::endl;
+    return final;
+  }
+ 
+  if (!final.isValid()) {
+    //std::cout << "final position is invalid" << std::endl;
+    for (int ie = (useMB2_ ? 2 : 1); ie >= 0; --ie) {
+      tsos = propagatorEndcaps->propagate(start, (eta > 0 ? *endcapDiskPos_[ie] : *endcapDiskNeg_[ie]));
+      if (tsos.isValid()) {
+        //std::cout << "TSOS is invalid" << std::endl;
+        if (useSimpleGeometry_) {
+          float rho = tsos.globalPosition().perp();
+          //std::cout << "  propagated to endcap " << ie << ", rho = " << rho << ", bounds [ " << endcapRadii_[ie].first << ", " << endcapRadii_[ie].second << "]" << std::endl;
+          if ((rho >= endcapRadii_[ie].first) && (rho <= endcapRadii_[ie].second)) {
+            //std::cout << "    acquired final position from TSOS" << std::endl;
+            final = tsos;
+          }
+        } else {
+          final = getBestDet(tsos, (eta > 0 ? muonGeometry_->forwardCSCLayers()[ie] : muonGeometry_->backwardCSCLayers()[ie]));
+        }
+      } 
+      // else 
+      //   std::cout << "  failed to propagated to endcap " << ie  << std::endl;
+      if (final.isValid()) {
+        //std::cout << "Valid endcap TSOS" <<std::endl;
+        break;
+      }
+      if (ie == 2 && !fallbackToME1_) break;
+    }
+  }
+  return final;
+}
+
+TrajectoryStateOnSurface 
+DisplacedL1MuFilter::getBestDet(const TrajectoryStateOnSurface &tsos, const DetLayer *layer) const {
+  TrajectoryStateOnSurface ret; // start as null
+  Chi2MeasurementEstimator estimator(1e10, 3.); // require compatibility at 3 sigma
+  std::vector<GeometricSearchDet::DetWithState> dets = layer->compatibleDets(tsos, *propagatorAny_, estimator);
+  if (!dets.empty()) {
+    ret = dets.front().second;
+  }
+  return ret;
 }
 
 void DisplacedL1MuFilter::bookL1MuTree()
@@ -1527,15 +1684,39 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("genGdMu_pz", event_.genGdMu_pz, "genGdMu_pz[2][2]/F");
   event_tree_->Branch("genGdMu_eta", event_.genGdMu_eta, "genGdMu_eta[2][2]/F");
   event_tree_->Branch("genGdMu_phi", event_.genGdMu_phi, "genGdMu_phi[2][2]/F");
+
+  event_tree_->Branch("genGdMu_eta_corr", event_.genGdMu_eta_corr, "genGdMu_eta_corr[2][2]/F");
   event_tree_->Branch("genGdMu_phi_corr", event_.genGdMu_phi_corr, "genGdMu_phi_corr[2][2]/F");
+  event_tree_->Branch("genGdMu_deta_corr", event_.genGdMu_deta_corr, "genGdMu_deta_corr[2][2]/F");
+  event_tree_->Branch("genGdMu_dphi_corr", event_.genGdMu_dphi_corr, "genGdMu_dphi_corr[2][2]/F");
+  event_tree_->Branch("genGdMu_dR_corr", event_.genGdMu_dR_corr, "genGdMu_dR_corr[2][2]/F");
+
+  event_tree_->Branch("genGdMu_eta_prop", event_.genGdMu_eta_prop, "genGdMu_eta_prop[2][2]/F");
+  event_tree_->Branch("genGdMu_phi_prop", event_.genGdMu_phi_prop, "genGdMu_phi_prop[2][2]/F");
+  event_tree_->Branch("genGdMu_deta_prop", event_.genGdMu_deta_prop, "genGdMu_deta_prop[2][2]/F");
+  event_tree_->Branch("genGdMu_dphi_prop", event_.genGdMu_dphi_prop, "genGdMu_dphi_prop[2][2]/F");
+  event_tree_->Branch("genGdMu_dR_prop", event_.genGdMu_dR_prop, "genGdMu_dR_prop[2][2]/F");
+
   event_tree_->Branch("genGdMu_vx", event_.genGdMu_vx, "genGdMu_vx[2][2]/F");
   event_tree_->Branch("genGdMu_vy", event_.genGdMu_vy, "genGdMu_vy[2][2]/F");
   event_tree_->Branch("genGdMu_vz", event_.genGdMu_vz, "genGdMu_vz[2][2]/F");
   event_tree_->Branch("genGdMu_dxy", event_.genGdMu_dxy, "genGdMu_dxy[2][2]/F");
-  event_tree_->Branch("genGd0Gd1_dR",   &event_.genGd0Gd1_dR,   "genGd0Gd1_dR/F");
+  
+  event_tree_->Branch("genGdMu_L1Tk_dR_prop", event_.genGdMu_L1Tk_dR_prop, "genGdMu_L1Tk_dR_prop[2][2]/F");
+  event_tree_->Branch("genGdMu_L1Tk_index_prop", event_.genGdMu_L1Tk_index_prop, "genGdMu_L1Tk_index_prop[2][2]/F");
+  event_tree_->Branch("genGdMu_L1Tk_dR_corr", event_.genGdMu_L1Tk_dR_corr, "genGdMu_L1Tk_dR_corr[2][2]/F");
+  event_tree_->Branch("genGdMu_L1Tk_index_corr", event_.genGdMu_L1Tk_index_corr, "genGdMu_L1Tk_index_corr[2][2]/F");
 
+  event_tree_->Branch("genGd0Gd1_dR",   &event_.genGd0Gd1_dR,   "genGd0Gd1_dR/F");
+  event_tree_->Branch("genGd_genMuMu_dEta",   event_.genGd_genMuMu_dEta,   "genGd_genMuMu_dEta[2]/F");
+  event_tree_->Branch("genGd_genMuMu_dPhi",   event_.genGd_genMuMu_dPhi,   "genGd_genMuMu_dPhi[2]/F");
+  event_tree_->Branch("genGd_genMuMu_dR",   event_.genGd_genMuMu_dR,   "genGd_genMuMu_dR[2]/F");
+  event_tree_->Branch("genGd_genMu_dEta",   event_.genGd_genMu_dEta,   "genGd_genMu_dEta[2][2]/F");
+  event_tree_->Branch("genGd_genMu_dPhi",   event_.genGd_genMu_dPhi,   "genGd_genMu_dPhi[2][2]/F");
+  event_tree_->Branch("genGd_genMu_dR",   event_.genGd_genMu_dR,   "genGd_genMu_dR[2][2]/F");
 
   event_tree_->Branch("nL1Mu", &event_.nL1Mu);
+  event_tree_->Branch("nL1Tk", &event_.nL1Tk);
 
   event_tree_->Branch("L1Mu_pt",event_.L1Mu_pt,"L1Mu_pt[nL1Mu]/F");
   event_tree_->Branch("L1Mu_eta", event_.L1Mu_eta,"L1Mu_eta[nL1Mu]/F");
@@ -1543,18 +1724,33 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("L1Mu_bx", event_.L1Mu_bx,"L1Mu_bx[nL1Mu]/I");
   event_tree_->Branch("L1Mu_charge", event_.L1Mu_charge,"L1Mu_charge[nL1Mu]/I");
   event_tree_->Branch("L1Mu_quality", event_.L1Mu_quality,"L1Mu_quality[nL1Mu]/I");
-  event_tree_->Branch("L1Mu_L1Tk_dR_min", event_.L1Mu_L1Tk_dR_min,"L1Mu_L1Tk_dR_min[nL1Mu]/F");
-  event_tree_->Branch("L1Mu_L1Tk_pt", event_.L1Mu_L1Tk_pt,"L1Mu_L1Tk_pt[nL1Mu]/F");
-  event_tree_->Branch("L1Mu_isMatched", event_.L1Mu_isMatched,"L1Mu_isMatched[nL1Mu]/I");
-  event_tree_->Branch("L1Mu_isUnMatched", event_.L1Mu_isUnMatched,"L1Mu_isUnMatched[nL1Mu]/I");
-  event_tree_->Branch("L1Mu_isUnMatchedL1TkPt2", event_.L1Mu_isUnMatchedL1TkPt2,"L1Mu_isUnMatchedL1TkPt2[nL1Mu]/I");
-  event_tree_->Branch("L1Mu_isUnMatchedL1TkPt2p5", event_.L1Mu_isUnMatchedL1TkPt2p5,"L1Mu_isUnMatchedL1TkPt2p5[nL1Mu]/I");
-  event_tree_->Branch("L1Mu_isUnMatchedL1TkPt3", event_.L1Mu_isUnMatchedL1TkPt3,"L1Mu_isUnMatchedL1TkPt3[nL1Mu]/I");
-  event_tree_->Branch("L1Mu_isUnMatchedL1TkPt4", event_.L1Mu_isUnMatchedL1TkPt4,"L1Mu_isUnMatchedL1TkPt4[nL1Mu]/I");
+  event_tree_->Branch("L1Mu_L1Tk_dR_corr", event_.L1Mu_L1Tk_dR_corr,"L1Mu_L1Tk_dR_corr[nL1Mu]/F");
+  event_tree_->Branch("L1Mu_L1Tk_pt_corr", event_.L1Mu_L1Tk_pt_corr,"L1Mu_L1Tk_pt_corr[nL1Mu]/F");
+  event_tree_->Branch("L1Mu_L1Tk_dR_prop", event_.L1Mu_L1Tk_dR_prop,"L1Mu_L1Tk_dR_prop[nL1Mu]/F");
+  event_tree_->Branch("L1Mu_L1Tk_dR_prop_true", event_.L1Mu_L1Tk_dR_prop_true,"L1Mu_L1Tk_dR_prop_true[nL1Mu]/F");
+  event_tree_->Branch("L1Mu_L1Tk_pt_prop", event_.L1Mu_L1Tk_pt_prop,"L1Mu_L1Tk_pt_prop[nL1Mu]/F");
 
-  event_tree_->Branch("genGdMu_L1Mu_dR_corr",    event_.genGdMu_L1Mu_dR_corr,    "genGdMu_L1Mu_dR_corr[2][2]/F");
+  event_tree_->Branch("L1Tk_pt",event_.L1Tk_pt,"L1Tk_pt[nL1Tk]/F");
+  event_tree_->Branch("L1Tk_eta", event_.L1Tk_eta,"L1Tk_eta[nL1Tk]/F");
+  event_tree_->Branch("L1Tk_phi", event_.L1Tk_phi,"L1Tk_phi[nL1Tk]/F");
+
+  event_tree_->Branch("L1Tk_eta_prop", event_.L1Tk_eta_prop,"L1Tk_eta_prop[nL1Tk]/F");
+  event_tree_->Branch("L1Tk_phi_prop", event_.L1Tk_phi_prop,"L1Tk_phi_prop[nL1Tk]/F");
+  event_tree_->Branch("L1Tk_deta_prop", event_.L1Tk_deta_prop,"L1Tk_deta_prop[nL1Tk]/F");
+  event_tree_->Branch("L1Tk_dphi_prop", event_.L1Tk_dphi_prop,"L1Tk_dphi_prop[nL1Tk]/F");
+  event_tree_->Branch("L1Tk_dR_prop", event_.L1Tk_dR_prop,"L1Tk_dR_prop[nL1Tk]/F");
+
+  event_tree_->Branch("L1Tk_eta_corr", event_.L1Tk_eta_corr,"L1Tk_eta_corr[nL1Tk]/F");
+  event_tree_->Branch("L1Tk_phi_corr", event_.L1Tk_phi_corr,"L1Tk_phi_corr[nL1Tk]/F");
+  event_tree_->Branch("L1Tk_deta_corr", event_.L1Tk_deta_corr,"L1Tk_deta_corr[nL1Tk]/F");
+  event_tree_->Branch("L1Tk_dphi_corr", event_.L1Tk_dphi_corr,"L1Tk_dphi_corr[nL1Tk]/F");
+  event_tree_->Branch("L1Tk_dR_corr", event_.L1Tk_dR_corr,"L1Tk_dR_corr[nL1Tk]/F");
+
   event_tree_->Branch("genGdMu_L1Mu_dR",    event_.genGdMu_L1Mu_dR,    "genGdMu_L1Mu_dR[2][2]/F");
+  event_tree_->Branch("genGdMu_L1Mu_dR_corr",    event_.genGdMu_L1Mu_dR_corr,    "genGdMu_L1Mu_dR_corr[2][2]/F");
   event_tree_->Branch("genGdMu_L1Mu_index_corr", event_.genGdMu_L1Mu_index_corr, "genGdMu_L1Mu_index_corr[2][2]/I");
+  event_tree_->Branch("genGdMu_L1Mu_dR_prop",    event_.genGdMu_L1Mu_dR_prop,    "genGdMu_L1Mu_dR_prop[2][2]/F");
+  event_tree_->Branch("genGdMu_L1Mu_index_prop", event_.genGdMu_L1Mu_index_prop, "genGdMu_L1Mu_index_prop[2][2]/I");
 
   event_tree_->Branch("pt_sim", &event_.pt_sim);
   event_tree_->Branch("eta_sim", &event_.eta_sim);
@@ -1641,7 +1837,11 @@ DisplacedL1MuFilter::clearBranches()
     event_.genGd_lxy[i] = -99;
     event_.genGd_l[i] = -99;
     event_.genGdMu_dxy_max[i] = -99;
-    
+ 
+    event_.genGd_genMuMu_dEta[i] = 99;
+    event_.genGd_genMuMu_dPhi[i] = 99;
+    event_.genGd_genMuMu_dR[i] = 99;
+
   }
 
   event_.genGd0Gd1_dR = -99;
@@ -1656,39 +1856,77 @@ DisplacedL1MuFilter::clearBranches()
       event_.genGdMu_pz[i][j] = -99;;
       event_.genGdMu_eta[i][j] = -99;;
       event_.genGdMu_phi[i][j] = -99;;
-      event_.genGdMu_phi_corr[i][j] = -99;;
+
+      event_.genGdMu_eta_corr[i][j] = -99;
+      event_.genGdMu_phi_corr[i][j] = -99;
+      event_.genGdMu_deta_corr[i][j] = 99;
+      event_.genGdMu_dphi_corr[i][j] = 99;
+      event_.genGdMu_dR_corr[i][j] = 99;
+      
+      event_.genGdMu_eta_prop[i][j] = -99;
+      event_.genGdMu_phi_prop[i][j] = -99;
+      event_.genGdMu_deta_prop[i][j] = 99;
+      event_.genGdMu_dphi_prop[i][j] = 99;
+      event_.genGdMu_dR_prop[i][j] = 99;
+
       event_.genGdMu_vx[i][j] = -99;;
       event_.genGdMu_vy[i][j] = -99;;
       event_.genGdMu_vz[i][j] = -99;;
       event_.genGdMu_dxy[i][j] = -99;;
+      event_.genGdMu_L1Tk_dR_prop[i][j] = 99;
+      event_.genGdMu_L1Tk_index_prop[i][j] = -99;
+      event_.genGdMu_L1Tk_dR_corr[i][j] = 99;
+      event_.genGdMu_L1Tk_index_corr[i][j] = -99;
 
       event_.genGdMu_L1Mu_dR[i][j] = 99.;
       event_.genGdMu_L1Mu_dR_corr[i][j] = 99.;
       event_.genGdMu_L1Mu_index_corr[i][j] = 99;
+      event_.genGdMu_L1Mu_dR_prop[i][j] = 99.;
+      event_.genGdMu_L1Mu_index_prop[i][j] = 99;
+
+      event_.genGd_genMu_dEta[i][j] = 99;
+      event_.genGd_genMu_dPhi[i][j] = 99;
+      event_.genGd_genMu_dR[i][j] = 99;
     }
   }
   event_.nL1Mu = 0;
+  event_.nL1Tk = 0;
 
 
   for (int i=0; i<kMaxL1Mu; ++i){
-    event_.L1Mu_pt[i] = -10;
-    event_.L1Mu_eta[i] = -10;
-    event_.L1Mu_phi[i] = -10;
-    event_.L1Mu_charge[i] = -10;
-    event_.L1Mu_bx[i] = -10;
-    event_.L1Mu_quality[i] = -10;
-    event_.L1Mu_L1Tk_dR_min[i] = 999.;
-    event_.L1Mu_L1Tk_pt[i] = -10.;
-    event_.L1Mu_isMatched[i] = 0;
-    event_.L1Mu_isUnMatched[i] = 0;
-    event_.L1Mu_isUnMatchedL1TkPt2[i] = 0;
-    event_.L1Mu_isUnMatchedL1TkPt2p5[i] = 0;
-    event_.L1Mu_isUnMatchedL1TkPt3[i] = 0;
-    event_.L1Mu_isUnMatchedL1TkPt4[i] = 0;
+    event_.L1Mu_pt[i] = -99;
+    event_.L1Mu_eta[i] = -99;
+    event_.L1Mu_phi[i] = -99;
+    event_.L1Mu_charge[i] = -99;
+    event_.L1Mu_bx[i] = -99;
+    event_.L1Mu_quality[i] = -99;
+    event_.L1Mu_L1Tk_dR_corr[i] = 999.;
+    event_.L1Mu_L1Tk_pt_corr[i] = -99.;
+    event_.L1Mu_L1Tk_dR_prop[i] = 999.;
+    event_.L1Mu_L1Tk_dR_prop_true[i] = 999.;
+    event_.L1Mu_L1Tk_pt_prop[i] = -99.;
   }
 
-  event_.has_sim = -10;
-  event_.pt_sim = -10;
+  for (int i=0; i<kMaxL1Tk; ++i){
+    event_.L1Tk_pt[i] = -99;
+    event_.L1Tk_eta[i] = -99; 
+    event_.L1Tk_phi[i] = -99;
+
+    event_.L1Tk_eta_prop[i] = -99;
+    event_.L1Tk_phi_prop[i] = -99;
+    event_.L1Tk_deta_prop[i] = -99;
+    event_.L1Tk_dphi_prop[i] = -99;
+    event_.L1Tk_dR_prop[i] = -99;
+
+    event_.L1Tk_eta_corr[i] = -99;
+    event_.L1Tk_phi_corr[i] = -99;
+    event_.L1Tk_deta_corr[i] = -99;
+    event_.L1Tk_dphi_corr[i]  = -99;
+    event_.L1Tk_dR_corr[i] = -99;    
+  }
+
+  event_.has_sim = -99;
+  event_.pt_sim = -99;
   event_.eta_sim = -99;
   event_.phi_sim = -99;
   event_.eta_sim_prop = -99;

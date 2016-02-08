@@ -1,24 +1,13 @@
-import sys
-from ROOT import *
-from ROOT import TH1F
-
 # run quiet mode
 import sys
 sys.argv.append( '-b' )
 
+from ROOT import *
 import ROOT 
 ROOT.gROOT.SetBatch(1)
 from Helpers import *
 
-def exit():
-  sys.exit(0)
-
 if __name__ == "__main__":  
-
-  #label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU0_L1TkdR0p4"; pu = 'PU0'; eff = True
-  #label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU0_L1TkdR0p3"; pu = 'PU0'; eff = True
-  #label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU0_L1TkdR0p2"; pu = 'PU0'; eff = True
-  #label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU0_L1TkdR0p12"; pu = 'PU0'; eff = True
 
   label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_L1TkdR0p4"; pu = 'PU140'; eff = True
   label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_L1TkdR0p3"; pu = 'PU140'; eff = True
@@ -31,37 +20,54 @@ if __name__ == "__main__":
   #label = "out_filter_ana_Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_L1TkdR0p12"; pu = 'PU140'; eff = False
 
   label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV"; pu = 'PU0'; eff = True#.root
-  label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140"; pu = 'PU140'; eff = True#.root
-  label = 'out_filter_ana_Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14'; pu = 'PU140'; eff = False
-
-  inputFile = label + ".root"
-  targetDir = label + "/"
+  label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160203"; pu = 'PU140'; eff = True#.root
+#  label = 'out_filter_ana_Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14'; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160207"; pu = 'PU140'; eff = False
+  MatchingL1TkMinPt = 0
 
   ## extension for figures - add more?
   ext = ".png"
-  
-
-  ## Trees
-  analyzer = "DisplacedL1MuFilter_PhaseIIGE21"
-  recHits = "L1MuTree"
 
   ## Style
-  gStyle.SetStatStyle(0);
+  gStyle.SetStatStyle(0)
 
-  ## input
-  file = TFile.Open(inputFile)
-  if not file: sys.exit('Input ROOT file %s is missing.' %(inputFile))
-
-  dirAna = file.Get(analyzer)
-  if not dirAna: sys.exit('Directory %s does not exist.' %(dirAna))
-    
-  treeHits = dirAna.Get(recHits)
-  if not treeHits: sys.exit('Tree %s does not exist.' %(treeHits))
-  
   print "Making the plots"
 
   set_style()
 
+  ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
+  eff = True
+  if eff: 
+    location = "/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_ctau_1000_ANA_v6/160207_223333/0000/"
+    label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160207"; pu = 'PU140'
+  else:   
+    location = "/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/Neutrino_Pt2to20_TTI2023Upg14D_PU140bx25_ILT_ANA_v4/160207_164050/0000/"
+    label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160207"; pu = 'PU140'
+  ch = addfiles(ch, dirname=location, ext=".root")
+  targetDir = label + "/"
+  
+  #exit()
+
+  def makedEtadPhidRPlots():
+    ## deta, dphi, dR plot for L1Tk
+    draw_1D(ch, "L1Tk_deta_prop", targetDir + "L1Tk_deta_prop", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="", opt = "")
+    draw_1D(ch, "L1Tk_dphi_prop", targetDir + "L1Tk_dphi_prop", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="", opt = "")
+    draw_1D(ch, "L1Tk_dR_prop", targetDir + "L1Tk_dR_prop", "dR; dR; Entries", "(100,0.,1.)", cut="", opt = "")
+
+    draw_1D(ch, "L1Tk_deta_prop", targetDir + "L1Tk_deta_prop_pt5", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="L1Tk_pt>5", opt = "")
+    draw_1D(ch, "L1Tk_dphi_prop", targetDir + "L1Tk_dphi_prop_pt5", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="L1Tk_pt>5", opt = "")
+    draw_1D(ch, "L1Tk_dR_prop", targetDir + "L1Tk_dR_prop_pt5", "dR; dR; Entries", "(100,0.,1.)", cut="L1Tk_pt>5", opt = "")
+
+    draw_1D(ch, "L1Tk_deta_prop", targetDir + "L1Tk_deta_prop_pt20", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="L1Tk_pt>20", opt = "")
+    draw_1D(ch, "L1Tk_dphi_prop", targetDir + "L1Tk_dphi_prop_pt20", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="L1Tk_pt>20", opt = "")
+    draw_1D(ch, "L1Tk_dR_prop", targetDir + "L1Tk_dR_prop_pt20", "dR; dR; Entries", "(100,0.,1.)", cut="L1Tk_pt>20", opt = "")
+
+    draw_1D(ch, "L1Tk_deta_prop", targetDir + "L1Tk_deta_prop_pt30", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="L1Tk_pt>30", opt = "")
+    draw_1D(ch, "L1Tk_dphi_prop", targetDir + "L1Tk_dphi_prop_pt30", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="L1Tk_pt>30", opt = "")
+    draw_1D(ch, "L1Tk_dR_prop", targetDir + "L1Tk_dR_prop_pt30", "dR; dR; Entries", "(100,0.,1.)", cut="L1Tk_pt>30", opt = "")
+
+  if not eff:
+    makedEtadPhidRPlots()
 
   def makeRateVsPtHistogram():
 
@@ -87,11 +93,14 @@ if __name__ == "__main__":
     h_single_displaced_rate_dR0p12_L1TkPt3 = TH1F("h_single_displaced_rate_dR0p12_L1TkPt3"," ",len(myptbin)-1, myptbin)
     h_single_displaced_rate_dR0p12_L1TkPt4 = TH1F("h_single_displaced_rate_dR0p12_L1TkPt4"," ",len(myptbin)-1, myptbin)
     
-    for k in range(0,treeHits.GetEntries()): 
-      treeHits.GetEntry(k)
-
+    for k in range(0,ch.GetEntries()):
+#    for k in range(0,100):
+      ch.GetEntry(k)
+      
+      treeHits = ch
       ## get the max value of the momentum
       pts = list(treeHits.L1Mu_pt)
+
       if len(pts)>=1:
               
         def getMaxPts():
@@ -123,20 +132,14 @@ if __name__ == "__main__":
             L1Mu_phi = treeHits.L1Mu_phi[i]
             L1Mu_bx = treeHits.L1Mu_bx[i]
             L1Mu_quality = treeHits.L1Mu_quality[i]
-            L1Mu_isMatched = treeHits.L1Mu_isMatched[i]
-            L1Mu_isUnMatched = treeHits.L1Mu_isUnMatched[i]
-            L1Mu_isUnMatchedL1TkPt2 = treeHits.L1Mu_isUnMatchedL1TkPt2[i]
-            L1Mu_isUnMatchedL1TkPt2p5 = treeHits.L1Mu_isUnMatchedL1TkPt2p5[i]
-            L1Mu_isUnMatchedL1TkPt3 = treeHits.L1Mu_isUnMatchedL1TkPt3[i]
-            L1Mu_isUnMatchedL1TkPt4 = treeHits.L1Mu_isUnMatchedL1TkPt4[i]
-            L1Mu_L1Tk_dR_min = treeHits.L1Mu_L1Tk_dR_min[i]
-            L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt[i]
+
+            L1Mu_L1Tk_dR_min = treeHits.L1Mu_L1Tk_dR_prop[i]
+            L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt_prop[i]
 
             if L1Mu_bx==0:
               print k,i, "pt", L1Mu_pt, "eta", L1Mu_eta, "phi", L1Mu_phi, "bx", L1Mu_bx, "quality", L1Mu_quality
 
 
-            matched = False
             unMatched_dR0p4_L1TkPt4 = False
             unMatched_dR0p4_L1TkPt3 = False
             unMatched_dR0p4_L1TkPt2p5 = False
@@ -158,7 +161,8 @@ if __name__ == "__main__":
             unMatched_dR0p12_L1TkPt2 = False
 
             ## matched 
-            if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_quality >= 4: matched = True
+            matched = L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_quality >= 4
+            matched = matched and L1Mu_L1Tk_pt>=MatchingL1TkMinPt
             
             ## unmatched 
             if L1Mu_L1Tk_dR_min <= 0.4 and L1Mu_L1Tk_pt>=4:   unMatched_dR0p4_L1TkPt4 = True
@@ -252,7 +256,7 @@ if __name__ == "__main__":
         if (maxPt_trig_dR0p12_L1TkPt2p5>0): h_single_displaced_rate_dR0p12_L1TkPt2p5.Fill(maxPt_trig_dR0p12_L1TkPt2p5)
         if (maxPt_trig_dR0p12_L1TkPt2>0): h_single_displaced_rate_dR0p12_L1TkPt2.Fill(maxPt_trig_dR0p12_L1TkPt2)
 
-    def makePlots(h1, h2, h3, h4, h5, title):
+    def makePlots(h1, h2, h3, h4, h5, isolation_cone, title):
       c = TCanvas("c","c",800,600)
       c.Clear()    
       gStyle.SetTitleBorderSize(0);
@@ -260,6 +264,8 @@ if __name__ == "__main__":
       gStyle.SetPadRightMargin(0.04);
       gStyle.SetPadTopMargin(0.06);
       gStyle.SetPadBottomMargin(0.13);
+      gPad.SetTickx(1)
+      gPad.SetTicky(1)
       gPad.SetLogy(1)
 
       b1 = TH1F("b1","b1",29,myptbin)
@@ -270,45 +276,62 @@ if __name__ == "__main__":
       b1.GetXaxis().SetTitle("L1Mu p_{T} cut [GeV]")
       b1.GetXaxis().SetTitleFont(62)
       b1.GetXaxis().SetTitleOffset(1.2)
-      b1.GetXaxis().SetTitleSize(0.045)
-      b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" " + pu + ", 14TeV")
+      b1.GetXaxis().SetTitleSize(0.05)
+      b1.GetYaxis().SetTitleSize(0.05)
+      b1.SetTitle("                                                                  14TeV, " + pu)
       b1.SetStats(0)
       b1.Draw()
 
       h1 = getRatePtHistogram(treeHits, h1)
       h1.SetFillColor(kRed)
       h1.Draw("e3same")
-    
-      h2 = getRatePtHistogram(treeHits, h2)
-      h2.SetFillColor(kMagenta)
-      h2.Draw("e3same")
-
-      h3 = getRatePtHistogram(treeHits, h3)
-      h3.SetFillColor(kBlue)
-      h3.Draw("e3same")
       
-      h4 = getRatePtHistogram(treeHits, h4)
-      h4.SetFillColor(kGreen+1)
-      h4.Draw("e3same")
-    
+      if isolation_cone != 0.12:    
+        h2 = getRatePtHistogram(treeHits, h2)
+        h2.SetFillColor(kMagenta)
+        h2.Draw("e3same")
+        
+        h3 = getRatePtHistogram(treeHits, h3)
+        h3.SetFillColor(kBlue)
+        h3.Draw("e3same")
+      
+        h4 = getRatePtHistogram(treeHits, h4)
+        h4.SetFillColor(kGreen+1)
+        h4.Draw("e3same")
+
       h5 = getRatePtHistogram(treeHits, h5)
       h5.SetFillColor(kOrange+1)
       h5.Draw("e3same")
-      
-      leg = TLegend(0.2,0.7,0.9,0.9,"","brNDC")
-      leg.SetFillColor(kWhite)
-      leg.SetBorderSize(0)
-      leg.SetFillStyle(0)
-      leg.SetTextSize(0.03)
-      leg.AddEntry(h1,"Single L1Mu", "f")
-      leg.AddEntry(h5,"Displaced L1Mu (p_{T} #geq 4 GeV on non-matching L1Tk)", "f")
-      leg.AddEntry(h4,"Displaced L1Mu (p_{T} #geq 3 GeV on non-matching L1Tk)", "f")
-      leg.AddEntry(h3,"Displaced L1Mu (p_{T} #geq 2.5 GeV on non-matching L1Tk)", "f")
-      leg.AddEntry(h2,"Displaced L1Mu (p_{T} #geq 2 GeV on non-matching L1Tk)", "f")
-      leg.Draw("same")
-      c.SaveAs(targetDir + title + ".png")
 
+      latex = applyTdrStyle()      
 
+      if isolation_cone == 0.12:
+        leg = TLegend(0.2,0.75,0.5,0.85,"","brNDC")
+        leg.SetFillColor(kWhite)
+        leg.SetBorderSize(0)
+        leg.SetFillStyle(0)
+        leg.SetTextSize(0.03)
+        leg.AddEntry(h1,"Prompt L1Mu", "f")
+        leg.AddEntry(None,"Displaced L1Mu", "")
+        leg.AddEntry(h5,"Matching L1Tk #DeltaR#leq0.12 with p_{T}#geq%.0f"%(MatchingL1TkMinPt), "f")
+        leg.Draw("same")
+      else:
+        leg = TLegend(0.2,0.6,0.9,0.85,"","brNDC")
+        leg.SetFillColor(kWhite)
+        leg.SetBorderSize(0)
+        leg.SetFillStyle(0)
+        leg.SetTextSize(0.03)
+        leg.AddEntry(h1,"Prompt L1Mu", "f")
+        leg.AddEntry(None,"Displaced L1Mu", "")
+        leg.AddEntry(None,"Matching L1Tk #DeltaR#leq0.12 with p_{T}#geq%.0f"%(MatchingL1TkMinPt), "")
+        leg.AddEntry(None,"Non-matching L1Tk #DeltaR#leq%.1f:"%(isolation_cone), "")
+        leg.AddEntry(h5,"p_{T} #geq 4 GeV", "f")        
+        leg.AddEntry(h4,"p_{T} #geq 3 GeV", "f")
+        leg.AddEntry(h3,"p_{T} #geq 2.5 GeV", "f")
+        leg.AddEntry(h2,"p_{T} #geq 2 GeV", "f")
+        leg.Draw("same")
+
+      c.SaveAs(targetDir + title + ext)
 
       ## ratios 
       c = TCanvas("c","c",800,600)
@@ -328,24 +351,30 @@ if __name__ == "__main__":
       b1.GetXaxis().SetTitle("L1Mu p_{T} cut [GeV]")
       b1.GetXaxis().SetTitleFont(62)
       b1.GetXaxis().SetTitleOffset(1.2)
-      b1.GetXaxis().SetTitleSize(0.045)
-      b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" " + pu + ", 14TeV")
+      b1.GetXaxis().SetTitleSize(0.05)
+      b1.GetYaxis().SetTitleSize(0.05)
+      b1.SetTitle("                                                                  14TeV, " + pu)
       b1.SetStats(0)
       b1.Draw()
     
-      h2.SetLineColor(kMagenta)      
-      h2.Divide(h1)
-      h2.Draw("same")
+      if isolation_cone != 0.12:    
+        h2.SetLineColor(kMagenta)      
+        h2.SetFillColor(kWhite)
+        h2.Divide(h1)
+        h2.Draw("same")
       
-      h3.SetLineColor(kBlue)
-      h3.Divide(h1)
-      h3.Draw("same")
+        h3.SetLineColor(kBlue)
+        h3.SetFillColor(kWhite)
+        h3.Divide(h1)
+        h3.Draw("same")
       
-      h4.SetLineColor(kGreen+1)
-      h4.Divide(h1)
-      h4.Draw("same")
+        h4.SetLineColor(kGreen+1)
+        h4.SetFillColor(kWhite)
+        h4.Divide(h1)
+        h4.Draw("same")
       
       h5.SetLineColor(kOrange+1)
+      h5.SetFillColor(kWhite)
       h5.Divide(h1)
       h5.Draw("same")
 
@@ -358,33 +387,56 @@ if __name__ == "__main__":
       print title, "%.2f"%((h3.GetBinContent(13) + h3.GetBinContent(14))/2.)
       print title, "%.2f"%((h4.GetBinContent(13) + h4.GetBinContent(14))/2.)
       print title, "%.2f"%((h5.GetBinContent(13) + h5.GetBinContent(14))/2.)
+      print 
+      print title, "%.2f"%(h2.GetBinContent(16))
+      print title, "%.2f"%(h3.GetBinContent(16))
+      print title, "%.2f"%(h4.GetBinContent(16))
+      print title, "%.2f"%(h5.GetBinContent(16))
 
-      leg = TLegend(0.2,0.2,0.9,0.4,"","brNDC")
-      leg.SetFillColor(kWhite)
-      leg.SetBorderSize(0)
-      leg.SetFillStyle(0)
-      leg.SetTextSize(0.03)
-      leg.AddEntry(h2,"Displaced L1Mu (p_{T} #geq 2 GeV on non-matching L1Tk)", "l")
-      leg.AddEntry(h3,"Displaced L1Mu (p_{T} #geq 2.5 GeV on non-matching L1Tk)", "l")
-      leg.AddEntry(h4,"Displaced L1Mu (p_{T} #geq 3 GeV on non-matching L1Tk)", "l")
-      leg.AddEntry(h5,"Displaced L1Mu (p_{T} #geq 4 GeV on non-matching L1Tk)", "l")
-      leg.Draw("same")
-      c.SaveAs(targetDir + title + "_ratio.png")
+      latex = applyTdrStyle()      
+
+      if isolation_cone == 0.12:
+        leg = TLegend(0.2,0.2,0.9,0.4,"","brNDC")
+        leg.SetFillColor(kWhite)
+        leg.SetBorderSize(0)
+        leg.SetFillStyle(0)
+        leg.SetTextSize(0.03)
+        leg.AddEntry(h1,"Prompt L1Mu", "l")
+        leg.AddEntry(None,"Displaced L1Mu", "")
+        leg.AddEntry(h5,"Matching L1Tk #DeltaR#leq0.12 with p_{T}#geq%.0f"%(MatchingL1TkMinPt), "l")
+        leg.Draw("same")
+      else:
+        leg = TLegend(0.2,0.2,0.9,0.4,"","brNDC")
+        leg.SetFillColor(kWhite)
+        leg.SetBorderSize(0)
+        leg.SetFillStyle(0)
+        leg.SetTextSize(0.03)
+        leg.AddEntry(h1,"Prompt L1Mu", "l")
+        leg.AddEntry(None,"Displaced L1Mu", "")
+        leg.AddEntry(None,"Matching L1Tk #DeltaR#leq0.12 with p_{T}#geq%.0f"%(MatchingL1TkMinPt), "")
+        leg.AddEntry(None,"Non-matching L1Tk #DeltaR#leq%.1f:"%(isolation_cone), "")
+        leg.AddEntry(h5,"p_{T} #geq 4 GeV", "l")        
+        leg.AddEntry(h4,"p_{T} #geq 3 GeV", "l")
+        leg.AddEntry(h3,"p_{T} #geq 2.5 GeV", "l")
+        leg.AddEntry(h2,"p_{T} #geq 2 GeV", "l")
+        leg.Draw("same")
+
+
+      c.SaveAs(targetDir + title + "_ratio" + ext)
 
     ## trigger rate plots vs pt
     makePlots(h_single_L1Mu_rate, h_single_displaced_rate_dR0p4_L1TkPt2, h_single_displaced_rate_dR0p4_L1TkPt2p5, 
-              h_single_displaced_rate_dR0p4_L1TkPt3, h_single_displaced_rate_dR0p4_L1TkPt4, "L1Mu_trigger_rate_pt_dR0p4")
+              h_single_displaced_rate_dR0p4_L1TkPt3, h_single_displaced_rate_dR0p4_L1TkPt4, 0.4, "L1Mu_trigger_rate_pt_dR0p4")
     makePlots(h_single_L1Mu_rate, h_single_displaced_rate_dR0p3_L1TkPt2, h_single_displaced_rate_dR0p3_L1TkPt2p5, 
-              h_single_displaced_rate_dR0p3_L1TkPt3, h_single_displaced_rate_dR0p3_L1TkPt4, "L1Mu_trigger_rate_pt_dR0p3")
+              h_single_displaced_rate_dR0p3_L1TkPt3, h_single_displaced_rate_dR0p3_L1TkPt4, 0.3, "L1Mu_trigger_rate_pt_dR0p3")
     makePlots(h_single_L1Mu_rate, h_single_displaced_rate_dR0p2_L1TkPt2, h_single_displaced_rate_dR0p2_L1TkPt2p5, 
-              h_single_displaced_rate_dR0p2_L1TkPt3, h_single_displaced_rate_dR0p2_L1TkPt4, "L1Mu_trigger_rate_pt_dR0p2")
+              h_single_displaced_rate_dR0p2_L1TkPt3, h_single_displaced_rate_dR0p2_L1TkPt4, 0.2, "L1Mu_trigger_rate_pt_dR0p2")
     makePlots(h_single_L1Mu_rate, h_single_displaced_rate_dR0p12_L1TkPt2, h_single_displaced_rate_dR0p12_L1TkPt2p5, 
-              h_single_displaced_rate_dR0p12_L1TkPt3, h_single_displaced_rate_dR0p12_L1TkPt4, "L1Mu_trigger_rate_pt_dR0p12")
+              h_single_displaced_rate_dR0p12_L1TkPt3, h_single_displaced_rate_dR0p12_L1TkPt4, 0.12, "L1Mu_trigger_rate_pt_dR0p12")
 
-  if not eff:
+  if not eff and False:
     makeRateVsPtHistogram()    
     pass
-
 
   def makeRateVsEtaHistogram(ptCut):
 
@@ -410,7 +462,7 @@ if __name__ == "__main__":
     h_single_displaced_rate_dR0p12_L1TkPt3 = TH1F("h_single_displaced_rate_dR0p12_L1TkPt3"," ",len(myetabin)-1, myetabin)
     h_single_displaced_rate_dR0p12_L1TkPt4 = TH1F("h_single_displaced_rate_dR0p12_L1TkPt4"," ",len(myetabin)-1, myetabin)
 
-    for k in range(0,treeHits.GetEntries()): #
+    for k in range(0,1000):#,treeHits.GetEntries()): #
       treeHits.GetEntry(k)
 
       ## get the max value of the momentum
@@ -467,14 +519,8 @@ if __name__ == "__main__":
             L1Mu_pt = treeHits.L1Mu_pt[i]
             L1Mu_bx = treeHits.L1Mu_bx[i]
             L1Mu_quality = treeHits.L1Mu_quality[i]
-            L1Mu_isMatched = treeHits.L1Mu_isMatched[i]
-            L1Mu_isUnMatched = treeHits.L1Mu_isUnMatched[i]
-            L1Mu_isUnMatchedL1TkPt2 = treeHits.L1Mu_isUnMatchedL1TkPt2[i]
-            L1Mu_isUnMatchedL1TkPt2p5 = treeHits.L1Mu_isUnMatchedL1TkPt2p5[i]
-            L1Mu_isUnMatchedL1TkPt3 = treeHits.L1Mu_isUnMatchedL1TkPt3[i]
-            L1Mu_isUnMatchedL1TkPt4 = treeHits.L1Mu_isUnMatchedL1TkPt4[i]
-            L1Mu_L1Tk_dR_min = treeHits.L1Mu_L1Tk_dR_min[i]
-            L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt[i]
+            L1Mu_L1Tk_dR_min = treeHits.L1Mu_L1Tk_dR_prop[i]
+            L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt_prop[i]
             
             matched = False
             unMatched_dR0p4_L1TkPt4 = False
@@ -498,8 +544,9 @@ if __name__ == "__main__":
             unMatched_dR0p12_L1TkPt2 = False
 
             ## matched 
-            if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_quality >= 4: matched = True
-            
+            matched = L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_quality >= 4
+            matched = matched and L1Mu_L1Tk_pt>=MatchingL1TkMinPt
+
             ## unmatched 
             if L1Mu_L1Tk_dR_min <= 0.4 and L1Mu_L1Tk_pt>=4:   unMatched_dR0p4_L1TkPt4 = True
             if L1Mu_L1Tk_dR_min <= 0.4 and L1Mu_L1Tk_pt>=3:   unMatched_dR0p4_L1TkPt3 = True
@@ -566,9 +613,9 @@ if __name__ == "__main__":
             if trig_dR0p12_L1TkPt2p5 and L1Mu_pt > maxPt_trig_dR0p12_L1TkPt2p5: maxPt_trig_dR0p12_L1TkPt2p5 = L1Mu_pt; maxPtIndex_trig_dR0p12_L1TkPt2p5 = i
             if trig_dR0p12_L1TkPt2 and L1Mu_pt > maxPt_trig_dR0p12_L1TkPt2:     maxPt_trig_dR0p12_L1TkPt2 = L1Mu_pt;   maxPtIndex_trig_dR0p12_L1TkPt2 = i
 
-          return maxPt1, maxPt_trig_dR0p4_L1TkPt4, maxPt_trig_dR0p4_L1TkPt3, maxPt_trig_dR0p4_L1TkPt2p5, maxPt_trig_dR0p4_L1TkPt2, maxPt_trig_dR0p3_L1TkPt4, maxPt_trig_dR0p3_L1TkPt3, maxPt_trig_dR0p3_L1TkPt2p5, maxPt_trig_dR0p3_L1TkPt2, maxPt_trig_dR0p2_L1TkPt4, maxPt_trig_dR0p2_L1TkPt3, maxPt_trig_dR0p2_L1TkPt2p5, maxPt_trig_dR0p2_L1TkPt2, maxPt_trig_dR0p12_L1TkPt4, maxPt_trig_dR0p12_L1TkPt3, maxPt_trig_dR0p12_L1TkPt2p5, maxPt_trig_dR0p12_L1TkPt2, maxPtIndex1, maxPtIndex_trig_dR0p4_L1TkPt4, maxPtIndex_trig_dR0p4_L1TkPt3, maxPtIndex_trig_dR0p4_L1TkPt2p5, maxPtIndex_trig_dR0p4_L1TkPt2, maxPtIndex_trig_dR0p3_L1TkPt4, maxPtIndex_trig_dR0p3_L1TkPt3, maxPtIndex_trig_dR0p3_L1TkPt2p5, maxPtIndex_trig_dR0p3_L1TkPt2, maxPtIndex_trig_dR0p2_L1TkPt4, maxPtIndex_trig_dR0p2_L1TkPt3, maxPtIndex_trig_dR0p2_L1TkPt2p5, maxPtIndex_trig_dR0p2_L1TkPt2, maxPtIndex_trig_dR0p12_L1TkPt4, maxPtIndex_trig_dR0p12_L1TkPt3, maxPtIndex_trig_dR0p12_L1TkPt2p5, maxPtIndex_trig_dR0p12_L1TkPt2
+          return maxPt1, maxPtIndex1, maxPt_trig_dR0p4_L1TkPt4, maxPt_trig_dR0p4_L1TkPt3, maxPt_trig_dR0p4_L1TkPt2p5, maxPt_trig_dR0p4_L1TkPt2, maxPt_trig_dR0p3_L1TkPt4, maxPt_trig_dR0p3_L1TkPt3, maxPt_trig_dR0p3_L1TkPt2p5, maxPt_trig_dR0p3_L1TkPt2, maxPt_trig_dR0p2_L1TkPt4, maxPt_trig_dR0p2_L1TkPt3, maxPt_trig_dR0p2_L1TkPt2p5, maxPt_trig_dR0p2_L1TkPt2, maxPt_trig_dR0p12_L1TkPt4, maxPt_trig_dR0p12_L1TkPt3, maxPt_trig_dR0p12_L1TkPt2p5, maxPt_trig_dR0p12_L1TkPt2, maxPtIndex_trig_dR0p4_L1TkPt4, maxPtIndex_trig_dR0p4_L1TkPt3, maxPtIndex_trig_dR0p4_L1TkPt2p5, maxPtIndex_trig_dR0p4_L1TkPt2, maxPtIndex_trig_dR0p3_L1TkPt4, maxPtIndex_trig_dR0p3_L1TkPt3, maxPtIndex_trig_dR0p3_L1TkPt2p5, maxPtIndex_trig_dR0p3_L1TkPt2, maxPtIndex_trig_dR0p2_L1TkPt4, maxPtIndex_trig_dR0p2_L1TkPt3, maxPtIndex_trig_dR0p2_L1TkPt2p5, maxPtIndex_trig_dR0p2_L1TkPt2, maxPtIndex_trig_dR0p12_L1TkPt4, maxPtIndex_trig_dR0p12_L1TkPt3, maxPtIndex_trig_dR0p12_L1TkPt2p5, maxPtIndex_trig_dR0p12_L1TkPt2
         
-        maxPt1, maxPt_trig_dR0p4_L1TkPt4, maxPt_trig_dR0p4_L1TkPt3, maxPt_trig_dR0p4_L1TkPt2p5, maxPt_trig_dR0p4_L1TkPt2, maxPt_trig_dR0p3_L1TkPt4, maxPt_trig_dR0p3_L1TkPt3, maxPt_trig_dR0p3_L1TkPt2p5, maxPt_trig_dR0p3_L1TkPt2, maxPt_trig_dR0p2_L1TkPt4, maxPt_trig_dR0p2_L1TkPt3, maxPt_trig_dR0p2_L1TkPt2p5, maxPt_trig_dR0p2_L1TkPt2, maxPt_trig_dR0p12_L1TkPt4, maxPt_trig_dR0p12_L1TkPt3, maxPt_trig_dR0p12_L1TkPt2p5, maxPt_trig_dR0p12_L1TkPt2, maxPtIndex1, maxPtIndex_trig_dR0p4_L1TkPt4, maxPtIndex_trig_dR0p4_L1TkPt3, maxPtIndex_trig_dR0p4_L1TkPt2p5, maxPtIndex_trig_dR0p4_L1TkPt2, maxPtIndex_trig_dR0p3_L1TkPt4, maxPtIndex_trig_dR0p3_L1TkPt3, maxPtIndex_trig_dR0p3_L1TkPt2p5, maxPtIndex_trig_dR0p3_L1TkPt2, maxPtIndex_trig_dR0p2_L1TkPt4, maxPtIndex_trig_dR0p2_L1TkPt3, maxPtIndex_trig_dR0p2_L1TkPt2p5, maxPtIndex_trig_dR0p2_L1TkPt2, maxPtIndex_trig_dR0p12_L1TkPt4, maxPtIndex_trig_dR0p12_L1TkPt3, maxPtIndex_trig_dR0p12_L1TkPt2p5, maxPtIndex_trig_dR0p12_L1TkPt2 = getMaxPts()
+        maxPt1, maxPtIndex1, maxPt_trig_dR0p4_L1TkPt4, maxPt_trig_dR0p4_L1TkPt3, maxPt_trig_dR0p4_L1TkPt2p5, maxPt_trig_dR0p4_L1TkPt2, maxPt_trig_dR0p3_L1TkPt4, maxPt_trig_dR0p3_L1TkPt3, maxPt_trig_dR0p3_L1TkPt2p5, maxPt_trig_dR0p3_L1TkPt2, maxPt_trig_dR0p2_L1TkPt4, maxPt_trig_dR0p2_L1TkPt3, maxPt_trig_dR0p2_L1TkPt2p5, maxPt_trig_dR0p2_L1TkPt2, maxPt_trig_dR0p12_L1TkPt4, maxPt_trig_dR0p12_L1TkPt3, maxPt_trig_dR0p12_L1TkPt2p5, maxPt_trig_dR0p12_L1TkPt2, maxPtIndex_trig_dR0p4_L1TkPt4, maxPtIndex_trig_dR0p4_L1TkPt3, maxPtIndex_trig_dR0p4_L1TkPt2p5, maxPtIndex_trig_dR0p4_L1TkPt2, maxPtIndex_trig_dR0p3_L1TkPt4, maxPtIndex_trig_dR0p3_L1TkPt3, maxPtIndex_trig_dR0p3_L1TkPt2p5, maxPtIndex_trig_dR0p3_L1TkPt2, maxPtIndex_trig_dR0p2_L1TkPt4, maxPtIndex_trig_dR0p2_L1TkPt3, maxPtIndex_trig_dR0p2_L1TkPt2p5, maxPtIndex_trig_dR0p2_L1TkPt2, maxPtIndex_trig_dR0p12_L1TkPt4, maxPtIndex_trig_dR0p12_L1TkPt3, maxPtIndex_trig_dR0p12_L1TkPt2p5, maxPtIndex_trig_dR0p12_L1TkPt2 = getMaxPts()
 
         if (maxPt1>0): h_single_L1Mu_rate.Fill(treeHits.L1Mu_eta[maxPtIndex1])
 
@@ -593,7 +640,7 @@ if __name__ == "__main__":
         if (maxPt_trig_dR0p12_L1TkPt2>0): h_single_displaced_rate_dR0p12_L1TkPt2.Fill(treeHits.L1Mu_eta[maxPtIndex_trig_dR0p12_L1TkPt2])
 
                                                                                     
-    def makePlots(h1, h2, h3, h4, h5, title):
+    def makePlots(h1, h2, h3, h4, h5, isolation_cone, title):
       c = TCanvas("c","c",800,600)
       c.Clear()    
       gStyle.SetTitleBorderSize(0);
@@ -601,6 +648,8 @@ if __name__ == "__main__":
       gStyle.SetPadRightMargin(0.04);
       gStyle.SetPadTopMargin(0.06);
       gStyle.SetPadBottomMargin(0.13);
+      gPad.SetTickx(1)
+      gPad.SetTicky(1)
       gPad.SetLogy(1)
 
       b1 = TH1F("b1","b1",len(myetabin)-1, myetabin)
@@ -611,8 +660,9 @@ if __name__ == "__main__":
       b1.GetXaxis().SetTitle("L1 muon #eta")
       b1.GetXaxis().SetTitleFont(62)
       b1.GetXaxis().SetTitleOffset(1.2)
-      b1.GetXaxis().SetTitleSize(0.045)
-      b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" " + pu + ", 14TeV")
+      b1.GetXaxis().SetTitleSize(0.05)
+      b1.GetYaxis().SetTitleSize(0.05)
+      b1.SetTitle("                                                                  14TeV, " + pu)
       b1.SetStats(0)
       b1.Draw()
 
@@ -620,33 +670,51 @@ if __name__ == "__main__":
       h1.SetLineColor(kRed)
       h1.Draw("same")
       
-      h2 = getRateEtaHistogram(treeHits, h2)
-      h2.SetLineColor(kMagenta)
-      h2.Draw("same")
+      if isolation_cone != 0.12:    
+        h2 = getRateEtaHistogram(treeHits, h2)
+        h2.SetLineColor(kMagenta)
+        h2.Draw("same")
 
-      h3 = getRateEtaHistogram(treeHits, h3)
-      h3.SetLineColor(kBlue)
-      h3.Draw("same")
-      
-      h4 = getRateEtaHistogram(treeHits, h4)
-      h4.SetLineColor(kGreen+1)
-      h4.Draw("same")
-      
+        h3 = getRateEtaHistogram(treeHits, h3)
+        h3.SetLineColor(kBlue)
+        h3.Draw("same")
+        
+        h4 = getRateEtaHistogram(treeHits, h4)
+        h4.SetLineColor(kGreen+1)
+        h4.Draw("same")
+
       h5 = getRateEtaHistogram(treeHits, h5)
       h5.SetLineColor(kOrange+1)
       h5.Draw("same")
       
-      leg = TLegend(0.2,0.7,0.9,0.9,"","brNDC")
-      leg.SetFillColor(kWhite)
-      leg.SetBorderSize(0)
-      leg.SetFillStyle(0)
-      leg.SetTextSize(0.03)
-      leg.AddEntry(h1,"Single L1Mu", "l")
-      leg.AddEntry(h5,"Displaced L1Mu (p_{T} #geq 4 GeV on non-matching L1Tk)", "l")
-      leg.AddEntry(h4,"Displaced L1Mu (p_{T} #geq 3 GeV on non-matching L1Tk)", "l")
-      leg.AddEntry(h3,"Displaced L1Mu (p_{T} #geq 2.5 GeV on non-matching L1Tk)", "l")
-      leg.AddEntry(h2,"Displaced L1Mu (p_{T} #geq 2 GeV on non-matching L1Tk)", "l")
-      leg.Draw("same")
+      latex = applyTdrStyle()      
+ 
+      if isolation_cone == 0.12:
+        leg = TLegend(0.2,0.7,0.9,0.9,"","brNDC")
+        leg.SetFillColor(kWhite)
+        leg.SetBorderSize(0)
+        leg.SetFillStyle(0)
+        leg.SetTextSize(0.03)
+        leg.AddEntry(h1,"Prompt L1Mu", "l")
+        leg.AddEntry(None,"Displaced L1Mu", "")
+        leg.AddEntry(h5,"Matching L1Tk #DeltaR#leq0.12 with p_{T}#geq%.0f"%(MatchingL1TkMinPt), "l")
+        leg.Draw("same")
+      else:
+        leg = TLegend(0.2,0.7,0.9,0.9,"","brNDC")
+        leg.SetFillColor(kWhite)
+        leg.SetBorderSize(0)
+        leg.SetFillStyle(0)
+        leg.SetTextSize(0.03)
+        leg.AddEntry(h1,"Prompt L1Mu", "l")
+        leg.AddEntry(None,"Displaced L1Mu", "")
+        leg.AddEntry(None,"Matching L1Tk #DeltaR#leq0.12 with p_{T}#geq%.0f"%(MatchingL1TkMinPt), "")
+        leg.AddEntry(None,"Non-matching L1Tk #DeltaR#leq%.1f:"%(isolation_cone), "")
+        leg.AddEntry(h5,"p_{T} #geq 4 GeV", "l")        
+        leg.AddEntry(h4,"p_{T} #geq 3 GeV", "l")
+        leg.AddEntry(h3,"p_{T} #geq 2.5 GeV", "l")
+        leg.AddEntry(h2,"p_{T} #geq 2 GeV", "l")
+        leg.Draw("same")
+
       c.SaveAs(targetDir + title + "ptCut%d.png"%(ptCut))
 
       ## ratios 
@@ -657,7 +725,7 @@ if __name__ == "__main__":
       gStyle.SetPadRightMargin(0.04);
       gStyle.SetPadTopMargin(0.06);
       gStyle.SetPadBottomMargin(0.13);
-      gPad.SetLogy(1)
+#      gPad.SetLogy(1)
 
       b1 = TH1F("b1","b1",len(myetabin)-1, myetabin)
       b1.GetYaxis().SetRangeUser(0.0001,1)
@@ -667,103 +735,334 @@ if __name__ == "__main__":
       b1.GetXaxis().SetTitle("L1 muon #eta")
       b1.GetXaxis().SetTitleFont(62)
       b1.GetXaxis().SetTitleOffset(1.2)
-      b1.GetXaxis().SetTitleSize(0.045)
-      b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" " + pu + ", 14TeV")
+      b1.GetXaxis().SetTitleSize(0.05)
+      b1.GetYaxis().SetTitleSize(0.05)
+      b1.SetTitle("14TeV," + pu)
       b1.SetStats(0)
       b1.Draw()
 
-      h2.SetLineColor(kMagenta)
-      h2.Divide(h1)
-      h2.Draw("same")
-      
-      h3.SetLineColor(kBlue)
-      h3.Divide(h1)
-      h3.Draw("same")
-      
-      h4.SetLineColor(kGreen+1)
-      h4.Divide(h1)
-      h4.Draw("same")
-      
+      if isolation_cone != 0.12:    
+        h2.SetLineColor(kMagenta)
+        h2.Divide(h1)
+        h2.SetFillColor(kWhite)
+        h2.Draw("same")
+        
+        h3.SetLineColor(kBlue)
+        h3.Divide(h1)
+        h2.SetFillColor(kWhite)
+        h3.Draw("same")
+        
+        h4.SetLineColor(kGreen+1)
+        h4.Divide(h1)
+        h4.SetFillColor(kWhite)
+        h4.Draw("same")
+        
       h5.SetLineColor(kOrange+1)
       h5.Divide(h1)
+      h5.SetFillColor(kWhite)
       h5.Draw("same")
-      
-      leg = TLegend(0.2,0.2,0.9,0.4,"","brNDC")
-      leg.SetFillColor(kWhite)
-      leg.SetBorderSize(0)
-      leg.SetFillStyle(0)
-      leg.SetTextSize(0.03)
-      leg.AddEntry(h5,"Displaced L1Mu (p_{T} #geq 4 GeV on non-matching L1Tk)", "l")
-      leg.AddEntry(h4,"Displaced L1Mu (p_{T} #geq 3 GeV on non-matching L1Tk)", "l")
-      leg.AddEntry(h3,"Displaced L1Mu (p_{T} #geq 2.5 GeV on non-matching L1Tk)", "l")
-      leg.AddEntry(h2,"Displaced L1Mu (p_{T} #geq 2 GeV on non-matching L1Tk)", "l")
-      leg.Draw("same")
-      c.SaveAs(targetDir + title + "ptCut%d_ratio.png"%(ptCut))
+
+      """
+      print title, "%.2f"%(h2.GetBinContent(11)) #pt10
+      print title, "%.2f"%(h3.GetBinContent(11))
+      print title, "%.2f"%(h4.GetBinContent(11))
+      print title, "%.2f"%(h5.GetBinContent(11))
+      print 
+      print title, "%.2f"%((h2.GetBinContent(13) + h2.GetBinContent(14))/2.) #average of pt14 and pt16
+      print title, "%.2f"%((h3.GetBinContent(13) + h3.GetBinContent(14))/2.)
+      print title, "%.2f"%((h4.GetBinContent(13) + h4.GetBinContent(14))/2.)
+      print title, "%.2f"%((h5.GetBinContent(13) + h5.GetBinContent(14))/2.)
+      """
+
+      latex = applyTdrStyle()      
+
+      if isolation_cone == 0.12:
+        leg = TLegend(0.2,0.2,0.9,0.4,"","brNDC")
+        leg.SetFillColor(kWhite)
+        leg.SetBorderSize(0)
+        leg.SetFillStyle(0)
+        leg.SetTextSize(0.03)
+        leg.AddEntry(None,"Displaced L1Mu", "")
+        leg.AddEntry(h5,"Matching L1Tk #DeltaR#leq0.12 with p_{T}#geq%.0f"%(MatchingL1TkMinPt), "l")
+        leg.Draw("same")
+      else:
+        leg = TLegend(0.2,0.2,0.9,0.4,"","brNDC")
+        leg.SetFillColor(kWhite)
+        leg.SetBorderSize(0)
+        leg.SetFillStyle(0)
+        leg.SetTextSize(0.03)
+        leg.AddEntry(None,"Displaced L1Mu", "")
+        leg.AddEntry(None,"Matching L1Tk #DeltaR#leq0.12 with p_{T}#geq%.0f"%(MatchingL1TkMinPt), "")
+        leg.AddEntry(None,"Non-matching L1Tk #DeltaR#leq%.1f:"%(isolation_cone), "")
+        leg.AddEntry(h5,"p_{T} #geq 4 GeV", "l")        
+        leg.AddEntry(h4,"p_{T} #geq 3 GeV", "l")
+        leg.AddEntry(h3,"p_{T} #geq 2.5 GeV", "l")
+        leg.AddEntry(h2,"p_{T} #geq 2 GeV", "l")
+        leg.Draw("same")
+
+      c.SaveAs(targetDir + title + "ptCut%d_ratio"%(ptCut) + ext)
 
     ## trigger rate plots vs pt
     makePlots(h_single_L1Mu_rate, 
               h_single_displaced_rate_dR0p4_L1TkPt2,
               h_single_displaced_rate_dR0p4_L1TkPt2p5, 
               h_single_displaced_rate_dR0p4_L1TkPt3, 
-              h_single_displaced_rate_dR0p4_L1TkPt4, 
+              h_single_displaced_rate_dR0p4_L1TkPt4, 0.4,
               "L1Mu_trigger_rate_pt_dR0p4")
 
     makePlots(h_single_L1Mu_rate, 
               h_single_displaced_rate_dR0p3_L1TkPt2,
               h_single_displaced_rate_dR0p3_L1TkPt2p5, 
               h_single_displaced_rate_dR0p3_L1TkPt3, 
-              h_single_displaced_rate_dR0p3_L1TkPt4, 
+              h_single_displaced_rate_dR0p3_L1TkPt4, 0.3,
               "L1Mu_trigger_rate_pt_dR0p3")
 
     makePlots(h_single_L1Mu_rate, 
               h_single_displaced_rate_dR0p2_L1TkPt2,
               h_single_displaced_rate_dR0p2_L1TkPt2p5, 
               h_single_displaced_rate_dR0p2_L1TkPt3, 
-              h_single_displaced_rate_dR0p2_L1TkPt4, 
+              h_single_displaced_rate_dR0p2_L1TkPt4, 0.2,
               "L1Mu_trigger_rate_pt_dR0p2")
 
     makePlots(h_single_L1Mu_rate, 
               h_single_displaced_rate_dR0p12_L1TkPt2,
               h_single_displaced_rate_dR0p12_L1TkPt2p5, 
               h_single_displaced_rate_dR0p12_L1TkPt3, 
-              h_single_displaced_rate_dR0p12_L1TkPt4, 
+              h_single_displaced_rate_dR0p12_L1TkPt4, 0.12,
               "L1Mu_trigger_rate_pt_dR0p12")
 
-  if not eff:
+  if not eff and False:
     makeRateVsEtaHistogram(10)
     makeRateVsEtaHistogram(15)
     makeRateVsEtaHistogram(20)
     pass
 
-  """
-  nPass = 0
-  for k in range(0,treeHits.GetEntries()): #
-      treeHits.GetEntry(k)
-
-      ## get the max value of the momentum
-      pts = list(treeHits.L1Mu_pt)
-      if len(pts)>=1:
-        nGoodMu = 0
-        for i in range(0,len(pts)):        
-          if treeHits.L1Mu_pt[i] >= 20 and treeHits.L1Mu_quality[i]>=4 and abs(treeHits.L1Mu_bx[i])<2 and abs(treeHits.L1Mu_eta[i])>=0.:
-            print k, i, treeHits.L1Mu_pt[i], treeHits.L1Mu_bx[i], treeHits.L1Mu_quality[i]
-            nGoodMu += 1
-        if nGoodMu>= 1:
-          nPass += 1
-      else:
-        continue
-
-  print "nPass", nPass
-  """
 
   #exit()
   
+  def makedRL1MuL1TkHistogram():
+
+    draw_1D(ch, "genGdMu_deta_prop", targetDir + "genGdMu_deta_prop", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="", opt = "")
+    draw_1D(ch, "genGdMu_dphi_prop", targetDir + "genGdMu_dphi_prop", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="", opt = "")
+    draw_1D(ch, "genGdMu_dR_prop", targetDir + "genGdMu_dR_prop", "dR; dR; Entries", "(100,0.,1.)", cut="", opt = "")
+
+    draw_1D(ch, "genGdMu_deta_prop", targetDir + "genGdMu_deta_prop_pt5", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="genGdMu_pt>5", opt = "")
+    draw_1D(ch, "genGdMu_dphi_prop", targetDir + "genGdMu_dphi_prop_pt5", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="genGdMu_pt>5", opt = "")
+    draw_1D(ch, "genGdMu_dR_prop", targetDir + "genGdMu_dR_prop_pt5", "dR; dR; Entries", "(100,0.,1.)", cut="genGdMu_pt>5", opt = "")
+
+    draw_1D(ch, "genGdMu_deta_prop", targetDir + "genGdMu_deta_prop_pt20", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="genGdMu_pt>20", opt = "")
+    draw_1D(ch, "genGdMu_dphi_prop", targetDir + "genGdMu_dphi_prop_pt20", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="genGdMu_pt>20", opt = "")
+    draw_1D(ch, "genGdMu_dR_prop", targetDir + "genGdMu_dR_prop_pt20", "dR; dR; Entries", "(100,0.,1.)", cut="genGdMu_pt>20", opt = "")
+
+    draw_1D(ch, "genGdMu_deta_prop", targetDir + "genGdMu_deta_prop_pt30", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="genGdMu_pt>30", opt = "")
+    draw_1D(ch, "genGdMu_dphi_prop", targetDir + "genGdMu_dphi_prop_pt30", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="genGdMu_pt>30", opt = "")
+    draw_1D(ch, "genGdMu_dR_prop", targetDir + "genGdMu_dR_prop_pt30", "dR; dR; Entries", "(100,0.,1.)", cut="genGdMu_pt>30", opt = "")
+
+
+    draw_1D(ch, "genGdMu_deta_prop", targetDir + "genGdMu_deta_prop_dxy0to0p1_pt5", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="abs(genGdMu_dxy)<0.1 && genGdMu_pt>5", opt = "")
+    draw_1D(ch, "genGdMu_dphi_prop", targetDir + "genGdMu_dphi_prop_dxy0to0p1_pt5", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="abs(genGdMu_dxy)<0.1 && genGdMu_pt>5", opt = "")
+    draw_1D(ch, "genGdMu_dR_prop", targetDir + "genGdMu_dR_prop_dxy0to0p1_pt5", "dR; dR; Entries", "(100,0.,1.)", cut="abs(genGdMu_dxy)<0.1 && genGdMu_pt>5", opt = "")
+
+    draw_1D(ch, "genGdMu_deta_prop", targetDir + "genGdMu_deta_prop_dxy1to5_pt5", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="1<abs(genGdMu_dxy) && abs(genGdMu_dxy)<5 && genGdMu_pt>5", opt = "")
+    draw_1D(ch, "genGdMu_dphi_prop", targetDir + "genGdMu_dphi_prop_dxy1to5_pt5", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="1<abs(genGdMu_dxy) && abs(genGdMu_dxy)<5 && genGdMu_pt>5", opt = "")
+    draw_1D(ch, "genGdMu_dR_prop", targetDir + "genGdMu_dR_prop_dxy1to5_pt5", "dR; dR; Entries", "(100,0.,1.)", cut="1<abs(genGdMu_dxy) && abs(genGdMu_dxy)<5 && genGdMu_pt>5", opt = "")
+
+    draw_1D(ch, "genGdMu_deta_prop", targetDir + "genGdMu_deta_prop_dxy5to10_pt5", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="5<abs(genGdMu_dxy) && abs(genGdMu_dxy)<10 && genGdMu_pt>5", opt = "")
+    draw_1D(ch, "genGdMu_dphi_prop", targetDir + "genGdMu_dphi_prop_dxy5to10_pt5", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="5<abs(genGdMu_dxy) && abs(genGdMu_dxy)<10 && genGdMu_pt>5", opt = "")
+    draw_1D(ch, "genGdMu_dR_prop", targetDir + "genGdMu_dR_prop_dxy5to10_pt5", "dR; dR; Entries", "(100,0.,1.)", cut="5<abs(genGdMu_dxy) && abs(genGdMu_dxy)<10 && genGdMu_pt>5", opt = "")
+
+    draw_1D(ch, "genGdMu_deta_prop", targetDir + "genGdMu_deta_prop_dxy10to50_pt5", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="10<abs(genGdMu_dxy) && abs(genGdMu_dxy)<30 && genGdMu_pt>5", opt = "")
+    draw_1D(ch, "genGdMu_dphi_prop", targetDir + "genGdMu_dphi_prop_dxy10to50_pt5", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="10<abs(genGdMu_dxy) && abs(genGdMu_dxy)<30 && genGdMu_pt>5", opt = "")
+    draw_1D(ch, "genGdMu_dR_prop", targetDir + "genGdMu_dR_prop_dxy10to50_pt5", "dR; dR; Entries", "(100,0.,1.)", cut="10<abs(genGdMu_dxy) && abs(genGdMu_dxy)<30 && genGdMu_pt>5", opt = "")
+
+
+    draw_1D(ch, "genGdMu_deta_prop", targetDir + "genGdMu_deta_prop_dxy0to0p1_pt20", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="abs(genGdMu_dxy)<0.1 && genGdMu_pt>20", opt = "")
+    draw_1D(ch, "genGdMu_dphi_prop", targetDir + "genGdMu_dphi_prop_dxy0to0p1_pt20", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="abs(genGdMu_dxy)<0.1 && genGdMu_pt>20", opt = "")
+    draw_1D(ch, "genGdMu_dR_prop", targetDir + "genGdMu_dR_prop_dxy0to0p1_pt20", "dR; dR; Entries", "(100,0.,1.)", cut="abs(genGdMu_dxy)<0.1 && genGdMu_pt>20", opt = "")
+
+    draw_1D(ch, "genGdMu_deta_prop", targetDir + "genGdMu_deta_prop_dxy1to5_pt20", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="1<abs(genGdMu_dxy) && abs(genGdMu_dxy)<5 && genGdMu_pt>20", opt = "")
+    draw_1D(ch, "genGdMu_dphi_prop", targetDir + "genGdMu_dphi_prop_dxy1to5_pt20", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="1<abs(genGdMu_dxy) && abs(genGdMu_dxy)<5 && genGdMu_pt>20", opt = "")
+    draw_1D(ch, "genGdMu_dR_prop", targetDir + "genGdMu_dR_prop_dxy1to5_pt20", "dR; dR; Entries", "(100,0.,1.)", cut="1<abs(genGdMu_dxy) && abs(genGdMu_dxy)<5 && genGdMu_pt>20", opt = "")
+
+    draw_1D(ch, "genGdMu_deta_prop", targetDir + "genGdMu_deta_prop_dxy5to10_pt20", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="5<abs(genGdMu_dxy) && abs(genGdMu_dxy)<10 && genGdMu_pt>20", opt = "")
+    draw_1D(ch, "genGdMu_dphi_prop", targetDir + "genGdMu_dphi_prop_dxy5to10_pt20", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="5<abs(genGdMu_dxy) && abs(genGdMu_dxy)<10 && genGdMu_pt>20", opt = "")
+    draw_1D(ch, "genGdMu_dR_prop", targetDir + "genGdMu_dR_prop_dxy5to10_pt20", "dR; dR; Entries", "(100,0.,1.)", cut="5<abs(genGdMu_dxy) && abs(genGdMu_dxy)<10 && genGdMu_pt>20", opt = "")
+
+    draw_1D(ch, "genGdMu_deta_prop", targetDir + "genGdMu_deta_prop_dxy10to50_pt20", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="10<abs(genGdMu_dxy) && abs(genGdMu_dxy)<30 && genGdMu_pt>20", opt = "")
+    draw_1D(ch, "genGdMu_dphi_prop", targetDir + "genGdMu_dphi_prop_dxy10to50_pt20", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="10<abs(genGdMu_dxy) && abs(genGdMu_dxy)<30 && genGdMu_pt>20", opt = "")
+    draw_1D(ch, "genGdMu_dR_prop", targetDir + "genGdMu_dR_prop_dxy10to50_pt20", "dR; dR; Entries", "(100,0.,1.)", cut="10<abs(genGdMu_dxy) && abs(genGdMu_dxy)<30 && genGdMu_pt>20", opt = "")
+
+
+    draw_1D(ch, "genGdMu_deta_corr", targetDir + "genGdMu_deta_corr", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="", opt = "")
+    draw_1D(ch, "genGdMu_dphi_corr", targetDir + "genGdMu_dphi_corr", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="", opt = "")
+    draw_1D(ch, "genGdMu_dR_corr", targetDir + "genGdMu_dR_corr", "dR; dR; Entries", "(100,0.,1.)", cut="", opt = "")
+
+    draw_1D(ch, "genGdMu_deta_corr", targetDir + "genGdMu_deta_corr_pt5", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="genGdMu_pt>5", opt = "")
+    draw_1D(ch, "genGdMu_dphi_corr", targetDir + "genGdMu_dphi_corr_pt5", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="genGdMu_pt>5", opt = "")
+    draw_1D(ch, "genGdMu_dR_corr", targetDir + "genGdMu_dR_corr_pt5", "dR; dR; Entries", "(100,0.,1.)", cut="genGdMu_pt>5", opt = "")
+
+    draw_1D(ch, "genGdMu_deta_corr", targetDir + "genGdMu_deta_corr_pt20", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="genGdMu_pt>20", opt = "")
+    draw_1D(ch, "genGdMu_dphi_corr", targetDir + "genGdMu_dphi_corr_pt20", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="genGdMu_pt>20", opt = "")
+    draw_1D(ch, "genGdMu_dR_corr", targetDir + "genGdMu_dR_corr_pt20", "dR; dR; Entries", "(100,0.,1.)", cut="genGdMu_pt>20", opt = "")
+
+    draw_1D(ch, "genGdMu_deta_corr", targetDir + "genGdMu_deta_corr_pt30", "d#eta; d#eta; Entries", "(100,0.,1.)", cut="genGdMu_pt>30", opt = "")
+    draw_1D(ch, "genGdMu_dphi_corr", targetDir + "genGdMu_dphi_corr_pt30", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="genGdMu_pt>30", opt = "")
+    draw_1D(ch, "genGdMu_dR_corr", targetDir + "genGdMu_dR_corr_pt30", "dR; dR; Entries", "(100,0.,1.)", cut="genGdMu_pt>30", opt = "")
+
+
+
+
+    genGdMu_L1Mu_dR_fid = TH1F("genGdMu_L1Mu_dR_fid","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    genGdMu_L1Mu_dR_fid_dxy0to0p1 = TH1F("genGdMu_L1Mu_dR_fid_dxy0to0p1","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    genGdMu_L1Mu_dR_fid_dxy1to5 = TH1F("genGdMu_L1Mu_dR_fid_dxy1to5","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    genGdMu_L1Mu_dR_fid_dxy5to10 = TH1F("genGdMu_L1Mu_dR_fid_dxy5to10","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    genGdMu_L1Mu_dR_fid_dxy10to50 = TH1F("genGdMu_L1Mu_dR_fid_dxy10to50","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+
+    genGdMu_L1Mu_dR_fid_barrel = TH1F("genGdMu_L1Mu_dR_fid_barrel","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    genGdMu_L1Mu_dR_fid_dxy0to0p1_barrel = TH1F("genGdMu_L1Mu_dR_fid_dxy0to0p1_barrel","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    genGdMu_L1Mu_dR_fid_dxy1to5_barrel = TH1F("genGdMu_L1Mu_dR_fid_dxy1to5_barrel","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    genGdMu_L1Mu_dR_fid_dxy5to10_barrel = TH1F("genGdMu_L1Mu_dR_fid_dxy5to10_barrel","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    genGdMu_L1Mu_dR_fid_dxy10to50_barrel = TH1F("genGdMu_L1Mu_dR_fid_dxy10to50_barrel","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+
+    genGdMu_L1Mu_dR_fid_endcap = TH1F("genGdMu_L1Mu_dR_fid_endcap","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    genGdMu_L1Mu_dR_fid_dxy0to0p1_endcap = TH1F("genGdMu_L1Mu_dR_fid_dxy0to0p1_endcap","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    genGdMu_L1Mu_dR_fid_dxy1to5_endcap = TH1F("genGdMu_L1Mu_dR_fid_dxy1to5_endcap","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    genGdMu_L1Mu_dR_fid_dxy5to10_endcap = TH1F("genGdMu_L1Mu_dR_fid_dxy5to10_endcap","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    genGdMu_L1Mu_dR_fid_dxy10to50_endcap = TH1F("genGdMu_L1Mu_dR_fid_dxy10to50_endcap","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+
+    L1Mu_L1Tk_dR_fid = TH1F("L1Mu_L1Tk_dR_fid","dR(real L1Mu,closest L1Tk);dR; Entries", 100,0.,1.)
+    L1Mu_L1Tk_dR_fid_dxy0to0p1 = TH1F("L1Mu_L1Tk_dR_fid_dxy0to0p1","dR(real L1Mu,closest L1Tk);dR; Entries", 100,0.,1.)
+    L1Mu_L1Tk_dR_fid_dxy1to5 = TH1F("L1Mu_L1Tk_dR_fid_dxy1to5","dR(real L1Mu,closest L1Tk);dR; Entries", 100,0.,1.)
+    L1Mu_L1Tk_dR_fid_dxy5to10 = TH1F("L1Mu_L1Tk_dR_fid_dxy5to10","dR(real L1Mu,closest L1Tk);dR; Entries", 100,0.,1.)
+    L1Mu_L1Tk_dR_fid_dxy10to50 = TH1F("L1Mu_L1Tk_dR_fid_dxy10to50","dR(real L1Mu,closest L1Tk);dR; Entries", 100,0.,1.)
+
+    treeHits = ch
+
+    for k in range(0,treeHits.GetEntries()):
+      treeHits.GetEntry(k)
+      if k%1000==0: print "Event", k, "nL1Mu", treeHits.nL1Mu
+
+      for i in range(0,2):
+        for j in range(0,2):
+          ij = i*2+j
+          
+          pt = abs(treeHits.genGdMu_pt[ij])
+          eta = treeHits.genGdMu_eta[ij]
+          phi = abs(treeHits.genGdMu_phi[ij])
+          eta_prop = treeHits.genGdMu_eta_prop[ij]
+          phi_prop = treeHits.genGdMu_phi_prop[ij]
+          dxy = abs(treeHits.genGdMu_dxy[ij])
+          vz = abs(treeHits.genGd_vz[i])
+          lxy =  abs(treeHits.genGd_lxy[i])
+
+          ## exclude all the bad muons
+          if (abs(treeHits.genGdMu_eta_prop[i*2+0])>2.4): 
+            continue
+          if (abs(treeHits.genGdMu_eta_prop[i*2+1])>2.4): 
+            continue
+          if (abs(treeHits.genGdMu_pt[i*2+0])<5): 
+            continue
+          if (abs(treeHits.genGdMu_pt[i*2+1])<5): 
+            continue
+          if (abs(treeHits.genGd0Gd1_dR) < 2):
+            continue
+          if (abs(treeHits.genGd_genMuMu_dR[i]) < 1):
+            continue
+          if treeHits.genGdMu_eta_prop[ij] == -99 or treeHits.genGdMu_phi_prop[ij] == -99:
+            continue
+          if lxy > 300:
+            continue
+          if vz > 500:
+            continue
+
+          L1Mu_index = treeHits.genGdMu_L1Mu_index_prop[ij]
+          L1Mu_dR_prop = treeHits.genGdMu_L1Mu_dR_prop[ij]
+
+          if L1Mu_index != 99:
+            L1Mu_pt = treeHits.L1Mu_pt[L1Mu_index]
+            L1Mu_eta = treeHits.L1Mu_eta[L1Mu_index]
+            L1Mu_phi = treeHits.L1Mu_phi[L1Mu_index]
+            L1Mu_bx = treeHits.L1Mu_bx[L1Mu_index]
+            L1Mu_quality = treeHits.L1Mu_quality[L1Mu_index]
+            L1Mu_L1Tk_dR_prop = treeHits.L1Mu_L1Tk_dR_prop[L1Mu_index]
+            L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt_prop[L1Mu_index]
+
+            extra_cuts = True
+            if extra_cuts: genGdMu_L1Mu_dR_fid.Fill(L1Mu_dR_prop)
+            if dxy<=0.1 and extra_cuts: genGdMu_L1Mu_dR_fid_dxy0to0p1.Fill(L1Mu_dR_prop)
+            if 1<dxy and dxy<=5 and extra_cuts: genGdMu_L1Mu_dR_fid_dxy1to5.Fill(L1Mu_dR_prop)
+            if 5<dxy and dxy<=10 and extra_cuts: genGdMu_L1Mu_dR_fid_dxy5to10.Fill(L1Mu_dR_prop)
+            if 10<dxy and dxy<=50 and extra_cuts: genGdMu_L1Mu_dR_fid_dxy10to50.Fill(L1Mu_dR_prop)
+            
+            extra_cuts = abs(eta_prop)<1.2
+            if extra_cuts: genGdMu_L1Mu_dR_fid_barrel.Fill(L1Mu_dR_prop)
+            if dxy<=0.1 and extra_cuts: genGdMu_L1Mu_dR_fid_dxy0to0p1_barrel.Fill(L1Mu_dR_prop)
+            if 1<dxy and dxy<=5 and extra_cuts: genGdMu_L1Mu_dR_fid_dxy1to5_barrel.Fill(L1Mu_dR_prop)
+            if 5<dxy and dxy<=10 and extra_cuts: genGdMu_L1Mu_dR_fid_dxy5to10_barrel.Fill(L1Mu_dR_prop)
+            if 10<dxy and dxy<=50 and extra_cuts: genGdMu_L1Mu_dR_fid_dxy10to50_barrel.Fill(L1Mu_dR_prop)
+
+            extra_cuts = abs(eta_prop)>1.2
+            if extra_cuts: genGdMu_L1Mu_dR_fid_endcap.Fill(L1Mu_dR_prop)
+            if dxy<=0.1 and extra_cuts: genGdMu_L1Mu_dR_fid_dxy0to0p1_endcap.Fill(L1Mu_dR_prop)
+            if 1<dxy and dxy<=5 and extra_cuts: genGdMu_L1Mu_dR_fid_dxy1to5_endcap.Fill(L1Mu_dR_prop)
+            if 5<dxy and dxy<=10 and extra_cuts: genGdMu_L1Mu_dR_fid_dxy5to10_endcap.Fill(L1Mu_dR_prop)
+            if 10<dxy and dxy<=50 and extra_cuts: genGdMu_L1Mu_dR_fid_dxy10to50_endcap.Fill(L1Mu_dR_prop)
+
+            extra_cuts = L1Mu_quality>=4 and abs(L1Mu_bx)==0
+            if extra_cuts: L1Mu_L1Tk_dR_fid.Fill(L1Mu_L1Tk_dR_prop)
+            if dxy<=0.1 and extra_cuts: L1Mu_L1Tk_dR_fid_dxy0to0p1.Fill(L1Mu_L1Tk_dR_prop)
+            if 1<dxy and dxy<=5 and extra_cuts: L1Mu_L1Tk_dR_fid_dxy1to5.Fill(L1Mu_L1Tk_dR_prop)
+            if 5<dxy and dxy<=10 and extra_cuts: L1Mu_L1Tk_dR_fid_dxy5to10.Fill(L1Mu_L1Tk_dR_prop)
+            if 10<dxy and dxy<=50 and extra_cuts: L1Mu_L1Tk_dR_fid_dxy10to50.Fill(L1Mu_L1Tk_dR_prop)
+            
+    makeSimplePlot(genGdMu_L1Mu_dR_fid, "genGdMu_L1Mu_dR_fid")
+    makeSimplePlot(genGdMu_L1Mu_dR_fid_dxy0to0p1, "genGdMu_L1Mu_dR_fid_dxy0to0p1")
+    makeSimplePlot(genGdMu_L1Mu_dR_fid_dxy1to5, "genGdMu_L1Mu_dR_fid_dxy1to5")
+    makeSimplePlot(genGdMu_L1Mu_dR_fid_dxy5to10, "genGdMu_L1Mu_dR_fid_dxy5to10")
+    makeSimplePlot(genGdMu_L1Mu_dR_fid_dxy10to50, "genGdMu_L1Mu_dR_fid_dxy10to50")
+
+    makeSimplePlot(genGdMu_L1Mu_dR_fid_barrel, "genGdMu_L1Mu_dR_fid_barrel")
+    makeSimplePlot(genGdMu_L1Mu_dR_fid_dxy0to0p1_barrel, "genGdMu_L1Mu_dR_fid_dxy0to0p1_barrel")
+    makeSimplePlot(genGdMu_L1Mu_dR_fid_dxy1to5_barrel, "genGdMu_L1Mu_dR_fid_dxy1to5_barrel")
+    makeSimplePlot(genGdMu_L1Mu_dR_fid_dxy5to10_barrel, "genGdMu_L1Mu_dR_fid_dxy5to10_barrel")
+    makeSimplePlot(genGdMu_L1Mu_dR_fid_dxy10to50_barrel, "genGdMu_L1Mu_dR_fid_dxy10to50_barrel")
+
+    makeSimplePlot(genGdMu_L1Mu_dR_fid_endcap, "genGdMu_L1Mu_dR_fid_endcap")
+    makeSimplePlot(genGdMu_L1Mu_dR_fid_dxy0to0p1_endcap, "genGdMu_L1Mu_dR_fid_dxy0to0p1_endcap")
+    makeSimplePlot(genGdMu_L1Mu_dR_fid_dxy1to5_endcap, "genGdMu_L1Mu_dR_fid_dxy1to5_endcap")
+    makeSimplePlot(genGdMu_L1Mu_dR_fid_dxy5to10_endcap, "genGdMu_L1Mu_dR_fid_dxy5to10_endcap")
+    makeSimplePlot(genGdMu_L1Mu_dR_fid_dxy10to50_endcap, "genGdMu_L1Mu_dR_fid_dxy10to50_endcap")
+
+    makeSimplePlot(L1Mu_L1Tk_dR_fid, "L1Mu_L1Tk_dR_fid")
+    makeSimplePlot(L1Mu_L1Tk_dR_fid_dxy0to0p1, "L1Mu_L1Tk_dR_fid_dxy0to0p1")
+    makeSimplePlot(L1Mu_L1Tk_dR_fid_dxy1to5, "L1Mu_L1Tk_dR_fid_dxy1to5")
+    makeSimplePlot(L1Mu_L1Tk_dR_fid_dxy5to10, "L1Mu_L1Tk_dR_fid_dxy5to10")
+    makeSimplePlot(L1Mu_L1Tk_dR_fid_dxy10to50, "L1Mu_L1Tk_dR_fid_dxy10to50")
+
+
+
+  if eff:
+    makedRL1MuL1TkHistogram()
+
+  exit()
+
   def makeEfficiencyHistogram():
 
     h_single_L1Mu_efficiency_L1Tk_pt0 = TH1F("h_single_L1Mu_efficiency_L1Tk_pt0"," ", 1000, 0, 20)
     h_single_L1Mu_efficiency_L1Tk_pt2 = TH1F("h_single_L1Mu_efficiency_L1Tk_pt2"," ", 1000, 0, 20)
     h_single_L1Mu_efficiency_L1Tk_pt3 = TH1F("h_single_L1Mu_efficiency_L1Tk_pt3"," ", 1000, 0, 20)
     h_single_L1Mu_efficiency_L1Tk_pt4 = TH1F("h_single_L1Mu_efficiency_L1Tk_pt4"," ", 1000, 0, 20)
+
+    binning2 = [0.05, 0.07, 0.1, 0.2, 0.3, 0.5, 1, 2, 4, 6, 10, 15, 20, 30, 50, 100, 200, 250, 275, 300, 400, 500, 1000]
+    nBins = len(binning2) - 1
+    genMu_dxy0to30_fid = TH1F("genMu_eta_dxy0to30_fid"," ", nBins, np.asarray(binning2))
+    genMu_dxy0to30_fidT = TH1F("genMu_eta_dxy0to30_fidT"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy0to30_fid = TH1F("L1Mu_genMu_eta_dxy0to30_fid"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy0to30_fidT = TH1F("L1Mu_genMu_eta_dxy0to30_fidT"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy0to30_fid_Q = TH1F("L1Mu_genMu_eta_dxy0to30_fid_Q"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy0to30_fid_BX_Q = TH1F("L1Mu_genMu_eta_dxy0to30_fid_BX_Q"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy0to30_fid_BX_Q_V = TH1F("L1Mu_genMu_eta_dxy0to30_fid_BX_Q_V"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy0to30_fid_BX_Q_V_I = TH1F("L1Mu_genMu_eta_dxy0to30_fid_BX_Q_V_I"," ", nBins, np.asarray(binning2))
 
     genMu_eta_dxy0to0p1_fid = TH1F("genMu_eta_dxy0to0p1_fid"," ", 25, 0, 2.5)
     genMu_eta_dxy1to5_fid = TH1F("genMu_eta_dxy1to5_fid"," ", 25, 0, 2.5)
@@ -1001,32 +1300,104 @@ if __name__ == "__main__":
 
     nTotalMuon = 0
     nGoodMuon = 0
-    for k in range(0,treeHits.GetEntries()): #
+  
+    nGoodGenMu = 0
+    nGoodGenMuMissingL1Mu = 0
+    nGoodGenMuMatchedL1MuMatchedToL1Tk = 0
+    nGoodGenMuMatchedL1MuMatchedToL1TkPt3 = 0
+    nGoodGenMuMatchedL1MuMatchedToL1TkPt4 = 0
+    nGoodGenMuMatchedL1MuMatchedToL1TkPt5 = 0
+    nGoodGenMuMatchedL1MuMatchedToL1TkPt6 = 0
+    nGoodGenMuMatchedL1MuMatchedToL1TkPt10 = 0
+    nGoodGenMuMatchedL1MuNotMatchedToL1Tk = 0
+    nGoodGenMuMatchedL1MuNotMatchedToL1TkL1MuQLessThan4 = 0
+    nGoodGenMuMatchedL1MuNotMatchedToL1TkL1MuBXNot0 = 0
+    nGoodGenMuMatchedL1MuTriggered = 0
+
+    for k in range(0,treeHits.GetEntries()):
       treeHits.GetEntry(k)
-      if verbose:
-        print "Event", k, "nL1Mu", treeHits.nL1Mu
+      print "Event", k, "nL1Mu", treeHits.nL1Mu
+      #if verbose:
       for i in range(0,2):
         for j in range(0,2):
           ij = i*2+j
-          if (abs(treeHits.genGdMu_eta[i*2+0])>2.5): 
+          
+          ## exclude all the bad muons
+          if (abs(treeHits.genGdMu_eta_prop[i*2+0])>2.4): 
             continue
-          if (abs(treeHits.genGdMu_eta[i*2+1])>2.5): 
+          if (abs(treeHits.genGdMu_eta_prop[i*2+1])>2.4): 
             continue
           if (abs(treeHits.genGdMu_pt[i*2+0])<5): 
             continue
           if (abs(treeHits.genGdMu_pt[i*2+1])<5): 
             continue
-            
+          if (abs(treeHits.genGd0Gd1_dR) < 2):
+            continue
+          if (abs(treeHits.genGd_genMuMu_dR[i]) < 1):
+            continue
+          if treeHits.genGdMu_eta_prop[ij] == -99 or treeHits.genGdMu_phi_prop[ij] == -99:
+            continue
+
+          pt = abs(treeHits.genGdMu_pt[ij])
+          eta = treeHits.genGdMu_eta[ij]
+          phi = abs(treeHits.genGdMu_phi[ij])
+          phi_corr = abs(treeHits.genGdMu_phi_corr[ij])
+          eta_prop = treeHits.genGdMu_eta_prop[ij]
+          phi_prop = treeHits.genGdMu_phi_prop[ij]
+          dxy = treeHits.genGdMu_dxy[ij]
+          vz = abs(treeHits.genGd_vz[i])
+          lxy =  abs(treeHits.genGd_lxy[i])
+
           if verbose:
-            print "\tMuon", i, j,
-            print "pt", treeHits.genGdMu_pt[ij],
-            print "eta", treeHits.genGdMu_eta[ij],
-            print "phi", treeHits.genGdMu_phi[ij],
-            print "phi_corr", treeHits.genGdMu_phi_corr[ij],
-            print "index_corr", treeHits.genGdMu_L1Mu_index_corr[ij],
-            print "dR", treeHits.genGdMu_L1Mu_dR_corr[ij],
+            print "\tGenMu", i, j,
+            print "pt", pt,
+            print "eta", eta,
+            print "phi", phi,
+            print "eta_prop", eta_prop,
+            print "phi_prop", phi_prop,
+            print "phi_corr", phi_corr,
+#            print "index_corr", treeHits.genGdMu_L1Mu_index_corr[ij],
+            print "dR_corr", treeHits.genGdMu_L1Mu_dR_corr[ij],
+#            print "index_prop", treeHits.genGdMu_L1Mu_index_prop[ij],
+            print "dR_prop", treeHits.genGdMu_L1Mu_dR_prop[ij],
             print "abs(dxy)", abs(treeHits.genGdMu_dxy[ij])
-          L1Mu_index = treeHits.genGdMu_L1Mu_index_corr[ij]
+          L1Mu_index = treeHits.genGdMu_L1Mu_index_prop[ij]
+          L1Mu_dR_prop = treeHits.genGdMu_L1Mu_dR_prop[ij]
+
+          trigL1Mu = False
+          trig_dR0p4_L1TkPt4 = False 
+          trig_dR0p4_L1TkPt3 = False 
+          trig_dR0p4_L1TkPt2p5 = False
+          trig_dR0p4_L1TkPt2 = False
+          
+          trig_dR0p3_L1TkPt4 = False 
+          trig_dR0p3_L1TkPt3 = False
+          trig_dR0p3_L1TkPt2p5 = False
+          trig_dR0p3_L1TkPt2 = False
+          
+          trig_dR0p2_L1TkPt4 = False
+          trig_dR0p2_L1TkPt3 = False
+          trig_dR0p2_L1TkPt2p5 = False
+          trig_dR0p2_L1TkPt2 = False
+
+          trig_dR0p12_L1TkPt4 = False
+          trig_dR0p12_L1TkPt3 = False
+          trig_dR0p12_L1TkPt2p5 = False
+          trig_dR0p12_L1TkPt2 = False
+
+          if L1Mu_index == 99 and verbose:
+            for ii in range(0,treeHits.nL1Mu):     
+              if treeHits.L1Mu_bx[ii] != 0: continue
+              print "\t\tNot Matched: L1Mu", ii,
+              print "L1Mu_pt", treeHits.L1Mu_pt[ii],
+              print "L1Mu_eta", treeHits.L1Mu_eta[ii],
+              print "L1Mu_phi", treeHits.L1Mu_phi[ii],
+              print "L1Mu_bx", treeHits.L1Mu_bx[ii],
+              print "L1Mu_quality", treeHits.L1Mu_quality[ii],
+              print "L1Mu_dR_prop", deltaR(eta_prop, phi_prop, treeHits.L1Mu_eta[ii], treeHits.L1Mu_phi[ii]),
+              print "L1Mu_dR_corr", deltaR(eta, phi_corr, treeHits.L1Mu_eta[ii], treeHits.L1Mu_phi[ii]),
+              print "index_prop", treeHits.genGdMu_L1Mu_index_prop[ij],
+              print "dR_prop", treeHits.genGdMu_L1Mu_dR_prop[ij]
 
           if L1Mu_index != 99:
             nTotalMuon +=1 
@@ -1035,157 +1406,67 @@ if __name__ == "__main__":
             L1Mu_phi = treeHits.L1Mu_phi[L1Mu_index]
             L1Mu_bx = treeHits.L1Mu_bx[L1Mu_index]
             L1Mu_quality = treeHits.L1Mu_quality[L1Mu_index]
-            L1Mu_isMatched = treeHits.L1Mu_isMatched[L1Mu_index]
-            L1Mu_isUnMatched = treeHits.L1Mu_isUnMatched[L1Mu_index]
-            L1Mu_isUnMatchedL1TkPt2 = treeHits.L1Mu_isUnMatchedL1TkPt2[L1Mu_index]
-            L1Mu_isUnMatchedL1TkPt2p5 = treeHits.L1Mu_isUnMatchedL1TkPt2p5[L1Mu_index]
-            L1Mu_isUnMatchedL1TkPt3 = treeHits.L1Mu_isUnMatchedL1TkPt3[L1Mu_index]
-            L1Mu_isUnMatchedL1TkPt4 = treeHits.L1Mu_isUnMatchedL1TkPt4[L1Mu_index]
-            L1Mu_L1Tk_dR_min = treeHits.L1Mu_L1Tk_dR_min[L1Mu_index]
-            L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt[L1Mu_index]
-            if L1Mu_quality >= 4:
-              nGoodMuon += 1
+            L1Mu_L1Tk_dR_prop = treeHits.L1Mu_L1Tk_dR_prop[L1Mu_index]
+            L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt_prop[L1Mu_index]
             if verbose:
-              print "\t\tL1Mu", "pt", L1Mu_pt, "eta", L1Mu_eta, "phi", L1Mu_phi, "Quality", L1Mu_quality,
-              print "L1Mu_L1Tk_dR_min", L1Mu_L1Tk_dR_min, "L1Mu_L1Tk_pt", L1Mu_L1Tk_pt
-              """
-              print "Matching", L1Mu_isMatched,
-              print L1Mu_isUnMatched, 
-              print L1Mu_isUnMatchedL1TkPt2,
-              print L1Mu_isUnMatchedL1TkPt3,
-              print L1Mu_isUnMatchedL1TkPt4
-              """
+              print "\t\tMatched: L1Mu", "pt", L1Mu_pt, "eta", L1Mu_eta, "phi", L1Mu_phi, "Quality", L1Mu_quality,
+              print "L1Mu_L1Tk_dR_min", L1Mu_L1Tk_dR_prop, "L1Mu_L1Tk_pt", L1Mu_L1Tk_pt
+                
 
-            """
-            matched = False
-            unMatched_dR0p4_L1TkPt4 = False
-            unMatched_dR0p4_L1TkPt3 = False
-            unMatched_dR0p4_L1TkPt2p5 = False
-            unMatched_dR0p4_L1TkPt2 = False
-
-            unMatched_dR0p3_L1TkPt4 = False
-            unMatched_dR0p3_L1TkPt3 = False
-            unMatched_dR0p3_L1TkPt2p5 = False
-            unMatched_dR0p3_L1TkPt2 = False
-
-            unMatched_dR0p2_L1TkPt4 = False
-            unMatched_dR0p2_L1TkPt3 = False
-            unMatched_dR0p2_L1TkPt2p5 = False
-            unMatched_dR0p2_L1TkPt2 = False
-
-            unMatched_dR0p12_L1TkPt4 = False
-            unMatched_dR0p12_L1TkPt3 = False
-            unMatched_dR0p12_L1TkPt2p5 = False
-            unMatched_dR0p12_L1TkPt2 = False
-
-            ## matched 
-            if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_quality >= 4: matched
+            matched = L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_quality >= 4
+            matched = matched and L1Mu_L1Tk_pt>=4 ## optional pT cut to increase the efficiency of matched L1Mu
+            common = (abs(L1Mu_bx) <= 0) and (L1Mu_quality >= 4)
             
-            ## unmatched 
-            if L1Mu_L1Tk_dR_min <= 0.4 and L1Mu_L1Tk_pt>=4: unMatched_dR0p4_L1TkPt4 = True
-            if L1Mu_L1Tk_dR_min <= 0.4 and L1Mu_L1Tk_pt>=3: unMatched_dR0p4_L1TkPt3 = True
-            if L1Mu_L1Tk_dR_min <= 0.4 and L1Mu_L1Tk_pt>=2.5: unMatched_dR0p4_L1TkPt2p5 = True
-            if L1Mu_L1Tk_dR_min <= 0.4 and L1Mu_L1Tk_pt>=2: unMatched_dR0p4_L1TkPt2 = True
+            if (common): trigL1Mu = True
+            if ((not matched) and not (L1Mu_L1Tk_dR_prop <= 0.4 and L1Mu_L1Tk_pt>=4) and common): trig_dR0p4_L1TkPt4 = True
+            if ((not matched) and not (L1Mu_L1Tk_dR_prop <= 0.4 and L1Mu_L1Tk_pt>=3) and common): trig_dR0p4_L1TkPt3 = True
+            if ((not matched) and not (L1Mu_L1Tk_dR_prop <= 0.4 and L1Mu_L1Tk_pt>=2.5) and common): trig_dR0p4_L1TkPt2p5 = True
+            if ((not matched) and not (L1Mu_L1Tk_dR_prop <= 0.4 and L1Mu_L1Tk_pt>=2) and common): trig_dR0p4_L1TkPt2 = True
 
-            if L1Mu_L1Tk_dR_min <= 0.3 and L1Mu_L1Tk_pt>=4: unMatched_dR0p3_L1TkPt4 = True
-            if L1Mu_L1Tk_dR_min <= 0.3 and L1Mu_L1Tk_pt>=3: unMatched_dR0p3_L1TkPt3 = True
-            if L1Mu_L1Tk_dR_min <= 0.3 and L1Mu_L1Tk_pt>=2.5: unMatched_dR0p3_L1TkPt2p5 = True
-            if L1Mu_L1Tk_dR_min <= 0.3 and L1Mu_L1Tk_pt>=2: unMatched_dR0p3_L1TkPt2 = True
-
-            if L1Mu_L1Tk_dR_min <= 0.2 and L1Mu_L1Tk_pt>=4: unMatched_dR0p2_L1TkPt4 = True
-            if L1Mu_L1Tk_dR_min <= 0.2 and L1Mu_L1Tk_pt>=3: unMatched_dR0p2_L1TkPt3 = True
-            if L1Mu_L1Tk_dR_min <= 0.2 and L1Mu_L1Tk_pt>=2.5: unMatched_dR0p2_L1TkPt2p5 = True
-            if L1Mu_L1Tk_dR_min <= 0.2 and L1Mu_L1Tk_pt>=2: unMatched_dR0p2_L1TkPt2 = True
-
-            if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_L1Tk_pt>=4: unMatched_dR0p12_L1TkPt4 = True
-            if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_L1Tk_pt>=3: unMatched_dR0p12_L1TkPt3 = True
-            if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_L1Tk_pt>=2.5: unMatched_dR0p12_L1TkPt2p5 = True
-            if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_L1Tk_pt>=2: unMatched_dR0p12_L1TkPt2 = True
-
-            common = (abs(L1Mu_bx) == 0) and (L1Mu_quality >= 4) and L1Mu_pt>=0
-
-            trigL1Mu = common
-            trig_dR0p4_L1TkPt4 =   (not matched) and (not unMatched_dR0p4_L1TkPt4) and common
-            trig_dR0p4_L1TkPt3 =   (not matched) and (not unMatched_dR0p4_L1TkPt3) and common
-            trig_dR0p4_L1TkPt2p5 = (not matched) and (not unMatched_dR0p4_L1TkPt2p5) and common
-            trig_dR0p4_L1TkPt2 =   (not matched) and (not unMatched_dR0p4_L1TkPt2) and common
-
-            trig_dR0p3_L1TkPt4 =   (not matched) and (not unMatched_dR0p3_L1TkPt4) and common
-            trig_dR0p3_L1TkPt3 =   (not matched) and (not unMatched_dR0p3_L1TkPt3) and common
-            trig_dR0p3_L1TkPt2p5 = (not matched) and (not unMatched_dR0p3_L1TkPt2p5) and common
-            trig_dR0p3_L1TkPt2 =   (not matched) and (not unMatched_dR0p3_L1TkPt2) and common
-
-            trig_dR0p2_L1TkPt4 =   (not matched) and (not unMatched_dR0p2_L1TkPt4) and common
-            trig_dR0p2_L1TkPt3 =   (not matched) and (not unMatched_dR0p2_L1TkPt3) and common
-            trig_dR0p2_L1TkPt2p5 = (not matched) and (not unMatched_dR0p2_L1TkPt2p5) and common
-            trig_dR0p2_L1TkPt2 =   (not matched) and (not unMatched_dR0p2_L1TkPt2) and common
-
-            trig_dR0p12_L1TkPt4 =   (not matched) and common
-            trig_dR0p12_L1TkPt3 =   (not matched) and common
-            trig_dR0p12_L1TkPt2p5 = (not matched) and common
-            trig_dR0p12_L1TkPt2 =   (not matched) and common
-            """
-
-            trigL1Mu = True
-            trig_dR0p4_L1TkPt4 = True 
-            trig_dR0p4_L1TkPt3 = True 
-            trig_dR0p4_L1TkPt2p5 = True
-            trig_dR0p4_L1TkPt2 = True
-
-            trig_dR0p3_L1TkPt4 = True 
-            trig_dR0p3_L1TkPt3 = True
-            trig_dR0p3_L1TkPt2p5 = True
-            trig_dR0p3_L1TkPt2 = True
-
-            trig_dR0p2_L1TkPt4 = True
-            trig_dR0p2_L1TkPt3 = True
-            trig_dR0p2_L1TkPt2p5 = True
-            trig_dR0p2_L1TkPt2 = True
-
-            trig_dR0p12_L1TkPt4 = True
-            trig_dR0p12_L1TkPt3 = True
-            trig_dR0p12_L1TkPt2p5 = True
-            trig_dR0p12_L1TkPt2 = True
-
-            matched = L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_quality >= 4
-            common = (abs(L1Mu_bx) != 0) or (L1Mu_quality < 4)
+            if ((not matched) and not (L1Mu_L1Tk_dR_prop <= 0.3 and L1Mu_L1Tk_pt>=4) and common): trig_dR0p3_L1TkPt4 = True
+            if ((not matched) and not (L1Mu_L1Tk_dR_prop <= 0.3 and L1Mu_L1Tk_pt>=3) and common): trig_dR0p3_L1TkPt3 = True
+            if ((not matched) and not (L1Mu_L1Tk_dR_prop <= 0.3 and L1Mu_L1Tk_pt>=2.5) and common): trig_dR0p3_L1TkPt2p5 = True
+            if ((not matched) and not (L1Mu_L1Tk_dR_prop <= 0.3 and L1Mu_L1Tk_pt>=2) and common): trig_dR0p3_L1TkPt2 = True
             
-            if (abs(L1Mu_bx) != 0) or (L1Mu_quality < 4): trigL1Mu = False
-            if (matched or (L1Mu_L1Tk_dR_min <= 0.4 and L1Mu_L1Tk_pt>=4) or common): trig_dR0p4_L1TkPt4 = False
-            if (matched or (L1Mu_L1Tk_dR_min <= 0.4 and L1Mu_L1Tk_pt>=3) or common): trig_dR0p4_L1TkPt3 = False
-            if (matched or (L1Mu_L1Tk_dR_min <= 0.4 and L1Mu_L1Tk_pt>=2.5) or common): trig_dR0p4_L1TkPt2p5 = False
-            if (matched or (L1Mu_L1Tk_dR_min <= 0.4 and L1Mu_L1Tk_pt>=2) or common): trig_dR0p4_L1TkPt2 = False
+            if ((not matched) and not (L1Mu_L1Tk_dR_prop <= 0.2 and L1Mu_L1Tk_pt>=4) and common): trig_dR0p2_L1TkPt4 = True
+            if ((not matched) and not (L1Mu_L1Tk_dR_prop <= 0.2 and L1Mu_L1Tk_pt>=3) and common): trig_dR0p2_L1TkPt3 = True
+            if ((not matched) and not (L1Mu_L1Tk_dR_prop <= 0.2 and L1Mu_L1Tk_pt>=2.5) and common): trig_dR0p2_L1TkPt2p5 = True
+            if ((not matched) and not (L1Mu_L1Tk_dR_prop <= 0.2 and L1Mu_L1Tk_pt>=2) and common): trig_dR0p2_L1TkPt2 = True
 
-            if (matched or (L1Mu_L1Tk_dR_min <= 0.3 and L1Mu_L1Tk_pt>=4) or common): trig_dR0p3_L1TkPt4 = False
-            if (matched or (L1Mu_L1Tk_dR_min <= 0.3 and L1Mu_L1Tk_pt>=3) or common): trig_dR0p3_L1TkPt3 = False
-            if (matched or (L1Mu_L1Tk_dR_min <= 0.3 and L1Mu_L1Tk_pt>=2.5) or common): trig_dR0p3_L1TkPt2p5 = False
-            if (matched or (L1Mu_L1Tk_dR_min <= 0.3 and L1Mu_L1Tk_pt>=2) or common): trig_dR0p3_L1TkPt2 = False
-            
-            if (matched or (L1Mu_L1Tk_dR_min <= 0.2 and L1Mu_L1Tk_pt>=4) or common): trig_dR0p2_L1TkPt4 = False
-            if (matched or (L1Mu_L1Tk_dR_min <= 0.2 and L1Mu_L1Tk_pt>=3) or common): trig_dR0p2_L1TkPt3 = False
-            if (matched or (L1Mu_L1Tk_dR_min <= 0.2 and L1Mu_L1Tk_pt>=2.5) or common): trig_dR0p2_L1TkPt2p5 = False
-            if (matched or (L1Mu_L1Tk_dR_min <= 0.2 and L1Mu_L1Tk_pt>=2) or common): trig_dR0p2_L1TkPt2 = False
+            if ((not matched) and common): trig_dR0p12_L1TkPt4 = True
+            if ((not matched) and common): trig_dR0p12_L1TkPt3 = True
+            if ((not matched) and common): trig_dR0p12_L1TkPt2p5 = True
+            if ((not matched) and common): trig_dR0p12_L1TkPt2 = True
 
-            if (matched or common): trig_dR0p12_L1TkPt4 = False
-            if (matched or common): trig_dR0p12_L1TkPt3 = False
-            if (matched or common): trig_dR0p12_L1TkPt2p5 = False
-            if (matched or common): trig_dR0p12_L1TkPt2 = False
 
-          eta = abs(treeHits.genGdMu_eta[ij])
-          dxy = abs(treeHits.genGdMu_dxy[ij])
-          pt = treeHits.genGdMu_pt[ij]
-          vz = abs(treeHits.genGd_vz[i])
-          lxy =  abs(treeHits.genGd_lxy[i])
+          dxy_range1 = (abs(dxy) <= 0.1)
+          dxy_range2 = (abs(dxy) > 1 and abs(dxy) <= 5)
+          dxy_range3 = (abs(dxy) > 5 and abs(dxy) <= 10)
+          dxy_range4 = (abs(dxy) > 10 and abs(dxy) <= 50)
 
-          dxy_range1 = (dxy <= 0.1)
-          dxy_range2 = (dxy > 1 and dxy <= 5)
-          dxy_range3 = (dxy > 5 and dxy <= 10)
-          dxy_range4 = (dxy > 10 and dxy <= 50)
-
-          eta_fid = eta<2.5 and vz < 500 and lxy < 300
+          eta_fid = abs(eta_prop)<2.4 and vz < 500 and lxy < 300
+          eta_fid_tight = abs(eta_prop)<2.4 and vz < 300 and lxy < 300
           pt_fid = pt>=5 and vz < 500 and lxy < 300
+          
+          if eta_fid:
+            genMu_dxy0to30_fid.Fill(abs(dxy))
+            if L1Mu_index != 99 and L1Mu_dR_prop < 0.2: 
+              L1Mu_genMu_dxy0to30_fid.Fill(abs(dxy))
+              if (L1Mu_quality >= 4):
+                L1Mu_genMu_dxy0to30_fid_Q.Fill(abs(dxy))
+                if (abs(L1Mu_bx) <= 0):
+                  L1Mu_genMu_dxy0to30_fid_BX_Q.Fill(abs(dxy))
+                  if not matched:
+                    L1Mu_genMu_dxy0to30_fid_BX_Q_V.Fill(abs(dxy))
+                    if trig_dR0p2_L1TkPt4:
+                      L1Mu_genMu_dxy0to30_fid_BX_Q_V_I.Fill(abs(dxy))
+            
+          if eta_fid_tight:
+            genMu_dxy0to30_fidT.Fill(abs(dxy))
+            if treeHits.genGdMu_L1Mu_index_corr[ij] != 99 and L1Mu_dR_prop < 0.2: 
+              L1Mu_genMu_dxy0to30_fidT.Fill(abs(dxy))
 
-
+          eta = abs(eta_prop)
           ## pt efficiencies
           if dxy_range1 and eta_fid:
             genMu_pt_dxy0to0p1_fid.Fill(pt)
@@ -1212,6 +1493,7 @@ if __name__ == "__main__":
 
           if dxy_range2 and eta_fid:
             genMu_pt_dxy1to5_fid.Fill(pt)
+            nGoodGenMu += 1
             if trigL1Mu:             L1Mu_genMu_pt_dxy1to5_fid.Fill(pt)
             if trig_dR0p4_L1TkPt4:   L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt4.Fill(pt)
             if trig_dR0p4_L1TkPt3:   L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt3.Fill(pt)
@@ -1231,7 +1513,46 @@ if __name__ == "__main__":
             if trig_dR0p12_L1TkPt4: L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt4.Fill(pt)
             if trig_dR0p12_L1TkPt3: L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt3.Fill(pt)
             if trig_dR0p12_L1TkPt2p5: L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt2p5.Fill(pt)
-            if trig_dR0p12_L1TkPt2: L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt2.Fill(pt)
+            if trig_dR0p12_L1TkPt2: 
+              L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt2.Fill(pt)
+              nGoodGenMuMatchedL1MuTriggered += 1
+            else:
+              print "\t\tGood GenMu with small dxy was not triggered", L1Mu_index              
+              if L1Mu_index == 99:
+                print "\t\t\tMissing L1Mu!"
+                nGoodGenMuMissingL1Mu += 1
+                print "\t\tlxy", lxy
+              if L1Mu_index != 99:
+                print "\t\t\tL1Mu was there!"
+                L1Mu_pt = treeHits.L1Mu_pt[L1Mu_index]
+                L1Mu_eta = treeHits.L1Mu_eta[L1Mu_index]
+                L1Mu_phi = treeHits.L1Mu_phi[L1Mu_index]
+                L1Mu_bx = treeHits.L1Mu_bx[L1Mu_index]
+                L1Mu_quality = treeHits.L1Mu_quality[L1Mu_index]
+                L1Mu_L1Tk_dR_prop = treeHits.L1Mu_L1Tk_dR_prop[L1Mu_index]
+                L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt_prop[L1Mu_index]
+                matched = L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_quality >= 4
+                common = (abs(L1Mu_bx) <= 0) and (L1Mu_quality >= 4)
+#                print "\t\tProperties:", "pt", L1Mu_pt, "eta", L1Mu_eta, "phi", L1Mu_phi, "Quality", L1Mu_quality,
+#                print "L1Tk_dR", L1Mu_L1Tk_dR_prop, "L1Tk_pt", L1Mu_L1Tk_pt, "bx", L1Mu_bx
+                if (matched):
+                  print "\t\t\tL1Mu was matched to a L1Tk!", L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt
+                  nGoodGenMuMatchedL1MuMatchedToL1Tk += 1
+                  if L1Mu_L1Tk_pt >= 3: nGoodGenMuMatchedL1MuMatchedToL1TkPt3 += 1 
+                  if L1Mu_L1Tk_pt >= 4: nGoodGenMuMatchedL1MuMatchedToL1TkPt4 += 1
+                  if L1Mu_L1Tk_pt >= 5: nGoodGenMuMatchedL1MuMatchedToL1TkPt5 += 1
+                  if L1Mu_L1Tk_pt >= 6: nGoodGenMuMatchedL1MuMatchedToL1TkPt6 += 1
+                  if L1Mu_L1Tk_pt >= 10: nGoodGenMuMatchedL1MuMatchedToL1TkPt10 += 1
+
+                else:
+                  nGoodGenMuMatchedL1MuNotMatchedToL1Tk += 1              
+                  if (not abs(L1Mu_bx) <= 0):
+                    print "\t\t\tL1Mu does not have bx=0!"
+                    nGoodGenMuMatchedL1MuNotMatchedToL1TkL1MuBXNot0 += 1
+                  else:
+                    if (L1Mu_quality<4):
+                      print "\t\t\tL1Mu does not have Q>=0!"
+                      nGoodGenMuMatchedL1MuNotMatchedToL1TkL1MuQLessThan4 += 1
 
           if dxy_range3 and eta_fid:
             genMu_pt_dxy5to10_fid.Fill(pt)
@@ -1372,7 +1693,22 @@ if __name__ == "__main__":
             if trig_dR0p12_L1TkPt2p5: L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt2p5.Fill(eta)
             if trig_dR0p12_L1TkPt2: L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt2.Fill(eta)
     
-    print "nTotalMuon", nTotalMuon, "nGoodMuon", nGoodMuon
+    print "---------------------------------------------"
+    print "Trigger Report"
+    print "---------------------------------------------"
+    print "nGoodGenMu", nGoodGenMu
+    print "nGoodGenMuMatchedL1MuTriggered", nGoodGenMuMatchedL1MuTriggered
+    print "nGoodGenMuMissingL1Mu", nGoodGenMuMissingL1Mu
+    print "nGoodGenMuMatchedL1MuMatchedToL1Tk", nGoodGenMuMatchedL1MuMatchedToL1Tk
+    print "\tnGoodGenMuMatchedL1MuMatchedToL1TkPt3", nGoodGenMuMatchedL1MuMatchedToL1TkPt3
+    print "\tnGoodGenMuMatchedL1MuMatchedToL1TkPt4", nGoodGenMuMatchedL1MuMatchedToL1TkPt4
+    print "\tnGoodGenMuMatchedL1MuMatchedToL1TkPt5", nGoodGenMuMatchedL1MuMatchedToL1TkPt5
+    print "\tnGoodGenMuMatchedL1MuMatchedToL1TkPt6", nGoodGenMuMatchedL1MuMatchedToL1TkPt6
+    print "\tnGoodGenMuMatchedL1MuMatchedToL1TkPt10", nGoodGenMuMatchedL1MuMatchedToL1TkPt10
+    print "nGoodGenMuMatchedL1MuNotMatchedToL1Tk", nGoodGenMuMatchedL1MuNotMatchedToL1Tk
+    print "nGoodGenMuMatchedL1MuNotMatchedToL1TkL1MuQLessThan4", nGoodGenMuMatchedL1MuNotMatchedToL1TkL1MuQLessThan4
+    print "nGoodGenMuMatchedL1MuNotMatchedToL1TkL1MuBXNot0", nGoodGenMuMatchedL1MuNotMatchedToL1TkL1MuBXNot0
+    print "---------------------------------------------"
 
     def makeEffPlot(eff1, eff2, eff3, eff4, title, doPt = True):
       
@@ -1383,6 +1719,8 @@ if __name__ == "__main__":
       gStyle.SetPadRightMargin(0.04);
       gStyle.SetPadTopMargin(0.06);
       gStyle.SetPadBottomMargin(0.13);
+      gPad.SetTickx(1)
+      gPad.SetTicky(1)
       #gPad.SetLogx(1)
       
       if doPt: mmax = 50;  xaxisTitle = "True Muon p_{T} [GeV]"
@@ -1397,7 +1735,7 @@ if __name__ == "__main__":
       b1.GetXaxis().SetTitleFont(62)
       b1.GetXaxis().SetTitleOffset(1.2)
       b1.GetXaxis().SetTitleSize(0.045)
-      b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" " + pu + ", 14TeV")
+      b1.SetTitle("                                                                  14TeV, " + pu)
       b1.SetStats(0)
       b1.Draw()
 
@@ -1410,6 +1748,15 @@ if __name__ == "__main__":
       eff4.SetLineColor(kBlue)
       eff4.Draw("same")
       
+      """
+      if doPt:
+        print title, "pt15", "%.2f"%((eff4.GetEfficiency(13) + eff4.GetEfficiency(14))/2.)
+        print title, "pt20", "%.2f"%(eff4.GetEfficiency(16)) 
+        print 
+      """
+
+      latex = applyTdrStyle()      
+
       leg = TLegend(0.7,0.4,0.9,0.6,"","brNDC")
       leg.SetFillColor(kWhite)
       leg.SetBorderSize(0)
@@ -1427,200 +1774,201 @@ if __name__ == "__main__":
                 TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2,   genMu_pt_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt2,  genMu_pt_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt2,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p4_L1TkPt2.png", True)
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p4_L1TkPt2" + ext, True)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt2p5, genMu_pt_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2p5,   genMu_pt_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt2p5,  genMu_pt_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt2p5,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p4_L1TkPt2p5.png", True)
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p4_L1TkPt2p5" + ext, True)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt3, genMu_pt_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt3,   genMu_pt_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt3,  genMu_pt_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt3,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p4_L1TkPt3.png", True)
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p4_L1TkPt3" + ext, True)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt4, genMu_pt_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt4,   genMu_pt_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt4,  genMu_pt_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt4,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p4_L1TkPt4.png", True)
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p4_L1TkPt4" + ext, True)
 
 
     makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt2, genMu_pt_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2,   genMu_pt_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt2,  genMu_pt_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt2,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p3_L1TkPt2.png", True)
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p3_L1TkPt2" + ext, True)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt2p5, genMu_pt_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2p5,   genMu_pt_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt2p5,  genMu_pt_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt2p5,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p3_L1TkPt2p5.png", True)
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p3_L1TkPt2p5" + ext, True)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt3, genMu_pt_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt3,   genMu_pt_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt3,  genMu_pt_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt3,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p3_L1TkPt3.png", True)
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p3_L1TkPt3" + ext, True)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt4, genMu_pt_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt4,   genMu_pt_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt4,  genMu_pt_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt4,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p3_L1TkPt4.png", True)
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p3_L1TkPt4" + ext, True)
 
 
     makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt2, genMu_pt_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2,   genMu_pt_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt2,  genMu_pt_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt2,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p2_L1TkPt2.png", True)
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p2_L1TkPt2" + ext, True)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt2p5, genMu_pt_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2p5,   genMu_pt_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt2p5,  genMu_pt_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt2p5,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p2_L1TkPt2p5.png", True)
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p2_L1TkPt2p5" + ext, True)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt3, genMu_pt_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt3,   genMu_pt_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt3,  genMu_pt_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt3,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p2_L1TkPt3.png", True)
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p2_L1TkPt3" + ext, True)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt4, genMu_pt_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt4,   genMu_pt_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt4,  genMu_pt_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt4,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p2_L1TkPt4.png", True)
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p2_L1TkPt4" + ext, True)
 
 
     makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt2, genMu_pt_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt2,   genMu_pt_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt2,  genMu_pt_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt2,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p12_L1TkPt2.png", True)
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p12_L1TkPt2" + ext, True)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt2p5, genMu_pt_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt2p5,   genMu_pt_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt2p5,  genMu_pt_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt2p5,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p12_L1TkPt2p5.png", True)
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p12_L1TkPt2p5" + ext, True)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt3, genMu_pt_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt3,   genMu_pt_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt3,  genMu_pt_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt3,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p12_L1TkPt3.png", True)
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p12_L1TkPt3" + ext, True)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt4, genMu_pt_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt4,   genMu_pt_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt4,  genMu_pt_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt4,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p12_L1TkPt4.png", True)
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p12_L1TkPt4" + ext, True)
 
+    
     ## eta effciency plots
     makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt2, genMu_eta_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt2,   genMu_eta_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt2,  genMu_eta_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt2,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p4_L1TkPt2.png", False)
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p4_L1TkPt2" + ext, False)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt2p5, genMu_eta_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt2p5,   genMu_eta_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt2p5,  genMu_eta_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt2p5,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p4_L1TkPt2p5.png", False)
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p4_L1TkPt2p5" + ext, False)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt3, genMu_eta_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt3,   genMu_eta_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt3,  genMu_eta_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt3,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p4_L1TkPt3.png", False)
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p4_L1TkPt3" + ext, False)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt4, genMu_eta_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt4,   genMu_eta_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt4,  genMu_eta_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt4,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p4_L1TkPt4.png", False)
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p4_L1TkPt4" + ext, False)
 
 
     makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt2, genMu_eta_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt2,   genMu_eta_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt2,  genMu_eta_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt2,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p3_L1TkPt2.png", False)
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p3_L1TkPt2" + ext, False)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt2p5, genMu_eta_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt2p5,   genMu_eta_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt2p5,  genMu_eta_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt2p5,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p3_L1TkPt2p5.png", False)
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p3_L1TkPt2p5" + ext, False)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt3, genMu_eta_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt3,   genMu_eta_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt3,  genMu_eta_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt3,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p3_L1TkPt3.png", False)
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p3_L1TkPt3" + ext, False)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt4, genMu_eta_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt4,   genMu_eta_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt4,  genMu_eta_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt4,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p3_L1TkPt4.png", False)
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p3_L1TkPt4" + ext, False)
 
 
     makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt2, genMu_eta_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt2,   genMu_eta_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt2,  genMu_eta_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt2,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p2_L1TkPt2.png", False)
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p2_L1TkPt2" + ext, False)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt2p5, genMu_eta_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt2p5,   genMu_eta_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt2p5,  genMu_eta_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt2p5,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p2_L1TkPt2p5.png", False)
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p2_L1TkPt2p5" + ext, False)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt3, genMu_eta_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt3,   genMu_eta_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt3,  genMu_eta_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt3,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p2_L1TkPt3.png", False)
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p2_L1TkPt3" + ext, False)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt4, genMu_eta_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt4,   genMu_eta_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt4,  genMu_eta_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt4,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p2_L1TkPt4.png", False)
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p2_L1TkPt4" + ext, False)
 
 
     makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt2, genMu_eta_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt2,   genMu_eta_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt2,  genMu_eta_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt2,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p12_L1TkPt2.png", False)
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p12_L1TkPt2" + ext, False)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt2p5, genMu_eta_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt2p5,   genMu_eta_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt2p5,  genMu_eta_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt2p5,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p12_L1TkPt2p5.png", False)
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p12_L1TkPt2p5" + ext, False)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt3, genMu_eta_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt3,   genMu_eta_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt3,  genMu_eta_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt3,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p12_L1TkPt3.png", False)
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p12_L1TkPt3" + ext, False)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt4, genMu_eta_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt4,   genMu_eta_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt4,  genMu_eta_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt4,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p12_L1TkPt4.png", False)
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p12_L1TkPt4" + ext, False)
 
 
     ## debug for slava
@@ -1628,17 +1976,95 @@ if __name__ == "__main__":
                 TEfficiency(L1Mu_genMu_pt_dxy1to5_fid,   genMu_pt_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy5to10_fid,  genMu_pt_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_pt_dxy10_fid,     genMu_pt_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_pt_fid.png", True)
+                targetDir + "L1Mu_trigger_efficiency_pt_fid" + ext, True)
 
     makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid, genMu_eta_dxy0to0p1_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy1to5_fid,   genMu_eta_dxy1to5_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy5to10_fid,  genMu_eta_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy10_fid,     genMu_eta_dxy10_fid),
-                targetDir + "L1Mu_trigger_efficiency_eta_fid.png", False)
+                targetDir + "L1Mu_trigger_efficiency_eta_fid" + ext, False)
 
+    def makeDxyEffPlot(eff1, eff2, eff3, eff4, eff5, title):
+      
+      c = TCanvas("c","c",800,600)
+      c.Clear()    
+      gStyle.SetTitleBorderSize(0);
+      gStyle.SetPadLeftMargin(0.126);
+      gStyle.SetPadRightMargin(0.04);
+      gStyle.SetPadTopMargin(0.06);
+      gStyle.SetPadBottomMargin(0.13);
+      gPad.SetTickx(1)
+      gPad.SetTicky(1)
+      gPad.SetLogx(1)
+      
+      binning2 = [0.05, 0.07, 0.1, 0.2, 0.3, 0.5, 1, 2, 4, 6, 10, 15, 20, 30, 50, 100, 200, 250, 275, 300, 400, 500, 1000] #
+      nBins = len(binning2) - 1
 
+      #b1 = TH1F("b1","b1", 30, 0, 30)
+      b1 = TH1F("b1","b1", nBins, np.asarray(binning2))
+      #b1.GetYaxis().SetRangeUser(.01,100)
+      b1.GetYaxis().SetTitleOffset(1.2)
+      b1.GetYaxis().SetNdivisions(520)
+      b1.GetYaxis().SetTitle("Trigger Reconstruction efficiency")
+      b1.GetXaxis().SetTitle("True Muon d_{xy} [cm]")
+      b1.GetXaxis().SetTitleFont(62)
+      b1.GetXaxis().SetTitleOffset(1.2)
+      b1.GetXaxis().SetTitleSize(0.045)
+      b1.SetTitle("                                                                  14TeV, " + pu)
+      b1.SetStats(0)
+      b1.Draw()
+
+      eff1.SetLineColor(kBlue)
+      eff1.SetLineWidth(2)
+      eff1.Draw("same")
+      if eff2:
+        eff2.SetLineColor(kOrange+1)
+        eff2.SetLineWidth(2)
+        eff2.Draw("same")
+      if eff3:
+        eff3.SetLineColor(kRed)
+        eff3.SetLineWidth(2)
+        eff3.Draw("same")
+      if eff4:
+        eff4.SetLineColor(kGreen+1)
+        eff4.SetLineWidth(2)
+        eff4.Draw("same")
+      if eff5:
+        eff5.SetLineColor(kMagenta+1)
+        eff5.SetLineWidth(2)
+        eff5.Draw("same")
+        
+      latex = applyTdrStyle()      
+
+      leg = TLegend(0.25,0.2,0.75,0.45,"","brNDC")
+      leg.SetFillColor(kWhite)
+      leg.SetBorderSize(0)
+      leg.SetFillStyle(0)
+      leg.SetTextSize(0.03)
+      leg.AddEntry(eff1,"L1Mu", "l")
+      leg.AddEntry(eff2,"L1Mu (Q#geq4)", "l")
+      leg.AddEntry(eff3,"L1Mu (Q#geq4, BX=0)", "l")
+      leg.AddEntry(eff4,"L1Mu (Q#geq4, BX=0) + veto (dR#leq0.12)", "l")
+      leg.AddEntry(eff5,"L1Mu (Q#geq4, BX=0) + veto (dR#leq0.12) + isol (dR<0.2, p_{T}^{L1Tk}#geq4)", "l")
+      leg.Draw("same")
+      c.SaveAs(targetDir + title)
+      
+    #makeDxyEffPlot(TEfficiency(firstSecondBin(L1Mu_genMu_dxy0to30_fidT), firstSecondBin(genMu_dxy0to30_fidT)), 
+    #               "L1Mu_trigger_efficiency_dxy_fidT" + ext)
+    makeDxyEffPlot(TEfficiency(firstSecondBin(L1Mu_genMu_dxy0to30_fid), firstSecondBin(genMu_dxy0to30_fid)),
+                   TEfficiency(firstSecondBin(L1Mu_genMu_dxy0to30_fid_Q), firstSecondBin(genMu_dxy0to30_fid)), 
+                   TEfficiency(firstSecondBin(L1Mu_genMu_dxy0to30_fid_BX_Q), firstSecondBin(genMu_dxy0to30_fid)),
+                   TEfficiency(firstSecondBin(L1Mu_genMu_dxy0to30_fid_BX_Q_V), firstSecondBin(genMu_dxy0to30_fid)),
+                   TEfficiency(firstSecondBin(L1Mu_genMu_dxy0to30_fid_BX_Q_V_I), firstSecondBin(genMu_dxy0to30_fid)),
+                   "L1Mu_trigger_efficiency_dxy_fid" + ext)
+    """
+    makeDxyEffPlot(TEfficiency(firstSecondBin(L1Mu_genMu_dxy0to30_fid_BX_Q), firstSecondBin(genMu_dxy0to30_fid)), 
+                   "L1Mu_trigger_efficiency_dxy_fid_BX_Q" + ext)
+    makeDxyEffPlot(TEfficiency(firstSecondBin(L1Mu_genMu_dxy0to30_fid_BX_Q_V), firstSecondBin(genMu_dxy0to30_fid)), 
+                   "L1Mu_trigger_efficiency_dxy_fid_BX_Q_V" + ext)
+    """               
   if eff:
-    makeEfficiencyHistogram()   
+    makeEfficiencyHistogram()
 
   exit()
 

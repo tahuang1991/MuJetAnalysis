@@ -11,11 +11,19 @@
 <use name="FWCore/ServiceRegistry"/>
 <use name="FWCore/Utilities"/>
 <use name="MagneticField/Engine"/>
+<use   name="TrackingTools/DetLayers"/>
 <use name="TrackingTools/GeomPropagators"/>
 <use name="TrackingTools/TrajectoryState"/>
 <use name="TrackingTools/Records"/>
 <use name="MagneticField/Records"/>
 <use name="DataFormats/GeometrySurface"/>
+<use   name="RecoMuon/DetLayers"/>
+<use   name="Geometry/Records"/>
+<use   name="Geometry/CommonDetUnit"/>
+<use   name="RecoMuon/DetLayers"/>
+<use   name="TrackingTools/KalmanUpdators"/>
+<use   name="RecoMuon/Records"/>
+
 <use name="root"/>
 
 <flags EDM_PLUGIN="1"/>

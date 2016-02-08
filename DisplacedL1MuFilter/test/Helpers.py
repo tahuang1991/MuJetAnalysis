@@ -5,6 +5,7 @@ import array
 from math import log10, floor
 from logic import *
 import numpy as np
+import os
 
 ptbin = [
     2.0,   2.5,   3.0,   3.5,   4.0,   4.5,   5.0,   6.0,   7.0,   8.0,  
@@ -19,6 +20,81 @@ etabin = [
     2.0, 2.1, 2.2, 2.3, 2.4, 2.5]
 myetabin = np.asarray(etabin)
 
+#_______________________________________________________________________________
+def applyTdrStyle():
+    cmsText     = "CMS Phase II Simulation"
+    cmsTextFont   = 61  ## default is helvetic-bold
+
+    lumiTextSize     = 0.6
+    lumiTextOffset   = 0.2
+    cmsTextSize      = 0.75
+    cmsTextOffset    = 0.1  ## only used in outOfFrame version
+    
+    relPosX    = 0.045
+    relPosY    = 0.035
+    relExtraDY = 1.2
+    
+    ## ratio of "CMS" and extra text size
+    extraOverCmsTextSize  = 0.76
+
+    lumi_14TeV = "PU = 0"
+
+    """
+    H = pad.GetWh();
+    W = pad.GetWw();
+    l = pad.GetLeftMargin();
+    b = pad.GetBottomMargin();
+    e = 0.025;
+    """
+    t = gPad.GetTopMargin();
+    r = gPad.GetRightMargin();
+
+
+    latex = TLatex()
+    latex.SetNDC();
+    latex.SetTextAngle(0);
+    latex.SetTextColor(kBlack);    
+    
+    extraTextSize = extraOverCmsTextSize*cmsTextSize;
+    """
+    latex.SetTextFont(cmsTextFont);
+    latex.SetTextSize(cmsTextSize*t);
+    latex.SetTextFont(42);
+    latex.SetTextAlign(31); 
+    latex.SetTextSize(lumiTextSize*t);    
+    latex.DrawLatex(1-r,1-t+lumiTextOffset*t,lumiText);    
+    """
+
+    """
+    alignY_=3;
+    alignX_=2;    
+    align_ = 10*alignX_ + alignY_;
+    latex.SetTextAlign(align_);
+    posX_ = 1-r - relPosX*(1-l-r)
+    posY_ = 1-t - relPosY*(1-t-b)
+    """
+    latex.DrawLatex(0.52, 0.87, cmsText);
+    return latex
+
+
+#______________________________________________________________________________
+def addfiles(ch, dirname=".", ext=".root"):
+  theInputFiles = []
+  if not os.path.isdir(dirname):
+    print "ERROR: This is not a valid directory: ", dirname
+    exit()
+  ls = os.listdir(dirname)
+  theInputFiles.extend([dirname[:] + x for x in ls if x.endswith(ext)])
+  for pfile in theInputFiles:
+    ch.Add(pfile)  
+
+  return ch
+
+#______________________________________________________________________________
+def firstSecondBin(h):
+    h.SetBinContent(1,h.GetBinContent(0) + h.GetBinContent(1))
+    h.SetBinContent(0,0)
+    return h
 #______________________________________________________________________________
 def getBackwardCumulative(h):
     htemp = TH1F("htemp"," ",len(myptbin)-1, myptbin)

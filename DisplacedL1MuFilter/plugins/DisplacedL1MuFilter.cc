@@ -758,7 +758,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
   }
 
-  
   for (int i=0; i<2; ++i){         
     for (int j=0; j<2; ++j){
       for (unsigned int k=0; k<TTTracks.size(); ++k) {
@@ -1426,9 +1425,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   */  
 
 // ------------ method called once each job just before starting event loop  ------------
-  void 
-    DisplacedL1MuFilter::beginJob()
-  {
+void 
+DisplacedL1MuFilter::beginJob()
+{
 }
  
 // ------------ method called once each job just after ending the event loop  ------------
@@ -1539,8 +1538,7 @@ DisplacedL1MuFilter::startingState(const TTTrack< Ref_PixelDigi_ > &tk) const {
 }
 
 TrajectoryStateOnSurface
-DisplacedL1MuFilter::extrapolate(const FreeTrajectoryState &start) const 
-{
+DisplacedL1MuFilter::extrapolate(const FreeTrajectoryState &start) const {
   if (!magfield_.isValid() || barrelCylinder_ == 0) {
     throw cms::Exception("NotInitialized") << "PropagateToMuon: You must call init(const edm::EventSetup &iSetup) before using this object.\n"; 
   }

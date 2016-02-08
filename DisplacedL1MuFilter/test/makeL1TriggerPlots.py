@@ -761,7 +761,6 @@ if __name__ == "__main__":
       h5.Divide(h1)
       h5.SetFillColor(kWhite)
       h5.Draw("same")
-
       """
       print title, "%.2f"%(h2.GetBinContent(11)) #pt10
       print title, "%.2f"%(h3.GetBinContent(11))
@@ -772,7 +771,7 @@ if __name__ == "__main__":
       print title, "%.2f"%((h3.GetBinContent(13) + h3.GetBinContent(14))/2.)
       print title, "%.2f"%((h4.GetBinContent(13) + h4.GetBinContent(14))/2.)
       print title, "%.2f"%((h5.GetBinContent(13) + h5.GetBinContent(14))/2.)
-      """
+     """
 
       latex = applyTdrStyle()      
 

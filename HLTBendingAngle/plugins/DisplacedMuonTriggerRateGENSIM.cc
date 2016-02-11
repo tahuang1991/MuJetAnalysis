@@ -74,6 +74,7 @@ struct MyTrackRateCSC
  Float_t vertex_z;
  Float_t dxy; 
  Float_t charge;
+ Int_t ntrks;
 
  Float_t Lxy;
  Float_t pzvz;
@@ -542,32 +543,46 @@ DisplacedMuonTriggerRateGENSIM::analyze(const edm::Event& ev, const edm::EventSe
    //edm::Handle<edm::RangeMap<DTChamberId,edm::OwnVector<DTRecSegment4D,edm::ClonePolicy<DTRecSegment4D> >,edm::ClonePolicy<DTRecSegment4D> > > SegmentsDT;
    //ev.getByLabel("hltDt4DSegments", SegmentsDT);
 
-   
-    etrk_csc_[0].init();// sim
+  //in total three case: 1.simpt, 2 position based pt; 3 direction based pt 
+ for (unsigned int k=0; k<3; k++){
+   etrk_csc_[k].init();// sim
    int trk_no=0;
    for (auto& t: *sim_tracks.product()) {
      if(!isSimTrackGood(t)) continue;
-     if (verboseSimTrack_) {
-      // std::cout << "Processing SimTrack " << trk_no + 1 << std::endl;      
-      // std::cout << "pt(GeV/c) = " << t.momentum().pt() << ", eta = " << t.momentum().eta()  
-      //           << ", phi = " << t.momentum().phi() << ", Q = " << t.charge()
-      //           << ", vtxIndex = " << t.vertIndex() << std::endl;
-     }
 
      vtx_dt = sim_vert[t.vertIndex()].position().x();
      vty_dt = sim_vert[t.vertIndex()].position().y();
      vtz_dt = sim_vert[t.vertIndex()].position().z();
 
      SimTrackMatchManager match(t, sim_vert[t.vertIndex()], cfg_, ev, es);
-     analyzeTrackEfficiency(match, trk_no, 0);
+     analyzeTrackEfficiency(match, trk_no, k);
     //a, l1_particles, hlt_l2_pp, l2_track, SegmentsDT);
 
     trk_no = trk_no + 1;
   }
 
-  tree_eff_csc_[0]->Fill();
+  etrk_csc_[k].ntrks = trk_no;
+  tree_eff_csc_[k]->Fill();
+  }
+  /*
+   etrk_csc_[0].init();// sim
+   int trk1_no=0;
+   for (auto& t: *sim_tracks.product()) {
+     if(!isSimTrackGood(t)) continue;
 
- //Filling per station CSC
+     vtx_dt = sim_vert[t.vertIndex()].position().x();
+     vty_dt = sim_vert[t.vertIndex()].position().y();
+     vtz_dt = sim_vert[t.vertIndex()].position().z();
+
+     SimTrackMatchManager match(t, sim_vert[t.vertIndex()], cfg_, ev, es);
+     analyzeTrackEfficiency(match, trk1_no, 1);
+    //a, l1_particles, hlt_l2_pp, l2_track, SegmentsDT);
+
+    trk1_no = trk1_no + 1;
+  }
+  etrk_csc_[1].ntrks = trk_no;
+  tree_eff_csc_[1]->Fill();
+   */
 
 }
 
@@ -582,58 +597,105 @@ DisplacedMuonTriggerRateGENSIM::analyzeTrackEfficiency(SimTrackMatchManager& mat
   const HLTTrackMatcher& match_hlt_track = match.hltTracks();
   //const SimVertex& vtx = match_sh.vtx();
   auto csc_simhits(match_sh.chamberIdsCSC(0));
-  /*
   //pt assignment
   float pt_position_tmp=-99;
   float pt_direction_tmp=-99;
   
  //CSC SimHits Start here
-  GlobalPoint gp_sh_odd[12];
-  GlobalPoint gp_sh_even[12];
-  
+  GlobalPoint gp_sh_odd[4];
+  GlobalPoint gp_sh_even[4];
+  GlobalVector gv_sh_odd[4];
+  GlobalVector gv_sh_even[4];
+  bool has_csc_sh[4]={false,false,false,false};
+  bool odd[4]={false,false,false,false};
+  for(auto d: csc_simhits)
+  {
+    CSCDetId id(d);
+    const int cscst(detIdToMEStation(id.station(),id.ring()));
+    if (stationscsc_to_use_.count(cscst) == 0) continue;
+    int nlayers(match_sh.nLayersWithHitsInSuperChamber(d));
 
-    	if (odd) gp_sh_odd[cscst] = hitGp;
-    	else gp_sh_even[cscst] = hitGp;
+    if (id.station()==1 and (id.ring()==4 or id.ring()==1)){
+    int other_ring(id.ring()==4 ? 1 : 4);
+    CSCDetId co_id(id.endcap(), id.station(), other_ring, id.chamber());
+      auto rawId(co_id.rawId());
+      if (csc_simhits.find(rawId) != csc_simhits.end()) {
+        nlayers = nlayers+match_sh.nLayersWithHitsInSuperChamber(rawId);
 
-  if (etrk_csc_[1].has_csc_sh>0 and etrk_csc_[6].has_csc_sh>0 and etrk_csc_[8].has_csc_sh>0){
-     int npar=-1;
+      }
+    }
+
+    if (nlayers < 4) continue;
+    
+    has_csc_sh[id.station()-1]=true;
+    if (id.chamber()%2==1){
+	 odd[id.station()-1]=true; 
+     	 gp_sh_odd[id.station()-1] = match_sh.simHitsMeanPosition(match_sh.hitsInChamber(d));
+    	 gv_sh_odd[id.station()-1] = match_sh.simHitsMeanMomentum(match_sh.hitsInChamber(d));
+      }else {
+	 odd[id.station()-1]=false; 
+     	 gp_sh_even[id.station()-1] = match_sh.simHitsMeanPosition(match_sh.hitsInChamber(d));
+    	 gv_sh_even[id.station()-1] = match_sh.simHitsMeanMomentum(match_sh.hitsInChamber(d));
+      }
+       
+  }
+
+  int npar=-1;
+  if (has_csc_sh[0] and has_csc_sh[1]){
      GlobalPoint gp1,gp2, gp3;
-     if ((etrk_csc_[1].has_csc_sh&1)>0 and (etrk_csc_[6].has_csc_sh&2)>0 and (etrk_csc_[8].has_csc_sh&2)>0){
-        gp1=gp_sh_odd[1];
-        gp2=gp_sh_even[6];
-        gp3=gp_sh_even[8];
+     GlobalVector gv1,gv2;
+     if (odd[0] and not(odd[1]) and not(odd[2])){
+        gp1=gp_sh_odd[0];
+        gp2=gp_sh_even[1];
+        gv1=gv_sh_odd[0];
+        gv2=gv_sh_even[1];
 	npar=0;
-     }else if ((etrk_csc_[1].has_csc_sh&1)>0 and (etrk_csc_[6].has_csc_sh&1)>0 and (etrk_csc_[8].has_csc_sh&1)>0){ 
-        gp1=gp_sh_odd[1];
-        gp2=gp_sh_odd[6];
-        gp3=gp_sh_odd[8];
+	if (has_csc_sh[2] and not(odd[2])) 
+        	gp3=gp_sh_even[2];
+     }else if (odd[0] and odd[1]) {
+        gp1=gp_sh_odd[0];
+        gp2=gp_sh_odd[1];
+        gv1=gv_sh_odd[0];
+        gv2=gv_sh_odd[1];
 	npar=1;
-     }else if ((etrk_csc_[1].has_csc_sh&2)>0 and (etrk_csc_[6].has_csc_sh&2)>0 and (etrk_csc_[8].has_csc_sh&2)>0){ 
-        gp1=gp_sh_even[1];
-        gp2=gp_sh_even[6];
-        gp3=gp_sh_even[8];
+	if (has_csc_sh[2] and odd[2]) 
+        	gp3=gp_sh_odd[2];
+    }else if (not(odd[0]) and not(odd[1])){
+        gp1=gp_sh_even[0];
+        gp2=gp_sh_even[1];
+        gv1=gv_sh_even[0];
+        gv2=gv_sh_even[1];
 	npar=2;
-     }else if ((etrk_csc_[1].has_csc_sh&2)>0 and (etrk_csc_[6].has_csc_sh&1)>0 and (etrk_csc_[8].has_csc_sh&1)>0){ 
-        gp1=gp_sh_even[1];
-        gp2=gp_sh_odd[6];
-        gp3=gp_sh_odd[8];
+	if (has_csc_sh[2] and not(odd[2])) 
+        	gp3=gp_sh_even[2];
+    }else if (not(odd[0]) and odd[1]){
+        gp1=gp_sh_even[0];
+        gp2=gp_sh_odd[1];
+        gv1=gv_sh_odd[0];
+        gv2=gv_sh_odd[1];
 	npar=3;
+	if (has_csc_sh[2] and odd[2]) 
+        	gp3=gp_sh_odd[2];
      }
      //std::cout <<" has csc sh st123 npar "<< npar << std::endl;
-     etrk_csc_[1].npar = npar;
-     etrk_csc_[1].pt_position_sh=Ptassign_Position_gp(gp1, gp2, gp3, etrk_csc_[1].eta_SimTrack, npar);  
-     etrk_csc_[1].pt_direction_sh=Ptassign_Direction(etrk_csc_[1].csc_bending_angle_12, etrk_csc_[1].eta_SimTrack, npar);  
-  
-  } */
+     float csc_bending_angle_12=deltaPhi(gv1.phi(), gv2.phi());
+     if (has_csc_sh[2])
+	pt_position_tmp=Ptassign_Position_gp(gp1, gp2, gp3, gp2.eta(), npar); //t.momentum().eta() 
 
-  if (st==0 and etrk_csc_[st].pt_SimTrack>t.momentum().pt())
-  //if ((st==0 and etrk_csc_[st].pt_SimTrack>t.momentum().pt()) or (st==1 and etrk_csc_[st].pt_position_sh> pt_position_tmp) or (st==2 and etrk_csc_[st].pt_direction_sh>pt_direction_tmp))
+     pt_direction_tmp=Ptassign_Direction(csc_bending_angle_12, gp2.eta(), npar);  
+  
+  } 
+
+  //if (st==0 and etrk_csc_[st].pt_SimTrack>t.momentum().pt())
+  if ((st==0 and etrk_csc_[st].pt_SimTrack>t.momentum().pt()) or (st==1 and etrk_csc_[st].pt_position_sh> pt_position_tmp) or (st==2 and etrk_csc_[st].pt_direction_sh>pt_direction_tmp))
 	return;
 
 
    //start to record the information since it may be triggered 
     etrk_csc_[st].run = match.simhits().event().id().run();
     etrk_csc_[st].lumi = match.simhits().event().id().luminosityBlock();
+    etrk_csc_[st].pt_position_sh = pt_position_tmp;
+    etrk_csc_[st].pt_direction_sh = pt_direction_tmp;
     etrk_csc_[st].pt_SimTrack = t.momentum().pt();
     etrk_csc_[st].phi_SimTrack = t.momentum().phi();
     etrk_csc_[st].eta_SimTrack = t.momentum().eta();
@@ -648,7 +710,7 @@ DisplacedMuonTriggerRateGENSIM::analyzeTrackEfficiency(SimTrackMatchManager& mat
     auto totalp = std::sqrt( t.momentum().x()*t.momentum().x() + t.momentum().y()*t.momentum().y() + t.momentum().z()*t.momentum().z());
     etrk_csc_[st].p_SimTrack = totalp;
     etrk_csc_[st].charge = t.charge();
-    etrk_csc_[st]. p_c_SimTrack = totalp*t.charge();
+    etrk_csc_[st].p_c_SimTrack = totalp*t.charge();
 
    
 
@@ -822,6 +884,7 @@ void MyTrackRateCSC::init()
 
  dxy = - 9.;
  charge = - 9.;
+ ntrks=0;
  
  Lxy = - 9999.;
  pzvz = - 999.;
@@ -1042,6 +1105,7 @@ TTree*MyTrackRateCSC::book(TTree *t, const std::string & name)
   t->Branch("p_SimTrack", &p_SimTrack);
   t->Branch("charge", &charge);
   t->Branch("p_c_SimTrack", &p_c_SimTrack);
+  t->Branch("ntrks", &ntrks);
 
 
   t->Branch("csc_st1_ring", &csc_st1_ring);

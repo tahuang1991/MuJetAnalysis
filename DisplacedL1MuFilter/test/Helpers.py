@@ -12,6 +12,8 @@ ptbin = [
     10.0,  12.0,  14.0,  16.0,  18.0,  20.0,  25.0,  30.0,  35.0,  40.0,  
     45.0,  50.0,  60.0,  70.0,  80.0,  90.0, 100.0, 120.0, 140.0, 200.0]
 myptbin = np.asarray(ptbin)
+nmyptbin = len(myptbin) - 1
+
 
 
 etabin = [
@@ -368,6 +370,47 @@ def makeEtaEffPlot(h, plotTitle, legTitle):
     #tex3 = drawLabel("H #rightarrow 2n_{1} #rightarrow 2n_{D}2Z_{D} #rightarrow 2n_{D}4#mu",0.45,0.65,0.05)
     tex2 = applyTdrStyle()
     c.SaveAs(plotTitle + ".png")
+
+
+#_______________________________________________________________________________
+def makeSimplePlot(targetDir, h, plotTitle):
+    c = TCanvas("c","c",800,600)
+    c.Clear()
+    gStyle.SetTitleStyle(0);
+    gStyle.SetTitleAlign(13); ##coord in top left
+    gStyle.SetTitleX(0.);
+    gStyle.SetTitleY(1.);
+    gStyle.SetTitleW(1);
+    gStyle.SetTitleH(0.058);
+    #gStyle.SetTitleXOffset(0.05)
+    gStyle.SetTitleBorderSize(0);
+    gStyle.SetPadLeftMargin(0.126);
+    gStyle.SetPadRightMargin(0.04);
+    gStyle.SetPadTopMargin(0.06);
+    gStyle.SetPadBottomMargin(0.13);
+    gStyle.SetOptStat(0);
+    gStyle.SetMarkerStyle(1);
+    gPad.SetTickx(1)
+    gPad.SetTicky(1)
+    #gStyle.SetStatStyle(0)
+    gStyle.SetOptStat(11111111)
+    h.SetStats(1)
+    h.GetXaxis().SetLabelSize(0.05)
+    h.GetYaxis().SetLabelSize(0.05)
+    h.GetXaxis().SetTitleSize(0.06)
+    h.GetYaxis().SetTitleSize(0.06)
+    #h.GetXaxis().SetLimits(0,maxbin)
+    h.Draw()
+    h.SetMarkerColor(kBlue)
+    h.SetLineColor(kBlue)
+    h.SetLineWidth(2)
+    h.SetMarkerStyle(1)
+    h.SetMarkerSize(15)
+    #tex = drawLabel(p.ctau + ", " + p.mass,0.45,0.55,0.05)
+    #tex4 = drawLabel(p.mass,0.55,0.47,0.05)
+    #tex3 = drawLabel("H #rightarrow 2n_{1} #rightarrow 2n_{D}2Z_{D} #rightarrow 2n_{D}4#mu",0.45,0.65,0.05)
+    tex2 = applyTdrStyle()
+    c.SaveAs(targetDir + plotTitle + ".png")
 
 
 #_______________________________________________________________________________

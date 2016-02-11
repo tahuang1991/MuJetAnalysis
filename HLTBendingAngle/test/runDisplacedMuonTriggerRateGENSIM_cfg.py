@@ -18,7 +18,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condD
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'MCRUN2_74_V9', '')
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000000))
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000000))
 
 process.source = cms.Source("PoolSource",
    fileNames = cms.untracked.vstring(
@@ -34,7 +34,8 @@ process = useInputDir(process, InputDir, True)
 
 
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("/fdata/hepx/store/user/taohuang/Ptassignment_30_Nov_ct0/out_ana_minbias_test_10M_20160210.root"),
+    fileName = cms.string("/fdata/hepx/store/user/taohuang/Ptassignment_30_Nov_ct0/out_ana_minbias_test_1M_20160210.root"),
+    #fileName = cms.string("out_ana.root"),
 	closeFileFast = cms.untracked.bool(True)
 )
 

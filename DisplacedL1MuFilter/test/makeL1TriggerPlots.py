@@ -36,10 +36,10 @@ if __name__ == "__main__":
   set_style()
 
   ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
-  eff = False
+  eff = True
   if eff: 
     location = "/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_ctau_1000_ANA_v6/160207_223333/0000/"
-    MatchingL1TkMinPt = 4; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160209_VetoL1TkPt4_v2"; pu = 'PU140'
+    MatchingL1TkMinPt = 4; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160211_VetoL1TkPt4_v2"; pu = 'PU140'
     #MatchingL1TkMinPt = 3; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160209_VetoL1TkPt3"; pu = 'PU140'
     #MatchingL1TkMinPt = 2.5; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160209_VetoL1TkPt2p5"; pu = 'PU140'
     #MatchingL1TkMinPt = 2; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160209_VetoL1TkPt2"; pu = 'PU140'
@@ -79,8 +79,6 @@ if __name__ == "__main__":
 
   if not eff:
     makedEtadPhidRPlots()
-
-  exit()
 
   def makeRateVsPtHistogram():
 
@@ -1646,8 +1644,6 @@ if __name__ == "__main__":
   if eff:
     makedRL1MuL1TkHistogram()
 
-  exit()
-
   def makeEfficiencyHistogram():
 
     h_single_L1Mu_efficiency_L1Tk_pt0 = TH1F("h_single_L1Mu_efficiency_L1Tk_pt0"," ", 1000, 0, 20)
@@ -1657,14 +1653,43 @@ if __name__ == "__main__":
 
     binning2 = [0.05, 0.07, 0.1, 0.2, 0.3, 0.5, 1, 2, 4, 6, 10, 15, 20, 30, 50, 100, 200, 250, 275, 300, 400, 500, 1000]
     nBins = len(binning2) - 1
-    genMu_dxy_fid = TH1F("genMu_eta_dxy_fid"," ", nBins, np.asarray(binning2))
-    genMu_dxy_fidT = TH1F("genMu_eta_dxy_fidT"," ", nBins, np.asarray(binning2))
-    L1Mu_genMu_dxy_fid = TH1F("L1Mu_genMu_eta_dxy_fid"," ", nBins, np.asarray(binning2))
-    L1Mu_genMu_dxy_fidT = TH1F("L1Mu_genMu_eta_dxy_fidT"," ", nBins, np.asarray(binning2))
-    L1Mu_genMu_dxy_fid_Q = TH1F("L1Mu_genMu_eta_dxy_fid_Q"," ", nBins, np.asarray(binning2))
-    L1Mu_genMu_dxy_fid_BX_Q = TH1F("L1Mu_genMu_eta_dxy_fid_BX_Q"," ", nBins, np.asarray(binning2))
-    L1Mu_genMu_dxy_fid_BX_Q_V = TH1F("L1Mu_genMu_eta_dxy_fid_BX_Q_V"," ", nBins, np.asarray(binning2))
-    L1Mu_genMu_dxy_fid_BX_Q_V_I = TH1F("L1Mu_genMu_eta_dxy_fid_BX_Q_V_I"," ", nBins, np.asarray(binning2))
+    genMu_dxy_fid = TH1F("genMu_dxy_fid"," ", nBins, np.asarray(binning2))
+    genMu_dxy_lxy_fid = TH2F("genMu_dxy_lxy_fid"," ", 100, 0, 100, 300, 0, 300)
+    genMu_dxy_fidT = TH1F("genMu_dxy_fidT"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid = TH1F("L1Mu_genMu_dxy_fid"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fidT = TH1F("L1Mu_genMu_dxy_fidT"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid_Q = TH1F("L1Mu_genMu_dxy_fid_Q"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid_BX_Q = TH1F("L1Mu_genMu_dxy_fid_BX_Q"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid_BX_Q_V = TH1F("L1Mu_genMu_dxy_fid_BX_Q_V"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid_BX_Q_V_I = TH1F("L1Mu_genMu_dxy_fid_BX_Q_V_I"," ", nBins, np.asarray(binning2))
+
+    genMu_lxy_fid = TH1F("genMu_lxy_fid"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_lxy_fid = TH1F("L1Mu_genMu_lxy_fid"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_lxy_fid_Q = TH1F("L1Mu_genMu_lxy_fid_Q"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_lxy_fid_BX_Q = TH1F("L1Mu_genMu_lxy_fid_BX_Q"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_lxy_fid_BX_Q_V = TH1F("L1Mu_genMu_lxy_fid_BX_Q_V"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_lxy_fid_BX_Q_V_I = TH1F("L1Mu_genMu_lxy_fid_BX_Q_V_I"," ", nBins, np.asarray(binning2))
+
+    genMu_dxy_fid_barrel = TH1F("genMu_dxy_fid_barrel"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid_barrel = TH1F("L1Mu_genMu_dxy_fid_barrel"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid_Q_barrel = TH1F("L1Mu_genMu_dxy_fid_Q_barrel"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid_BX_Q_barrel = TH1F("L1Mu_genMu_dxy_fid_BX_Q_barrel"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid_BX_Q_V_barrel = TH1F("L1Mu_genMu_dxy_fid_BX_Q_V_barrel"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid_BX_Q_V_I_barrel = TH1F("L1Mu_genMu_dxy_fid_BX_Q_V_I_barrel"," ", nBins, np.asarray(binning2))
+
+    genMu_dxy_fid_overlap = TH1F("genMu_dxy_fid_overlap"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid_overlap = TH1F("L1Mu_genMu_dxy_fid_overlap"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid_Q_overlap = TH1F("L1Mu_genMu_dxy_fid_Q_overlap"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid_BX_Q_overlap = TH1F("L1Mu_genMu_dxy_fid_BX_Q_overlap"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid_BX_Q_V_overlap = TH1F("L1Mu_genMu_dxy_fid_BX_Q_V_overlap"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid_BX_Q_V_I_overlap = TH1F("L1Mu_genMu_dxy_fid_BX_Q_V_I_overlap"," ", nBins, np.asarray(binning2))
+
+    genMu_dxy_fid_endcap = TH1F("genMu_dxy_fid_endcap"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid_endcap = TH1F("L1Mu_genMu_dxy_fid_endcap"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid_Q_endcap = TH1F("L1Mu_genMu_dxy_fid_Q_endcap"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid_BX_Q_endcap = TH1F("L1Mu_genMu_dxy_fid_BX_Q_endcap"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid_BX_Q_V_endcap = TH1F("L1Mu_genMu_dxy_fid_BX_Q_V_endcap"," ", nBins, np.asarray(binning2))
+    L1Mu_genMu_dxy_fid_BX_Q_V_I_endcap = TH1F("L1Mu_genMu_dxy_fid_BX_Q_V_I_endcap"," ", nBins, np.asarray(binning2))
 
     genMu_eta_dxy0to0p1_fid = TH1F("genMu_eta_dxy0to0p1_fid"," ", 25, 0, 2.5)
     genMu_eta_dxy1to5_fid = TH1F("genMu_eta_dxy1to5_fid"," ", 25, 0, 2.5)
@@ -1952,6 +1977,8 @@ if __name__ == "__main__":
           vz = abs(treeHits.genGd_vz[i])
           lxy =  abs(treeHits.genGd_lxy[i])
 
+          genMu_dxy_lxy_fid.Fill(dxy,lxy)
+
           if verbose or True:
             print "\tGenMu", i, j,
             print "pt", pt,
@@ -2048,7 +2075,10 @@ if __name__ == "__main__":
           dxy_range3 = (abs(dxy) > 5 and abs(dxy) <= 10)
           dxy_range4 = (abs(dxy) > 10 and abs(dxy) <= 50)
 
-          eta_fid = abs(eta_prop)<2.4 and vz < 500 and lxy < 300
+          eta_fid = abs(eta_prop)<=2.4 and vz < 500 and lxy < 300
+          eta_fid_barrel = abs(eta_prop)<=0.9 and vz < 500 and lxy < 300
+          eta_fid_overlap = 0.9< abs(eta_prop) and abs(eta_prop)<=1.2 and vz < 500 and lxy < 300
+          eta_fid_endcap = abs(eta_prop)>1.2 and vz < 500 and lxy < 300
           eta_fid_tight = abs(eta_prop)<2.4 and vz < 300 and lxy < 300
           pt_fid = pt>=5 and vz < 500 and lxy < 300
           
@@ -2064,6 +2094,66 @@ if __name__ == "__main__":
                     L1Mu_genMu_dxy_fid_BX_Q_V.Fill(abs(dxy))
                     if trig_dR0p4_L1TkPt4:
                       L1Mu_genMu_dxy_fid_BX_Q_V_I.Fill(abs(dxy))
+                      if abs(dxy)<1:
+                        print "ALARM"
+
+          if eta_fid:
+            genMu_lxy_fid.Fill(abs(lxy))
+            if L1Mu_index != 99 and L1Mu_dR_prop < 0.2: 
+              L1Mu_genMu_lxy_fid.Fill(abs(lxy))
+              if (L1Mu_quality >= 4):
+                L1Mu_genMu_lxy_fid_Q.Fill(abs(lxy))
+                if (abs(L1Mu_bx) <= 0):
+                  L1Mu_genMu_lxy_fid_BX_Q.Fill(abs(lxy))
+                  if not matched:
+                    L1Mu_genMu_lxy_fid_BX_Q_V.Fill(abs(lxy))
+                    if trig_dR0p4_L1TkPt4:
+                      L1Mu_genMu_lxy_fid_BX_Q_V_I.Fill(abs(lxy))
+                      if abs(lxy)<1:
+                        print "ALARM"
+
+          if eta_fid_barrel:
+            genMu_dxy_fid_barrel.Fill(abs(dxy))
+            if L1Mu_index != 99 and L1Mu_dR_prop < 0.2: 
+              L1Mu_genMu_dxy_fid_barrel.Fill(abs(dxy))
+              if (L1Mu_quality >= 4):
+                L1Mu_genMu_dxy_fid_Q_barrel.Fill(abs(dxy))
+                if (abs(L1Mu_bx) <= 0):
+                  L1Mu_genMu_dxy_fid_BX_Q_barrel.Fill(abs(dxy))
+                  if not matched:
+                    L1Mu_genMu_dxy_fid_BX_Q_V_barrel.Fill(abs(dxy))
+                    if trig_dR0p4_L1TkPt4:
+                      L1Mu_genMu_dxy_fid_BX_Q_V_I_barrel.Fill(abs(dxy))
+                      if abs(dxy)<1:
+                        print "ALARM"
+
+          if eta_fid_overlap:
+            genMu_dxy_fid_overlap.Fill(abs(dxy))
+            if L1Mu_index != 99 and L1Mu_dR_prop < 0.2: 
+              L1Mu_genMu_dxy_fid_overlap.Fill(abs(dxy))
+              if (L1Mu_quality >= 4):
+                L1Mu_genMu_dxy_fid_Q_overlap.Fill(abs(dxy))
+                if (abs(L1Mu_bx) <= 0):
+                  L1Mu_genMu_dxy_fid_BX_Q_overlap.Fill(abs(dxy))
+                  if not matched:
+                    L1Mu_genMu_dxy_fid_BX_Q_V_overlap.Fill(abs(dxy))
+                    if trig_dR0p4_L1TkPt4:
+                      L1Mu_genMu_dxy_fid_BX_Q_V_I_overlap.Fill(abs(dxy))
+                      if abs(dxy)<1:
+                        print "ALARM"
+
+          if eta_fid_endcap:
+            genMu_dxy_fid_endcap.Fill(abs(dxy))
+            if L1Mu_index != 99 and L1Mu_dR_prop < 0.2: 
+              L1Mu_genMu_dxy_fid_endcap.Fill(abs(dxy))
+              if (L1Mu_quality >= 4):
+                L1Mu_genMu_dxy_fid_Q_endcap.Fill(abs(dxy))
+                if (abs(L1Mu_bx) <= 0):
+                  L1Mu_genMu_dxy_fid_BX_Q_endcap.Fill(abs(dxy))
+                  if not matched:
+                    L1Mu_genMu_dxy_fid_BX_Q_V_endcap.Fill(abs(dxy))
+                    if trig_dR0p4_L1TkPt4:
+                      L1Mu_genMu_dxy_fid_BX_Q_V_I_endcap.Fill(abs(dxy))
                       if abs(dxy)<1:
                         print "ALARM"
 
@@ -2315,6 +2405,19 @@ if __name__ == "__main__":
     print "nGoodGenMuMatchedL1MuNotMatchedToL1TkL1MuQLessThan4", nGoodGenMuMatchedL1MuNotMatchedToL1TkL1MuQLessThan4
     print "nGoodGenMuMatchedL1MuNotMatchedToL1TkL1MuBXNot0", nGoodGenMuMatchedL1MuNotMatchedToL1TkL1MuBXNot0
     print "---------------------------------------------"
+
+    c = TCanvas("c","c",800,600)
+    c.Clear()    
+    gStyle.SetTitleBorderSize(0);
+    gStyle.SetPadLeftMargin(0.126);
+    gStyle.SetPadRightMargin(0.04);
+    gStyle.SetPadTopMargin(0.06);
+    gStyle.SetPadBottomMargin(0.13);
+    gPad.SetTickx(1)
+    gPad.SetTicky(1)
+#    gStyle.SetPalette(kBlackBody)
+    genMu_dxy_lxy_fid.Draw("colz")
+    c.SaveAs("genMu_dxy_lxy_fid_plot.png")
 
     def makeEffPlot(eff1, eff2, eff3, eff4, title, doPt = True):
       
@@ -2655,12 +2758,41 @@ if __name__ == "__main__":
       
     #makeDxyEffPlot(TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fidT), firstSecondBin(genMu_dxy_fidT)), 
     #               "L1Mu_trigger_efficiency_dxy_fidT" + ext)
+    makeDxyEffPlot(TEfficiency(firstSecondBin(L1Mu_genMu_lxy_fid), firstSecondBin(genMu_lxy_fid)),
+                   TEfficiency(firstSecondBin(L1Mu_genMu_lxy_fid_Q), firstSecondBin(genMu_lxy_fid)), 
+                   TEfficiency(firstSecondBin(L1Mu_genMu_lxy_fid_BX_Q), firstSecondBin(genMu_lxy_fid)),
+                   TEfficiency(firstSecondBin(L1Mu_genMu_lxy_fid_BX_Q_V), firstSecondBin(genMu_lxy_fid)),
+                   TEfficiency(firstSecondBin(L1Mu_genMu_lxy_fid_BX_Q_V_I), firstSecondBin(genMu_lxy_fid)),
+                   "L1Mu_trigger_efficiency_lxy_fid" + ext)
+
     makeDxyEffPlot(TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid), firstSecondBin(genMu_dxy_fid)),
                    TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_Q), firstSecondBin(genMu_dxy_fid)), 
                    TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_BX_Q), firstSecondBin(genMu_dxy_fid)),
                    TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_BX_Q_V), firstSecondBin(genMu_dxy_fid)),
                    TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_BX_Q_V_I), firstSecondBin(genMu_dxy_fid)),
                    "L1Mu_trigger_efficiency_dxy_fid" + ext)
+
+    makeDxyEffPlot(TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_barrel), firstSecondBin(genMu_dxy_fid_barrel)),
+                   TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_Q_barrel), firstSecondBin(genMu_dxy_fid_barrel)), 
+                   TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_BX_Q_barrel), firstSecondBin(genMu_dxy_fid_barrel)),
+                   TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_BX_Q_V_barrel), firstSecondBin(genMu_dxy_fid_barrel)),
+                   TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_BX_Q_V_I_barrel), firstSecondBin(genMu_dxy_fid_barrel)),
+                   "L1Mu_trigger_efficiency_dxy_fid_barrel" + ext)
+
+    makeDxyEffPlot(TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_overlap), firstSecondBin(genMu_dxy_fid_overlap)),
+                   TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_Q_overlap), firstSecondBin(genMu_dxy_fid_overlap)), 
+                   TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_BX_Q_overlap), firstSecondBin(genMu_dxy_fid_overlap)),
+                   TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_BX_Q_V_overlap), firstSecondBin(genMu_dxy_fid_overlap)),
+                   TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_BX_Q_V_I_overlap), firstSecondBin(genMu_dxy_fid_overlap)),
+                   "L1Mu_trigger_efficiency_dxy_fid_overlap" + ext)
+ 
+    makeDxyEffPlot(TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_endcap), firstSecondBin(genMu_dxy_fid_endcap)),
+                   TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_Q_endcap), firstSecondBin(genMu_dxy_fid_endcap)), 
+                   TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_BX_Q_endcap), firstSecondBin(genMu_dxy_fid_endcap)),
+                   TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_BX_Q_V_endcap), firstSecondBin(genMu_dxy_fid_endcap)),
+                   TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_BX_Q_V_I_endcap), firstSecondBin(genMu_dxy_fid_endcap)),
+                   "L1Mu_trigger_efficiency_dxy_fid_endcap" + ext)
+
     """
     makeDxyEffPlot(TEfficiency(firstSecondBin(L1Mu_genMu_dxy_fid_BX_Q), firstSecondBin(genMu_dxy_fid)), 
                    "L1Mu_trigger_efficiency_dxy_fid_BX_Q" + ext)

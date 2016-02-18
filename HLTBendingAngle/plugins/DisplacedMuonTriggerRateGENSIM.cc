@@ -677,15 +677,15 @@ DisplacedMuonTriggerRateGENSIM::analyzeTrackEfficiency(SimTrackMatchManager& mat
 	if (has_csc_sh[2] and odd[2]) 
         	gp3=gp_sh_odd[2];
      }
-     //std::cout <<" has csc sh st123 npar "<< npar << std::endl;
      float csc_bending_angle_12=deltaPhi(gv1.phi(), gv2.phi());
      if (has_csc_sh[2])
 	pt_position_tmp=Ptassign_Position_gp(gp1, gp2, gp3, gp2.eta(), npar); //t.momentum().eta() 
 
      pt_direction_tmp=Ptassign_Direction(csc_bending_angle_12, gp2.eta(), npar);  
+     std::cerr <<"case "<< st <<" eta "<< gp2.eta() <<" has csc sh st12 npar "<< npar <<" simpt "<< t.momentum().pt() <<" pt_position "<< pt_position_tmp << " pt_direction "<< pt_direction_tmp <<std::endl;
   
   } 
-
+  etrk_csc_[st].npar = npar;
   //if (st==0 and etrk_csc_[st].pt_SimTrack>t.momentum().pt())
   if ((st==0 and etrk_csc_[st].pt_SimTrack>t.momentum().pt()) or (st==1 and etrk_csc_[st].pt_position_sh> pt_position_tmp) or (st==2 and etrk_csc_[st].pt_direction_sh>pt_direction_tmp))
 	return;
@@ -1154,6 +1154,7 @@ TTree*MyTrackRateCSC::book(TTree *t, const std::string & name)
   t->Branch("csc_st3_gv_phi", &csc_st3_gv_phi);
   t->Branch("csc_st3_deltaphi", &csc_st3_deltaphi);
   t->Branch("csc_st3_bending_sh", &csc_st3_bending_sh);
+  t->Branch("csc_st3_has_csc_sh", &csc_st3_has_csc_sh);
 
   t->Branch("csc_st4_ring", &csc_st4_ring);
   t->Branch("csc_st4_chamber", &csc_st4_chamber);
@@ -1169,6 +1170,7 @@ TTree*MyTrackRateCSC::book(TTree *t, const std::string & name)
   t->Branch("csc_st4_gv_phi", &csc_st4_gv_phi);
   t->Branch("csc_st4_deltaphi", &csc_st4_deltaphi);
   t->Branch("csc_st4_bending_sh", &csc_st4_bending_sh);
+  t->Branch("csc_st4_has_csc_sh", &csc_st4_has_csc_sh);
 
 
   t->Branch("delta_x_gp_12", &delta_x_gp_12);

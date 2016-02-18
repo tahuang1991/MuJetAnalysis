@@ -158,6 +158,7 @@ struct MyTrackEffCSC
  Int_t has_csc_24;
  Int_t has_csc_34;
 
+ Int_t npar;
  Float_t pt_position_sh,pt_direction_sh;
  Float_t bending_sh;
 
@@ -635,7 +636,7 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
 
 
     // Case ME11
-    if(id.station()==1){
+    if(st==2 or st==3){
         etrk_csc_[1].nlayerscsc = nlayers;
         etrk_csc_[1].csc_station = 1;
         etrk_csc_[1].csc_ring = 1;
@@ -859,9 +860,10 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
         gp3=gp_sh_odd[8];
 	npar=3;
      }
-     //std::cout <<" has csc sh st123 npar "<< npar << std::endl;
-     etrk_csc_[1].pt_position_sh=Ptassign_Position_gp(gp1, gp2, gp3, etrk_csc_[1].eta_SimTrack, npar);  
-     etrk_csc_[1].pt_direction_sh=Ptassign_Direction(etrk_csc_[1].csc_bending_angle_12, etrk_csc_[1].eta_SimTrack, npar);  
+     etrk_csc_[1].npar = npar;
+     etrk_csc_[1].pt_position_sh=Ptassign_Position_gp(gp1, gp2, gp3, gp2.eta(), npar);  
+     etrk_csc_[1].pt_direction_sh=Ptassign_Direction(fabs(etrk_csc_[1].csc_bending_angle_12), gp2.eta(), npar);  
+     std::cout <<"has_csc_12 "<< etrk_csc_[1].has_csc_12 <<" has_csc_23 "<< etrk_csc_[1].has_csc_23 <<" has csc sh st123 npar "<< npar<<" simpt "<<t.momentum().pt() <<" eta "<<gp2.eta()<<" bending_st12 "<< etrk_csc_[1].csc_bending_angle_12 << " pt_direction "<< etrk_csc_[1].pt_direction_sh << std::endl;
   
   } 
 
@@ -992,6 +994,7 @@ void MyTrackEffCSC::init()
 
  csc_p_over_cosh_eta = - 99.; 
 
+ npar = -1;
  pt_position_sh=-99;
  pt_direction_sh = -99;
  bending_sh = -10;
@@ -1188,6 +1191,7 @@ TTree*MyTrackEffCSC::book(TTree *t, const std::string & name)
   t->Branch("has_csc_24", &has_csc_24);
   t->Branch("has_csc_34", &has_csc_34);
 
+  t->Branch("npar", &npar);
   t->Branch("pt_position_sh", &pt_position_sh);
   t->Branch("pt_direction_sh", &pt_direction_sh);
   t->Branch("bending_sh", &bending_sh);

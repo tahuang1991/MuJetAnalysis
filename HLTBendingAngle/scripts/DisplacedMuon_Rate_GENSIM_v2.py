@@ -36,7 +36,7 @@ myptbin = np.asarray(ptbin)
 #___________________________________________________
 def getRatecount(tree,todraw,cut):
     
-    htemp = ROOT.TH1F("htemp"," ",50,-100,100)
+    htemp = ROOT.TH1F("htemp"," ",50,0,100)
     tree.Draw(todraw+">>htemp",cut)
     print "cuts ",cut, " entries ",htemp.GetEntries()
     return htemp.GetEntries()
@@ -50,6 +50,8 @@ def getRate(filedir, treename, todraw, cut):
     	  ls = os.listdir(filedir)
     	  for x in ls:
 		x = filedir[:]+x
+		if os.path.isdir(x):
+			continue
 		tree.Add(x)
     elif os.path.isfile(filedir):
 	  tree.Add(filedir)
@@ -70,6 +72,7 @@ def getRate(filedir, treename, todraw, cut):
  #   h.Print("all")
     #ntotalEvents = getRatecount(tree,"pt_SimTrack",cut)
     ntotalEvents = getRatecount(tree,"pt_SimTrack","1")
+    #ntotalEvents = 10000000
     #h.Scale(40000./ntotalEvents/3./2.*0.795)
     h.Scale(30000.*140/ntotalEvents)
 #    print "after scale "
@@ -90,40 +93,40 @@ b1.GetYaxis().SetTitleSize(0.045)
 b1.SetTitle("CMS Simulation Preliminary"+" "*26 +" PU140, 14TeV")
 b1.SetStats(0)
 
-treename = "DisplacedMuonTriggerRateGENSIM/trk_rate_csc_sim"
-treename2 = "DisplacedMuonTriggerRateGENSIM/trk_rate_csc_position"
-treename3 = "DisplacedMuonTriggerRateGENSIM/trk_rate_csc_direction"
-filedir = "/fdata/hepx/store/user/tahuang/MinBias_TuneCUETP8M1_13TeV-pythia8/crab_MinbiasOnly_20160210_v2/160210_174957/0000/"
-#filedir = "/fdata/hepx/store/user/taohuang/Ptassignment_30_Nov_ct0/out_ana_minbias_test_1M_20160210.root"
-cut = "abs(csc_st2_gp_eta)<2.4 && abs(csc_st2_gp_eta)>1.6"
+treename = "HLTBendingAngle/trk_eff_csc_ME11"
+#treename = "DisplacedMuonTriggerRateGENSIM/trk_rate_csc_sim"
+#filedir = "NewPtassign_Minbias_gensim/"
+#filedir = "out_ana_minbias_test_10M_20160210.root"
+#filedir = "/fdata/hepx/store/user/tahuang/MinBias_TuneCUETP8M1_13TeV-pythia8/crab_MinbiasOnly_20160210_v2/160210_174957/0000/"
+filedir = "/fdata/hepx/store/user/tahuang/MinBias_TuneCUETP8M1_13TeV-pythia8/crab_MinbiasOnly_20160216_EffAna/160217_052533/0000/"
+cut = "abs(eta_SimTrack)<2.4 && abs(eta_SimTrack )>1.6"
 #tfile1 = ROOT.TFile("/uscms_data/d3/tahuang/CMSSW_6_2_0_SLHC25_patch1/src/GEMCode/GEMValidation/test/Rate_Neutrino_SLHC25_2019withoutGEM_PU140_0706.root")
 #tfile2 = ROOT.TFile("/uscms_data/d3/tahuang/CMSSW_6_2_0_SLHC25_patch1/src/GEMCode/GEMValidation/test/Rate_Neutrino_SLHC25_2019withGEM_PU140_0706.root")
 #tfile3 = ROOT.TFile("/uscms_data/d3/tahuang/CMSSW_6_2_0_SLHC25_patch1/src/GEMCode/GEMValidation/test/Rate_Neutrino_SLHC25_2023NoRPC_PU140_0706.root")
 #tfile4 = ROOT.TFile("/uscms_data/d3/tahuang/CMSSW_6_2_0_SLHC25_patch1/src/GEMCode/GEMValidation/test/Rate_Neutrino_SLHC25_PU140_0706.root")
 e1 = getRate(filedir, treename,"pt_SimTrack",cut)
-e2 = getRate(filedir, treename2,"pt_position_sh",cut)
-e3 = getRate(filedir, treename3,"abs(pt_direction_sh)",cut+"&& abs(pt_direction_sh)<99")
+#e2 = getRate(filedir, treename,"pt_position_sh",cut)
 #e3 = getRate(tree2, cut3)
 #e4 = getRate(tree4, cut2)
 #e4 = getRate("/uscms_data/d3/tahuang/CMSSW_6_2_0_SLHC25_patch1/src/GEMCode/GEMValidation/test/Rate_Neutrino_SLHC25_PU140_0706.root",treename, cut)
 
 #e0 = getAllEff("/eos/uscms/store/user/tahuang/SLHC25_patch1_2023Muon_1M_Ana_PU140_Pt2_50_ME11_step0/",treename, den, num)
 
-e2.SetFillColor(ROOT.kBlue+1)
+#e2.SetFillColor(ROOT.kBlue+1)
 #e3.SetFillColor(ROOT.kRed-4)
-e3.SetFillColor(ROOT.kMagenta+2)
+#e3.SetFillColor(ROOT.kMagenta+2)
 e1.SetFillColor(ROOT.kGreen+2)
 
 b1.Draw()
 e1.Draw("e3same")
-e2.Draw("e3same")
-e3.Draw("e3same")
+#e2.Draw("e3same")
+#e3.Draw("e3same")
 #e4.Draw("e3same")
 ROOT.gPad.SetLogx()
 ROOT.gPad.SetLogy()
 
 
-legend = ROOT.TLegend(0.5,0.7,0.93,0.95)
+legend = ROOT.TLegend(0.5,0.55,0.93,0.92)
 legend.SetFillStyle(0)
 #legend.SetFillColor(ROOT.kWhite)
 legend.SetTextFont(62)
@@ -132,8 +135,7 @@ legend.SetBorderSize(0)
 #legend.SetTextSize()
 #legend.SetHeader("p_{T}^{sim}>10,2.14>|#eta|>1.64, has at least 3stubs and hasME1")
 legend.AddEntry(e1,"true pt","f")
-legend.AddEntry(e2,"position based reco pt","f")
-legend.AddEntry(e3,"direction based reco pt","f")
+#legend.AddEntry(e2,"position based reco pt","f")
 #legend.AddEntry(e2,"#splitline{Phase I, 3+stubs}{and one stub in YE1/1}","f")
 #legend.AddEntry(e3,"#splitline{Phase II with GE11 only}{3+stubs and YE1/1 bending angle}","f")
 #legend.AddEntry(e4,"#splitline{Full PhaseII, 3+stubs }{and YE1/1 bending angle}","f")
@@ -146,5 +148,5 @@ tex.SetNDC()
 tex.Draw("same")
 
 
-c1.SaveAs("Trigrate_pt_displacedMuon_Gensim_all_PU140_brazos.pdf")
-c1.SaveAs("Trigrate_pt_displacedMuon_Gensim_all_PU140_brazos.png")
+c1.SaveAs("Trigrate_EffAna_pt_displacedMuon_Gensim_PU140_20160217_brazos.pdf")
+c1.SaveAs("Trigrate_EffAna_pt_displacedMuon_Gensim_PU140_20160217_brazos.png")

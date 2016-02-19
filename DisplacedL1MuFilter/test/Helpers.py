@@ -247,8 +247,6 @@ def draw_2D(p, to_draw, c_title, title, h_bins, cut="", opt = ""):
   h.SetTitle(title)
   h.SetLineWidth(2)
   h.SetLineColor(kBlue)
-  header = "                                                         PU = 140, 14 TeV"
-#  h.SetTitle(header)
   h.Draw(opt) 
   c.SaveAs("" + c_title + ".png")
 

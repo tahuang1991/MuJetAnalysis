@@ -20,7 +20,7 @@ if __name__ == "__main__":
   #label = "out_filter_ana_Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_L1TkdR0p12"; pu = 'PU140'; eff = False
 
   label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV"; pu = 'PU0'; eff = True#.root
-  label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160203"; pu = 'PU140'; eff = True#.root
+  label = "out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160216"; pu = 'PU140'; eff = True#.root
 #  label = 'out_filter_ana_Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14'; pu = 'PU140'; eff = False
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160207"; pu = 'PU140'; eff = False
   
@@ -39,7 +39,7 @@ if __name__ == "__main__":
   eff = True
   if eff: 
     location = "/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_ctau_1000_ANA_v6/160207_223333/0000/"
-    MatchingL1TkMinPt = 4; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160211_VetoL1TkPt4_v2"; pu = 'PU140'
+    MatchingL1TkMinPt = 4; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160216"; pu = 'PU140'
     #MatchingL1TkMinPt = 3; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160209_VetoL1TkPt3"; pu = 'PU140'
     #MatchingL1TkMinPt = 2.5; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160209_VetoL1TkPt2p5"; pu = 'PU140'
     #MatchingL1TkMinPt = 2; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160209_VetoL1TkPt2"; pu = 'PU140'
@@ -1155,6 +1155,42 @@ if __name__ == "__main__":
     L1Mu_L1Tk_pt_fid_dxy5to10_endcap_22_24 = TH1F("L1Mu_L1Tk_pt_fid_dxy5to10_endcap_22_24","L1Tk p_{T} endcap;GeV; Entries", 50,0.,50.)
     L1Mu_L1Tk_pt_fid_dxy10to50_endcap_22_24 = TH1F("L1Mu_L1Tk_pt_fid_dxy10to50_endcap_22_24","L1Tk p_{T} endcap;GeV; Entries", 50,0.,50.)
 
+    L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_barrel = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_barrel","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_overlap = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_overlap","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_12_14 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_12_14","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_14_16 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_14_16","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_16_18 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_16_18","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_18_20 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_18_20","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_20_22 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_20_22","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_22_24 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_22_24","", 100,0.,1.,50,0.,50.)
+
+    L1Mu_L1Tk_dRvspt_fid_dxy1to5_barrel = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy1to5_barrel","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy1to5_overlap = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy1to5_overlap","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_12_14 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_12_14","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_14_16 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_14_16","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_16_18 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_16_18","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_18_20 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_18_20","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_20_22 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_20_22","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_22_24 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_22_24","", 100,0.,1.,50,0.,50.)
+
+    L1Mu_L1Tk_dRvspt_fid_dxy5to10_barrel = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy5to10_barrel","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy5to10_overlap = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy5to10_overlap","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_12_14 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_12_14","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_14_16 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_14_16","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_16_18 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_16_18","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_18_20 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_18_20","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_20_22 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_20_22","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_22_24 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_22_24","", 100,0.,1.,50,0.,50.)
+
+    L1Mu_L1Tk_dRvspt_fid_dxy10to50_barrel = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy10to50_barrel","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy10to50_overlap = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy10to50_overlap","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_12_14 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_12_14","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_14_16 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_14_16","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_16_18 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_16_18","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_18_20 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_18_20","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_20_22 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_20_22","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_22_24 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_22_24","", 100,0.,1.,50,0.,50.)
+
     treeHits = ch
 
     for k in range(0,treeHits.GetEntries()):
@@ -1429,6 +1465,44 @@ if __name__ == "__main__":
                 if eta_region4: L1Mu_L1Tk_pt_fid_dxy10to50_endcap_18_20.Fill(L1Mu_L1Tk_pt_prop)
                 if eta_region5: L1Mu_L1Tk_pt_fid_dxy10to50_endcap_20_22.Fill(L1Mu_L1Tk_pt_prop)
                 if eta_region6: L1Mu_L1Tk_pt_fid_dxy10to50_endcap_22_24.Fill(L1Mu_L1Tk_pt_prop)              
+                
+              ### 2D plots
+              if dxy_region1: 
+                if eta_barrel: L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_barrel.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_overlap: L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_overlap.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region1: L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_12_14.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region2: L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_14_16.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region3: L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_16_18.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region4: L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_18_20.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region5: L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_20_22.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region6: L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_22_24.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+              if dxy_region2: 
+                if eta_barrel: L1Mu_L1Tk_dRvspt_fid_dxy1to5_barrel.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_overlap: L1Mu_L1Tk_dRvspt_fid_dxy1to5_overlap.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region1: L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_12_14.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region2: L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_14_16.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region3: L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_16_18.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region4: L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_18_20.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region5: L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_20_22.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region6: L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_22_24.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+              if dxy_region3: 
+                if eta_barrel: L1Mu_L1Tk_dRvspt_fid_dxy5to10_barrel.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_overlap: L1Mu_L1Tk_dRvspt_fid_dxy5to10_overlap.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region1: L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_12_14.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region2: L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_14_16.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region3: L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_16_18.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region4: L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_18_20.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region5: L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_20_22.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region6: L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_22_24.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+              if dxy_region4: 
+                if eta_barrel: L1Mu_L1Tk_dRvspt_fid_dxy10to50_barrel.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_overlap: L1Mu_L1Tk_dRvspt_fid_dxy10to50_overlap.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region1: L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_12_14.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region2: L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_14_16.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region3: L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_16_18.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region4: L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_18_20.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region5: L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_20_22.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region6: L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_22_24.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
 
             extra_cuts = L1Mu_quality>=4 and abs(L1Mu_bx)==0
             if extra_cuts: L1Mu_L1Tk_dR_true_fid.Fill(L1Mu_L1Tk_dR_prop_true)
@@ -1640,6 +1714,41 @@ if __name__ == "__main__":
     makeSimplePlot(thisTargetDir, L1Mu_L1Tk_pt_fid_dxy5to10_endcap_22_24, "L1Mu_L1Tk_pt_fid_dxy5to10_endcap_22_24")
     makeSimplePlot(thisTargetDir, L1Mu_L1Tk_pt_fid_dxy10to50_endcap_22_24, "L1Mu_L1Tk_pt_fid_dxy10to50_endcap_22_24")
 
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_barrel, "L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_barrel")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_overlap, "L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_overlap")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_12_14, "L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_12_14")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_14_16, "L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_14_16")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_16_18, "L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_16_18")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_18_20, "L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_18_20")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_20_22, "L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_20_22")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_22_24, "L1Mu_L1Tk_dRvspt_fid_dxy0to0p1_endcap_22_24")
+                 
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy1to5_barrel, "L1Mu_L1Tk_dRvspt_fid_dxy1to5_barrel")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy1to5_overlap, "L1Mu_L1Tk_dRvspt_fid_dxy1to5_overlap")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_12_14, "L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_12_14")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_14_16, "L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_14_16")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_16_18, "L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_16_18")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_18_20, "L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_18_20")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_20_22, "L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_20_22")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_22_24, "L1Mu_L1Tk_dRvspt_fid_dxy1to5_endcap_22_24")
+
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy5to10_barrel, "L1Mu_L1Tk_dRvspt_fid_dxy5to10_barrel")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy5to10_overlap, "L1Mu_L1Tk_dRvspt_fid_dxy5to10_overlap")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_12_14, "L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_12_14")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_14_16, "L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_14_16")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_16_18, "L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_16_18")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_18_20, "L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_18_20")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_20_22, "L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_20_22")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_22_24, "L1Mu_L1Tk_dRvspt_fid_dxy5to10_endcap_22_24")
+
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy10to50_barrel, "L1Mu_L1Tk_dRvspt_fid_dxy10to50_barrel")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy10to50_overlap, "L1Mu_L1Tk_dRvspt_fid_dxy10to50_overlap")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_12_14, "L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_12_14")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_14_16, "L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_14_16")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_16_18, "L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_16_18")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_18_20, "L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_18_20")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_20_22, "L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_20_22")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_22_24, "L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_22_24")
 
   if eff:
     makedRL1MuL1TkHistogram()

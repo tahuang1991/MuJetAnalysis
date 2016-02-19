@@ -10,7 +10,7 @@ process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorOpposite_cfi')
 process.load('TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorAlong_cfi')
-process.load('MuJetAnalysis.HLTBendingAngle.L2MuonCandidatePtFromSegmentAlignmentProducer_cfi')
+process.load('MuJetAnalysis.HLTBendingAngle.L2TrackPtFromSegmentAlignmentProducer_cfi')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'PH2_1K_FB_V6::All', '')
@@ -23,7 +23,7 @@ process.source = cms.Source("PoolSource",
    )
 )
 
-process.p = cms.Path(process.L2MuonCandidatesPtFromSegmentAlignment)
+process.p = cms.Path(process.L2TrackPtFromSegmentAlignment)
 
 
 ## messages

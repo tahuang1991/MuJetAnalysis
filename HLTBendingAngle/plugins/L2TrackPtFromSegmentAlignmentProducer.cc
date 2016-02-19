@@ -131,9 +131,9 @@ L2TrackPtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm::Eve
     // print some relevant information
     if (verbose) {
       std::cout << "RecoTrackExtra " << std::endl
-		<< "\tpT_inner: "<<recoTrackExtra.innerMomentum().Rho() << std::endl
-		<< "\teta_inner: "<<recoTrackExtra.innerPosition().eta() << std::endl
-		<< "\tphi_inner: "<<recoTrackExtra.innerPosition().phi() << std::endl
+                << "\tpT_inner: "<<recoTrackExtra.innerMomentum().Rho() << std::endl
+                << "\teta_inner: "<<recoTrackExtra.innerPosition().eta() << std::endl
+                << "\tphi_inner: "<<recoTrackExtra.innerPosition().phi() << std::endl
                 << "\tpT_outer: "<<recoTrackExtra.outerMomentum().Rho() << std::endl
                 << "\teta_outer: "<<recoTrackExtra.outerPosition().eta() << std::endl
                 << "\tphi_outer: "<<recoTrackExtra.outerPosition().phi() <<std::endl;  
@@ -483,15 +483,16 @@ L2TrackPtFromSegmentAlignmentProducer::ptFromBending(const reco::TrackExtra& rec
     
     my_track_.dz_gp_ME1_ME2 = my_track_.z_gp_ME2 - my_track_.z_gp_ME1;
     my_track_.dz_gp_ME2_ME3 = my_track_.z_gp_ME3 - my_track_.z_gp_ME2;
-
-    my_track_.dphi_gv_MB1_MB4 = my_track_.phi_gv_MB1 - my_track_.phi_gv_MB4;
-
     
-    std::cout << "Calculate Pt" << std::endl;
+    my_track_.dphi_gv_MB1_MB4 = my_track_.phi_gv_MB1 - my_track_.phi_gv_MB4;
+    std::cout << "dphi_gv_MB1_MB4 " << my_track_.dphi_gv_MB1_MB4 << std::endl;
 
+    std::cout << "Calculate Pt" << std::endl;
+    std::cout << (1./my_track_.dphi_gv_MB1_MB4 + 1.769)/1.656 << std::endl;
+    
     // barrel
     if (std::abs(recoTrackExtra.innerPosition().eta())<0.9){
-      newPt = (1./my_track_.dphi_gp_MB1_MB4 + 1.769)/1.656;
+      newPt = (1./my_track_.dphi_gv_MB1_MB4 + 1.769)/1.656;
     }
     // endcap
     if (std::abs(recoTrackExtra.innerPosition().eta())>1.1){

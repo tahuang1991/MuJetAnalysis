@@ -371,7 +371,7 @@ def makeEtaEffPlot(h, plotTitle, legTitle):
 
 
 #_______________________________________________________________________________
-def makeSimplePlot(targetDir, h, plotTitle):
+def makeSimplePlot(targetDir, h, plotTitle, setLogx=False):
     c = TCanvas("c","c",800,600)
     c.Clear()
     gStyle.SetTitleStyle(0);
@@ -390,6 +390,8 @@ def makeSimplePlot(targetDir, h, plotTitle):
     gStyle.SetMarkerStyle(1);
     gPad.SetTickx(1)
     gPad.SetTicky(1)
+    if setLogx:
+        gPad.SetLogx()
     #gStyle.SetStatStyle(0)
     gStyle.SetOptStat(11111111)
     h.SetStats(1)

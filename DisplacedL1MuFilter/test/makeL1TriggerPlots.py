@@ -39,7 +39,8 @@ if __name__ == "__main__":
   eff = True
   if eff: 
     location = "/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_ctau_1000_ANA_v6/160207_223333/0000/"
-    MatchingL1TkMinPt = 4; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160216"; pu = 'PU140'
+#    MatchingL1TkMinPt = 4; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160219"; pu = 'PU140'
+    MatchingL1TkMinPt = 4; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160229"; pu = 'PU140'
     #MatchingL1TkMinPt = 3; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160209_VetoL1TkPt3"; pu = 'PU140'
     #MatchingL1TkMinPt = 2.5; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160209_VetoL1TkPt2p5"; pu = 'PU140'
     #MatchingL1TkMinPt = 2; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160209_VetoL1TkPt2"; pu = 'PU140'
@@ -1058,6 +1059,16 @@ if __name__ == "__main__":
     L1Mu_L1Tk_dR_fid_dxy5to10_endcap_22_24 = TH1F("L1Mu_L1Tk_dR_fid_dxy5to10_endcap_22_24","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
     L1Mu_L1Tk_dR_fid_dxy10to50_endcap_22_24 = TH1F("L1Mu_L1Tk_dR_fid_dxy10to50_endcap_22_24","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
 
+    L1Mu_L1Tk_dR_fid_dxy1to50 = TH1F("L1Mu_L1Tk_dR_fid_dxy1to50","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    L1Mu_L1Tk_dR_fid_dxy1to50_barrel = TH1F("L1Mu_L1Tk_dR_fid_dxy1to50_barrel","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    L1Mu_L1Tk_dR_fid_dxy1to50_overlap = TH1F("L1Mu_L1Tk_dR_fid_dxy1to50_overlap","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    L1Mu_L1Tk_dR_fid_dxy1to50_endcap = TH1F("L1Mu_L1Tk_dR_fid_dxy1to50_endcap","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    L1Mu_L1Tk_dR_fid_dxy1to50_endcap_12_14 = TH1F("L1Mu_L1Tk_dR_fid_dxy1to50_endcap_12_14","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    L1Mu_L1Tk_dR_fid_dxy1to50_endcap_14_16 = TH1F("L1Mu_L1Tk_dR_fid_dxy1to50_endcap_14_16","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    L1Mu_L1Tk_dR_fid_dxy1to50_endcap_16_18 = TH1F("L1Mu_L1Tk_dR_fid_dxy1to50_endcap_16_18","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    L1Mu_L1Tk_dR_fid_dxy1to50_endcap_18_20 = TH1F("L1Mu_L1Tk_dR_fid_dxy1to50_endcap_18_20","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    L1Mu_L1Tk_dR_fid_dxy1to50_endcap_20_22 = TH1F("L1Mu_L1Tk_dR_fid_dxy1to50_endcap_20_22","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
+    L1Mu_L1Tk_dR_fid_dxy1to50_endcap_22_24 = TH1F("L1Mu_L1Tk_dR_fid_dxy1to50_endcap_22_24","dR(Gen Mu,closest L1Mu);dR; Entries", 100,0.,1.)
 
     L1Mu_L1Tk_dR_fid_barrel_pt2 = TH1F("L1Mu_L1Tk_dR_fid_barrel_pt2","dR(real L1Mu,closest L1Tk);dR; Entries", 100,0.,1.)
     L1Mu_L1Tk_dR_fid_dxy0to0p1_barrel_pt2 = TH1F("L1Mu_L1Tk_dR_fid_dxy0to0p1_barrel_pt2","dR(real L1Mu,closest L1Tk);dR; Entries", 100,0.,1.)
@@ -1191,6 +1202,30 @@ if __name__ == "__main__":
     L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_20_22 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_20_22","", 100,0.,1.,50,0.,50.)
     L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_22_24 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_22_24","", 100,0.,1.,50,0.,50.)
 
+    L1Mu_L1Tk_dRvspt_fid_dxy0to1_barrel = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy0to1_barrel","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy0to1_overlap = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy0to1_overlap","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_12_14 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_12_14","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_14_16 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_14_16","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_16_18 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_16_18","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_18_20 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_18_20","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_20_22 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_20_22","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_22_24 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_22_24","", 100,0.,1.,50,0.,50.)
+
+    L1Mu_L1Tk_dRvspt_fid_dxy1to50_barrel = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy1to50_barrel","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy1to50_overlap = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy1to50_overlap","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_12_14 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_12_14","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_14_16 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_14_16","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_16_18 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_16_18","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_18_20 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_18_20","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_20_22 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_20_22","", 100,0.,1.,50,0.,50.)
+    L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_22_24 = TH2F("L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_22_24","", 100,0.,1.,50,0.,50.)
+
+    L1Mu_dxyvslxy_fid = TH2F("L1Mu_dxyvslxy_fid","; dxy [cm]; Lxy [cm]",100,0.01,100.,300,0.,300.)
+    L1Mu_dxyvslxy_fid_endcap_22_24 = TH2F("L1Mu_dxyvslxy_fid_endcap_22_24","", 100,0.,1.,300,0.,300.)
+    L1Mu_dxyvslxy_fid_endcap_22_24 = TH2F("L1Mu_dxyvslxy_fid_endcap_22_24","", 100,0.,1.,300,0.,300.)
+    L1Mu_dxyvslxy_fid_endcap_22_24 = TH2F("L1Mu_dxyvslxy_fid_endcap_22_24","", 100,0.,1.,300,0.,300.)
+    L1Mu_dxyvslxy_fid_endcap_22_24 = TH2F("L1Mu_dxyvslxy_fid_endcap_22_24","", 100,0.,1.,300,0.,300.)
+
     treeHits = ch
 
     for k in range(0,treeHits.GetEntries()):
@@ -1248,6 +1283,7 @@ if __name__ == "__main__":
             dxy_region2 = 1<dxy and dxy<=5
             dxy_region3 = 5<dxy and dxy<=10
             dxy_region4 = 10<dxy and dxy<=50
+            dxy_region6 = 1<dxy and dxy<=50
 
             eta_all = abs(eta_prop)<=2.4 
             eta_barrel = abs(eta_prop)<0.9
@@ -1260,6 +1296,8 @@ if __name__ == "__main__":
             eta_region4 = abs(eta_prop)<=2.0 and abs(eta_prop)>1.8
             eta_region5 = abs(eta_prop)<=2.2 and abs(eta_prop)>2.0
             eta_region6 = abs(eta_prop)<=2.4 and abs(eta_prop)>2.2
+
+            L1Mu_dxyvslxy_fid.Fill(dxy, lxy)
 
             if eta_all: genGdMu_L1Mu_dR_fid.Fill(L1Mu_dR_prop)
             if dxy_region1 and eta_all: genGdMu_L1Mu_dR_fid_dxy0to0p1.Fill(L1Mu_dR_prop)
@@ -1335,6 +1373,8 @@ if __name__ == "__main__":
               if eta_region5: L1Mu_L1Tk_dR_fid_endcap_20_22.Fill(L1Mu_L1Tk_dR_prop)
               if eta_region6: L1Mu_L1Tk_dR_fid_endcap_22_24.Fill(L1Mu_L1Tk_dR_prop)              
 
+
+
               if dxy_region1: 
                 L1Mu_L1Tk_dR_fid_dxy0to0p1.Fill(L1Mu_L1Tk_dR_prop)
                 if eta_barrel: L1Mu_L1Tk_dR_fid_dxy0to0p1_barrel.Fill(L1Mu_L1Tk_dR_prop)
@@ -1394,6 +1434,18 @@ if __name__ == "__main__":
                 if eta_region4: L1Mu_L1Tk_dR_fid_dxy10to50_endcap_18_20.Fill(L1Mu_L1Tk_dR_prop)
                 if eta_region5: L1Mu_L1Tk_dR_fid_dxy10to50_endcap_20_22.Fill(L1Mu_L1Tk_dR_prop)
                 if eta_region6: L1Mu_L1Tk_dR_fid_dxy10to50_endcap_22_24.Fill(L1Mu_L1Tk_dR_prop)              
+
+              if dxy_region6: 
+                L1Mu_L1Tk_dR_fid_dxy1to50.Fill(L1Mu_L1Tk_dR_prop)
+                if eta_barrel: L1Mu_L1Tk_dR_fid_dxy1to50_barrel.Fill(L1Mu_L1Tk_dR_prop)
+                if eta_overlap: L1Mu_L1Tk_dR_fid_dxy1to50_overlap.Fill(L1Mu_L1Tk_dR_prop)
+                if eta_endcap:  L1Mu_L1Tk_dR_fid_dxy1to50_endcap.Fill(L1Mu_L1Tk_dR_prop)
+                if eta_region1: L1Mu_L1Tk_dR_fid_dxy1to50_endcap_12_14.Fill(L1Mu_L1Tk_dR_prop)
+                if eta_region2: L1Mu_L1Tk_dR_fid_dxy1to50_endcap_14_16.Fill(L1Mu_L1Tk_dR_prop)
+                if eta_region3: L1Mu_L1Tk_dR_fid_dxy1to50_endcap_16_18.Fill(L1Mu_L1Tk_dR_prop)
+                if eta_region4: L1Mu_L1Tk_dR_fid_dxy1to50_endcap_18_20.Fill(L1Mu_L1Tk_dR_prop)
+                if eta_region5: L1Mu_L1Tk_dR_fid_dxy1to50_endcap_20_22.Fill(L1Mu_L1Tk_dR_prop)
+                if eta_region6: L1Mu_L1Tk_dR_fid_dxy1to50_endcap_22_24.Fill(L1Mu_L1Tk_dR_prop)              
 
               L1Mu_L1Tk_pt_fid.Fill(L1Mu_L1Tk_pt_prop)
               if eta_barrel: L1Mu_L1Tk_pt_fid_barrel.Fill(L1Mu_L1Tk_pt_prop)
@@ -1503,6 +1555,25 @@ if __name__ == "__main__":
                 if eta_region4: L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_18_20.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
                 if eta_region5: L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_20_22.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
                 if eta_region6: L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_22_24.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+
+              if dxy<=1:
+                if eta_barrel: L1Mu_L1Tk_dRvspt_fid_dxy0to1_barrel.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_overlap: L1Mu_L1Tk_dRvspt_fid_dxy0to1_overlap.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region1: L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_12_14.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region2: L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_14_16.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region3: L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_16_18.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region4: L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_18_20.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region5: L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_20_22.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region6: L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_22_24.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)              
+              if 1<dxy and dxy<=50:
+                if eta_barrel: L1Mu_L1Tk_dRvspt_fid_dxy1to50_barrel.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_overlap: L1Mu_L1Tk_dRvspt_fid_dxy1to50_overlap.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region1: L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_12_14.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region2: L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_14_16.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region3: L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_16_18.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region4: L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_18_20.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region5: L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_20_22.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)
+                if eta_region6: L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_22_24.Fill(L1Mu_L1Tk_dR_prop, L1Mu_L1Tk_pt_prop)              
 
             extra_cuts = L1Mu_quality>=4 and abs(L1Mu_bx)==0
             if extra_cuts: L1Mu_L1Tk_dR_true_fid.Fill(L1Mu_L1Tk_dR_prop_true)
@@ -1642,6 +1713,17 @@ if __name__ == "__main__":
     makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dR_fid_dxy5to10_endcap_22_24, "L1Mu_L1Tk_dR_fid_dxy5to10_endcap_22_24")
     makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dR_fid_dxy10to50_endcap_22_24, "L1Mu_L1Tk_dR_fid_dxy10to50_endcap_22_24")
 
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dR_fid_dxy1to50,"L1Mu_L1Tk_dR_fid_dxy1to50")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dR_fid_dxy1to50_barrel,"L1Mu_L1Tk_dR_fid_dxy1to50_barrel")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dR_fid_dxy1to50_overlap,"L1Mu_L1Tk_dR_fid_dxy1to50_overlap")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dR_fid_dxy1to50_endcap,"L1Mu_L1Tk_dR_fid_dxy1to50_endcap")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dR_fid_dxy1to50_endcap_12_14,"L1Mu_L1Tk_dR_fid_dxy1to50_endcap_12_14")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dR_fid_dxy1to50_endcap_14_16,"L1Mu_L1Tk_dR_fid_dxy1to50_endcap_14_16")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dR_fid_dxy1to50_endcap_16_18,"L1Mu_L1Tk_dR_fid_dxy1to50_endcap_16_18")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dR_fid_dxy1to50_endcap_18_20,"L1Mu_L1Tk_dR_fid_dxy1to50_endcap_18_20")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dR_fid_dxy1to50_endcap_20_22,"L1Mu_L1Tk_dR_fid_dxy1to50_endcap_20_22")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dR_fid_dxy1to50_endcap_22_24,"L1Mu_L1Tk_dR_fid_dxy1to50_endcap_22_24")
+
     makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dR_true_fid, "L1Mu_L1Tk_dR_true_fid")
     makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dR_true_fid_dxy0to0p1, "L1Mu_L1Tk_dR_true_fid_dxy0to0p1")
     makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dR_true_fid_dxy1to5, "L1Mu_L1Tk_dR_true_fid_dxy1to5")
@@ -1750,8 +1832,32 @@ if __name__ == "__main__":
     makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_20_22, "L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_20_22")
     makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_22_24, "L1Mu_L1Tk_dRvspt_fid_dxy10to50_endcap_22_24")
 
+    makeSimplePlot(thisTargetDir, L1Mu_dxyvslxy_fid, "L1Mu_dxyvslxy_fid", True)    
+
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy1to50_barrel, "L1Mu_L1Tk_dRvspt_fid_dxy1to50_barrel")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy1to50_overlap, "L1Mu_L1Tk_dRvspt_fid_dxy1to50_overlap")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_12_14, "L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_12_14")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_14_16, "L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_14_16")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_16_18, "L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_16_18")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_18_20, "L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_18_20")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_20_22, "L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_20_22")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_22_24, "L1Mu_L1Tk_dRvspt_fid_dxy1to50_endcap_22_24")
+
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy0to1_barrel, "L1Mu_L1Tk_dRvspt_fid_dxy0to1_barrel")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy0to1_overlap, "L1Mu_L1Tk_dRvspt_fid_dxy0to1_overlap")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_12_14, "L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_12_14")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_14_16, "L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_14_16")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_16_18, "L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_16_18")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_18_20, "L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_18_20")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_20_22, "L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_20_22")
+    makeSimplePlot(thisTargetDir, L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_22_24, "L1Mu_L1Tk_dRvspt_fid_dxy0to1_endcap_22_24")
+
+
+
   if eff:
     makedRL1MuL1TkHistogram()
+
+  exit()
 
   def makeEfficiencyHistogram():
 
@@ -1989,6 +2095,26 @@ if __name__ == "__main__":
     L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt4 = TH1F("L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt4"," ", 25,0,50)
     L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt4 = TH1F("L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt4"," ", 25,0,50)
 
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt4_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt4_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt4_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt4_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p2p5_L1TkPt4_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2p5_L1TkPt4_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt4_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt4_total"," ", 25,0,50)
+
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt3_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt3_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt3_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt3_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p2p5_L1TkPt3_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2p5_L1TkPt3_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt3_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt3_total"," ", 25,0,50)
+
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2p5_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2p5_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2p5_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2p5_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p2p5_L1TkPt2p5_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2p5_L1TkPt2p5_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2p5_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2p5_total"," ", 25,0,50)
+
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p2p5_L1TkPt2_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2p5_L1TkPt2_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2_total"," ", 25,0,50)
+
 
     ## temporary check for Slava
     L1Mu_genMu_pt_dxy0to0p1_fid = TH1F("L1Mu_genMu_pt_dxy0top01_fid"," ", 25,0,50)
@@ -2152,9 +2278,18 @@ if __name__ == "__main__":
               print "\t\tMatched: L1Mu", "pt", L1Mu_pt, "eta", L1Mu_eta, "phi", L1Mu_phi, "Quality", L1Mu_quality,
               print "L1Mu_L1Tk_dR_min", L1Mu_L1Tk_dR_prop, "L1Mu_L1Tk_pt", L1Mu_L1Tk_pt
                 
+            L1Mu_barrel = abs(L1Mu_eta)<=0.9
+            L1Mu_overlap = abs(L1Mu_eta)>0.9 and abs(L1Mu_eta)<=1.2
+            L1Mu_endcap = abs(L1Mu_eta)>1.2 and abs(L1Mu_eta)<=2.4
 
             matched = L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_quality >= 4
+            matched_barrel = L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_quality >= 4
+            matched_overlap = L1Mu_L1Tk_dR_prop <= 0.07 and L1Mu_quality >= 4
+            matched_endcap = L1Mu_L1Tk_dR_prop <= 0.05 and L1Mu_quality >= 4
             matched = matched and L1Mu_L1Tk_pt>=0 ## optional pT cut to increase the efficiency of matched L1Mu
+            matched_barrel = matched_barrel and L1Mu_L1Tk_pt>=0 ## optional pT cut to increase the efficiency of matched L1Mu
+            matched_overlap = matched_overlap and L1Mu_L1Tk_pt>=0 ## optional pT cut to increase the efficiency of matched L1Mu
+            matched_endcap = matched_endcap and L1Mu_L1Tk_pt>=0 ## optional pT cut to increase the efficiency of matched L1Mu
             common = (abs(L1Mu_bx) <= 0) and (L1Mu_quality >= 4)
             
             if (common): trigL1Mu = True
@@ -2177,6 +2312,93 @@ if __name__ == "__main__":
             if ((not matched) and common): trig_dR0p12_L1TkPt3 = True
             if ((not matched) and common): trig_dR0p12_L1TkPt2p5 = True
             if ((not matched) and common): trig_dR0p12_L1TkPt2 = True
+
+            L1Mu_barrel = abs(L1Mu_eta)<=0.9
+            L1Mu_overlap = abs(L1Mu_eta)>0.9 and abs(L1Mu_eta)<=1.2
+            L1Mu_endcap = abs(L1Mu_eta)>1.2 and abs(L1Mu_eta)<=2.4
+
+            trig_dR0p4_L1TkPt4_barrel = L1Mu_barrel and (not matched_barrel) and not (L1Mu_L1Tk_dR_prop <= 0.4 and L1Mu_L1Tk_pt>=4) and common
+            trig_dR0p4_L1TkPt3_barrel = L1Mu_barrel and (not matched_barrel) and not (L1Mu_L1Tk_dR_prop <= 0.4 and L1Mu_L1Tk_pt>=3) and common
+            trig_dR0p4_L1TkPt2p5_barrel = L1Mu_barrel and (not matched_barrel) and not (L1Mu_L1Tk_dR_prop <= 0.4 and L1Mu_L1Tk_pt>=2.5) and common
+            trig_dR0p4_L1TkPt2_barrel = L1Mu_barrel and (not matched_barrel) and not (L1Mu_L1Tk_dR_prop <= 0.4 and L1Mu_L1Tk_pt>=2) and common
+
+            trig_dR0p3_L1TkPt4_barrel = L1Mu_barrel and (not matched_barrel) and not (L1Mu_L1Tk_dR_prop <= 0.3 and L1Mu_L1Tk_pt>=4) and common
+            trig_dR0p3_L1TkPt3_barrel = L1Mu_barrel and (not matched_barrel) and not (L1Mu_L1Tk_dR_prop <= 0.3 and L1Mu_L1Tk_pt>=3) and common
+            trig_dR0p3_L1TkPt2p5_barrel = L1Mu_barrel and (not matched_barrel) and not (L1Mu_L1Tk_dR_prop <= 0.3 and L1Mu_L1Tk_pt>=2.5) and common
+            trig_dR0p3_L1TkPt2_barrel = L1Mu_barrel and (not matched_barrel) and not (L1Mu_L1Tk_dR_prop <= 0.3 and L1Mu_L1Tk_pt>=2) and common
+
+            trig_dR0p2_L1TkPt4_barrel = L1Mu_barrel and (not matched_barrel) and not (L1Mu_L1Tk_dR_prop <= 0.2 and L1Mu_L1Tk_pt>=4) and common
+            trig_dR0p2_L1TkPt3_barrel = L1Mu_barrel and (not matched_barrel) and not (L1Mu_L1Tk_dR_prop <= 0.2 and L1Mu_L1Tk_pt>=3) and common
+            trig_dR0p2_L1TkPt2p5_barrel = L1Mu_barrel and (not matched_barrel) and not (L1Mu_L1Tk_dR_prop <= 0.2 and L1Mu_L1Tk_pt>=2.5) and common
+            trig_dR0p2_L1TkPt2_barrel = L1Mu_barrel and (not matched_barrel) and not (L1Mu_L1Tk_dR_prop <= 0.2 and L1Mu_L1Tk_pt>=2) and common
+
+            trig_dR0p12_L1TkPt4_barrel = L1Mu_barrel and (not matched_barrel) and not (L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_L1Tk_pt>=4) and common
+            trig_dR0p12_L1TkPt3_barrel = L1Mu_barrel and (not matched_barrel) and not (L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_L1Tk_pt>=3) and common
+            trig_dR0p12_L1TkPt2p5_barrel = L1Mu_barrel and (not matched_barrel) and not (L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_L1Tk_pt>=2.5) and common
+            trig_dR0p12_L1TkPt2_barrel = L1Mu_barrel and (not matched_barrel) and not (L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_L1Tk_pt>=2) and common
+
+
+            trig_dR0p4_L1TkPt4_overlap = L1Mu_overlap and (not matched_overlap) and not (L1Mu_L1Tk_dR_prop <= 0.4 and L1Mu_L1Tk_pt>=4) and common
+            trig_dR0p4_L1TkPt3_overlap = L1Mu_overlap and (not matched_overlap) and not (L1Mu_L1Tk_dR_prop <= 0.4 and L1Mu_L1Tk_pt>=3) and common
+            trig_dR0p4_L1TkPt2p5_overlap = L1Mu_overlap and (not matched_overlap) and not (L1Mu_L1Tk_dR_prop <= 0.4 and L1Mu_L1Tk_pt>=2.5) and common
+            trig_dR0p4_L1TkPt2_overlap = L1Mu_overlap and (not matched_overlap) and not (L1Mu_L1Tk_dR_prop <= 0.4 and L1Mu_L1Tk_pt>=2) and common
+
+            trig_dR0p3_L1TkPt4_overlap = L1Mu_overlap and (not matched_overlap) and not (L1Mu_L1Tk_dR_prop <= 0.3 and L1Mu_L1Tk_pt>=4) and common
+            trig_dR0p3_L1TkPt3_overlap = L1Mu_overlap and (not matched_overlap) and not (L1Mu_L1Tk_dR_prop <= 0.3 and L1Mu_L1Tk_pt>=3) and common
+            trig_dR0p3_L1TkPt2p5_overlap = L1Mu_overlap and (not matched_overlap) and not (L1Mu_L1Tk_dR_prop <= 0.3 and L1Mu_L1Tk_pt>=2.5) and common
+            trig_dR0p3_L1TkPt2_overlap = L1Mu_overlap and (not matched_overlap) and not (L1Mu_L1Tk_dR_prop <= 0.3 and L1Mu_L1Tk_pt>=2) and common
+
+            trig_dR0p2_L1TkPt4_overlap = L1Mu_overlap and (not matched_overlap) and not (L1Mu_L1Tk_dR_prop <= 0.2 and L1Mu_L1Tk_pt>=4) and common
+            trig_dR0p2_L1TkPt3_overlap = L1Mu_overlap and (not matched_overlap) and not (L1Mu_L1Tk_dR_prop <= 0.2 and L1Mu_L1Tk_pt>=3) and common
+            trig_dR0p2_L1TkPt2p5_overlap = L1Mu_overlap and (not matched_overlap) and not (L1Mu_L1Tk_dR_prop <= 0.2 and L1Mu_L1Tk_pt>=2.5) and common
+            trig_dR0p2_L1TkPt2_overlap = L1Mu_overlap and (not matched_overlap) and not (L1Mu_L1Tk_dR_prop <= 0.2 and L1Mu_L1Tk_pt>=2) and common
+
+            trig_dR0p12_L1TkPt4_overlap = L1Mu_overlap and (not matched_overlap) and not (L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_L1Tk_pt>=4) and common
+            trig_dR0p12_L1TkPt3_overlap = L1Mu_overlap and (not matched_overlap) and not (L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_L1Tk_pt>=3) and common
+            trig_dR0p12_L1TkPt2p5_overlap = L1Mu_overlap and (not matched_overlap) and not (L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_L1Tk_pt>=2.5) and common
+            trig_dR0p12_L1TkPt2_overlap = L1Mu_overlap and (not matched_overlap) and not (L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_L1Tk_pt>=2) and common
+            
+
+            trig_dR0p4_L1TkPt4_endcap = L1Mu_endcap and (not matched_endcap) and not (L1Mu_L1Tk_dR_prop <= 0.4 and L1Mu_L1Tk_pt>=4) and common
+            trig_dR0p4_L1TkPt3_endcap = L1Mu_endcap and (not matched_endcap) and not (L1Mu_L1Tk_dR_prop <= 0.4 and L1Mu_L1Tk_pt>=3) and common
+            trig_dR0p4_L1TkPt2p5_endcap = L1Mu_endcap and (not matched_endcap) and not (L1Mu_L1Tk_dR_prop <= 0.4 and L1Mu_L1Tk_pt>=2.5) and common
+            trig_dR0p4_L1TkPt2_endcap = L1Mu_endcap and (not matched_endcap) and not (L1Mu_L1Tk_dR_prop <= 0.4 and L1Mu_L1Tk_pt>=2) and common
+
+            trig_dR0p3_L1TkPt4_endcap = L1Mu_endcap and (not matched_endcap) and not (L1Mu_L1Tk_dR_prop <= 0.3 and L1Mu_L1Tk_pt>=4) and common
+            trig_dR0p3_L1TkPt3_endcap = L1Mu_endcap and (not matched_endcap) and not (L1Mu_L1Tk_dR_prop <= 0.3 and L1Mu_L1Tk_pt>=3) and common
+            trig_dR0p3_L1TkPt2p5_endcap = L1Mu_endcap and (not matched_endcap) and not (L1Mu_L1Tk_dR_prop <= 0.3 and L1Mu_L1Tk_pt>=2.5) and common
+            trig_dR0p3_L1TkPt2_endcap = L1Mu_endcap and (not matched_endcap) and not (L1Mu_L1Tk_dR_prop <= 0.3 and L1Mu_L1Tk_pt>=2) and common
+
+            trig_dR0p2_L1TkPt4_endcap = L1Mu_endcap and (not matched_endcap) and not (L1Mu_L1Tk_dR_prop <= 0.2 and L1Mu_L1Tk_pt>=4) and common
+            trig_dR0p2_L1TkPt3_endcap = L1Mu_endcap and (not matched_endcap) and not (L1Mu_L1Tk_dR_prop <= 0.2 and L1Mu_L1Tk_pt>=3) and common
+            trig_dR0p2_L1TkPt2p5_endcap = L1Mu_endcap and (not matched_endcap) and not (L1Mu_L1Tk_dR_prop <= 0.2 and L1Mu_L1Tk_pt>=2.5) and common
+            trig_dR0p2_L1TkPt2_endcap = L1Mu_endcap and (not matched_endcap) and not (L1Mu_L1Tk_dR_prop <= 0.2 and L1Mu_L1Tk_pt>=2) and common
+
+            trig_dR0p12_L1TkPt4_endcap = L1Mu_endcap and (not matched_endcap) and not (L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_L1Tk_pt>=4) and common
+            trig_dR0p12_L1TkPt3_endcap = L1Mu_endcap and (not matched_endcap) and not (L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_L1Tk_pt>=3) and common
+            trig_dR0p12_L1TkPt2p5_endcap = L1Mu_endcap and (not matched_endcap) and not (L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_L1Tk_pt>=2.5) and common
+            trig_dR0p12_L1TkPt2_endcap = L1Mu_endcap and (not matched_endcap) and not (L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_L1Tk_pt>=2) and common
+
+            
+            trig_dR0p4_L1TkPt4_total = trig_dR0p4_L1TkPt4_barrel and trig_dR0p4_L1TkPt4_overlap and trig_dR0p4_L1TkPt4_endcap
+            trig_dR0p3_L1TkPt4_total = trig_dR0p3_L1TkPt4_barrel and trig_dR0p3_L1TkPt4_overlap and trig_dR0p3_L1TkPt4_endcap
+            trig_dR0p2_L1TkPt4_total = trig_dR0p2_L1TkPt4_barrel and trig_dR0p2_L1TkPt4_overlap and trig_dR0p2_L1TkPt4_endcap
+            trig_dR0p12_L1TkPt4_total = trig_dR0p12_L1TkPt4_barrel and trig_dR0p12_L1TkPt4_overlap and trig_dR0p12_L1TkPt4_endcap
+
+            trig_dR0p4_L1TkPt3_total = trig_dR0p4_L1TkPt3_barrel and trig_dR0p4_L1TkPt3_overlap and trig_dR0p4_L1TkPt3_endcap
+            trig_dR0p3_L1TkPt3_total = trig_dR0p3_L1TkPt3_barrel and trig_dR0p3_L1TkPt3_overlap and trig_dR0p3_L1TkPt3_endcap
+            trig_dR0p2_L1TkPt3_total = trig_dR0p2_L1TkPt3_barrel and trig_dR0p2_L1TkPt3_overlap and trig_dR0p2_L1TkPt3_endcap
+            trig_dR0p12_L1TkPt3_total = trig_dR0p12_L1TkPt3_barrel and trig_dR0p12_L1TkPt3_overlap and trig_dR0p12_L1TkPt3_endcap
+            
+            trig_dR0p4_L1TkPt2p5_total = trig_dR0p4_L1TkPt2p5_barrel and trig_dR0p4_L1TkPt2p5_overlap and trig_dR0p4_L1TkPt2p5_endcap
+            trig_dR0p3_L1TkPt2p5_total = trig_dR0p3_L1TkPt2p5_barrel and trig_dR0p3_L1TkPt2p5_overlap and trig_dR0p3_L1TkPt2p5_endcap
+            trig_dR0p2_L1TkPt2p5_total = trig_dR0p2_L1TkPt2p5_barrel and trig_dR0p2_L1TkPt2p5_overlap and trig_dR0p2_L1TkPt2p5_endcap
+            trig_dR0p12_L1TkPt2p5_total = trig_dR0p12_L1TkPt2p5_barrel and trig_dR0p12_L1TkPt2p5_overlap and trig_dR0p12_L1TkPt2p5_endcap
+
+            trig_dR0p4_L1TkPt2_total = trig_dR0p4_L1TkPt2_barrel and trig_dR0p4_L1TkPt2_overlap and trig_dR0p4_L1TkPt2_endcap
+            trig_dR0p3_L1TkPt2_total = trig_dR0p3_L1TkPt2_barrel and trig_dR0p3_L1TkPt2_overlap and trig_dR0p3_L1TkPt2_endcap
+            trig_dR0p2_L1TkPt2_total = trig_dR0p2_L1TkPt2_barrel and trig_dR0p2_L1TkPt2_overlap and trig_dR0p2_L1TkPt2_endcap
+            trig_dR0p12_L1TkPt2_total = trig_dR0p12_L1TkPt2_barrel and trig_dR0p12_L1TkPt2_overlap and trig_dR0p12_L1TkPt2_endcap
 
 
           dxy_range1 = (abs(dxy) <= 0.1)
@@ -2276,6 +2498,29 @@ if __name__ == "__main__":
           if dxy_range1 and eta_fid:
             genMu_pt_dxy0to0p1_fid.Fill(pt)
             if trigL1Mu:      L1Mu_genMu_pt_dxy0to0p1_fid.Fill(pt)
+
+            ### plots with different veto cones per eta section
+            if trig_dR0p4_L1TkPt4_total:   L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt4_total.Fill(pt)
+            if trig_dR0p4_L1TkPt3_total:   L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt3_total.Fill(pt)
+            if trig_dR0p4_L1TkPt2p5_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p4_L1TkPt2_total:   L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p3_L1TkPt4_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt4_total.Fill(pt)
+            if trig_dR0p3_L1TkPt3_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt3_total.Fill(pt)
+            if trig_dR0p3_L1TkPt2p5_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p3_L1TkPt2_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p2_L1TkPt4_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt4_total.Fill(pt)
+            if trig_dR0p2_L1TkPt3_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt3_total.Fill(pt)
+            if trig_dR0p2_L1TkPt2p5_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p2_L1TkPt2_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p12_L1TkPt4_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt4_total.Fill(pt)
+            if trig_dR0p12_L1TkPt3_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt3_total.Fill(pt)
+            if trig_dR0p12_L1TkPt2p5_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p12_L1TkPt2_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt2_total.Fill(pt)
+
+
             if trig_dR0p4_L1TkPt4: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt4.Fill(pt)
             if trig_dR0p4_L1TkPt3: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt3.Fill(pt)
             if trig_dR0p4_L1TkPt2p5: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt2p5.Fill(pt)
@@ -2300,6 +2545,29 @@ if __name__ == "__main__":
             genMu_pt_dxy1to5_fid.Fill(pt)
             nGoodGenMu += 1
             if trigL1Mu:             L1Mu_genMu_pt_dxy1to5_fid.Fill(pt)
+
+            ### plots with different veto cones per eta section
+            if trig_dR0p4_L1TkPt4_total:   L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt4_total.Fill(pt)
+            if trig_dR0p4_L1TkPt3_total:   L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt3_total.Fill(pt)
+            if trig_dR0p4_L1TkPt2p5_total: L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p4_L1TkPt2_total:   L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p3_L1TkPt4_total: L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt4_total.Fill(pt)
+            if trig_dR0p3_L1TkPt3_total: L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt3_total.Fill(pt)
+            if trig_dR0p3_L1TkPt2p5_total: L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p3_L1TkPt2_total: L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p2_L1TkPt4_total: L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt4_total.Fill(pt)
+            if trig_dR0p2_L1TkPt3_total: L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt3_total.Fill(pt)
+            if trig_dR0p2_L1TkPt2p5_total: L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p2_L1TkPt2_total: L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p12_L1TkPt4_total: L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt4_total.Fill(pt)
+            if trig_dR0p12_L1TkPt3_total: L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt3_total.Fill(pt)
+            if trig_dR0p12_L1TkPt2p5_total: L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p12_L1TkPt2_total: L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt2_total.Fill(pt)
+
+
             if trig_dR0p4_L1TkPt4:   L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt4.Fill(pt)
             if trig_dR0p4_L1TkPt3:   L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt3.Fill(pt)
             if trig_dR0p4_L1TkPt2p5: L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2p5.Fill(pt)
@@ -2362,6 +2630,29 @@ if __name__ == "__main__":
           if dxy_range3 and eta_fid:
             genMu_pt_dxy5to10_fid.Fill(pt)
             if trigL1Mu:             L1Mu_genMu_pt_dxy5to10_fid.Fill(pt)
+
+            ### plots with different veto cones per eta section
+            if trig_dR0p4_L1TkPt4_total:   L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt4_total.Fill(pt)
+            if trig_dR0p4_L1TkPt3_total:   L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt3_total.Fill(pt)
+            if trig_dR0p4_L1TkPt2p5_total: L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p4_L1TkPt2_total:   L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p3_L1TkPt4_total: L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt4_total.Fill(pt)
+            if trig_dR0p3_L1TkPt3_total: L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt3_total.Fill(pt)
+            if trig_dR0p3_L1TkPt2p5_total: L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p3_L1TkPt2_total: L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p2_L1TkPt4_total: L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt4_total.Fill(pt)
+            if trig_dR0p2_L1TkPt3_total: L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt3_total.Fill(pt)
+            if trig_dR0p2_L1TkPt2p5_total: L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p2_L1TkPt2_total: L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p12_L1TkPt4_total: L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt4_total.Fill(pt)
+            if trig_dR0p12_L1TkPt3_total: L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt3_total.Fill(pt)
+            if trig_dR0p12_L1TkPt2p5_total: L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p12_L1TkPt2_total: L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt2_total.Fill(pt)
+
+
             if trig_dR0p4_L1TkPt4:   L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt4.Fill(pt)
             if trig_dR0p4_L1TkPt3:   L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt3.Fill(pt)
             if trig_dR0p4_L1TkPt2p5: L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt2p5.Fill(pt)
@@ -2385,6 +2676,29 @@ if __name__ == "__main__":
           if dxy_range4 and eta_fid:
             genMu_pt_dxy10_fid.Fill(pt)
             if trigL1Mu:             L1Mu_genMu_pt_dxy10_fid.Fill(pt)
+
+            ### plots with different veto cones per eta section
+            if trig_dR0p4_L1TkPt4_total:   L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt4_total.Fill(pt)
+            if trig_dR0p4_L1TkPt3_total:   L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt3_total.Fill(pt)
+            if trig_dR0p4_L1TkPt2p5_total: L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p4_L1TkPt2_total:   L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p3_L1TkPt4_total: L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt4_total.Fill(pt)
+            if trig_dR0p3_L1TkPt3_total: L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt3_total.Fill(pt)
+            if trig_dR0p3_L1TkPt2p5_total: L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p3_L1TkPt2_total: L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p2_L1TkPt4_total: L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt4_total.Fill(pt)
+            if trig_dR0p2_L1TkPt3_total: L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt3_total.Fill(pt)
+            if trig_dR0p2_L1TkPt2p5_total: L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p2_L1TkPt2_total: L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p12_L1TkPt4_total: L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt4_total.Fill(pt)
+            if trig_dR0p12_L1TkPt3_total: L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt3_total.Fill(pt)
+            if trig_dR0p12_L1TkPt2p5_total: L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p12_L1TkPt2_total: L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt2_total.Fill(pt)
+
+
             if trig_dR0p4_L1TkPt4:   L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt4.Fill(pt)
             if trig_dR0p4_L1TkPt3:   L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt3.Fill(pt)
             if trig_dR0p4_L1TkPt2p5: L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt2p5.Fill(pt)
@@ -2409,6 +2723,29 @@ if __name__ == "__main__":
           if dxy_range1 and pt_fid:
             genMu_eta_dxy0to0p1_fid.Fill(eta)
             if trigL1Mu:             L1Mu_genMu_eta_dxy0to0p1_fid.Fill(eta)
+
+            ### plots with different veto cones per eta section
+            if trig_dR0p4_L1TkPt4_total:   L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt4_total.Fill(pt)
+            if trig_dR0p4_L1TkPt3_total:   L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt3_total.Fill(pt)
+            if trig_dR0p4_L1TkPt2p5_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p4_L1TkPt2_total:   L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p3_L1TkPt4_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt4_total.Fill(pt)
+            if trig_dR0p3_L1TkPt3_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt3_total.Fill(pt)
+            if trig_dR0p3_L1TkPt2p5_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p3_L1TkPt2_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p2_L1TkPt4_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt4_total.Fill(pt)
+            if trig_dR0p2_L1TkPt3_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt3_total.Fill(pt)
+            if trig_dR0p2_L1TkPt2p5_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p2_L1TkPt2_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p12_L1TkPt4_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt4_total.Fill(pt)
+            if trig_dR0p12_L1TkPt3_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt3_total.Fill(pt)
+            if trig_dR0p12_L1TkPt2p5_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p12_L1TkPt2_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt2_total.Fill(pt)
+
+
             if trig_dR0p4_L1TkPt4:   L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt4.Fill(eta)
             if trig_dR0p4_L1TkPt3:   L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt3.Fill(eta)
             if trig_dR0p4_L1TkPt2p5: L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt2p5.Fill(eta)

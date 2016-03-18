@@ -48,7 +48,7 @@
 
 using namespace std;
 
-struct MyTrackRateL1
+struct MyTrackeffL1
 {
  void init();
  TTree*book(TTree *t, const std::string & name = "l1_particles_");
@@ -59,7 +59,7 @@ struct MyTrackRateL1
  Float_t L1_charge;
 };
 
-struct MyTrackRateCSC
+struct MyTrackeffCSC
 {
  void init();
  TTree*book(TTree *t, const std::string & name = "trk_eff_csc_");
@@ -189,7 +189,7 @@ struct MyTrackRateCSC
 
 };
 
-struct MyTrackRateDT
+struct MyTrackeffDT
 {
  void init();
  TTree*book(TTree *t, const std::string & name = "trk_eff_dt_");
@@ -272,11 +272,11 @@ struct MyTrackRateDT
 };
 
 
-class DisplacedMuonTriggerRateGENSIM : public edm::EDAnalyzer 
+class DisplacedMuonTriggerAnalyzer : public edm::EDAnalyzer 
 {
 public:
-  explicit DisplacedMuonTriggerRateGENSIM(const edm::ParameterSet&);
-  ~DisplacedMuonTriggerRateGENSIM();
+  explicit DisplacedMuonTriggerAnalyzer(const edm::ParameterSet&);
+  ~DisplacedMuonTriggerAnalyzer();
   
   virtual void analyze(const edm::Event&, const edm::EventSetup&) ;
   
@@ -296,13 +296,13 @@ private:
   std::set<int> l1particles_muons_;
   
   TTree *tree_eff_dt_[56];
-  MyTrackRateDT etrk_dt_[56];
+  MyTrackeffDT etrk_dt_[56];
   
-  TTree *tree_eff_csc_[3];//sim, position based, direction based
-  MyTrackRateCSC etrk_csc_[3];
+  TTree *tree_eff_csc_[1];
+  MyTrackeffCSC etrk_csc_[1];
 
   TTree *tree_eff_l1_[6];
-  MyTrackRateL1 etrk_l1_[6];
+  MyTrackeffL1 etrk_l1_[6];
   float deltaR;
   int does_it_match;
 
@@ -322,7 +322,7 @@ private:
   std::vector<std::pair<int,int> > cscStationsCo_;
 };
 
-DisplacedMuonTriggerRateGENSIM::DisplacedMuonTriggerRateGENSIM(const edm::ParameterSet& ps)
+DisplacedMuonTriggerAnalyzer::DisplacedMuonTriggerAnalyzer(const edm::ParameterSet& ps)
   : cfg_(ps.getParameterSet("simTrackMatching"))
   , verbose_(ps.getUntrackedParameter<int>("verbose", 0))
 {
@@ -442,16 +442,8 @@ DisplacedMuonTriggerRateGENSIM::DisplacedMuonTriggerRateGENSIM(const edm::Parame
   copy(CSCStationsToUse.begin(),CSCStationsToUse.end(), inserter(stationscsc_to_use_, stationscsc_to_use_.end()));
   //case0
   stringstream ss0;
-  ss0<< "trk_rate_csc_sim";
+  ss0<< "trk_rate_csc_all";
   tree_eff_csc_[0] = etrk_csc_[0].book(tree_eff_csc_[0], ss0.str());
-  //case1
-  stringstream ss1;
-  ss1<< "trk_rate_csc_position";
-  tree_eff_csc_[1] = etrk_csc_[1].book(tree_eff_csc_[1], ss1.str());
-  //case1
-  stringstream ss2;
-  ss2<< "trk_rate_csc_direction";
-  tree_eff_csc_[2] = etrk_csc_[2].book(tree_eff_csc_[2], ss2.str());
 
 
   dtStationsCo_.push_back(std::make_pair(-99,-99));
@@ -494,24 +486,24 @@ DisplacedMuonTriggerRateGENSIM::DisplacedMuonTriggerRateGENSIM(const edm::Parame
 };
 
 
-int DisplacedMuonTriggerRateGENSIM::detIdToMEStation(int st, int ri)
+int DisplacedMuonTriggerAnalyzer::detIdToMEStation(int st, int ri)
 {
   auto p(std::make_pair(st, ri));
   return std::find(cscStationsCo_.begin(), cscStationsCo_.end(), p) - cscStationsCo_.begin();
 }
 
-int DisplacedMuonTriggerRateGENSIM::detIdToMBStation(int wh,  int st)
+int DisplacedMuonTriggerAnalyzer::detIdToMBStation(int wh,  int st)
 {
   auto p(std::make_pair(wh, st));
   return std::find(dtStationsCo_.begin(), dtStationsCo_.end(),p) - dtStationsCo_.begin();
 };
 
-DisplacedMuonTriggerRateGENSIM::~DisplacedMuonTriggerRateGENSIM()
+DisplacedMuonTriggerAnalyzer::~DisplacedMuonTriggerAnalyzer()
 {
 }
 
 void
-DisplacedMuonTriggerRateGENSIM::analyze(const edm::Event& ev, const edm::EventSetup& es)
+DisplacedMuonTriggerAnalyzer::analyze(const edm::Event& ev, const edm::EventSetup& es)
 {
    using namespace edm;
 
@@ -544,8 +536,6 @@ DisplacedMuonTriggerRateGENSIM::analyze(const edm::Event& ev, const edm::EventSe
    //ev.getByLabel("hltDt4DSegments", SegmentsDT);
 
   //in total three case: 1.simpt, 2 position based pt; 3 direction based pt 
- for (unsigned int k=0; k<3; k++){
-   etrk_csc_[k].init();// sim
    int trk_no=0;
    for (auto& t: *sim_tracks.product()) {
      if(!isSimTrackGood(t)) continue;
@@ -555,39 +545,16 @@ DisplacedMuonTriggerRateGENSIM::analyze(const edm::Event& ev, const edm::EventSe
      vtz_dt = sim_vert[t.vertIndex()].position().z();
 
      SimTrackMatchManager match(t, sim_vert[t.vertIndex()], cfg_, ev, es);
-     analyzeTrackEfficiency(match, trk_no, k);
-    //a, l1_particles, hlt_l2_pp, l2_track, SegmentsDT);
+     analyzeTrackEfficiency(match, trk_no, 0);
 
     trk_no = trk_no + 1;
   }
 
-  etrk_csc_[k].ntrks = trk_no;
-  tree_eff_csc_[k]->Fill();
-  }
-  /*
-   etrk_csc_[0].init();// sim
-   int trk1_no=0;
-   for (auto& t: *sim_tracks.product()) {
-     if(!isSimTrackGood(t)) continue;
-
-     vtx_dt = sim_vert[t.vertIndex()].position().x();
-     vty_dt = sim_vert[t.vertIndex()].position().y();
-     vtz_dt = sim_vert[t.vertIndex()].position().z();
-
-     SimTrackMatchManager match(t, sim_vert[t.vertIndex()], cfg_, ev, es);
-     analyzeTrackEfficiency(match, trk1_no, 1);
-    //a, l1_particles, hlt_l2_pp, l2_track, SegmentsDT);
-
-    trk1_no = trk1_no + 1;
-  }
-  etrk_csc_[1].ntrks = trk_no;
-  tree_eff_csc_[1]->Fill();
-   */
 
 }
 
 void 
-DisplacedMuonTriggerRateGENSIM::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no, int st)
+DisplacedMuonTriggerAnalyzer::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no, int st)
 {
   const SimHitMatcher& match_sh = match.simhits();
   //const TrackMatcher& match_track = match.tracks();
@@ -602,12 +569,13 @@ DisplacedMuonTriggerRateGENSIM::analyzeTrackEfficiency(SimTrackMatchManager& mat
   float pt_direction_tmp=-99;
   
  //CSC SimHits Start here
+  etrk_csc_[st].init();
   GlobalPoint gp_sh_odd[4];
   GlobalPoint gp_sh_even[4];
   GlobalVector gv_sh_odd[4];
   GlobalVector gv_sh_even[4];
   bool has_csc_sh[4]={false,false,false,false};
-  int npar=-1;
+  //bool odd[4]={false,false,false,false};
   int oddeven[4]={0,0,0,0};
   for(auto d: csc_simhits)
   {
@@ -642,6 +610,7 @@ DisplacedMuonTriggerRateGENSIM::analyzeTrackEfficiency(SimTrackMatchManager& mat
        
   }
 
+  int npar=-1;
   if (has_csc_sh[0] and has_csc_sh[1]){
      GlobalPoint gp1,gp2, gp3;
      GlobalVector gv1,gv2;
@@ -691,11 +660,8 @@ DisplacedMuonTriggerRateGENSIM::analyzeTrackEfficiency(SimTrackMatchManager& mat
 	std::cout <<" recopt is misassigned "<< std::endl; 
   
   } 
-  etrk_csc_[st].npar = npar;
+    etrk_csc_[st].npar = npar;
   //if (st==0 and etrk_csc_[st].pt_SimTrack>t.momentum().pt())
-  if ((st==0 and etrk_csc_[st].pt_SimTrack>t.momentum().pt()) or (st==1 and etrk_csc_[st].pt_position_sh> pt_position_tmp) or (st==2 and etrk_csc_[st].pt_direction_sh>pt_direction_tmp))
-	return;
-
 
    //start to record the information since it may be triggered 
     etrk_csc_[st].run = match.simhits().event().id().run();
@@ -784,10 +750,10 @@ DisplacedMuonTriggerRateGENSIM::analyzeTrackEfficiency(SimTrackMatchManager& mat
     
     	const bool odd(id.chamber()%2==1);
 
-    	GlobalVector ym = match_sh.simHitsMeanMomentum(simhits);
     	if (odd) etrk_csc_[st].csc_st2_has_csc_sh |= 1;
     	else etrk_csc_[st].csc_st2_has_csc_sh |= 2;
 
+    	GlobalVector ym = match_sh.simHitsMeanMomentum(simhits);
     	etrk_csc_[st].csc_st2_gv_eta = ym.eta();
     	etrk_csc_[st].csc_st2_gv_phi = ym.phi();
     	etrk_csc_[st].csc_st2_gv_pt = ym.perp();
@@ -851,7 +817,6 @@ DisplacedMuonTriggerRateGENSIM::analyzeTrackEfficiency(SimTrackMatchManager& mat
      }
 
  } // End of CSC Sim Hits
-
   if (etrk_csc_[st].csc_st1_nlayerscsc>3 and etrk_csc_[st].csc_st2_nlayerscsc>3){
 	etrk_csc_[st].csc_deltaphi_gp_12 = deltaPhi(etrk_csc_[st].csc_st1_gp_phi ,etrk_csc_[st].csc_st2_gp_phi);
 	etrk_csc_[st].csc_bending_angle_12 = deltaPhi(etrk_csc_[st].csc_st1_gv_phi ,etrk_csc_[st].csc_st2_gv_phi);
@@ -876,12 +841,12 @@ DisplacedMuonTriggerRateGENSIM::analyzeTrackEfficiency(SimTrackMatchManager& mat
 	etrk_csc_[st].delta_x_gp_13 = newxst3-newxst1;
 	etrk_csc_[st].delta_y_gp_13 = newyst3-newyst1;
 	}
-    
+  tree_eff_csc_[st]->Fill();
 
 }
 
 bool 
-DisplacedMuonTriggerRateGENSIM::isSimTrackGood(const SimTrack &t)
+DisplacedMuonTriggerAnalyzer::isSimTrackGood(const SimTrack &t)
 {
   // select only muon tracks
   if (t.noVertex()) return false;
@@ -893,7 +858,7 @@ DisplacedMuonTriggerRateGENSIM::isSimTrackGood(const SimTrack &t)
   return true;
 }
 
-void MyTrackRateL1::init()
+void MyTrackeffL1::init()
 {
 
  L1_pt = -99.;
@@ -904,7 +869,7 @@ void MyTrackRateL1::init()
 
 } 
 
-void MyTrackRateCSC::init()
+void MyTrackeffCSC::init()
 {
 
  lumi = - 99;
@@ -1027,7 +992,7 @@ void MyTrackRateCSC::init()
  pt_position_sh=-99;
  pt_direction_sh = -99;
 }
-void MyTrackRateDT::init()
+void MyTrackeffDT::init()
 {
  lumi = -99;
  run= -99;
@@ -1102,7 +1067,7 @@ void MyTrackRateDT::init()
 
 }
 
-TTree*MyTrackRateL1::book(TTree *t, const std::string & name)
+TTree*MyTrackeffL1::book(TTree *t, const std::string & name)
 {
   edm::Service< TFileService> fs;
   t = fs->make<TTree>(name.c_str(),name.c_str());
@@ -1115,7 +1080,7 @@ TTree*MyTrackRateL1::book(TTree *t, const std::string & name)
   return t;
 }
 
-TTree*MyTrackRateCSC::book(TTree *t, const std::string & name)
+TTree*MyTrackeffCSC::book(TTree *t, const std::string & name)
 {
 
   edm::Service< TFileService > fs;
@@ -1248,7 +1213,7 @@ TTree*MyTrackRateCSC::book(TTree *t, const std::string & name)
   return t;
 }
 
-TTree*MyTrackRateDT::book(TTree *t,const std::string & name)
+TTree*MyTrackeffDT::book(TTree *t,const std::string & name)
 {
   edm::Service< TFileService > fs;
   t = fs->make<TTree>(name.c_str(),name.c_str());
@@ -1331,7 +1296,7 @@ TTree*MyTrackRateDT::book(TTree *t,const std::string & name)
 
 
 void
-DisplacedMuonTriggerRateGENSIM::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+DisplacedMuonTriggerAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
   //The following says we do not know what parameters are allowed so do no validation
   // Please change this to state exactly what you do use, even if it is no parameters
   edm::ParameterSetDescription desc;
@@ -1340,4 +1305,4 @@ DisplacedMuonTriggerRateGENSIM::fillDescriptions(edm::ConfigurationDescriptions&
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(DisplacedMuonTriggerRateGENSIM);
+DEFINE_FWK_MODULE(DisplacedMuonTriggerAnalyzer);

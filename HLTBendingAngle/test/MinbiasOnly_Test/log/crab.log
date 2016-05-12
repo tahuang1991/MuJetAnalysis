@@ -1,0 +1,80 @@
+2016-01-26 15:40:44,545 [DEBUG] 	/home/hepxadmin/CRAB_2_11_1_patch1/python/crab.py -create -submit -cfg Minbiasonly.cfg
+
+2016-01-26 15:40:44,545 [INFO] 	Version 2.11.1_patch1 running on Tue Jan 26 15:40:44 2016 CST (21:40:44 UTC)
+
+crab. Working options:
+	scheduler           slurm
+	job type            CMSSW
+	server              OFF
+	working directory   /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/MinbiasOnly_Test/
+
+2016-01-26 15:40:44,546 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/home/taohuang/.cms_crab/allowed_releases.conf].
+2016-01-26 15:40:44,755 [DEBUG] 	Input whitelist: T3_US_TAMU
+2016-01-26 15:40:44,755 [DEBUG] 	Input blacklist: 
+2016-01-26 15:40:44,764 [DEBUG] 	Converted whitelist: srm.brazos.tamu.edu
+2016-01-26 15:40:44,764 [DEBUG] 	Converted blacklist: 
+2016-01-26 15:40:47,872 [INFO] 	Your se_white_list is set to T3_US_TAMU: only local dataset will be considered
+2016-01-26 15:40:47,872 [INFO] 	Using a proxy
+2016-01-26 15:40:50,005 [DEBUG] 	Linux login02.brazos.tamu.edu 2.6.32-573.12.1.el6.x86_64 #1 SMP Tue Dec 15 21:19:08 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
+ 
+Used properties:
+Linux login02.brazos.tamu.edu 2.6.32-573.12.1.el6.x86_64 #1 SMP Tue Dec 15 21:19:08 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
+ 
+Used properties:
+   CMSSW.allow_nonproductioncmssw : 1
+   CMSSW.datasetpath : /MinBias_TuneCUETP8M1_13TeV-pythia8/RunIIWinter15GS-MCRUN2_71_V1-v1/GEN-SIM
+   CMSSW.dbs_url : phys03
+   CMSSW.get_edm_output : 1
+   CMSSW.number_of_jobs : 10
+   CMSSW.output_file : out_ana.root
+   CMSSW.pset : runHLTBendingAngle_cfg.py
+   CMSSW.total_number_of_events : 1000
+   CMSSW.use_dbs3 : 1
+   CRAB.cfg : Minbiasonly.cfg
+   CRAB.create : 
+   CRAB.jobtype : cmssw
+   CRAB.scheduler : slurm
+   CRAB.submit : 
+   CRAB.use_server : 0
+   GRID.ce_white_list : T3_US_TAMU
+   GRID.dont_check_proxy : 1
+   GRID.proxy_server : fg-myproxy.fnal.gov
+   GRID.rb : CERN
+   GRID.se_white_list : T3_US_TAMU
+   GRID.virtual_organization : cms
+   SLURM.queue : hepx
+   SLURM.wnbase : /tmp
+   SLURM.workernodebase : /tmp
+   USER.check_user_remote_dir : 1
+   USER.copy_data : 1
+   USER.dbs_url_for_publication : https://cmsdbsprod.cern.ch:8443/cms_dbs_ph_analysis_01_writer/servlet/DBSServlet
+   USER.debug_wrapper : 1
+   USER.publish_data : 0
+   USER.publish_data_name : MinbiasOnly_Test
+   USER.return_data : 0
+   USER.srm_version : srmv2
+   USER.storage_element : T3_US_TAMU
+   USER.storage_path : /srm/v2/server?SFN=/fdata/hepx/
+   USER.ui_working_dir : MinbiasOnly_Test
+   USER.user_remote_dir : MinbiasOnly_Test
+End of used properties.
+
+2016-01-26 15:40:50,006 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/home/taohuang/.cms_crab/site_black_list.conf].
+2016-01-26 15:40:50,007 [DEBUG] 	Enforced black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2 
+2016-01-26 15:40:50,008 [INFO] 	PSN black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2
+2016-01-26 15:40:50,267 [DEBUG] 	CMSSW::__init__
+2016-01-26 15:40:50,268 [DEBUG] 	Scram::Scram() version is 2
+2016-01-26 15:40:50,268 [DEBUG] 	Scram::Scram() arch is slc6_amd64_gcc491
+2016-01-26 15:40:50,268 [DEBUG] 	Downloading file [https://cmssdt.cern.ch/SDT/cgi-bin] to [/home/taohuang/.cms_crab/ReleasesXML?anytype=1].
+2016-01-26 15:40:50,269 [DEBUG] 	/home/taohuang/.cms_crab/0_GET_ReleasesXML?anytype=1 expired, refreshing cache
+2016-01-26 15:40:50,269 [DEBUG] 	getData: 
+	url: /SDT/cgi-bin/ReleasesXML?anytype=1
+	data: {}
+2016-01-26 15:40:52,270 [INFO] 	Contacting Data Discovery Services ...
+2016-01-26 15:40:52,270 [DEBUG] 	No mapping to a DBS2 instance possible for dbs_url=https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader
+2016-01-26 15:40:52,270 [DEBUG] 	ERROR: ERROR: local scope DBS instance https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader
+      specified while dataset is
+      /MinBias_TuneCUETP8M1_13TeV-pythia8/RunIIWinter15GS-MCRUN2_71_V1-v1/GEN-SIM
+    When using local scope DBS, dataset must have one of the following tiers:
+      ['USER']
+

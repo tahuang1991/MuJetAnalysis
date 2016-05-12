@@ -1,0 +1,28 @@
+#!/bin/bash
+#SBATCH -J testscript
+#SBATCH -p hepx 
+#SBATCH --time=120:00:00
+#SBATCH -n1
+#SBATCH --mem-per-cpu=1500
+#SBATCH -o testscript-%A-%a.out
+#SBATCH -e testscript-%A-%a.err
+#SBATCH --ntasks-per-core=1
+#SBATCH --mail-type=END,FAIL      # notifications for job done & fail
+#SBATCH --mail-user=gdowcn@gmail.com # send-to address
+
+source ~/.bashrc
+. /etc/profile.d/modules.sh
+
+#cd /fdata/hepx/store/user/taohuang/Hhh/
+
+echo "`date`, SLURM_JOBID = $SLURM_JOBID"
+jobid=$SLURM_JOBID
+eval `scramv1 runtime -sh`
+cmsRun runDisplacedMuonTriggerRateGENSIM_cfg.py
+###any command here 
+#python out.py
+#sed -i "s/pattern-home/jobid-$jobid/g" "test.txt"
+#Herwig++ --help
+
+exit 0
+

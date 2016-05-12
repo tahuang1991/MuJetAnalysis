@@ -1,0 +1,407 @@
+2015-11-30 12:03:54,360 [DEBUG] 	/home/hepxadmin/CRAB_2_11_1_patch1/python/crab.py -create -submit -cfg Prompt.cfg
+
+2015-11-30 12:03:54,361 [INFO] 	Version 2.11.1_patch1 running on Mon Nov 30 12:03:54 2015 CST (18:03:54 UTC)
+
+crab. Working options:
+	scheduler           slurm
+	job type            CMSSW
+	server              OFF
+	working directory   /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/Ptassignment_30_Nov_ct0/
+
+2015-11-30 12:03:54,361 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/home/taohuang/.cms_crab/allowed_releases.conf].
+2015-11-30 12:03:54,545 [DEBUG] 	Input whitelist: T3_US_TAMU
+2015-11-30 12:03:54,546 [DEBUG] 	Input blacklist: 
+2015-11-30 12:03:54,553 [DEBUG] 	Converted whitelist: srm.brazos.tamu.edu
+2015-11-30 12:03:54,554 [DEBUG] 	Converted blacklist: 
+2015-11-30 12:03:58,489 [INFO] 	Your se_white_list is set to T3_US_TAMU: only local dataset will be considered
+2015-11-30 12:03:58,489 [INFO] 	Using a proxy
+2015-11-30 12:04:01,048 [INFO] 	Your proxy will expire in:
+	0 hours 00 minutes 00 seconds
+
+2015-11-30 12:04:08,705 [DEBUG] 	MyProxy delegation:
+eval `scram unsetenv -sh`; export GT_PROXY_MODE=rfc; myproxy-init -d -n -s myproxy.cern.ch
+2015-11-30 12:04:08,740 [DEBUG] 	Linux login02.brazos.tamu.edu 2.6.32-504.8.1.el6.x86_64 #1 SMP Wed Jan 28 21:11:36 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
+ 
+Used properties:
+Linux login02.brazos.tamu.edu 2.6.32-504.8.1.el6.x86_64 #1 SMP Wed Jan 28 21:11:36 UTC 2015 x86_64 x86_64 x86_64 GNU/Linux
+ 
+Used properties:
+   CMSSW.allow_nonproductioncmssw : 1
+   CMSSW.datasetpath : /DarkSUSY_mH_125_mGammaD_20000_ctau0_14TeV_madgraph452_bridge224_LHE_pythia8_GEN_SIM_80k_v3/jrdv009-DarkSUSY_mH_125_mGammaD_20000_ctau0_14TeV_madgraph452_bridge224_LHE_pythia8_GEN_SIM_80k_v3-e007db91b5aa2bed7c0fc47ce82a4274/USER
+   CMSSW.dbs_url : phys03
+   CMSSW.get_edm_output : 1
+   CMSSW.number_of_jobs : 1
+   CMSSW.output_file : out_ana.root
+   CMSSW.pset : runHLTBendingAngle_cfg.py
+   CMSSW.total_number_of_events : 80000
+   CMSSW.use_dbs3 : 1
+   CRAB.cfg : Prompt.cfg
+   CRAB.create : 
+   CRAB.jobtype : cmssw
+   CRAB.scheduler : slurm
+   CRAB.submit : 
+   CRAB.use_server : 0
+   GRID.ce_white_list : T3_US_TAMU
+   GRID.dont_check_proxy : 1
+   GRID.proxy_server : fg-myproxy.fnal.gov
+   GRID.rb : CERN
+   GRID.se_white_list : T3_US_TAMU
+   GRID.virtual_organization : cms
+   SLURM.queue : hepx
+   SLURM.wnbase : /tmp
+   SLURM.workernodebase : /tmp
+   USER.check_user_remote_dir : 1
+   USER.copy_data : 1
+   USER.dbs_url_for_publication : https://cmsdbsprod.cern.ch:8443/cms_dbs_ph_analysis_01_writer/servlet/DBSServlet
+   USER.debug_wrapper : 1
+   USER.publish_data : 0
+   USER.publish_data_name : Ptassignment_30_Nov_ct0
+   USER.return_data : 0
+   USER.srm_version : srmv2
+   USER.storage_element : T3_US_TAMU
+   USER.storage_path : /srm/v2/server?SFN=/fdata/hepx/
+   USER.ui_working_dir : Ptassignment_30_Nov_ct0
+   USER.user_remote_dir : Ptassignment_30_Nov_ct0
+End of used properties.
+
+2015-11-30 12:04:08,741 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/home/taohuang/.cms_crab/site_black_list.conf].
+2015-11-30 12:04:08,742 [DEBUG] 	/home/taohuang/.cms_crab/0_GET_site_black_list.conf expired, refreshing cache
+2015-11-30 12:04:08,742 [DEBUG] 	getData: 
+	url: /cms/LCG/crab/config/site_black_list.conf
+	data: {}
+2015-11-30 12:04:09,525 [DEBUG] 	Enforced black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2 
+2015-11-30 12:04:09,525 [INFO] 	PSN black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2
+2015-11-30 12:04:09,840 [DEBUG] 	CMSSW::__init__
+2015-11-30 12:04:09,841 [DEBUG] 	Scram::Scram() version is 2
+2015-11-30 12:04:09,841 [DEBUG] 	Scram::Scram() arch is slc6_amd64_gcc491
+2015-11-30 12:04:09,841 [DEBUG] 	Downloading file [https://cmssdt.cern.ch/SDT/cgi-bin] to [/home/taohuang/.cms_crab/ReleasesXML?anytype=1].
+2015-11-30 12:04:09,842 [DEBUG] 	/home/taohuang/.cms_crab/0_GET_ReleasesXML?anytype=1 expired, refreshing cache
+2015-11-30 12:04:09,842 [DEBUG] 	getData: 
+	url: /SDT/cgi-bin/ReleasesXML?anytype=1
+	data: {}
+2015-11-30 12:04:12,262 [INFO] 	Contacting Data Discovery Services ...
+2015-11-30 12:04:12,262 [DEBUG] 	No mapping to a DBS2 instance possible for dbs_url=https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader
+2015-11-30 12:04:12,262 [INFO] 	Accessing DBS at: https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader
+2015-11-30 12:04:15,992 [INFO] 	DBS3 lookup took  3.54 sec
+2015-11-30 12:04:16,239 [INFO] 	Datatype is mc
+2015-11-30 12:04:16,241 [DEBUG] 	No mapping to a DBS2 instance possible for dbs_url=https://cmsweb.cern.ch/dbs/prod/phys03/DBSReader
+2015-11-30 12:04:16,242 [DEBUG] 	Retrieve block locations with
+curl -ks --cert $X509_USER_PROXY --key $X509_USER_PROXY "https://cmsweb.cern.ch/phedex/datasvc/json/prod/BlockReplicaSummary?dataset=/DarkSUSY_mH_125_mGammaD_20000_ctau0_14TeV_madgraph452_bridge224_LHE_pythia8_GEN_SIM_80k_v3/jrdv009-DarkSUSY_mH_125_mGammaD_20000_ctau0_14TeV_madgraph452_bridge224_LHE_pythia8_GEN_SIM_80k_v3-e007db91b5aa2bed7c0fc47ce82a4274/USER&complete=y"
+2015-11-30 12:04:17,978 [DEBUG] 	Retrieve PNNs type with
+curl -ks --cert $X509_USER_PROXY --key $X509_USER_PROXY "https://cmsweb.cern.ch/phedex/datasvc/cjson/prod/nodes"
+2015-11-30 12:04:19,786 [INFO] 	No dataset location information found in PhEDEx
+2015-11-30 12:04:19,787 [INFO] 	Use origin site location recorded in local scope DBS
+2015-11-30 12:04:23,517 [INFO] 	Requested dataset: /DarkSUSY_mH_125_mGammaD_20000_ctau0_14TeV_madgraph452_bridge224_LHE_pythia8_GEN_SIM_80k_v3/jrdv009-DarkSUSY_mH_125_mGammaD_20000_ctau0_14TeV_madgraph452_bridge224_LHE_pythia8_GEN_SIM_80k_v3-e007db91b5aa2bed7c0fc47ce82a4274/USER has 80000 events in 1 blocks.
+
+2015-11-30 12:04:25,151 [DEBUG] 	Job splitting method: EventBased
+2015-11-30 12:04:25,152 [INFO] 	May not create the exact number_of_jobs requested.
+2015-11-30 12:04:25,152 [DEBUG] 	Events in Block File 80000
+2015-11-30 12:04:25,158 [DEBUG] 	
+Job 1 can run over 80000 events.
+Job 1 Destination: ['T3_US_TAMU']
+
+2015-11-30 12:04:25,158 [INFO] 	1 job(s) can run on 80000 events.
+
+2015-11-30 12:04:25,160 [INFO] 	List of jobs and available destination sites:
+
+Block     1: jobs                    1: sites: T3_US_TAMU
+
+2015-11-30 12:04:25,231 [DEBUG] 	PsetManipulator::__init__: PSet file = runHLTBendingAngle_cfg.py
+2015-11-30 12:04:27,969 [DEBUG] 	Output from TFileService out_ana.root already in output files
+2015-11-30 12:04:28,109 [DEBUG] 	lib /home/taohuang/work/CMSSW_7_4_4/lib to be tarred
+2015-11-30 12:04:29,615 [DEBUG] 	Creator: JobType CMSSW created
+2015-11-30 12:04:29,615 [DEBUG] 	Creator: total # of jobs = 1
+2015-11-30 12:04:29,615 [DEBUG] 	Creator constructor finished
+2015-11-30 12:04:29,752 [DEBUG] 	parseRange_ None
+2015-11-30 12:04:29,755 [DEBUG] 	Scram::Scram() version is 2
+2015-11-30 12:04:29,755 [DEBUG] 	Scram::Scram() arch is slc6_amd64_gcc491
+2015-11-30 12:04:29,755 [DEBUG] 	Creator::run() called
+2015-11-30 12:04:29,756 [DEBUG] 	Scram::Scram() version is 2
+2015-11-30 12:04:29,756 [DEBUG] 	Scram::Scram() arch is slc6_amd64_gcc491
+2015-11-30 12:04:31,925 [INFO] 	output files will be staged at T3_US_TAMU
+       with LFN's starting with = /store/user/taohuang/Ptassignment_30_Nov_ct0/
+2015-11-30 12:04:31,932 [INFO] 	Checking remote location
+2015-11-30 12:04:31,933 [DEBUG] 	protocol = srm-lcg
+endpoint = srm://srm.brazos.tamu.edu:8443/srm/v2/server?SFN=/fdata/hepx/store/user/taohuang/Ptassignment_30_Nov_ct0/
+
+2015-11-30 12:04:33,029 [DEBUG] 	Command:	eval `scram unsetenv -sh` ; lcg-ls -d -b -D srmv2 srm://srm.brazos.tamu.edu:8443/srm/v2/server?SFN=/fdata/hepx/store/user/taohuang/Ptassignment_30_Nov_ct0/
+2015-11-30 12:04:33,030 [DEBUG] 	ExitCode:	1
+2015-11-30 12:04:33,030 [DEBUG] 	Output:	/fdata/hepx/store/user/taohuang/Ptassignment_30_Nov_ct0/: [SE][Ls][SRM_INVALID_PATH] No such file or directory.
+
+2015-11-30 12:04:33,046 [INFO] 	Creating 1 jobs, please wait...
+2015-11-30 12:04:33,046 [DEBUG] 	Creation Time: 3.29098200798
+2015-11-30 12:04:33,046 [INFO] 	Total of 1 jobs created.
+
+2015-11-30 12:04:33,046 [DEBUG] 	Submitter::run() called
+2015-11-30 12:04:33,049 [DEBUG] 	nsjobs -1
+2015-11-30 12:04:33,049 [DEBUG] 	Total jobs 1
+2015-11-30 12:04:33,051 [DEBUG] 	nj_list [1]
+2015-11-30 12:04:33,055 [DEBUG] 	GRIDNAME: /CN=Tao Huang 
+2015-11-30 12:04:33,269 [DEBUG] 	Submission DashBoard Pre-Submission report: {'ApplicationVersion': 'CMSSW_7_4_4', 'taskId': 'taohuang_Ptassignment_30_Nov_ct0_71nay2', 'resubmitter': 'user', 'tool': 'crab2', 'vo': 'cms', 'tool_ui': 'login02.brazos.tamu.edu', 'JSToolVersion': '2.11.1_patch1', 'user': 'taohuang', 'scheduler': 'slurm', 'taskType': 'analysis', 'CMSUser': 'taohuang', 'jobId': 'TaskMeta', 'datasetFull': '/DarkSUSY_mH_125_mGammaD_20000_ctau0_14TeV_madgraph452_bridge224_LHE_pythia8_GEN_SIM_80k_v3/jrdv009-DarkSUSY_mH_125_mGammaD_20000_ctau0_14TeV_madgraph452_bridge224_LHE_pythia8_GEN_SIM_80k_v3-e007db91b5aa2bed7c0fc47ce82a4274/USER', 'exe': 'cmsRun', 'GridName': '/CN=Tao Huang', 'SubmissionType': 'direct'}
+2015-11-30 12:04:33,270 [INFO] 	Checking available resources...
+2015-11-30 12:04:33,278 [INFO] 	Found  compatible site(s) for job 1
+2015-11-30 12:04:33,279 [INFO] 	1 blocks of jobs will be submitted
+2015-11-30 12:04:33,279 [DEBUG] 	Delegating proxy 
+2015-11-30 12:04:33,280 [DEBUG] 	Submitting jobs [1]
+2015-11-30 12:04:33,434 [DEBUG] 	 CONFIG: #!/bin/sh
+2015-11-30 12:04:33,434 [DEBUG] 	 CONFIG: # This script generated by CRAB2 from http://cms.cern.ch
+2015-11-30 12:04:33,434 [DEBUG] 	 CONFIG: #SBATCH --error /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/Ptassignment_30_Nov_ct0/res/wrapper_CMSSW_1.stderr
+2015-11-30 12:04:33,434 [DEBUG] 	 CONFIG: #SBATCH --output /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/Ptassignment_30_Nov_ct0/res/wrapper_CMSSW_1.stdout
+2015-11-30 12:04:33,434 [DEBUG] 	 CONFIG: #SBATCH --job-name CMS_CRAB2
+2015-11-30 12:04:33,435 [DEBUG] 	 CONFIG: #SBATCH --partition hepx
+2015-11-30 12:04:33,435 [DEBUG] 	 CONFIG: mkdir -p /tmp
+2015-11-30 12:04:33,435 [DEBUG] 	 CONFIG: cp /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/Ptassignment_30_Nov_ct0/share/default.tgz /tmp/36b4b59151434620a3c126631cb3d241-default.tgz
+2015-11-30 12:04:33,435 [DEBUG] 	 CONFIG: cp /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/Ptassignment_30_Nov_ct0/share/arguments.xml /tmp/36b4b59151434620a3c126631cb3d241-arguments.xml
+2015-11-30 12:04:33,435 [DEBUG] 	 CONFIG: cp /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/Ptassignment_30_Nov_ct0/job/CMSSW.sh /tmp/36b4b59151434620a3c126631cb3d241-CMSSW.sh
+2015-11-30 12:04:33,435 [DEBUG] 	 CONFIG: cp /home/taohuang/.x509up_u1468 /tmp/36b4b59151434620a3c126631cb3d241-.x509up_u1468
+2015-11-30 12:04:33,435 [DEBUG] 	 CONFIG: cp -f /tmp/36b4b59151434620a3c126631cb3d241-out_files_1.tgz /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/Ptassignment_30_Nov_ct0/res/out_files_1.tgz
+2015-11-30 12:04:33,436 [DEBUG] 	 CONFIG: cp -f /tmp/36b4b59151434620a3c126631cb3d241-crab_fjr_1.xml /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/Ptassignment_30_Nov_ct0/res/crab_fjr_1.xml
+2015-11-30 12:04:33,436 [DEBUG] 	 CONFIG: set -x
+2015-11-30 12:04:33,436 [DEBUG] 	 CONFIG: pwd
+2015-11-30 12:04:33,436 [DEBUG] 	 CONFIG: ls -lah
+2015-11-30 12:04:33,436 [DEBUG] 	 CONFIG: echo ***BEGINNING SLURMV2***
+2015-11-30 12:04:33,436 [DEBUG] 	 CONFIG: CRAB2_OLD_DIRECTORY=`pwd`
+2015-11-30 12:04:33,436 [DEBUG] 	 CONFIG: CRAB2_SLURM_WORKDIR=/tmp
+2015-11-30 12:04:33,436 [DEBUG] 	 CONFIG: cd /tmp
+2015-11-30 12:04:33,437 [DEBUG] 	 CONFIG: CRAB2_WORKDIR=`pwd`/CRAB2-$SLURM_JOBCOOKIE$SLURM_JOBID
+2015-11-30 12:04:33,437 [DEBUG] 	 CONFIG: if [ ! -d $CRAB2_WORKDIR ] ; then 
+2015-11-30 12:04:33,437 [DEBUG] 	 CONFIG:   mkdir -p $CRAB2_WORKDIR
+2015-11-30 12:04:33,437 [DEBUG] 	 CONFIG: fi
+2015-11-30 12:04:33,437 [DEBUG] 	 CONFIG: cd $CRAB2_WORKDIR
+2015-11-30 12:04:33,437 [DEBUG] 	 CONFIG: mv $CRAB2_SLURM_WORKDIR/36b4b59151434620a3c126631cb3d241-default.tgz $CRAB2_WORKDIR/default.tgz
+2015-11-30 12:04:33,437 [DEBUG] 	 CONFIG: mv $CRAB2_SLURM_WORKDIR/36b4b59151434620a3c126631cb3d241-arguments.xml $CRAB2_WORKDIR/arguments.xml
+2015-11-30 12:04:33,437 [DEBUG] 	 CONFIG: mv $CRAB2_SLURM_WORKDIR/36b4b59151434620a3c126631cb3d241-CMSSW.sh $CRAB2_WORKDIR/CMSSW.sh
+2015-11-30 12:04:33,438 [DEBUG] 	 CONFIG: mv $CRAB2_SLURM_WORKDIR/36b4b59151434620a3c126631cb3d241-.x509up_u1468 $CRAB2_WORKDIR/.x509up_u1468
+2015-11-30 12:04:33,438 [DEBUG] 	 CONFIG: export X509_USER_PROXY=$CRAB2_WORKDIR/.x509up_u1468
+2015-11-30 12:04:33,438 [DEBUG] 	 CONFIG: ./CMSSW.sh 1 1
+2015-11-30 12:04:33,438 [DEBUG] 	 CONFIG: ls $CRAB2_WORKDIR
+2015-11-30 12:04:33,438 [DEBUG] 	 CONFIG: mv $CRAB2_WORKDIR/out_files_1.tgz $CRAB2_SLURM_WORKDIR/36b4b59151434620a3c126631cb3d241-out_files_1.tgz
+2015-11-30 12:04:33,438 [DEBUG] 	 CONFIG: mv $CRAB2_WORKDIR/crab_fjr_1.xml $CRAB2_SLURM_WORKDIR/36b4b59151434620a3c126631cb3d241-crab_fjr_1.xml
+2015-11-30 12:04:33,438 [DEBUG] 	 CONFIG: mv -f /tmp/36b4b59151434620a3c126631cb3d241-out_files_1.tgz /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/Ptassignment_30_Nov_ct0/res/out_files_1.tgz
+2015-11-30 12:04:33,438 [DEBUG] 	 CONFIG: mv -f /tmp/36b4b59151434620a3c126631cb3d241-crab_fjr_1.xml /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/Ptassignment_30_Nov_ct0/res/crab_fjr_1.xml
+2015-11-30 12:04:33,439 [DEBUG] 	 CONFIG: cd $CRAB2_OLD_DIRECTORY
+2015-11-30 12:04:33,439 [DEBUG] 	 CONFIG: rm -rf $CRAB2_WORKDIR
+2015-11-30 12:04:34,536 [DEBUG] 	WMS : None
+Collection ID : 9585337
+2015-11-30 12:04:34,540 [DEBUG] 	Submitted job # 1
+2015-11-30 12:04:34,545 [DEBUG] 	Updating [[1]] state SubSuccess
+2015-11-30 12:04:34,555 [DEBUG] 	GRIDNAME: /CN=Tao Huang 
+2015-11-30 12:04:34,590 [DEBUG] 	Submission Time: 1.54309391975
+2015-11-30 12:04:34,590 [INFO] 	Total of 1 jobs submitted.
+2015-11-30 14:15:24,914 [DEBUG] 	/home/hepxadmin/CRAB_2_11_1_patch1/python/crab.py -status -c Ptassignment_30_Nov_ct0/
+
+2015-11-30 14:15:24,915 [INFO] 	Version 2.11.1_patch1 running on Mon Nov 30 14:15:24 2015 CST (20:15:24 UTC)
+
+crab. Working options:
+	scheduler           slurm
+	job type            CMSSW
+	server              OFF
+	working directory   /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/Ptassignment_30_Nov_ct0/
+
+2015-11-30 14:15:24,915 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/home/taohuang/.cms_crab/allowed_releases.conf].
+2015-11-30 14:15:24,916 [DEBUG] 	/home/taohuang/.cms_crab/0_GET_allowed_releases.conf expired, refreshing cache
+2015-11-30 14:15:24,916 [DEBUG] 	getData: 
+	url: /cms/LCG/crab/config/allowed_releases.conf
+	data: {}
+2015-11-30 14:15:25,764 [DEBUG] 	Input whitelist: T3_US_TAMU
+2015-11-30 14:15:25,765 [DEBUG] 	Input blacklist: 
+2015-11-30 14:15:25,766 [DEBUG] 	/home/taohuang/.cms_sitedbcache/0_GET_site-names.json expired, refreshing cache
+2015-11-30 14:15:25,766 [DEBUG] 	getData: 
+	url: /sitedb/data/prod/site-names
+	data: {}
+2015-11-30 14:15:32,513 [DEBUG] 	/home/taohuang/.cms_sitedbcache/0_GET_site-resources.json expired, refreshing cache
+2015-11-30 14:15:32,513 [DEBUG] 	getData: 
+	url: /sitedb/data/prod/site-resources
+	data: {}
+2015-11-30 14:15:39,402 [DEBUG] 	Converted whitelist: srm.brazos.tamu.edu
+2015-11-30 14:15:39,402 [DEBUG] 	Converted blacklist: 
+2015-11-30 14:15:41,100 [DEBUG] 	ERROR: ERROR decoding SiteDB output
+
+
+2015-11-30 14:15:44,484 [DEBUG] 	/home/hepxadmin/CRAB_2_11_1_patch1/python/crab.py -status -c Ptassignment_30_Nov_ct0/
+
+2015-11-30 14:15:44,484 [INFO] 	Version 2.11.1_patch1 running on Mon Nov 30 14:15:44 2015 CST (20:15:44 UTC)
+
+crab. Working options:
+	scheduler           slurm
+	job type            CMSSW
+	server              OFF
+	working directory   /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/Ptassignment_30_Nov_ct0/
+
+2015-11-30 14:15:44,484 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/home/taohuang/.cms_crab/allowed_releases.conf].
+2015-11-30 14:15:44,611 [DEBUG] 	Input whitelist: T3_US_TAMU
+2015-11-30 14:15:44,612 [DEBUG] 	Input blacklist: 
+2015-11-30 14:15:44,619 [DEBUG] 	Converted whitelist: srm.brazos.tamu.edu
+2015-11-30 14:15:44,619 [DEBUG] 	Converted blacklist: 
+2015-11-30 14:15:46,312 [DEBUG] 	ERROR: ERROR decoding SiteDB output
+
+
+2015-11-30 14:16:07,717 [DEBUG] 	/home/hepxadmin/CRAB_2_11_1_patch1/python/crab.py -status -c Ptassignment_30_Nov_ct0/
+
+2015-11-30 14:16:07,717 [INFO] 	Version 2.11.1_patch1 running on Mon Nov 30 14:16:07 2015 CST (20:16:07 UTC)
+
+crab. Working options:
+	scheduler           slurm
+	job type            CMSSW
+	server              OFF
+	working directory   /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/Ptassignment_30_Nov_ct0/
+
+2015-11-30 14:16:07,717 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/home/taohuang/.cms_crab/allowed_releases.conf].
+2015-11-30 14:16:07,845 [DEBUG] 	Input whitelist: T3_US_TAMU
+2015-11-30 14:16:07,845 [DEBUG] 	Input blacklist: 
+2015-11-30 14:16:07,852 [DEBUG] 	Converted whitelist: srm.brazos.tamu.edu
+2015-11-30 14:16:07,853 [DEBUG] 	Converted blacklist: 
+2015-11-30 14:16:10,884 [INFO] 	Your se_white_list is set to T3_US_TAMU: only local dataset will be considered
+2015-11-30 14:16:10,884 [INFO] 	Using a proxy
+2015-11-30 14:16:13,201 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/home/taohuang/.cms_crab/site_black_list.conf].
+2015-11-30 14:16:13,202 [DEBUG] 	/home/taohuang/.cms_crab/0_GET_site_black_list.conf expired, refreshing cache
+2015-11-30 14:16:13,202 [DEBUG] 	getData: 
+	url: /cms/LCG/crab/config/site_black_list.conf
+	data: {}
+2015-11-30 14:16:13,505 [DEBUG] 	Enforced black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2 
+2015-11-30 14:16:13,505 [INFO] 	PSN black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2
+2015-11-30 14:16:13,529 [DEBUG] 	Status::run() called
+2015-11-30 14:16:13,529 [INFO] 	Checking the status of all jobs: please wait
+2015-11-30 14:16:15,270 [INFO] 	
+ID    END STATUS            ACTION       ExeExitCode JobExitCode E_HOST
+----- --- ----------------- ------------  ---------- ----------- ---------
+1     N   Done              Terminated                           
+
+2015-11-30 14:16:15,293 [INFO] 	 1 Total Jobs 
+ >>>>>>>>> 1 Jobs Done
+	Jobs terminated: retrieve them with: crab -getoutput <List of jobs>
+	List of jobs: 1 
+
+2015-11-30 14:16:15,295 [INFO] 	You can also follow the status of this task on :
+	CMS Dashboard: http://dashb-cms-job-task.cern.ch/taskmon.html#task=taohuang_Ptassignment_30_Nov_ct0_71nay2
+	Your task name is: taohuang_Ptassignment_30_Nov_ct0_71nay2 
+
+2015-11-30 14:16:15,295 [DEBUG] 	Status Time: 1.76605200768
+2015-11-30 14:17:28,635 [DEBUG] 	/home/hepxadmin/CRAB_2_11_1_patch1/python/crab.py -status -c Ptassignment_30_Nov_ct0/
+
+2015-11-30 14:17:28,635 [INFO] 	Version 2.11.1_patch1 running on Mon Nov 30 14:17:28 2015 CST (20:17:28 UTC)
+
+crab. Working options:
+	scheduler           slurm
+	job type            CMSSW
+	server              OFF
+	working directory   /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/Ptassignment_30_Nov_ct0/
+
+2015-11-30 14:17:28,636 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/home/taohuang/.cms_crab/allowed_releases.conf].
+2015-11-30 14:17:28,823 [DEBUG] 	Input whitelist: T3_US_TAMU
+2015-11-30 14:17:28,823 [DEBUG] 	Input blacklist: 
+2015-11-30 14:17:28,830 [DEBUG] 	Converted whitelist: srm.brazos.tamu.edu
+2015-11-30 14:17:28,830 [DEBUG] 	Converted blacklist: 
+2015-11-30 14:17:32,014 [INFO] 	Your se_white_list is set to T3_US_TAMU: only local dataset will be considered
+2015-11-30 14:17:32,015 [INFO] 	Using a proxy
+2015-11-30 14:17:34,077 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/home/taohuang/.cms_crab/site_black_list.conf].
+2015-11-30 14:17:34,078 [DEBUG] 	Enforced black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2 
+2015-11-30 14:17:34,079 [INFO] 	PSN black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2
+2015-11-30 14:17:34,085 [DEBUG] 	Status::run() called
+2015-11-30 14:17:34,085 [INFO] 	Checking the status of all jobs: please wait
+2015-11-30 14:17:34,262 [INFO] 	
+ID    END STATUS            ACTION       ExeExitCode JobExitCode E_HOST
+----- --- ----------------- ------------  ---------- ----------- ---------
+1     Y   Done              Terminated                           
+
+2015-11-30 14:17:34,284 [INFO] 	 1 Total Jobs 
+ >>>>>>>>> 1 Jobs Done
+	Jobs terminated: retrieve them with: crab -getoutput <List of jobs>
+	List of jobs: 1 
+
+2015-11-30 14:17:34,286 [INFO] 	You can also follow the status of this task on :
+	CMS Dashboard: http://dashb-cms-job-task.cern.ch/taskmon.html#task=taohuang_Ptassignment_30_Nov_ct0_71nay2
+	Your task name is: taohuang_Ptassignment_30_Nov_ct0_71nay2 
+
+2015-11-30 14:17:34,286 [DEBUG] 	Status Time: 0.200935840607
+2015-11-30 14:17:49,873 [DEBUG] 	/home/hepxadmin/CRAB_2_11_1_patch1/python/crab.py -status -get -c Ptassignment_30_Nov_ct0/
+
+2015-11-30 14:17:49,873 [INFO] 	Version 2.11.1_patch1 running on Mon Nov 30 14:17:49 2015 CST (20:17:49 UTC)
+
+crab. Working options:
+	scheduler           slurm
+	job type            CMSSW
+	server              OFF
+	working directory   /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/Ptassignment_30_Nov_ct0/
+
+2015-11-30 14:17:49,874 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/home/taohuang/.cms_crab/allowed_releases.conf].
+2015-11-30 14:17:50,000 [DEBUG] 	Input whitelist: T3_US_TAMU
+2015-11-30 14:17:50,001 [DEBUG] 	Input blacklist: 
+2015-11-30 14:17:50,007 [DEBUG] 	Converted whitelist: srm.brazos.tamu.edu
+2015-11-30 14:17:50,008 [DEBUG] 	Converted blacklist: 
+2015-11-30 14:17:52,789 [INFO] 	Your se_white_list is set to T3_US_TAMU: only local dataset will be considered
+2015-11-30 14:17:52,790 [INFO] 	Using a proxy
+2015-11-30 14:17:55,448 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/home/taohuang/.cms_crab/site_black_list.conf].
+2015-11-30 14:17:55,450 [DEBUG] 	Enforced black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2 
+2015-11-30 14:17:55,450 [INFO] 	PSN black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2
+2015-11-30 14:17:55,471 [DEBUG] 	Status::run() called
+2015-11-30 14:17:55,472 [INFO] 	Checking the status of all jobs: please wait
+2015-11-30 14:17:55,585 [INFO] 	
+ID    END STATUS            ACTION       ExeExitCode JobExitCode E_HOST
+----- --- ----------------- ------------  ---------- ----------- ---------
+1     Y   Done              Terminated                           
+
+2015-11-30 14:17:55,608 [INFO] 	 1 Total Jobs 
+ >>>>>>>>> 1 Jobs Done
+	Jobs terminated: retrieve them with: crab -getoutput <List of jobs>
+	List of jobs: 1 
+
+2015-11-30 14:17:55,610 [INFO] 	You can also follow the status of this task on :
+	CMS Dashboard: http://dashb-cms-job-task.cern.ch/taskmon.html#task=taohuang_Ptassignment_30_Nov_ct0_71nay2
+	Your task name is: taohuang_Ptassignment_30_Nov_ct0_71nay2 
+
+2015-11-30 14:17:55,610 [DEBUG] 	Status Time: 0.138305902481
+2015-11-30 14:17:55,610 [DEBUG] 	GetOutput::run() called
+2015-11-30 14:17:55,621 [DEBUG] 	/bin/sh: /usr/bin/fs: No such file or directory
+ while checking AFS quota. Treat as check OK
+2015-11-30 14:17:55,630 [DEBUG] 	/bin/sh: /usr/bin/fs: No such file or directory
+ while checking partition. Treat as check OK
+2015-11-30 14:17:55,775 [INFO] 	Results of Jobs # 1 are in /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/Ptassignment_30_Nov_ct0//res/
+2015-11-30 14:17:56,491 [DEBUG] 	/bin/sh: /usr/bin/fs: No such file or directory
+ while checking AFS quota. Treat as check OK
+2015-11-30 14:17:56,502 [DEBUG] 	/bin/sh: /usr/bin/fs: No such file or directory
+ while checking partition. Treat as check OK
+2015-11-30 14:17:56,560 [DEBUG] 	GetOutput Time: 0.95013999939
+2015-11-30 14:20:34,053 [DEBUG] 	/home/hepxadmin/CRAB_2_11_1_patch1/python/crab.py -status -get -c Ptassignment_30_Nov_ct0/
+
+2015-11-30 14:20:34,053 [INFO] 	Version 2.11.1_patch1 running on Mon Nov 30 14:20:34 2015 CST (20:20:34 UTC)
+
+crab. Working options:
+	scheduler           slurm
+	job type            CMSSW
+	server              OFF
+	working directory   /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/Ptassignment_30_Nov_ct0/
+
+2015-11-30 14:20:34,054 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/home/taohuang/.cms_crab/allowed_releases.conf].
+2015-11-30 14:20:34,241 [DEBUG] 	Input whitelist: T3_US_TAMU
+2015-11-30 14:20:34,241 [DEBUG] 	Input blacklist: 
+2015-11-30 14:20:34,248 [DEBUG] 	Converted whitelist: srm.brazos.tamu.edu
+2015-11-30 14:20:34,249 [DEBUG] 	Converted blacklist: 
+2015-11-30 14:20:37,289 [INFO] 	Your se_white_list is set to T3_US_TAMU: only local dataset will be considered
+2015-11-30 14:20:37,290 [INFO] 	Using a proxy
+2015-11-30 14:20:39,358 [DEBUG] 	Downloading file [http://cmsdoc.cern.ch/cms/LCG/crab/config/] to [/home/taohuang/.cms_crab/site_black_list.conf].
+2015-11-30 14:20:39,360 [DEBUG] 	Enforced black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2 
+2015-11-30 14:20:39,360 [INFO] 	PSN black list: TAPE,srm-cms.cern.ch,cmssrm.fnal.gov,T1_RU,T1_TW,cmseos.fnal.gov,cmsdca2.fnal.gov,T2_PK_NCP,T3_US_Vanderbilt_EC2
+2015-11-30 14:20:39,372 [DEBUG] 	Status::run() called
+2015-11-30 14:20:39,372 [INFO] 	Checking the status of all jobs: please wait
+2015-11-30 14:20:39,475 [INFO] 	
+ID    END STATUS            ACTION       ExeExitCode JobExitCode E_HOST
+----- --- ----------------- ------------  ---------- ----------- ---------
+1     Y   Retrieved         Cleared       0          0           
+
+2015-11-30 14:20:39,481 [INFO] 	ExitCodes Summary
+ >>>>>>>>> 1 Jobs with Wrapper Exit Code : 0 
+	 List of jobs: 1 
+	See https://twiki.cern.ch/twiki/bin/view/CMSPublic/JobExitCodes for Exit Code meaning
+
+2015-11-30 14:20:39,482 [INFO] 	 1 Total Jobs 
+
+2015-11-30 14:20:39,483 [INFO] 	You can also follow the status of this task on :
+	CMS Dashboard: http://dashb-cms-job-task.cern.ch/taskmon.html#task=taohuang_Ptassignment_30_Nov_ct0_71nay2
+	Your task name is: taohuang_Ptassignment_30_Nov_ct0_71nay2 
+
+2015-11-30 14:20:39,484 [DEBUG] 	Status Time: 0.111364841461
+2015-11-30 14:20:39,484 [DEBUG] 	GetOutput::run() called
+2015-11-30 14:20:39,486 [DEBUG] 	ERROR: Jobs 1 are not in Done status. It is not possible yet to retrieve the output. 
+
+

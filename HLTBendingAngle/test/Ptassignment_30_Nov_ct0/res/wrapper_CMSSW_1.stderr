@@ -1,0 +1,29 @@
+cp: cannot stat `/tmp/36b4b59151434620a3c126631cb3d241-out_files_1.tgz': No such file or directory
+cp: cannot stat `/tmp/36b4b59151434620a3c126631cb3d241-crab_fjr_1.xml': No such file or directory
++ pwd
++ ls -lah
++ echo '***BEGINNING' 'SLURMV2***'
+++ pwd
++ CRAB2_OLD_DIRECTORY=/home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test
++ CRAB2_SLURM_WORKDIR=/tmp
++ cd /tmp
+++ pwd
++ CRAB2_WORKDIR=/tmp/CRAB2-9585337
++ '[' '!' -d /tmp/CRAB2-9585337 ']'
++ mkdir -p /tmp/CRAB2-9585337
++ cd /tmp/CRAB2-9585337
++ mv /tmp/36b4b59151434620a3c126631cb3d241-default.tgz /tmp/CRAB2-9585337/default.tgz
++ mv /tmp/36b4b59151434620a3c126631cb3d241-arguments.xml /tmp/CRAB2-9585337/arguments.xml
++ mv /tmp/36b4b59151434620a3c126631cb3d241-CMSSW.sh /tmp/CRAB2-9585337/CMSSW.sh
++ mv /tmp/36b4b59151434620a3c126631cb3d241-.x509up_u1468 /tmp/CRAB2-9585337/.x509up_u1468
++ export X509_USER_PROXY=/tmp/CRAB2-9585337/.x509up_u1468
++ X509_USER_PROXY=/tmp/CRAB2-9585337/.x509up_u1468
++ ./CMSSW.sh 1 1
++ ls /tmp/CRAB2-9585337
++ mv /tmp/CRAB2-9585337/out_files_1.tgz /tmp/36b4b59151434620a3c126631cb3d241-out_files_1.tgz
++ mv /tmp/CRAB2-9585337/crab_fjr_1.xml /tmp/36b4b59151434620a3c126631cb3d241-crab_fjr_1.xml
++ mv -f /tmp/36b4b59151434620a3c126631cb3d241-out_files_1.tgz /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/Ptassignment_30_Nov_ct0/res/out_files_1.tgz
++ mv -f /tmp/36b4b59151434620a3c126631cb3d241-crab_fjr_1.xml /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test/Ptassignment_30_Nov_ct0/res/crab_fjr_1.xml
++ cd /home/taohuang/work/CMSSW_7_4_4/src/MuJetAnalysis/HLTBendingAngle/test
++ rm -rf /tmp/CRAB2-9585337
+slurmstepd: Exceeded step memory limit at some point. Step may have been partially swapped out to disk.

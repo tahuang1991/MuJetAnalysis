@@ -1,0 +1,45 @@
+DEBUG 2016-02-08 14:46:47,085: 	 Executing command: 'submit'
+DEBUG 2016-02-08 14:46:47,086: 	 Found CRAB cache file /home/taohuang/.crab3
+DEBUG 2016-02-08 14:46:47,100: 	 Checking credentials
+DEBUG 2016-02-08 14:46:47,101: 	 Found proxy file /tmp/x509up_u1468
+DEBUG 2016-02-08 14:46:47,101: 	 Getting proxy life time left
+DEBUG 2016-02-08 14:46:47,205: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1468 -timeleft
+ output : 72165
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-08 14:46:47,310: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1468 -actimeleft
+ output : 72165
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-08 14:46:47,311: 	 Proxy valid for 20:02:45 hours
+INFO 2016-02-08 14:46:47,311: 	 Will use CRAB configuration file crab3_Prompt.py
+DEBUG 2016-02-08 14:46:47,311: 	 Loading CRAB configuration file.
+DEBUG 2016-02-08 14:46:47,315: 	 Will use CRAB Analysis plugin (i.e. will run an analysis job type).
+DEBUG 2016-02-08 14:46:47,432: 	 Executing : 
+ command : openssl x509 -in ~/.globus/usercert.pem -subject -noout
+ output : subject= /DC=ch/DC=cern/OU=Organic Units/OU=Users/CN=tahuang/CN=753047/CN=Tao Huang
+
+ error: WARNING: can't open config file: /build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/tmp/BUILDROOT/44604f3e263d23c2db927cc2b6d4278c/build/dmwmbld/srv/state/dmwmbld/builds/comp_gcc493/w/slc6_amd64_gcc493/external/openssl/1.0.1p/ssl/openssl.cnf
+
+ retcode : 0
+DEBUG 2016-02-08 14:46:47,432: 	 Checking credentials
+DEBUG 2016-02-08 14:46:47,432: 	 Found proxy file /tmp/x509up_u1468
+DEBUG 2016-02-08 14:46:47,432: 	 Getting proxy life time left
+DEBUG 2016-02-08 14:46:47,537: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1468 -timeleft
+ output : 72165
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-08 14:46:47,643: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u1468 -actimeleft
+ output : 72165
+
+ error: 
+ retcode : 0
+DEBUG 2016-02-08 14:46:47,643: 	 Proxy valid for 20:02:45 hours
+ERROR 2016-02-08 14:46:47,674: 	 Keyboard Interrupted

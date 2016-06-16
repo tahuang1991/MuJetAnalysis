@@ -450,7 +450,7 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   // initialize the tree
   init();
 
-  const DisplacedGENMuonMatcher& match_gen = match.genMuons();
+  //const DisplacedGENMuonMatcher& match_gen = match.genMuons();
   const SimHitMatcher& match_sh = match.simhits();
   const DTRecHitMatcher& match_dtrh = match.dtRecHits();
   const CSCRecHitMatcher& match_cscrh = match.cscRecHits();
@@ -469,6 +469,7 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
   //                              GEN LEVEL                                     
   //****************************************************************************
 
+  /*
   auto matchedGENMuons(match_gen.getMatchedGENMuons());
   auto matchedDarkBoson(match_gen.getMatchedDarkBoson());
 
@@ -527,6 +528,7 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
 
   etrk_[0].genGd0Gd1_dR = match_gen.darkBosonDeltaR();
   etrk_[0].genGd0Gd1_m = match_gen.darkBosonInvM();
+  */
 
   //****************************************************************************
   //                              SIM LEVEL                                     
@@ -683,9 +685,23 @@ HLTBendingAngle::analyzeTrackEfficiency(SimTrackMatchManager& match, int trk_no)
     etrk_[0].recoTrack_phi_outer = recoTrack.outerPhi();
   }
 
+  edm::Handle<reco::RecoChargedCandidateCollection> candsH;
+  match_sh.event().getByLabel("hltL2MuonCandidates", candsH);
+  const reco::RecoChargedCandidateCollection & cands = *candsH.product();
+  
+  for(auto& candidate: cands) {
+    if (reco::deltaR(t.momentum().eta(), t.momentum().phi(), candidate.eta(), candidate.phi()) < 0.2){
+      std::cout << "RecoCand matched!" << std::endl;
+      etrk_[0].has_recoChargedCandidate = 1;
+      etrk_[0].recoChargedCandidate_pt = candidate.pt();
+      etrk_[0].recoChargedCandidate_eta = candidate.eta();
+      etrk_[0].recoChargedCandidate_phi = candidate.phi();
+    }
+  }
+
   // RecoChargedCandidate
   auto recoChargedCandidates(match_hlt_track.getMatchedRecoChargedCandidates());
-  if (recoChargedCandidates.size()) {
+  if (recoChargedCandidates.size() and false) {
     if (verbose_) std::cout << "Number of matched RecoChargedCandidates: " << recoChargedCandidates.size() << std::endl;
     etrk_[0].has_recoChargedCandidate = 1;
 
@@ -848,8 +864,8 @@ HLTBendingAngle::isSimTrackGood(const SimTrack &t)
   if (t.noGenpart()) return false;
   if (std::abs(t.type()) != 13 and simTrackOnlyMuon_) return false;
   if (t.momentum().pt() < simTrackMinPt_) return false;
-  //const float eta(std::abs(t.momentum().eta()));
-  //if (eta > simTrackMaxEta_ || eta < simTrackMinEta_) return false; 
+  const float eta(std::abs(t.momentum().eta()));
+  if (eta > simTrackMaxEta_ || eta < simTrackMinEta_) return false; 
   return true;
 }
 

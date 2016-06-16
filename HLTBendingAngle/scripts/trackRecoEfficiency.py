@@ -14,47 +14,37 @@ def l1ExtraTrackEfficiency(p):
 
 def recoTrackEfficiency(p):
 
-    def ptEfficiencies():
+    ptBinning = "(50,0,100)"
+    pts = [0,0,10,15,20,25]
+    for pt in pts:
+        makePtEffPlot(p, getEffObject(p, "sim_pt", ptBinning, AND(cms_eta(), n_dt_csc_seg(1), Gd_fid()), has_cand(pt)), "eff_sim_pt_%dseg_pt_fid_recoCand_pt%d"%(1, pt), "L2Mu")
 
-        ptBinning = "(50,0,100)"
-
-        pts = [0,0,10,15,20,25]
-
-        for pt in pts:
-            makePtEffPlot(p, getEffObject(p, "sim_pt", ptBinning, AND(cms_eta(), n_dt_csc_seg(1), Gd_fid()), has_cand(pt)), "eff_sim_pt_%dseg_pt_fid_recoCand_pt%d"%(1, pt), "L2Mu")
-
-    def etaEfficiencies():
-
-        etaBinning = "(50,-2.5,2.5)"
-
-        def plot(n, min_dxy, max_dxy, min_sim_pt, min_l1_pt, min_reco_pt):
-            makeEtaEffPlot(p, getEffObject(p, "abs(sim_eta)", etaBinning, AND(n_dt_csc_seg(n), sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), has_L1Extra(min_l1_pt), Gd_fid()), has_cand(min_reco_pt)), 
-                           "eff_sim_eta_%dseg_pt%d_dxy%dto%d_L1Extra_pt%d_fid_recoCand_pt%d"%(n, min_sim_pt, min_dxy, max_dxy, min_l1_pt, min_reco_pt), "L2Mu")
+    etaBinning = "(50,0,2.5)"
+    
+    def plot(n, min_dxy, max_dxy, min_sim_pt, min_l1_pt, min_reco_pt):
+        makeEtaEffPlot(p, getEffObject(p, "abs(sim_eta)", etaBinning, AND(n_dt_csc_seg(n), sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), has_L1Extra(min_l1_pt), Gd_fid()), has_cand(min_reco_pt)),
+                       "eff_sim_eta_%dseg_pt%d_dxy%dto%d_L1Extra_pt%d_fid_recoCand_pt%d"%(n, min_sim_pt, min_dxy, max_dxy, min_l1_pt, min_reco_pt), "L2Mu")
         
-        ## make plots
-        plot(1, 0, 10, 22, 0, 17)
+    ## make plots
+    plot(1, 0, 0.1, 10, 0, 0)
 
-        """
-        makeEtaEffPlot(p, getEffObject(p, "abs(sim_eta)", etaBinning, AND(sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), Gd_fid()), has_ge11_rh(2)), 
-                       "eff_sim_eta_pt%d_dxy%dto%d_fid_gemseg_st1"%(min_sim_pt, min_dxy, max_dxy), "GE11 segment")
-        makeEtaEffPlot(p, getEffObject(p, "abs(sim_eta)", etaBinning, AND(sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), Gd_fid()), has_ge21_rh(2)), 
-                       "eff_sim_eta_pt%d_dxy%dto%d_fid_gemseg_st2"%(min_sim_pt, min_dxy, max_dxy), "GE21 segment")
-        makeEtaEffPlot(p, getEffObject(p, "abs(sim_eta)", etaBinning, AND(sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), Gd_fid()), OR(has_ge11_rh(2), has_ge21_rh(2))), 
-                       "eff_sim_eta_pt%d_dxy%dto%d_fid_gemseg_st12"%(min_sim_pt, min_dxy, max_dxy), "GEM segment")
-
-        makeEtaEffPlot(p, getEffObject(p, "abs(sim_eta)", etaBinning, AND(sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), Gd_fid()), n_rpc_st_sh(1)), 
-                       "eff_sim_eta_pt%d_dxy%dto%d_fid_rpcsh_st1"%(min_sim_pt, min_dxy, max_dxy), "1 RPC")
-        makeEtaEffPlot(p, getEffObject(p, "abs(sim_eta)", etaBinning, AND(sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), Gd_fid()), n_rpc_st_sh(2)), 
-                       "eff_sim_eta_pt%d_dxy%dto%d_fid_rpcsh_st2"%(min_sim_pt, min_dxy, max_dxy), "2 RPC")
-        makeEtaEffPlot(p, getEffObject(p, "abs(sim_eta)", etaBinning, AND(sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), Gd_fid()), n_rpc_st_sh(3)), 
-                       "eff_sim_eta_pt%d_dxy%dto%d_fid_rpcsh_st3"%(min_sim_pt, min_dxy, max_dxy), "3 RPC")
-        makeEtaEffPlot(p, getEffObject(p, "abs(sim_eta)", etaBinning, AND(sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), Gd_fid()), n_rpc_st_sh(4)), 
-                       "eff_sim_eta_pt%d_dxy%dto%d_fid_rpcsh_st4"%(min_sim_pt, min_dxy, max_dxy), "4 RPC")
-        """
-
-    ## call to functions
-    etaEfficiencies()
-
+    """
+    makeEtaEffPlot(p, getEffObject(p, "abs(sim_eta)", etaBinning, AND(sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), Gd_fid()), has_ge11_rh(2)), 
+    "eff_sim_eta_pt%d_dxy%dto%d_fid_gemseg_st1"%(min_sim_pt, min_dxy, max_dxy), "GE11 segment")
+    makeEtaEffPlot(p, getEffObject(p, "abs(sim_eta)", etaBinning, AND(sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), Gd_fid()), has_ge21_rh(2)), 
+    "eff_sim_eta_pt%d_dxy%dto%d_fid_gemseg_st2"%(min_sim_pt, min_dxy, max_dxy), "GE21 segment")
+    makeEtaEffPlot(p, getEffObject(p, "abs(sim_eta)", etaBinning, AND(sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), Gd_fid()), OR(has_ge11_rh(2), has_ge21_rh(2))), 
+    "eff_sim_eta_pt%d_dxy%dto%d_fid_gemseg_st12"%(min_sim_pt, min_dxy, max_dxy), "GEM segment")
+    
+    makeEtaEffPlot(p, getEffObject(p, "abs(sim_eta)", etaBinning, AND(sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), Gd_fid()), n_rpc_st_sh(1)), 
+    "eff_sim_eta_pt%d_dxy%dto%d_fid_rpcsh_st1"%(min_sim_pt, min_dxy, max_dxy), "1 RPC")
+    makeEtaEffPlot(p, getEffObject(p, "abs(sim_eta)", etaBinning, AND(sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), Gd_fid()), n_rpc_st_sh(2)), 
+    "eff_sim_eta_pt%d_dxy%dto%d_fid_rpcsh_st2"%(min_sim_pt, min_dxy, max_dxy), "2 RPC")
+    makeEtaEffPlot(p, getEffObject(p, "abs(sim_eta)", etaBinning, AND(sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), Gd_fid()), n_rpc_st_sh(3)), 
+    "eff_sim_eta_pt%d_dxy%dto%d_fid_rpcsh_st3"%(min_sim_pt, min_dxy, max_dxy), "3 RPC")
+    makeEtaEffPlot(p, getEffObject(p, "abs(sim_eta)", etaBinning, AND(sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), Gd_fid()), n_rpc_st_sh(4)), 
+    "eff_sim_eta_pt%d_dxy%dto%d_fid_rpcsh_st4"%(min_sim_pt, min_dxy, max_dxy), "4 RPC")
+    """
 
 
 
@@ -92,7 +82,7 @@ def recoTrackEfficiency(p):
     """
 
         
-def L1TrackEfficiency(p, min_dxy, max_dxy, min_sim_pt, min_l1_pt):
+def L1TrackEfficiency(p, min_dxy, max_dxy, min_sim_pt, min_l1_pt=0):
     ## vs eta
     efficiency = getEffObject(p, "abs(sim_eta)", "(25,0,2.5)", AND(sim_pt(min_sim_pt), sim_dxy(min_dxy, max_dxy), Gd_fid()), has_L1Extra(min_l1_pt))
     makeEtaEffPlot(p, efficiency, "eff_sim_eta_pt%d_dxy%dto%d_fid_L1_pt%d"%(min_sim_pt, min_dxy, max_dxy, min_l1_pt), "p_{T}^{SIM} > %.1f, p_{T}^{L1}>%.1f, |d_{xy}|<%.1f"%(min_sim_pt, min_l1_pt, max_dxy))
@@ -114,6 +104,18 @@ def special_recoTrackEfficiency(p, min_dxy, max_dxy, sim_pt_cut, min_l1_pt, reco
     loss_pt = 0.
     loss_missing = 0.
     loss_3seg = 0.
+
+    loss_pt_01 = 0.
+    loss_pt_02 = 0.
+    loss_pt_03 = 0.
+    loss_pt_04 = 0.
+    loss_pt_05 = 0.
+    loss_pt_06 = 0.
+    loss_pt_07 = 0.
+    loss_pt_08 = 0.
+    loss_pt_09 = 0.
+    loss_pt_10 = 0.
+
     num_eta = TH1F( 'num_eta', '', 25, 0, 2.4 )
     denom_eta = TH1F( 'denom_eta', '', 25, 0, 2.4 )
     offset = TH2F( 'offset', '', 25, 0, 2.4, 100, -5, 3)
@@ -213,15 +215,22 @@ def special_recoTrackEfficiency(p, min_dxy, max_dxy, sim_pt_cut, min_l1_pt, reco
                 elif case_bad_muon_cand_pt_low:
                     loss_pt = loss_pt + 1.
                 if not case_bad_muon_no_3_stubs and case_bad_muon_cand_pt_low:
-                    offset.Fill(abs(tree.sim_eta), (tree.sim_pt-tree.recoChargedCandidate_pt)/tree.sim_pt)
+                    pt_offset = (tree.sim_pt-tree.recoChargedCandidate_pt)/tree.sim_pt
+                    offset.Fill(abs(tree.sim_eta), pt_offset)
                     
-                    """
+                    if offset  < 0.1:
+                        loss_pt_01 = loss_pt_01 + 1
+                    if 0.1 < offset and offset < 0.2:
+                        loss_pt_02 = loss_pt_02 + 1
+
+                    
                     print "reco_pt", tree.recoChargedCandidate_pt
                     print "reco_eta", tree.recoChargedCandidate_eta
                     print "sim_eta", tree.sim_eta
                     print "sim_pt", tree.sim_pt
                     print "(sim_pt-reco_pt)/sim_pt", (tree.sim_pt-tree.recoChargedCandidate_pt)/tree.sim_pt
-                    """
+                    print
+
     print "------------------------------"
     print "Denominator:", denom
     print "Numerator:", num

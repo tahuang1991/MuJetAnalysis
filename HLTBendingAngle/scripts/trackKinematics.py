@@ -7,6 +7,7 @@ def trackKinematics(p):
     draw_1D(p,"l1Extra_eta", "l1Extra_eta", "L1Extra #eta; L1Extra #eta; Entries", "(50,-2.5,2.5)")
     draw_1D(p,"l1Extra_phi", "l1Extra_phi", "L1Extra #phi; L1Extra #phi; Entries", "(60,-3.1416,3.1416)")
     draw_1D(p,"l1Extra_dR", "l1Extra_dR", "dR(SimTrack,L1Extra); dR(SimTrack, L1Extra); Entries", "(100,0,1.0")
+    draw_1D(p,"l1Extra_dR", "l1Extra_dR_dxy10_eta24", "dR(SimTrack,L1Extra); dR(SimTrack, L1Extra); Entries", "(100,0,1.0", AND(cms_eta(),sim_dxy(10)))
 
     draw_1D(p,"recoTrackExtra_pt_outer",  "recoTrackExtra_pt_outer",  "TrackExtra outer p_{T}; TrackExtra p_{T}^{outer} [GeV/c]; Entries", "(50,0,100)")
     draw_1D(p,"recoTrackExtra_eta_outer", "recoTrackExtra_eta_outer", "TrackExtra outer #eta; TrackExtra #eta^{outer}; Entries", "(50,-2.5,2.5)")

@@ -140,7 +140,7 @@ L2TrackPtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm::Eve
     }
 
     const double newPt(ptFromBending(recoTrackExtra));
-    std::cout << "Assign Pt" << std::endl;
+    // std::cout << "Assign Pt" << std::endl;
     
     
     /* 
@@ -169,13 +169,13 @@ L2TrackPtFromSegmentAlignmentProducer::produce(edm::Event& event, const edm::Eve
   } // end loop on muons
   
   // make a new vector
-  std::cout << "-----------------------------------" << std::endl;
-  std::cout << "Construct a new TrajectoryContainer" << std::endl; 
+  // std::cout << "-----------------------------------" << std::endl;
+  // std::cout << "Construct a new TrajectoryContainer" << std::endl; 
   TrajectoryContainer newTrajVector;
   for (auto t: trajectories) newTrajVector.push_back(new Trajectory(t));
   
   // load the trajectories in the trackloader
-  std::cout << "load the trajectories in the trackloader" << std::endl;
+  // std::cout << "load the trajectories in the trackloader" << std::endl;
   OrphanHandle<reco::TrackCollection> orphanHandleTracks(muonTrackLoader_->loadTracks(newTrajVector, event));
 
   LogTrace(metname)<<"Event loaded"
@@ -255,20 +255,20 @@ L2TrackPtFromSegmentAlignmentProducer::updateTrajectoryMeasurement(const Traject
   */
   
   // get the old TSOS 
-  std::cout << "get the old TSOS" << std::endl;
+  // std::cout << "get the old TSOS" << std::endl;
   TrajectoryStateOnSurface tsos(oldMeas.updatedState());
   
   // get the old global momentum
-  std::cout << "get the old global momentum" << std::endl;
+  // std::cout << "get the old global momentum" << std::endl;
   GlobalVector oldGlobalMomentum(tsos.globalMomentum());
 
   // calculate the scale factor by which we scale the pT
-  std::cout << "calculate the scale factor by which we scale the pT" << std::endl;
+  // std::cout << "calculate the scale factor by which we scale the pT" << std::endl;
   double oldPt(oldGlobalMomentum.perp());
   double scaleFactor(newPt/oldPt);
 
   // make a new global vector with the pT scaled
-  std::cout << "make a new global vector with the pT scaled" << std::endl;
+  // std::cout << "make a new global vector with the pT scaled" << std::endl;
   double newPx(oldGlobalMomentum.x()*scaleFactor);
   double newPy(oldGlobalMomentum.y()*scaleFactor);
   double newPz(oldGlobalMomentum.z()*scaleFactor);
@@ -276,12 +276,12 @@ L2TrackPtFromSegmentAlignmentProducer::updateTrajectoryMeasurement(const Traject
   GlobalVector newGlobalMomentum(newPx, newPy, newPz);
   
   // get the old global parameters
-  std::cout << "get the old global parameters" << std::endl;
+  // std::cout << "get the old global parameters" << std::endl;
   GlobalTrajectoryParameters oldGlobalParameters(tsos.globalParameters());
   
   // make new global parameters using the new momentum
   // do not change the position, charge or magnetic field
-  std::cout << "make new global parameters using the new momentum" << std::endl;
+  // std::cout << "make new global parameters using the new momentum" << std::endl;
   GlobalTrajectoryParameters newGlobalParameters(oldGlobalParameters.position(),
                                                  newGlobalMomentum,
                                                  oldGlobalParameters.charge(),
@@ -289,20 +289,20 @@ L2TrackPtFromSegmentAlignmentProducer::updateTrajectoryMeasurement(const Traject
   
   // make a new TSOS
   // do not change the error or the surface
-  std::cout << "make a new TSOS" << std::endl;
+  // std::cout << "make a new TSOS" << std::endl;
   TrajectoryStateOnSurface newTSOS(newGlobalParameters,
                                    tsos.cartesianError(),
                                    tsos.surface());
   
   // make a new measurement
   // do not change the forward state, backward state, rechit or estimate
-  std::cout << "make a new measurement" << std::endl;
+  // std::cout << "make a new measurement" << std::endl;
   newMeas = TrajectoryMeasurement(oldMeas.forwardPredictedState(),
                                   oldMeas.backwardPredictedState(),
                                   newTSOS,
                                   oldMeas.recHit(),
                                   oldMeas.estimate());
-  std::cout << "End" << std::endl;
+  // std::cout << "End" << std::endl;
 }
 
 
@@ -310,7 +310,7 @@ double
 L2TrackPtFromSegmentAlignmentProducer::ptFromBending(const reco::TrackExtra& recoTrackExtra)
 {
   double newPt = -1;
-  double verbose = true;
+  double verbose =false;
   // load the segments
   for(auto rh = recoTrackExtra.recHitsBegin(); rh != recoTrackExtra.recHitsEnd(); rh++) {
     
@@ -327,7 +327,7 @@ L2TrackPtFromSegmentAlignmentProducer::ptFromBending(const reco::TrackExtra& rec
           std::cout << "\t\t    :: segment :: " << *seg << std::endl;
         }
 
-	std::cout << "Getting global directions" << std::endl;
+	// std::cout << "Getting global directions" << std::endl;
 
         const LocalPoint lp_seg(seg->localPosition());
         const GlobalPoint gp_seg(dt_geom->idToDet((**rh).rawId())->surface().toGlobal(lp_seg));
@@ -335,7 +335,7 @@ L2TrackPtFromSegmentAlignmentProducer::ptFromBending(const reco::TrackExtra& rec
         const LocalVector lv_seg(seg->localDirection());
         const GlobalVector gv_seg(dt_geom->idToDet((**rh).rawId())->surface().toGlobal(lv_seg));
         
-	std::cout << "Found global directions" << std::endl;
+	// std::cout << "Found global directions" << std::endl;
 
         if (detId.station() == 1) {
           my_track_.x_gp_MB1 = gp_seg.x(); 
@@ -485,10 +485,10 @@ L2TrackPtFromSegmentAlignmentProducer::ptFromBending(const reco::TrackExtra& rec
     my_track_.dz_gp_ME2_ME3 = my_track_.z_gp_ME3 - my_track_.z_gp_ME2;
     
     my_track_.dphi_gv_MB1_MB4 = my_track_.phi_gv_MB1 - my_track_.phi_gv_MB4;
-    std::cout << "dphi_gv_MB1_MB4 " << my_track_.dphi_gv_MB1_MB4 << std::endl;
+    // std::cout << "dphi_gv_MB1_MB4 " << my_track_.dphi_gv_MB1_MB4 << std::endl;
 
-    std::cout << "Calculate Pt" << std::endl;
-    std::cout << (1./my_track_.dphi_gv_MB1_MB4 + 1.769)/1.656 << std::endl;
+    // std::cout << "Calculate Pt" << std::endl;
+    // std::cout << (1./my_track_.dphi_gv_MB1_MB4 + 1.769)/1.656 << std::endl;
     
     // barrel
     if (std::abs(recoTrackExtra.innerPosition().eta())<0.9){
@@ -503,7 +503,7 @@ L2TrackPtFromSegmentAlignmentProducer::ptFromBending(const reco::TrackExtra& rec
     // rescale the values in the innermost station (using a muon trackloader)
     // we don't want to change the direction of the muon, only the pT
 
-    std::cout << "newPt " << newPt << std::endl;
+    // std::cout << "newPt " << newPt << std::endl;
     return newPt;
 }
 

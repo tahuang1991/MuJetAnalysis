@@ -310,7 +310,7 @@ def makePtEffPlot(p, h, plotTitle, legTitle):
     #gStyle.SetStatStyle(0)
 
     ## base plot
-    base = TH1D("base","base", 50, 0, 100)
+    base = TH1D("base","base", 50, 0, 50)
     base.SetStats(0)
     base.SetTitle("                                                                      14 TeV,  PU = %d; SimTrack p_{T} [GeV]; Reconstruction efficiency"%(p.pu))
     base.SetMinimum(0)
@@ -331,7 +331,7 @@ def makePtEffPlot(p, h, plotTitle, legTitle):
     h.Draw("same")
 
     ## legend
-    leg = TLegend(0.2,0.3,0.75,0.45,"","brNDC")
+    leg = TLegend(0.5,0.3,0.8,0.45,"","brNDC")
     leg.SetFillColor(kWhite)
     leg.SetBorderSize(0)
     leg.SetFillStyle(0)

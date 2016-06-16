@@ -13,7 +13,7 @@ from ptCorrelation import *
 from inputFiles import *
 
 inputDir = "/uscms_data/d3/dildick/work/MuonPhaseIIScopeDoc/CMSSW_6_2_0_SLHC26_patch3/src/"
-preOut = "/uscms_data/d3/dildick/work/MuonPhaseIIScopeDoc/CMSSW_6_2_0_SLHC26_patch3/src/MuJetAnalysis/HLTBendingAngle/scripts/rebase/prompt_hltL2MuonCandidates/"
+preOut = "/uscms_data/d3/dildick/work/MuonPhaseIIScopeDoc/CMSSW_6_2_0_SLHC26_patch3/src/MuJetAnalysis/HLTBendingAngle/scripts/rebase/notdisplacedmu2/"
 ext = ".png"
 pu=0
 
@@ -21,7 +21,7 @@ pu=0
 class Plotter:
     def __init__(self):
         self.inputDir = inputDir
-        self.inputFile = '/uscms/home/dildick/nobackup/work/MuonPhaseIIScopeDoc/CMSSW_6_2_0_SLHC26_patch3/src/out_ana_prompt_hltL2MuonCandidates.root'
+        self.inputFile = '/uscms/home/dildick/nobackup/work/MuonPhaseIIScopeDoc/CMSSW_6_2_0_SLHC26_patch3/src/out_ana_notdisplacedmu.root'
         # '/eos/uscms/store/user/lpcgem/SingleMuPt2to50/SingleMuPt2to50_PU0_ANA_fullScope/151026_121406/0000/out_ana.root'
         print self.inputFile
         self.outputDir = preOut #+ outputDirs[i]

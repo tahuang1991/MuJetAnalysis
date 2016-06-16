@@ -44,6 +44,7 @@ def draw_2DProfX(p, c_title, title, h_bins, to_draw, cut):
   g.SetTitle(title)
   g.Draw("s")
   l = TLine(0, 1./6, 2.4, 1./6)
+  l.SetLineWidth(7)
   l.SetLineColor(kRed)
   l.Draw("same")
   c.SaveAs(p.outputDir + c_title + p.ext)

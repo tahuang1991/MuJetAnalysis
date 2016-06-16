@@ -6,11 +6,15 @@ def pTCorrelationPlots(p):
     def base_cut(min_sim_pt=5, max_sim_pt = 999, min_dxy=0, max_dxy=10, min_l1_pt=0):
         return AND(n_dt_csc_seg(1), sim_pt(min_sim_pt, max_sim_pt), sim_dxy(min_dxy, max_dxy), has_L1Extra(min_l1_pt), Gd_fid())
 
-    title =  ";|#eta|; (p_{T}^{SIM}-p_{T}^{RECO})/p_{T}^{SIM}"
-    binning = "(60, 0, 3.0, 150, -1.5, 1.5)"
-    toplot = "(sim_pt-recoChargedCandidate_pt)/sim_pt:abs(sim_eta)"
+    title =  ";|#eta|; (p_{T}^{SIM}-p_{T}^{RECO})/(1/p_{T}^{RECO})"
+    binning = "(60, 0, 3.0, 100, -1.5, 10)"
+    toplot = "((sim_pt-recoChargedCandidate_pt)/recoChargedCandidate_pt):abs(sim_eta)"
 
     draw_2D(p, "absEtaVsRelPt_3st", title, binning, toplot, AND(base_cut(), has_cand(), cand_3_st()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_3st_pt1", title, binning, toplot, AND(base_cut(), has_cand(), sim_pt(1), cand_3_st()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_3st_pt5", title, binning, toplot, AND(base_cut(), has_cand(), sim_pt(5), cand_3_st()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_3st_pt10", title, binning, toplot, AND(base_cut(), has_cand(), sim_pt(10), cand_3_st()), "COLZ")
+    draw_2D(p, "absEtaVsRelPt_3st_pt15", title, binning, toplot, AND(base_cut(), has_cand(), sim_pt(15), cand_3_st()), "COLZ")
     """
     draw_2D(p, "absEtaVsRelPt_3st_pt5to10", '5 < p_{T} < 10 GeV' + title, binning, toplot, AND(base_cut(5,10), has_cand(), cand_3_st()), "COLZ")
     draw_2D(p, "absEtaVsRelPt_3st_pt10to15", '10 < p_{T} < 15 GeV' + title, binning, toplot, AND(base_cut(10,15), has_cand(), cand_3_st()), "COLZ")

@@ -121,20 +121,32 @@ def n_rpc_st_sh(n=2):
 
 #_______________________________________________________________________________
 def n_dt_csc_st_sh(n=2):
-    return OR(TCut("n_dt_st_sh>=%d"%(n)), TCut("n_csc_st_sh>=%d"%(n)))
-
+    return TCut("n_dt_st_sh + n_csc_st_sh>=%d"%(n))
+                
 #_______________________________________________________________________________
 def n_dt_seg(n=2):
     return TCut("n_dt_seg>=%d"%(n))
+
+#_______________________________________________________________________________
+def n_dt_st_seg(n=2):
+    return TCut("n_dt_st_seg>=%d"%(n))
 
 #_______________________________________________________________________________
 def n_csc_seg(n=2):
     return TCut("n_csc_seg>=%d"%(n))
 
 #_______________________________________________________________________________
+def n_csc_st_seg(n=2):
+    return TCut("n_csc_st_seg>=%d"%(n))
+
+#_______________________________________________________________________________
 def n_dt_csc_seg(n):
     return TCut("n_dt_seg + n_csc_seg>=%d"%(n))
     
+#_______________________________________________________________________________
+def n_dt_csc_st_seg(n):
+    return TCut("n_dt_st_seg + n_csc_st_seg>=%d"%(n))
+
 #_______________________________________________________________________________
 def n_dt_csc_gem_seg(n):
     return TCut("n_dt_st_seg + n_csc_st_seg + n_gem_st_rh >=%d"%(n))
@@ -142,6 +154,10 @@ def n_dt_csc_gem_seg(n):
 #_______________________________________________________________________________
 def n_rpc_st_rh(n):
     return TCut("n_rpc_st_rh>=%d"%(n))
+
+#_______________________________________________________________________________
+def n_gem_st_rh(n):
+    return TCut("n_gem_st_rh>=%d"%(n))
 
 #_______________________________________________________________________________
 def has_ge11_sh():
@@ -166,9 +182,10 @@ def has_ge21_rh(n):
         return TCut("has_ge21_st_2rh==1")
 
 #_______________________________________________________________________________
-def has_L1Extra(l1_pt=0):
-    deltaR = 0.1   
-    return AND(TCut("has_l1Extra>=1"), TCut("l1Extra_dR<%f"%(deltaR)), TCut("l1Extra_pt>%f"%(l1_pt)))
+def has_L1Extra(min_l1_pt=0, max_l1_pt=9999):
+    deltaR = 0.2
+    return AND(TCut("has_l1Extra>=1"), TCut("l1Extra_dR<%f"%(deltaR)), 
+               TCut("l1Extra_pt>%f"%(min_l1_pt)), TCut("l1Extra_pt<%f"%(max_l1_pt)))
 
 #_______________________________________________________________________________
 def has_trackExtra(pt=0):

@@ -40,7 +40,8 @@ if __name__ == "__main__":
   if eff: 
     location = "/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_ctau_1000_ANA_v6/160207_223333/0000/"
 #    MatchingL1TkMinPt = 4; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160219"; pu = 'PU140'
-    MatchingL1TkMinPt = 4; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160229"; pu = 'PU140'
+    MatchingL1TkMinPtEff = 4; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160103_VetoL1TkPt0"; pu = 'PU140'
+#    MatchingL1TkMinPt = 4; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160229"; pu = 'PU140'
     #MatchingL1TkMinPt = 3; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160209_VetoL1TkPt3"; pu = 'PU140'
     #MatchingL1TkMinPt = 2.5; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160209_VetoL1TkPt2p5"; pu = 'PU140'
     #MatchingL1TkMinPt = 2; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160209_VetoL1TkPt2"; pu = 'PU140'
@@ -78,7 +79,7 @@ if __name__ == "__main__":
     draw_1D(ch, "L1Tk_dphi_prop", targetDir + "L1Tk_dphi_prop_pt30", "d#phi; d#phi; Entries", "(100,0.,1.)", cut="L1Tk_pt>30", opt = "")
     draw_1D(ch, "L1Tk_dR_prop", targetDir + "L1Tk_dR_prop_pt30", "dR; dR; Entries", "(100,0.,1.)", cut="L1Tk_pt>30", opt = "")
 
-  if not eff:
+  if not eff and False:
     makedEtadPhidRPlots()
 
   def makeRateVsPtHistogram():
@@ -215,10 +216,10 @@ if __name__ == "__main__":
             trig_dR0p2_L1TkPt2p5 = (not matched) and (not unMatched_dR0p2_L1TkPt2p5) and common
             trig_dR0p2_L1TkPt2 =   (not matched) and (not unMatched_dR0p2_L1TkPt2) and common
 
-            trig_dR0p12_L1TkPt4 =   (not matched) and common
-            trig_dR0p12_L1TkPt3 =   (not matched) and common
-            trig_dR0p12_L1TkPt2p5 = (not matched) and common
-            trig_dR0p12_L1TkPt2 =   (not matched) and common
+            trig_dR0p12_L1TkPt4 =   (not matched) and (not unMatched_dR0p12_L1TkPt4) and common
+            trig_dR0p12_L1TkPt3 =   (not matched) and (not unMatched_dR0p12_L1TkPt3) and common
+            trig_dR0p12_L1TkPt2p5 = (not matched) and (not unMatched_dR0p12_L1TkPt2p5) and common
+            trig_dR0p12_L1TkPt2 =   (not matched) and (not unMatched_dR0p12_L1TkPt2) and common
 
 
             if trigL1Mu                         and L1Mu_pt > maxPt1:                                     maxPt1 = L1Mu_pt
@@ -299,19 +300,19 @@ if __name__ == "__main__":
       h1.SetFillColor(kRed)
       h1.Draw("e3same")
       
-      if isolation_cone != 0.12:    
-        h2 = getRatePtHistogram(treeHits, h2)
-        h2.SetFillColor(kMagenta)
-        h2.Draw("e3same")
-        
-        h3 = getRatePtHistogram(treeHits, h3)
-        h3.SetFillColor(kBlue)
-        h3.Draw("e3same")
+      #if isolation_cone != 0.12:    
+      h2 = getRatePtHistogram(treeHits, h2)
+      h2.SetFillColor(kMagenta)
+      h2.Draw("e3same")
       
-        h4 = getRatePtHistogram(treeHits, h4)
-        h4.SetFillColor(kGreen+1)
-        h4.Draw("e3same")
-
+      h3 = getRatePtHistogram(treeHits, h3)
+      h3.SetFillColor(kBlue)
+      h3.Draw("e3same")
+      
+      h4 = getRatePtHistogram(treeHits, h4)
+      h4.SetFillColor(kGreen+1)
+      h4.Draw("e3same")
+      
       h5 = getRatePtHistogram(treeHits, h5)
       h5.SetFillColor(kOrange+1)
       h5.Draw("e3same")
@@ -370,37 +371,35 @@ if __name__ == "__main__":
       b1.SetStats(0)
       b1.Draw()
     
-      if isolation_cone != 0.12:    
-        h2.SetLineColor(kMagenta)      
-        h2.SetFillColor(kWhite)
-        h2.Divide(h1)
-        h2.Draw("same")
+      #if isolation_cone != 0.12:    
+      h2.SetLineColor(kMagenta)      
+      h2.SetFillColor(kWhite)
+      h2.Divide(h1)
+      h2.Draw("same")
       
-        h3.SetLineColor(kBlue)
-        h3.SetFillColor(kWhite)
-        h3.Divide(h1)
-        h3.Draw("same")
+      h3.SetLineColor(kBlue)
+      h3.SetFillColor(kWhite)
+      h3.Divide(h1)
+      h3.Draw("same")
       
-        h4.SetLineColor(kGreen+1)
-        h4.SetFillColor(kWhite)
-        h4.Divide(h1)
-        h4.Draw("same")
+      h4.SetLineColor(kGreen+1)
+      h4.SetFillColor(kWhite)
+      h4.Divide(h1)
+      h4.Draw("same")
       
       h5.SetLineColor(kOrange+1)
       h5.SetFillColor(kWhite)
       h5.Divide(h1)
       h5.Draw("same")
 
-      if isolation_cone != 0.12:    
-        print title, "%.2f"%(1./h2.GetBinContent(11))
-        print title, "%.2f"%(1./h3.GetBinContent(11))
-        print title, "%.2f"%(1./h4.GetBinContent(11))
+      print title, "%.2f"%(1./h2.GetBinContent(11))
+      print title, "%.2f"%(1./h3.GetBinContent(11))
+      print title, "%.2f"%(1./h4.GetBinContent(11))
       print title, "%.2f"%(1./h5.GetBinContent(11))
       print 
-      if isolation_cone != 0.12:    
-        print title, "%.2f"%(2./(h2.GetBinContent(13) + h2.GetBinContent(14)))
-        print title, "%.2f"%(2./(h3.GetBinContent(13) + h3.GetBinContent(14)))
-        print title, "%.2f"%(2./(h4.GetBinContent(13) + h4.GetBinContent(14)))
+      print title, "%.2f"%(2./(h2.GetBinContent(13) + h2.GetBinContent(14)))
+      print title, "%.2f"%(2./(h3.GetBinContent(13) + h3.GetBinContent(14)))
+      print title, "%.2f"%(2./(h4.GetBinContent(13) + h4.GetBinContent(14)))
       print title, "%.2f"%(2./(h5.GetBinContent(13) + h5.GetBinContent(14)))
       """
       print 
@@ -442,14 +441,26 @@ if __name__ == "__main__":
       c.SaveAs(targetDir + title + "_ratio" + ext)
 
     ## trigger rate plots vs pt
-    makePlots(h_single_L1Mu_rate, h_single_displaced_rate_dR0p4_L1TkPt2, h_single_displaced_rate_dR0p4_L1TkPt2p5, 
-              h_single_displaced_rate_dR0p4_L1TkPt3, h_single_displaced_rate_dR0p4_L1TkPt4, 0.4, "L1Mu_trigger_rate_pt_dR0p4")
-    makePlots(h_single_L1Mu_rate, h_single_displaced_rate_dR0p3_L1TkPt2, h_single_displaced_rate_dR0p3_L1TkPt2p5, 
-              h_single_displaced_rate_dR0p3_L1TkPt3, h_single_displaced_rate_dR0p3_L1TkPt4, 0.3, "L1Mu_trigger_rate_pt_dR0p3")
-    makePlots(h_single_L1Mu_rate, h_single_displaced_rate_dR0p2_L1TkPt2, h_single_displaced_rate_dR0p2_L1TkPt2p5, 
-              h_single_displaced_rate_dR0p2_L1TkPt3, h_single_displaced_rate_dR0p2_L1TkPt4, 0.2, "L1Mu_trigger_rate_pt_dR0p2")
-    makePlots(h_single_L1Mu_rate, h_single_displaced_rate_dR0p12_L1TkPt2, h_single_displaced_rate_dR0p12_L1TkPt2p5, 
-              h_single_displaced_rate_dR0p12_L1TkPt3, h_single_displaced_rate_dR0p12_L1TkPt4, 0.12, "L1Mu_trigger_rate_pt_dR0p12")
+    makePlots(h_single_L1Mu_rate, 
+              h_single_displaced_rate_dR0p4_L1TkPt2, 
+              h_single_displaced_rate_dR0p4_L1TkPt2p5, 
+              h_single_displaced_rate_dR0p4_L1TkPt3, 
+              h_single_displaced_rate_dR0p4_L1TkPt4, 0.4, "L1Mu_trigger_rate_pt_dR0p4")
+    makePlots(h_single_L1Mu_rate, 
+              h_single_displaced_rate_dR0p3_L1TkPt2, 
+              h_single_displaced_rate_dR0p3_L1TkPt2p5, 
+              h_single_displaced_rate_dR0p3_L1TkPt3, 
+              h_single_displaced_rate_dR0p3_L1TkPt4, 0.3, "L1Mu_trigger_rate_pt_dR0p3")
+    makePlots(h_single_L1Mu_rate, 
+              h_single_displaced_rate_dR0p2_L1TkPt2, 
+              h_single_displaced_rate_dR0p2_L1TkPt2p5, 
+              h_single_displaced_rate_dR0p2_L1TkPt3, 
+              h_single_displaced_rate_dR0p2_L1TkPt4, 0.2, "L1Mu_trigger_rate_pt_dR0p2")
+    makePlots(h_single_L1Mu_rate, 
+              h_single_displaced_rate_dR0p12_L1TkPt2, 
+              h_single_displaced_rate_dR0p12_L1TkPt2p5, 
+              h_single_displaced_rate_dR0p12_L1TkPt3, 
+              h_single_displaced_rate_dR0p12_L1TkPt4, 0.12, "L1Mu_trigger_rate_pt_dR0p12")
 
   if not eff:
     makeRateVsPtHistogram()    
@@ -1854,10 +1865,10 @@ if __name__ == "__main__":
 
 
 
-  if eff:
+  if eff and False:
     makedRL1MuL1TkHistogram()
 
-  exit()
+  #exit()
 
   def makeEfficiencyHistogram():
 
@@ -2001,6 +2012,91 @@ if __name__ == "__main__":
     L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt4 = TH1F("L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt4"," ", 25, 0, 2.5)
 
 
+    ## plots per eta section
+    L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt4_total = TH1F("L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt4_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt4_total = TH1F("L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt4_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt4_total = TH1F("L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt4_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt4_total = TH1F("L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt4_total"," ", 25, 0, 2.5)
+
+    L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt3_total = TH1F("L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt3_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt3_total = TH1F("L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt3_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt3_total = TH1F("L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt3_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt3_total = TH1F("L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt3_total"," ", 25, 0, 2.5)
+
+    L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt2p5_total = TH1F("L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt2p5_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt2p5_total = TH1F("L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt2p5_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt2p5_total = TH1F("L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt2p5_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt2p5_total = TH1F("L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt2p5_total"," ", 25, 0, 2.5)
+
+    L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt2_total = TH1F("L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt2_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt2_total = TH1F("L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt2_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt2_total = TH1F("L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt2_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt2_total = TH1F("L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt2_total"," ", 25, 0, 2.5)
+
+
+    L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt4_total = TH1F("L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt4_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt4_total = TH1F("L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt4_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt4_total = TH1F("L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt4_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt4_total = TH1F("L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt4_total"," ", 25, 0, 2.5)
+
+    L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt3_total = TH1F("L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt3_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt3_total = TH1F("L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt3_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt3_total = TH1F("L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt3_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt3_total = TH1F("L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt3_total"," ", 25, 0, 2.5)
+
+    L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt2p5_total = TH1F("L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt2p5_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt2p5_total = TH1F("L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt2p5_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt2p5_total = TH1F("L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt2p5_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt2p5_total = TH1F("L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt2p5_total"," ", 25, 0, 2.5)
+
+    L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt2_total = TH1F("L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt2_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt2_total = TH1F("L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt2_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt2_total = TH1F("L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt2_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt2_total = TH1F("L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt2_total"," ", 25, 0, 2.5)
+
+ 
+    L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt4_total = TH1F("L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt4_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt4_total = TH1F("L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt4_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt4_total = TH1F("L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt4_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt4_total = TH1F("L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt4_total"," ", 25, 0, 2.5)
+
+    L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt3_total = TH1F("L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt3_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt3_total = TH1F("L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt3_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt3_total = TH1F("L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt3_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt3_total = TH1F("L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt3_total"," ", 25, 0, 2.5)
+
+    L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt2p5_total = TH1F("L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt2p5_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt2p5_total = TH1F("L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt2p5_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt2p5_total = TH1F("L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt2p5_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt2p5_total = TH1F("L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt2p5_total"," ", 25, 0, 2.5)
+
+    L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt2_total = TH1F("L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt2_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt2_total = TH1F("L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt2_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt2_total = TH1F("L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt2_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt2_total = TH1F("L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt2_total"," ", 25, 0, 2.5)
+
+
+    L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt4_total = TH1F("L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt4_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt4_total = TH1F("L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt4_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt4_total = TH1F("L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt4_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt4_total = TH1F("L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt4_total"," ", 25, 0, 2.5)
+
+    L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt3_total = TH1F("L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt3_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt3_total = TH1F("L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt3_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt3_total = TH1F("L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt3_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt3_total = TH1F("L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt3_total"," ", 25, 0, 2.5)
+
+    L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt2p5_total = TH1F("L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt2p5_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt2p5_total = TH1F("L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt2p5_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt2p5_total = TH1F("L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt2p5_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt2p5_total = TH1F("L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt2p5_total"," ", 25, 0, 2.5)
+
+    L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt2_total = TH1F("L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt2_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt2_total = TH1F("L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt2_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt2_total = TH1F("L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt2_total"," ", 25, 0, 2.5)
+    L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt2_total = TH1F("L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt2_total"," ", 25, 0, 2.5)
+
+
     ## pt plots
     genMu_pt_dxy0to0p1_fid = TH1F("genMu_pt_dxy0to0p1_fid"," ", 25,0,50)
     genMu_pt_dxy1to5_fid = TH1F("genMu_pt_dxy1to5_fid"," ", 25,0,50)
@@ -2095,25 +2191,89 @@ if __name__ == "__main__":
     L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt4 = TH1F("L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt4"," ", 25,0,50)
     L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt4 = TH1F("L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt4"," ", 25,0,50)
 
-    L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt4_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt4_total"," ", 25,0,50)
-    L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt4_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt4_total"," ", 25,0,50)
-    L1Mu_genMu_pt_dxy1to5_fid_dR0p2p5_L1TkPt4_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2p5_L1TkPt4_total"," ", 25,0,50)
-    L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt4_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt4_total"," ", 25,0,50)
+    ## plots per eta section
+    L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt4_total = TH1F("L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt4_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt4_total = TH1F("L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt4_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt4_total = TH1F("L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt4_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt4_total = TH1F("L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt4_total"," ", 25,0,50)
 
-    L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt3_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt3_total"," ", 25,0,50)
-    L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt3_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt3_total"," ", 25,0,50)
-    L1Mu_genMu_pt_dxy1to5_fid_dR0p2p5_L1TkPt3_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2p5_L1TkPt3_total"," ", 25,0,50)
-    L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt3_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt3_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt3_total = TH1F("L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt3_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt3_total = TH1F("L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt3_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt3_total = TH1F("L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt3_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt3_total = TH1F("L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt3_total"," ", 25,0,50)
 
-    L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2p5_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2p5_total"," ", 25,0,50)
-    L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2p5_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2p5_total"," ", 25,0,50)
-    L1Mu_genMu_pt_dxy1to5_fid_dR0p2p5_L1TkPt2p5_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2p5_L1TkPt2p5_total"," ", 25,0,50)
-    L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2p5_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2p5_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt2p5_total = TH1F("L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt2p5_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt2p5_total = TH1F("L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt2p5_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt2p5_total = TH1F("L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt2p5_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt2p5_total = TH1F("L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt2p5_total"," ", 25,0,50)
 
-    L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2_total"," ", 25,0,50)
-    L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2_total"," ", 25,0,50)
-    L1Mu_genMu_pt_dxy1to5_fid_dR0p2p5_L1TkPt2_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2p5_L1TkPt2_total"," ", 25,0,50)
-    L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2_total =  = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt2_total = TH1F("L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt2_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt2_total = TH1F("L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt2_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt2_total = TH1F("L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt2_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt2_total = TH1F("L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt2_total"," ", 25,0,50)
+
+
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt4_total = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt4_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt4_total = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt4_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt4_total = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt4_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt4_total = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt4_total"," ", 25,0,50)
+
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt3_total = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt3_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt3_total = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt3_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt3_total = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt3_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt3_total = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt3_total"," ", 25,0,50)
+
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2p5_total = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2p5_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2p5_total = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2p5_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2p5_total = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2p5_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt2p5_total = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt2p5_total"," ", 25,0,50)
+
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2_total = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2_total = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2_total = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt2_total = TH1F("L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt2_total"," ", 25,0,50)
+
+ 
+    L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt4_total = TH1F("L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt4_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt4_total = TH1F("L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt4_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt4_total = TH1F("L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt4_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt4_total = TH1F("L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt4_total"," ", 25,0,50)
+
+    L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt3_total = TH1F("L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt3_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt3_total = TH1F("L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt3_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt3_total = TH1F("L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt3_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt3_total = TH1F("L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt3_total"," ", 25,0,50)
+
+    L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt2p5_total = TH1F("L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt2p5_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt2p5_total = TH1F("L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt2p5_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt2p5_total = TH1F("L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt2p5_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt2p5_total = TH1F("L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt2p5_total"," ", 25,0,50)
+
+    L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt2_total = TH1F("L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt2_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt2_total = TH1F("L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt2_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt2_total = TH1F("L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt2_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt2_total = TH1F("L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt2_total"," ", 25,0,50)
+
+
+    L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt4_total = TH1F("L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt4_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt4_total = TH1F("L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt4_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt4_total = TH1F("L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt4_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt4_total = TH1F("L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt4_total"," ", 25,0,50)
+
+    L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt3_total = TH1F("L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt3_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt3_total = TH1F("L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt3_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt3_total = TH1F("L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt3_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt3_total = TH1F("L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt3_total"," ", 25,0,50)
+
+    L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt2p5_total = TH1F("L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt2p5_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt2p5_total = TH1F("L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt2p5_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt2p5_total = TH1F("L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt2p5_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt2p5_total = TH1F("L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt2p5_total"," ", 25,0,50)
+
+    L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt2_total = TH1F("L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt2_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt2_total = TH1F("L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt2_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt2_total = TH1F("L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt2_total"," ", 25,0,50)
+    L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt2_total = TH1F("L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt2_total"," ", 25,0,50)
 
 
     ## temporary check for Slava
@@ -2278,18 +2438,9 @@ if __name__ == "__main__":
               print "\t\tMatched: L1Mu", "pt", L1Mu_pt, "eta", L1Mu_eta, "phi", L1Mu_phi, "Quality", L1Mu_quality,
               print "L1Mu_L1Tk_dR_min", L1Mu_L1Tk_dR_prop, "L1Mu_L1Tk_pt", L1Mu_L1Tk_pt
                 
-            L1Mu_barrel = abs(L1Mu_eta)<=0.9
-            L1Mu_overlap = abs(L1Mu_eta)>0.9 and abs(L1Mu_eta)<=1.2
-            L1Mu_endcap = abs(L1Mu_eta)>1.2 and abs(L1Mu_eta)<=2.4
-
             matched = L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_quality >= 4
-            matched_barrel = L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_quality >= 4
-            matched_overlap = L1Mu_L1Tk_dR_prop <= 0.07 and L1Mu_quality >= 4
-            matched_endcap = L1Mu_L1Tk_dR_prop <= 0.05 and L1Mu_quality >= 4
-            matched = matched and L1Mu_L1Tk_pt>=0 ## optional pT cut to increase the efficiency of matched L1Mu
-            matched_barrel = matched_barrel and L1Mu_L1Tk_pt>=0 ## optional pT cut to increase the efficiency of matched L1Mu
-            matched_overlap = matched_overlap and L1Mu_L1Tk_pt>=0 ## optional pT cut to increase the efficiency of matched L1Mu
-            matched_endcap = matched_endcap and L1Mu_L1Tk_pt>=0 ## optional pT cut to increase the efficiency of matched L1Mu
+            matched = matched and L1Mu_L1Tk_pt>=MatchingL1TkMinPtEff ## optional pT cut to increase the efficiency of matched L1Mu
+
             common = (abs(L1Mu_bx) <= 0) and (L1Mu_quality >= 4)
             
             if (common): trigL1Mu = True
@@ -2308,14 +2459,24 @@ if __name__ == "__main__":
             if ((not matched) and not (L1Mu_L1Tk_dR_prop <= 0.2 and L1Mu_L1Tk_pt>=2.5) and common): trig_dR0p2_L1TkPt2p5 = True
             if ((not matched) and not (L1Mu_L1Tk_dR_prop <= 0.2 and L1Mu_L1Tk_pt>=2) and common): trig_dR0p2_L1TkPt2 = True
 
-            if ((not matched) and common): trig_dR0p12_L1TkPt4 = True
-            if ((not matched) and common): trig_dR0p12_L1TkPt3 = True
-            if ((not matched) and common): trig_dR0p12_L1TkPt2p5 = True
-            if ((not matched) and common): trig_dR0p12_L1TkPt2 = True
+            if ((not matched) and not (L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_L1Tk_pt>=4) and common): trig_dR0p12_L1TkPt4 = True
+            if ((not matched) and not (L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_L1Tk_pt>=3) and common): trig_dR0p12_L1TkPt3 = True
+            if ((not matched) and not (L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_L1Tk_pt>=2.5) and common): trig_dR0p12_L1TkPt2p5 = True
+            if ((not matched) and not (L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_L1Tk_pt>=2) and common): trig_dR0p12_L1TkPt2 = True
+
 
             L1Mu_barrel = abs(L1Mu_eta)<=0.9
             L1Mu_overlap = abs(L1Mu_eta)>0.9 and abs(L1Mu_eta)<=1.2
             L1Mu_endcap = abs(L1Mu_eta)>1.2 and abs(L1Mu_eta)<=2.4
+
+            matched_barrel = L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_quality >= 4
+            matched_barrel = matched_barrel and L1Mu_L1Tk_pt>=0 ## optional pT cut to increase the efficiency of matched L1Mu
+
+            matched_overlap = L1Mu_L1Tk_dR_prop <= 0.10 and L1Mu_quality >= 4
+            matched_overlap = matched_overlap and L1Mu_L1Tk_pt>=0 ## optional pT cut to increase the efficiency of matched L1Mu
+
+            matched_endcap = L1Mu_L1Tk_dR_prop <= 0.09 and L1Mu_quality >= 4
+            matched_endcap = matched_endcap and L1Mu_L1Tk_pt>=0 ## optional pT cut to increase the efficiency of matched L1Mu
 
             trig_dR0p4_L1TkPt4_barrel = L1Mu_barrel and (not matched_barrel) and not (L1Mu_L1Tk_dR_prop <= 0.4 and L1Mu_L1Tk_pt>=4) and common
             trig_dR0p4_L1TkPt3_barrel = L1Mu_barrel and (not matched_barrel) and not (L1Mu_L1Tk_dR_prop <= 0.4 and L1Mu_L1Tk_pt>=3) and common
@@ -2380,25 +2541,25 @@ if __name__ == "__main__":
             trig_dR0p12_L1TkPt2_endcap = L1Mu_endcap and (not matched_endcap) and not (L1Mu_L1Tk_dR_prop <= 0.12 and L1Mu_L1Tk_pt>=2) and common
 
             
-            trig_dR0p4_L1TkPt4_total = trig_dR0p4_L1TkPt4_barrel and trig_dR0p4_L1TkPt4_overlap and trig_dR0p4_L1TkPt4_endcap
-            trig_dR0p3_L1TkPt4_total = trig_dR0p3_L1TkPt4_barrel and trig_dR0p3_L1TkPt4_overlap and trig_dR0p3_L1TkPt4_endcap
-            trig_dR0p2_L1TkPt4_total = trig_dR0p2_L1TkPt4_barrel and trig_dR0p2_L1TkPt4_overlap and trig_dR0p2_L1TkPt4_endcap
-            trig_dR0p12_L1TkPt4_total = trig_dR0p12_L1TkPt4_barrel and trig_dR0p12_L1TkPt4_overlap and trig_dR0p12_L1TkPt4_endcap
+            trig_dR0p4_L1TkPt4_total = trig_dR0p4_L1TkPt4_barrel or trig_dR0p4_L1TkPt4_overlap or trig_dR0p4_L1TkPt4_endcap
+            trig_dR0p3_L1TkPt4_total = trig_dR0p3_L1TkPt4_barrel or trig_dR0p3_L1TkPt4_overlap or trig_dR0p3_L1TkPt4_endcap
+            trig_dR0p2_L1TkPt4_total = trig_dR0p2_L1TkPt4_barrel or trig_dR0p2_L1TkPt4_overlap or trig_dR0p2_L1TkPt4_endcap
+            trig_dR0p12_L1TkPt4_total = trig_dR0p12_L1TkPt4_barrel or trig_dR0p12_L1TkPt4_overlap or trig_dR0p12_L1TkPt4_endcap
 
-            trig_dR0p4_L1TkPt3_total = trig_dR0p4_L1TkPt3_barrel and trig_dR0p4_L1TkPt3_overlap and trig_dR0p4_L1TkPt3_endcap
-            trig_dR0p3_L1TkPt3_total = trig_dR0p3_L1TkPt3_barrel and trig_dR0p3_L1TkPt3_overlap and trig_dR0p3_L1TkPt3_endcap
-            trig_dR0p2_L1TkPt3_total = trig_dR0p2_L1TkPt3_barrel and trig_dR0p2_L1TkPt3_overlap and trig_dR0p2_L1TkPt3_endcap
-            trig_dR0p12_L1TkPt3_total = trig_dR0p12_L1TkPt3_barrel and trig_dR0p12_L1TkPt3_overlap and trig_dR0p12_L1TkPt3_endcap
+            trig_dR0p4_L1TkPt3_total = trig_dR0p4_L1TkPt3_barrel or trig_dR0p4_L1TkPt3_overlap or trig_dR0p4_L1TkPt3_endcap
+            trig_dR0p3_L1TkPt3_total = trig_dR0p3_L1TkPt3_barrel or trig_dR0p3_L1TkPt3_overlap or trig_dR0p3_L1TkPt3_endcap
+            trig_dR0p2_L1TkPt3_total = trig_dR0p2_L1TkPt3_barrel or trig_dR0p2_L1TkPt3_overlap or trig_dR0p2_L1TkPt3_endcap
+            trig_dR0p12_L1TkPt3_total = trig_dR0p12_L1TkPt3_barrel or trig_dR0p12_L1TkPt3_overlap or trig_dR0p12_L1TkPt3_endcap
             
-            trig_dR0p4_L1TkPt2p5_total = trig_dR0p4_L1TkPt2p5_barrel and trig_dR0p4_L1TkPt2p5_overlap and trig_dR0p4_L1TkPt2p5_endcap
-            trig_dR0p3_L1TkPt2p5_total = trig_dR0p3_L1TkPt2p5_barrel and trig_dR0p3_L1TkPt2p5_overlap and trig_dR0p3_L1TkPt2p5_endcap
-            trig_dR0p2_L1TkPt2p5_total = trig_dR0p2_L1TkPt2p5_barrel and trig_dR0p2_L1TkPt2p5_overlap and trig_dR0p2_L1TkPt2p5_endcap
-            trig_dR0p12_L1TkPt2p5_total = trig_dR0p12_L1TkPt2p5_barrel and trig_dR0p12_L1TkPt2p5_overlap and trig_dR0p12_L1TkPt2p5_endcap
+            trig_dR0p4_L1TkPt2p5_total = trig_dR0p4_L1TkPt2p5_barrel or trig_dR0p4_L1TkPt2p5_overlap or trig_dR0p4_L1TkPt2p5_endcap
+            trig_dR0p3_L1TkPt2p5_total = trig_dR0p3_L1TkPt2p5_barrel or trig_dR0p3_L1TkPt2p5_overlap or trig_dR0p3_L1TkPt2p5_endcap
+            trig_dR0p2_L1TkPt2p5_total = trig_dR0p2_L1TkPt2p5_barrel or trig_dR0p2_L1TkPt2p5_overlap or trig_dR0p2_L1TkPt2p5_endcap
+            trig_dR0p12_L1TkPt2p5_total = trig_dR0p12_L1TkPt2p5_barrel or trig_dR0p12_L1TkPt2p5_overlap or trig_dR0p12_L1TkPt2p5_endcap
 
-            trig_dR0p4_L1TkPt2_total = trig_dR0p4_L1TkPt2_barrel and trig_dR0p4_L1TkPt2_overlap and trig_dR0p4_L1TkPt2_endcap
-            trig_dR0p3_L1TkPt2_total = trig_dR0p3_L1TkPt2_barrel and trig_dR0p3_L1TkPt2_overlap and trig_dR0p3_L1TkPt2_endcap
-            trig_dR0p2_L1TkPt2_total = trig_dR0p2_L1TkPt2_barrel and trig_dR0p2_L1TkPt2_overlap and trig_dR0p2_L1TkPt2_endcap
-            trig_dR0p12_L1TkPt2_total = trig_dR0p12_L1TkPt2_barrel and trig_dR0p12_L1TkPt2_overlap and trig_dR0p12_L1TkPt2_endcap
+            trig_dR0p4_L1TkPt2_total = trig_dR0p4_L1TkPt2_barrel or trig_dR0p4_L1TkPt2_overlap or trig_dR0p4_L1TkPt2_endcap
+            trig_dR0p3_L1TkPt2_total = trig_dR0p3_L1TkPt2_barrel or trig_dR0p3_L1TkPt2_overlap or trig_dR0p3_L1TkPt2_endcap
+            trig_dR0p2_L1TkPt2_total = trig_dR0p2_L1TkPt2_barrel or trig_dR0p2_L1TkPt2_overlap or trig_dR0p2_L1TkPt2_endcap
+            trig_dR0p12_L1TkPt2_total = trig_dR0p12_L1TkPt2_barrel or trig_dR0p12_L1TkPt2_overlap or trig_dR0p12_L1TkPt2_endcap
 
 
           dxy_range1 = (abs(dxy) <= 0.1)
@@ -2725,25 +2886,27 @@ if __name__ == "__main__":
             if trigL1Mu:             L1Mu_genMu_eta_dxy0to0p1_fid.Fill(eta)
 
             ### plots with different veto cones per eta section
-            if trig_dR0p4_L1TkPt4_total:   L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt4_total.Fill(pt)
-            if trig_dR0p4_L1TkPt3_total:   L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt3_total.Fill(pt)
-            if trig_dR0p4_L1TkPt2p5_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt2p5_total.Fill(pt)
-            if trig_dR0p4_L1TkPt2_total:   L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt2_total.Fill(pt)
+            if trig_dR0p4_L1TkPt4_total:   
+              L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt4_total.Fill(pt)
+              print ">>>>OK!!!<<<<"
+            if trig_dR0p4_L1TkPt3_total:   L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt3_total.Fill(pt)
+            if trig_dR0p4_L1TkPt2p5_total: L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p4_L1TkPt2_total:   L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt2_total.Fill(pt)
 
-            if trig_dR0p3_L1TkPt4_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt4_total.Fill(pt)
-            if trig_dR0p3_L1TkPt3_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt3_total.Fill(pt)
-            if trig_dR0p3_L1TkPt2p5_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt2p5_total.Fill(pt)
-            if trig_dR0p3_L1TkPt2_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt2_total.Fill(pt)
+            if trig_dR0p3_L1TkPt4_total: L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt4_total.Fill(pt)
+            if trig_dR0p3_L1TkPt3_total: L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt3_total.Fill(pt)
+            if trig_dR0p3_L1TkPt2p5_total: L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p3_L1TkPt2_total: L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt2_total.Fill(pt)
 
-            if trig_dR0p2_L1TkPt4_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt4_total.Fill(pt)
-            if trig_dR0p2_L1TkPt3_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt3_total.Fill(pt)
-            if trig_dR0p2_L1TkPt2p5_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt2p5_total.Fill(pt)
-            if trig_dR0p2_L1TkPt2_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt2_total.Fill(pt)
+            if trig_dR0p2_L1TkPt4_total: L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt4_total.Fill(pt)
+            if trig_dR0p2_L1TkPt3_total: L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt3_total.Fill(pt)
+            if trig_dR0p2_L1TkPt2p5_total: L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p2_L1TkPt2_total: L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt2_total.Fill(pt)
 
-            if trig_dR0p12_L1TkPt4_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt4_total.Fill(pt)
-            if trig_dR0p12_L1TkPt3_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt3_total.Fill(pt)
-            if trig_dR0p12_L1TkPt2p5_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt2p5_total.Fill(pt)
-            if trig_dR0p12_L1TkPt2_total: L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt2_total.Fill(pt)
+            if trig_dR0p12_L1TkPt4_total: L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt4_total.Fill(pt)
+            if trig_dR0p12_L1TkPt3_total: L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt3_total.Fill(pt)
+            if trig_dR0p12_L1TkPt2p5_total: L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p12_L1TkPt2_total: L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt2_total.Fill(pt)
 
 
             if trig_dR0p4_L1TkPt4:   L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt4.Fill(eta)
@@ -2769,6 +2932,29 @@ if __name__ == "__main__":
           if dxy_range2 and pt_fid:
             genMu_eta_dxy1to5_fid.Fill(eta)
             if trigL1Mu:             L1Mu_genMu_eta_dxy1to5_fid.Fill(eta)
+
+            ### plots with different veto cones per eta section
+            if trig_dR0p4_L1TkPt4_total:   L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt4_total.Fill(pt)
+            if trig_dR0p4_L1TkPt3_total:   L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt3_total.Fill(pt)
+            if trig_dR0p4_L1TkPt2p5_total: L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p4_L1TkPt2_total:   L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p3_L1TkPt4_total: L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt4_total.Fill(pt)
+            if trig_dR0p3_L1TkPt3_total: L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt3_total.Fill(pt)
+            if trig_dR0p3_L1TkPt2p5_total: L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p3_L1TkPt2_total: L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p2_L1TkPt4_total: L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt4_total.Fill(pt)
+            if trig_dR0p2_L1TkPt3_total: L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt3_total.Fill(pt)
+            if trig_dR0p2_L1TkPt2p5_total: L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p2_L1TkPt2_total: L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p12_L1TkPt4_total: L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt4_total.Fill(pt)
+            if trig_dR0p12_L1TkPt3_total: L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt3_total.Fill(pt)
+            if trig_dR0p12_L1TkPt2p5_total: L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p12_L1TkPt2_total: L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt2_total.Fill(pt)
+
+
             if trig_dR0p4_L1TkPt4:   L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt4.Fill(eta)
             if trig_dR0p4_L1TkPt3:   L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt3.Fill(eta)
             if trig_dR0p4_L1TkPt2p5: L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt2p5.Fill(eta)
@@ -2792,6 +2978,29 @@ if __name__ == "__main__":
           if dxy_range3 and pt_fid:
             genMu_eta_dxy5to10_fid.Fill(eta)
             if trigL1Mu:             L1Mu_genMu_eta_dxy5to10_fid.Fill(eta)
+
+            ### plots with different veto cones per eta section
+            if trig_dR0p4_L1TkPt4_total:   L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt4_total.Fill(pt)
+            if trig_dR0p4_L1TkPt3_total:   L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt3_total.Fill(pt)
+            if trig_dR0p4_L1TkPt2p5_total: L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p4_L1TkPt2_total:   L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p3_L1TkPt4_total: L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt4_total.Fill(pt)
+            if trig_dR0p3_L1TkPt3_total: L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt3_total.Fill(pt)
+            if trig_dR0p3_L1TkPt2p5_total: L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p3_L1TkPt2_total: L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p2_L1TkPt4_total: L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt4_total.Fill(pt)
+            if trig_dR0p2_L1TkPt3_total: L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt3_total.Fill(pt)
+            if trig_dR0p2_L1TkPt2p5_total: L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p2_L1TkPt2_total: L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p12_L1TkPt4_total: L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt4_total.Fill(pt)
+            if trig_dR0p12_L1TkPt3_total: L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt3_total.Fill(pt)
+            if trig_dR0p12_L1TkPt2p5_total: L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p12_L1TkPt2_total: L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt2_total.Fill(pt)
+
+
             if trig_dR0p4_L1TkPt4:   L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt4.Fill(eta)
             if trig_dR0p4_L1TkPt3:   L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt3.Fill(eta)
             if trig_dR0p4_L1TkPt2p5: L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt2p5.Fill(eta)
@@ -2815,6 +3024,30 @@ if __name__ == "__main__":
           if dxy_range4 and pt_fid:
             genMu_eta_dxy10_fid.Fill(eta)
             if trigL1Mu:             L1Mu_genMu_eta_dxy10_fid.Fill(eta)
+
+
+            ### plots with different veto cones per eta section
+            if trig_dR0p4_L1TkPt4_total:   L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt4_total.Fill(pt)
+            if trig_dR0p4_L1TkPt3_total:   L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt3_total.Fill(pt)
+            if trig_dR0p4_L1TkPt2p5_total: L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p4_L1TkPt2_total:   L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p3_L1TkPt4_total: L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt4_total.Fill(pt)
+            if trig_dR0p3_L1TkPt3_total: L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt3_total.Fill(pt)
+            if trig_dR0p3_L1TkPt2p5_total: L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p3_L1TkPt2_total: L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p2_L1TkPt4_total: L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt4_total.Fill(pt)
+            if trig_dR0p2_L1TkPt3_total: L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt3_total.Fill(pt)
+            if trig_dR0p2_L1TkPt2p5_total: L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p2_L1TkPt2_total: L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt2_total.Fill(pt)
+
+            if trig_dR0p12_L1TkPt4_total: L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt4_total.Fill(pt)
+            if trig_dR0p12_L1TkPt3_total: L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt3_total.Fill(pt)
+            if trig_dR0p12_L1TkPt2p5_total: L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt2p5_total.Fill(pt)
+            if trig_dR0p12_L1TkPt2_total: L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt2_total.Fill(pt)
+
+
             if trig_dR0p4_L1TkPt4:   L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt4.Fill(eta)
             if trig_dR0p4_L1TkPt3:   L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt3.Fill(eta)
             if trig_dR0p4_L1TkPt2p5: L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt2p5.Fill(eta)
@@ -2904,8 +3137,9 @@ if __name__ == "__main__":
       eff4.Draw("same")
       
       if doPt:
-        print title, "pt15", "%.2f"%((eff3.GetEfficiency(8) + eff3.GetEfficiency(9))/2.)
-        print title, "pt20", "%.2f"%(eff3.GetEfficiency(11))
+        errorAverage = sqrt(eff3.GetEfficiencyErrorUp(8)*eff3.GetEfficiencyErrorUp(8) + eff3.GetEfficiencyErrorUp(9)*eff3.GetEfficiencyErrorUp(9))/2.
+        print title, "pt15", "%.2f"%((eff3.GetEfficiency(8) + eff3.GetEfficiency(9))/2.), "+/-%f"%(errorAverage)
+        print title, "pt20", "%.2f"%(eff3.GetEfficiency(11)), "+/-%f"%(eff3.GetEfficiencyErrorUp(11))
         print
 
       latex = applyTdrStyle()      
@@ -3122,6 +3356,210 @@ if __name__ == "__main__":
                 TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt4,  genMu_eta_dxy5to10_fid),
                 TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt4,     genMu_eta_dxy10_fid),
                 targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p12_L1TkPt4" + ext, False)
+
+
+    ## PLOTS WITH DIFFERENT CONE SIZES IN BARREL/overlap/endcap
+    ## pt effciency plots
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt2_total, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2_total,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt2_total,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt2_total,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p4_L1TkPt2_total" + ext, True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt2p5_total, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt2p5_total,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt2p5_total,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt2p5_total,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p4_L1TkPt2p5_total" + ext, True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt3_total, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt3_total,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt3_total,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt3_total,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p4_L1TkPt3_total" + ext, True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p4_L1TkPt4_total, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p4_L1TkPt4_total,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p4_L1TkPt4_total,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p4_L1TkPt4_total,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p4_L1TkPt4_total" + ext, True)
+
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt2_total, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2_total,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt2_total,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt2_total,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p3_L1TkPt2_total" + ext, True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt2p5_total, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt2p5_total,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt2p5_total,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt2p5_total,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p3_L1TkPt2p5_total" + ext, True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt3_total, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt3_total,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt3_total,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt3_total,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p3_L1TkPt3_total" + ext, True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p3_L1TkPt4_total, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p3_L1TkPt4_total,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p3_L1TkPt4_total,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p3_L1TkPt4_total,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p3_L1TkPt4_total" + ext, True)
+
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt2_total, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2_total,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt2_total,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt2_total,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p2_L1TkPt2_total" + ext, True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt2p5_total, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt2p5_total,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt2p5_total,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt2p5_total,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p2_L1TkPt2p5_total" + ext, True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt3_total, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt3_total,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt3_total,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt3_total,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p2_L1TkPt3_total" + ext, True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p2_L1TkPt4_total, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p2_L1TkPt4_total,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p2_L1TkPt4_total,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p2_L1TkPt4_total,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p2_L1TkPt4_total" + ext, True)
+
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt2_total, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt2_total,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt2_total,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt2_total,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p12_L1TkPt2_total" + ext, True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt2p5_total, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt2p5_total,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt2p5_total,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt2p5_total,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p12_L1TkPt2p5_total" + ext, True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt3_total, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt3_total,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt3_total,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt3_total,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p12_L1TkPt3_total" + ext, True)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_pt_dxy0to0p1_fid_dR0p12_L1TkPt4_total, genMu_pt_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy1to5_fid_dR0p12_L1TkPt4_total,   genMu_pt_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy5to10_fid_dR0p12_L1TkPt4_total,  genMu_pt_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_pt_dxy10_fid_dR0p12_L1TkPt4_total,     genMu_pt_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_pt_fid_dR0p12_L1TkPt4_total" + ext, True)
+
+    
+    ## eta effciency plots
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt2_total, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt2_total,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt2_total,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt2_total,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p4_L1TkPt2_total" + ext, False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt2p5_total, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt2p5_total,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt2p5_total,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt2p5_total,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p4_L1TkPt2p5_total" + ext, False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt3_total, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt3_total,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt3_total,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt3_total,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p4_L1TkPt3_total" + ext, False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p4_L1TkPt4_total, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p4_L1TkPt4_total,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p4_L1TkPt4_total,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p4_L1TkPt4_total,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p4_L1TkPt4_total" + ext, False)
+
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt2_total, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt2_total,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt2_total,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt2_total,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p3_L1TkPt2_total" + ext, False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt2p5_total, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt2p5_total,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt2p5_total,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt2p5_total,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p3_L1TkPt2p5_total" + ext, False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt3_total, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt3_total,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt3_total,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt3_total,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p3_L1TkPt3_total" + ext, False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p3_L1TkPt4_total, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p3_L1TkPt4_total,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p3_L1TkPt4_total,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p3_L1TkPt4_total,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p3_L1TkPt4_total" + ext, False)
+
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt2_total, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt2_total,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt2_total,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt2_total,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p2_L1TkPt2_total" + ext, False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt2p5_total, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt2p5_total,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt2p5_total,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt2p5_total,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p2_L1TkPt2p5_total" + ext, False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt3_total, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt3_total,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt3_total,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt3_total,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p2_L1TkPt3_total" + ext, False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p2_L1TkPt4_total, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p2_L1TkPt4_total,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p2_L1TkPt4_total,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p2_L1TkPt4_total,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p2_L1TkPt4_total" + ext, False)
+
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt2_total, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt2_total,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt2_total,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt2_total,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p12_L1TkPt2_total" + ext, False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt2p5_total, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt2p5_total,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt2p5_total,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt2p5_total,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p12_L1TkPt2p5_total" + ext, False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt3_total, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt3_total,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt3_total,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt3_total,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p12_L1TkPt3_total" + ext, False)
+
+    makeEffPlot(TEfficiency(L1Mu_genMu_eta_dxy0to0p1_fid_dR0p12_L1TkPt4_total, genMu_eta_dxy0to0p1_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy1to5_fid_dR0p12_L1TkPt4_total,   genMu_eta_dxy1to5_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy5to10_fid_dR0p12_L1TkPt4_total,  genMu_eta_dxy5to10_fid),
+                TEfficiency(L1Mu_genMu_eta_dxy10_fid_dR0p12_L1TkPt4_total,     genMu_eta_dxy10_fid),
+                targetDir + "L1Mu_trigger_efficiency_eta_fid_dR0p12_L1TkPt4_total" + ext, False)
+
 
 
     ## debug for slava

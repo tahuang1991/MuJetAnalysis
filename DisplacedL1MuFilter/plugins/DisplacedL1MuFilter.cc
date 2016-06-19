@@ -939,11 +939,15 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       double ptScale = muPtScale->getPtScale()->getLowEdge(track.pt()) + 1.e-6;;
       double etaScale = muScales->getRegionalEtaScale(0)->getCenter(track.eta());
       double phiScale = muScales->getPhiScale()->getLowEdge(track.phi());
-
-      std::cout << "pt (scale) " << ptScale
-                << "eta (scale) " << etaScale 
-                << "phi (scale) " << phiScale << std::endl;
-
+      
+      std::cout << "pt (scale) = " << ptScale
+                << ", eta (scale) = " << etaScale 
+                << ", phi (scale) = " << phiScale << " " << track.phi() << std::endl;
+      std::cout << "stubs: " << std::endl; 
+      for (auto stub: L1DTTrackPhis[j].second) {
+        std::cout << "\t " << stub << std::endl;
+        std::cout << "\t phiValue = " << stub.phiValue() << ", phibValue = " << stub.phibValue() << std::endl;
+      }
       // const int sign(l1track_->endcap()==1 ? 1 : -1);
       // pt_ = muPtScale->getPtScale()->getLowEdge(pt_packed_) + 1.e-6;
       // eta_ = muScales->getRegionalEtaScale(2)->getCenter(l1track_->eta_packed()) * sign;

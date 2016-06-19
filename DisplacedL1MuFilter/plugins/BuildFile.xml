@@ -1,7 +1,7 @@
 <use name="FWCore/Framework"/>
 <use name="FWCore/PluginManager"/>
 <use name="FWCore/ParameterSet"/>
-<use   name="SimDataFormats/Track"/>
+<use name="SimDataFormats/Track"/>
 <use name="CommonTools/UtilAlgos"/>
 <use name="DataFormats/Candidate"/>
 <use name="DataFormats/Math"/>
@@ -11,18 +11,22 @@
 <use name="FWCore/ServiceRegistry"/>
 <use name="FWCore/Utilities"/>
 <use name="MagneticField/Engine"/>
-<use   name="TrackingTools/DetLayers"/>
+<use name="TrackingTools/DetLayers"/>
 <use name="TrackingTools/GeomPropagators"/>
 <use name="TrackingTools/TrajectoryState"/>
 <use name="TrackingTools/Records"/>
 <use name="MagneticField/Records"/>
 <use name="DataFormats/GeometrySurface"/>
-<use   name="RecoMuon/DetLayers"/>
-<use   name="Geometry/Records"/>
-<use   name="Geometry/CommonDetUnit"/>
-<use   name="RecoMuon/DetLayers"/>
-<use   name="TrackingTools/KalmanUpdators"/>
-<use   name="RecoMuon/Records"/>
+<use name="RecoMuon/DetLayers"/>
+<use name="Geometry/Records"/>
+<use name="Geometry/CommonDetUnit"/>
+<use name="RecoMuon/DetLayers"/>
+<use name="TrackingTools/KalmanUpdators"/>
+<use name="RecoMuon/Records"/>
+<use name="DataFormats/L1DTTrackFinder"/>
+<use name="L1Trigger/DTTrackFinder"/>
+<use name="CondFormats/DataRecord/"/>
+<use name="CondFormats/L1TObjects/"/>
 
 <use name="root"/>
 

@@ -80,6 +80,17 @@
 #include "TrackingTools/DetLayers/interface/DetLayer.h"
 #include "TrackingTools/KalmanUpdators/interface/Chi2MeasurementEstimator.h"
 
+#include "DataFormats/L1DTTrackFinder/interface/L1MuDTChambPhContainer.h"
+#include "DataFormats/L1DTTrackFinder/interface/L1MuDTTrackCand.h"
+#include "DataFormats/L1DTTrackFinder/interface/L1MuDTTrackContainer.h"
+#include "DataFormats/L1GlobalMuonTrigger/interface/L1MuRegionalCand.h"
+#include "L1Trigger/DTTrackFinder/interface/L1MuDTTrack.h"
+#include "L1Trigger/DTTrackFinder/src/L1MuDTTrackSegPhi.h"
+
+#include "CondFormats/L1TObjects/interface/L1MuTriggerScales.h"
+#include "CondFormats/L1TObjects/interface/L1MuTriggerPtScale.h"
+#include "CondFormats/DataRecord/interface/L1MuTriggerPtScaleRcd.h"
+#include "CondFormats/DataRecord/interface/L1MuTriggerScalesRcd.h"
 //
 // class declaration
 //
@@ -352,6 +363,13 @@ private:
   std::pair<float,float> endcapRadii_[3];
   MyEvent event_;
   TTree* event_tree_;
+
+  // trigger scale
+  unsigned long long  muScalesCacheID_;
+  unsigned long long  muPtScaleCacheID_;
+
+  edm::ESHandle< L1MuTriggerScales > muScales;
+  edm::ESHandle< L1MuTriggerPtScale > muPtScale;
 };
 
 DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) : 
@@ -373,6 +391,10 @@ DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) :
   L1TkMu_input = iConfig.getParameter<edm::InputTag>("L1TkMu_input");
   
   bookL1MuTree();
+
+  muScalesCacheID_ = 0ULL ;
+  muPtScaleCacheID_ = 0ULL ;
+
 }
 
 DisplacedL1MuFilter::~DisplacedL1MuFilter()
@@ -413,6 +435,33 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   edm::Handle<GMTs> aH;
   iEvent.getByLabel("simGmtDigis", aH);
   const GMTs& l1GmtCands(*aH.product());
+
+  edm::Handle<L1MuDTChambPhContainer> L1MuDTChambPhH;
+  iEvent.getByLabel("simDtTriggerPrimitiveDigis", L1MuDTChambPhH);
+  const L1MuDTChambPhContainer& L1MuDTChambPhs(*L1MuDTChambPhH.product());
+
+  edm::Handle<L1MuDTTrackContainer> L1MuDTTrackH;
+  iEvent.getByLabel("simDttfDigis", "DTTF", L1MuDTTrackH);
+  const L1MuDTTrackContainer& L1MuDTTracks(*L1MuDTTrackH.product());
+
+  edm::Handle<vector<L1MuRegionalCand> > L1MuDTRegTrackH;
+  iEvent.getByLabel("simDttfDigis", "DT", L1MuDTRegTrackH);
+  const vector<L1MuRegionalCand>& L1MuDTRegTracks(*L1MuDTRegTrackH.product());
+  
+  edm::Handle<vector<pair<L1MuDTTrack,vector<L1MuDTTrackSegPhi> > > > L1DTTrackPhiH;
+  iEvent.getByLabel("dttfDigis","DTTF", L1DTTrackPhiH);
+  const vector<pair<L1MuDTTrack,vector<L1MuDTTrackSegPhi> > >& L1DTTrackPhis(*L1DTTrackPhiH.product());
+
+
+  if (iSetup.get< L1MuTriggerScalesRcd >().cacheIdentifier() != muScalesCacheID_ ||
+      iSetup.get< L1MuTriggerPtScaleRcd >().cacheIdentifier() != muPtScaleCacheID_ )
+    {
+      iSetup.get< L1MuTriggerScalesRcd >().get( muScales );
+      iSetup.get< L1MuTriggerPtScaleRcd >().get( muPtScale );
+
+      muScalesCacheID_  = iSetup.get< L1MuTriggerScalesRcd >().cacheIdentifier();
+      muPtScaleCacheID_ = iSetup.get< L1MuTriggerPtScaleRcd >().cacheIdentifier();
+    }
 
 
   // edm::Handle<L1MuGMTReadoutCollection> hl1GmtCands;
@@ -783,7 +832,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     const double l1Tk_eta_corr = l1Tk_eta;
     const double l1Tk_phi_corr = phiHeavyCorr(l1Tk_pt, l1Tk_eta, l1Tk_phi, l1Tk_charge);
 
-    if(verbose) {
+    if(verbose and false) {
       cout << "l1Tk " << j << endl; 
       cout << "l1Tk_pt " << l1Tk_pt << endl;
       cout << "l1Tk_eta " << l1Tk_eta << endl;
@@ -798,7 +847,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     if (!(ex_point == GlobalPoint())) {
       l1Tk_eta_prop = ex_point.eta();
       l1Tk_phi_prop = ex_point.phi();
-      if(verbose) {
+      if(verbose and false) {
         cout << "l1Tk_eta_prop " << l1Tk_eta_prop << endl;
         cout << "l1Tk_phi_prop " << l1Tk_phi_prop << endl;
       }
@@ -846,6 +895,65 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       cout << "l1Mu_charge " << event_.L1Mu_charge[i] << endl;
     }
 
+    // find the matching DT
+    auto L1MuDTPhiStubs = *L1MuDTChambPhs.getContainer();
+    std::cout << "Number of L1MuDTPhiStubs " << L1MuDTPhiStubs.size() << std::endl;
+    // for (unsigned int j=0; j<L1MuDTPhiStubs.size(); ++j) {
+    //   std::cout << "bxNum " << L1MuDTPhiStubs[j].bxNum() << std::endl;
+    //   std::cout << "whNum " << L1MuDTPhiStubs[j].whNum() << std::endl;
+    //   std::cout << "scNum " << L1MuDTPhiStubs[j].scNum() << std::endl;
+    //   std::cout << "stNum " << L1MuDTPhiStubs[j].stNum() << std::endl;
+    //   std::cout << "phi " << L1MuDTPhiStubs[j].phi() << std::endl;
+    //   std::cout << "phiB " << L1MuDTPhiStubs[j].phiB() << std::endl;
+    //   std::cout << "code " << L1MuDTPhiStubs[j].code() << std::endl;
+    //   std::cout << "Ts2Tag " << L1MuDTPhiStubs[j].Ts2Tag() << std::endl;
+    //   std::cout << "BxCnt " << L1MuDTPhiStubs[j].BxCnt() << std::endl;
+    // }
+
+    // find the matching DT tracks
+    auto L1MuDTCands = *L1MuDTTracks.getContainer();
+    std::cout << "Number of L1MuDTCands " <<L1MuDTCands.size() << std::endl;
+    // for (unsigned int j=0; j<L1MuDTCands.size(); ++j) {
+    //   std::cout << "whNum " << L1MuDTCands[j].whNum() << std::endl;
+    //   std::cout << "scNum " << L1MuDTCands[j].scNum() << std::endl;
+    //   //      std::cout << "stNum " << L1MuDTCands[j].stNum() << std::endl;
+    //   std::cout << "TCNum " << L1MuDTCands[j].TCNum() << std::endl;
+    //   std::cout << "TrkTag " << L1MuDTCands[j].TrkTag() << std::endl;
+    // }
+    
+    std::cout << "Number of L1MuDTRegTracks " <<L1MuDTRegTracks.size() << std::endl;
+    // for (unsigned int j=0; j<L1MuDTRegTracks.size(); ++j) {
+    //   L1MuDTRegTracks[j].print();
+    //   std::cout << "pt " << L1MuDTRegTracks[j].ptValue()
+    //             << "eta " << L1MuDTRegTracks[j].etaValue()
+    //             << "phi " << L1MuDTRegTracks[j].phiValue() << std::endl;
+    // }
+
+    std::cout << "Number of L1DTTrackPhis " <<L1DTTrackPhis.size() << std::endl;
+    for (unsigned int j=0; j<L1DTTrackPhis.size(); ++j) {
+      auto track = L1DTTrackPhis[j].first;
+      // std::cout << "pt " << track.ptValue()
+      //           << "eta " << track.etaValue()
+      //           << "phi " << track.phiValue() << std::endl;
+
+      double ptScale = muPtScale->getPtScale()->getLowEdge(track.pt()) + 1.e-6;;
+      double etaScale = muScales->getRegionalEtaScale(0)->getCenter(track.eta());
+      double phiScale = muScales->getPhiScale()->getLowEdge(track.phi());
+
+      std::cout << "pt (scale) " << ptScale
+                << "eta (scale) " << etaScale 
+                << "phi (scale) " << phiScale << std::endl;
+
+      // const int sign(l1track_->endcap()==1 ? 1 : -1);
+      // pt_ = muPtScale->getPtScale()->getLowEdge(pt_packed_) + 1.e-6;
+      // eta_ = muScales->getRegionalEtaScale(2)->getCenter(l1track_->eta_packed()) * sign;
+      // phi_ = normalizedPhi(muScales->getPhiScale()->getLowEdge(phi_packed_));
+
+      // const float eps = 1.e-5; // add an epsilon so that setting works with low edge value
+      // unsigned int t_Scale = theTriggerScales->getPtScale()->getPacked( L1DTTrackPhis[j].first.pt() + eps );
+
+    }
+
     // calculate the number of L1Tk within 0.12
     for (unsigned int j=0; j<TTTracks.size(); ++j) {
       auto l1Tk = TTTracks[j];
@@ -856,7 +964,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       const double l1Tk_eta_corr = l1Tk_eta;
       const double l1Tk_phi_corr = phiHeavyCorr(l1Tk_pt, l1Tk_eta, l1Tk_phi, l1Tk_charge);
 
-      if(verbose) {
+      if(verbose and false) {
         cout << "l1Tk " << j << endl; 
         cout << "l1Tk_pt " << l1Tk_pt << endl;
         cout << "l1Tk_eta " << l1Tk_eta << endl;
@@ -871,7 +979,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       if (!(ex_point == GlobalPoint())) {
         l1Tk_eta_prop = ex_point.eta();
         l1Tk_phi_prop = ex_point.phi();
-        if(verbose) {
+        if(verbose and false) {
           cout << "l1Tk_eta_prop " << l1Tk_eta_prop << endl;
           cout << "l1Tk_phi_prop " << l1Tk_phi_prop << endl;
         }

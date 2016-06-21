@@ -96,6 +96,7 @@
 //
 
 const Int_t kMaxL1Mu = 50;
+const Int_t kMaxDTTF = 50;
 const Int_t kMaxL1Tk = 500;
 const int nGlu = 2;
 const int nGd = 2;
@@ -227,6 +228,17 @@ struct MyEvent
   Float_t dEta_L1Tk_corr, dPhi_L1Tk_corr, dR_L1Tk_corr;
   Float_t dEta_L1Tk_prop, dPhi_L1Tk_prop, dR_L1Tk_prop;
   Float_t dEta_sim_L1Tk, dPhi_sim_L1Tk, dR_sim_L1Tk;
+
+  // Matching the L1Mu to DTTF
+  Int_t nDTTF;
+  Float_t DTTF_pt[kMaxDTTF], DTTF_eta[kMaxDTTF], DTTF_phi[kMaxDTTF], DTTF_nStubs[kMaxDTTF];
+  Float_t DTTF_phi1[kMaxDTTF], DTTF_phi2[kMaxDTTF], DTTF_phi3[kMaxDTTF], DTTF_phi4[kMaxDTTF];
+  Float_t DTTF_phib1[kMaxDTTF], DTTF_phib2[kMaxDTTF], DTTF_phib3[kMaxDTTF], DTTF_phib4[kMaxDTTF];
+  Float_t DTTF_quality1[kMaxDTTF], DTTF_quality2[kMaxDTTF], DTTF_quality3[kMaxDTTF], DTTF_quality4[kMaxDTTF];
+  Float_t DTTF_bx1[kMaxDTTF], DTTF_bx2[kMaxDTTF], DTTF_bx3[kMaxDTTF], DTTF_bx4[kMaxDTTF];
+  Float_t DTTF_wh1[kMaxDTTF], DTTF_wh2[kMaxDTTF], DTTF_wh3[kMaxDTTF], DTTF_wh4[kMaxDTTF];
+  Float_t DTTF_se1[kMaxDTTF], DTTF_se2[kMaxDTTF], DTTF_se3[kMaxDTTF], DTTF_se4[kMaxDTTF];
+  Float_t DTTF_st1[kMaxDTTF], DTTF_st2[kMaxDTTF], DTTF_st3[kMaxDTTF], DTTF_st4[kMaxDTTF];
 };
 
 bool PtOrder (const reco::GenParticle* p1, const reco::GenParticle* p2) 
@@ -265,6 +277,16 @@ double My_dPhi(double phi1, double phi2) {
   if (dPhi >  M_PI) dPhi -= 2.*M_PI;
   if (dPhi < -M_PI) dPhi += 2.*M_PI;
   return dPhi;
+}
+
+double phiL1DTTrack(const L1MuDTTrack& track)
+{
+  int phi_local = track.phi_packed(); //range: 0 < phi_local < 31
+  if ( phi_local > 15 ) phi_local -= 32; //range: -16 < phi_local < 15    
+  double dttrk_phi_global = normalizedPhi((phi_local*(M_PI/72.))+((M_PI/6.)*track.spid().sector()));// + 12*i->scNum(); //range: -16 < phi_global < 147 
+  // if(dttrk_phi_global < 0) dttrk_phi_global+=2*M_PI; //range: 0 < phi_global < 147
+  // if(dttrk_phi_global > 2*M_PI) dttrk_phi_global-=2*M_PI; //range: 0 < phi_global < 143
+  return dttrk_phi_global;
 }
 
 bool 
@@ -436,17 +458,17 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByLabel("simGmtDigis", aH);
   const GMTs& l1GmtCands(*aH.product());
 
-  edm::Handle<L1MuDTChambPhContainer> L1MuDTChambPhH;
-  iEvent.getByLabel("simDtTriggerPrimitiveDigis", L1MuDTChambPhH);
-  const L1MuDTChambPhContainer& L1MuDTChambPhs(*L1MuDTChambPhH.product());
+  // edm::Handle<L1MuDTChambPhContainer> L1MuDTChambPhH;
+  // iEvent.getByLabel("simDtTriggerPrimitiveDigis", L1MuDTChambPhH);
+  // const L1MuDTChambPhContainer& L1MuDTChambPhs(*L1MuDTChambPhH.product());
 
-  edm::Handle<L1MuDTTrackContainer> L1MuDTTrackH;
-  iEvent.getByLabel("simDttfDigis", "DTTF", L1MuDTTrackH);
-  const L1MuDTTrackContainer& L1MuDTTracks(*L1MuDTTrackH.product());
+  // edm::Handle<L1MuDTTrackContainer> L1MuDTTrackH;
+  // iEvent.getByLabel("simDttfDigis", "DTTF", L1MuDTTrackH);
+  // const L1MuDTTrackContainer& L1MuDTTracks(*L1MuDTTrackH.product());
 
-  edm::Handle<vector<L1MuRegionalCand> > L1MuDTRegTrackH;
-  iEvent.getByLabel("simDttfDigis", "DT", L1MuDTRegTrackH);
-  const vector<L1MuRegionalCand>& L1MuDTRegTracks(*L1MuDTRegTrackH.product());
+  // edm::Handle<vector<L1MuRegionalCand> > L1MuDTRegTrackH;
+  // iEvent.getByLabel("simDttfDigis", "DT", L1MuDTRegTrackH);
+  // const vector<L1MuRegionalCand>& L1MuDTRegTracks(*L1MuDTRegTrackH.product());
   
   edm::Handle<vector<pair<L1MuDTTrack,vector<L1MuDTTrackSegPhi> > > > L1DTTrackPhiH;
   iEvent.getByLabel("dttfDigis","DTTF", L1DTTrackPhiH);
@@ -885,7 +907,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     event_.L1Mu_charge[i] = l1Mu.charge();
     event_.L1Mu_quality[i] = l1Mu.quality();
     event_.L1Mu_bx[i] = l1Mu.bx();
-
+  
     if(verbose) {
       cout << "l1Mu " << i << endl; 
       cout << "l1Mu_pt " << event_.L1Mu_pt[i] << endl;
@@ -893,11 +915,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       cout << "l1Mu_phi " << event_.L1Mu_phi[i] << endl;
       cout << "l1Mu_quality " << event_.L1Mu_quality[i] << endl;
       cout << "l1Mu_charge " << event_.L1Mu_charge[i] << endl;
+      cout << "l1Mu_bx " << event_.L1Mu_bx[i] << endl;
     }
 
     // find the matching DT
-    auto L1MuDTPhiStubs = *L1MuDTChambPhs.getContainer();
-    std::cout << "Number of L1MuDTPhiStubs " << L1MuDTPhiStubs.size() << std::endl;
+    // auto L1MuDTPhiStubs = *L1MuDTChambPhs.getContainer();
+    // std::cout << "Number of L1MuDTPhiStubs " << L1MuDTPhiStubs.size() << std::endl;
     // for (unsigned int j=0; j<L1MuDTPhiStubs.size(); ++j) {
     //   std::cout << "bxNum " << L1MuDTPhiStubs[j].bxNum() << std::endl;
     //   std::cout << "whNum " << L1MuDTPhiStubs[j].whNum() << std::endl;
@@ -911,8 +934,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     // }
 
     // find the matching DT tracks
-    auto L1MuDTCands = *L1MuDTTracks.getContainer();
-    std::cout << "Number of L1MuDTCands " <<L1MuDTCands.size() << std::endl;
+    // auto L1MuDTCands = *L1MuDTTracks.getContainer();
+    // std::cout << "Number of L1MuDTCands " <<L1MuDTCands.size() << std::endl;
     // for (unsigned int j=0; j<L1MuDTCands.size(); ++j) {
     //   std::cout << "whNum " << L1MuDTCands[j].whNum() << std::endl;
     //   std::cout << "scNum " << L1MuDTCands[j].scNum() << std::endl;
@@ -921,7 +944,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     //   std::cout << "TrkTag " << L1MuDTCands[j].TrkTag() << std::endl;
     // }
     
-    std::cout << "Number of L1MuDTRegTracks " <<L1MuDTRegTracks.size() << std::endl;
+    // std::cout << "Number of L1MuDTRegTracks " <<L1MuDTRegTracks.size() << std::endl;
     // for (unsigned int j=0; j<L1MuDTRegTracks.size(); ++j) {
     //   L1MuDTRegTracks[j].print();
     //   std::cout << "pt " << L1MuDTRegTracks[j].ptValue()
@@ -930,33 +953,68 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     // }
 
     std::cout << "Number of L1DTTrackPhis " <<L1DTTrackPhis.size() << std::endl;
+    double bestDrL1MuL1DTTrack = 99;
+    int indexDrL1MuL1DTTrack = -1;
     for (unsigned int j=0; j<L1DTTrackPhis.size(); ++j) {
       auto track = L1DTTrackPhis[j].first;
-      // std::cout << "pt " << track.ptValue()
-      //           << "eta " << track.etaValue()
-      //           << "phi " << track.phiValue() << std::endl;
 
-      double ptScale = muPtScale->getPtScale()->getLowEdge(track.pt()) + 1.e-6;;
-      double etaScale = muScales->getRegionalEtaScale(0)->getCenter(track.eta());
-      double phiScale = muScales->getPhiScale()->getLowEdge(track.phi());
+      double DTTF_pt = muPtScale->getPtScale()->getLowEdge(track.pt()) + 1.e-6;;
+      double DTTF_eta = muScales->getRegionalEtaScale(0)->getCenter(track.eta());
+      double DTTF_phi = phiL1DTTrack(track);
+      double DTTF_bx = track.bx();
+      double DTTF_quality = track.quality();
       
-      std::cout << "pt (scale) = " << ptScale
-                << ", eta (scale) = " << etaScale 
-                << ", phi (scale) = " << phiScale << " " << track.phi() << std::endl;
-      std::cout << "stubs: " << std::endl; 
-      for (auto stub: L1DTTrackPhis[j].second) {
-        std::cout << "\t " << stub << std::endl;
-        std::cout << "\t phiValue = " << stub.phiValue() << ", phibValue = " << stub.phibValue() << std::endl;
-      }
-      // const int sign(l1track_->endcap()==1 ? 1 : -1);
-      // pt_ = muPtScale->getPtScale()->getLowEdge(pt_packed_) + 1.e-6;
-      // eta_ = muScales->getRegionalEtaScale(2)->getCenter(l1track_->eta_packed()) * sign;
-      // phi_ = normalizedPhi(muScales->getPhiScale()->getLowEdge(phi_packed_));
-
-      // const float eps = 1.e-5; // add an epsilon so that setting works with low edge value
-      // unsigned int t_Scale = theTriggerScales->getPtScale()->getPacked( L1DTTrackPhis[j].first.pt() + eps );
-
+      std::cout << "pt  = " << DTTF_pt
+                << ", eta  = " << DTTF_eta 
+                << ", phi  = " << DTTF_phi 
+                << ", bx " << DTTF_bx 
+                << ", quality " << DTTF_quality << std::endl;
+      
+      // std::cout << "stubs: " << std::endl; 
+      // for (auto stub: L1DTTrackPhis[j].second) {
+      //   std::cout << "\t " << stub << std::endl;
+      //   std::cout << "\t phiValue = " << stub.phiValue() << ", phibValue = " << stub.phibValue() << std::endl;
+      // }
+      
+      if ( ( event_.L1Mu_quality[i] > 5 ) &&
+           ( fabs( event_.L1Mu_phi[i] - DTTF_phi ) < 0.001 ) &&             
+           ( event_.L1Mu_bx[i] == DTTF_bx ) ) {
+        double drL1MuL1DTTrack = reco::deltaR(l1Mu.etaValue(), normalizedPhi(l1Mu.phiValue()), DTTF_eta, DTTF_phi);
+        if (drL1MuL1DTTrack < bestDrL1MuL1DTTrack) {
+          bestDrL1MuL1DTTrack = drL1MuL1DTTrack;
+          indexDrL1MuL1DTTrack = j;
+        }
+        // std::cout << "\t>>>>Matched!!!<<<<" << std::endl;
+      }                
+  
+      // double drL1MuL1DTTrack = reco::deltaR(l1Mu.etaValue(), normalizedPhi(l1Mu.phiValue()), etaScale, dttrk_phi_global);
+      // if (drL1MuL1DTTrack < bestDrL1MuL1DTTrack) {
+      //   bestDrL1MuL1DTTrack = drL1MuL1DTTrack;
+      //   indexDrL1MuL1DTTrack = j;
+      // }
     }
+    
+    if (indexDrL1MuL1DTTrack != -1) { // and bestDrL1MuL1DTTrack < 0.2
+      // Print matching DTTF track
+      auto track = L1DTTrackPhis[indexDrL1MuL1DTTrack].first;
+      std::cout << "\tMatching DTTF track" << std::endl;
+      std::cout << "\tpt "  << muPtScale->getPtScale()->getLowEdge(track.pt() + 1.e-6)
+                << "\teta " << muScales->getRegionalEtaScale(0)->getCenter(track.eta())
+                << "\tphi " << phiL1DTTrack(track) 
+                << "\tbx "  << track.bx()
+                << "\tquality " << track.quality() << std::endl;
+      
+      // Print stubs
+      std::cout << "\tstubs: " << std::endl; 
+      for (auto stub: L1DTTrackPhis[indexDrL1MuL1DTTrack].second) {
+        std::cout << "\t\t " << stub << std::endl;
+        std::cout << "\t\t phiValue = " << stub.phiValue() << ", phibValue = " << stub.phibValue() << std::endl;
+      }  
+    }
+    else {
+      std::cout << "\tNo matching DTTF track" << std::endl;
+    }
+    
 
     // calculate the number of L1Tk within 0.12
     for (unsigned int j=0; j<TTTracks.size(); ++j) {
@@ -1894,6 +1952,44 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("dEta_sim_L1Tk", &event_.dEta_sim_L1Tk);
   event_tree_->Branch("dPhi_sim_L1Tk", &event_.dPhi_sim_L1Tk);
   event_tree_->Branch("dR_sim_L1Tk", &event_.dR_sim_L1Tk);
+
+  event_tree_->Branch("nDTTF", &event_.nDTTF);
+  event_tree_->Branch("DTTF_pt", event_.DTTF_pt,"DTTF_pt[nDTTF]/F");
+  event_tree_->Branch("DTTF_eta", event_.DTTF_eta,"DTTF_eta[nDTTF]/F");
+  event_tree_->Branch("DTTF_phi", event_.DTTF_phi,"DTTF_phi[nDTTF]/F");
+  event_tree_->Branch("DTTF_nStubs", event_.DTTF_nStubs,"DTTF_nStubs[nDTTF]/F");
+
+  event_tree_->Branch("DTTF_phi1", event_.DTTF_phi1,"DTTF_phi1[nDTTF]/F");
+  event_tree_->Branch("DTTF_phib1", event_.DTTF_phib1,"DTTF_phib1[nDTTF]/F");
+  event_tree_->Branch("DTTF_quality1", event_.DTTF_quality1,"DTTF_quality1[nDTTF]/F");
+  event_tree_->Branch("DTTF_bx1", event_.DTTF_bx1,"DTTF_bx1[nDTTF]/F");
+  event_tree_->Branch("DTTF_wh1", event_.DTTF_wh1,"DTTF_wh1[nDTTF]/F");
+  event_tree_->Branch("DTTF_se1", event_.DTTF_se1,"DTTF_se1[nDTTF]/F");
+  event_tree_->Branch("DTTF_st1", event_.DTTF_st1,"DTTF_st1[nDTTF]/F");
+
+  event_tree_->Branch("DTTF_phi2", event_.DTTF_phi2,"DTTF_phi2[nDTTF]/F");
+  event_tree_->Branch("DTTF_phib2", event_.DTTF_phib2,"DTTF_phib2[nDTTF]/F");
+  event_tree_->Branch("DTTF_quality2", event_.DTTF_quality2,"DTTF_quality2[nDTTF]/F");
+  event_tree_->Branch("DTTF_bx2", event_.DTTF_bx2,"DTTF_bx2[nDTTF]/F");
+  event_tree_->Branch("DTTF_wh2", event_.DTTF_wh2,"DTTF_wh2[nDTTF]/F");
+  event_tree_->Branch("DTTF_se2", event_.DTTF_se2,"DTTF_se2[nDTTF]/F");
+  event_tree_->Branch("DTTF_st2", event_.DTTF_st2,"DTTF_st2[nDTTF]/F");
+
+  event_tree_->Branch("DTTF_phi3", event_.DTTF_phi3,"DTTF_phi3[nDTTF]/F");
+  event_tree_->Branch("DTTF_phib3", event_.DTTF_phib3,"DTTF_phib3[nDTTF]/F");
+  event_tree_->Branch("DTTF_quality3", event_.DTTF_quality3,"DTTF_quality3[nDTTF]/F");
+  event_tree_->Branch("DTTF_bx3", event_.DTTF_bx3,"DTTF_bx3[nDTTF]/F");
+  event_tree_->Branch("DTTF_wh3", event_.DTTF_wh3,"DTTF_wh3[nDTTF]/F");
+  event_tree_->Branch("DTTF_se3", event_.DTTF_se3,"DTTF_se3[nDTTF]/F");
+  event_tree_->Branch("DTTF_st3", event_.DTTF_st3,"DTTF_st3[nDTTF]/F");
+
+  event_tree_->Branch("DTTF_phi4", event_.DTTF_phi4,"DTTF_phi4[nDTTF]/F");
+  event_tree_->Branch("DTTF_phib4", event_.DTTF_phib4,"DTTF_phib4[nDTTF]/F");
+  event_tree_->Branch("DTTF_quality4", event_.DTTF_quality4,"DTTF_quality4[nDTTF]/F");
+  event_tree_->Branch("DTTF_bx4", event_.DTTF_bx4,"DTTF_bx4[nDTTF]/F");
+  event_tree_->Branch("DTTF_wh4", event_.DTTF_wh4,"DTTF_wh4[nDTTF]/F");
+  event_tree_->Branch("DTTF_se4", event_.DTTF_se4,"DTTF_se4[nDTTF]/F");
+  event_tree_->Branch("DTTF_st4", event_.DTTF_st4,"DTTF_st4[nDTTF]/F");
 }
 
 
@@ -2061,6 +2157,48 @@ DisplacedL1MuFilter::clearBranches()
   event_.dEta_sim_L1Tk = 99;
   event_.dPhi_sim_L1Tk = 99;
   event_.dR_sim_L1Tk = 99;
+
+
+  event_.nDTTF = 0;
+
+  for (int i=0; i<kMaxDTTF; ++i){
+    event_.DTTF_pt[i] = 99;
+    event_.DTTF_eta[i] = 99;
+    event_.DTTF_phi[i] = 99;
+    event_.DTTF_nStubs[i] = 99;
+
+    event_.DTTF_phi1[i] = 99;
+    event_.DTTF_phib1[i] = 99;
+    event_.DTTF_quality1[i] = 99;
+    event_.DTTF_bx1[i] = 99;
+    event_.DTTF_wh1[i] = 99;
+    event_.DTTF_se1[i] = 99;
+    event_.DTTF_st1[i] = 99;
+
+    event_.DTTF_phi2[i] = 99;
+    event_.DTTF_phib2[i] = 99;
+    event_.DTTF_quality2[i] = 99;
+    event_.DTTF_bx2[i] = 99;
+    event_.DTTF_wh2[i] = 99;
+    event_.DTTF_se2[i] = 99;
+    event_.DTTF_st2[i] = 99;
+
+    event_.DTTF_phi3[i] = 99;
+    event_.DTTF_phib3[i] = 99;
+    event_.DTTF_quality3[i] = 99;
+    event_.DTTF_bx3[i] = 99;
+    event_.DTTF_wh3[i] = 99;
+    event_.DTTF_se3[i] = 99;
+    event_.DTTF_st3[i] = 99;
+
+    event_.DTTF_phi4[i] = 99;
+    event_.DTTF_phib4[i] = 99;
+    event_.DTTF_quality4[i] = 99;
+    event_.DTTF_bx4[i] = 99;
+    event_.DTTF_wh4[i] = 99;
+    event_.DTTF_se4[i] = 99;
+    event_.DTTF_st4[i] = 99;
+  }
 }
 
 //define this as a plug-in

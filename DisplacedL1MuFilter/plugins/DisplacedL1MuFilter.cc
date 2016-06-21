@@ -953,10 +953,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     //             << "phi " << L1MuDTRegTracks[j].phiValue() << std::endl;
     // }
 
-    std::cout << "Number of L1DTTrackPhis " <<L1DTTrackPhis.size() << std::endl;
+    if(verbose) std::cout << "Number of L1DTTrackPhis " <<L1DTTrackPhis.size() << std::endl;
     event_.nDTTF = L1DTTrackPhis.size();
     double bestDrL1MuL1DTTrack = 99;
-    int indexDrL1MuL1DTTrack = -1;
+    Int_t indexDrL1MuL1DTTrack = -1;
     for (unsigned int j=0; j<L1DTTrackPhis.size(); ++j) {
       auto track = L1DTTrackPhis[j].first;
 
@@ -965,12 +965,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       double DTTF_phi = phiL1DTTrack(track);
       double DTTF_bx = track.bx();
       double DTTF_quality = track.quality();
-      
-      std::cout << "pt  = " << DTTF_pt
-                << ", eta  = " << DTTF_eta 
-                << ", phi  = " << DTTF_phi 
-                << ", bx " << DTTF_bx 
-                << ", quality " << DTTF_quality << std::endl;
+    
+      if(verbose) {  
+        std::cout << "pt  = " << DTTF_pt
+                  << ", eta  = " << DTTF_eta 
+                  << ", phi  = " << DTTF_phi 
+                  << ", bx " << DTTF_bx 
+                  << ", quality " << DTTF_quality << std::endl;
+      }
 
       event_.DTTF_pt[j] = DTTF_pt;
       event_.DTTF_eta[j] = DTTF_eta;
@@ -1022,39 +1024,47 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         };
       }
       
-      if ( ( event_.L1Mu_quality[i] > 5 ) &&
+      if ( ( event_.L1Mu_quality[i] > 0 ) &&
            ( fabs( event_.L1Mu_phi[i] - DTTF_phi ) < 0.001 ) &&             
            ( event_.L1Mu_bx[i] == DTTF_bx ) ) {
-        double drL1MuL1DTTrack = reco::deltaR(l1Mu.etaValue(), normalizedPhi(l1Mu.phiValue()), DTTF_eta, DTTF_phi);
+        double drL1MuL1DTTrack = reco::deltaR(l1Mu.etaValue(), 
+                                              normalizedPhi(l1Mu.phiValue()), 
+                                              DTTF_eta, 
+                                              DTTF_phi);
         if (drL1MuL1DTTrack < bestDrL1MuL1DTTrack) {
           bestDrL1MuL1DTTrack = drL1MuL1DTTrack;
-          indexDrL1MuL1DTTrack = j;
+          event_.L1Mu_DTTF_index[i] = j;
         }
       }                
     }
     
-    if (indexDrL1MuL1DTTrack != -1) { // and bestDrL1MuL1DTTrack < 0.2
-      // Print matching DTTF track
-      auto track = L1DTTrackPhis[indexDrL1MuL1DTTrack].first;
-      std::cout << "\tMatching DTTF track" << std::endl;
-      std::cout << "\tpt "  << muPtScale->getPtScale()->getLowEdge(track.pt() + 1.e-6)
-                << "\teta " << muScales->getRegionalEtaScale(0)->getCenter(track.eta())
-                << "\tphi " << phiL1DTTrack(track) 
-                << "\tbx "  << track.bx()
-                << "\tquality " << track.quality() << std::endl;
-      
-      // Print stubs
-      std::cout << "\tstubs: " << std::endl; 
-      for (auto stub: L1DTTrackPhis[indexDrL1MuL1DTTrack].second) {
-        std::cout << "\t\t " << stub << std::endl;
-        std::cout << "\t\t phiValue = " << stub.phiValue() << ", phibValue = " << stub.phibValue() << std::endl;
-      }  
-    }
-    else {
-      std::cout << "\tNo matching DTTF track" << std::endl;
+    // store the index of the matching DTTF
+    event_. L1Mu_DTTF_index[i] = indexDrL1MuL1DTTrack;
+    
+    
+    if(verbose) {  
+      if (indexDrL1MuL1DTTrack != -1) { // and bestDrL1MuL1DTTrack < 0.2
+        // Print matching DTTF track
+        auto track = L1DTTrackPhis[indexDrL1MuL1DTTrack].first;
+        std::cout << "\tMatching DTTF track" << std::endl;
+        std::cout << "\tpt "  << muPtScale->getPtScale()->getLowEdge(track.pt() + 1.e-6)
+                  << "\teta " << muScales->getRegionalEtaScale(0)->getCenter(track.eta())
+                  << "\tphi " << phiL1DTTrack(track) 
+                  << "\tbx "  << track.bx()
+                  << "\tquality " << track.quality() << std::endl;
+        
+        // Print stubs
+        std::cout << "\tstubs: " << std::endl; 
+        for (auto stub: L1DTTrackPhis[indexDrL1MuL1DTTrack].second) {
+          std::cout << "\t\t " << stub << std::endl;
+          std::cout << "\t\t phiValue = " << stub.phiValue() << ", phibValue = " << stub.phibValue() << std::endl;
+        }  
+      }
+      else {
+        std::cout << "\tNo matching DTTF track" << std::endl;
+      }
     }
     
-
     // calculate the number of L1Tk within 0.12
     for (unsigned int j=0; j<TTTracks.size(); ++j) {
       auto l1Tk = TTTracks[j];
@@ -1993,6 +2003,8 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("dR_sim_L1Tk", &event_.dR_sim_L1Tk);
 
   event_tree_->Branch("nDTTF", &event_.nDTTF);
+  event_tree_->Branch("L1Mu_DTTF_index", event_.L1Mu_DTTF_index,"L1Mu_DTTF_index[nL1Mu]/I");
+
   event_tree_->Branch("DTTF_pt", event_.DTTF_pt,"DTTF_pt[nDTTF]/F");
   event_tree_->Branch("DTTF_eta", event_.DTTF_eta,"DTTF_eta[nDTTF]/F");
   event_tree_->Branch("DTTF_phi", event_.DTTF_phi,"DTTF_phi[nDTTF]/F");
@@ -2150,6 +2162,7 @@ DisplacedL1MuFilter::clearBranches()
     event_.L1Mu_L1Tk_dR_prop[i] = 999.;
     event_.L1Mu_L1Tk_dR_prop_true[i] = 999.;
     event_.L1Mu_L1Tk_pt_prop[i] = -99.;
+    event_.L1Mu_DTTF_index[i] = 99;
   }
 
   for (int i=0; i<kMaxL1Tk; ++i){

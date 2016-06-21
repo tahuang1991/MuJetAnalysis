@@ -231,6 +231,7 @@ struct MyEvent
 
   // Matching the L1Mu to DTTF
   Int_t nDTTF;
+  Int_t L1Mu_DTTF_index[kMaxL1Mu];
   Float_t DTTF_pt[kMaxDTTF], DTTF_eta[kMaxDTTF], DTTF_phi[kMaxDTTF], DTTF_nStubs[kMaxDTTF];
   Float_t DTTF_phi1[kMaxDTTF], DTTF_phi2[kMaxDTTF], DTTF_phi3[kMaxDTTF], DTTF_phi4[kMaxDTTF];
   Float_t DTTF_phib1[kMaxDTTF], DTTF_phib2[kMaxDTTF], DTTF_phib3[kMaxDTTF], DTTF_phib4[kMaxDTTF];
@@ -953,6 +954,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     // }
 
     std::cout << "Number of L1DTTrackPhis " <<L1DTTrackPhis.size() << std::endl;
+    event_.nDTTF = L1DTTrackPhis.size();
     double bestDrL1MuL1DTTrack = 99;
     int indexDrL1MuL1DTTrack = -1;
     for (unsigned int j=0; j<L1DTTrackPhis.size(); ++j) {
@@ -969,12 +971,56 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                 << ", phi  = " << DTTF_phi 
                 << ", bx " << DTTF_bx 
                 << ", quality " << DTTF_quality << std::endl;
+
+      event_.DTTF_pt[j] = DTTF_pt;
+      event_.DTTF_eta[j] = DTTF_eta;
+      event_.DTTF_phi[j] = DTTF_phi;
+      event_.DTTF_nStubs[j] = L1DTTrackPhis[j].second.size();
       
-      // std::cout << "stubs: " << std::endl; 
-      // for (auto stub: L1DTTrackPhis[j].second) {
-      //   std::cout << "\t " << stub << std::endl;
-      //   std::cout << "\t phiValue = " << stub.phiValue() << ", phibValue = " << stub.phibValue() << std::endl;
-      // }
+      // std::cout << "stubs: " << std::endl;
+      for (auto stub: L1DTTrackPhis[j].second) {
+        // std::cout << "\t " << stub << std::endl;
+        // std::cout << "\t phiValue = " << stub.phiValue() << ", phibValue = " << stub.phibValue() << std::endl;
+        int station = stub.station();
+        switch(station) {
+        case 1:
+          event_.DTTF_phi1[j] = stub.phi();
+          event_.DTTF_phib1[j] = stub.phib();
+          event_.DTTF_quality1[j] = stub.quality();
+          event_.DTTF_bx1[j] = stub.bx();
+          event_.DTTF_wh1[j] = stub.wheel();
+          event_.DTTF_se1[j] = stub.sector();
+          event_.DTTF_st1[j] = stub.station();
+          break;
+        case 2:
+          event_.DTTF_phi2[j] = stub.phi();
+          event_.DTTF_phib2[j] = stub.phib();
+          event_.DTTF_quality2[j] = stub.quality();
+          event_.DTTF_bx2[j] = stub.bx();
+          event_.DTTF_wh2[j] = stub.wheel();
+          event_.DTTF_se2[j] = stub.sector();
+          event_.DTTF_st2[j] = stub.station();
+          break;
+        case 3:
+          event_.DTTF_phi3[j] = stub.phi();
+          event_.DTTF_phib3[j] = stub.phib();
+          event_.DTTF_quality3[j] = stub.quality();
+          event_.DTTF_bx3[j] = stub.bx();
+          event_.DTTF_wh3[j] = stub.wheel();
+          event_.DTTF_se3[j] = stub.sector();
+          event_.DTTF_st3[j] = stub.station();
+          break;
+        case 4:
+          event_.DTTF_phi4[j] = stub.phi();
+          event_.DTTF_phib4[j] = stub.phib();
+          event_.DTTF_quality4[j] = stub.quality();
+          event_.DTTF_bx4[j] = stub.bx();
+          event_.DTTF_wh4[j] = stub.wheel();
+          event_.DTTF_se4[j] = stub.sector();
+          event_.DTTF_st4[j] = stub.station();
+          break;
+        };
+      }
       
       if ( ( event_.L1Mu_quality[i] > 5 ) &&
            ( fabs( event_.L1Mu_phi[i] - DTTF_phi ) < 0.001 ) &&             
@@ -984,14 +1030,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           bestDrL1MuL1DTTrack = drL1MuL1DTTrack;
           indexDrL1MuL1DTTrack = j;
         }
-        // std::cout << "\t>>>>Matched!!!<<<<" << std::endl;
       }                
-  
-      // double drL1MuL1DTTrack = reco::deltaR(l1Mu.etaValue(), normalizedPhi(l1Mu.phiValue()), etaScale, dttrk_phi_global);
-      // if (drL1MuL1DTTrack < bestDrL1MuL1DTTrack) {
-      //   bestDrL1MuL1DTTrack = drL1MuL1DTTrack;
-      //   indexDrL1MuL1DTTrack = j;
-      // }
     }
     
     if (indexDrL1MuL1DTTrack != -1) { // and bestDrL1MuL1DTTrack < 0.2
@@ -1075,7 +1114,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         event_.L1Mu_L1Tk_pt_corr[i] = l1Tk_pt;
       }
     } // end of loop on TTTracks
-   
+    
     // match the L1Mu to GEN
     if (genMuonGroups.size() == 2 and genMuonGroups[0].size() == 2 and genMuonGroups[1].size() == 2) {
       double newDR[2][2];
@@ -1184,7 +1223,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
       }
     }
-  }
+    }
   
   event_tree_->Fill();  
   

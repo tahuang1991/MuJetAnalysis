@@ -86,17 +86,22 @@
 #include "DataFormats/L1GlobalMuonTrigger/interface/L1MuRegionalCand.h"
 #include "L1Trigger/DTTrackFinder/interface/L1MuDTTrack.h"
 #include "L1Trigger/DTTrackFinder/src/L1MuDTTrackSegPhi.h"
+#include "DataFormats/L1CSCTrackFinder/interface/L1CSCTrackCollection.h"
 
 #include "CondFormats/L1TObjects/interface/L1MuTriggerScales.h"
 #include "CondFormats/L1TObjects/interface/L1MuTriggerPtScale.h"
 #include "CondFormats/DataRecord/interface/L1MuTriggerPtScaleRcd.h"
 #include "CondFormats/DataRecord/interface/L1MuTriggerScalesRcd.h"
+#include <L1Trigger/CSCCommonTrigger/interface/CSCConstants.h>
+#include <L1Trigger/CSCTrackFinder/interface/CSCTFPtLUT.h>
+
 //
 // class declaration
 //
 
 const Int_t kMaxL1Mu = 50;
 const Int_t kMaxDTTF = 50;
+const Int_t kMaxCSCTF = 50;
 const Int_t kMaxL1Tk = 500;
 const int nGlu = 2;
 const int nGd = 2;
@@ -232,14 +237,35 @@ struct MyEvent
   // Matching the L1Mu to DTTF
   Int_t nDTTF;
   Int_t L1Mu_DTTF_index[kMaxL1Mu];
-  Float_t DTTF_pt[kMaxDTTF], DTTF_eta[kMaxDTTF], DTTF_phi[kMaxDTTF], DTTF_nStubs[kMaxDTTF];
+  Float_t DTTF_pt[kMaxDTTF], DTTF_eta[kMaxDTTF], DTTF_phi[kMaxDTTF], DTTF_bx[kMaxDTTF], DTTF_nStubs[kMaxDTTF];
   Float_t DTTF_phi1[kMaxDTTF], DTTF_phi2[kMaxDTTF], DTTF_phi3[kMaxDTTF], DTTF_phi4[kMaxDTTF];
   Float_t DTTF_phib1[kMaxDTTF], DTTF_phib2[kMaxDTTF], DTTF_phib3[kMaxDTTF], DTTF_phib4[kMaxDTTF];
-  Float_t DTTF_quality1[kMaxDTTF], DTTF_quality2[kMaxDTTF], DTTF_quality3[kMaxDTTF], DTTF_quality4[kMaxDTTF];
-  Float_t DTTF_bx1[kMaxDTTF], DTTF_bx2[kMaxDTTF], DTTF_bx3[kMaxDTTF], DTTF_bx4[kMaxDTTF];
-  Float_t DTTF_wh1[kMaxDTTF], DTTF_wh2[kMaxDTTF], DTTF_wh3[kMaxDTTF], DTTF_wh4[kMaxDTTF];
-  Float_t DTTF_se1[kMaxDTTF], DTTF_se2[kMaxDTTF], DTTF_se3[kMaxDTTF], DTTF_se4[kMaxDTTF];
-  Float_t DTTF_st1[kMaxDTTF], DTTF_st2[kMaxDTTF], DTTF_st3[kMaxDTTF], DTTF_st4[kMaxDTTF];
+  Int_t DTTF_quality1[kMaxDTTF], DTTF_quality2[kMaxDTTF], DTTF_quality3[kMaxDTTF], DTTF_quality4[kMaxDTTF];
+  Int_t DTTF_bx1[kMaxDTTF], DTTF_bx2[kMaxDTTF], DTTF_bx3[kMaxDTTF], DTTF_bx4[kMaxDTTF];
+  Int_t DTTF_wh1[kMaxDTTF], DTTF_wh2[kMaxDTTF], DTTF_wh3[kMaxDTTF], DTTF_wh4[kMaxDTTF];
+  Int_t DTTF_se1[kMaxDTTF], DTTF_se2[kMaxDTTF], DTTF_se3[kMaxDTTF], DTTF_se4[kMaxDTTF];
+  Int_t DTTF_st1[kMaxDTTF], DTTF_st2[kMaxDTTF], DTTF_st3[kMaxDTTF], DTTF_st4[kMaxDTTF];
+
+  // Matching the L1Mu to CSCTF  
+  Int_t nCSCTF;
+  Int_t L1Mu_CSCTF_index[kMaxL1Mu];
+  Float_t CSCTF_pt[kMaxCSCTF], CSCTF_eta[kMaxCSCTF], CSCTF_phi[kMaxCSCTF], CSCTF_bx[kMaxCSCTF], CSCTF_nStubs[kMaxCSCTF], CSCTF_quality[kMaxCSCTF];
+
+  Int_t CSCTF_st1[kMaxCSCTF], CSCTF_ri1[kMaxCSCTF], CSCTF_ch1[kMaxCSCTF], CSCTF_en1[kMaxCSCTF];
+  Int_t CSCTF_trk1[kMaxCSCTF], CSCTF_quality1[kMaxCSCTF], CSCTF_wg1[kMaxCSCTF], CSCTF_hs1[kMaxCSCTF]; 
+  Int_t CSCTF_pat1[kMaxCSCTF], CSCTF_bend1[kMaxCSCTF], CSCTF_bx1[kMaxCSCTF], CSCTF_clctpat1[kMaxCSCTF];
+  
+  Int_t CSCTF_st2[kMaxCSCTF], CSCTF_ri2[kMaxCSCTF], CSCTF_ch2[kMaxCSCTF], CSCTF_en2[kMaxCSCTF];
+  Int_t CSCTF_trk2[kMaxCSCTF], CSCTF_quality2[kMaxCSCTF], CSCTF_wg2[kMaxCSCTF], CSCTF_hs2[kMaxCSCTF]; 
+  Int_t CSCTF_pat2[kMaxCSCTF], CSCTF_bend2[kMaxCSCTF], CSCTF_bx2[kMaxCSCTF], CSCTF_clctpat2[kMaxCSCTF];
+
+  Int_t CSCTF_st3[kMaxCSCTF], CSCTF_ri3[kMaxCSCTF], CSCTF_ch3[kMaxCSCTF], CSCTF_en3[kMaxCSCTF];
+  Int_t CSCTF_trk3[kMaxCSCTF], CSCTF_quality3[kMaxCSCTF], CSCTF_wg3[kMaxCSCTF], CSCTF_hs3[kMaxCSCTF]; 
+  Int_t CSCTF_pat3[kMaxCSCTF], CSCTF_bend3[kMaxCSCTF], CSCTF_bx3[kMaxCSCTF], CSCTF_clctpat3[kMaxCSCTF];
+
+  Int_t CSCTF_st4[kMaxCSCTF], CSCTF_ri4[kMaxCSCTF], CSCTF_ch4[kMaxCSCTF], CSCTF_en4[kMaxCSCTF];
+  Int_t CSCTF_trk4[kMaxCSCTF], CSCTF_quality4[kMaxCSCTF], CSCTF_wg4[kMaxCSCTF], CSCTF_hs4[kMaxCSCTF]; 
+  Int_t CSCTF_pat4[kMaxCSCTF], CSCTF_bend4[kMaxCSCTF], CSCTF_bx4[kMaxCSCTF], CSCTF_clctpat4[kMaxCSCTF];
 };
 
 bool PtOrder (const reco::GenParticle* p1, const reco::GenParticle* p2) 
@@ -289,6 +315,17 @@ double phiL1DTTrack(const L1MuDTTrack& track)
   // if(dttrk_phi_global > 2*M_PI) dttrk_phi_global-=2*M_PI; //range: 0 < phi_global < 143
   return dttrk_phi_global;
 }
+
+double phiL1CSCTrack(const csc::L1Track& track)
+{
+  unsigned gbl_phi(track.localPhi() + ((track.sector() - 1)*24) + 6);
+  if(gbl_phi > 143) gbl_phi -= 143;
+  double phi_packed = gbl_phi & 0xff;
+  return phi_packed;
+}
+
+
+
 
 bool 
 isSimTrackGood(const SimTrack &t)
@@ -475,6 +512,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByLabel("dttfDigis","DTTF", L1DTTrackPhiH);
   const vector<pair<L1MuDTTrack,vector<L1MuDTTrackSegPhi> > >& L1DTTrackPhis(*L1DTTrackPhiH.product());
 
+  // tracks produced by TF
+  edm::Handle< L1CSCTrackCollection > hl1Tracks;
+  iEvent.getByLabel("simCsctfTrackDigis", hl1Tracks);
+  const L1CSCTrackCollection& l1Tracks(*hl1Tracks.product());
 
   if (iSetup.get< L1MuTriggerScalesRcd >().cacheIdentifier() != muScalesCacheID_ ||
       iSetup.get< L1MuTriggerPtScaleRcd >().cacheIdentifier() != muPtScaleCacheID_ )
@@ -486,7 +527,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       muPtScaleCacheID_ = iSetup.get< L1MuTriggerPtScaleRcd >().cacheIdentifier();
     }
 
-
+  
   // edm::Handle<L1MuGMTReadoutCollection> hl1GmtCands;
   // iEvent.getByLabel(L1Mu_input, hl1GmtCands );
   
@@ -953,10 +994,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     //             << "phi " << L1MuDTRegTracks[j].phiValue() << std::endl;
     // }
 
+    // Matching to DTTF
     if(verbose) std::cout << "Number of L1DTTrackPhis " <<L1DTTrackPhis.size() << std::endl;
     event_.nDTTF = L1DTTrackPhis.size();
     double bestDrL1MuL1DTTrack = 99;
-    Int_t indexDrL1MuL1DTTrack = -1;
     for (unsigned int j=0; j<L1DTTrackPhis.size(); ++j) {
       auto track = L1DTTrackPhis[j].first;
 
@@ -977,6 +1018,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       event_.DTTF_pt[j] = DTTF_pt;
       event_.DTTF_eta[j] = DTTF_eta;
       event_.DTTF_phi[j] = DTTF_phi;
+      event_.DTTF_bx[j] = DTTF_bx;
       event_.DTTF_nStubs[j] = L1DTTrackPhis[j].second.size();
       
       // std::cout << "stubs: " << std::endl;
@@ -986,8 +1028,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         int station = stub.station();
         switch(station) {
         case 1:
-          event_.DTTF_phi1[j] = stub.phi();
-          event_.DTTF_phib1[j] = stub.phib();
+          event_.DTTF_phi1[j] = stub.phiValue();
+          event_.DTTF_phib1[j] = stub.phibValue();
           event_.DTTF_quality1[j] = stub.quality();
           event_.DTTF_bx1[j] = stub.bx();
           event_.DTTF_wh1[j] = stub.wheel();
@@ -995,8 +1037,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           event_.DTTF_st1[j] = stub.station();
           break;
         case 2:
-          event_.DTTF_phi2[j] = stub.phi();
-          event_.DTTF_phib2[j] = stub.phib();
+          event_.DTTF_phi2[j] = stub.phiValue();
+          event_.DTTF_phib2[j] = stub.phibValue();
           event_.DTTF_quality2[j] = stub.quality();
           event_.DTTF_bx2[j] = stub.bx();
           event_.DTTF_wh2[j] = stub.wheel();
@@ -1004,8 +1046,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           event_.DTTF_st2[j] = stub.station();
           break;
         case 3:
-          event_.DTTF_phi3[j] = stub.phi();
-          event_.DTTF_phib3[j] = stub.phib();
+          event_.DTTF_phi3[j] = stub.phiValue();
+          event_.DTTF_phib3[j] = stub.phibValue();
           event_.DTTF_quality3[j] = stub.quality();
           event_.DTTF_bx3[j] = stub.bx();
           event_.DTTF_wh3[j] = stub.wheel();
@@ -1013,8 +1055,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           event_.DTTF_st3[j] = stub.station();
           break;
         case 4:
-          event_.DTTF_phi4[j] = stub.phi();
-          event_.DTTF_phib4[j] = stub.phib();
+          event_.DTTF_phi4[j] = stub.phiValue();
+          event_.DTTF_phib4[j] = stub.phibValue();
           event_.DTTF_quality4[j] = stub.quality();
           event_.DTTF_bx4[j] = stub.bx();
           event_.DTTF_wh4[j] = stub.wheel();
@@ -1038,14 +1080,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }                
     }
     
-    // store the index of the matching DTTF
-    event_. L1Mu_DTTF_index[i] = indexDrL1MuL1DTTrack;
-    
-    
+    /*
     if(verbose) {  
-      if (indexDrL1MuL1DTTrack != -1) { // and bestDrL1MuL1DTTrack < 0.2
+      int tempIndex = event_.L1Mu_DTTF_index[i]; 
+      if (tempIndex != -1) { // and bestDrL1MuL1DTTrack < 0.2
         // Print matching DTTF track
-        auto track = L1DTTrackPhis[indexDrL1MuL1DTTrack].first;
+        auto track = L1DTTrackPhis[tempIndex].first;
         std::cout << "\tMatching DTTF track" << std::endl;
         std::cout << "\tpt "  << muPtScale->getPtScale()->getLowEdge(track.pt() + 1.e-6)
                   << "\teta " << muScales->getRegionalEtaScale(0)->getCenter(track.eta())
@@ -1055,7 +1095,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         
         // Print stubs
         std::cout << "\tstubs: " << std::endl; 
-        for (auto stub: L1DTTrackPhis[indexDrL1MuL1DTTrack].second) {
+        for (auto stub: L1DTTrackPhis[tempIndex].second) {
           std::cout << "\t\t " << stub << std::endl;
           std::cout << "\t\t phiValue = " << stub.phiValue() << ", phibValue = " << stub.phibValue() << std::endl;
         }  
@@ -1064,7 +1104,125 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         std::cout << "\tNo matching DTTF track" << std::endl;
       }
     }
+    */
     
+    // Matching to DTTF     
+    event_.nCSCTF = l1Tracks.size();
+    if(verbose) std::cout << "Number of L1CSCTracks " <<event_.nCSCTF << std::endl;
+    //double bestDrL1MuL1CSCTrack = 99;
+    for (int j=0; j<event_.nCSCTF; ++j) {
+      auto track = l1Tracks[j].first;
+      const int sign(track.endcap()==1 ? 1 : -1);
+      const unsigned eta_sign(track.endcap() == 1 ? 0 : 1);
+      const int gbl_eta(track.eta_packed() | eta_sign << (L1MuRegionalCand::ETA_LENGTH - 1));
+      unsigned gpt = 0, quality = 0;
+      csc::L1Track::decodeRank(track.rank(), gpt, quality);
+      double pt_packed = gpt & 0x1f;
+
+      // calculate pt, eta and phi (don't forget to store the sign)                                                                                   
+      event_.CSCTF_pt[j] = muPtScale->getPtScale()->getLowEdge(pt_packed) + 1.e-6;
+      event_.CSCTF_eta[j] = muScales->getRegionalEtaScale(2)->getCenter(track.eta_packed()) * sign;
+      event_.CSCTF_phi[j] = normalizedPhi(muScales->getPhiScale()->getLowEdge(phiL1CSCTrack(track)));
+      event_.CSCTF_bx[j] = track.bx();
+      event_.CSCTF_quality[j] = quality;
+
+      if(verbose) {  
+        std::cout << "pt  = " << event_.CSCTF_pt[j]
+                  << ", eta  = " << event_.CSCTF_eta[j] 
+                  << ", phi  = " << event_.CSCTF_phi[j]
+                  << ", bx " << event_.CSCTF_bx[j]
+                  << ", quality " << event_.CSCTF_quality[j] << std::endl;
+      }
+
+
+      std::cout << "stubs: " << std::endl;
+      auto stubCollection(l1Tracks[j].second);
+      for (auto detUnitIt = stubCollection->begin(); detUnitIt != stubCollection->end(); detUnitIt++) {
+        const CSCDetId& id = (*detUnitIt).first;
+        //std::cout << "DetId " << id << std::endl;
+        const auto range = (*detUnitIt).second;
+        for (auto digiIt = range.first; digiIt != range.second; digiIt++) {
+          if (!(*digiIt).isValid()) continue;
+          std::cout << "\t" << *digiIt << std::endl;
+        }
+      }
+
+      // /// return track number
+      // int getTrknmb()  const { return trknmb; }
+
+      // /// return valid pattern bit
+      // bool isValid()   const { return valid; }
+
+      // /// return the 4 bit Correlated LCT Quality
+      // int getQuality() const { return quality; }
+
+      // /// return the key wire group
+      // int getKeyWG()   const { return keywire; }
+
+      // /// return the key halfstrip from 0,159
+      // int getStrip()   const { return strip; }
+
+      // /// return pattern
+      // int getPattern() const { return pattern; }
+
+      // /// return bend
+      // int getBend()    const { return bend; }
+
+      // /// return BX
+      // int getBX()      const { return bx; }
+
+      // /// return CLCT pattern number (in use again Feb 2011)
+      // int getCLCTPattern() const { return (pattern & 0xF); }
+
+      /*
+      // std::cout << "stubs: " << std::endl;
+      for (auto stub: l1Tracks[j].second) {
+        // std::cout << "\t " << stub << std::endl;
+        // std::cout << "\t phiValue = " << stub.phiValue() << ", phibValue = " << stub.phibValue() << std::endl;
+        int station = stub.station();
+        switch(station) {
+        case 1:
+          event_.CSCTF_phi1[j] = stub.phiValue();
+          event_.CSCTF_phib1[j] = stub.phibValue();
+          event_.CSCTF_quality1[j] = stub.quality();
+          event_.CSCTF_bx1[j] = stub.bx();
+          event_.CSCTF_wh1[j] = stub.wheel();
+          event_.CSCTF_se1[j] = stub.sector();
+          event_.CSCTF_st1[j] = stub.station();
+          break;
+        case 2:
+          event_.CSCTF_phi2[j] = stub.phiValue();
+          event_.CSCTF_phib2[j] = stub.phibValue();
+          event_.CSCTF_quality2[j] = stub.quality();
+          event_.CSCTF_bx2[j] = stub.bx();
+          event_.CSCTF_wh2[j] = stub.wheel();
+          event_.CSCTF_se2[j] = stub.sector();
+          event_.CSCTF_st2[j] = stub.station();
+          break;
+        case 3:
+          event_.CSCTF_phi3[j] = stub.phiValue();
+          event_.CSCTF_phib3[j] = stub.phibValue();
+          event_.CSCTF_quality3[j] = stub.quality();
+          event_.CSCTF_bx3[j] = stub.bx();
+          event_.CSCTF_wh3[j] = stub.wheel();
+          event_.CSCTF_se3[j] = stub.sector();
+          event_.CSCTF_st3[j] = stub.station();
+          break;
+        case 4:
+          event_.CSCTF_phi4[j] = stub.phiValue();
+          event_.CSCTF_phib4[j] = stub.phibValue();
+          event_.CSCTF_quality4[j] = stub.quality();
+          event_.CSCTF_bx4[j] = stub.bx();
+          event_.CSCTF_wh4[j] = stub.wheel();
+          event_.CSCTF_se4[j] = stub.sector();
+          event_.CSCTF_st4[j] = stub.station();
+          break;
+        };
+      }
+      */
+    }
+
+
     // calculate the number of L1Tk within 0.12
     for (unsigned int j=0; j<TTTracks.size(); ++j) {
       auto l1Tk = TTTracks[j];
@@ -2008,6 +2166,7 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("DTTF_pt", event_.DTTF_pt,"DTTF_pt[nDTTF]/F");
   event_tree_->Branch("DTTF_eta", event_.DTTF_eta,"DTTF_eta[nDTTF]/F");
   event_tree_->Branch("DTTF_phi", event_.DTTF_phi,"DTTF_phi[nDTTF]/F");
+  event_tree_->Branch("DTTF_bx", event_.DTTF_bx,"DTTF_bx[nDTTF]/F");
   event_tree_->Branch("DTTF_nStubs", event_.DTTF_nStubs,"DTTF_nStubs[nDTTF]/F");
 
   event_tree_->Branch("DTTF_phi1", event_.DTTF_phi1,"DTTF_phi1[nDTTF]/F");
@@ -2041,6 +2200,30 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("DTTF_wh4", event_.DTTF_wh4,"DTTF_wh4[nDTTF]/F");
   event_tree_->Branch("DTTF_se4", event_.DTTF_se4,"DTTF_se4[nDTTF]/F");
   event_tree_->Branch("DTTF_st4", event_.DTTF_st4,"DTTF_st4[nDTTF]/F");
+
+
+  event_tree_->Branch("nCSCTF", &event_.nCSCTF);
+  event_tree_->Branch("L1Mu_CSCTF_index", event_.L1Mu_CSCTF_index,"L1Mu_CSCTF_index[nL1Mu]/I");
+
+  event_tree_->Branch("CSCTF_pt", event_.CSCTF_pt,"CSCTF_pt[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_eta", event_.CSCTF_eta,"CSCTF_eta[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_phi", event_.CSCTF_phi,"CSCTF_phi[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_bx", event_.CSCTF_bx,"CSCTF_bx[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_nStubs", event_.CSCTF_nStubs,"CSCTF_nStubs[nCSCTF]/F");
+
+    // event_.CSCTF_st1[i] = 99; 
+    // event_.CSCTF_ri1[i] = 99; 
+    // event_.CSCTF_ch1[i] = 99; 
+    // event_.CSCTF_en1[i] = 99;;
+    // event_.CSCTF_trk1[i] = 99; 
+    // event_.CSCTF_quality1[i] = 99; 
+    // event_.CSCTF_wg1[i] = 99; 
+    // event_.CSCTF_hs1[i] = 99;; 
+    // event_.CSCTF_pat1[i] = 99; 
+    // event_.CSCTF_bend1[i] = 99; 
+    // event_.CSCTF_bx1[i] = 99; 
+    // event_.CSCTF_clctpat1[i] = 99;;
+
 }
 
 
@@ -2162,7 +2345,8 @@ DisplacedL1MuFilter::clearBranches()
     event_.L1Mu_L1Tk_dR_prop[i] = 999.;
     event_.L1Mu_L1Tk_dR_prop_true[i] = 999.;
     event_.L1Mu_L1Tk_pt_prop[i] = -99.;
-    event_.L1Mu_DTTF_index[i] = 99;
+    event_.L1Mu_DTTF_index[i] = -1;
+    event_.L1Mu_CSCTF_index[i] = -1;
   }
 
   for (int i=0; i<kMaxL1Tk; ++i){
@@ -2251,7 +2435,71 @@ DisplacedL1MuFilter::clearBranches()
     event_.DTTF_se4[i] = 99;
     event_.DTTF_st4[i] = 99;
   }
+
+
+  event_.nCSCTF = 0;
+
+  for (int i=0; i<kMaxCSCTF; ++i){
+    event_.CSCTF_pt[i] = 99;
+    event_.CSCTF_eta[i] = 99;
+    event_.CSCTF_phi[i] = 99;
+    event_.CSCTF_nStubs[i] = 99;
+
+    event_.CSCTF_st1[i] = 99; 
+    event_.CSCTF_ri1[i] = 99; 
+    event_.CSCTF_ch1[i] = 99; 
+    event_.CSCTF_en1[i] = 99;;
+    event_.CSCTF_trk1[i] = 99; 
+    event_.CSCTF_quality1[i] = 99; 
+    event_.CSCTF_wg1[i] = 99; 
+    event_.CSCTF_hs1[i] = 99;; 
+    event_.CSCTF_pat1[i] = 99; 
+    event_.CSCTF_bend1[i] = 99; 
+    event_.CSCTF_bx1[i] = 99; 
+    event_.CSCTF_clctpat1[i] = 99;;
+
+    event_.CSCTF_st2[i] = 99; 
+    event_.CSCTF_ri2[i] = 99; 
+    event_.CSCTF_ch2[i] = 99; 
+    event_.CSCTF_en2[i] = 99;;
+    event_.CSCTF_trk2[i] = 99; 
+    event_.CSCTF_quality2[i] = 99; 
+    event_.CSCTF_wg2[i] = 99; 
+    event_.CSCTF_hs2[i] = 99;; 
+    event_.CSCTF_pat2[i] = 99; 
+    event_.CSCTF_bend2[i] = 99; 
+    event_.CSCTF_bx2[i] = 99; 
+    event_.CSCTF_clctpat2[i] = 99;;
+
+    event_.CSCTF_st3[i] = 99; 
+    event_.CSCTF_ri3[i] = 99; 
+    event_.CSCTF_ch3[i] = 99; 
+    event_.CSCTF_en3[i] = 99;;
+    event_.CSCTF_trk3[i] = 99; 
+    event_.CSCTF_quality3[i] = 99; 
+    event_.CSCTF_wg3[i] = 99; 
+    event_.CSCTF_hs3[i] = 99;; 
+    event_.CSCTF_pat3[i] = 99; 
+    event_.CSCTF_bend3[i] = 99; 
+    event_.CSCTF_bx3[i] = 99; 
+    event_.CSCTF_clctpat3[i] = 99;;
+
+    event_.CSCTF_st4[i] = 99; 
+    event_.CSCTF_ri4[i] = 99; 
+    event_.CSCTF_ch4[i] = 99; 
+    event_.CSCTF_en4[i] = 99;;
+    event_.CSCTF_trk4[i] = 99; 
+    event_.CSCTF_quality4[i] = 99; 
+    event_.CSCTF_wg4[i] = 99; 
+    event_.CSCTF_hs4[i] = 99;; 
+    event_.CSCTF_pat4[i] = 99; 
+    event_.CSCTF_bend4[i] = 99; 
+    event_.CSCTF_bx4[i] = 99; 
+    event_.CSCTF_clctpat4[i] = 99;;
+  }
 }
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(DisplacedL1MuFilter);
+
+//  LocalWords:  kMaxCSCTF

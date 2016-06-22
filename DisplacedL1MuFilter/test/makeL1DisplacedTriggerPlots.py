@@ -29,6 +29,9 @@ if __name__ == "__main__":
   
   def displacedTriggerEfficiency():
     print treeHits.GetEntries()
+    nL1MuTotal = 0
+    nL1MuMatchedDTTF = 0
+
     for k in range(0,treeHits.GetEntries()):
       treeHits.GetEntry(k)
       print "Event", k, "nL1Mu", treeHits.nL1Mu
@@ -68,6 +71,7 @@ if __name__ == "__main__":
 
           L1Mu_index = treeHits.genGdMu_L1Mu_index_prop[ij]
           L1Mu_dR_prop = treeHits.genGdMu_L1Mu_dR_prop[ij]
+          #if L1Mu_dR_prop > 0.9 : continue
 
           if verbose:
             print "\tGenMu", i, j,
@@ -84,6 +88,10 @@ if __name__ == "__main__":
             print "vz", vz
 
           if L1Mu_index != 99:
+            L1Mu_quality = treeHits.L1Mu_quality[L1Mu_index]
+            if L1Mu_quality <=5 : continue
+
+            nL1MuTotal += 1
             L1Mu_pt = treeHits.L1Mu_pt[L1Mu_index]
             L1Mu_eta = treeHits.L1Mu_eta[L1Mu_index]
             L1Mu_phi = treeHits.L1Mu_phi[L1Mu_index]
@@ -103,7 +111,8 @@ if __name__ == "__main__":
             print "\t\tnDTTF", treeHits.nDTTF, "DTTF index", L1Mu_DTTF_index
 
             
-            if L1Mu_DTTF_index != 99 and L1Mu_DTTF_index != -1:
+            if L1Mu_DTTF_index != 99 and L1Mu_DTTF_index != -1 :
+              nL1MuMatchedDTTF += 1
               DTTF_pt = treeHits.DTTF_pt[L1Mu_DTTF_index]
               DTTF_eta = treeHits.DTTF_eta[L1Mu_DTTF_index]
               DTTF_phi = treeHits.DTTF_phi[L1Mu_DTTF_index]
@@ -147,7 +156,9 @@ if __name__ == "__main__":
                 print "\t\tDTTF_phib2", DTTF_phib2
                 print "\t\tDTTF_phib3", DTTF_phib3
                 print "\t\tDTTF_phib4", DTTF_phib4
-                print 
+                print
+ 
+    print nL1MuTotal, nL1MuMatchedDTTF
 
   displacedTriggerEfficiency()
   exit()

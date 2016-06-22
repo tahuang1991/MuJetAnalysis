@@ -1,3 +1,5 @@
+<use name="FWCore/ServiceRegistry"/>
+<use name="FWCore/Utilities"/>
 <use name="FWCore/Framework"/>
 <use name="FWCore/PluginManager"/>
 <use name="FWCore/ParameterSet"/>
@@ -8,25 +10,25 @@
 <use name="DataFormats/L1Trigger"/>
 <use name="DataFormats/L1GlobalMuonTrigger"/>
 <use name="DataFormats/L1TrackTrigger"/>
-<use name="FWCore/ServiceRegistry"/>
-<use name="FWCore/Utilities"/>
+<use name="DataFormats/L1CSCTrackFinder"/>
+<use name="DataFormats/L1DTTrackFinder"/>
+<use name="DataFormats/GeometrySurface"/>
 <use name="MagneticField/Engine"/>
 <use name="TrackingTools/DetLayers"/>
 <use name="TrackingTools/GeomPropagators"/>
 <use name="TrackingTools/TrajectoryState"/>
 <use name="TrackingTools/Records"/>
 <use name="MagneticField/Records"/>
-<use name="DataFormats/GeometrySurface"/>
-<use name="RecoMuon/DetLayers"/>
 <use name="Geometry/Records"/>
 <use name="Geometry/CommonDetUnit"/>
-<use name="RecoMuon/DetLayers"/>
 <use name="TrackingTools/KalmanUpdators"/>
-<use name="RecoMuon/Records"/>
-<use name="DataFormats/L1DTTrackFinder"/>
 <use name="L1Trigger/DTTrackFinder"/>
+<use name="L1Trigger/CSCTrackFinder"/>
+<use name="L1Trigger/CSCCommonTrigger"/>
 <use name="CondFormats/DataRecord/"/>
 <use name="CondFormats/L1TObjects/"/>
+<use name="RecoMuon/DetLayers"/>
+<use name="RecoMuon/Records"/>
 
 <use name="root"/>
 

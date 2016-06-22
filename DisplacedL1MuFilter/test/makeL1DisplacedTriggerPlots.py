@@ -76,7 +76,7 @@ if __name__ == "__main__":
           L1Mu_index = treeHits.genGdMu_L1Mu_index_prop[ij]
           L1Mu_dR_prop = treeHits.genGdMu_L1Mu_dR_prop[ij]
           ## work in barrel region only for the time being
-          if abs(eta_prop) > 2.5: 
+          if abs(eta_prop) > 0.9: 
             continue
           ## this is to make sure there are no freak L1Mu-GenMu matches!!
           if L1Mu_dR_prop > 0.2:

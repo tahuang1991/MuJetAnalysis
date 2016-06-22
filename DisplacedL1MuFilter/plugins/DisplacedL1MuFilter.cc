@@ -2483,6 +2483,7 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_bend1[i] = 99; 
     event_.CSCTF_bx1[i] = 99; 
     event_.CSCTF_clctpat1[i] = 99;;
+    event_.CSCTF_val1[i] = 99;;
 
     event_.CSCTF_st2[i] = 99; 
     event_.CSCTF_ri2[i] = 99; 
@@ -2496,6 +2497,7 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_bend2[i] = 99; 
     event_.CSCTF_bx2[i] = 99; 
     event_.CSCTF_clctpat2[i] = 99;;
+    event_.CSCTF_val2[i] = 99;;
 
     event_.CSCTF_st3[i] = 99; 
     event_.CSCTF_ri3[i] = 99; 
@@ -2509,6 +2511,7 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_bend3[i] = 99; 
     event_.CSCTF_bx3[i] = 99; 
     event_.CSCTF_clctpat3[i] = 99;;
+    event_.CSCTF_val3[i] = 99;;
 
     event_.CSCTF_st4[i] = 99; 
     event_.CSCTF_ri4[i] = 99; 
@@ -2521,7 +2524,8 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_pat4[i] = 99; 
     event_.CSCTF_bend4[i] = 99; 
     event_.CSCTF_bx4[i] = 99; 
-    event_.CSCTF_clctpat4[i] = 99;;
+    event_.CSCTF_clctpat4[i] = 99;
+    event_.CSCTF_val4[i] = 99;
   }
 }
 

@@ -20,7 +20,7 @@ process.load("SLHCUpgradeSimulations.L1TrackTrigger.L1TkMuonSequence_cfi")
 process.load("L1Trigger.TrackTrigger.TrackTrigger_cff")
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000)
+    input = cms.untracked.int32(-1)
 )
 
 """
@@ -73,7 +73,7 @@ process.p = cms.Path(process.dttfDigis)
 #process.p.remove(process.L1TkMuonsDTSequence)
 
 process.out = cms.OutputModule("PoolOutputModule",
-   fileName = cms.untracked.string('file:out_DTTF_ctau_1000_PU140.root'),
+   fileName = cms.untracked.string('file:out_DTTF_ctau_1000_PU140_full.root'),
 #                               SelectEvents = cms.untracked.PSet(SelectEvents = cms.vstring('p')),
 )
 

@@ -26,15 +26,19 @@ if __name__ == "__main__":
   targetDir = label + "/"
   
   verbose = True
+  printExtraInfo = False
   
   def displacedTriggerEfficiency():
     print treeHits.GetEntries()
     nL1MuTotal = 0
     nL1MuMatchedDTTF = 0
+    nL1MuMatchedCSCTF = 0
+    nL1MuMatchedDTTFandCSCTF = 0
+    nL1MuNotMatchedDTTForCSCTF = 0
 
     for k in range(0,treeHits.GetEntries()):
       treeHits.GetEntry(k)
-      print "Event", k, "nL1Mu", treeHits.nL1Mu
+      print "Event", k+1, "nL1Mu", treeHits.nL1Mu
 
       for i in range(0,2):
         for j in range(0,2):
@@ -71,7 +75,12 @@ if __name__ == "__main__":
 
           L1Mu_index = treeHits.genGdMu_L1Mu_index_prop[ij]
           L1Mu_dR_prop = treeHits.genGdMu_L1Mu_dR_prop[ij]
-          #if L1Mu_dR_prop > 0.9 : continue
+          ## work in barrel region only for the time being
+          if abs(eta_prop) > 2.5: 
+            continue
+          ## this is to make sure there are no freak L1Mu-GenMu matches!!
+          if L1Mu_dR_prop > 0.2:
+            continue
 
           if verbose:
             print "\tGenMu", i, j,
@@ -107,16 +116,18 @@ if __name__ == "__main__":
               print "L1Mu_L1Tk_dR_min", L1Mu_L1Tk_dR_prop, "L1Mu_L1Tk_pt", L1Mu_L1Tk_pt_prop
               print 
 
+            ## Matched to CSC
             L1Mu_DTTF_index = treeHits.L1Mu_DTTF_index[L1Mu_index]
-            print "\t\tnDTTF", treeHits.nDTTF, "DTTF index", L1Mu_DTTF_index
-
+            print "\t\t>>>>INFO: Number of DTTFs", treeHits.nDTTF
+            print
             
             if L1Mu_DTTF_index != 99 and L1Mu_DTTF_index != -1 :
+              print "\t\t>>>>INFO: Matching DTTF with index", L1Mu_DTTF_index 
               nL1MuMatchedDTTF += 1
               DTTF_pt = treeHits.DTTF_pt[L1Mu_DTTF_index]
               DTTF_eta = treeHits.DTTF_eta[L1Mu_DTTF_index]
               DTTF_phi = treeHits.DTTF_phi[L1Mu_DTTF_index]
-              #DTTF_bx = treeHits.DTTF_bx[L1Mu_DTTF_index]
+              DTTF_bx = treeHits.DTTF_bx[L1Mu_DTTF_index]
               DTTF_nStubs = treeHits.DTTF_nStubs[L1Mu_DTTF_index]
               DTTF_phib1 = treeHits.DTTF_phib1[L1Mu_DTTF_index]
               DTTF_phib2 = treeHits.DTTF_phib2[L1Mu_DTTF_index]
@@ -126,7 +137,7 @@ if __name__ == "__main__":
               print "\t\tDTTF_pt", DTTF_pt
               print "\t\tDTTF_eta", DTTF_eta
               print "\t\tDTTF_phi", DTTF_phi
-              #print "\t\tDTTF_bx", DTTF_bx
+              print "\t\tDTTF_bx", DTTF_bx
               print "\t\tDTTF_nStubs", DTTF_nStubs
               print "\t\tDTTF_phib1", DTTF_phib1 
               print "\t\tDTTF_phib2", DTTF_phib2
@@ -134,31 +145,84 @@ if __name__ == "__main__":
               print "\t\tDTTF_phib4", DTTF_phib4
               print               
             else:
-              print "\t\t>>>> No Matching DTTF!!! Print all available DTTF..."
-              for jj in range(0,treeHits.nDTTF):
-              
-                DTTF_pt = treeHits.DTTF_pt[jj]
-                DTTF_eta = treeHits.DTTF_eta[jj]
-                DTTF_phi = treeHits.DTTF_phi[jj]
-                #DTTF_bx = treeHits.DTTF_bx[jj]
-                DTTF_nStubs = treeHits.DTTF_nStubs[jj]
-                DTTF_phib1 = treeHits.DTTF_phib1[jj]
-                DTTF_phib2 = treeHits.DTTF_phib2[jj]
-                DTTF_phib3 = treeHits.DTTF_phib3[jj]
-                DTTF_phib4 = treeHits.DTTF_phib4[jj]
-                print "\t\tDTTF", jj
-                print "\t\tDTTF_pt", DTTF_pt
-                print "\t\tDTTF_eta", DTTF_eta
-                print "\t\tDTTF_phi", DTTF_phi
-                #print "\t\tDTTF_bx", DTTF_bx
-                print "\t\tDTTF_nStubs", DTTF_nStubs
-                print "\t\tDTTF_phib1", DTTF_phib1 
-                print "\t\tDTTF_phib2", DTTF_phib2
-                print "\t\tDTTF_phib3", DTTF_phib3
-                print "\t\tDTTF_phib4", DTTF_phib4
+              if printExtraInfo:
+                print "\t\t>>>>INFO: No Matching DTTF!!! Print all available DTTF..."
                 print
+                for jj in range(0,treeHits.nDTTF):
+                  DTTF_pt = treeHits.DTTF_pt[jj]
+                  DTTF_eta = treeHits.DTTF_eta[jj]
+                  DTTF_phi = treeHits.DTTF_phi[jj]
+                  DTTF_bx = treeHits.DTTF_bx[jj]
+                  DTTF_nStubs = treeHits.DTTF_nStubs[jj]
+                  DTTF_phib1 = treeHits.DTTF_phib1[jj]
+                  DTTF_phib2 = treeHits.DTTF_phib2[jj]
+                  DTTF_phib3 = treeHits.DTTF_phib3[jj]
+                  DTTF_phib4 = treeHits.DTTF_phib4[jj]
+                  print "\t\tDTTF", jj
+                  print "\t\tDTTF_pt", DTTF_pt
+                  print "\t\tDTTF_eta", DTTF_eta
+                  print "\t\tDTTF_phi", DTTF_phi
+                  print "\t\tDTTF_bx", DTTF_bx
+                  print "\t\tDTTF_nStubs", DTTF_nStubs
+                  print "\t\tDTTF_phib1", DTTF_phib1 
+                  print "\t\tDTTF_phib2", DTTF_phib2
+                  print "\t\tDTTF_phib3", DTTF_phib3
+                  print "\t\tDTTF_phib4", DTTF_phib4
+                  print
  
-    print nL1MuTotal, nL1MuMatchedDTTF
+            ## Matched to CSC
+            L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[L1Mu_index]
+            print "\t\t>>>>INFO: Number of CSCTFs", treeHits.nCSCTF
+            print
+
+            if L1Mu_CSCTF_index != 99 and L1Mu_CSCTF_index != -1 :
+              print "\t\t>>>>INFO: Matching CSCTF with index", L1Mu_CSCTF_index 
+              nL1MuMatchedCSCTF += 1
+              CSCTF_pt = treeHits.CSCTF_pt[L1Mu_CSCTF_index]
+              CSCTF_eta = treeHits.CSCTF_eta[L1Mu_CSCTF_index]
+              CSCTF_phi = treeHits.CSCTF_phi[L1Mu_CSCTF_index]
+              CSCTF_bx = treeHits.CSCTF_bx[L1Mu_CSCTF_index]
+              CSCTF_nStubs = treeHits.CSCTF_nStubs[L1Mu_CSCTF_index]
+              print "\t\tCSCTF", L1Mu_CSCTF_index
+              print "\t\tCSCTF_pt", CSCTF_pt
+              print "\t\tCSCTF_eta", CSCTF_eta
+              print "\t\tCSCTF_phi", CSCTF_phi
+              print "\t\tCSCTF_bx", CSCTF_bx
+              print "\t\tCSCTF_nStubs", CSCTF_nStubs
+              print               
+            else:
+              if printExtraInfo:
+                print "\t\t>>>>INFO: No Matching CSCTF!!! Print all available CSCTF..."
+                print 
+                for jj in range(0,treeHits.nCSCTF):
+                  CSCTF_pt = treeHits.CSCTF_pt[jj]
+                  CSCTF_eta = treeHits.CSCTF_eta[jj]
+                  CSCTF_phi = treeHits.CSCTF_phi[jj]
+                  CSCTF_bx = treeHits.CSCTF_bx[jj]
+                  CSCTF_nStubs = treeHits.CSCTF_nStubs[jj]
+                  print "\t\tCSCTF", jj
+                  print "\t\tCSCTF_pt", CSCTF_pt
+                  print "\t\tCSCTF_eta", CSCTF_eta
+                  print "\t\tCSCTF_phi", CSCTF_phi
+                  print "\t\tCSCTF_bx", CSCTF_bx
+                  print "\t\tCSCTF_nStubs", CSCTF_nStubs
+                  print
+
+            ## Matched by CSC and DT
+            if L1Mu_DTTF_index != 99 and L1Mu_DTTF_index != -1 and L1Mu_CSCTF_index != 99 and L1Mu_CSCTF_index != -1:
+              nL1MuMatchedDTTFandCSCTF += 1
+              print ">>>>INFO: Matched by CSCTF and DTTF<<<<"
+
+            ## Not matched by CSC or DT
+            if (L1Mu_DTTF_index == 99 or L1Mu_DTTF_index == -1) and (L1Mu_CSCTF_index == 99 or L1Mu_CSCTF_index == -1):
+              nL1MuNotMatchedDTTForCSCTF += 1
+              print ">>>>ALARM: Not Matched by CSCTF or DTTF<<<<"
+
+    print "nL1MuTotal", nL1MuTotal
+    print "nL1MuMatchedDTTF", nL1MuMatchedDTTF
+    print "nL1MuMatchedCSCTF", nL1MuMatchedCSCTF
+    print "nL1MuMatchedDTTFandCSCTF", nL1MuMatchedDTTFandCSCTF
+    print "nL1MuNotMatchedDTTForCSCTF", nL1MuNotMatchedDTTForCSCTF
 
   displacedTriggerEfficiency()
   exit()

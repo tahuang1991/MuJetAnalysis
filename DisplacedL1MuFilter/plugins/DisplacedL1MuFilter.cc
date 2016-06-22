@@ -237,7 +237,7 @@ struct MyEvent
   // Matching the L1Mu to DTTF
   Int_t nDTTF;
   Int_t L1Mu_DTTF_index[kMaxL1Mu];
-  Float_t DTTF_pt[kMaxDTTF], DTTF_eta[kMaxDTTF], DTTF_phi[kMaxDTTF], DTTF_bx[kMaxDTTF], DTTF_nStubs[kMaxDTTF];
+  Float_t DTTF_pt[kMaxDTTF], DTTF_eta[kMaxDTTF], DTTF_phi[kMaxDTTF], DTTF_bx[kMaxDTTF], DTTF_nStubs[kMaxDTTF], DTTF_quality[kMaxDTTF];
   Float_t DTTF_phi1[kMaxDTTF], DTTF_phi2[kMaxDTTF], DTTF_phi3[kMaxDTTF], DTTF_phi4[kMaxDTTF];
   Float_t DTTF_phib1[kMaxDTTF], DTTF_phib2[kMaxDTTF], DTTF_phib3[kMaxDTTF], DTTF_phib4[kMaxDTTF];
   Int_t DTTF_quality1[kMaxDTTF], DTTF_quality2[kMaxDTTF], DTTF_quality3[kMaxDTTF], DTTF_quality4[kMaxDTTF];
@@ -266,6 +266,8 @@ struct MyEvent
   Int_t CSCTF_st4[kMaxCSCTF], CSCTF_ri4[kMaxCSCTF], CSCTF_ch4[kMaxCSCTF], CSCTF_en4[kMaxCSCTF];
   Int_t CSCTF_trk4[kMaxCSCTF], CSCTF_quality4[kMaxCSCTF], CSCTF_wg4[kMaxCSCTF], CSCTF_hs4[kMaxCSCTF]; 
   Int_t CSCTF_pat4[kMaxCSCTF], CSCTF_bend4[kMaxCSCTF], CSCTF_bx4[kMaxCSCTF], CSCTF_clctpat4[kMaxCSCTF];
+
+  Int_t CSCTF_val1[kMaxCSCTF], CSCTF_val2[kMaxCSCTF], CSCTF_val3[kMaxCSCTF], CSCTF_val4[kMaxCSCTF];
 };
 
 bool PtOrder (const reco::GenParticle* p1, const reco::GenParticle* p2) 
@@ -998,30 +1000,26 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     if(verbose) std::cout << "Number of L1DTTrackPhis " <<L1DTTrackPhis.size() << std::endl;
     event_.nDTTF = L1DTTrackPhis.size();
     double bestDrL1MuL1DTTrack = 99;
-    for (unsigned int j=0; j<L1DTTrackPhis.size(); ++j) {
+    for (unsigned int j=0; j<L1DTTrackPhis.size(); ++j) { 
       auto track = L1DTTrackPhis[j].first;
 
-      double DTTF_pt = muPtScale->getPtScale()->getLowEdge(track.pt()) + 1.e-6;;
-      double DTTF_eta = muScales->getRegionalEtaScale(0)->getCenter(track.eta());
-      double DTTF_phi = phiL1DTTrack(track);
-      double DTTF_bx = track.bx();
-      double DTTF_quality = track.quality();
+      event_.DTTF_pt[j] = muPtScale->getPtScale()->getLowEdge(track.pt()) + 1.e-6;
+      event_.DTTF_eta[j] = muScales->getRegionalEtaScale(0)->getCenter(track.eta());
+      event_.DTTF_phi[j] = phiL1DTTrack(track);
+      event_.DTTF_bx[j] = track.bx();
+      event_.DTTF_nStubs[j] = L1DTTrackPhis[j].second.size();
+      event_.DTTF_quality[i] = track.quality();
     
       if(verbose) {  
-        std::cout << "pt  = " << DTTF_pt
-                  << ", eta  = " << DTTF_eta 
-                  << ", phi  = " << DTTF_phi 
-                  << ", bx " << DTTF_bx 
-                  << ", quality " << DTTF_quality << std::endl;
+        std::cout << "pt  = " << event_.DTTF_pt[j]
+                  << ", eta  = " << event_.DTTF_eta[j] 
+                  << ", phi  = " << event_.DTTF_phi[j]
+                  << ", bx = " << event_.DTTF_bx[j] 
+                  << ", quality = " << event_.DTTF_quality[j] 
+                  << ", nStubs = " << event_.DTTF_nStubs[j]
+                  << std::endl;
       }
 
-      event_.DTTF_pt[j] = DTTF_pt;
-      event_.DTTF_eta[j] = DTTF_eta;
-      event_.DTTF_phi[j] = DTTF_phi;
-      event_.DTTF_bx[j] = DTTF_bx;
-      event_.DTTF_nStubs[j] = L1DTTrackPhis[j].second.size();
-      
-      // std::cout << "stubs: " << std::endl;
       for (auto stub: L1DTTrackPhis[j].second) {
         // std::cout << "\t " << stub << std::endl;
         // std::cout << "\t phiValue = " << stub.phiValue() << ", phibValue = " << stub.phibValue() << std::endl;
@@ -1067,34 +1065,34 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
       
       if ( ( event_.L1Mu_quality[i] > 0 ) &&
-           ( fabs( event_.L1Mu_phi[i] - DTTF_phi ) < 0.001 ) &&             
-           ( event_.L1Mu_bx[i] == DTTF_bx ) ) {
+           ( reco::deltaPhi( event_.L1Mu_phi[i], event_.DTTF_phi[j] ) < 0.001 ) &&             
+           ( event_.L1Mu_bx[i] == event_.DTTF_bx[j] ) ) {
         double drL1MuL1DTTrack = reco::deltaR(l1Mu.etaValue(), 
                                               normalizedPhi(l1Mu.phiValue()), 
-                                              DTTF_eta, 
-                                              DTTF_phi);
-        if (drL1MuL1DTTrack < bestDrL1MuL1DTTrack) {
+                                              event_.DTTF_eta[j], 
+                                              event_.DTTF_phi[j]);
+        if (drL1MuL1DTTrack < bestDrL1MuL1DTTrack and drL1MuL1DTTrack < 0.3) {
           bestDrL1MuL1DTTrack = drL1MuL1DTTrack;
           event_.L1Mu_DTTF_index[i] = j;
         }
-      }                
+      }
     }
     
-    /*
+    
     if(verbose) {  
       int tempIndex = event_.L1Mu_DTTF_index[i]; 
       if (tempIndex != -1) { // and bestDrL1MuL1DTTrack < 0.2
         // Print matching DTTF track
         auto track = L1DTTrackPhis[tempIndex].first;
         std::cout << "\tMatching DTTF track" << std::endl;
-        std::cout << "\tpt "  << muPtScale->getPtScale()->getLowEdge(track.pt() + 1.e-6)
-                  << "\teta " << muScales->getRegionalEtaScale(0)->getCenter(track.eta())
-                  << "\tphi " << phiL1DTTrack(track) 
-                  << "\tbx "  << track.bx()
-                  << "\tquality " << track.quality() << std::endl;
+        std::cout << "\tpt = "  << event_.DTTF_pt[tempIndex]
+                  << ", eta = " << event_.DTTF_eta[tempIndex]
+                  << ", phi = " << event_.DTTF_phi[tempIndex] 
+                  << ", bx = "  << event_.DTTF_bx[tempIndex]
+                  << ", quality = " << event_.DTTF_quality[tempIndex] << std::endl;
         
         // Print stubs
-        std::cout << "\tstubs: " << std::endl; 
+        std::cout << "\tNumber of stubs: " << event_.DTTF_nStubs[tempIndex] << std::endl; 
         for (auto stub: L1DTTrackPhis[tempIndex].second) {
           std::cout << "\t\t " << stub << std::endl;
           std::cout << "\t\t phiValue = " << stub.phiValue() << ", phibValue = " << stub.phibValue() << std::endl;
@@ -1104,23 +1102,20 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         std::cout << "\tNo matching DTTF track" << std::endl;
       }
     }
-    */
+    
     
     // Matching to DTTF     
     event_.nCSCTF = l1Tracks.size();
     if(verbose) std::cout << "Number of L1CSCTracks " <<event_.nCSCTF << std::endl;
-    //double bestDrL1MuL1CSCTrack = 99;
+    double bestDrL1MuL1CSCTrack = 99;
     for (int j=0; j<event_.nCSCTF; ++j) {
       auto track = l1Tracks[j].first;
       const int sign(track.endcap()==1 ? 1 : -1);
-      const unsigned eta_sign(track.endcap() == 1 ? 0 : 1);
-      const int gbl_eta(track.eta_packed() | eta_sign << (L1MuRegionalCand::ETA_LENGTH - 1));
       unsigned gpt = 0, quality = 0;
       csc::L1Track::decodeRank(track.rank(), gpt, quality);
-      double pt_packed = gpt & 0x1f;
 
       // calculate pt, eta and phi (don't forget to store the sign)                                                                                   
-      event_.CSCTF_pt[j] = muPtScale->getPtScale()->getLowEdge(pt_packed) + 1.e-6;
+      event_.CSCTF_pt[j] = muPtScale->getPtScale()->getLowEdge(gpt & 0x1f) + 1.e-6;
       event_.CSCTF_eta[j] = muScales->getRegionalEtaScale(2)->getCenter(track.eta_packed()) * sign;
       event_.CSCTF_phi[j] = normalizedPhi(muScales->getPhiScale()->getLowEdge(phiL1CSCTrack(track)));
       event_.CSCTF_bx[j] = track.bx();
@@ -1130,97 +1125,128 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         std::cout << "pt  = " << event_.CSCTF_pt[j]
                   << ", eta  = " << event_.CSCTF_eta[j] 
                   << ", phi  = " << event_.CSCTF_phi[j]
-                  << ", bx " << event_.CSCTF_bx[j]
-                  << ", quality " << event_.CSCTF_quality[j] << std::endl;
+                  << ", bx = " << event_.CSCTF_bx[j]
+                  << ", quality = " << event_.CSCTF_quality[j] 
+                  << std::endl;
       }
-
-
-      std::cout << "stubs: " << std::endl;
+      event_.CSCTF_nStubs[j] = 0;
       auto stubCollection(l1Tracks[j].second);
-      for (auto detUnitIt = stubCollection->begin(); detUnitIt != stubCollection->end(); detUnitIt++) {
+      for (auto detUnitIt = stubCollection.begin(); detUnitIt != stubCollection.end(); detUnitIt++) {
         const CSCDetId& id = (*detUnitIt).first;
-        //std::cout << "DetId " << id << std::endl;
         const auto range = (*detUnitIt).second;
         for (auto digiIt = range.first; digiIt != range.second; digiIt++) {
-          if (!(*digiIt).isValid()) continue;
-          std::cout << "\t" << *digiIt << std::endl;
+          //if (!(*digiIt).isValid()) continue;
+          event_.CSCTF_nStubs[j] += 1;
+          auto stub = *digiIt;
+          switch(id.station()) {
+          case 1:
+            event_.CSCTF_st1[j] = id.station();
+            event_.CSCTF_ri1[j] = id.ring(); 
+            event_.CSCTF_ch1[j] = id.chamber();
+            event_.CSCTF_en1[j] = id.zendcap();
+            event_.CSCTF_trk1[j] = stub.getTrknmb(); 
+            event_.CSCTF_quality1[j] = stub.getQuality();
+            event_.CSCTF_wg1[j] = stub.getKeyWG();
+            event_.CSCTF_hs1[j] = stub.getStrip();
+            event_.CSCTF_pat1[j] = stub.getPattern();
+            event_.CSCTF_bend1[j] = stub.getBend();
+            event_.CSCTF_bx1[j] = stub.getBX();
+            event_.CSCTF_clctpat1[j] = stub.getCLCTPattern();
+            event_.CSCTF_val1[j] = stub.isValid();
+            break;
+          case 2:
+            event_.CSCTF_st2[j] = id.station();
+            event_.CSCTF_ri2[j] = id.ring(); 
+            event_.CSCTF_ch2[j] = id.chamber();
+            event_.CSCTF_en2[j] = id.zendcap();
+            event_.CSCTF_trk2[j] = stub.getTrknmb(); 
+            event_.CSCTF_quality2[j] = stub.getQuality();
+            event_.CSCTF_wg2[j] = stub.getKeyWG();
+            event_.CSCTF_hs2[j] = stub.getStrip();
+            event_.CSCTF_pat2[j] = stub.getPattern();
+            event_.CSCTF_bend2[j] = stub.getBend();
+            event_.CSCTF_bx2[j] = stub.getBX();
+            event_.CSCTF_clctpat2[j] = stub.getCLCTPattern();
+            event_.CSCTF_val2[j] = stub.isValid();
+            break;
+          case 3:
+            event_.CSCTF_st3[j] = id.station();
+            event_.CSCTF_ri3[j] = id.ring(); 
+            event_.CSCTF_ch3[j] = id.chamber();
+            event_.CSCTF_en3[j] = id.zendcap();
+            event_.CSCTF_trk3[j] = stub.getTrknmb(); 
+            event_.CSCTF_quality3[j] = stub.getQuality();
+            event_.CSCTF_wg3[j] = stub.getKeyWG();
+            event_.CSCTF_hs3[j] = stub.getStrip();
+            event_.CSCTF_pat3[j] = stub.getPattern();
+            event_.CSCTF_bend3[j] = stub.getBend();
+            event_.CSCTF_bx3[j] = stub.getBX();
+            event_.CSCTF_clctpat3[j] = stub.getCLCTPattern();
+            event_.CSCTF_val3[j] = stub.isValid();
+            break;
+          case 4:
+            event_.CSCTF_st4[j] = id.station();
+            event_.CSCTF_ri4[j] = id.ring(); 
+            event_.CSCTF_ch4[j] = id.chamber();
+            event_.CSCTF_en4[j] = id.zendcap();
+            event_.CSCTF_trk4[j] = stub.getTrknmb(); 
+            event_.CSCTF_quality4[j] = stub.getQuality();
+            event_.CSCTF_wg4[j] = stub.getKeyWG();
+            event_.CSCTF_hs4[j] = stub.getStrip();
+            event_.CSCTF_pat4[j] = stub.getPattern();
+            event_.CSCTF_bend4[j] = stub.getBend();
+            event_.CSCTF_bx4[j] = stub.getBX();
+            event_.CSCTF_clctpat4[j] = stub.getCLCTPattern();
+            event_.CSCTF_val4[j] = stub.isValid();
+            break;
+          };
         }
       }
 
-      // /// return track number
-      // int getTrknmb()  const { return trknmb; }
-
-      // /// return valid pattern bit
-      // bool isValid()   const { return valid; }
-
-      // /// return the 4 bit Correlated LCT Quality
-      // int getQuality() const { return quality; }
-
-      // /// return the key wire group
-      // int getKeyWG()   const { return keywire; }
-
-      // /// return the key halfstrip from 0,159
-      // int getStrip()   const { return strip; }
-
-      // /// return pattern
-      // int getPattern() const { return pattern; }
-
-      // /// return bend
-      // int getBend()    const { return bend; }
-
-      // /// return BX
-      // int getBX()      const { return bx; }
-
-      // /// return CLCT pattern number (in use again Feb 2011)
-      // int getCLCTPattern() const { return (pattern & 0xF); }
-
-      /*
-      // std::cout << "stubs: " << std::endl;
-      for (auto stub: l1Tracks[j].second) {
-        // std::cout << "\t " << stub << std::endl;
-        // std::cout << "\t phiValue = " << stub.phiValue() << ", phibValue = " << stub.phibValue() << std::endl;
-        int station = stub.station();
-        switch(station) {
-        case 1:
-          event_.CSCTF_phi1[j] = stub.phiValue();
-          event_.CSCTF_phib1[j] = stub.phibValue();
-          event_.CSCTF_quality1[j] = stub.quality();
-          event_.CSCTF_bx1[j] = stub.bx();
-          event_.CSCTF_wh1[j] = stub.wheel();
-          event_.CSCTF_se1[j] = stub.sector();
-          event_.CSCTF_st1[j] = stub.station();
-          break;
-        case 2:
-          event_.CSCTF_phi2[j] = stub.phiValue();
-          event_.CSCTF_phib2[j] = stub.phibValue();
-          event_.CSCTF_quality2[j] = stub.quality();
-          event_.CSCTF_bx2[j] = stub.bx();
-          event_.CSCTF_wh2[j] = stub.wheel();
-          event_.CSCTF_se2[j] = stub.sector();
-          event_.CSCTF_st2[j] = stub.station();
-          break;
-        case 3:
-          event_.CSCTF_phi3[j] = stub.phiValue();
-          event_.CSCTF_phib3[j] = stub.phibValue();
-          event_.CSCTF_quality3[j] = stub.quality();
-          event_.CSCTF_bx3[j] = stub.bx();
-          event_.CSCTF_wh3[j] = stub.wheel();
-          event_.CSCTF_se3[j] = stub.sector();
-          event_.CSCTF_st3[j] = stub.station();
-          break;
-        case 4:
-          event_.CSCTF_phi4[j] = stub.phiValue();
-          event_.CSCTF_phib4[j] = stub.phibValue();
-          event_.CSCTF_quality4[j] = stub.quality();
-          event_.CSCTF_bx4[j] = stub.bx();
-          event_.CSCTF_wh4[j] = stub.wheel();
-          event_.CSCTF_se4[j] = stub.sector();
-          event_.CSCTF_st4[j] = stub.station();
-          break;
-        };
-      }
-      */
+      if ( ( event_.L1Mu_quality[i] > 0 ) &&
+           ( reco::deltaPhi( event_.L1Mu_phi[i], event_.CSCTF_phi[j] ) < 0.001 ) &&             
+           ( event_.L1Mu_bx[i] == event_.CSCTF_bx[j] ) ) {
+        double drL1MuL1CSCTrack = reco::deltaR(l1Mu.etaValue(), 
+                                               normalizedPhi(l1Mu.phiValue()), 
+                                               event_.CSCTF_eta[j], 
+                                               event_.CSCTF_phi[j]);
+        if (drL1MuL1CSCTrack < bestDrL1MuL1CSCTrack and drL1MuL1CSCTrack < 0.3) {
+          bestDrL1MuL1CSCTrack = drL1MuL1CSCTrack;
+          event_.L1Mu_CSCTF_index[i] = j;
+        }
+      }                
     }
+    
+    if(verbose) {  
+      int tempIndex = event_.L1Mu_CSCTF_index[i]; 
+      if (tempIndex != -1) { // and bestDrL1MuL1CSCTrack < 0.2
+        // Print matching CSCTF track
+        std::cout << "\tMatching CSCTF track" << std::endl;
+        std::cout << "\tpt = "  << event_.CSCTF_pt[tempIndex]
+                  << ", eta = " << event_.CSCTF_eta[tempIndex]
+                  << ", phi = " << event_.CSCTF_phi[tempIndex]
+                  << ", bx = "  << event_.CSCTF_bx[tempIndex]
+                  << ", quality = " << event_.CSCTF_quality[tempIndex]
+                  << std::endl;
+        
+        // Print stubs
+        std::cout << "\tNumber of stubs: " << event_.CSCTF_nStubs[tempIndex] << std::endl;
+        auto stubCollection(l1Tracks[tempIndex].second);
+        for (auto detUnitIt = stubCollection.begin(); detUnitIt != stubCollection.end(); detUnitIt++) {
+          const CSCDetId& id = (*detUnitIt).first;
+          std::cout << "\t\tDetId " << id << std::endl;
+          const auto range = (*detUnitIt).second;
+          for (auto digiIt = range.first; digiIt != range.second; digiIt++) {
+            //if (!(*digiIt).isValid()) continue;
+            std::cout << "\t\t" << *digiIt << std::endl;
+          }
+        }
+      }
+      else {
+        std::cout << "\tNo matching CSCTF track" << std::endl;
+      }
+    }
+
 
 
     // calculate the number of L1Tk within 0.12

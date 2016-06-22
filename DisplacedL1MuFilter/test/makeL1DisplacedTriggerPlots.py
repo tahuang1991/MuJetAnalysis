@@ -36,6 +36,21 @@ if __name__ == "__main__":
     nL1MuMatchedDTTFandCSCTF = 0
     nL1MuNotMatchedDTTForCSCTF = 0
 
+    ## declare plots
+    GenMuPt_phiDTst1_phiDTst2 = TH2F("GenMuPt_phiDTst1_phiDTst2","", 100,0.,100,100,0.,1.)
+    GenMuPt_phiDTst1_phiDTst3 = TH2F("GenMuPt_phiDTst1_phiDTst3","", 100,0.,100,100,0.,1.)
+    GenMuPt_phiDTst1_phiDTst4 = TH2F("GenMuPt_phiDTst1_phiDTst4","", 100,0.,100,100,0.,1.)
+    GenMuPt_phiDTst2_phiDTst3 = TH2F("GenMuPt_phiDTst2_phiDTst3","", 100,0.,100,100,0.,1.)
+    GenMuPt_phiDTst2_phiDTst4 = TH2F("GenMuPt_phiDTst2_phiDTst4","", 100,0.,100,100,0.,1.)
+    GenMuPt_phiDTst3_phiDTst4 = TH2F("GenMuPt_phiDTst3_phiDTst4","", 100,0.,100,100,0.,1.)
+
+    GenMuPt_phiDTst1_phiDTst2_inv = TH2F("GenMuPt_phiDTst1_phiDTst2_inv","", 100,0.,100,100,0.,120.)
+    GenMuPt_phiDTst1_phiDTst3_inv = TH2F("GenMuPt_phiDTst1_phiDTst3_inv","", 100,0.,100,100,0.,120.)
+    GenMuPt_phiDTst1_phiDTst4_inv = TH2F("GenMuPt_phiDTst1_phiDTst4_inv","", 100,0.,100,100,0.,120.)
+    GenMuPt_phiDTst2_phiDTst3_inv = TH2F("GenMuPt_phiDTst2_phiDTst3_inv","", 100,0.,100,100,0.,120.)
+    GenMuPt_phiDTst2_phiDTst4_inv = TH2F("GenMuPt_phiDTst2_phiDTst4_inv","", 100,0.,100,100,0.,120.)
+    GenMuPt_phiDTst3_phiDTst4_inv = TH2F("GenMuPt_phiDTst3_phiDTst4_inv","", 100,0.,100,100,0.,120.)
+
     for k in range(0,treeHits.GetEntries()):
       treeHits.GetEntry(k)
       print "Event", k+1, "nL1Mu", treeHits.nL1Mu
@@ -143,7 +158,23 @@ if __name__ == "__main__":
               print "\t\tDTTF_phib2", DTTF_phib2
               print "\t\tDTTF_phib3", DTTF_phib3
               print "\t\tDTTF_phib4", DTTF_phib4
-              print               
+              print
+
+              ## fill histograms
+              if DTTF_phib1 != 99 and DTTF_phib2 != 99: GenMuPt_phiDTst1_phiDTst2.Fill(pt, abs(DTTF_phib1-DTTF_phib2)) 
+              if DTTF_phib1 != 99 and DTTF_phib3 != 99: GenMuPt_phiDTst1_phiDTst3.Fill(pt, abs(DTTF_phib1-DTTF_phib3))
+              if DTTF_phib1 != 99 and DTTF_phib4 != 99: GenMuPt_phiDTst1_phiDTst4.Fill(pt, abs(DTTF_phib1-DTTF_phib4))
+              if DTTF_phib2 != 99 and DTTF_phib3 != 99: GenMuPt_phiDTst2_phiDTst3.Fill(pt, abs(DTTF_phib2-DTTF_phib3))
+              if DTTF_phib2 != 99 and DTTF_phib4 != 99: GenMuPt_phiDTst2_phiDTst4.Fill(pt, abs(DTTF_phib2-DTTF_phib4))
+              if DTTF_phib3 != 99 and DTTF_phib4 != 99: GenMuPt_phiDTst3_phiDTst4.Fill(pt, abs(DTTF_phib3-DTTF_phib4))
+
+              if DTTF_phib1 != 99 and DTTF_phib2 != 99: GenMuPt_phiDTst1_phiDTst2_inv.Fill(pt, 1./abs(DTTF_phib1-DTTF_phib2)) 
+              if DTTF_phib1 != 99 and DTTF_phib3 != 99: GenMuPt_phiDTst1_phiDTst3_inv.Fill(pt, 1./abs(DTTF_phib1-DTTF_phib3))
+              if DTTF_phib1 != 99 and DTTF_phib4 != 99: GenMuPt_phiDTst1_phiDTst4_inv.Fill(pt, 1./abs(DTTF_phib1-DTTF_phib4))
+              if DTTF_phib2 != 99 and DTTF_phib3 != 99: GenMuPt_phiDTst2_phiDTst3_inv.Fill(pt, 1./abs(DTTF_phib2-DTTF_phib3))
+              if DTTF_phib2 != 99 and DTTF_phib4 != 99: GenMuPt_phiDTst2_phiDTst4_inv.Fill(pt, 1./abs(DTTF_phib2-DTTF_phib4))
+              if DTTF_phib3 != 99 and DTTF_phib4 != 99: GenMuPt_phiDTst3_phiDTst4_inv.Fill(pt, 1./abs(DTTF_phib3-DTTF_phib4))
+
             else:
               if printExtraInfo:
                 print "\t\t>>>>INFO: No Matching DTTF!!! Print all available DTTF..."
@@ -223,6 +254,22 @@ if __name__ == "__main__":
     print "nL1MuMatchedCSCTF", nL1MuMatchedCSCTF
     print "nL1MuMatchedDTTFandCSCTF", nL1MuMatchedDTTFandCSCTF
     print "nL1MuNotMatchedDTTForCSCTF", nL1MuNotMatchedDTTForCSCTF
+
+    
+    GenMuPt_phiDTst1_phiDTst2.SaveAs("GenMuPt_phiDTst1_phiDTst2.png")
+    GenMuPt_phiDTst1_phiDTst3.SaveAs("GenMuPt_phiDTst1_phiDTst3.png")
+    GenMuPt_phiDTst1_phiDTst4.SaveAs("GenMuPt_phiDTst1_phiDTst4.png")
+    GenMuPt_phiDTst2_phiDTst3.SaveAs("GenMuPt_phiDTst2_phiDTst3.png")
+    GenMuPt_phiDTst2_phiDTst4.SaveAs("GenMuPt_phiDTst2_phiDTst4.png")
+    GenMuPt_phiDTst3_phiDTst4.SaveAs("GenMuPt_phiDTst3_phiDTst4.png")
+
+    GenMuPt_phiDTst1_phiDTst2_inv.SaveAs("GenMuPt_phiDTst1_phiDTst2_inv.png")
+    GenMuPt_phiDTst1_phiDTst3_inv.SaveAs("GenMuPt_phiDTst1_phiDTst3_inv.png")
+    GenMuPt_phiDTst1_phiDTst4_inv.SaveAs("GenMuPt_phiDTst1_phiDTst4_inv.png")
+    GenMuPt_phiDTst2_phiDTst3_inv.SaveAs("GenMuPt_phiDTst2_phiDTst3_inv.png")
+    GenMuPt_phiDTst2_phiDTst4_inv.SaveAs("GenMuPt_phiDTst2_phiDTst4_inv.png")
+    GenMuPt_phiDTst3_phiDTst4_inv.SaveAs("GenMuPt_phiDTst3_phiDTst4_inv.png")
+    
 
   displacedTriggerEfficiency()
   exit()

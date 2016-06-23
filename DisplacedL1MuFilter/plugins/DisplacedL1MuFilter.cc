@@ -569,18 +569,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByLabel("simGmtDigis", aH);
   const GMTs& l1GmtCands(*aH.product());
 
-  // edm::Handle<L1MuDTChambPhContainer> L1MuDTChambPhH;
-  // iEvent.getByLabel("simDtTriggerPrimitiveDigis", L1MuDTChambPhH);
-  // const L1MuDTChambPhContainer& L1MuDTChambPhs(*L1MuDTChambPhH.product());
-
-  // edm::Handle<L1MuDTTrackContainer> L1MuDTTrackH;
-  // iEvent.getByLabel("simDttfDigis", "DTTF", L1MuDTTrackH);
-  // const L1MuDTTrackContainer& L1MuDTTracks(*L1MuDTTrackH.product());
-
-  // edm::Handle<vector<L1MuRegionalCand> > L1MuDTRegTrackH;
-  // iEvent.getByLabel("simDttfDigis", "DT", L1MuDTRegTrackH);
-  // const vector<L1MuRegionalCand>& L1MuDTRegTracks(*L1MuDTRegTrackH.product());
-  
   edm::Handle<vector<pair<L1MuDTTrack,vector<L1MuDTTrackSegPhi> > > > L1DTTrackPhiH;
   iEvent.getByLabel("dttfDigis","DTTF", L1DTTrackPhiH);
   const vector<pair<L1MuDTTrack,vector<L1MuDTTrackSegPhi> > >& L1DTTrackPhis(*L1DTTrackPhiH.product());
@@ -615,26 +603,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   edm::Handle< std::vector<RPCDigiL1Link> > hL1MuRPCfLinks;
   iEvent.getByLabel("simRpcTriggerDigis", "RPCf", hL1MuRPCfLinks);
   const std::vector<RPCDigiL1Link>& l1MuRPCfLinks(*hL1MuRPCfLinks.product());
-
-  // edm::Handle<L1MuGMTReadoutCollection> hl1GmtCands;
-  // iEvent.getByLabel(L1Mu_input, hl1GmtCands );
-  
-  //  std::vector<L1MuGMTExtendedCand> l1GmtCands;
-
-  // Get GMT candidates from all bunch crossings
-  // auto gmt_records = hl1GmtCands->getRecords();
-  // for (auto rItr = gmt_records.begin(); rItr!=gmt_records.end() ; ++rItr ){
-  //   if (rItr->getBxInEvent() < -1 || rItr->getBxInEvent() > 1) continue;
-    
-  //   auto GMTCands = rItr->getGMTCands();
-  //   for (auto cItr = GMTCands.begin() ; cItr != GMTCands.end() ; ++cItr )
-  //     if (!cItr->empty()) l1GmtCands.push_back(*cItr);
-  // }
-
-  // // L1 Trigger Analysis
-  // edm::Handle<l1extra::L1MuonParticleCollection> muonsHandle;
-  // iEvent.getByLabel("l1extraParticles", muonsHandle);
-  // //const l1extra::L1MuonParticleCollection& muons = *muonsHandle.product();
 
   // L1 TrackingTrigger Analysis
   edm::Handle< std::vector< TTTrack< Ref_PixelDigi_ > > > TTTrackHandle;
@@ -1048,40 +1016,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       cout << "l1Mu_bx " << event_.L1Mu_bx[i] << endl;
     }
 
-    // find the matching DT
-    // auto L1MuDTPhiStubs = *L1MuDTChambPhs.getContainer();
-    // std::cout << "Number of L1MuDTPhiStubs " << L1MuDTPhiStubs.size() << std::endl;
-    // for (unsigned int j=0; j<L1MuDTPhiStubs.size(); ++j) {
-    //   std::cout << "bxNum " << L1MuDTPhiStubs[j].bxNum() << std::endl;
-    //   std::cout << "whNum " << L1MuDTPhiStubs[j].whNum() << std::endl;
-    //   std::cout << "scNum " << L1MuDTPhiStubs[j].scNum() << std::endl;
-    //   std::cout << "stNum " << L1MuDTPhiStubs[j].stNum() << std::endl;
-    //   std::cout << "phi " << L1MuDTPhiStubs[j].phi() << std::endl;
-    //   std::cout << "phiB " << L1MuDTPhiStubs[j].phiB() << std::endl;
-    //   std::cout << "code " << L1MuDTPhiStubs[j].code() << std::endl;
-    //   std::cout << "Ts2Tag " << L1MuDTPhiStubs[j].Ts2Tag() << std::endl;
-    //   std::cout << "BxCnt " << L1MuDTPhiStubs[j].BxCnt() << std::endl;
-    // }
-
-    // find the matching DT tracks
-    // auto L1MuDTCands = *L1MuDTTracks.getContainer();
-    // std::cout << "Number of L1MuDTCands " <<L1MuDTCands.size() << std::endl;
-    // for (unsigned int j=0; j<L1MuDTCands.size(); ++j) {
-    //   std::cout << "whNum " << L1MuDTCands[j].whNum() << std::endl;
-    //   std::cout << "scNum " << L1MuDTCands[j].scNum() << std::endl;
-    //   //      std::cout << "stNum " << L1MuDTCands[j].stNum() << std::endl;
-    //   std::cout << "TCNum " << L1MuDTCands[j].TCNum() << std::endl;
-    //   std::cout << "TrkTag " << L1MuDTCands[j].TrkTag() << std::endl;
-    // }
-    
-    // std::cout << "Number of L1MuDTRegTracks " <<L1MuDTRegTracks.size() << std::endl;
-    // for (unsigned int j=0; j<L1MuDTRegTracks.size(); ++j) {
-    //   L1MuDTRegTracks[j].print();
-    //   std::cout << "pt " << L1MuDTRegTracks[j].ptValue()
-    //             << "eta " << L1MuDTRegTracks[j].etaValue()
-    //             << "phi " << L1MuDTRegTracks[j].phiValue() << std::endl;
-    // }
-
     // Matching to DTTF
     if(verbose) std::cout << "Number of L1DTTrackPhis " <<L1DTTrackPhis.size() << std::endl;
     event_.nDTTF = L1DTTrackPhis.size();
@@ -1363,99 +1297,116 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           event_.L1Mu_RPCb_index[i] = j;
         }
       }                
-
-      for (unsigned int j=0; j<l1MuRPCbLinks.size(); ++j) { 
-        auto link = l1MuRPCbLinks[j];
-        for (unsigned int i=1; i<=link.nlayer(); ++i){
-          if (link.empty(i)) continue;
-          event_.RPCb_nStubs[j] += 1;
-          double phi = getGlobalPhi(link.rawdetId(i), link.strip(i));
-          auto detId = RPCDetId(link.rawdetId(i));
-          std::cout << "\t" << i 
-                    << ", RPCDetId " << detId 
-                    << ", strip " << link.strip(i) 
-                    << ", bx " << link.bx(i) 
-                    << ", phi " << phi
-                    << std::endl; 
-          switch(i) {
-          case 1:
-            event_.RPCb_bx1[j] = link.bx(i); 
-            event_.RPCb_strip1[j] = link.strip(i); 
-            event_.RPCb_phi1[j] = phi;
-            event_.RPCb_re1[j] = detId.region(); 
-            event_.RPCb_ri1[j] = detId.ring(); 
-            event_.RPCb_st1[j] = detId.station(); 
-            event_.RPCb_se1[j] = detId.sector();
-            event_.RPCb_la1[j] = detId.layer(); 
-            event_.RPCb_su1[j] = detId.subsector(); 
-            event_.RPCb_ro1[j] = detId.roll();
-            break;
-          case 2:
-            event_.RPCb_bx2[j] = link.bx(i); 
-            event_.RPCb_strip2[j] = link.strip(i); 
-            event_.RPCb_phi2[j] = phi;
-            event_.RPCb_re2[j] = detId.region(); 
-            event_.RPCb_ri2[j] = detId.ring(); 
-            event_.RPCb_st2[j] = detId.station(); 
-            event_.RPCb_se2[j] = detId.sector();
-            event_.RPCb_la2[j] = detId.layer(); 
-            event_.RPCb_su2[j] = detId.subsector(); 
-            event_.RPCb_ro2[j] = detId.roll();
-            break;
-          case 3:
-            event_.RPCb_bx3[j] = link.bx(i); 
-            event_.RPCb_strip3[j] = link.strip(i); 
-            event_.RPCb_phi3[j] = phi;
-            event_.RPCb_re3[j] = detId.region(); 
-            event_.RPCb_ri3[j] = detId.ring(); 
-            event_.RPCb_st3[j] = detId.station(); 
-            event_.RPCb_se3[j] = detId.sector();
-            event_.RPCb_la3[j] = detId.layer(); 
-            event_.RPCb_su3[j] = detId.subsector(); 
-            event_.RPCb_ro3[j] = detId.roll();
-            break;
-          case 4:
-            event_.RPCb_bx4[j] = link.bx(i); 
-            event_.RPCb_strip4[j] = link.strip(i); 
-            event_.RPCb_phi4[j] = phi;
-            event_.RPCb_re4[j] = detId.region(); 
-            event_.RPCb_ri4[j] = detId.ring(); 
-            event_.RPCb_st4[j] = detId.station(); 
-            event_.RPCb_se4[j] = detId.sector();
-            event_.RPCb_la4[j] = detId.layer(); 
-            event_.RPCb_su4[j] = detId.subsector(); 
-            event_.RPCb_ro4[j] = detId.roll();
-            break;
-          case 5:
-            event_.RPCb_bx5[j] = link.bx(i); 
-            event_.RPCb_strip5[j] = link.strip(i); 
-            event_.RPCb_phi5[j] = phi;
-            event_.RPCb_re5[j] = detId.region(); 
-            event_.RPCb_ri5[j] = detId.ring(); 
-            event_.RPCb_st5[j] = detId.station(); 
-            event_.RPCb_se5[j] = detId.sector();
-            event_.RPCb_la5[j] = detId.layer(); 
-            event_.RPCb_su5[j] = detId.subsector(); 
-            event_.RPCb_ro5[j] = detId.roll();
-            break;
-          case 6:
-            event_.RPCb_bx6[j] = link.bx(i); 
-            event_.RPCb_strip6[j] = link.strip(i); 
-            event_.RPCb_phi6[j] = phi;
-            event_.RPCb_re6[j] = detId.region(); 
-            event_.RPCb_ri6[j] = detId.ring(); 
-            event_.RPCb_st6[j] = detId.station(); 
-            event_.RPCb_se6[j] = detId.sector();
-            event_.RPCb_la6[j] = detId.layer(); 
-            event_.RPCb_su6[j] = detId.subsector(); 
-            event_.RPCb_ro6[j] = detId.roll();
-            break;
-          };
-        } 
-      }
+      
+      auto link = l1MuRPCbLinks[j];
+      for (unsigned int ii=1; ii<=link.nlayer(); ++ii){
+        if (link.empty(i)) continue;
+        event_.RPCb_nStubs[j] += 1;
+        double phi = getGlobalPhi(link.rawdetId(ii), link.strip(ii));
+        auto detId = RPCDetId(link.rawdetId(ii));
+        std::cout << "\t" << i 
+                  << ", RPCDetId " << detId 
+                  << ", strip " << link.strip(ii) 
+                  << ", bx " << link.bx(ii) 
+                  << ", phi " << phi
+                  << std::endl; 
+        switch(ii) {
+        case 1:
+          event_.RPCb_bx1[j] = link.bx(ii); 
+          event_.RPCb_strip1[j] = link.strip(ii); 
+          event_.RPCb_phi1[j] = phi;
+          event_.RPCb_re1[j] = detId.region(); 
+          event_.RPCb_ri1[j] = detId.ring(); 
+          event_.RPCb_st1[j] = detId.station(); 
+          event_.RPCb_se1[j] = detId.sector();
+          event_.RPCb_la1[j] = detId.layer(); 
+          event_.RPCb_su1[j] = detId.subsector(); 
+          event_.RPCb_ro1[j] = detId.roll();
+          break;
+        case 2:
+          event_.RPCb_bx2[j] = link.bx(ii); 
+          event_.RPCb_strip2[j] = link.strip(ii); 
+          event_.RPCb_phi2[j] = phi;
+          event_.RPCb_re2[j] = detId.region(); 
+          event_.RPCb_ri2[j] = detId.ring(); 
+          event_.RPCb_st2[j] = detId.station(); 
+          event_.RPCb_se2[j] = detId.sector();
+          event_.RPCb_la2[j] = detId.layer(); 
+          event_.RPCb_su2[j] = detId.subsector(); 
+          event_.RPCb_ro2[j] = detId.roll();
+          break;
+        case 3:
+          event_.RPCb_bx3[j] = link.bx(ii); 
+          event_.RPCb_strip3[j] = link.strip(ii); 
+          event_.RPCb_phi3[j] = phi;
+          event_.RPCb_re3[j] = detId.region(); 
+          event_.RPCb_ri3[j] = detId.ring(); 
+          event_.RPCb_st3[j] = detId.station(); 
+          event_.RPCb_se3[j] = detId.sector();
+          event_.RPCb_la3[j] = detId.layer(); 
+          event_.RPCb_su3[j] = detId.subsector(); 
+          event_.RPCb_ro3[j] = detId.roll();
+          break;
+        case 4:
+          event_.RPCb_bx4[j] = link.bx(ii); 
+          event_.RPCb_strip4[j] = link.strip(ii); 
+          event_.RPCb_phi4[j] = phi;
+          event_.RPCb_re4[j] = detId.region(); 
+          event_.RPCb_ri4[j] = detId.ring(); 
+          event_.RPCb_st4[j] = detId.station(); 
+          event_.RPCb_se4[j] = detId.sector();
+          event_.RPCb_la4[j] = detId.layer(); 
+          event_.RPCb_su4[j] = detId.subsector(); 
+          event_.RPCb_ro4[j] = detId.roll();
+          break;
+        case 5:
+          event_.RPCb_bx5[j] = link.bx(ii); 
+          event_.RPCb_strip5[j] = link.strip(ii); 
+          event_.RPCb_phi5[j] = phi;
+          event_.RPCb_re5[j] = detId.region(); 
+          event_.RPCb_ri5[j] = detId.ring(); 
+          event_.RPCb_st5[j] = detId.station(); 
+          event_.RPCb_se5[j] = detId.sector();
+          event_.RPCb_la5[j] = detId.layer(); 
+          event_.RPCb_su5[j] = detId.subsector(); 
+          event_.RPCb_ro5[j] = detId.roll();
+          break;
+        case 6:
+          event_.RPCb_bx6[j] = link.bx(ii); 
+          event_.RPCb_strip6[j] = link.strip(ii); 
+          event_.RPCb_phi6[j] = phi;
+          event_.RPCb_re6[j] = detId.region(); 
+          event_.RPCb_ri6[j] = detId.ring(); 
+          event_.RPCb_st6[j] = detId.station(); 
+          event_.RPCb_se6[j] = detId.sector();
+          event_.RPCb_la6[j] = detId.layer(); 
+          event_.RPCb_su6[j] = detId.subsector(); 
+          event_.RPCb_ro6[j] = detId.roll();
+          break;
+        };
+      } 
     }
 
     
+    if(verbose) {  
+      int tempIndex = event_.L1Mu_RPCb_index[i]; 
+      if (tempIndex != -1) { // and bestDrL1MuL1CSCTrack < 0.2
+        // Print matching RPCb track
+        std::cout << "\tMatching RPCb track" << std::endl;
+        std::cout << "\tpt = "  << event_.RPCb_pt[tempIndex]
+                  << ", eta = " << event_.RPCb_eta[tempIndex]
+                  << ", phi = " << event_.RPCb_phi[tempIndex]
+                  << ", bx = "  << event_.RPCb_bx[tempIndex]
+                  << ", quality = " << event_.RPCb_quality[tempIndex]
+                  << ", nStubs = " << event_.RPCb_nStubs[tempIndex]
+                  << std::endl;
+      }
+      else {
+        std::cout << "\tNo matching RPCb track" << std::endl;
+      }
+    }
+
+
     // Matching to RPCf cands
     double bestDrL1MuL1RPCf = 99;
     if(verbose) std::cout << "Number of l1MuRPCfs: " <<l1MuRPCfs.size() << std::endl;
@@ -1489,94 +1440,110 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
       }                
 
-      for (unsigned int j=0; j<l1MuRPCfLinks.size(); ++j) { 
-        auto link = l1MuRPCfLinks[j];
-        for (unsigned int i=1; i<=link.nlayer(); ++i){
-          if (link.empty(i)) continue;
-          event_.RPCf_nStubs[j] += 1;
-          double phi = getGlobalPhi(link.rawdetId(i), link.strip(i));
-          auto detId = RPCDetId(link.rawdetId(i));
-          std::cout << "\t" << i 
-                    << ", RPCDetId " << detId 
-                    << ", strip " << link.strip(i) 
-                    << ", bx " << link.bx(i) 
-                    << ", phi " << phi
-                    << std::endl; 
-          switch(i) {
-          case 1:
-            event_.RPCf_bx1[j] = link.bx(i); 
-            event_.RPCf_strip1[j] = link.strip(i); 
-            event_.RPCf_phi1[j] = phi;
-            event_.RPCf_re1[j] = detId.region(); 
-            event_.RPCf_ri1[j] = detId.ring(); 
-            event_.RPCf_st1[j] = detId.station(); 
-            event_.RPCf_se1[j] = detId.sector();
-            event_.RPCf_la1[j] = detId.layer(); 
-            event_.RPCf_su1[j] = detId.subsector(); 
-            event_.RPCf_ro1[j] = detId.roll();
-            break;
-          case 2:
-            event_.RPCf_bx2[j] = link.bx(i); 
-            event_.RPCf_strip2[j] = link.strip(i); 
-            event_.RPCf_phi2[j] = phi;
-            event_.RPCf_re2[j] = detId.region(); 
-            event_.RPCf_ri2[j] = detId.ring(); 
-            event_.RPCf_st2[j] = detId.station(); 
-            event_.RPCf_se2[j] = detId.sector();
-            event_.RPCf_la2[j] = detId.layer(); 
-            event_.RPCf_su2[j] = detId.subsector(); 
-            event_.RPCf_ro2[j] = detId.roll();
-            break;
-          case 3:
-            event_.RPCf_bx3[j] = link.bx(i); 
-            event_.RPCf_strip3[j] = link.strip(i); 
-            event_.RPCf_phi3[j] = phi;
-            event_.RPCf_re3[j] = detId.region(); 
-            event_.RPCf_ri3[j] = detId.ring(); 
-            event_.RPCf_st3[j] = detId.station(); 
-            event_.RPCf_se3[j] = detId.sector();
-            event_.RPCf_la3[j] = detId.layer(); 
-            event_.RPCf_su3[j] = detId.subsector(); 
-            event_.RPCf_ro3[j] = detId.roll();
-            break;
-          case 4:
-            event_.RPCf_bx4[j] = link.bx(i); 
-            event_.RPCf_strip4[j] = link.strip(i); 
-            event_.RPCf_phi4[j] = phi;
-            event_.RPCf_re4[j] = detId.region(); 
-            event_.RPCf_ri4[j] = detId.ring(); 
-            event_.RPCf_st4[j] = detId.station(); 
-            event_.RPCf_se4[j] = detId.sector();
-            event_.RPCf_la4[j] = detId.layer(); 
-            event_.RPCf_su4[j] = detId.subsector(); 
-            event_.RPCf_ro4[j] = detId.roll();
-            break;
-          case 5:
-            event_.RPCf_bx5[j] = link.bx(i); 
-            event_.RPCf_strip5[j] = link.strip(i); 
-            event_.RPCf_phi5[j] = phi;
-            event_.RPCf_re5[j] = detId.region(); 
-            event_.RPCf_ri5[j] = detId.ring(); 
-            event_.RPCf_st5[j] = detId.station(); 
-            event_.RPCf_se5[j] = detId.sector();
-            event_.RPCf_la5[j] = detId.layer(); 
-            event_.RPCf_su5[j] = detId.subsector(); 
-            event_.RPCf_ro5[j] = detId.roll();
-            break;
-          case 6:
-            event_.RPCf_bx6[j] = link.bx(i); 
-            event_.RPCf_strip6[j] = link.strip(i); 
-            event_.RPCf_phi6[j] = phi;
-            event_.RPCf_re6[j] = detId.region(); 
-            event_.RPCf_ri6[j] = detId.ring(); 
-            event_.RPCf_st6[j] = detId.station(); 
-            event_.RPCf_se6[j] = detId.sector();
-            event_.RPCf_la6[j] = detId.layer(); 
-            event_.RPCf_su6[j] = detId.subsector(); 
-            event_.RPCf_ro6[j] = detId.roll();
-            break;
-          };
-        } 
+      auto link = l1MuRPCfLinks[j];
+      for (unsigned int ii=1; ii<=link.nlayer(); ++ii){
+        if (link.empty(ii)) continue;
+        event_.RPCf_nStubs[j] += 1;
+        double phi = getGlobalPhi(link.rawdetId(ii), link.strip(ii));
+        auto detId = RPCDetId(link.rawdetId(ii));
+        std::cout << "\t" << i 
+                  << ", RPCDetId " << detId 
+                  << ", strip " << link.strip(ii) 
+                  << ", bx " << link.bx(ii) 
+                  << ", phi " << phi
+                  << std::endl; 
+        switch(ii) {
+        case 1:
+          event_.RPCf_bx1[j] = link.bx(ii); 
+          event_.RPCf_strip1[j] = link.strip(ii); 
+          event_.RPCf_phi1[j] = phi;
+          event_.RPCf_re1[j] = detId.region(); 
+          event_.RPCf_ri1[j] = detId.ring(); 
+          event_.RPCf_st1[j] = detId.station(); 
+          event_.RPCf_se1[j] = detId.sector();
+          event_.RPCf_la1[j] = detId.layer(); 
+          event_.RPCf_su1[j] = detId.subsector(); 
+          event_.RPCf_ro1[j] = detId.roll();
+          break;
+        case 2:
+          event_.RPCf_bx2[j] = link.bx(ii); 
+          event_.RPCf_strip2[j] = link.strip(ii); 
+          event_.RPCf_phi2[j] = phi;
+          event_.RPCf_re2[j] = detId.region(); 
+          event_.RPCf_ri2[j] = detId.ring(); 
+          event_.RPCf_st2[j] = detId.station(); 
+          event_.RPCf_se2[j] = detId.sector();
+          event_.RPCf_la2[j] = detId.layer(); 
+          event_.RPCf_su2[j] = detId.subsector(); 
+          event_.RPCf_ro2[j] = detId.roll();
+          break;
+        case 3:
+          event_.RPCf_bx3[j] = link.bx(ii); 
+          event_.RPCf_strip3[j] = link.strip(ii); 
+          event_.RPCf_phi3[j] = phi;
+          event_.RPCf_re3[j] = detId.region(); 
+          event_.RPCf_ri3[j] = detId.ring(); 
+          event_.RPCf_st3[j] = detId.station(); 
+          event_.RPCf_se3[j] = detId.sector();
+          event_.RPCf_la3[j] = detId.layer(); 
+          event_.RPCf_su3[j] = detId.subsector(); 
+          event_.RPCf_ro3[j] = detId.roll();
+          break;
+        case 4:
+          event_.RPCf_bx4[j] = link.bx(ii); 
+          event_.RPCf_strip4[j] = link.strip(ii); 
+          event_.RPCf_phi4[j] = phi;
+          event_.RPCf_re4[j] = detId.region(); 
+          event_.RPCf_ri4[j] = detId.ring(); 
+          event_.RPCf_st4[j] = detId.station(); 
+          event_.RPCf_se4[j] = detId.sector();
+          event_.RPCf_la4[j] = detId.layer(); 
+          event_.RPCf_su4[j] = detId.subsector(); 
+          event_.RPCf_ro4[j] = detId.roll();
+          break;
+        case 5:
+          event_.RPCf_bx5[j] = link.bx(ii); 
+          event_.RPCf_strip5[j] = link.strip(ii); 
+          event_.RPCf_phi5[j] = phi;
+          event_.RPCf_re5[j] = detId.region(); 
+          event_.RPCf_ri5[j] = detId.ring(); 
+          event_.RPCf_st5[j] = detId.station(); 
+          event_.RPCf_se5[j] = detId.sector();
+          event_.RPCf_la5[j] = detId.layer(); 
+          event_.RPCf_su5[j] = detId.subsector(); 
+          event_.RPCf_ro5[j] = detId.roll();
+          break;
+        case 6:
+          event_.RPCf_bx6[j] = link.bx(ii); 
+          event_.RPCf_strip6[j] = link.strip(ii); 
+          event_.RPCf_phi6[j] = phi;
+          event_.RPCf_re6[j] = detId.region(); 
+          event_.RPCf_ri6[j] = detId.ring(); 
+          event_.RPCf_st6[j] = detId.station(); 
+          event_.RPCf_se6[j] = detId.sector();
+          event_.RPCf_la6[j] = detId.layer(); 
+          event_.RPCf_su6[j] = detId.subsector(); 
+          event_.RPCf_ro6[j] = detId.roll();
+          break;
+        };
+      } 
+    }
+
+    if(verbose) {  
+      int tempIndex = event_.L1Mu_RPCf_index[i]; 
+      if (tempIndex != -1) { // and bestDrL1MuL1CSCTrack < 0.2
+        // Print matching RPCf track
+        std::cout << "\tMatching RPCf track" << std::endl;
+        std::cout << "\tpt = "  << event_.RPCf_pt[tempIndex]
+                  << ", eta = " << event_.RPCf_eta[tempIndex]
+                  << ", phi = " << event_.RPCf_phi[tempIndex]
+                  << ", bx = "  << event_.RPCf_bx[tempIndex]
+                  << ", quality = " << event_.RPCf_quality[tempIndex]
+                  << ", nStubs = " << event_.RPCf_nStubs[tempIndex]
+                  << std::endl;
+      }
+      else {
+        std::cout << "\tNo matching RPCf track" << std::endl;
       }
     }
 

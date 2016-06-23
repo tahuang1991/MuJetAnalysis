@@ -1,3 +1,4 @@
+import array
 from ROOT import *
 from cuts import *
 import math
@@ -429,3 +430,7 @@ def get_1D(p, title, h_name, h_bins, to_draw, cut, opt = "", color = kBlue):
     h.SetMinimum(0.)
     SetOwnership(h, False)
     return h
+
+#_______________________________________________________________________________
+def to_array(x, fmt="d"):
+    return array.array(fmt, x)

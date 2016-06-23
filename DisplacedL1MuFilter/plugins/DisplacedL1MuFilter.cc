@@ -1299,8 +1299,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }                
       
       auto link = l1MuRPCbLinks[j];
+      event_.RPCb_nStubs[j] = 0;
       for (unsigned int ii=1; ii<=link.nlayer(); ++ii){
-        if (link.empty(i)) continue;
+        if (link.empty(ii)) continue;
         event_.RPCb_nStubs[j] += 1;
         double phi = getGlobalPhi(link.rawdetId(ii), link.strip(ii));
         auto detId = RPCDetId(link.rawdetId(ii));
@@ -1440,6 +1441,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
       }                
 
+      event_.RPCf_nStubs[j] = 0;
       auto link = l1MuRPCfLinks[j];
       for (unsigned int ii=1; ii<=link.nlayer(); ++ii){
         if (link.empty(ii)) continue;
@@ -2936,7 +2938,7 @@ DisplacedL1MuFilter::clearBranches()
     event_.DTTF_pt[i] = 99;
     event_.DTTF_eta[i] = 99;
     event_.DTTF_phi[i] = 99;
-    event_.DTTF_nStubs[i] = 99;
+    event_.DTTF_nStubs[i] = 0;
 
     event_.DTTF_phi1[i] = 99;
     event_.DTTF_phib1[i] = 99;

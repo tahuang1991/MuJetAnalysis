@@ -98,12 +98,12 @@ if __name__ == "__main__":
     phiDTst2_phiDTst4 = TH1F("phiDTst2_phiDTst4","", 100,-1.,1.)
     phiDTst3_phiDTst4 = TH1F("phiDTst3_phiDTst4","", 100,-1.,1.)
 
-    GenMuPt_vs_phiDTst1_phiDTst2 = TH2F("GenMuPt_vs_phiDTst1_phiDTst2","", 60,0.,60,100,0.,1.)
-    GenMuPt_vs_phiDTst1_phiDTst3 = TH2F("GenMuPt_vs_phiDTst1_phiDTst3","", 60,0.,60,100,0.,1.)
-    GenMuPt_vs_phiDTst1_phiDTst4 = TH2F("GenMuPt_vs_phiDTst1_phiDTst4","", 60,0.,60,100,0.,1.)
-    GenMuPt_vs_phiDTst2_phiDTst3 = TH2F("GenMuPt_vs_phiDTst2_phiDTst3","", 60,0.,60,100,0.,1.)
-    GenMuPt_vs_phiDTst2_phiDTst4 = TH2F("GenMuPt_vs_phiDTst2_phiDTst4","", 60,0.,60,100,0.,1.)
-    GenMuPt_vs_phiDTst3_phiDTst4 = TH2F("GenMuPt_vs_phiDTst3_phiDTst4","", 60,0.,60,100,0.,1.)
+    GenMuPt_vs_phiDTst1_phiDTst2 = TH2F("GenMuPt_vs_phiDTst1_phiDTst2","", 60,0.,60,100,-1.,1.)
+    GenMuPt_vs_phiDTst1_phiDTst3 = TH2F("GenMuPt_vs_phiDTst1_phiDTst3","", 60,0.,60,100,-1.,1.)
+    GenMuPt_vs_phiDTst1_phiDTst4 = TH2F("GenMuPt_vs_phiDTst1_phiDTst4","", 60,0.,60,100,-1.,1.)
+    GenMuPt_vs_phiDTst2_phiDTst3 = TH2F("GenMuPt_vs_phiDTst2_phiDTst3","", 60,0.,60,100,-1.,1.)
+    GenMuPt_vs_phiDTst2_phiDTst4 = TH2F("GenMuPt_vs_phiDTst2_phiDTst4","", 60,0.,60,100,-1.,1.)
+    GenMuPt_vs_phiDTst3_phiDTst4 = TH2F("GenMuPt_vs_phiDTst3_phiDTst4","", 60,0.,60,100,-1.,1.)
 
     GenMuPt_vs_phiDTst1_phiDTst2_inv = TH2F("GenMuPt_vs_phiDTst1_phiDTst2_inv","", 60,0.,60,100,0.,120.)
     GenMuPt_vs_phiDTst1_phiDTst3_inv = TH2F("GenMuPt_vs_phiDTst1_phiDTst3_inv","", 60,0.,60,100,0.,120.)
@@ -303,6 +303,7 @@ if __name__ == "__main__":
               print "Pt from 2, 4", getPtFromDphi(2,4,DTTF_phib2,DTTF_phib4)
               print "Pt from 3, 4", getPtFromDphi(3,4,DTTF_phib3,DTTF_phib4)
 
+              ## fill histograms
               phiDTst1_phiDTst2.Fill(DTTF_phib1-DTTF_phib2)
               phiDTst1_phiDTst3.Fill(DTTF_phib1-DTTF_phib3)
               phiDTst1_phiDTst4.Fill(DTTF_phib1-DTTF_phib4)
@@ -310,7 +311,13 @@ if __name__ == "__main__":
               phiDTst2_phiDTst4.Fill(DTTF_phib2-DTTF_phib4)
               phiDTst3_phiDTst4.Fill(DTTF_phib3-DTTF_phib4)
 
-              ## fill histograms
+              GenMuPt_vs_phiDTst1_phiDTst2.Fill(pt, DTTF_phib1-DTTF_phib2)
+              GenMuPt_vs_phiDTst1_phiDTst3.Fill(pt, DTTF_phib1-DTTF_phib3)
+              GenMuPt_vs_phiDTst1_phiDTst4.Fill(pt, DTTF_phib1-DTTF_phib4)
+              GenMuPt_vs_phiDTst2_phiDTst3.Fill(pt, DTTF_phib2-DTTF_phib3)
+              GenMuPt_vs_phiDTst2_phiDTst4.Fill(pt, DTTF_phib2-DTTF_phib4)
+              GenMuPt_vs_phiDTst3_phiDTst4.Fill(pt, DTTF_phib3-DTTF_phib4)
+
               nDT_stubs.Fill(L1Mu_status(DTTF_phib1, DTTF_phib2, DTTF_phib3, DTTF_phib4) ) 
 
               if DTTF_phib1 != 99 and DTTF_phib2 != 99: GenMuPt_vs_phiDTst1_phiDTst2.Fill(pt, abs(DTTF_phib1-DTTF_phib2)) 
@@ -326,15 +333,6 @@ if __name__ == "__main__":
               if DTTF_phib2 != 99 and DTTF_phib3 != 99 and DTTF_phib2!=DTTF_phib3: GenMuPt_vs_phiDTst2_phiDTst3_inv.Fill(pt, 1./(DTTF_phib2-DTTF_phib3))
               if DTTF_phib2 != 99 and DTTF_phib4 != 99 and DTTF_phib2!=DTTF_phib4: GenMuPt_vs_phiDTst2_phiDTst4_inv.Fill(pt, 1./(DTTF_phib2-DTTF_phib4))
               if DTTF_phib3 != 99 and DTTF_phib4 != 99 and DTTF_phib3!=DTTF_phib4: GenMuPt_vs_phiDTst3_phiDTst4_inv.Fill(pt, 1./(DTTF_phib3-DTTF_phib4))
-
-              """
-              GenMuPt_phiDTst1_phiDTst2 = TH1F("GenMuPt_phiDTst1_phiDTst2","", 60,0.,60)
-              GenMuPt_phiDTst1_phiDTst3 = TH1F("GenMuPt_phiDTst1_phiDTst3","", 60,0.,60)
-              GenMuPt_phiDTst1_phiDTst4 = TH1F("GenMuPt_phiDTst1_phiDTst4","", 60,0.,60)
-              GenMuPt_phiDTst2_phiDTst3 = TH1F("GenMuPt_phiDTst2_phiDTst3","", 60,0.,60)
-              GenMuPt_phiDTst2_phiDTst4 = TH1F("GenMuPt_phiDTst2_phiDTst4","", 60,0.,60)
-              GenMuPt_phiDTst3_phiDTst4 = TH1F("GenMuPt_phiDTst3_phiDTst4","", 60,0.,60)
-              """
 
               
             else:
@@ -417,7 +415,7 @@ if __name__ == "__main__":
     print "nL1MuMatchedDTTFandCSCTF", nL1MuMatchedDTTFandCSCTF
     print "nL1MuNotMatchedDTTForCSCTF", nL1MuNotMatchedDTTForCSCTF
 
-    def makeSimplePlot(hist, title, option = 'colz'):
+    def makeSimplePlot(hist, cTitle, title, option = ''):
       c = TCanvas("c","c",800,600)
       c.Clear()    
       gStyle.SetTitleBorderSize(0);
@@ -428,9 +426,8 @@ if __name__ == "__main__":
       gPad.SetTickx(1)
       gPad.SetTicky(1)
       hist.Draw(option)
-      hist.GetXaxis().SetTitle('GEN Mu p_{T} [GeV]')
-      hist.GetYaxis().SetTitle('#DeltaPhi')
-      c.SaveAs(title)
+      hist.SetTitle(title)
+      c.SaveAs(cTitle)
 
     def makeGenPtVsDPhiPlot(hist, title, plotColz = True, doFit = False, fitfunction = "pol1", option = 'colz'):
       c = TCanvas("c","c",800,600)
@@ -463,14 +460,23 @@ if __name__ == "__main__":
 
     ### close makeGenPtVsDPhiPlot
 
-    makeSimplePlot(nDT_stubs, targetDir + "nDT_stubs.png", "")
+    makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst2, targetDir + "GenMuPt_vs_phiDTst1_phiDTst2.png", ";p_{T} [GeV]; #Delta#Phi_{12}", "COLZ")
+    makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst3, targetDir + "GenMuPt_vs_phiDTst1_phiDTst3.png", ";p_{T} [GeV]; #Delta#Phi_{13}", "COLZ")
+    makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst4, targetDir + "GenMuPt_vs_phiDTst1_phiDTst4.png", ";p_{T} [GeV]; #Delta#Phi_{14}", "COLZ")
+    makeSimplePlot(GenMuPt_vs_phiDTst2_phiDTst3, targetDir + "GenMuPt_vs_phiDTst2_phiDTst3.png", ";p_{T} [GeV]; #Delta#Phi_{23}", "COLZ")
+    makeSimplePlot(GenMuPt_vs_phiDTst2_phiDTst4, targetDir + "GenMuPt_vs_phiDTst2_phiDTst4.png", ";p_{T} [GeV]; #Delta#Phi_{24}", "COLZ")
+    makeSimplePlot(GenMuPt_vs_phiDTst3_phiDTst4, targetDir + "GenMuPt_vs_phiDTst3_phiDTst4.png", ";p_{T} [GeV]; #Delta#Phi_{34}", "COLZ")
 
-    makeSimplePlot(phiDTst1_phiDTst2, targetDir + "phiDTst1_phiDTst2.png")
-    makeSimplePlot(phiDTst1_phiDTst3, targetDir + "phiDTst1_phiDTst3.png")
-    makeSimplePlot(phiDTst1_phiDTst4, targetDir + "phiDTst1_phiDTst4.png")
-    makeSimplePlot(phiDTst2_phiDTst3, targetDir + "phiDTst2_phiDTst3.png")
-    makeSimplePlot(phiDTst2_phiDTst4, targetDir + "phiDTst2_phiDTst4.png")
-    makeSimplePlot(phiDTst3_phiDTst4, targetDir + "phiDTst3_phiDTst4.png")
+    makeSimplePlot(nDT_stubs, targetDir + "nDT_stubs.png", "; status; Number of entries")
+
+    """
+    makeSimplePlot(phiDTst1_phiDTst2, targetDir + "phiDTst1_phiDTst2.png", ";GEN Mu p_{T} [GeV]; #Delta#Phi_{12}", "COLZ")
+    makeSimplePlot(phiDTst1_phiDTst3, targetDir + "phiDTst1_phiDTst3.png", ";GEN Mu p_{T} [GeV]; #Delta#Phi_{13}", "COLZ")
+    makeSimplePlot(phiDTst1_phiDTst4, targetDir + "phiDTst1_phiDTst4.png", ";GEN Mu p_{T} [GeV]; #Delta#Phi_{14}", "COLZ")
+    makeSimplePlot(phiDTst2_phiDTst3, targetDir + "phiDTst2_phiDTst3.png", ";GEN Mu p_{T} [GeV]; #Delta#Phi_{23}", "COLZ")
+    makeSimplePlot(phiDTst2_phiDTst4, targetDir + "phiDTst2_phiDTst4.png", ";GEN Mu p_{T} [GeV]; #Delta#Phi_{24}", "COLZ")
+    makeSimplePlot(phiDTst3_phiDTst4, targetDir + "phiDTst3_phiDTst4.png", ";GEN Mu p_{T} [GeV]; #Delta#Phi_{34}", "COLZ")
+    """
 
     makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst1_phiDTst2, targetDir + "GenMuPt_vs_phiDTst1_phiDTst2_pol1.png")
     makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst1_phiDTst3, targetDir + "GenMuPt_vs_phiDTst1_phiDTst3_pol1.png")
@@ -493,21 +499,6 @@ if __name__ == "__main__":
     makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst2_phiDTst4_inv, targetDir + "GenMuPt_vs_phiDTst2_phiDTst4_inv_pol1_v2.png", True, True, "pol1")
     makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst3_phiDTst4_inv, targetDir + "GenMuPt_vs_phiDTst3_phiDTst4_inv_pol1_v2.png", True, True, "pol1")
 
-    """
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_phiDTst1_phiDTst2_inv_pol2.png", True, "pol2")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst1_phiDTst3_inv, targetDir + "GenMuPt_vs_phiDTst1_phiDTst3_inv_pol2.png", True, "pol2")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst1_phiDTst4_inv, targetDir + "GenMuPt_vs_phiDTst1_phiDTst4_inv_pol2.png", True, "pol2")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst2_phiDTst3_inv, targetDir + "GenMuPt_vs_phiDTst2_phiDTst3_inv_pol2.png", True, "pol2")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst2_phiDTst4_inv, targetDir + "GenMuPt_vs_phiDTst2_phiDTst4_inv_pol2.png", True, "pol2")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst3_phiDTst4_inv, targetDir + "GenMuPt_vs_phiDTst3_phiDTst4_inv_pol2.png", True, "pol2")
-
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_phiDTst1_phiDTst2_inv_pol3.png", True, "pol3")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst1_phiDTst3_inv, targetDir + "GenMuPt_vs_phiDTst1_phiDTst3_inv_pol3.png", True, "pol3")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst1_phiDTst4_inv, targetDir + "GenMuPt_vs_phiDTst1_phiDTst4_inv_pol3.png", True, "pol3")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst2_phiDTst3_inv, targetDir + "GenMuPt_vs_phiDTst2_phiDTst3_inv_pol3.png", True, "pol3")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst2_phiDTst4_inv, targetDir + "GenMuPt_vs_phiDTst2_phiDTst4_inv_pol3.png", True, "pol3")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst3_phiDTst4_inv, targetDir + "GenMuPt_vs_phiDTst3_phiDTst4_inv_pol3.png", True, "pol3")
-    """
 
     ## L1Mu pT trigger turn-on curves
     def makeEffPlot(eff1, eff2, eff3, title, doPt = True):

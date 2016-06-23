@@ -20,7 +20,7 @@ process.load("L1Trigger.TrackTrigger.TrackTrigger_cff")
 process.load('L1TriggerConfig.L1ScalesProducers.L1MuTriggerScalesConfig_cff')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10000)
+    input = cms.untracked.int32(-1)
 )
 
 """
@@ -66,7 +66,8 @@ process.source = cms.Source(
     #fileNames = cms.untracked.vstring('/store/mc/TP2023HGCALDR/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/GEN-SIM-DIGI-RAW/HGCALForMUO_PU140BX25_newsplit_PH2_1K_FB_V6-v2/40000/0097F2D6-523D-E511-BA2B-0025907254C8.root')
     #fileNames = cms.untracked.vstring("file:filter.root")
 )
-
+from MuJetAnalysis.HLTBendingAngle.InputFileHelpers import useInputDir
+process = useInputDir(process, "/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_DTTFmod/160622_185508/0000/","out_DTTF_ctau_1000_PU140_full") 
 
 process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 #process.l1extraParticles + + process.dump

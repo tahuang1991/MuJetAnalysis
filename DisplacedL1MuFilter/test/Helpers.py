@@ -378,7 +378,7 @@ def makeSimplePlot(targetDir, h, plotTitle, setLogx=False):
     gStyle.SetTitleStyle(0);
     gStyle.SetTitleAlign(13); ##coord in top left
     gStyle.SetTitleX(0.);
-    gStyle.SetTitleY(1.);
+    gStyle.SetTitleY(0.);
     gStyle.SetTitleW(1);
     gStyle.SetTitleH(0.058);
     #gStyle.SetTitleXOffset(0.05)

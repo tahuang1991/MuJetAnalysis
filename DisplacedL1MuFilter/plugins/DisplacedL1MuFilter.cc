@@ -87,6 +87,10 @@
 #include "L1Trigger/DTTrackFinder/interface/L1MuDTTrack.h"
 #include "L1Trigger/DTTrackFinder/src/L1MuDTTrackSegPhi.h"
 #include "DataFormats/L1CSCTrackFinder/interface/L1CSCTrackCollection.h"
+#include "DataFormats/RPCDigi/interface/RPCDigiL1Linkfwd.h"
+#include "DataFormats/RPCDigi/interface/RPCDigiL1Link.h"
+#include "DataFormats/MuonDetId/interface/RPCDetId.h"
+#include "Geometry/RPCGeometry/interface/RPCGeometry.h"
 
 #include "CondFormats/L1TObjects/interface/L1MuTriggerScales.h"
 #include "CondFormats/L1TObjects/interface/L1MuTriggerPtScale.h"
@@ -102,6 +106,8 @@
 const Int_t kMaxL1Mu = 50;
 const Int_t kMaxDTTF = 50;
 const Int_t kMaxCSCTF = 50;
+const Int_t kMaxRPCb = 50;
+const Int_t kMaxRPCf = 50;
 const Int_t kMaxL1Tk = 500;
 const int nGlu = 2;
 const int nGd = 2;
@@ -268,6 +274,66 @@ struct MyEvent
   Int_t CSCTF_pat4[kMaxCSCTF], CSCTF_bend4[kMaxCSCTF], CSCTF_bx4[kMaxCSCTF], CSCTF_clctpat4[kMaxCSCTF];
 
   Int_t CSCTF_val1[kMaxCSCTF], CSCTF_val2[kMaxCSCTF], CSCTF_val3[kMaxCSCTF], CSCTF_val4[kMaxCSCTF];
+
+
+  // Matching the L1Mu to RPCb  
+  Int_t nRPCb;
+  Int_t L1Mu_RPCb_index[kMaxL1Mu];
+  Float_t RPCb_pt[kMaxRPCb], RPCb_eta[kMaxRPCb], RPCb_phi[kMaxRPCb], RPCb_bx[kMaxRPCb], RPCb_nStubs[kMaxRPCb], RPCb_quality[kMaxRPCb];
+
+  Int_t RPCb_bx1[kMaxRPCb], RPCb_strip1[kMaxRPCb], RPCb_phi1[kMaxRPCb];
+  Int_t RPCb_re1[kMaxRPCb], RPCb_ri1[kMaxRPCb], RPCb_st1[kMaxRPCb], RPCb_se1[kMaxRPCb];
+  Int_t RPCb_la1[kMaxRPCb], RPCb_su1[kMaxRPCb], RPCb_ro1[kMaxRPCb];
+ 
+  Int_t RPCb_bx2[kMaxRPCb], RPCb_strip2[kMaxRPCb], RPCb_phi2[kMaxRPCb];
+  Int_t RPCb_re2[kMaxRPCb], RPCb_ri2[kMaxRPCb], RPCb_st2[kMaxRPCb], RPCb_se2[kMaxRPCb];
+  Int_t RPCb_la2[kMaxRPCb], RPCb_su2[kMaxRPCb], RPCb_ro2[kMaxRPCb];
+
+  Int_t RPCb_bx3[kMaxRPCb], RPCb_strip3[kMaxRPCb], RPCb_phi3[kMaxRPCb];
+  Int_t RPCb_re3[kMaxRPCb], RPCb_ri3[kMaxRPCb], RPCb_st3[kMaxRPCb], RPCb_se3[kMaxRPCb];
+  Int_t RPCb_la3[kMaxRPCb], RPCb_su3[kMaxRPCb], RPCb_ro3[kMaxRPCb];
+
+  Int_t RPCb_bx4[kMaxRPCb], RPCb_strip4[kMaxRPCb], RPCb_phi4[kMaxRPCb];
+  Int_t RPCb_re4[kMaxRPCb], RPCb_ri4[kMaxRPCb], RPCb_st4[kMaxRPCb], RPCb_se4[kMaxRPCb];
+  Int_t RPCb_la4[kMaxRPCb], RPCb_su4[kMaxRPCb], RPCb_ro4[kMaxRPCb];
+
+  Int_t RPCb_bx5[kMaxRPCb], RPCb_strip5[kMaxRPCb], RPCb_phi5[kMaxRPCb];
+  Int_t RPCb_re5[kMaxRPCb], RPCb_ri5[kMaxRPCb], RPCb_st5[kMaxRPCb], RPCb_se5[kMaxRPCb];
+  Int_t RPCb_la5[kMaxRPCb], RPCb_su5[kMaxRPCb], RPCb_ro5[kMaxRPCb];
+
+  Int_t RPCb_bx6[kMaxRPCb], RPCb_strip6[kMaxRPCb], RPCb_phi6[kMaxRPCb];
+  Int_t RPCb_re6[kMaxRPCb], RPCb_ri6[kMaxRPCb], RPCb_st6[kMaxRPCb], RPCb_se6[kMaxRPCb];
+  Int_t RPCb_la6[kMaxRPCb], RPCb_su6[kMaxRPCb], RPCb_ro6[kMaxRPCb];
+
+
+  // Matching the L1Mu to RPCf  
+  Int_t nRPCf;
+  Int_t L1Mu_RPCf_index[kMaxL1Mu];
+  Float_t RPCf_pt[kMaxRPCf], RPCf_eta[kMaxRPCf], RPCf_phi[kMaxRPCf], RPCf_bx[kMaxRPCf], RPCf_nStubs[kMaxRPCf], RPCf_quality[kMaxRPCf];
+
+  Int_t RPCf_bx1[kMaxRPCf], RPCf_strip1[kMaxRPCf], RPCf_phi1[kMaxRPCf];
+  Int_t RPCf_re1[kMaxRPCf], RPCf_ri1[kMaxRPCf], RPCf_st1[kMaxRPCf], RPCf_se1[kMaxRPCf];
+  Int_t RPCf_la1[kMaxRPCf], RPCf_su1[kMaxRPCf], RPCf_ro1[kMaxRPCf];
+ 
+  Int_t RPCf_bx2[kMaxRPCf], RPCf_strip2[kMaxRPCf], RPCf_phi2[kMaxRPCf];
+  Int_t RPCf_re2[kMaxRPCf], RPCf_ri2[kMaxRPCf], RPCf_st2[kMaxRPCf], RPCf_se2[kMaxRPCf];
+  Int_t RPCf_la2[kMaxRPCf], RPCf_su2[kMaxRPCf], RPCf_ro2[kMaxRPCf];
+
+  Int_t RPCf_bx3[kMaxRPCf], RPCf_strip3[kMaxRPCf], RPCf_phi3[kMaxRPCf];
+  Int_t RPCf_re3[kMaxRPCf], RPCf_ri3[kMaxRPCf], RPCf_st3[kMaxRPCf], RPCf_se3[kMaxRPCf];
+  Int_t RPCf_la3[kMaxRPCf], RPCf_su3[kMaxRPCf], RPCf_ro3[kMaxRPCf];
+
+  Int_t RPCf_bx4[kMaxRPCf], RPCf_strip4[kMaxRPCf], RPCf_phi4[kMaxRPCf];
+  Int_t RPCf_re4[kMaxRPCf], RPCf_ri4[kMaxRPCf], RPCf_st4[kMaxRPCf], RPCf_se4[kMaxRPCf];
+  Int_t RPCf_la4[kMaxRPCf], RPCf_su4[kMaxRPCf], RPCf_ro4[kMaxRPCf];
+
+  Int_t RPCf_bx5[kMaxRPCf], RPCf_strip5[kMaxRPCf], RPCf_phi5[kMaxRPCf];
+  Int_t RPCf_re5[kMaxRPCf], RPCf_ri5[kMaxRPCf], RPCf_st5[kMaxRPCf], RPCf_se5[kMaxRPCf];
+  Int_t RPCf_la5[kMaxRPCf], RPCf_su5[kMaxRPCf], RPCf_ro5[kMaxRPCf];
+
+  Int_t RPCf_bx6[kMaxRPCf], RPCf_strip6[kMaxRPCf], RPCf_phi6[kMaxRPCf];
+  Int_t RPCf_re6[kMaxRPCf], RPCf_ri6[kMaxRPCf], RPCf_st6[kMaxRPCf], RPCf_se6[kMaxRPCf];
+  Int_t RPCf_la6[kMaxRPCf], RPCf_su6[kMaxRPCf], RPCf_ro6[kMaxRPCf];
 };
 
 bool PtOrder (const reco::GenParticle* p1, const reco::GenParticle* p2) 
@@ -326,9 +392,6 @@ double phiL1CSCTrack(const csc::L1Track& track)
   return phi_packed;
 }
 
-
-
-
 bool 
 isSimTrackGood(const SimTrack &t)
 {
@@ -362,6 +425,8 @@ private:
   virtual void beginJob() override;
   virtual bool filter(edm::Event&, const edm::EventSetup&) override;
   virtual void endJob() override;
+
+  float getGlobalPhi(unsigned int rawid, int stripN);
 
   GlobalPoint extrapolateGP(const reco::GenParticle &tk);
   GlobalPoint extrapolateGP(const TTTrack< Ref_PixelDigi_ > &tk);
@@ -411,6 +476,8 @@ private:
   double max_pT_L1Tk;
   int verbose;
 
+  const RPCGeometry* rpcGeometry_;
+
   edm::InputTag L1Mu_input;
   edm::InputTag L1TkMu_input;
   
@@ -419,6 +486,8 @@ private:
   edm::ESHandle<Propagator> propagatorOpposite_;
   edm::ESHandle<Propagator> propagatorAny_;
   edm::ESHandle<MuonDetLayerGeometry> muonGeometry_;
+  edm::ESHandle<RPCGeometry> rpc_geom_;
+  
   const  BoundCylinder *barrelCylinder_;
   const  BoundDisk *endcapDiskPos_[3], *endcapDiskNeg_[3];
   double barrelHalfLength_;
@@ -492,6 +561,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     // std::cout << "L1MuonMatcher: endcap " << i << " Z = " << endcapDiskPos_[i]->position().z() << ", radii = " << endcapRadii_[i].first << "," << endcapRadii_[i].second << std::endl;
   }
 
+  iSetup.get<MuonGeometryRecord>().get(rpc_geom_);
+  rpcGeometry_ = &*rpc_geom_;
 
   typedef std::vector<L1MuGMTCand> GMTs;
   edm::Handle<GMTs> aH;
@@ -529,7 +600,22 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       muPtScaleCacheID_ = iSetup.get< L1MuTriggerPtScaleRcd >().cacheIdentifier();
     }
 
+  edm::Handle< std::vector<L1MuRegionalCand> > hL1MuRPCbs;
+  iEvent.getByLabel("simRpcTriggerDigis", "RPCb", hL1MuRPCbs);
+  const std::vector<L1MuRegionalCand>& l1MuRPCbs(*hL1MuRPCbs.product());
   
+  edm::Handle< std::vector<RPCDigiL1Link> > hL1MuRPCbLinks;
+  iEvent.getByLabel("simRpcTriggerDigis", "RPCb", hL1MuRPCbLinks);
+  const std::vector<RPCDigiL1Link>& l1MuRPCbLinks(*hL1MuRPCbLinks.product());
+  
+  edm::Handle< std::vector<L1MuRegionalCand> > hL1MuRPCfs;
+  iEvent.getByLabel("simRpcTriggerDigis", "RPCf", hL1MuRPCfs);
+  const std::vector<L1MuRegionalCand>& l1MuRPCfs(*hL1MuRPCfs.product());
+  
+  edm::Handle< std::vector<RPCDigiL1Link> > hL1MuRPCfLinks;
+  iEvent.getByLabel("simRpcTriggerDigis", "RPCf", hL1MuRPCfLinks);
+  const std::vector<RPCDigiL1Link>& l1MuRPCfLinks(*hL1MuRPCfLinks.product());
+
   // edm::Handle<L1MuGMTReadoutCollection> hl1GmtCands;
   // iEvent.getByLabel(L1Mu_input, hl1GmtCands );
   
@@ -1077,8 +1163,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
       }
     }
-    
-    
+        
     if(verbose) {  
       int tempIndex = event_.L1Mu_DTTF_index[i]; 
       if (tempIndex != -1) { // and bestDrL1MuL1DTTrack < 0.2
@@ -1103,8 +1188,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
     }
     
-    
-    // Matching to DTTF     
+    // Matching to CSCTF     
     event_.nCSCTF = l1Tracks.size();
     if(verbose) std::cout << "Number of L1CSCTracks " <<event_.nCSCTF << std::endl;
     double bestDrL1MuL1CSCTrack = 99;
@@ -1247,6 +1331,254 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
     }
 
+    // Matching to RPCb cands
+    double bestDrL1MuL1RPCb = 99;
+    if(verbose) std::cout << "Number of l1MuRPCbs: " <<l1MuRPCbs.size() << std::endl;
+    event_.nRPCb = l1MuRPCbs.size();
+    for (unsigned int j=0; j<l1MuRPCbs.size(); ++j) { 
+      auto track = l1MuRPCbs[j];
+
+      event_.RPCb_pt[j] = muPtScale->getPtScale()->getLowEdge(track.pt_packed());
+      event_.RPCb_eta[j] = muScales->getRegionalEtaScale(track.type_idx())->getCenter(track.eta_packed());
+      event_.RPCb_phi[j] = normalizedPhi(muScales->getPhiScale()->getLowEdge(track.phi_packed()));
+      event_.RPCb_bx[j] = track.bx();
+      event_.RPCb_quality[j] = track.quality();
+
+      std::cout << "pt " << event_.RPCb_pt[j]
+                << ", eta " << event_.RPCb_eta[j]
+                << ", phi " << event_.RPCb_phi[j]
+                << ", bx " << event_.RPCb_bx[j]
+                << ", quality " << event_.RPCb_quality[j]
+                << std::endl;
+
+      if ( ( event_.L1Mu_quality[i] > 0 ) &&
+           ( reco::deltaPhi( event_.L1Mu_phi[i], event_.RPCb_phi[j] ) < 0.001 ) &&             
+           ( event_.L1Mu_bx[i] == event_.RPCb_bx[j] ) ) {
+        double drL1MuL1RPCb = reco::deltaR(l1Mu.etaValue(), 
+                                           normalizedPhi(l1Mu.phiValue()), 
+                                           event_.RPCb_eta[j], 
+                                           event_.RPCb_phi[j]);
+        if (drL1MuL1RPCb < bestDrL1MuL1RPCb and drL1MuL1RPCb < 0.3) {
+          bestDrL1MuL1RPCb = drL1MuL1RPCb;
+          event_.L1Mu_RPCb_index[i] = j;
+        }
+      }                
+
+      for (unsigned int j=0; j<l1MuRPCbLinks.size(); ++j) { 
+        auto link = l1MuRPCbLinks[j];
+        for (unsigned int i=1; i<=link.nlayer(); ++i){
+          if (link.empty(i)) continue;
+          event_.RPCb_nStubs[j] += 1;
+          double phi = getGlobalPhi(link.rawdetId(i), link.strip(i));
+          auto detId = RPCDetId(link.rawdetId(i));
+          std::cout << "\t" << i 
+                    << ", RPCDetId " << detId 
+                    << ", strip " << link.strip(i) 
+                    << ", bx " << link.bx(i) 
+                    << ", phi " << phi
+                    << std::endl; 
+          switch(i) {
+          case 1:
+            event_.RPCb_bx1[j] = link.bx(i); 
+            event_.RPCb_strip1[j] = link.strip(i); 
+            event_.RPCb_phi1[j] = phi;
+            event_.RPCb_re1[j] = detId.region(); 
+            event_.RPCb_ri1[j] = detId.ring(); 
+            event_.RPCb_st1[j] = detId.station(); 
+            event_.RPCb_se1[j] = detId.sector();
+            event_.RPCb_la1[j] = detId.layer(); 
+            event_.RPCb_su1[j] = detId.subsector(); 
+            event_.RPCb_ro1[j] = detId.roll();
+            break;
+          case 2:
+            event_.RPCb_bx2[j] = link.bx(i); 
+            event_.RPCb_strip2[j] = link.strip(i); 
+            event_.RPCb_phi2[j] = phi;
+            event_.RPCb_re2[j] = detId.region(); 
+            event_.RPCb_ri2[j] = detId.ring(); 
+            event_.RPCb_st2[j] = detId.station(); 
+            event_.RPCb_se2[j] = detId.sector();
+            event_.RPCb_la2[j] = detId.layer(); 
+            event_.RPCb_su2[j] = detId.subsector(); 
+            event_.RPCb_ro2[j] = detId.roll();
+            break;
+          case 3:
+            event_.RPCb_bx3[j] = link.bx(i); 
+            event_.RPCb_strip3[j] = link.strip(i); 
+            event_.RPCb_phi3[j] = phi;
+            event_.RPCb_re3[j] = detId.region(); 
+            event_.RPCb_ri3[j] = detId.ring(); 
+            event_.RPCb_st3[j] = detId.station(); 
+            event_.RPCb_se3[j] = detId.sector();
+            event_.RPCb_la3[j] = detId.layer(); 
+            event_.RPCb_su3[j] = detId.subsector(); 
+            event_.RPCb_ro3[j] = detId.roll();
+            break;
+          case 4:
+            event_.RPCb_bx4[j] = link.bx(i); 
+            event_.RPCb_strip4[j] = link.strip(i); 
+            event_.RPCb_phi4[j] = phi;
+            event_.RPCb_re4[j] = detId.region(); 
+            event_.RPCb_ri4[j] = detId.ring(); 
+            event_.RPCb_st4[j] = detId.station(); 
+            event_.RPCb_se4[j] = detId.sector();
+            event_.RPCb_la4[j] = detId.layer(); 
+            event_.RPCb_su4[j] = detId.subsector(); 
+            event_.RPCb_ro4[j] = detId.roll();
+            break;
+          case 5:
+            event_.RPCb_bx5[j] = link.bx(i); 
+            event_.RPCb_strip5[j] = link.strip(i); 
+            event_.RPCb_phi5[j] = phi;
+            event_.RPCb_re5[j] = detId.region(); 
+            event_.RPCb_ri5[j] = detId.ring(); 
+            event_.RPCb_st5[j] = detId.station(); 
+            event_.RPCb_se5[j] = detId.sector();
+            event_.RPCb_la5[j] = detId.layer(); 
+            event_.RPCb_su5[j] = detId.subsector(); 
+            event_.RPCb_ro5[j] = detId.roll();
+            break;
+          case 6:
+            event_.RPCb_bx6[j] = link.bx(i); 
+            event_.RPCb_strip6[j] = link.strip(i); 
+            event_.RPCb_phi6[j] = phi;
+            event_.RPCb_re6[j] = detId.region(); 
+            event_.RPCb_ri6[j] = detId.ring(); 
+            event_.RPCb_st6[j] = detId.station(); 
+            event_.RPCb_se6[j] = detId.sector();
+            event_.RPCb_la6[j] = detId.layer(); 
+            event_.RPCb_su6[j] = detId.subsector(); 
+            event_.RPCb_ro6[j] = detId.roll();
+            break;
+          };
+        } 
+      }
+    }
+
+    
+    // Matching to RPCf cands
+    double bestDrL1MuL1RPCf = 99;
+    if(verbose) std::cout << "Number of l1MuRPCfs: " <<l1MuRPCfs.size() << std::endl;
+    event_.nRPCf = l1MuRPCfs.size();
+    for (unsigned int j=0; j<l1MuRPCfs.size(); ++j) { 
+      auto track = l1MuRPCfs[j];
+
+      event_.RPCf_pt[j] = muPtScale->getPtScale()->getLowEdge(track.pt_packed());
+      event_.RPCf_eta[j] = muScales->getRegionalEtaScale(track.type_idx())->getCenter(track.eta_packed());
+      event_.RPCf_phi[j] = normalizedPhi(muScales->getPhiScale()->getLowEdge(track.phi_packed()));
+      event_.RPCf_bx[j] = track.bx();
+      event_.RPCf_quality[j] = track.quality();
+
+      std::cout << "pt " << event_.RPCf_pt[j]
+                << ", eta " << event_.RPCf_eta[j]
+                << ", phi " << event_.RPCf_phi[j]
+                << ", bx " << event_.RPCf_bx[j]
+                << ", quality " << event_.RPCf_quality[j]
+                << std::endl;
+
+      if ( ( event_.L1Mu_quality[i] > 0 ) &&
+           ( reco::deltaPhi( event_.L1Mu_phi[i], event_.RPCf_phi[j] ) < 0.001 ) &&             
+           ( event_.L1Mu_bx[i] == event_.RPCf_bx[j] ) ) {
+        double drL1MuL1RPCf = reco::deltaR(l1Mu.etaValue(), 
+                                           normalizedPhi(l1Mu.phiValue()), 
+                                           event_.RPCf_eta[j], 
+                                           event_.RPCf_phi[j]);
+        if (drL1MuL1RPCf < bestDrL1MuL1RPCf and drL1MuL1RPCf < 0.3) {
+          bestDrL1MuL1RPCf = drL1MuL1RPCf;
+          event_.L1Mu_RPCf_index[i] = j;
+        }
+      }                
+
+      for (unsigned int j=0; j<l1MuRPCfLinks.size(); ++j) { 
+        auto link = l1MuRPCfLinks[j];
+        for (unsigned int i=1; i<=link.nlayer(); ++i){
+          if (link.empty(i)) continue;
+          event_.RPCf_nStubs[j] += 1;
+          double phi = getGlobalPhi(link.rawdetId(i), link.strip(i));
+          auto detId = RPCDetId(link.rawdetId(i));
+          std::cout << "\t" << i 
+                    << ", RPCDetId " << detId 
+                    << ", strip " << link.strip(i) 
+                    << ", bx " << link.bx(i) 
+                    << ", phi " << phi
+                    << std::endl; 
+          switch(i) {
+          case 1:
+            event_.RPCf_bx1[j] = link.bx(i); 
+            event_.RPCf_strip1[j] = link.strip(i); 
+            event_.RPCf_phi1[j] = phi;
+            event_.RPCf_re1[j] = detId.region(); 
+            event_.RPCf_ri1[j] = detId.ring(); 
+            event_.RPCf_st1[j] = detId.station(); 
+            event_.RPCf_se1[j] = detId.sector();
+            event_.RPCf_la1[j] = detId.layer(); 
+            event_.RPCf_su1[j] = detId.subsector(); 
+            event_.RPCf_ro1[j] = detId.roll();
+            break;
+          case 2:
+            event_.RPCf_bx2[j] = link.bx(i); 
+            event_.RPCf_strip2[j] = link.strip(i); 
+            event_.RPCf_phi2[j] = phi;
+            event_.RPCf_re2[j] = detId.region(); 
+            event_.RPCf_ri2[j] = detId.ring(); 
+            event_.RPCf_st2[j] = detId.station(); 
+            event_.RPCf_se2[j] = detId.sector();
+            event_.RPCf_la2[j] = detId.layer(); 
+            event_.RPCf_su2[j] = detId.subsector(); 
+            event_.RPCf_ro2[j] = detId.roll();
+            break;
+          case 3:
+            event_.RPCf_bx3[j] = link.bx(i); 
+            event_.RPCf_strip3[j] = link.strip(i); 
+            event_.RPCf_phi3[j] = phi;
+            event_.RPCf_re3[j] = detId.region(); 
+            event_.RPCf_ri3[j] = detId.ring(); 
+            event_.RPCf_st3[j] = detId.station(); 
+            event_.RPCf_se3[j] = detId.sector();
+            event_.RPCf_la3[j] = detId.layer(); 
+            event_.RPCf_su3[j] = detId.subsector(); 
+            event_.RPCf_ro3[j] = detId.roll();
+            break;
+          case 4:
+            event_.RPCf_bx4[j] = link.bx(i); 
+            event_.RPCf_strip4[j] = link.strip(i); 
+            event_.RPCf_phi4[j] = phi;
+            event_.RPCf_re4[j] = detId.region(); 
+            event_.RPCf_ri4[j] = detId.ring(); 
+            event_.RPCf_st4[j] = detId.station(); 
+            event_.RPCf_se4[j] = detId.sector();
+            event_.RPCf_la4[j] = detId.layer(); 
+            event_.RPCf_su4[j] = detId.subsector(); 
+            event_.RPCf_ro4[j] = detId.roll();
+            break;
+          case 5:
+            event_.RPCf_bx5[j] = link.bx(i); 
+            event_.RPCf_strip5[j] = link.strip(i); 
+            event_.RPCf_phi5[j] = phi;
+            event_.RPCf_re5[j] = detId.region(); 
+            event_.RPCf_ri5[j] = detId.ring(); 
+            event_.RPCf_st5[j] = detId.station(); 
+            event_.RPCf_se5[j] = detId.sector();
+            event_.RPCf_la5[j] = detId.layer(); 
+            event_.RPCf_su5[j] = detId.subsector(); 
+            event_.RPCf_ro5[j] = detId.roll();
+            break;
+          case 6:
+            event_.RPCf_bx6[j] = link.bx(i); 
+            event_.RPCf_strip6[j] = link.strip(i); 
+            event_.RPCf_phi6[j] = phi;
+            event_.RPCf_re6[j] = detId.region(); 
+            event_.RPCf_ri6[j] = detId.ring(); 
+            event_.RPCf_st6[j] = detId.station(); 
+            event_.RPCf_se6[j] = detId.sector();
+            event_.RPCf_la6[j] = detId.layer(); 
+            event_.RPCf_su6[j] = detId.subsector(); 
+            event_.RPCf_ro6[j] = detId.roll();
+            break;
+          };
+        } 
+      }
+    }
 
 
     // calculate the number of L1Tk within 0.12
@@ -1849,6 +2181,17 @@ DisplacedL1MuFilter::fillDescriptions(edm::ConfigurationDescriptions& descriptio
   descriptions.addDefault(desc);
 }
 
+float 
+DisplacedL1MuFilter::getGlobalPhi(unsigned int rawid, int stripN)
+{  
+  const RPCDetId id(rawid);
+  std::unique_ptr<const RPCRoll>  roll(rpcGeometry_->roll(id));
+  const uint16_t strip = stripN;
+  const LocalPoint lp = roll->centreOfStrip(strip);
+  const GlobalPoint gp = roll->toGlobal(lp);
+  roll.release();
+  return gp.phi();
+}
 
 GlobalPoint 
 DisplacedL1MuFilter::extrapolateGP(const reco::GenParticle &tk)
@@ -2236,20 +2579,217 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_phi", event_.CSCTF_phi,"CSCTF_phi[nCSCTF]/F");
   event_tree_->Branch("CSCTF_bx", event_.CSCTF_bx,"CSCTF_bx[nCSCTF]/F");
   event_tree_->Branch("CSCTF_nStubs", event_.CSCTF_nStubs,"CSCTF_nStubs[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_quality", event_.CSCTF_quality,"CSCTF_quality[nCSCTF]/F");
 
-    // event_.CSCTF_st1[i] = 99; 
-    // event_.CSCTF_ri1[i] = 99; 
-    // event_.CSCTF_ch1[i] = 99; 
-    // event_.CSCTF_en1[i] = 99;;
-    // event_.CSCTF_trk1[i] = 99; 
-    // event_.CSCTF_quality1[i] = 99; 
-    // event_.CSCTF_wg1[i] = 99; 
-    // event_.CSCTF_hs1[i] = 99;; 
-    // event_.CSCTF_pat1[i] = 99; 
-    // event_.CSCTF_bend1[i] = 99; 
-    // event_.CSCTF_bx1[i] = 99; 
-    // event_.CSCTF_clctpat1[i] = 99;;
+  event_tree_->Branch("CSCTF_st1", event_.CSCTF_st1,"CSCTF_st1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_ri1", event_.CSCTF_ri1,"CSCTF_ri1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_ch1", event_.CSCTF_ch1,"CSCTF_ch1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_en1", event_.CSCTF_en1,"CSCTF_en1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_trk1", event_.CSCTF_trk1,"CSCTF_trk1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_quality1", event_.CSCTF_quality1,"CSCTF_quality1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_wg1", event_.CSCTF_wg1,"CSCTF_wg1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_hs1", event_.CSCTF_hs1,"CSCTF_hs1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_pat1", event_.CSCTF_pat1,"CSCTF_pat1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_bend1", event_.CSCTF_bend1,"CSCTF_bend1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_bx1", event_.CSCTF_bx1,"CSCTF_bx1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_clctpat1", event_.CSCTF_clctpat1,"CSCTF_clctpat1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_val1", event_.CSCTF_val1,"CSCTF_val1[nCSCTF]/F");
 
+  event_tree_->Branch("CSCTF_st2", event_.CSCTF_st2,"CSCTF_st2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_ri2", event_.CSCTF_ri2,"CSCTF_ri2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_ch2", event_.CSCTF_ch2,"CSCTF_ch2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_en2", event_.CSCTF_en2,"CSCTF_en2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_trk2", event_.CSCTF_trk2,"CSCTF_trk2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_quality2", event_.CSCTF_quality2,"CSCTF_quality2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_wg2", event_.CSCTF_wg2,"CSCTF_wg2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_hs2", event_.CSCTF_hs2,"CSCTF_hs2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_pat2", event_.CSCTF_pat2,"CSCTF_pat2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_bend2", event_.CSCTF_bend2,"CSCTF_bend2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_bx2", event_.CSCTF_bx2,"CSCTF_bx2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_clctpat2", event_.CSCTF_clctpat2,"CSCTF_clctpat2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_val2", event_.CSCTF_val2,"CSCTF_val2[nCSCTF]/F");
+
+  event_tree_->Branch("CSCTF_st3", event_.CSCTF_st3,"CSCTF_st3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_ri3", event_.CSCTF_ri3,"CSCTF_ri3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_ch3", event_.CSCTF_ch3,"CSCTF_ch3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_en3", event_.CSCTF_en3,"CSCTF_en3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_trk3", event_.CSCTF_trk3,"CSCTF_trk3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_quality3", event_.CSCTF_quality3,"CSCTF_quality3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_wg3", event_.CSCTF_wg3,"CSCTF_wg3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_hs3", event_.CSCTF_hs3,"CSCTF_hs3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_pat3", event_.CSCTF_pat3,"CSCTF_pat3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_bend3", event_.CSCTF_bend3,"CSCTF_bend3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_bx3", event_.CSCTF_bx3,"CSCTF_bx3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_clctpat3", event_.CSCTF_clctpat3,"CSCTF_clctpat3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_val3", event_.CSCTF_val3,"CSCTF_val3[nCSCTF]/F");
+
+  event_tree_->Branch("CSCTF_st4", event_.CSCTF_st4,"CSCTF_st4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_ri4", event_.CSCTF_ri4,"CSCTF_ri4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_ch4", event_.CSCTF_ch4,"CSCTF_ch4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_en4", event_.CSCTF_en4,"CSCTF_en4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_trk4", event_.CSCTF_trk4,"CSCTF_trk4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_quality4", event_.CSCTF_quality4,"CSCTF_quality4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_wg4", event_.CSCTF_wg4,"CSCTF_wg4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_hs4", event_.CSCTF_hs4,"CSCTF_hs4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_pat4", event_.CSCTF_pat4,"CSCTF_pat4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_bend4", event_.CSCTF_bend4,"CSCTF_bend4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_bx4", event_.CSCTF_bx4,"CSCTF_bx4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_clctpat4", event_.CSCTF_clctpat4,"CSCTF_clctpat4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_val4", event_.CSCTF_val4,"CSCTF_val4[nCSCTF]/F");
+
+
+  event_tree_->Branch("nRPCb", &event_.nRPCb);
+  event_tree_->Branch("L1Mu_RPCb_index", event_.L1Mu_RPCb_index,"L1Mu_RPCb_index[nL1Mu]/I");
+
+  event_tree_->Branch("RPCb_pt", event_.RPCb_pt,"RPCb_pt[nRPCb]/F");
+  event_tree_->Branch("RPCb_eta", event_.RPCb_eta,"RPCb_eta[nRPCb]/F");
+  event_tree_->Branch("RPCb_phi", event_.RPCb_phi,"RPCb_phi[nRPCb]/F");
+  event_tree_->Branch("RPCb_bx", event_.RPCb_bx,"RPCb_bx[nRPCb]/F");
+  event_tree_->Branch("RPCb_nStubs", event_.RPCb_nStubs,"RPCb_nStubs[nRPCb]/F");
+  event_tree_->Branch("RPCb_quality", event_.RPCb_quality,"RPCb_quality[nRPCb]/F");
+
+  event_tree_->Branch("RPCb_bx1", event_.RPCb_bx1,"RPCb_bx1[nRPCb]/F");
+  event_tree_->Branch("RPCb_strip1", event_.RPCb_strip1,"RPCb_strip1[nRPCb]/F");
+  event_tree_->Branch("RPCb_phi1", event_.RPCb_phi1,"RPCb_phi1[nRPCb]/F");
+  event_tree_->Branch("RPCb_re1", event_.RPCb_re1,"RPCb_re1[nRPCb]/F");
+  event_tree_->Branch("RPCb_ri1", event_.RPCb_ri1,"RPCb_ri1[nRPCb]/F");
+  event_tree_->Branch("RPCb_st1", event_.RPCb_st1,"RPCb_st1[nRPCb]/F");
+  event_tree_->Branch("RPCb_se1", event_.RPCb_se1,"RPCb_se1[nRPCb]/F");
+  event_tree_->Branch("RPCb_la1", event_.RPCb_la1,"RPCb_la1[nRPCb]/F");
+  event_tree_->Branch("RPCb_su1", event_.RPCb_su1,"RPCb_su1[nRPCb]/F");
+  event_tree_->Branch("RPCb_ro1", event_.RPCb_ro1,"RPCb_ro1[nRPCb]/F");
+  
+  event_tree_->Branch("RPCb_bx2", event_.RPCb_bx2,"RPCb_bx2[nRPCb]/F");
+  event_tree_->Branch("RPCb_strip2", event_.RPCb_strip2,"RPCb_strip2[nRPCb]/F");
+  event_tree_->Branch("RPCb_phi2", event_.RPCb_phi2,"RPCb_phi2[nRPCb]/F");
+  event_tree_->Branch("RPCb_re2", event_.RPCb_re2,"RPCb_re2[nRPCb]/F");
+  event_tree_->Branch("RPCb_ri2", event_.RPCb_ri2,"RPCb_ri2[nRPCb]/F");
+  event_tree_->Branch("RPCb_st2", event_.RPCb_st2,"RPCb_st2[nRPCb]/F");
+  event_tree_->Branch("RPCb_se2", event_.RPCb_se2,"RPCb_se2[nRPCb]/F");
+  event_tree_->Branch("RPCb_la2", event_.RPCb_la2,"RPCb_la2[nRPCb]/F");
+  event_tree_->Branch("RPCb_su2", event_.RPCb_su2,"RPCb_su2[nRPCb]/F");
+  event_tree_->Branch("RPCb_ro2", event_.RPCb_ro2,"RPCb_ro2[nRPCb]/F");
+
+  event_tree_->Branch("RPCb_bx3", event_.RPCb_bx3,"RPCb_bx3[nRPCb]/F");
+  event_tree_->Branch("RPCb_strip3", event_.RPCb_strip3,"RPCb_strip3[nRPCb]/F");
+  event_tree_->Branch("RPCb_phi3", event_.RPCb_phi3,"RPCb_phi3[nRPCb]/F");
+  event_tree_->Branch("RPCb_re3", event_.RPCb_re3,"RPCb_re3[nRPCb]/F");
+  event_tree_->Branch("RPCb_ri3", event_.RPCb_ri3,"RPCb_ri3[nRPCb]/F");
+  event_tree_->Branch("RPCb_st3", event_.RPCb_st3,"RPCb_st3[nRPCb]/F");
+  event_tree_->Branch("RPCb_se3", event_.RPCb_se3,"RPCb_se3[nRPCb]/F");
+  event_tree_->Branch("RPCb_la3", event_.RPCb_la3,"RPCb_la3[nRPCb]/F");
+  event_tree_->Branch("RPCb_su3", event_.RPCb_su3,"RPCb_su3[nRPCb]/F");
+  event_tree_->Branch("RPCb_ro3", event_.RPCb_ro3,"RPCb_ro3[nRPCb]/F");
+
+  event_tree_->Branch("RPCb_bx4", event_.RPCb_bx4,"RPCb_bx4[nRPCb]/F");
+  event_tree_->Branch("RPCb_strip4", event_.RPCb_strip4,"RPCb_strip4[nRPCb]/F");
+  event_tree_->Branch("RPCb_phi4", event_.RPCb_phi4,"RPCb_phi4[nRPCb]/F");
+  event_tree_->Branch("RPCb_re4", event_.RPCb_re4,"RPCb_re4[nRPCb]/F");
+  event_tree_->Branch("RPCb_ri4", event_.RPCb_ri4,"RPCb_ri4[nRPCb]/F");
+  event_tree_->Branch("RPCb_st4", event_.RPCb_st4,"RPCb_st4[nRPCb]/F");
+  event_tree_->Branch("RPCb_se4", event_.RPCb_se4,"RPCb_se4[nRPCb]/F");
+  event_tree_->Branch("RPCb_la4", event_.RPCb_la4,"RPCb_la4[nRPCb]/F");
+  event_tree_->Branch("RPCb_su4", event_.RPCb_su4,"RPCb_su4[nRPCb]/F");
+  event_tree_->Branch("RPCb_ro4", event_.RPCb_ro4,"RPCb_ro4[nRPCb]/F");
+
+  event_tree_->Branch("RPCb_bx5", event_.RPCb_bx5,"RPCb_bx5[nRPCb]/F");
+  event_tree_->Branch("RPCb_strip5", event_.RPCb_strip5,"RPCb_strip5[nRPCb]/F");
+  event_tree_->Branch("RPCb_phi5", event_.RPCb_phi5,"RPCb_phi5[nRPCb]/F");
+  event_tree_->Branch("RPCb_re5", event_.RPCb_re5,"RPCb_re5[nRPCb]/F");
+  event_tree_->Branch("RPCb_ri5", event_.RPCb_ri5,"RPCb_ri5[nRPCb]/F");
+  event_tree_->Branch("RPCb_st5", event_.RPCb_st5,"RPCb_st5[nRPCb]/F");
+  event_tree_->Branch("RPCb_se5", event_.RPCb_se5,"RPCb_se5[nRPCb]/F");
+  event_tree_->Branch("RPCb_la5", event_.RPCb_la5,"RPCb_la5[nRPCb]/F");
+  event_tree_->Branch("RPCb_su5", event_.RPCb_su5,"RPCb_su5[nRPCb]/F");
+  event_tree_->Branch("RPCb_ro5", event_.RPCb_ro5,"RPCb_ro5[nRPCb]/F");
+
+  event_tree_->Branch("RPCb_bx6", event_.RPCb_bx6,"RPCb_bx6[nRPCb]/F");
+  event_tree_->Branch("RPCb_strip6", event_.RPCb_strip6,"RPCb_strip6[nRPCb]/F");
+  event_tree_->Branch("RPCb_phi6", event_.RPCb_phi6,"RPCb_phi6[nRPCb]/F");
+  event_tree_->Branch("RPCb_re6", event_.RPCb_re6,"RPCb_re6[nRPCb]/F");
+  event_tree_->Branch("RPCb_ri6", event_.RPCb_ri6,"RPCb_ri6[nRPCb]/F");
+  event_tree_->Branch("RPCb_st6", event_.RPCb_st6,"RPCb_st6[nRPCb]/F");
+  event_tree_->Branch("RPCb_se6", event_.RPCb_se6,"RPCb_se6[nRPCb]/F");
+  event_tree_->Branch("RPCb_la6", event_.RPCb_la6,"RPCb_la6[nRPCb]/F");
+  event_tree_->Branch("RPCb_su6", event_.RPCb_su6,"RPCb_su6[nRPCb]/F");
+  event_tree_->Branch("RPCb_ro6", event_.RPCb_ro6,"RPCb_ro6[nRPCb]/F");
+
+
+  event_tree_->Branch("nRPCf", &event_.nRPCf);
+  event_tree_->Branch("L1Mu_RPCf_index", event_.L1Mu_RPCf_index,"L1Mu_RPCf_index[nL1Mu]/I");
+
+  event_tree_->Branch("RPCf_pt", event_.RPCf_pt,"RPCf_pt[nRPCf]/F");
+  event_tree_->Branch("RPCf_eta", event_.RPCf_eta,"RPCf_eta[nRPCf]/F");
+  event_tree_->Branch("RPCf_phi", event_.RPCf_phi,"RPCf_phi[nRPCf]/F");
+  event_tree_->Branch("RPCf_bx", event_.RPCf_bx,"RPCf_bx[nRPCf]/F");
+  event_tree_->Branch("RPCf_nStubs", event_.RPCf_nStubs,"RPCf_nStubs[nRPCf]/F");
+  event_tree_->Branch("RPCf_quality", event_.RPCf_quality,"RPCf_quality[nRPCf]/F");
+
+  event_tree_->Branch("RPCf_bx1", event_.RPCf_bx1,"RPCf_bx1[nRPCf]/F");
+  event_tree_->Branch("RPCf_strip1", event_.RPCf_strip1,"RPCf_strip1[nRPCf]/F");
+  event_tree_->Branch("RPCf_phi1", event_.RPCf_phi1,"RPCf_phi1[nRPCf]/F");
+  event_tree_->Branch("RPCf_re1", event_.RPCf_re1,"RPCf_re1[nRPCf]/F");
+  event_tree_->Branch("RPCf_ri1", event_.RPCf_ri1,"RPCf_ri1[nRPCf]/F");
+  event_tree_->Branch("RPCf_st1", event_.RPCf_st1,"RPCf_st1[nRPCf]/F");
+  event_tree_->Branch("RPCf_se1", event_.RPCf_se1,"RPCf_se1[nRPCf]/F");
+  event_tree_->Branch("RPCf_la1", event_.RPCf_la1,"RPCf_la1[nRPCf]/F");
+  event_tree_->Branch("RPCf_su1", event_.RPCf_su1,"RPCf_su1[nRPCf]/F");
+  event_tree_->Branch("RPCf_ro1", event_.RPCf_ro1,"RPCf_ro1[nRPCf]/F");
+  
+  event_tree_->Branch("RPCf_bx2", event_.RPCf_bx2,"RPCf_bx2[nRPCf]/F");
+  event_tree_->Branch("RPCf_strip2", event_.RPCf_strip2,"RPCf_strip2[nRPCf]/F");
+  event_tree_->Branch("RPCf_phi2", event_.RPCf_phi2,"RPCf_phi2[nRPCf]/F");
+  event_tree_->Branch("RPCf_re2", event_.RPCf_re2,"RPCf_re2[nRPCf]/F");
+  event_tree_->Branch("RPCf_ri2", event_.RPCf_ri2,"RPCf_ri2[nRPCf]/F");
+  event_tree_->Branch("RPCf_st2", event_.RPCf_st2,"RPCf_st2[nRPCf]/F");
+  event_tree_->Branch("RPCf_se2", event_.RPCf_se2,"RPCf_se2[nRPCf]/F");
+  event_tree_->Branch("RPCf_la2", event_.RPCf_la2,"RPCf_la2[nRPCf]/F");
+  event_tree_->Branch("RPCf_su2", event_.RPCf_su2,"RPCf_su2[nRPCf]/F");
+  event_tree_->Branch("RPCf_ro2", event_.RPCf_ro2,"RPCf_ro2[nRPCf]/F");
+
+  event_tree_->Branch("RPCf_bx3", event_.RPCf_bx3,"RPCf_bx3[nRPCf]/F");
+  event_tree_->Branch("RPCf_strip3", event_.RPCf_strip3,"RPCf_strip3[nRPCf]/F");
+  event_tree_->Branch("RPCf_phi3", event_.RPCf_phi3,"RPCf_phi3[nRPCf]/F");
+  event_tree_->Branch("RPCf_re3", event_.RPCf_re3,"RPCf_re3[nRPCf]/F");
+  event_tree_->Branch("RPCf_ri3", event_.RPCf_ri3,"RPCf_ri3[nRPCf]/F");
+  event_tree_->Branch("RPCf_st3", event_.RPCf_st3,"RPCf_st3[nRPCf]/F");
+  event_tree_->Branch("RPCf_se3", event_.RPCf_se3,"RPCf_se3[nRPCf]/F");
+  event_tree_->Branch("RPCf_la3", event_.RPCf_la3,"RPCf_la3[nRPCf]/F");
+  event_tree_->Branch("RPCf_su3", event_.RPCf_su3,"RPCf_su3[nRPCf]/F");
+  event_tree_->Branch("RPCf_ro3", event_.RPCf_ro3,"RPCf_ro3[nRPCf]/F");
+
+  event_tree_->Branch("RPCf_bx4", event_.RPCf_bx4,"RPCf_bx4[nRPCf]/F");
+  event_tree_->Branch("RPCf_strip4", event_.RPCf_strip4,"RPCf_strip4[nRPCf]/F");
+  event_tree_->Branch("RPCf_phi4", event_.RPCf_phi4,"RPCf_phi4[nRPCf]/F");
+  event_tree_->Branch("RPCf_re4", event_.RPCf_re4,"RPCf_re4[nRPCf]/F");
+  event_tree_->Branch("RPCf_ri4", event_.RPCf_ri4,"RPCf_ri4[nRPCf]/F");
+  event_tree_->Branch("RPCf_st4", event_.RPCf_st4,"RPCf_st4[nRPCf]/F");
+  event_tree_->Branch("RPCf_se4", event_.RPCf_se4,"RPCf_se4[nRPCf]/F");
+  event_tree_->Branch("RPCf_la4", event_.RPCf_la4,"RPCf_la4[nRPCf]/F");
+  event_tree_->Branch("RPCf_su4", event_.RPCf_su4,"RPCf_su4[nRPCf]/F");
+  event_tree_->Branch("RPCf_ro4", event_.RPCf_ro4,"RPCf_ro4[nRPCf]/F");
+
+  event_tree_->Branch("RPCf_bx5", event_.RPCf_bx5,"RPCf_bx5[nRPCf]/F");
+  event_tree_->Branch("RPCf_strip5", event_.RPCf_strip5,"RPCf_strip5[nRPCf]/F");
+  event_tree_->Branch("RPCf_phi5", event_.RPCf_phi5,"RPCf_phi5[nRPCf]/F");
+  event_tree_->Branch("RPCf_re5", event_.RPCf_re5,"RPCf_re5[nRPCf]/F");
+  event_tree_->Branch("RPCf_ri5", event_.RPCf_ri5,"RPCf_ri5[nRPCf]/F");
+  event_tree_->Branch("RPCf_st5", event_.RPCf_st5,"RPCf_st5[nRPCf]/F");
+  event_tree_->Branch("RPCf_se5", event_.RPCf_se5,"RPCf_se5[nRPCf]/F");
+  event_tree_->Branch("RPCf_la5", event_.RPCf_la5,"RPCf_la5[nRPCf]/F");
+  event_tree_->Branch("RPCf_su5", event_.RPCf_su5,"RPCf_su5[nRPCf]/F");
+  event_tree_->Branch("RPCf_ro5", event_.RPCf_ro5,"RPCf_ro5[nRPCf]/F");
+
+  event_tree_->Branch("RPCf_bx6", event_.RPCf_bx6,"RPCf_bx6[nRPCf]/F");
+  event_tree_->Branch("RPCf_strip6", event_.RPCf_strip6,"RPCf_strip6[nRPCf]/F");
+  event_tree_->Branch("RPCf_phi6", event_.RPCf_phi6,"RPCf_phi6[nRPCf]/F");
+  event_tree_->Branch("RPCf_re6", event_.RPCf_re6,"RPCf_re6[nRPCf]/F");
+  event_tree_->Branch("RPCf_ri6", event_.RPCf_ri6,"RPCf_ri6[nRPCf]/F");
+  event_tree_->Branch("RPCf_st6", event_.RPCf_st6,"RPCf_st6[nRPCf]/F");
+  event_tree_->Branch("RPCf_se6", event_.RPCf_se6,"RPCf_se6[nRPCf]/F");
+  event_tree_->Branch("RPCf_la6", event_.RPCf_la6,"RPCf_la6[nRPCf]/F");
+  event_tree_->Branch("RPCf_su6", event_.RPCf_su6,"RPCf_su6[nRPCf]/F");
+  event_tree_->Branch("RPCf_ro6", event_.RPCf_ro6,"RPCf_ro6[nRPCf]/F");
 }
 
 
@@ -2373,6 +2913,8 @@ DisplacedL1MuFilter::clearBranches()
     event_.L1Mu_L1Tk_pt_prop[i] = -99.;
     event_.L1Mu_DTTF_index[i] = -1;
     event_.L1Mu_CSCTF_index[i] = -1;
+    event_.L1Mu_RPCb_index[i] = -1;
+    event_.L1Mu_RPCf_index[i] = -1;
   }
 
   for (int i=0; i<kMaxL1Tk; ++i){
@@ -2469,7 +3011,7 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_pt[i] = 99;
     event_.CSCTF_eta[i] = 99;
     event_.CSCTF_phi[i] = 99;
-    event_.CSCTF_nStubs[i] = 99;
+    event_.CSCTF_nStubs[i] = 0;
 
     event_.CSCTF_st1[i] = 99; 
     event_.CSCTF_ri1[i] = 99; 
@@ -2526,6 +3068,160 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_bx4[i] = 99; 
     event_.CSCTF_clctpat4[i] = 99;
     event_.CSCTF_val4[i] = 99;
+  }
+
+  event_.nRPCb = 0;
+
+  for (int i=0; i<kMaxRPCb; ++i){
+    event_.RPCb_pt[i] = 99;
+    event_.RPCb_eta[i] = 99;
+    event_.RPCb_phi[i] = 99;
+    event_.RPCb_bx[i] = 99;
+    event_.RPCb_nStubs[i] = 0;
+    event_.RPCb_quality[i] = 99;
+    
+    event_.RPCb_bx1[i] = 99;
+    event_.RPCb_strip1[i] = 99;
+    event_.RPCb_phi1[i] = 99;
+    event_.RPCb_re1[i] = 99;
+    event_.RPCb_ri1[i] = 99;
+    event_.RPCb_st1[i] = 99;
+    event_.RPCb_se1[i] = 99;
+    event_.RPCb_la1[i] = 99;
+    event_.RPCb_su1[i] = 99;
+    event_.RPCb_ro1[i] = 99;
+
+    event_.RPCb_bx2[i] = 99;
+    event_.RPCb_strip2[i] = 99;
+    event_.RPCb_phi2[i] = 99;
+    event_.RPCb_re2[i] = 99;
+    event_.RPCb_ri2[i] = 99;
+    event_.RPCb_st2[i] = 99;
+    event_.RPCb_se2[i] = 99;
+    event_.RPCb_la2[i] = 99;
+    event_.RPCb_su2[i] = 99;
+    event_.RPCb_ro2[i] = 99;
+
+    event_.RPCb_bx3[i] = 99;
+    event_.RPCb_strip3[i] = 99;
+    event_.RPCb_phi3[i] = 99;
+    event_.RPCb_re3[i] = 99;
+    event_.RPCb_ri3[i] = 99;
+    event_.RPCb_st3[i] = 99;
+    event_.RPCb_se3[i] = 99;
+    event_.RPCb_la3[i] = 99;
+    event_.RPCb_su3[i] = 99;
+    event_.RPCb_ro3[i] = 99;
+
+    event_.RPCb_bx4[i] = 99;
+    event_.RPCb_strip4[i] = 99;
+    event_.RPCb_phi4[i] = 99;
+    event_.RPCb_re4[i] = 99;
+    event_.RPCb_ri4[i] = 99;
+    event_.RPCb_st4[i] = 99;
+    event_.RPCb_se4[i] = 99;
+    event_.RPCb_la4[i] = 99;
+    event_.RPCb_su4[i] = 99;
+    event_.RPCb_ro4[i] = 99;
+
+    event_.RPCb_bx5[i] = 99;
+    event_.RPCb_strip5[i] = 99;
+    event_.RPCb_phi5[i] = 99;
+    event_.RPCb_re5[i] = 99;
+    event_.RPCb_ri5[i] = 99;
+    event_.RPCb_st5[i] = 99;
+    event_.RPCb_se5[i] = 99;
+    event_.RPCb_la5[i] = 99;
+    event_.RPCb_su5[i] = 99;
+    event_.RPCb_ro5[i] = 99;
+
+    event_.RPCb_bx6[i] = 99;
+    event_.RPCb_strip6[i] = 99;
+    event_.RPCb_phi6[i] = 99;
+    event_.RPCb_re6[i] = 99;
+    event_.RPCb_ri6[i] = 99;
+    event_.RPCb_st6[i] = 99;
+    event_.RPCb_se6[i] = 99;
+    event_.RPCb_la6[i] = 99;
+    event_.RPCb_su6[i] = 99;
+    event_.RPCb_ro6[i] = 99;
+  }
+
+  event_.nRPCf = 0;
+
+  for (int i=0; i<kMaxRPCf; ++i){
+    event_.RPCf_pt[i] = 99;
+    event_.RPCf_eta[i] = 99;
+    event_.RPCf_phi[i] = 99;
+    event_.RPCf_bx[i] = 99;
+    event_.RPCf_nStubs[i] = 0;
+    event_.RPCf_quality[i] = 99;
+    
+    event_.RPCf_bx1[i] = 99;
+    event_.RPCf_strip1[i] = 99;
+    event_.RPCf_phi1[i] = 99;
+    event_.RPCf_re1[i] = 99;
+    event_.RPCf_ri1[i] = 99;
+    event_.RPCf_st1[i] = 99;
+    event_.RPCf_se1[i] = 99;
+    event_.RPCf_la1[i] = 99;
+    event_.RPCf_su1[i] = 99;
+    event_.RPCf_ro1[i] = 99;
+
+    event_.RPCf_bx2[i] = 99;
+    event_.RPCf_strip2[i] = 99;
+    event_.RPCf_phi2[i] = 99;
+    event_.RPCf_re2[i] = 99;
+    event_.RPCf_ri2[i] = 99;
+    event_.RPCf_st2[i] = 99;
+    event_.RPCf_se2[i] = 99;
+    event_.RPCf_la2[i] = 99;
+    event_.RPCf_su2[i] = 99;
+    event_.RPCf_ro2[i] = 99;
+
+    event_.RPCf_bx3[i] = 99;
+    event_.RPCf_strip3[i] = 99;
+    event_.RPCf_phi3[i] = 99;
+    event_.RPCf_re3[i] = 99;
+    event_.RPCf_ri3[i] = 99;
+    event_.RPCf_st3[i] = 99;
+    event_.RPCf_se3[i] = 99;
+    event_.RPCf_la3[i] = 99;
+    event_.RPCf_su3[i] = 99;
+    event_.RPCf_ro3[i] = 99;
+
+    event_.RPCf_bx4[i] = 99;
+    event_.RPCf_strip4[i] = 99;
+    event_.RPCf_phi4[i] = 99;
+    event_.RPCf_re4[i] = 99;
+    event_.RPCf_ri4[i] = 99;
+    event_.RPCf_st4[i] = 99;
+    event_.RPCf_se4[i] = 99;
+    event_.RPCf_la4[i] = 99;
+    event_.RPCf_su4[i] = 99;
+    event_.RPCf_ro4[i] = 99;
+
+    event_.RPCf_bx5[i] = 99;
+    event_.RPCf_strip5[i] = 99;
+    event_.RPCf_phi5[i] = 99;
+    event_.RPCf_re5[i] = 99;
+    event_.RPCf_ri5[i] = 99;
+    event_.RPCf_st5[i] = 99;
+    event_.RPCf_se5[i] = 99;
+    event_.RPCf_la5[i] = 99;
+    event_.RPCf_su5[i] = 99;
+    event_.RPCf_ro5[i] = 99;
+
+    event_.RPCf_bx6[i] = 99;
+    event_.RPCf_strip6[i] = 99;
+    event_.RPCf_phi6[i] = 99;
+    event_.RPCf_re6[i] = 99;
+    event_.RPCf_ri6[i] = 99;
+    event_.RPCf_st6[i] = 99;
+    event_.RPCf_se6[i] = 99;
+    event_.RPCf_la6[i] = 99;
+    event_.RPCf_su6[i] = 99;
+    event_.RPCf_ro6[i] = 99;
   }
 }
 

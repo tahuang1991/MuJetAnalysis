@@ -53,7 +53,7 @@ def p0_p1_library(st1, st2):
 def getPtFromDphi(st1, st2, dphi1, dphi2):
   if dphi1 != 99 and dphi2 != 99 and dphi1 != dphi2:
     values = p0_p1_library(st1, st2)
-    return values[0] + 1./(dphi1-dphi2)*values[1]
+    return values[0] + 1./abs(dphi1-dphi2)*values[1]
   else: 
     return -1
  
@@ -89,6 +89,7 @@ if __name__ == "__main__":
 
     ## declare plots
     nDT_stubs = TH1F("nDT_stubs","", 16,0.,16)
+    nDT_stubs_vs_dxy = TH2F("nDT_stubs_vs_dxy","", 16,0.,16,100,0,100)
     nCSC_stubs = TH1F("nCSC_stubs","", 16,0.,16)
 
     phiDTst1_phiDTst2 = TH1F("phiDTst1_phiDTst2","", 100,-1.,1.)
@@ -159,6 +160,25 @@ if __name__ == "__main__":
     L1MuPt10_GenMuPt_dxy200to500 = TH1F("L1MuPt10_GenMuPt_dxy200to500","", 60,0.,60)
     L1MuPt15_GenMuPt_dxy200to500 = TH1F("L1MuPt15_GenMuPt_dxy200to500","", 60,0.,60)
     L1MuPt20_GenMuPt_dxy200to500 = TH1F("L1MuPt20_GenMuPt_dxy200to500","", 60,0.,60)
+
+
+    DPhiPt10_GenMuPt = TH1F("DPhiPt10_GenMuPt","", 60,0.,60)
+    DPhiPt15_GenMuPt = TH1F("DPhiPt15_GenMuPt","", 60,0.,60)
+    DPhiPt20_GenMuPt = TH1F("DPhiPt20_GenMuPt","", 60,0.,60)
+
+    DPhiPt10_GenMuPt_dxy0to5 = TH1F("DPhiPt10_GenMuPt_dxy0to5","", 60,0.,60)
+    DPhiPt15_GenMuPt_dxy0to5 = TH1F("DPhiPt15_GenMuPt_dxy0to5","", 60,0.,60)
+    DPhiPt20_GenMuPt_dxy0to5 = TH1F("DPhiPt20_GenMuPt_dxy0to5","", 60,0.,60)
+
+    DPhiPt10_GenMuPt_dxy50to100 = TH1F("DPhiPt10_GenMuPt_dxy50to100","", 60,0.,60)
+    DPhiPt15_GenMuPt_dxy50to100 = TH1F("DPhiPt15_GenMuPt_dxy50to100","", 60,0.,60)
+    DPhiPt20_GenMuPt_dxy50to100 = TH1F("DPhiPt20_GenMuPt_dxy50to100","", 60,0.,60)
+
+    DPhiPt10_GenMuPt_dxy200to500 = TH1F("DPhiPt10_GenMuPt_dxy200to500","", 60,0.,60)
+    DPhiPt15_GenMuPt_dxy200to500 = TH1F("DPhiPt15_GenMuPt_dxy200to500","", 60,0.,60)
+    DPhiPt20_GenMuPt_dxy200to500 = TH1F("DPhiPt20_GenMuPt_dxy200to500","", 60,0.,60)
+
+
 
     for k in range(0,treeHits.GetEntries()):
       treeHits.GetEntry(k)
@@ -304,21 +324,24 @@ if __name__ == "__main__":
               print "Pt from 3, 4", getPtFromDphi(3,4,DTTF_phib3,DTTF_phib4)
 
               ## fill histograms
-              phiDTst1_phiDTst2.Fill(DTTF_phib1-DTTF_phib2)
-              phiDTst1_phiDTst3.Fill(DTTF_phib1-DTTF_phib3)
-              phiDTst1_phiDTst4.Fill(DTTF_phib1-DTTF_phib4)
-              phiDTst2_phiDTst3.Fill(DTTF_phib2-DTTF_phib3)
-              phiDTst2_phiDTst4.Fill(DTTF_phib2-DTTF_phib4)
-              phiDTst3_phiDTst4.Fill(DTTF_phib3-DTTF_phib4)
+              if DTTF_phib1 != 99 and DTTF_phib2 != 99: phiDTst1_phiDTst2.Fill(DTTF_phib1-DTTF_phib2)
+              if DTTF_phib1 != 99 and DTTF_phib3 != 99: phiDTst1_phiDTst3.Fill(DTTF_phib1-DTTF_phib3)
+              if DTTF_phib1 != 99 and DTTF_phib4 != 99: phiDTst1_phiDTst4.Fill(DTTF_phib1-DTTF_phib4)
+              if DTTF_phib2 != 99 and DTTF_phib3 != 99: phiDTst2_phiDTst3.Fill(DTTF_phib2-DTTF_phib3)
+              if DTTF_phib2 != 99 and DTTF_phib4 != 99: phiDTst2_phiDTst4.Fill(DTTF_phib2-DTTF_phib4)
+              if DTTF_phib3 != 99 and DTTF_phib4 != 99: phiDTst3_phiDTst4.Fill(DTTF_phib3-DTTF_phib4)
 
-              GenMuPt_vs_phiDTst1_phiDTst2.Fill(pt, DTTF_phib1-DTTF_phib2)
-              GenMuPt_vs_phiDTst1_phiDTst3.Fill(pt, DTTF_phib1-DTTF_phib3)
-              GenMuPt_vs_phiDTst1_phiDTst4.Fill(pt, DTTF_phib1-DTTF_phib4)
-              GenMuPt_vs_phiDTst2_phiDTst3.Fill(pt, DTTF_phib2-DTTF_phib3)
-              GenMuPt_vs_phiDTst2_phiDTst4.Fill(pt, DTTF_phib2-DTTF_phib4)
-              GenMuPt_vs_phiDTst3_phiDTst4.Fill(pt, DTTF_phib3-DTTF_phib4)
+              if DTTF_phib1 != 99 and DTTF_phib2 != 99: GenMuPt_vs_phiDTst1_phiDTst2.Fill(pt, DTTF_phib1-DTTF_phib2)
+              if DTTF_phib1 != 99 and DTTF_phib3 != 99: GenMuPt_vs_phiDTst1_phiDTst3.Fill(pt, DTTF_phib1-DTTF_phib3)
+              if DTTF_phib1 != 99 and DTTF_phib4 != 99: GenMuPt_vs_phiDTst1_phiDTst4.Fill(pt, DTTF_phib1-DTTF_phib4)
+              if DTTF_phib2 != 99 and DTTF_phib3 != 99: GenMuPt_vs_phiDTst2_phiDTst3.Fill(pt, DTTF_phib2-DTTF_phib3)
+              if DTTF_phib2 != 99 and DTTF_phib4 != 99: GenMuPt_vs_phiDTst2_phiDTst4.Fill(pt, DTTF_phib2-DTTF_phib4)
+              if DTTF_phib3 != 99 and DTTF_phib4 != 99: GenMuPt_vs_phiDTst3_phiDTst4.Fill(pt, DTTF_phib3-DTTF_phib4)
 
-              nDT_stubs.Fill(L1Mu_status(DTTF_phib1, DTTF_phib2, DTTF_phib3, DTTF_phib4) ) 
+              L1Mu_DT_status = L1Mu_status(DTTF_phib1, DTTF_phib2, DTTF_phib3, DTTF_phib4)
+              nDT_stubs.Fill(L1Mu_DT_status ) 
+              nDT_stubs_vs_dxy.Fill(L1Mu_DT_status, dxy)
+
 
               if DTTF_phib1 != 99 and DTTF_phib2 != 99: GenMuPt_vs_phiDTst1_phiDTst2.Fill(pt, abs(DTTF_phib1-DTTF_phib2)) 
               if DTTF_phib1 != 99 and DTTF_phib3 != 99: GenMuPt_vs_phiDTst1_phiDTst3.Fill(pt, abs(DTTF_phib1-DTTF_phib3))
@@ -417,7 +440,7 @@ if __name__ == "__main__":
 
     def makeSimplePlot(hist, cTitle, title, option = ''):
       c = TCanvas("c","c",800,600)
-      c.Clear()    
+      c.Clear()
       gStyle.SetTitleBorderSize(0);
       gStyle.SetPadLeftMargin(0.126);
       gStyle.SetPadRightMargin(0.04);
@@ -468,15 +491,14 @@ if __name__ == "__main__":
     makeSimplePlot(GenMuPt_vs_phiDTst3_phiDTst4, targetDir + "GenMuPt_vs_phiDTst3_phiDTst4.png", ";p_{T} [GeV]; #Delta#Phi_{34}", "COLZ")
 
     makeSimplePlot(nDT_stubs, targetDir + "nDT_stubs.png", "; status; Number of entries")
+    makeSimplePlot(nDT_stubs_vs_dxy, targetDir + "nDT_stubs_vs_dxy.png", "; status; d_{xy} [cm]", "COLZ")
 
-    """
-    makeSimplePlot(phiDTst1_phiDTst2, targetDir + "phiDTst1_phiDTst2.png", ";GEN Mu p_{T} [GeV]; #Delta#Phi_{12}", "COLZ")
-    makeSimplePlot(phiDTst1_phiDTst3, targetDir + "phiDTst1_phiDTst3.png", ";GEN Mu p_{T} [GeV]; #Delta#Phi_{13}", "COLZ")
-    makeSimplePlot(phiDTst1_phiDTst4, targetDir + "phiDTst1_phiDTst4.png", ";GEN Mu p_{T} [GeV]; #Delta#Phi_{14}", "COLZ")
-    makeSimplePlot(phiDTst2_phiDTst3, targetDir + "phiDTst2_phiDTst3.png", ";GEN Mu p_{T} [GeV]; #Delta#Phi_{23}", "COLZ")
-    makeSimplePlot(phiDTst2_phiDTst4, targetDir + "phiDTst2_phiDTst4.png", ";GEN Mu p_{T} [GeV]; #Delta#Phi_{24}", "COLZ")
-    makeSimplePlot(phiDTst3_phiDTst4, targetDir + "phiDTst3_phiDTst4.png", ";GEN Mu p_{T} [GeV]; #Delta#Phi_{34}", "COLZ")
-    """
+    makeSimplePlot(phiDTst1_phiDTst2, targetDir + "phiDTst1_phiDTst2.png", ";#Delta#Phi_{12}; Entries")
+    makeSimplePlot(phiDTst1_phiDTst3, targetDir + "phiDTst1_phiDTst3.png", ";#Delta#Phi_{13}; Entries")
+    makeSimplePlot(phiDTst1_phiDTst4, targetDir + "phiDTst1_phiDTst4.png", ";#Delta#Phi_{14}; Entries")
+    makeSimplePlot(phiDTst2_phiDTst3, targetDir + "phiDTst2_phiDTst3.png", ";#Delta#Phi_{23}; Entries")
+    makeSimplePlot(phiDTst2_phiDTst4, targetDir + "phiDTst2_phiDTst4.png", ";#Delta#Phi_{24}; Entries")
+    makeSimplePlot(phiDTst3_phiDTst4, targetDir + "phiDTst3_phiDTst4.png", ";#Delta#Phi_{34}; Entries")
 
     makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst1_phiDTst2, targetDir + "GenMuPt_vs_phiDTst1_phiDTst2_pol1.png")
     makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst1_phiDTst3, targetDir + "GenMuPt_vs_phiDTst1_phiDTst3_pol1.png")
@@ -523,9 +545,7 @@ if __name__ == "__main__":
       b1.GetYaxis().SetNdivisions(520)
       b1.GetYaxis().SetTitle("Trigger efficiency")
       b1.GetXaxis().SetTitle(xaxisTitle)
-      b1.GetXaxis().SetTitleFont(62)
       b1.GetXaxis().SetTitleOffset(1.2)
-      b1.GetXaxis().SetTitleSize(0.045)
       b1.SetTitle("                                                                  14TeV, PU140")
       b1.SetStats(0)
       b1.Draw()
@@ -537,13 +557,18 @@ if __name__ == "__main__":
       eff3.SetLineColor(kGreen+1)
       eff3.Draw("same")
 
-      latex = applyTdrStyle()      
+      latex = applyTdrStyle()
 
-      leg = TLegend(0.7,0.4,0.9,0.6,"","brNDC")
+      ## get the pT cut from the title
+      index = title.find('L1MuPt')
+      ptCut = title[index+6:index+8]
+
+      leg = TLegend(0.6,0.2,0.9,0.45,"","brNDC")
       leg.SetFillColor(kWhite)
-      leg.SetBorderSize(0)
-      leg.SetFillStyle(0)
-      leg.SetTextSize(0.03)
+      leg.SetBorderSize(1)
+      leg.SetFillStyle(1001)
+      leg.SetTextSize(0.04)
+      leg.SetHeader("L1Mu trigger p_{T} #geq " + ptCut +  "GeV")
       leg.AddEntry(eff1,"|dxy| #leq 5 cm", "l")
       leg.AddEntry(eff2,"50 < |dxy| #leq 100 cm", "l")
       leg.AddEntry(eff3,"200 < |dxy| #leq 500 cm", "l")

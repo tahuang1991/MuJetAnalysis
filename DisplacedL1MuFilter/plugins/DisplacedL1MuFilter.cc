@@ -1278,13 +1278,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       event_.RPCb_bx[j] = track.bx();
       event_.RPCb_quality[j] = track.quality();
 
-      std::cout << "pt " << event_.RPCb_pt[j]
-                << ", eta " << event_.RPCb_eta[j]
-                << ", phi " << event_.RPCb_phi[j]
-                << ", bx " << event_.RPCb_bx[j]
-                << ", quality " << event_.RPCb_quality[j]
-                << std::endl;
-
+      if(verbose) {  
+        std::cout << "pt " << event_.RPCb_pt[j]
+                  << ", eta " << event_.RPCb_eta[j]
+                  << ", phi " << event_.RPCb_phi[j]
+                  << ", bx " << event_.RPCb_bx[j]
+                  << ", quality " << event_.RPCb_quality[j]
+                  << std::endl;
+      }
       if ( ( event_.L1Mu_quality[i] > 0 ) &&
            ( reco::deltaPhi( event_.L1Mu_phi[i], event_.RPCb_phi[j] ) < 0.001 ) &&             
            ( event_.L1Mu_bx[i] == event_.RPCb_bx[j] ) ) {
@@ -1305,12 +1306,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         event_.RPCb_nStubs[j] += 1;
         double phi = getGlobalPhi(link.rawdetId(ii), link.strip(ii));
         auto detId = RPCDetId(link.rawdetId(ii));
-        std::cout << "\t" << i 
-                  << ", RPCDetId " << detId 
-                  << ", strip " << link.strip(ii) 
-                  << ", bx " << link.bx(ii) 
-                  << ", phi " << phi
-                  << std::endl; 
+        if(verbose) {  
+          std::cout << "\t" << i 
+                    << ", RPCDetId " << detId 
+                    << ", strip " << link.strip(ii) 
+                    << ", bx " << link.bx(ii) 
+                    << ", phi " << phi
+                    << std::endl;
+        } 
         switch(ii) {
         case 1:
           event_.RPCb_bx1[j] = link.bx(ii); 
@@ -1421,13 +1424,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       event_.RPCf_bx[j] = track.bx();
       event_.RPCf_quality[j] = track.quality();
 
-      std::cout << "pt " << event_.RPCf_pt[j]
-                << ", eta " << event_.RPCf_eta[j]
-                << ", phi " << event_.RPCf_phi[j]
-                << ", bx " << event_.RPCf_bx[j]
-                << ", quality " << event_.RPCf_quality[j]
-                << std::endl;
-
+      if(verbose) {  
+        std::cout << "pt " << event_.RPCf_pt[j]
+                  << ", eta " << event_.RPCf_eta[j]
+                  << ", phi " << event_.RPCf_phi[j]
+                  << ", bx " << event_.RPCf_bx[j]
+                  << ", quality " << event_.RPCf_quality[j]
+                  << std::endl;
+      }
       if ( ( event_.L1Mu_quality[i] > 0 ) &&
            ( reco::deltaPhi( event_.L1Mu_phi[i], event_.RPCf_phi[j] ) < 0.001 ) &&             
            ( event_.L1Mu_bx[i] == event_.RPCf_bx[j] ) ) {
@@ -1448,12 +1452,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         event_.RPCf_nStubs[j] += 1;
         double phi = getGlobalPhi(link.rawdetId(ii), link.strip(ii));
         auto detId = RPCDetId(link.rawdetId(ii));
-        std::cout << "\t" << i 
-                  << ", RPCDetId " << detId 
-                  << ", strip " << link.strip(ii) 
-                  << ", bx " << link.bx(ii) 
-                  << ", phi " << phi
-                  << std::endl; 
+        if(verbose) {  
+          std::cout << "\t" << i 
+                    << ", RPCDetId " << detId 
+                    << ", strip " << link.strip(ii) 
+                    << ", bx " << link.bx(ii) 
+                    << ", phi " << phi
+                    << std::endl;
+        } 
         switch(ii) {
         case 1:
           event_.RPCf_bx1[j] = link.bx(ii); 

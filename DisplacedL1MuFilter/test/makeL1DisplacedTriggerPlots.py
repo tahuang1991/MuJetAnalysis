@@ -70,10 +70,10 @@ if __name__ == "__main__":
 
   set_style()
 
-  file = TFile("/uscms/home/dildick/nobackup/work/MuonPhaseIITDRStudies/CMSSW_6_2_0_SLHC28_patch1/src/out_ana_ctau_1000_PU140_10kEvent.root")
+  file = TFile("/uscms/home/dildick/nobackup/work/MuonPhaseIITDRStudies/CMSSW_6_2_0_SLHC28_patch1/src/out_ana_ctau_1000_PU140.root")
   treeHits = file.Get("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
 
-  label = "DisplacedL1MuTrigger_20160622"
+  label = "DisplacedL1MuTrigger_20160623"
   targetDir = label + "/"
   
   verbose = True
@@ -81,11 +81,31 @@ if __name__ == "__main__":
   
   def displacedTriggerEfficiency():
     print treeHits.GetEntries()
+    
+    ## some counters
     nL1MuTotal = 0
-    nL1MuMatchedDTTF = 0
-    nL1MuMatchedCSCTF = 0
-    nL1MuMatchedDTTFandCSCTF = 0
-    nL1MuNotMatchedDTTForCSCTF = 0
+
+    nL1MuNotMatched = 0
+    
+    nL1MuMatched_CSCTF = 0
+    nL1MuMatched_DTTF  = 0
+    nL1MuMatched_RPCb  = 0
+    nL1MuMatched_RPCf  = 0
+    
+    nL1MuMatched_DTTF_CSCTF = 0
+    nL1MuMatched_RPCb_RPCf  = 0
+    nL1MuMatched_DTTF_RPCb  = 0
+    nL1MuMatched_DTTF_RPCf  = 0
+    nL1MuMatched_CSCTF_RPCb = 0
+    nL1MuMatched_CSCTF_RPCf = 0
+    
+    nL1MuMatched_CSCTF_DTTF_RPCb = 0
+    nL1MuMatched_CSCTF_DTTF_RPCf = 0
+    nL1MuMatched_DTTF_RPCb_RPCf  = 0
+    nL1MuMatched_CSCTF_RPCb_RPCf = 0
+    
+    nL1MuMatched_DTTF_CSCTF_RPCb_RPCf = 0
+
 
     ## declare plots
     nDT_stubs = TH1F("nDT_stubs","", 16,0.,16)
@@ -221,7 +241,7 @@ if __name__ == "__main__":
             continue
 
           ## work in barrel region only for the time being
-          if abs(eta_prop) > 0.9: 
+          if abs(eta_prop) > 2.4: 
             continue
 
           GenMuPt.Fill(pt)
@@ -249,7 +269,7 @@ if __name__ == "__main__":
 
           if L1Mu_index != 99 and L1Mu_dR_prop < 0.2:
             L1Mu_quality = treeHits.L1Mu_quality[L1Mu_index]
-            if L1Mu_quality <=5 :
+            if L1Mu_quality <=0 :
               print "\t\tL1Mu was matched to GenMu, but has quality too low: ", L1Mu_quality 
               continue
 
@@ -287,14 +307,45 @@ if __name__ == "__main__":
               print "L1Mu_L1Tk_dR_min", L1Mu_L1Tk_dR_prop, "L1Mu_L1Tk_pt", L1Mu_L1Tk_pt_prop
               print 
 
+            ## Check for matches -- summary
+            L1Mu_DTTF_index  = treeHits.L1Mu_DTTF_index[L1Mu_index]
+            L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[L1Mu_index]
+            L1Mu_RPCb_index  = treeHits.L1Mu_RPCb_index[L1Mu_index]
+            L1Mu_RPCf_index  = treeHits.L1Mu_RPCf_index[L1Mu_index]
+
+            m_CSCTF = L1Mu_CSCTF_index != 99 and L1Mu_CSCTF_index != -1
+            m_DTTF  = L1Mu_DTTF_index  != 99 and L1Mu_DTTF_index  != -1
+            m_RPCb  = L1Mu_RPCb_index  != 99 and L1Mu_RPCb_index  != -1
+            m_RPCf  = L1Mu_RPCf_index  != 99 and L1Mu_RPCf_index  != -1
+
+            if not m_CSCTF and not m_DTTF and not m_RPCb and not m_RPCf: nL1MuNotMatched +=1
+
+            if     m_CSCTF and not m_DTTF and not m_RPCb and not m_RPCf: nL1MuMatched_CSCTF += 1
+            if not m_CSCTF and     m_DTTF and not m_RPCb and not m_RPCf: nL1MuMatched_DTTF  += 1
+            if not m_CSCTF and not m_DTTF and     m_RPCb and not m_RPCf: nL1MuMatched_RPCb  += 1
+            if not m_CSCTF and not m_DTTF and not m_RPCb and     m_RPCf: nL1MuMatched_RPCf  += 1
+
+            if     m_CSCTF and     m_DTTF and not m_RPCb and not m_RPCf: nL1MuMatched_DTTF_CSCTF += 1
+            if not m_CSCTF and not m_DTTF and     m_RPCb and     m_RPCf: nL1MuMatched_RPCb_RPCf  += 1
+            if not m_CSCTF and     m_DTTF and     m_RPCb and not m_RPCf: nL1MuMatched_DTTF_RPCb  += 1
+            if not m_CSCTF and     m_DTTF and not m_RPCb and     m_RPCf: nL1MuMatched_DTTF_RPCf  += 1
+            if     m_CSCTF and not m_DTTF and     m_RPCb and not m_RPCf: nL1MuMatched_CSCTF_RPCb += 1
+            if     m_CSCTF and not m_DTTF and not m_RPCb and     m_RPCf: nL1MuMatched_CSCTF_RPCf += 1
+
+            if     m_CSCTF and     m_DTTF and     m_RPCb and not m_RPCf: nL1MuMatched_CSCTF_DTTF_RPCb += 1
+            if     m_CSCTF and     m_DTTF and not m_RPCb and     m_RPCf: nL1MuMatched_CSCTF_DTTF_RPCf += 1
+            if not m_CSCTF and     m_DTTF and     m_RPCb and     m_RPCf: nL1MuMatched_DTTF_RPCb_RPCf  += 1
+            if     m_CSCTF and not m_DTTF and     m_RPCb and     m_RPCf: nL1MuMatched_CSCTF_RPCb_RPCf += 1
+ 
+            if     m_CSCTF and     m_DTTF and     m_RPCb and     m_RPCf: nL1MuMatched_DTTF_CSCTF_RPCb_RPCf +=1
+
+
             ## Matched to CSC
-            L1Mu_DTTF_index = treeHits.L1Mu_DTTF_index[L1Mu_index]
             print "\t\t>>>>INFO: Number of DTTFs", treeHits.nDTTF
             print
             
-            if L1Mu_DTTF_index != 99 and L1Mu_DTTF_index != -1 :
-              print "\t\t>>>>INFO: Matching DTTF with index", L1Mu_DTTF_index 
-              nL1MuMatchedDTTF += 1
+            if m_DTTF:
+              print "\t\t>>>>INFO: Matching DTTF with index", L1Mu_DTTF_index
               DTTF_pt = treeHits.DTTF_pt[L1Mu_DTTF_index]
               DTTF_eta = treeHits.DTTF_eta[L1Mu_DTTF_index]
               DTTF_phi = treeHits.DTTF_phi[L1Mu_DTTF_index]
@@ -385,13 +436,11 @@ if __name__ == "__main__":
                   print
  
             ## Matched to CSC
-            L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[L1Mu_index]
             print "\t\t>>>>INFO: Number of CSCTFs", treeHits.nCSCTF
             print
 
-            if L1Mu_CSCTF_index != 99 and L1Mu_CSCTF_index != -1 :
+            if m_CSCTF:
               print "\t\t>>>>INFO: Matching CSCTF with index", L1Mu_CSCTF_index 
-              nL1MuMatchedCSCTF += 1
               CSCTF_pt = treeHits.CSCTF_pt[L1Mu_CSCTF_index]
               CSCTF_eta = treeHits.CSCTF_eta[L1Mu_CSCTF_index]
               CSCTF_phi = treeHits.CSCTF_phi[L1Mu_CSCTF_index]
@@ -422,21 +471,103 @@ if __name__ == "__main__":
                   print "\t\tCSCTF_nStubs", CSCTF_nStubs
                   print
 
-            ## Matched by CSC and DT
-            if L1Mu_DTTF_index != 99 and L1Mu_DTTF_index != -1 and L1Mu_CSCTF_index != 99 and L1Mu_CSCTF_index != -1:
-              nL1MuMatchedDTTFandCSCTF += 1
-              print ">>>>INFO: Matched by CSCTF and DTTF<<<<"
+            ## Matched to RPCb
+            print "\t\t>>>>INFO: Number of RPCbs", treeHits.nRPCb
+            print
 
-            ## Not matched by CSC or DT
-            if (L1Mu_DTTF_index == 99 or L1Mu_DTTF_index == -1) and (L1Mu_CSCTF_index == 99 or L1Mu_CSCTF_index == -1):
-              nL1MuNotMatchedDTTForCSCTF += 1
-              print ">>>>ALARM: Not Matched by CSCTF or DTTF<<<<"
+            if m_RPCb:
+              print "\t\t>>>>INFO: Matching RPCb with index", L1Mu_RPCb_index 
+              RPCb_pt = treeHits.RPCb_pt[L1Mu_RPCb_index]
+              RPCb_eta = treeHits.RPCb_eta[L1Mu_RPCb_index]
+              RPCb_phi = treeHits.RPCb_phi[L1Mu_RPCb_index]
+              RPCb_bx = treeHits.RPCb_bx[L1Mu_RPCb_index]
+              RPCb_nStubs = treeHits.RPCb_nStubs[L1Mu_RPCb_index]
+              print "\t\tRPCb", L1Mu_RPCb_index
+              print "\t\tRPCb_pt", RPCb_pt
+              print "\t\tRPCb_eta", RPCb_eta
+              print "\t\tRPCb_phi", RPCb_phi
+              print "\t\tRPCb_bx", RPCb_bx
+              print "\t\tRPCb_nStubs", RPCb_nStubs
+              print               
+            else:
+              if printExtraInfo:
+                print "\t\t>>>>INFO: No Matching RPCb!!! Print all available RPCb..."
+                print 
+                for jj in range(0,treeHits.nRPCb):
+                  RPCb_pt = treeHits.RPCb_pt[jj]
+                  RPCb_eta = treeHits.RPCb_eta[jj]
+                  RPCb_phi = treeHits.RPCb_phi[jj]
+                  RPCb_bx = treeHits.RPCb_bx[jj]
+                  RPCb_nStubs = treeHits.RPCb_nStubs[jj]
+                  print "\t\tRPCb", jj
+                  print "\t\tRPCb_pt", RPCb_pt
+                  print "\t\tRPCb_eta", RPCb_eta
+                  print "\t\tRPCb_phi", RPCb_phi
+                  print "\t\tRPCb_bx", RPCb_bx
+                  print "\t\tRPCb_nStubs", RPCb_nStubs
+                  print
 
-    print "nL1MuTotal", nL1MuTotal
-    print "nL1MuMatchedDTTF", nL1MuMatchedDTTF
-    print "nL1MuMatchedCSCTF", nL1MuMatchedCSCTF
-    print "nL1MuMatchedDTTFandCSCTF", nL1MuMatchedDTTFandCSCTF
-    print "nL1MuNotMatchedDTTForCSCTF", nL1MuNotMatchedDTTForCSCTF
+
+            ## Matched to RPCf
+            print "\t\t>>>>INFO: Number of RPCfs", treeHits.nRPCf
+            print
+
+            if m_RPCf:
+              print "\t\t>>>>INFO: Matching RPCf with index", L1Mu_RPCf_index 
+              RPCf_pt = treeHits.RPCf_pt[L1Mu_RPCf_index]
+              RPCf_eta = treeHits.RPCf_eta[L1Mu_RPCf_index]
+              RPCf_phi = treeHits.RPCf_phi[L1Mu_RPCf_index]
+              RPCf_bx = treeHits.RPCf_bx[L1Mu_RPCf_index]
+              RPCf_nStubs = treeHits.RPCf_nStubs[L1Mu_RPCf_index]
+              print "\t\tRPCf", L1Mu_RPCf_index
+              print "\t\tRPCf_pt", RPCf_pt
+              print "\t\tRPCf_eta", RPCf_eta
+              print "\t\tRPCf_phi", RPCf_phi
+              print "\t\tRPCf_bx", RPCf_bx
+              print "\t\tRPCf_nStubs", RPCf_nStubs
+              print               
+            else:
+              if printExtraInfo:
+                print "\t\t>>>>INFO: No Matching RPCf!!! Print all available RPCf..."
+                print 
+                for jj in range(0,treeHits.nRPCf):
+                  RPCf_pt = treeHits.RPCf_pt[jj]
+                  RPCf_eta = treeHits.RPCf_eta[jj]
+                  RPCf_phi = treeHits.RPCf_phi[jj]
+                  RPCf_bx = treeHits.RPCf_bx[jj]
+                  RPCf_nStubs = treeHits.RPCf_nStubs[jj]
+                  print "\t\tRPCf", jj
+                  print "\t\tRPCf_pt", RPCf_pt
+                  print "\t\tRPCf_eta", RPCf_eta
+                  print "\t\tRPCf_phi", RPCf_phi
+                  print "\t\tRPCf_bx", RPCf_bx
+                  print "\t\tRPCf_nStubs", RPCf_nStubs
+                  print
+
+
+    ## print out 
+    print "-----------------------------------"
+    print "Summary of the L1Mu matches: "
+    print 
+    print "Total                       ", nL1MuTotal
+    print "Not Matched                 ", nL1MuNotMatched
+    print "Matched CSCTF               ", nL1MuMatched_CSCTF
+    print "Matched DTTF                ", nL1MuMatched_DTTF
+    print "Matched RPCb                ", nL1MuMatched_RPCb
+    print "Matched RPCf                ", nL1MuMatched_RPCf
+    print "Matched DTTF_CSCTF          ", nL1MuMatched_DTTF_CSCTF
+    print "Matched RPCb_RPCf           ", nL1MuMatched_RPCb_RPCf
+    print "Matched DTTF_RPCb           ", nL1MuMatched_DTTF_RPCb
+    print "Matched DTTF_RPCf           ", nL1MuMatched_DTTF_RPCf
+    print "Matched CSCTF_RPCb          ", nL1MuMatched_CSCTF_RPCb
+    print "Matched CSCTF_RPCf          ", nL1MuMatched_CSCTF_RPCf
+    print "Matched CSCTF_DTTF_RPCb     ", nL1MuMatched_CSCTF_DTTF_RPCb
+    print "Matched CSCTF_DTTF_RPCf     ", nL1MuMatched_CSCTF_DTTF_RPCf
+    print "Matched DTTF_RPCb_RPCf      ", nL1MuMatched_DTTF_RPCb_RPCf
+    print "Matched CSCTF_RPCb_RPCf     ", nL1MuMatched_CSCTF_RPCb_RPCf
+    print "Matched DTTF_CSCTF_RPCb_RPCf", nL1MuMatched_DTTF_CSCTF_RPCb_RPCf
+    print "-----------------------------------"
+
 
     def makeSimplePlot(hist, cTitle, title, option = ''):
       c = TCanvas("c","c",800,600)

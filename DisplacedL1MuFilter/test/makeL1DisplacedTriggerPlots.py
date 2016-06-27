@@ -1,7 +1,7 @@
 # run quiet mode
 import sys
 sys.argv.append( '-b' )
-
+import math
 from ROOT import *
 import ROOT 
 ROOT.gROOT.SetBatch(1)
@@ -41,6 +41,16 @@ def L1Mu_status(st1, st2, st3, st4):
   return status
 
 
+def deltaPhi(phi1, phi2):
+  M_PI = 4*math.atan(1)
+  result = phi1 - phi2;
+  while (result > M_PI): 
+    result -= 2*M_PI;
+  while (result <= -M_PI):
+    result += 2*M_PI;
+  return result;
+
+
 def p0_p1_library(st1, st2):
   if st1==1 and st2==2: return [ 6.63738036092 , 1.67128451936 ]
   if st1==1 and st2==3: return [ -2.37588042705 , 1.31868093618 ]
@@ -76,7 +86,7 @@ if __name__ == "__main__":
   label = "DisplacedL1MuTrigger_20160623"
   targetDir = label + "/"
   
-  verbose = True
+  verbose = False
   printExtraInfo = False
   
   def displacedTriggerEfficiency():
@@ -132,6 +142,13 @@ if __name__ == "__main__":
     GenMuPt_vs_phiDTst2_phiDTst3_inv = TH2F("GenMuPt_vs_phiDTst2_phiDTst3_inv","", 60,0.,60,100,0.,120.)
     GenMuPt_vs_phiDTst2_phiDTst4_inv = TH2F("GenMuPt_vs_phiDTst2_phiDTst4_inv","", 60,0.,60,100,0.,120.)
     GenMuPt_vs_phiDTst3_phiDTst4_inv = TH2F("GenMuPt_vs_phiDTst3_phiDTst4_inv","", 60,0.,60,100,0.,120.)
+
+    GenMuPt_vs_abs_phiDTst1_phiDTst2_inv = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst2_inv","", 60,0.,60,100,0.,120.)
+    GenMuPt_vs_abs_phiDTst1_phiDTst3_inv = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst3_inv","", 60,0.,60,100,0.,120.)
+    GenMuPt_vs_abs_phiDTst1_phiDTst4_inv = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst4_inv","", 60,0.,60,100,0.,120.)
+    GenMuPt_vs_abs_phiDTst2_phiDTst3_inv = TH2F("GenMuPt_vs_abs_phiDTst2_phiDTst3_inv","", 60,0.,60,100,0.,120.)
+    GenMuPt_vs_abs_phiDTst2_phiDTst4_inv = TH2F("GenMuPt_vs_abs_phiDTst2_phiDTst4_inv","", 60,0.,60,100,0.,120.)
+    GenMuPt_vs_abs_phiDTst3_phiDTst4_inv = TH2F("GenMuPt_vs_abs_phiDTst3_phiDTst4_inv","", 60,0.,60,100,0.,120.)
 
     GenMuPt = TH1F("GenMuPt","", 60,0.,60)
     GenMuPt_phiDTst1_phiDTst2 = TH1F("GenMuPt_phiDTst1_phiDTst2","", 60,0.,60)
@@ -202,7 +219,7 @@ if __name__ == "__main__":
 
     for k in range(0,treeHits.GetEntries()):
       treeHits.GetEntry(k)
-      print "Event", k+1, "nL1Mu", treeHits.nL1Mu
+      if k%1000==0: print "Event", k+1, "nL1Mu", treeHits.nL1Mu
 
       for i in range(0,2):
         for j in range(0,2):
@@ -347,11 +364,13 @@ if __name__ == "__main__":
 
 
             ## Matched to CSC
-            print "\t\t>>>>INFO: Number of DTTFs", treeHits.nDTTF
-            print
+            if verbose:
+              print "\t\t>>>>INFO: Number of DTTFs", treeHits.nDTTF
+              print
             
             if m_DTTF:
-              print "\t\t>>>>INFO: Matching DTTF with index", L1Mu_DTTF_index
+              if verbose:
+                print "\t\t>>>>INFO: Matching DTTF with index", L1Mu_DTTF_index
               DTTF_pt = treeHits.DTTF_pt[L1Mu_DTTF_index]
               DTTF_eta = treeHits.DTTF_eta[L1Mu_DTTF_index]
               DTTF_phi = treeHits.DTTF_phi[L1Mu_DTTF_index]
@@ -361,17 +380,18 @@ if __name__ == "__main__":
               DTTF_phib2 = treeHits.DTTF_phib2[L1Mu_DTTF_index]
               DTTF_phib3 = treeHits.DTTF_phib3[L1Mu_DTTF_index]
               DTTF_phib4 = treeHits.DTTF_phib4[L1Mu_DTTF_index]
-              print "\t\tDTTF", L1Mu_DTTF_index
-              print "\t\tDTTF_pt", DTTF_pt
-              print "\t\tDTTF_eta", DTTF_eta
-              print "\t\tDTTF_phi", DTTF_phi
-              print "\t\tDTTF_bx", DTTF_bx
-              print "\t\tDTTF_nStubs", DTTF_nStubs
-              print "\t\tDTTF_phib1", DTTF_phib1 
-              print "\t\tDTTF_phib2", DTTF_phib2
-              print "\t\tDTTF_phib3", DTTF_phib3
-              print "\t\tDTTF_phib4", DTTF_phib4
-              print
+              if verbose:
+                print "\t\tDTTF", L1Mu_DTTF_index
+                print "\t\tDTTF_pt", DTTF_pt
+                print "\t\tDTTF_eta", DTTF_eta
+                print "\t\tDTTF_phi", DTTF_phi
+                print "\t\tDTTF_bx", DTTF_bx
+                print "\t\tDTTF_nStubs", DTTF_nStubs
+                print "\t\tDTTF_phib1", DTTF_phib1 
+                print "\t\tDTTF_phib2", DTTF_phib2
+                print "\t\tDTTF_phib3", DTTF_phib3
+                print "\t\tDTTF_phib4", DTTF_phib4
+                print
 
               """
               print "Pt from 1, 2", getPtFromDphi(1,2,DTTF_phib1,DTTF_phib2)
@@ -383,38 +403,44 @@ if __name__ == "__main__":
               """
 
               ## fill histograms
-              if DTTF_phib1 != 99 and DTTF_phib2 != 99: phiDTst1_phiDTst2.Fill(DTTF_phib1-DTTF_phib2)
-              if DTTF_phib1 != 99 and DTTF_phib3 != 99: phiDTst1_phiDTst3.Fill(DTTF_phib1-DTTF_phib3)
-              if DTTF_phib1 != 99 and DTTF_phib4 != 99: phiDTst1_phiDTst4.Fill(DTTF_phib1-DTTF_phib4)
-              if DTTF_phib2 != 99 and DTTF_phib3 != 99: phiDTst2_phiDTst3.Fill(DTTF_phib2-DTTF_phib3)
-              if DTTF_phib2 != 99 and DTTF_phib4 != 99: phiDTst2_phiDTst4.Fill(DTTF_phib2-DTTF_phib4)
-              if DTTF_phib3 != 99 and DTTF_phib4 != 99: phiDTst3_phiDTst4.Fill(DTTF_phib3-DTTF_phib4)
+              DTTF_phib1_phib2 = deltaPhi(DTTF_phib1, DTTF_phib2) 
+              DTTF_phib1_phib3 = deltaPhi(DTTF_phib1, DTTF_phib3)
+              DTTF_phib1_phib4 = deltaPhi(DTTF_phib1, DTTF_phib4)
+              DTTF_phib2_phib3 = deltaPhi(DTTF_phib2, DTTF_phib3)
+              DTTF_phib2_phib4 = deltaPhi(DTTF_phib2, DTTF_phib4)
+              DTTF_phib3_phib4 = deltaPhi(DTTF_phib3, DTTF_phib4)
 
-              if DTTF_phib1 != 99 and DTTF_phib2 != 99: GenMuPt_vs_phiDTst1_phiDTst2.Fill(pt, DTTF_phib1-DTTF_phib2)
-              if DTTF_phib1 != 99 and DTTF_phib3 != 99: GenMuPt_vs_phiDTst1_phiDTst3.Fill(pt, DTTF_phib1-DTTF_phib3)
-              if DTTF_phib1 != 99 and DTTF_phib4 != 99: GenMuPt_vs_phiDTst1_phiDTst4.Fill(pt, DTTF_phib1-DTTF_phib4)
-              if DTTF_phib2 != 99 and DTTF_phib3 != 99: GenMuPt_vs_phiDTst2_phiDTst3.Fill(pt, DTTF_phib2-DTTF_phib3)
-              if DTTF_phib2 != 99 and DTTF_phib4 != 99: GenMuPt_vs_phiDTst2_phiDTst4.Fill(pt, DTTF_phib2-DTTF_phib4)
-              if DTTF_phib3 != 99 and DTTF_phib4 != 99: GenMuPt_vs_phiDTst3_phiDTst4.Fill(pt, DTTF_phib3-DTTF_phib4)
+              abs_DTTF_phib1_phib2 = abs(DTTF_phib1_phib2)
+              abs_DTTF_phib1_phib3 = abs(DTTF_phib1_phib3)
+              abs_DTTF_phib1_phib4 = abs(DTTF_phib1_phib4)
+              abs_DTTF_phib2_phib3 = abs(DTTF_phib2_phib3)
+              abs_DTTF_phib2_phib4 = abs(DTTF_phib2_phib4)
+              abs_DTTF_phib3_phib4 = abs(DTTF_phib3_phib4)
+
+              if DTTF_phib1 != 99 and DTTF_phib2 != 99: phiDTst1_phiDTst2.Fill(DTTF_phib1_phib2)
+              if DTTF_phib1 != 99 and DTTF_phib3 != 99: phiDTst1_phiDTst3.Fill(DTTF_phib1_phib3)
+              if DTTF_phib1 != 99 and DTTF_phib4 != 99: phiDTst1_phiDTst4.Fill(DTTF_phib1_phib4)
+              if DTTF_phib2 != 99 and DTTF_phib3 != 99: phiDTst2_phiDTst3.Fill(DTTF_phib2_phib3)
+              if DTTF_phib2 != 99 and DTTF_phib4 != 99: phiDTst2_phiDTst4.Fill(DTTF_phib2_phib4)
+              if DTTF_phib3 != 99 and DTTF_phib4 != 99: phiDTst3_phiDTst4.Fill(DTTF_phib3_phib4)
+
+              if DTTF_phib1 != 99 and DTTF_phib2 != 99: GenMuPt_vs_phiDTst1_phiDTst2.Fill(pt, DTTF_phib1_phib2)
+              if DTTF_phib1 != 99 and DTTF_phib3 != 99: GenMuPt_vs_phiDTst1_phiDTst3.Fill(pt, DTTF_phib1_phib3)
+              if DTTF_phib1 != 99 and DTTF_phib4 != 99: GenMuPt_vs_phiDTst1_phiDTst4.Fill(pt, DTTF_phib1_phib4)
+              if DTTF_phib2 != 99 and DTTF_phib3 != 99: GenMuPt_vs_phiDTst2_phiDTst3.Fill(pt, DTTF_phib2_phib3)
+              if DTTF_phib2 != 99 and DTTF_phib4 != 99: GenMuPt_vs_phiDTst2_phiDTst4.Fill(pt, DTTF_phib2_phib4)
+              if DTTF_phib3 != 99 and DTTF_phib4 != 99: GenMuPt_vs_phiDTst3_phiDTst4.Fill(pt, DTTF_phib3_phib4)
 
               L1Mu_DT_status = L1Mu_status(DTTF_phib1, DTTF_phib2, DTTF_phib3, DTTF_phib4)
               nDT_stubs.Fill(L1Mu_DT_status ) 
               nDT_stubs_vs_dxy.Fill(L1Mu_DT_status, dxy)
 
-
-              if DTTF_phib1 != 99 and DTTF_phib2 != 99: GenMuPt_vs_phiDTst1_phiDTst2.Fill(pt, abs(DTTF_phib1-DTTF_phib2)) 
-              if DTTF_phib1 != 99 and DTTF_phib3 != 99: GenMuPt_vs_phiDTst1_phiDTst3.Fill(pt, abs(DTTF_phib1-DTTF_phib3))
-              if DTTF_phib1 != 99 and DTTF_phib4 != 99: GenMuPt_vs_phiDTst1_phiDTst4.Fill(pt, abs(DTTF_phib1-DTTF_phib4))
-              if DTTF_phib2 != 99 and DTTF_phib3 != 99: GenMuPt_vs_phiDTst2_phiDTst3.Fill(pt, abs(DTTF_phib2-DTTF_phib3))
-              if DTTF_phib2 != 99 and DTTF_phib4 != 99: GenMuPt_vs_phiDTst2_phiDTst4.Fill(pt, abs(DTTF_phib2-DTTF_phib4))
-              if DTTF_phib3 != 99 and DTTF_phib4 != 99: GenMuPt_vs_phiDTst3_phiDTst4.Fill(pt, abs(DTTF_phib3-DTTF_phib4))
-
-              if DTTF_phib1 != 99 and DTTF_phib2 != 99 and DTTF_phib1!=DTTF_phib2: GenMuPt_vs_phiDTst1_phiDTst2_inv.Fill(pt, 1./(DTTF_phib1-DTTF_phib2)) 
-              if DTTF_phib1 != 99 and DTTF_phib3 != 99 and DTTF_phib1!=DTTF_phib3: GenMuPt_vs_phiDTst1_phiDTst3_inv.Fill(pt, 1./(DTTF_phib1-DTTF_phib3))
-              if DTTF_phib1 != 99 and DTTF_phib4 != 99 and DTTF_phib1!=DTTF_phib4: GenMuPt_vs_phiDTst1_phiDTst4_inv.Fill(pt, 1./(DTTF_phib1-DTTF_phib4))
-              if DTTF_phib2 != 99 and DTTF_phib3 != 99 and DTTF_phib2!=DTTF_phib3: GenMuPt_vs_phiDTst2_phiDTst3_inv.Fill(pt, 1./(DTTF_phib2-DTTF_phib3))
-              if DTTF_phib2 != 99 and DTTF_phib4 != 99 and DTTF_phib2!=DTTF_phib4: GenMuPt_vs_phiDTst2_phiDTst4_inv.Fill(pt, 1./(DTTF_phib2-DTTF_phib4))
-              if DTTF_phib3 != 99 and DTTF_phib4 != 99 and DTTF_phib3!=DTTF_phib4: GenMuPt_vs_phiDTst3_phiDTst4_inv.Fill(pt, 1./(DTTF_phib3-DTTF_phib4))
+              if DTTF_phib1 != 99 and DTTF_phib2 != 99 and DTTF_phib1!=DTTF_phib2: GenMuPt_vs_abs_phiDTst1_phiDTst2_inv.Fill(pt, 1./abs_DTTF_phib1_phib2) 
+              if DTTF_phib1 != 99 and DTTF_phib3 != 99 and DTTF_phib1!=DTTF_phib3: GenMuPt_vs_abs_phiDTst1_phiDTst3_inv.Fill(pt, 1./abs_DTTF_phib1_phib3)
+              if DTTF_phib1 != 99 and DTTF_phib4 != 99 and DTTF_phib1!=DTTF_phib4: GenMuPt_vs_abs_phiDTst1_phiDTst4_inv.Fill(pt, 1./abs_DTTF_phib1_phib4)
+              if DTTF_phib2 != 99 and DTTF_phib3 != 99 and DTTF_phib2!=DTTF_phib3: GenMuPt_vs_abs_phiDTst2_phiDTst3_inv.Fill(pt, 1./abs_DTTF_phib2_phib3)
+              if DTTF_phib2 != 99 and DTTF_phib4 != 99 and DTTF_phib2!=DTTF_phib4: GenMuPt_vs_abs_phiDTst2_phiDTst4_inv.Fill(pt, 1./abs_DTTF_phib2_phib4)
+              if DTTF_phib3 != 99 and DTTF_phib4 != 99 and DTTF_phib3!=DTTF_phib4: GenMuPt_vs_abs_phiDTst3_phiDTst4_inv.Fill(pt, 1./abs_DTTF_phib3_phib4)
 
               
             else:
@@ -444,11 +470,13 @@ if __name__ == "__main__":
                   print
  
             ## Matched to CSC
-            print "\t\t>>>>INFO: Number of CSCTFs", treeHits.nCSCTF
-            print
+            if verbose:
+              print "\t\t>>>>INFO: Number of CSCTFs", treeHits.nCSCTF
+              print
 
             if m_CSCTF:
-              print "\t\t>>>>INFO: Matching CSCTF with index", L1Mu_CSCTF_index 
+              if verbose:
+                print "\t\t>>>>INFO: Matching CSCTF with index", L1Mu_CSCTF_index 
               CSCTF_pt = treeHits.CSCTF_pt[L1Mu_CSCTF_index]
               CSCTF_eta = treeHits.CSCTF_eta[L1Mu_CSCTF_index]
               CSCTF_phi = treeHits.CSCTF_phi[L1Mu_CSCTF_index]
@@ -458,17 +486,18 @@ if __name__ == "__main__":
               CSCTF_pat2 = treeHits.CSCTF_pat2[L1Mu_CSCTF_index]
               CSCTF_pat3 = treeHits.CSCTF_pat3[L1Mu_CSCTF_index]
               CSCTF_pat4 = treeHits.CSCTF_pat4[L1Mu_CSCTF_index]
-              print "\t\tCSCTF", L1Mu_CSCTF_index
-              print "\t\tCSCTF_pt", CSCTF_pt
-              print "\t\tCSCTF_eta", CSCTF_eta
-              print "\t\tCSCTF_phi", CSCTF_phi
-              print "\t\tCSCTF_bx", CSCTF_bx
-              print "\t\tCSCTF_nStubs", CSCTF_nStubs
-              print "\t\tCSCTF_pat1", CSCTF_pat1 
-              print "\t\tCSCTF_pat2", CSCTF_pat2
-              print "\t\tCSCTF_pat3", CSCTF_pat3
-              print "\t\tCSCTF_pat4", CSCTF_pat4
-              print               
+              if verbose:
+                print "\t\tCSCTF", L1Mu_CSCTF_index
+                print "\t\tCSCTF_pt", CSCTF_pt
+                print "\t\tCSCTF_eta", CSCTF_eta
+                print "\t\tCSCTF_phi", CSCTF_phi
+                print "\t\tCSCTF_bx", CSCTF_bx
+                print "\t\tCSCTF_nStubs", CSCTF_nStubs
+                print "\t\tCSCTF_pat1", CSCTF_pat1 
+                print "\t\tCSCTF_pat2", CSCTF_pat2
+                print "\t\tCSCTF_pat3", CSCTF_pat3
+                print "\t\tCSCTF_pat4", CSCTF_pat4
+                print               
             else:
               if printExtraInfo:
                 print "\t\t>>>>INFO: No Matching CSCTF!!! Print all available CSCTF..."
@@ -488,11 +517,13 @@ if __name__ == "__main__":
                   print
 
             ## Matched to RPCb
-            print "\t\t>>>>INFO: Number of RPCbs", treeHits.nRPCb
-            print
+            if verbose:
+              print "\t\t>>>>INFO: Number of RPCbs", treeHits.nRPCb
+              print
 
             if m_RPCb:
-              print "\t\t>>>>INFO: Matching RPCb with index", L1Mu_RPCb_index 
+              if verbose:
+                print "\t\t>>>>INFO: Matching RPCb with index", L1Mu_RPCb_index 
               RPCb_pt = treeHits.RPCb_pt[L1Mu_RPCb_index]
               RPCb_eta = treeHits.RPCb_eta[L1Mu_RPCb_index]
               RPCb_phi = treeHits.RPCb_phi[L1Mu_RPCb_index]
@@ -502,13 +533,14 @@ if __name__ == "__main__":
               RPCb_phi2 = treeHits.RPCb_phi2[L1Mu_RPCb_index]
               RPCb_phi3 = treeHits.RPCb_phi3[L1Mu_RPCb_index]
               RPCb_phi4 = treeHits.RPCb_phi4[L1Mu_RPCb_index]
-              print "\t\tRPCb", L1Mu_RPCb_index
-              print "\t\tRPCb_pt", RPCb_pt
-              print "\t\tRPCb_eta", RPCb_eta
-              print "\t\tRPCb_phi", RPCb_phi
-              print "\t\tRPCb_bx", RPCb_bx
-              print "\t\tRPCb_nStubs", RPCb_nStubs
-              print               
+              if verbose:
+                print "\t\tRPCb", L1Mu_RPCb_index
+                print "\t\tRPCb_pt", RPCb_pt
+                print "\t\tRPCb_eta", RPCb_eta
+                print "\t\tRPCb_phi", RPCb_phi
+                print "\t\tRPCb_bx", RPCb_bx
+                print "\t\tRPCb_nStubs", RPCb_nStubs
+                print               
             else:
               if printExtraInfo:
                 print "\t\t>>>>INFO: No Matching RPCb!!! Print all available RPCb..."
@@ -529,23 +561,26 @@ if __name__ == "__main__":
 
 
             ## Matched to RPCf
-            print "\t\t>>>>INFO: Number of RPCfs", treeHits.nRPCf
-            print
+            if verbose:
+              print "\t\t>>>>INFO: Number of RPCfs", treeHits.nRPCf
+              print
 
             if m_RPCf:
-              print "\t\t>>>>INFO: Matching RPCf with index", L1Mu_RPCf_index 
+              if verbose:
+                print "\t\t>>>>INFO: Matching RPCf with index", L1Mu_RPCf_index 
               RPCf_pt = treeHits.RPCf_pt[L1Mu_RPCf_index]
               RPCf_eta = treeHits.RPCf_eta[L1Mu_RPCf_index]
               RPCf_phi = treeHits.RPCf_phi[L1Mu_RPCf_index]
               RPCf_bx = treeHits.RPCf_bx[L1Mu_RPCf_index]
               RPCf_nStubs = treeHits.RPCf_nStubs[L1Mu_RPCf_index]
-              print "\t\tRPCf", L1Mu_RPCf_index
-              print "\t\tRPCf_pt", RPCf_pt
-              print "\t\tRPCf_eta", RPCf_eta
-              print "\t\tRPCf_phi", RPCf_phi
-              print "\t\tRPCf_bx", RPCf_bx
-              print "\t\tRPCf_nStubs", RPCf_nStubs
-              print               
+              if verbose:
+                print "\t\tRPCf", L1Mu_RPCf_index
+                print "\t\tRPCf_pt", RPCf_pt
+                print "\t\tRPCf_eta", RPCf_eta
+                print "\t\tRPCf_phi", RPCf_phi
+                print "\t\tRPCf_bx", RPCf_bx
+                print "\t\tRPCf_nStubs", RPCf_nStubs
+                print               
             else:
               if printExtraInfo:
                 print "\t\t>>>>INFO: No Matching RPCf!!! Print all available RPCf..."
@@ -565,28 +600,29 @@ if __name__ == "__main__":
                   print
 
 
-    ## print out 
-    print "-----------------------------------"
-    print "Summary of the L1Mu matches: "
-    print 
-    print "Total                       ", nL1MuTotal
-    print "Not Matched                 ", nL1MuNotMatched
-    print "Matched CSCTF               ", nL1MuMatched_CSCTF
-    print "Matched DTTF                ", nL1MuMatched_DTTF
-    print "Matched RPCb                ", nL1MuMatched_RPCb
-    print "Matched RPCf                ", nL1MuMatched_RPCf
-    print "Matched DTTF_CSCTF          ", nL1MuMatched_DTTF_CSCTF
-    print "Matched RPCb_RPCf           ", nL1MuMatched_RPCb_RPCf
-    print "Matched DTTF_RPCb           ", nL1MuMatched_DTTF_RPCb
-    print "Matched DTTF_RPCf           ", nL1MuMatched_DTTF_RPCf
-    print "Matched CSCTF_RPCb          ", nL1MuMatched_CSCTF_RPCb
-    print "Matched CSCTF_RPCf          ", nL1MuMatched_CSCTF_RPCf
-    print "Matched CSCTF_DTTF_RPCb     ", nL1MuMatched_CSCTF_DTTF_RPCb
-    print "Matched CSCTF_DTTF_RPCf     ", nL1MuMatched_CSCTF_DTTF_RPCf
-    print "Matched DTTF_RPCb_RPCf      ", nL1MuMatched_DTTF_RPCb_RPCf
-    print "Matched CSCTF_RPCb_RPCf     ", nL1MuMatched_CSCTF_RPCb_RPCf
-    print "Matched DTTF_CSCTF_RPCb_RPCf", nL1MuMatched_DTTF_CSCTF_RPCb_RPCf
-    print "-----------------------------------"
+    ## print out
+    if verbose:
+      print "-----------------------------------"
+      print "Summary of the L1Mu matches: "
+      print 
+      print "Total                       ", nL1MuTotal
+      print "Not Matched                 ", nL1MuNotMatched
+      print "Matched CSCTF               ", nL1MuMatched_CSCTF
+      print "Matched DTTF                ", nL1MuMatched_DTTF
+      print "Matched RPCb                ", nL1MuMatched_RPCb
+      print "Matched RPCf                ", nL1MuMatched_RPCf
+      print "Matched DTTF_CSCTF          ", nL1MuMatched_DTTF_CSCTF
+      print "Matched RPCb_RPCf           ", nL1MuMatched_RPCb_RPCf
+      print "Matched DTTF_RPCb           ", nL1MuMatched_DTTF_RPCb
+      print "Matched DTTF_RPCf           ", nL1MuMatched_DTTF_RPCf
+      print "Matched CSCTF_RPCb          ", nL1MuMatched_CSCTF_RPCb
+      print "Matched CSCTF_RPCf          ", nL1MuMatched_CSCTF_RPCf
+      print "Matched CSCTF_DTTF_RPCb     ", nL1MuMatched_CSCTF_DTTF_RPCb
+      print "Matched CSCTF_DTTF_RPCf     ", nL1MuMatched_CSCTF_DTTF_RPCf
+      print "Matched DTTF_RPCb_RPCf      ", nL1MuMatched_DTTF_RPCb_RPCf
+      print "Matched CSCTF_RPCb_RPCf     ", nL1MuMatched_CSCTF_RPCb_RPCf
+      print "Matched DTTF_CSCTF_RPCb_RPCf", nL1MuMatched_DTTF_CSCTF_RPCb_RPCf
+      print "-----------------------------------"
 
 
     def makeSimplePlot(hist, cTitle, title, option = ''):
@@ -658,19 +694,19 @@ if __name__ == "__main__":
     makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst2_phiDTst4, targetDir + "GenMuPt_vs_phiDTst2_phiDTst4_pol1.png")
     makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst3_phiDTst4, targetDir + "GenMuPt_vs_phiDTst3_phiDTst4_pol1.png")
 
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_phiDTst1_phiDTst2_inv_pol1.png", False, True, "pol1")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst1_phiDTst3_inv, targetDir + "GenMuPt_vs_phiDTst1_phiDTst3_inv_pol1.png", False, True, "pol1")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst1_phiDTst4_inv, targetDir + "GenMuPt_vs_phiDTst1_phiDTst4_inv_pol1.png", False, True, "pol1")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst2_phiDTst3_inv, targetDir + "GenMuPt_vs_phiDTst2_phiDTst3_inv_pol1.png", False, True, "pol1")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst2_phiDTst4_inv, targetDir + "GenMuPt_vs_phiDTst2_phiDTst4_inv_pol1.png", False, True, "pol1")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst3_phiDTst4_inv, targetDir + "GenMuPt_vs_phiDTst3_phiDTst4_inv_pol1.png", False, True, "pol1")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol1.png", False, True, "pol1")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst3_inv_pol1.png", False, True, "pol1")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_pol1.png", False, True, "pol1")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst3_inv_pol1.png", False, True, "pol1")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst4_inv_pol1.png", False, True, "pol1")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst3_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst3_phiDTst4_inv_pol1.png", False, True, "pol1")
     
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_phiDTst1_phiDTst2_inv_pol1_v2.png", True, True, "pol1")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst1_phiDTst3_inv, targetDir + "GenMuPt_vs_phiDTst1_phiDTst3_inv_pol1_v2.png", True, True, "pol1")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst1_phiDTst4_inv, targetDir + "GenMuPt_vs_phiDTst1_phiDTst4_inv_pol1_v2.png", True, True, "pol1")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst2_phiDTst3_inv, targetDir + "GenMuPt_vs_phiDTst2_phiDTst3_inv_pol1_v2.png", True, True, "pol1")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst2_phiDTst4_inv, targetDir + "GenMuPt_vs_phiDTst2_phiDTst4_inv_pol1_v2.png", True, True, "pol1")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_phiDTst3_phiDTst4_inv, targetDir + "GenMuPt_vs_phiDTst3_phiDTst4_inv_pol1_v2.png", True, True, "pol1")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol1_v2.png", True, True, "pol1")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst3_inv_pol1_v2.png", True, True, "pol1")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_pol1_v2.png", True, True, "pol1")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst3_inv_pol1_v2.png", True, True, "pol1")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst4_inv_pol1_v2.png", True, True, "pol1")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst3_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst3_phiDTst4_inv_pol1_v2.png", True, True, "pol1")
 
 
     ## L1Mu pT trigger turn-on curves

@@ -7,6 +7,7 @@ import ROOT
 ROOT.gROOT.SetBatch(1)
 from Helpers import *
 
+#______________________________________________________________________________                                                                                                  
 def L1Mu_status(st1, st2, st3, st4):
   def ok(st):
     return st != 99
@@ -40,7 +41,22 @@ def L1Mu_status(st1, st2, st3, st4):
 
   return status
 
+#______________________________________________________________________________                                                                                                  
+def addfiles(ch, dirname=".", ext=".root"):
+  theInputFiles = []
+  if not os.path.isdir(dirname):
+    print "ERROR: This is not a valid directory: ", dirname
+    exit()
+  ls = os.listdir(dirname)
+  theInputFiles.extend([dirname[:] + x for x in ls if x.endswith(ext)])
+  for pfile in theInputFiles:
+    print pfile
+    ch.Add(pfile)
 
+  return ch
+
+
+#______________________________________________________________________________                                                                                                  
 def deltaPhi(phi1, phi2):
   M_PI = 4*math.atan(1)
   result = phi1 - phi2;
@@ -51,23 +67,48 @@ def deltaPhi(phi1, phi2):
   return result;
 
 
-def p0_p1_library(st1, st2):
-  if st1==1 and st2==2: return [ 6.63738036092 , 1.67128451936 ]
-  if st1==1 and st2==3: return [ -2.37588042705 , 1.31868093618 ]
-  if st1==1 and st2==4: return [ -1.45258110746 , 0.838664779673 ]
-  if st1==2 and st2==3: return [ 3.52740153958 , 1.77591777212 ]
-  if st1==2 and st2==4: return [ -1.67134393158 , 1.26311765874 ]
-  if st1==3 and st2==4: return [ 11.0541738298 , 1.47386392052 ]
+#______________________________________________________________________________                                                                                                  
+def poly_library(st1, st2, pol):
+  if pol == 'pol1':
+    if st1==1 and st2==2: return [5.746, 1.787, 0, 0]
+    if st1==1 and st2==3: return [-2.232, 1.316, 0, 0]
+    if st1==1 and st2==4: return [2.902, 1.06, 0, 0]
+    if st1==2 and st2==3: return [5.673, 1.509, 0, 0]
+    if st1==2 and st2==4: return [-1.954, 1.387, 0, 0]
+    if st1==3 and st2==4: return [9.49, 1.701, 0, 0]
 
+  if pol == 'pol2':
+    if st1==1 and st2==2: return [-5.242, 3.51, -0.05, 0]
+    if st1==1 and st2==3: return [-4.949, 1.803, -0.01521, 0]
+    if st1==1 and st2==4: return [-3.815, 1.25, -0.0059, 0]
+    if st1==2 and st2==3: return [-5.676, 3.146, -0.04168, 0]
+    if st1==2 and st2==4: return [-6.098, 2.019, -0.01753, 0]
+    if st1==3 and st2==4: return [-5.73,  4.098, -0.06534, 0]
 
-def getPtFromDphi(st1, st2, dphi1, dphi2):
+  if pol == 'pol3':
+    if st1==1 and st2==2: return [-9.07, 4.337, -0.09737, 0.0007264]
+    if st1==1 and st2==3: return [-3.847, 1.544, 0.0003261, -0.0002424]
+    if st1==1 and st2==4: return [2.217, 0.8523, 0.01741, -0.0003688]
+    if st1==2 and st2==3: return [-8.221, 3.66, -0.06812, 0.0003513]
+    if st1==2 and st2==4: return [-7.146, 2.234, -0.02903, 0.0001623]
+    if st1==3 and st2==4: return [-12.02, 4.979, -0.1118, 0.0006741]
+
+#______________________________________________________________________________                                                                                                  
+def getPtFromDphi(st1, st2, dphi1, dphi2, pol):
   if dphi1 != 99 and dphi2 != 99 and dphi1 != dphi2:
-    values = p0_p1_library(st1, st2)
-    return values[0] + 1./abs(dphi1-dphi2)*values[1]
+    values = poly_library(st1, st2)
+    abs_deltaPhi_inv = 1./abs(deltaPhidphi1, dphi2)
+
+    p0_term = values[0]
+    p1_term = abs_deltaPhi_inv*values[1]
+    p2_term = abs_deltaPhi_inv*abs_deltaPhi_inv*values[2]
+    p3_term = abs_deltaPhi_inv*abs_deltaPhi_inv*abs_deltaPhi_inv*values[3]
+    return p0_term + p1_term + p2_term + p3_term
   else: 
     return -1
  
 
+#______________________________________________________________________________                                                                                                  
 if __name__ == "__main__":  
 
   ## extension for figures - add more?
@@ -80,10 +121,14 @@ if __name__ == "__main__":
 
   set_style()
 
-  file = TFile("/uscms/home/dildick/nobackup/work/MuonPhaseIITDRStudies/CMSSW_6_2_0_SLHC28_patch1/src/out_ana_ctau_1000_PU140.root")
-  treeHits = file.Get("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
+  #file = TFile("/uscms/home/dildick/nobackup/work/MuonPhaseIITDRStudies/CMSSW_6_2_0_SLHC28_patch1/src/out_ana_ctau_1000_PU140.root")
+  #treeHits = file.Get("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
 
-  label = "DisplacedL1MuTrigger_20160623"
+  ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
+  ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/', ext=".root")
+
+  treeHits = ch
+  label = "DisplacedL1MuTrigger_20160627"
   targetDir = label + "/"
   
   verbose = False
@@ -172,6 +217,14 @@ if __name__ == "__main__":
     GenMuPt_phiDTst2_phiDTst4 = TH1F("GenMuPt_phiDTst2_phiDTst4","", 60,0.,60)
     GenMuPt_phiDTst3_phiDTst4 = TH1F("GenMuPt_phiDTst3_phiDTst4","", 60,0.,60)
 
+    GenMuPt_barrel = TH1F("GenMuPt_barrel","", 60,0.,60)
+    GenMuPt_phiDTst1_phiDTst2_barrel = TH1F("GenMuPt_phiDTst1_phiDTst2_barrel","", 60,0.,60)
+    GenMuPt_phiDTst1_phiDTst3_barrel = TH1F("GenMuPt_phiDTst1_phiDTst3_barrel","", 60,0.,60)
+    GenMuPt_phiDTst1_phiDTst4_barrel = TH1F("GenMuPt_phiDTst1_phiDTst4_barrel","", 60,0.,60)
+    GenMuPt_phiDTst2_phiDTst3_barrel = TH1F("GenMuPt_phiDTst2_phiDTst3_barrel","", 60,0.,60)
+    GenMuPt_phiDTst2_phiDTst4_barrel = TH1F("GenMuPt_phiDTst2_phiDTst4_barrel","", 60,0.,60)
+    GenMuPt_phiDTst3_phiDTst4_barrel = TH1F("GenMuPt_phiDTst3_phiDTst4_barrel","", 60,0.,60)
+
     GenMuPt_dxy0to5 = TH1F("GenMuPt_dxy0to5","", 60,0.,60)
     GenMuPt_phiDTst1_phiDTst2_dxy0to5 = TH1F("GenMuPt_phiDTst1_phiDTst2_dxy0to5","", 60,0.,60)
     GenMuPt_phiDTst1_phiDTst3_dxy0to5 = TH1F("GenMuPt_phiDTst1_phiDTst3_dxy0to5","", 60,0.,60)
@@ -196,6 +249,7 @@ if __name__ == "__main__":
     GenMuPt_phiDTst2_phiDTst4_dxy200to500 = TH1F("GenMuPt_phiDTst2_phiDTst4_dxy200to500","", 60,0.,60)
     GenMuPt_phiDTst3_phiDTst4_dxy200to500 = TH1F("GenMuPt_phiDTst3_phiDTst4_dxy200to500","", 60,0.,60)
     
+
     L1MuPt10_GenMuPt = TH1F("L1MuPt10_GenMuPt","", 60,0.,60)
     L1MuPt15_GenMuPt = TH1F("L1MuPt15_GenMuPt","", 60,0.,60)
     L1MuPt20_GenMuPt = TH1F("L1MuPt20_GenMuPt","", 60,0.,60)
@@ -228,6 +282,40 @@ if __name__ == "__main__":
     DPhiPt10_GenMuPt_dxy200to500 = TH1F("DPhiPt10_GenMuPt_dxy200to500","", 60,0.,60)
     DPhiPt15_GenMuPt_dxy200to500 = TH1F("DPhiPt15_GenMuPt_dxy200to500","", 60,0.,60)
     DPhiPt20_GenMuPt_dxy200to500 = TH1F("DPhiPt20_GenMuPt_dxy200to500","", 60,0.,60)
+
+
+    L1MuPt10_GenMuPt_barrel = TH1F("L1MuPt10_GenMuPt_barrel","", 60,0.,60)
+    L1MuPt15_GenMuPt_barrel = TH1F("L1MuPt15_GenMuPt_barrel","", 60,0.,60)
+    L1MuPt20_GenMuPt_barrel = TH1F("L1MuPt20_GenMuPt_barrel","", 60,0.,60)
+
+    L1MuPt10_GenMuPt_dxy0to5_barrel = TH1F("L1MuPt10_GenMuPt_dxy0to5_barrel","", 60,0.,60)
+    L1MuPt15_GenMuPt_dxy0to5_barrel = TH1F("L1MuPt15_GenMuPt_dxy0to5_barrel","", 60,0.,60)
+    L1MuPt20_GenMuPt_dxy0to5_barrel = TH1F("L1MuPt20_GenMuPt_dxy0to5_barrel","", 60,0.,60)
+
+    L1MuPt10_GenMuPt_dxy50to100_barrel = TH1F("L1MuPt10_GenMuPt_dxy50to100_barrel","", 60,0.,60)
+    L1MuPt15_GenMuPt_dxy50to100_barrel = TH1F("L1MuPt15_GenMuPt_dxy50to100_barrel","", 60,0.,60)
+    L1MuPt20_GenMuPt_dxy50to100_barrel = TH1F("L1MuPt20_GenMuPt_dxy50to100_barrel","", 60,0.,60)
+
+    L1MuPt10_GenMuPt_dxy200to500_barrel = TH1F("L1MuPt10_GenMuPt_dxy200to500_barrel","", 60,0.,60)
+    L1MuPt15_GenMuPt_dxy200to500_barrel = TH1F("L1MuPt15_GenMuPt_dxy200to500_barrel","", 60,0.,60)
+    L1MuPt20_GenMuPt_dxy200to500_barrel = TH1F("L1MuPt20_GenMuPt_dxy200to500_barrel","", 60,0.,60)
+
+
+    DPhiPt10_GenMuPt_barrel = TH1F("DPhiPt10_GenMuPt_barrel","", 60,0.,60)
+    DPhiPt15_GenMuPt_barrel = TH1F("DPhiPt15_GenMuPt_barrel","", 60,0.,60)
+    DPhiPt20_GenMuPt_barrel = TH1F("DPhiPt20_GenMuPt_barrel","", 60,0.,60)
+
+    DPhiPt10_GenMuPt_dxy0to5_barrel = TH1F("DPhiPt10_GenMuPt_dxy0to5_barrel","", 60,0.,60)
+    DPhiPt15_GenMuPt_dxy0to5_barrel = TH1F("DPhiPt15_GenMuPt_dxy0to5_barrel","", 60,0.,60)
+    DPhiPt20_GenMuPt_dxy0to5_barrel = TH1F("DPhiPt20_GenMuPt_dxy0to5_barrel","", 60,0.,60)
+
+    DPhiPt10_GenMuPt_dxy50to100_barrel = TH1F("DPhiPt10_GenMuPt_dxy50to100_barrel","", 60,0.,60)
+    DPhiPt15_GenMuPt_dxy50to100_barrel = TH1F("DPhiPt15_GenMuPt_dxy50to100_barrel","", 60,0.,60)
+    DPhiPt20_GenMuPt_dxy50to100_barrel = TH1F("DPhiPt20_GenMuPt_dxy50to100_barrel","", 60,0.,60)
+
+    DPhiPt10_GenMuPt_dxy200to500_barrel = TH1F("DPhiPt10_GenMuPt_dxy200to500_barrel","", 60,0.,60)
+    DPhiPt15_GenMuPt_dxy200to500_barrel = TH1F("DPhiPt15_GenMuPt_dxy200to500_barrel","", 60,0.,60)
+    DPhiPt20_GenMuPt_dxy200to500_barrel = TH1F("DPhiPt20_GenMuPt_dxy200to500_barrel","", 60,0.,60)
 
 
 
@@ -280,6 +368,12 @@ if __name__ == "__main__":
           if 50 < dxy  and dxy <= 100: GenMuPt_dxy50to100.Fill(pt)
           if 200 < dxy and dxy <= 500: GenMuPt_dxy200to500.Fill(pt)
 
+          if abs(eta_prop)<0.9:
+            GenMuPt_barrel.Fill(pt)
+            if dxy <= 5:                 GenMuPt_dxy0to5_barrel.Fill(pt)
+            if 50 < dxy  and dxy <= 100: GenMuPt_dxy50to100_barrel.Fill(pt)
+            if 200 < dxy and dxy <= 500: GenMuPt_dxy200to500_barrel.Fill(pt)
+
           ## this is to make sure there are no freak L1Mu-GenMu matches!!
           L1Mu_index = treeHits.genGdMu_L1Mu_index_prop[ij]
           L1Mu_dR_prop = treeHits.genGdMu_L1Mu_dR_prop[ij]
@@ -330,6 +424,23 @@ if __name__ == "__main__":
               if dxy <= 5:                 L1MuPt20_GenMuPt_dxy0to5.Fill(pt)
               if 50 < dxy  and dxy <= 100: L1MuPt20_GenMuPt_dxy50to100.Fill(pt)
               if 200 < dxy and dxy <= 500: L1MuPt20_GenMuPt_dxy200to500.Fill(pt)
+
+            if abs(eta_prop)<0.9:
+              if L1Mu_pt>=10:
+                L1MuPt10_GenMuPt_barrel.Fill(pt)
+                if dxy <= 5:                 L1MuPt10_GenMuPt_dxy0to5_barrel.Fill(pt)
+                if 50 < dxy  and dxy <= 100: L1MuPt10_GenMuPt_dxy50to100_barrel.Fill(pt)
+                if 200 < dxy and dxy <= 500: L1MuPt10_GenMuPt_dxy200to500_barrel.Fill(pt)
+              if L1Mu_pt>=15:
+                L1MuPt15_GenMuPt_barrel.Fill(pt)
+                if dxy <= 5:                 L1MuPt15_GenMuPt_dxy0to5_barrel.Fill(pt)
+                if 50 < dxy  and dxy <= 100: L1MuPt15_GenMuPt_dxy50to100_barrel.Fill(pt)
+                if 200 < dxy and dxy <= 500: L1MuPt15_GenMuPt_dxy200to500_barrel.Fill(pt)
+              if L1Mu_pt>=20:
+                L1MuPt20_GenMuPt_barrel.Fill(pt)
+                if dxy <= 5:                 L1MuPt20_GenMuPt_dxy0to5_barrel.Fill(pt)
+                if 50 < dxy  and dxy <= 100: L1MuPt20_GenMuPt_dxy50to100_barrel.Fill(pt)
+                if 200 < dxy and dxy <= 500: L1MuPt20_GenMuPt_dxy200to500_barrel.Fill(pt)
 
 
             if verbose:
@@ -679,22 +790,25 @@ if __name__ == "__main__":
       gStyle.SetPadBottomMargin(0.13);
       gPad.SetTickx(1)
       gPad.SetTicky(1)
-      hist.Draw(option)
-      hist.GetXaxis().SetTitle('GEN Mu p_{T} [GeV]')
-      hist.GetYaxis().SetTitle('#DeltaPhi')
-      g = hist.ProfileX()
+      hist2 = hist.Clone()
+      hist2.Draw(option)
+      hist2.GetXaxis().SetTitle('GEN Mu p_{T} [GeV]')
+      hist2.GetYaxis().SetTitle('#DeltaPhi')
+      g = hist2.ProfileX()
       g.SetTitle(title)
       if doFit:
-        p1fit = TF1("p1fit", fitfunction, 0, 50);
+        p1fit = TF1("p1fit", fitfunction, 0, 60);
         g.Fit(p1fit,"RQ")
-        p0 = g.GetFunction("p1fit").GetParameter("p0") #to_array()
-        p1 = g.GetFunction("p1fit").GetParameter("p1")
-        print "return [", p0, ",", p1, "]"
+        #p0 = g.GetFunction("p1fit").GetParameter("p0") #to_array()
+        #p1 = g.GetFunction("p1fit").GetParameter("p1")
         
       if plotColz:
-        hist.Draw(option + "same")
+        hist2.Draw(option + "same")
       g.Draw("s same")
       c.SaveAs(title)
+      SetOwnership( g, True )
+      SetOwnership( hist2, True )
+
 
     ### close makeGenPtVsDPhiPlot
 
@@ -736,6 +850,7 @@ if __name__ == "__main__":
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst4, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst4_pol1.png")
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst3_phiDTst4, targetDir + "GenMuPt_vs_abs_phiDTst3_phiDTst4_pol1.png")
 
+
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol1.png", False, True, "pol1")
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst3_inv_pol1.png", False, True, "pol1")
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_pol1.png", False, True, "pol1")
@@ -750,6 +865,35 @@ if __name__ == "__main__":
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst4_inv_pol1_v2.png", True, True, "pol1")
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst3_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst3_phiDTst4_inv_pol1_v2.png", True, True, "pol1")
 
+
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol2.png", False, True, "pol2")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst3_inv_pol2.png", False, True, "pol2")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_pol2.png", False, True, "pol2")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst3_inv_pol2.png", False, True, "pol2")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst4_inv_pol2.png", False, True, "pol2")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst3_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst3_phiDTst4_inv_pol2.png", False, True, "pol2")
+    
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol2_v2.png", True, True, "pol2")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst3_inv_pol2_v2.png", True, True, "pol2")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_pol2_v2.png", True, True, "pol2")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst3_inv_pol2_v2.png", True, True, "pol2")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst4_inv_pol2_v2.png", True, True, "pol2")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst3_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst3_phiDTst4_inv_pol2_v2.png", True, True, "pol2")
+
+
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol3.png", False, True, "pol3")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst3_inv_pol3.png", False, True, "pol3")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_pol3.png", False, True, "pol3")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst3_inv_pol3.png", False, True, "pol3")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst4_inv_pol3.png", False, True, "pol3")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst3_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst3_phiDTst4_inv_pol3.png", False, True, "pol3")
+    
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol3_v2.png", True, True, "pol3")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst3_inv_pol3_v2.png", True, True, "pol3")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_pol3_v2.png", True, True, "pol3")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst3_inv_pol3_v2.png", True, True, "pol3")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst4_inv_pol3_v2.png", True, True, "pol3")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst3_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst3_phiDTst4_inv_pol3_v2.png", True, True, "pol3")
 
     ## L1Mu pT trigger turn-on curves
     def makeEffPlot(eff1, eff2, eff3, title, doPt = True):

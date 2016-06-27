@@ -277,6 +277,8 @@ struct MyEvent
   Int_t CSCTF_pat4[kMaxCSCTF], CSCTF_bend4[kMaxCSCTF], CSCTF_bx4[kMaxCSCTF], CSCTF_clctpat4[kMaxCSCTF];
 
   Int_t CSCTF_val1[kMaxCSCTF], CSCTF_val2[kMaxCSCTF], CSCTF_val3[kMaxCSCTF], CSCTF_val4[kMaxCSCTF];
+  Int_t CSCTF_phi1[kMaxCSCTF], CSCTF_phi2[kMaxCSCTF], CSCTF_phi3[kMaxCSCTF], CSCTF_phi4[kMaxCSCTF];
+  Int_t CSCTF_phib1[kMaxCSCTF], CSCTF_phib2[kMaxCSCTF], CSCTF_phib3[kMaxCSCTF], CSCTF_phib4[kMaxCSCTF];
 
 
   // Matching the L1Mu to RPCb  
@@ -339,12 +341,14 @@ struct MyEvent
   Int_t RPCf_la6[kMaxRPCf], RPCf_su6[kMaxRPCf], RPCf_ro6[kMaxRPCf];
 };
 
-bool PtOrder (const reco::GenParticle* p1, const reco::GenParticle* p2) 
+bool 
+PtOrder (const reco::GenParticle* p1, const reco::GenParticle* p2) 
 { 
   return (p1->pt() > p2->pt() ); 
 }
 
-double dxy(double px, double py, double vx, double vy, double pt)
+double 
+dxy(double px, double py, double vx, double vy, double pt)
 {
   //Source: https://cmssdt.cern.ch/SDT/lxr/source/DataFormats/TrackReco/interface/TrackBase.h#119
   return (- vx * py + vy * px ) / pt;
@@ -362,7 +366,8 @@ phiHeavyCorr(double pt, double eta, double phi, double q)
   return resPhi;
 }
 
-double dRWeighted(double eta1, double phi1, double eta2, double phi2, double sigma_eta=2., double sigma_phi=1.)
+double 
+dRWeighted(double eta1, double phi1, double eta2, double phi2, double sigma_eta=2., double sigma_phi=1.)
 {
   double dEta = std::abs(eta1 - eta2);
   double dPhi = reco::deltaPhi(phi1, phi2);
@@ -370,14 +375,16 @@ double dRWeighted(double eta1, double phi1, double eta2, double phi2, double sig
   return dR;
 }
 
-double My_dPhi(double phi1, double phi2) {
+double 
+My_dPhi(double phi1, double phi2) {
   double dPhi = phi1 - phi2;
   if (dPhi >  M_PI) dPhi -= 2.*M_PI;
   if (dPhi < -M_PI) dPhi += 2.*M_PI;
   return dPhi;
 }
 
-double phiL1DTTrack(const L1MuDTTrack& track)
+double 
+phiL1DTTrack(const L1MuDTTrack& track)
 {
   int phi_local = track.phi_packed(); //range: 0 < phi_local < 31
   if ( phi_local > 15 ) phi_local -= 32; //range: -16 < phi_local < 15    
@@ -387,7 +394,8 @@ double phiL1DTTrack(const L1MuDTTrack& track)
   return dttrk_phi_global;
 }
 
-double phiL1CSCTrack(const csc::L1Track& track)
+double 
+phiL1CSCTrack(const csc::L1Track& track)
 {
   unsigned gbl_phi(track.localPhi() + ((track.sector() - 1)*24) + 6);
   if(gbl_phi > 143) gbl_phi -= 143;
@@ -430,6 +438,7 @@ private:
   virtual void endJob() override;
 
   float getGlobalPhi(unsigned int rawid, int stripN);
+  double calcCSCSpecificPhi(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const;
   GlobalPoint getCSCSpecificPoint(unsigned int rawid, const CSCCorrelatedLCTDigi& tp) const;
   bool isCSCCounterClockwise(const std::unique_ptr<const CSCLayer>& layer) const;
 
@@ -1181,6 +1190,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.CSCTF_bx1[j] = stub.getBX();
             event_.CSCTF_clctpat1[j] = stub.getCLCTPattern();
             event_.CSCTF_val1[j] = stub.isValid();
+            event_.CSCTF_phi1[j] = calcCSCSpecificPhi(id.rawId(), stub);
             break;
           case 2:
             event_.CSCTF_st2[j] = id.station();
@@ -1196,6 +1206,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.CSCTF_bx2[j] = stub.getBX();
             event_.CSCTF_clctpat2[j] = stub.getCLCTPattern();
             event_.CSCTF_val2[j] = stub.isValid();
+            event_.CSCTF_phi2[j] = calcCSCSpecificPhi(id.rawId(), stub);
             break;
           case 3:
             event_.CSCTF_st3[j] = id.station();
@@ -1211,6 +1222,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.CSCTF_bx3[j] = stub.getBX();
             event_.CSCTF_clctpat3[j] = stub.getCLCTPattern();
             event_.CSCTF_val3[j] = stub.isValid();
+            event_.CSCTF_phi3[j] = calcCSCSpecificPhi(id.rawId(), stub);
             break;
           case 4:
             event_.CSCTF_st4[j] = id.station();
@@ -1226,6 +1238,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.CSCTF_bx4[j] = stub.getBX();
             event_.CSCTF_clctpat4[j] = stub.getCLCTPattern();
             event_.CSCTF_val4[j] = stub.isValid();
+            event_.CSCTF_phi4[j] = calcCSCSpecificPhi(id.rawId(), stub);
             break;
           };
         }
@@ -2178,6 +2191,12 @@ DisplacedL1MuFilter::getGlobalPhi(unsigned int rawid, int stripN)
   return gp.phi();
 }
 
+double 
+DisplacedL1MuFilter::calcCSCSpecificPhi(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const
+{
+  return getCSCSpecificPoint(rawId, tp).phi();
+}
+
 GlobalPoint 
 DisplacedL1MuFilter::getCSCSpecificPoint(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const {
   const CSCDetId id(rawId); 
@@ -2651,6 +2670,8 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_bx1", event_.CSCTF_bx1,"CSCTF_bx1[nCSCTF]/F");
   event_tree_->Branch("CSCTF_clctpat1", event_.CSCTF_clctpat1,"CSCTF_clctpat1[nCSCTF]/F");
   event_tree_->Branch("CSCTF_val1", event_.CSCTF_val1,"CSCTF_val1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_phi1", event_.CSCTF_phi1,"CSCTF_phi1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_phib1", event_.CSCTF_phib1,"CSCTF_phib1[nCSCTF]/F");
 
   event_tree_->Branch("CSCTF_st2", event_.CSCTF_st2,"CSCTF_st2[nCSCTF]/F");
   event_tree_->Branch("CSCTF_ri2", event_.CSCTF_ri2,"CSCTF_ri2[nCSCTF]/F");
@@ -2665,6 +2686,8 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_bx2", event_.CSCTF_bx2,"CSCTF_bx2[nCSCTF]/F");
   event_tree_->Branch("CSCTF_clctpat2", event_.CSCTF_clctpat2,"CSCTF_clctpat2[nCSCTF]/F");
   event_tree_->Branch("CSCTF_val2", event_.CSCTF_val2,"CSCTF_val2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_phi2", event_.CSCTF_phi2,"CSCTF_phi2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_phib2", event_.CSCTF_phib2,"CSCTF_phib2[nCSCTF]/F");
 
   event_tree_->Branch("CSCTF_st3", event_.CSCTF_st3,"CSCTF_st3[nCSCTF]/F");
   event_tree_->Branch("CSCTF_ri3", event_.CSCTF_ri3,"CSCTF_ri3[nCSCTF]/F");
@@ -2679,6 +2702,8 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_bx3", event_.CSCTF_bx3,"CSCTF_bx3[nCSCTF]/F");
   event_tree_->Branch("CSCTF_clctpat3", event_.CSCTF_clctpat3,"CSCTF_clctpat3[nCSCTF]/F");
   event_tree_->Branch("CSCTF_val3", event_.CSCTF_val3,"CSCTF_val3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_phi3", event_.CSCTF_phi3,"CSCTF_phi3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_phib3", event_.CSCTF_phib3,"CSCTF_phib3[nCSCTF]/F");
 
   event_tree_->Branch("CSCTF_st4", event_.CSCTF_st4,"CSCTF_st4[nCSCTF]/F");
   event_tree_->Branch("CSCTF_ri4", event_.CSCTF_ri4,"CSCTF_ri4[nCSCTF]/F");
@@ -2693,7 +2718,10 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_bx4", event_.CSCTF_bx4,"CSCTF_bx4[nCSCTF]/F");
   event_tree_->Branch("CSCTF_clctpat4", event_.CSCTF_clctpat4,"CSCTF_clctpat4[nCSCTF]/F");
   event_tree_->Branch("CSCTF_val4", event_.CSCTF_val4,"CSCTF_val4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_phi4", event_.CSCTF_phi4,"CSCTF_phi4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_phib4", event_.CSCTF_phib4,"CSCTF_phib4[nCSCTF]/F");
 
+  
 
   event_tree_->Branch("nRPCb", &event_.nRPCb);
   event_tree_->Branch("L1Mu_RPCb_index", event_.L1Mu_RPCb_index,"L1Mu_RPCb_index[nL1Mu]/I");
@@ -3083,6 +3111,8 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_bx1[i] = 99; 
     event_.CSCTF_clctpat1[i] = 99;;
     event_.CSCTF_val1[i] = 99;;
+    event_.CSCTF_phi1[i] = 99;;
+    event_.CSCTF_phib1[i] = 99;;
 
     event_.CSCTF_st2[i] = 99; 
     event_.CSCTF_ri2[i] = 99; 
@@ -3097,6 +3127,8 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_bx2[i] = 99; 
     event_.CSCTF_clctpat2[i] = 99;;
     event_.CSCTF_val2[i] = 99;;
+    event_.CSCTF_phi2[i] = 99;;
+    event_.CSCTF_phib2[i] = 99;;
 
     event_.CSCTF_st3[i] = 99; 
     event_.CSCTF_ri3[i] = 99; 
@@ -3111,6 +3143,8 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_bx3[i] = 99; 
     event_.CSCTF_clctpat3[i] = 99;;
     event_.CSCTF_val3[i] = 99;;
+    event_.CSCTF_phi3[i] = 99;;
+    event_.CSCTF_phib3[i] = 99;;
 
     event_.CSCTF_st4[i] = 99; 
     event_.CSCTF_ri4[i] = 99; 
@@ -3125,6 +3159,8 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_bx4[i] = 99; 
     event_.CSCTF_clctpat4[i] = 99;
     event_.CSCTF_val4[i] = 99;
+    event_.CSCTF_phi4[i] = 99;;
+    event_.CSCTF_phib4[i] = 99;;
   }
 
   event_.nRPCb = 0;

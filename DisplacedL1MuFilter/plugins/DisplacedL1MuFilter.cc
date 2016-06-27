@@ -91,6 +91,9 @@
 #include "DataFormats/RPCDigi/interface/RPCDigiL1Link.h"
 #include "DataFormats/MuonDetId/interface/RPCDetId.h"
 #include "Geometry/RPCGeometry/interface/RPCGeometry.h"
+#include "DataFormats/MuonDetId/interface/CSCDetId.h"
+#include "Geometry/CSCGeometry/interface/CSCGeometry.h"
+#include "L1Trigger/CSCCommonTrigger/interface/CSCPatternLUT.h"
 
 #include "CondFormats/L1TObjects/interface/L1MuTriggerScales.h"
 #include "CondFormats/L1TObjects/interface/L1MuTriggerPtScale.h"
@@ -427,6 +430,8 @@ private:
   virtual void endJob() override;
 
   float getGlobalPhi(unsigned int rawid, int stripN);
+  GlobalPoint getCSCSpecificPoint(unsigned int rawid, const CSCCorrelatedLCTDigi& tp) const;
+  bool isCSCCounterClockwise(const std::unique_ptr<const CSCLayer>& layer) const;
 
   GlobalPoint extrapolateGP(const reco::GenParticle &tk);
   GlobalPoint extrapolateGP(const TTTrack< Ref_PixelDigi_ > &tk);
@@ -477,6 +482,7 @@ private:
   int verbose;
 
   const RPCGeometry* rpcGeometry_;
+  const CSCGeometry* cscGeometry_;
 
   edm::InputTag L1Mu_input;
   edm::InputTag L1TkMu_input;
@@ -487,6 +493,7 @@ private:
   edm::ESHandle<Propagator> propagatorAny_;
   edm::ESHandle<MuonDetLayerGeometry> muonGeometry_;
   edm::ESHandle<RPCGeometry> rpc_geom_;
+  edm::ESHandle<CSCGeometry> csc_geom_;
   
   const  BoundCylinder *barrelCylinder_;
   const  BoundDisk *endcapDiskPos_[3], *endcapDiskNeg_[3];
@@ -563,6 +570,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   iSetup.get<MuonGeometryRecord>().get(rpc_geom_);
   rpcGeometry_ = &*rpc_geom_;
+
+  iSetup.get<MuonGeometryRecord>().get(csc_geom_);
+  cscGeometry_ = &*csc_geom_;
 
   typedef std::vector<L1MuGMTCand> GMTs;
   edm::Handle<GMTs> aH;
@@ -2166,6 +2176,78 @@ DisplacedL1MuFilter::getGlobalPhi(unsigned int rawid, int stripN)
   const GlobalPoint gp = roll->toGlobal(lp);
   roll.release();
   return gp.phi();
+}
+
+GlobalPoint 
+DisplacedL1MuFilter::getCSCSpecificPoint(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const {
+  const CSCDetId id(rawId); 
+  // we should change this to weak_ptrs at some point
+  // requires introducing std::shared_ptrs to geometry
+  std::unique_ptr<const CSCChamber> chamb(cscGeometry_->chamber(id));
+  std::unique_ptr<const CSCLayerGeometry> layer_geom(
+                                                     chamb->layer(CSCConstants::KEY_ALCT_LAYER)->geometry()
+                                                     );
+  std::unique_ptr<const CSCLayer> layer(
+                                        chamb->layer(CSCConstants::KEY_ALCT_LAYER)
+                                        );
+  
+  const uint16_t halfstrip = tp.getStrip();
+  const uint16_t pattern = tp.getPattern();
+  const uint16_t keyWG = tp.getKeyWG(); 
+  //const unsigned maxStrips = layer_geom->numberOfStrips();  
+
+  // so we can extend this later 
+  // assume TMB2007 half-strips only as baseline
+  double offset = 0.0;
+  switch(1) {
+  case 1:
+    offset = CSCPatternLUT::get2007Position(pattern);
+  }
+  const unsigned halfstrip_offs = unsigned(0.5 + halfstrip + offset);
+  const unsigned strip = halfstrip_offs/2 + 1; // geom starts from 1
+
+  // the rough location of the hit at the ALCT key layer
+  // we will refine this using the half strip information
+  const LocalPoint coarse_lp = 
+    layer_geom->stripWireGroupIntersection(strip,keyWG);  
+  const GlobalPoint coarse_gp = layer->surface().toGlobal(coarse_lp);  
+  
+  // the strip width/4.0 gives the offset of the half-strip
+  // center with respect to the strip center
+  const double hs_offset = layer_geom->stripPhiPitch()/4.0;
+  
+  // determine handedness of the chamber
+  const bool ccw = isCSCCounterClockwise(layer);
+  // we need to subtract the offset of even half strips and add the odd ones
+  const double phi_offset = ( ( halfstrip_offs%2 ? 1 : -1)*
+                              ( ccw ? -hs_offset : hs_offset ) );
+  
+  // the global eta calculation uses the middle of the strip
+  // so no need to increment it
+  const GlobalPoint final_gp( GlobalPoint::Polar( coarse_gp.theta(),
+                                                  (coarse_gp.phi().value() + 
+                                                   phi_offset),
+                                                  coarse_gp.mag() ) );
+    
+  // We need to add in some notion of the 'error' on trigger primitives
+  // like the width of the wire group by the width of the strip
+  // or something similar      
+
+  // release ownership of the pointers
+  chamb.release();
+  layer_geom.release();
+  layer.release();
+  
+  return final_gp;
+}
+
+bool 
+DisplacedL1MuFilter::isCSCCounterClockwise(const std::unique_ptr<const CSCLayer>& layer) const {
+  const int nStrips = layer->geometry()->numberOfStrips();
+  const double phi1 = layer->centerOfStrip(1).phi();
+  const double phiN = layer->centerOfStrip(nStrips).phi();
+  return ( (std::abs(phi1 - phiN) < M_PI  && phi1 >= phiN) || 
+           (std::abs(phi1 - phiN) >= M_PI && phi1 < phiN)     );  
 }
 
 GlobalPoint 

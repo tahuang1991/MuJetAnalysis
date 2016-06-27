@@ -318,26 +318,32 @@ if __name__ == "__main__":
             m_RPCb  = L1Mu_RPCb_index  != 99 and L1Mu_RPCb_index  != -1
             m_RPCf  = L1Mu_RPCf_index  != 99 and L1Mu_RPCf_index  != -1
 
-            if not m_CSCTF and not m_DTTF and not m_RPCb and not m_RPCf: nL1MuNotMatched +=1
+            n_CSCTF = not m_CSCTF
+            n_DTTF  = not m_DTTF
+            n_RPCb  = not m_RPCb
+            n_RPCf  = not m_RPCf
 
-            if     m_CSCTF and not m_DTTF and not m_RPCb and not m_RPCf: nL1MuMatched_CSCTF += 1
-            if not m_CSCTF and     m_DTTF and not m_RPCb and not m_RPCf: nL1MuMatched_DTTF  += 1
-            if not m_CSCTF and not m_DTTF and     m_RPCb and not m_RPCf: nL1MuMatched_RPCb  += 1
-            if not m_CSCTF and not m_DTTF and not m_RPCb and     m_RPCf: nL1MuMatched_RPCf  += 1
+            
+            if n_CSCTF and n_DTTF and n_RPCb and n_RPCf: nL1MuNotMatched +=1
 
-            if     m_CSCTF and     m_DTTF and not m_RPCb and not m_RPCf: nL1MuMatched_DTTF_CSCTF += 1
-            if not m_CSCTF and not m_DTTF and     m_RPCb and     m_RPCf: nL1MuMatched_RPCb_RPCf  += 1
-            if not m_CSCTF and     m_DTTF and     m_RPCb and not m_RPCf: nL1MuMatched_DTTF_RPCb  += 1
-            if not m_CSCTF and     m_DTTF and not m_RPCb and     m_RPCf: nL1MuMatched_DTTF_RPCf  += 1
-            if     m_CSCTF and not m_DTTF and     m_RPCb and not m_RPCf: nL1MuMatched_CSCTF_RPCb += 1
-            if     m_CSCTF and not m_DTTF and not m_RPCb and     m_RPCf: nL1MuMatched_CSCTF_RPCf += 1
+            if m_CSCTF and n_DTTF and n_RPCb and n_RPCf: nL1MuMatched_CSCTF += 1
+            if n_CSCTF and m_DTTF and n_RPCb and n_RPCf: nL1MuMatched_DTTF  += 1
+            if n_CSCTF and n_DTTF and m_RPCb and n_RPCf: nL1MuMatched_RPCb  += 1
+            if n_CSCTF and n_DTTF and n_RPCb and m_RPCf: nL1MuMatched_RPCf  += 1
 
-            if     m_CSCTF and     m_DTTF and     m_RPCb and not m_RPCf: nL1MuMatched_CSCTF_DTTF_RPCb += 1
-            if     m_CSCTF and     m_DTTF and not m_RPCb and     m_RPCf: nL1MuMatched_CSCTF_DTTF_RPCf += 1
-            if not m_CSCTF and     m_DTTF and     m_RPCb and     m_RPCf: nL1MuMatched_DTTF_RPCb_RPCf  += 1
-            if     m_CSCTF and not m_DTTF and     m_RPCb and     m_RPCf: nL1MuMatched_CSCTF_RPCb_RPCf += 1
+            if m_CSCTF and m_DTTF and n_RPCb and n_RPCf: nL1MuMatched_DTTF_CSCTF += 1
+            if n_CSCTF and n_DTTF and m_RPCb and m_RPCf: nL1MuMatched_RPCb_RPCf  += 1
+            if n_CSCTF and m_DTTF and m_RPCb and n_RPCf: nL1MuMatched_DTTF_RPCb  += 1
+            if n_CSCTF and m_DTTF and n_RPCb and m_RPCf: nL1MuMatched_DTTF_RPCf  += 1
+            if m_CSCTF and n_DTTF and m_RPCb and n_RPCf: nL1MuMatched_CSCTF_RPCb += 1
+            if m_CSCTF and n_DTTF and n_RPCb and m_RPCf: nL1MuMatched_CSCTF_RPCf += 1
+
+            if m_CSCTF and m_DTTF and m_RPCb and n_RPCf: nL1MuMatched_CSCTF_DTTF_RPCb += 1
+            if m_CSCTF and m_DTTF and n_RPCb and m_RPCf: nL1MuMatched_CSCTF_DTTF_RPCf += 1
+            if n_CSCTF and m_DTTF and m_RPCb and m_RPCf: nL1MuMatched_DTTF_RPCb_RPCf  += 1
+            if m_CSCTF and n_DTTF and m_RPCb and m_RPCf: nL1MuMatched_CSCTF_RPCb_RPCf += 1
  
-            if     m_CSCTF and     m_DTTF and     m_RPCb and     m_RPCf: nL1MuMatched_DTTF_CSCTF_RPCb_RPCf +=1
+            if m_CSCTF and m_DTTF and m_RPCb and m_RPCf: nL1MuMatched_DTTF_CSCTF_RPCb_RPCf +=1
 
 
             ## Matched to CSC
@@ -367,12 +373,14 @@ if __name__ == "__main__":
               print "\t\tDTTF_phib4", DTTF_phib4
               print
 
+              """
               print "Pt from 1, 2", getPtFromDphi(1,2,DTTF_phib1,DTTF_phib2)
               print "Pt from 1, 3", getPtFromDphi(1,3,DTTF_phib1,DTTF_phib3)
               print "Pt from 1, 4", getPtFromDphi(1,4,DTTF_phib1,DTTF_phib4)
               print "Pt from 2, 3", getPtFromDphi(2,3,DTTF_phib2,DTTF_phib3)
               print "Pt from 2, 4", getPtFromDphi(2,4,DTTF_phib2,DTTF_phib4)
               print "Pt from 3, 4", getPtFromDphi(3,4,DTTF_phib3,DTTF_phib4)
+              """
 
               ## fill histograms
               if DTTF_phib1 != 99 and DTTF_phib2 != 99: phiDTst1_phiDTst2.Fill(DTTF_phib1-DTTF_phib2)
@@ -446,12 +454,20 @@ if __name__ == "__main__":
               CSCTF_phi = treeHits.CSCTF_phi[L1Mu_CSCTF_index]
               CSCTF_bx = treeHits.CSCTF_bx[L1Mu_CSCTF_index]
               CSCTF_nStubs = treeHits.CSCTF_nStubs[L1Mu_CSCTF_index]
+              CSCTF_pat1 = treeHits.CSCTF_pat1[L1Mu_CSCTF_index]
+              CSCTF_pat2 = treeHits.CSCTF_pat2[L1Mu_CSCTF_index]
+              CSCTF_pat3 = treeHits.CSCTF_pat3[L1Mu_CSCTF_index]
+              CSCTF_pat4 = treeHits.CSCTF_pat4[L1Mu_CSCTF_index]
               print "\t\tCSCTF", L1Mu_CSCTF_index
               print "\t\tCSCTF_pt", CSCTF_pt
               print "\t\tCSCTF_eta", CSCTF_eta
               print "\t\tCSCTF_phi", CSCTF_phi
               print "\t\tCSCTF_bx", CSCTF_bx
               print "\t\tCSCTF_nStubs", CSCTF_nStubs
+              print "\t\tCSCTF_pat1", CSCTF_pat1 
+              print "\t\tCSCTF_pat2", CSCTF_pat2
+              print "\t\tCSCTF_pat3", CSCTF_pat3
+              print "\t\tCSCTF_pat4", CSCTF_pat4
               print               
             else:
               if printExtraInfo:
@@ -482,6 +498,10 @@ if __name__ == "__main__":
               RPCb_phi = treeHits.RPCb_phi[L1Mu_RPCb_index]
               RPCb_bx = treeHits.RPCb_bx[L1Mu_RPCb_index]
               RPCb_nStubs = treeHits.RPCb_nStubs[L1Mu_RPCb_index]
+              RPCb_phi1 = treeHits.RPCb_phi1[L1Mu_RPCb_index]
+              RPCb_phi2 = treeHits.RPCb_phi2[L1Mu_RPCb_index]
+              RPCb_phi3 = treeHits.RPCb_phi3[L1Mu_RPCb_index]
+              RPCb_phi4 = treeHits.RPCb_phi4[L1Mu_RPCb_index]
               print "\t\tRPCb", L1Mu_RPCb_index
               print "\t\tRPCb_pt", RPCb_pt
               print "\t\tRPCb_eta", RPCb_eta

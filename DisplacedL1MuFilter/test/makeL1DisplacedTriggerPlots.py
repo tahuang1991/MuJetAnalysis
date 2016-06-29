@@ -1,4 +1,4 @@
-1;95;0c# run quiet mode
+# run quiet mode
 import sys
 sys.argv.append( '-b' )
 import math
@@ -156,6 +156,122 @@ def getPtErrorFromDphi(st1, st2, dphi1, dphi2, pol):
     return 0
 
 #______________________________________________________________________________                                                                                                  
+def getQuantilesX(hist2d):
+  probs = array.array('d', [0.025, 0.16, 0.5, 1 - 0.16, 0.975] )
+  q = array.array('d', [0.0]*len(probs))
+  hist1d = hist2d.QuantilesX(len(probs), q, probs)
+  SetOwnership( hist1d, True )
+  return hist1d
+
+#______________________________________________________________________________                                                                                                  
+def get1DHistogramMedianY(hist2d):
+    '''this function returns a 1d histogram
+    for a 2d histgram using the median and the x-sigma resolution on the median'''
+
+    xBins = hist2d.GetXaxis().GetNbins()
+    yBins = hist2d.GetYaxis().GetNbins()
+    xminBin = hist2d.GetXaxis().GetXmin()
+    xmaxBin = hist2d.GetXaxis().GetXmax()
+    yminBin = hist2d.GetYaxis().GetXmin()
+    ymaxBin = hist2d.GetYaxis().GetXmax()
+  
+    printa = 0
+    b1 = hist2d
+    r1 = TH1F("r1","1/abs(\Delta\phi) vs p^{Sim}",xBins,xminBin,xmaxBin)
+    for x in range(0,xBins):
+
+        if (printa > 0):
+            print "*********** For bin x: %d **********************"%x
+            
+        
+        # Find the total number of frequencies
+        totalfreq = b1.Integral(x,x,0,yBins+1)
+
+        # Calculate half of the frequencies
+        med = 0
+        
+        if (totalfreq%2 ==1) :
+            med = (totalfreq-1)/2 + 1            # Set the value of the median
+
+        if (totalfreq%2 ==0):
+            med = (totalfreq/2) + 0.5               # This might need to be added 0.5
+
+        temporal = 0
+        midbin = 0
+        
+        for m in range (0,yBins+1):
+                temporal = b1.Integral(x,x,0,m)
+
+                if (temporal >= med):
+                    midbin = m              # Break once I get to the median
+                    break
+
+       
+        if (printa > 0):
+
+                print "suma: ",totalfreq
+                print "Midbin: ",midbin
+                print "mediana count: ",temporal
+
+
+        
+        # midbin is the actual value to be stored in (x, midbin) histogram.    
+        # Find the error above the median
+        
+        sumerrup = 0                       # Sum of events up
+        binerrup = 0                       # Bin which has the 34% of events
+        
+        for k in range (midbin, yBins+1): # Looping over the midbin up to 10000 
+            sumerrup = b1.Integral(x,x,midbin,k)
+  
+            if (sumerrup >= 0.33*totalfreq):     # If the summ is bigger or equal to 34% of the total number of entries, break
+                binerrup = k
+                break
+        
+        sumerrlow = 0
+        binerrlow = 0
+
+        
+        for r in range (0, midbin):
+            sumerrlow = b1.Integral(x,x,midbin,midbin-r)
+
+            if (sumerrlow >= 0.33*totalfreq):
+                binerrlow = midbin-r        # Store the bin which has the 34% value 
+                break
+        
+        # error is the difference averaged on the bin low and bin up
+ 
+        errorbin = abs(binerrup - binerrlow)/2
+        if (totalfreq > 0):
+            errorbin = errorbin / sqrt (totalfreq)
+        
+        if (printa > 0):
+            print " X position: ",x
+            print " Bin y: ",midbin
+            print " Error: ",errorbin
+            print " Error low: ",binerrlow
+            print " Sum err low: ",sumerrlow
+            print " Error high: ",binerrup
+            print " Sum err high: ",sumerrup
+
+        # Store in a histogram the values of (x, midbin) with an error given by errorbin
+
+        
+        if errorbin ==0:
+            errorbin == 1
+
+            
+        scale = yBins / ymaxBin
+        if ymaxBin < yBins:
+            scale = ymaxBin / yBins
+
+
+        r1.SetBinContent(x, midbin*scale)
+        r1.SetBinError(x, errorbin*scale)
+
+    return r1                               #Return the histogram 1D 
+
+#______________________________________________________________________________                                                                                                  
 if __name__ == "__main__":  
 
   ## extension for figures - add more?
@@ -175,7 +291,7 @@ if __name__ == "__main__":
   ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/', ext=".root")
 
   treeHits = ch
-  label = "DisplacedL1MuTrigger_20160627"
+  label = "DisplacedL1MuTrigger_20160628"
   targetDir = label + "/"
   
   verbose = False
@@ -421,6 +537,54 @@ if __name__ == "__main__":
     DPhiPt10_GenMuPt_dxy50to100 = TH1F("DPhiPt10_GenMuPt_dxy50to100","", 60,0.,60)
     DPhiPt15_GenMuPt_dxy50to100 = TH1F("DPhiPt15_GenMuPt_dxy50to100","", 60,0.,60)
     DPhiPt20_GenMuPt_dxy50to100 = TH1F("DPhiPt20_GenMuPt_dxy50to100","", 60,0.,60)
+
+    DPhiPt10_GenMuPt_barrel = TH1F("DPhiPt10_GenMuPt_barrel","", 60,0.,60)
+    DPhiPt15_GenMuPt_barrel = TH1F("DPhiPt15_GenMuPt_barrel","", 60,0.,60)
+    DPhiPt20_GenMuPt_barrel = TH1F("DPhiPt20_GenMuPt_barrel","", 60,0.,60)
+
+    DPhiPt10_GenMuPt_dxy0to5_barrel = TH1F("DPhiPt10_GenMuPt_dxy0to5_barrel","", 60,0.,60)
+    DPhiPt15_GenMuPt_dxy0to5_barrel = TH1F("DPhiPt15_GenMuPt_dxy0to5_barrel","", 60,0.,60)
+    DPhiPt20_GenMuPt_dxy0to5_barrel = TH1F("DPhiPt20_GenMuPt_dxy0to5_barrel","", 60,0.,60)
+
+    DPhiPt10_GenMuPt_dxy5to50_barrel = TH1F("DPhiPt10_GenMuPt_dxy5to50_barrel","", 60,0.,60)
+    DPhiPt15_GenMuPt_dxy5to50_barrel = TH1F("DPhiPt15_GenMuPt_dxy5to50_barrel","", 60,0.,60)
+    DPhiPt20_GenMuPt_dxy5to50_barrel = TH1F("DPhiPt20_GenMuPt_dxy5to50_barrel","", 60,0.,60)
+
+    DPhiPt10_GenMuPt_dxy50to100_barrel = TH1F("DPhiPt10_GenMuPt_dxy50to100_barrel","", 60,0.,60)
+    DPhiPt15_GenMuPt_dxy50to100_barrel = TH1F("DPhiPt15_GenMuPt_dxy50to100_barrel","", 60,0.,60)
+    DPhiPt20_GenMuPt_dxy50to100_barrel = TH1F("DPhiPt20_GenMuPt_dxy50to100_barrel","", 60,0.,60)
+
+    DPhiPt10_GenMuPt_overlap = TH1F("DPhiPt10_GenMuPt_overlap","", 60,0.,60)
+    DPhiPt15_GenMuPt_overlap = TH1F("DPhiPt15_GenMuPt_overlap","", 60,0.,60)
+    DPhiPt20_GenMuPt_overlap = TH1F("DPhiPt20_GenMuPt_overlap","", 60,0.,60)
+
+    DPhiPt10_GenMuPt_dxy0to5_overlap = TH1F("DPhiPt10_GenMuPt_dxy0to5_overlap","", 60,0.,60)
+    DPhiPt15_GenMuPt_dxy0to5_overlap = TH1F("DPhiPt15_GenMuPt_dxy0to5_overlap","", 60,0.,60)
+    DPhiPt20_GenMuPt_dxy0to5_overlap = TH1F("DPhiPt20_GenMuPt_dxy0to5_overlap","", 60,0.,60)
+
+    DPhiPt10_GenMuPt_dxy5to50_overlap = TH1F("DPhiPt10_GenMuPt_dxy5to50_overlap","", 60,0.,60)
+    DPhiPt15_GenMuPt_dxy5to50_overlap = TH1F("DPhiPt15_GenMuPt_dxy5to50_overlap","", 60,0.,60)
+    DPhiPt20_GenMuPt_dxy5to50_overlap = TH1F("DPhiPt20_GenMuPt_dxy5to50_overlap","", 60,0.,60)
+
+    DPhiPt10_GenMuPt_dxy50to100_overlap = TH1F("DPhiPt10_GenMuPt_dxy50to100_overlap","", 60,0.,60)
+    DPhiPt15_GenMuPt_dxy50to100_overlap = TH1F("DPhiPt15_GenMuPt_dxy50to100_overlap","", 60,0.,60)
+    DPhiPt20_GenMuPt_dxy50to100_overlap = TH1F("DPhiPt20_GenMuPt_dxy50to100_overlap","", 60,0.,60)
+
+    DPhiPt10_GenMuPt_endcap = TH1F("DPhiPt10_GenMuPt_endcap","", 60,0.,60)
+    DPhiPt15_GenMuPt_endcap = TH1F("DPhiPt15_GenMuPt_endcap","", 60,0.,60)
+    DPhiPt20_GenMuPt_endcap = TH1F("DPhiPt20_GenMuPt_endcap","", 60,0.,60)
+
+    DPhiPt10_GenMuPt_dxy0to5_endcap = TH1F("DPhiPt10_GenMuPt_dxy0to5_endcap","", 60,0.,60)
+    DPhiPt15_GenMuPt_dxy0to5_endcap = TH1F("DPhiPt15_GenMuPt_dxy0to5_endcap","", 60,0.,60)
+    DPhiPt20_GenMuPt_dxy0to5_endcap = TH1F("DPhiPt20_GenMuPt_dxy0to5_endcap","", 60,0.,60)
+
+    DPhiPt10_GenMuPt_dxy5to50_endcap = TH1F("DPhiPt10_GenMuPt_dxy5to50_endcap","", 60,0.,60)
+    DPhiPt15_GenMuPt_dxy5to50_endcap = TH1F("DPhiPt15_GenMuPt_dxy5to50_endcap","", 60,0.,60)
+    DPhiPt20_GenMuPt_dxy5to50_endcap = TH1F("DPhiPt20_GenMuPt_dxy5to50_endcap","", 60,0.,60)
+
+    DPhiPt10_GenMuPt_dxy50to100_endcap = TH1F("DPhiPt10_GenMuPt_dxy50to100_endcap","", 60,0.,60)
+    DPhiPt15_GenMuPt_dxy50to100_endcap = TH1F("DPhiPt15_GenMuPt_dxy50to100_endcap","", 60,0.,60)
+    DPhiPt20_GenMuPt_dxy50to100_endcap = TH1F("DPhiPt20_GenMuPt_dxy50to100_endcap","", 60,0.,60)
 
 
     L1MuPt10_GenMuPt_barrel = TH1F("L1MuPt10_GenMuPt_barrel","", 60,0.,60)
@@ -1130,6 +1294,8 @@ if __name__ == "__main__":
       hist2.GetXaxis().SetTitle('GEN Mu p_{T} [GeV]')
       hist2.GetYaxis().SetTitle('#DeltaPhi')
       g = hist2.ProfileX()
+      g = get1DHistogramMedianY(hist2)
+      #g.SetMarkerColor(kRed)
       g.SetTitle(title)
       if doFit:
         p1fit = TF1("p1fit", fitfunction, 0, 60);
@@ -1152,8 +1318,8 @@ if __name__ == "__main__":
         else:
           p3 = 0; p3_err = 0
 
-        #print "[", p0, ", ", p1, ", ", p2, ", ", p3, "]"
-        print "[", p0_err, ", ", p1_err, ", ", p2_err, ", ", p3_err, "]"
+        print "[", p0, ", ", p1, ", ", p2, ", ", p3, "]"
+        #print "[", p0_err, ", ", p1_err, ", ", p2_err, ", ", p3_err, "]"
        
         """
         x = []
@@ -1167,6 +1333,7 @@ if __name__ == "__main__":
       if plotColz:
         hist2.Draw(option + "same")
       g.Draw("s same")
+      #g2.Draw("same")
       c.SaveAs(title)
       SetOwnership( g, True )
       SetOwnership( hist2, True )
@@ -1297,6 +1464,8 @@ if __name__ == "__main__":
       ## get the pT cut from the title
       index = title.find('L1MuPt')
       ptCut = title[index+6:index+8]
+      print "title", title
+      print "ptCut", ptCut
 
       leg = TLegend(0.6,0.2,0.9,0.45,"","brNDC")
       leg.SetFillColor(kWhite)
@@ -1314,147 +1483,147 @@ if __name__ == "__main__":
     makeEffPlot(TEfficiency(L1MuPt10_GenMuPt_dxy0to5, GenMuPt_dxy0to5),
                 TEfficiency(L1MuPt10_GenMuPt_dxy5to50, GenMuPt_dxy5to50),
                 TEfficiency(L1MuPt10_GenMuPt_dxy50to100, GenMuPt_dxy50to100),
-                targetDir + "L1MuPt10_GenMuPt_dxy0to500.png", True)
+                targetDir + "L1MuPt10_GenMuPt_dxy0to100.png", True)
 
     makeEffPlot(TEfficiency(L1MuPt15_GenMuPt_dxy0to5, GenMuPt_dxy0to5),
                 TEfficiency(L1MuPt15_GenMuPt_dxy5to50, GenMuPt_dxy5to50),
                 TEfficiency(L1MuPt15_GenMuPt_dxy50to100, GenMuPt_dxy50to100),
-                targetDir + "L1MuPt15_GenMuPt_dxy0to500.png", True)
+                targetDir + "L1MuPt15_GenMuPt_dxy0to100.png", True)
 
     makeEffPlot(TEfficiency(L1MuPt20_GenMuPt_dxy0to5, GenMuPt_dxy0to5),
                 TEfficiency(L1MuPt20_GenMuPt_dxy5to50, GenMuPt_dxy5to50),
                 TEfficiency(L1MuPt20_GenMuPt_dxy50to100, GenMuPt_dxy50to100),
-                targetDir + "L1MuPt20_GenMuPt_dxy0to500.png", True)
+                targetDir + "L1MuPt20_GenMuPt_dxy0to100.png", True)
 
 
     makeEffPlot(TEfficiency(L1MuPt10_GenMuPt_dxy0to5_barrel, GenMuPt_dxy0to5_barrel),
                 TEfficiency(L1MuPt10_GenMuPt_dxy5to50_barrel, GenMuPt_dxy5to50_barrel),
                 TEfficiency(L1MuPt10_GenMuPt_dxy50to100_barrel, GenMuPt_dxy50to100_barrel),
-                targetDir + "L1MuPt10_GenMuPt_dxy0to500_barrel.png", True)
+                targetDir + "L1MuPt10_GenMuPt_dxy0to100_barrel.png", True)
 
     makeEffPlot(TEfficiency(L1MuPt15_GenMuPt_dxy0to5_barrel, GenMuPt_dxy0to5_barrel),
                 TEfficiency(L1MuPt15_GenMuPt_dxy5to50_barrel, GenMuPt_dxy5to50_barrel),
                 TEfficiency(L1MuPt15_GenMuPt_dxy50to100_barrel, GenMuPt_dxy50to100_barrel),
-                targetDir + "L1MuPt15_GenMuPt_dxy0to500_barrel.png", True)
+                targetDir + "L1MuPt15_GenMuPt_dxy0to100_barrel.png", True)
 
     makeEffPlot(TEfficiency(L1MuPt20_GenMuPt_dxy0to5_barrel, GenMuPt_dxy0to5_barrel),
                 TEfficiency(L1MuPt20_GenMuPt_dxy5to50_barrel, GenMuPt_dxy5to50_barrel),
                 TEfficiency(L1MuPt20_GenMuPt_dxy50to100_barrel, GenMuPt_dxy50to100_barrel),
-                targetDir + "L1MuPt20_GenMuPt_dxy0to500_barrel.png", True)
+                targetDir + "L1MuPt20_GenMuPt_dxy0to100_barrel.png", True)
 
 
     makeEffPlot(TEfficiency(L1MuPt10_GenMuPt_dxy0to5_overlap, GenMuPt_dxy0to5_overlap),
                 TEfficiency(L1MuPt10_GenMuPt_dxy5to50_overlap, GenMuPt_dxy5to50_overlap),
                 TEfficiency(L1MuPt10_GenMuPt_dxy50to100_overlap, GenMuPt_dxy50to100_overlap),
-                targetDir + "L1MuPt10_GenMuPt_dxy0to500_overlap.png", True)
+                targetDir + "L1MuPt10_GenMuPt_dxy0to100_overlap.png", True)
 
     makeEffPlot(TEfficiency(L1MuPt15_GenMuPt_dxy0to5_overlap, GenMuPt_dxy0to5_overlap),
                 TEfficiency(L1MuPt15_GenMuPt_dxy5to50_overlap, GenMuPt_dxy5to50_overlap),
                 TEfficiency(L1MuPt15_GenMuPt_dxy50to100_overlap, GenMuPt_dxy50to100_overlap),
-                targetDir + "L1MuPt15_GenMuPt_dxy0to500_overlap.png", True)
+                targetDir + "L1MuPt15_GenMuPt_dxy0to100_overlap.png", True)
 
     makeEffPlot(TEfficiency(L1MuPt20_GenMuPt_dxy0to5_overlap, GenMuPt_dxy0to5_overlap),
                 TEfficiency(L1MuPt20_GenMuPt_dxy5to50_overlap, GenMuPt_dxy5to50_overlap),
                 TEfficiency(L1MuPt20_GenMuPt_dxy50to100_overlap, GenMuPt_dxy50to100_overlap),
-                targetDir + "L1MuPt20_GenMuPt_dxy0to500_overlap.png", True)
+                targetDir + "L1MuPt20_GenMuPt_dxy0to100_overlap.png", True)
 
 
     makeEffPlot(TEfficiency(L1MuPt10_GenMuPt_dxy0to5_endcap, GenMuPt_dxy0to5_endcap),
                 TEfficiency(L1MuPt10_GenMuPt_dxy5to50_endcap, GenMuPt_dxy5to50_endcap),
                 TEfficiency(L1MuPt10_GenMuPt_dxy50to100_endcap, GenMuPt_dxy50to100_endcap),
-                targetDir + "L1MuPt10_GenMuPt_dxy0to500_endcap.png", True)
+                targetDir + "L1MuPt10_GenMuPt_dxy0to100_endcap.png", True)
 
     makeEffPlot(TEfficiency(L1MuPt15_GenMuPt_dxy0to5_endcap, GenMuPt_dxy0to5_endcap),
                 TEfficiency(L1MuPt15_GenMuPt_dxy5to50_endcap, GenMuPt_dxy5to50_endcap),
                 TEfficiency(L1MuPt15_GenMuPt_dxy50to100_endcap, GenMuPt_dxy50to100_endcap),
-                targetDir + "L1MuPt15_GenMuPt_dxy0to500_endcap.png", True)
+                targetDir + "L1MuPt15_GenMuPt_dxy0to100_endcap.png", True)
 
     makeEffPlot(TEfficiency(L1MuPt20_GenMuPt_dxy0to5_endcap, GenMuPt_dxy0to5_endcap),
                 TEfficiency(L1MuPt20_GenMuPt_dxy5to50_endcap, GenMuPt_dxy5to50_endcap),
                 TEfficiency(L1MuPt20_GenMuPt_dxy50to100_endcap, GenMuPt_dxy50to100_endcap),
-                targetDir + "L1MuPt20_GenMuPt_dxy0to500_endcap.png", True)
+                targetDir + "L1MuPt20_GenMuPt_dxy0to100_endcap.png", True)
 
 
 
     makeEffPlot(TEfficiency(DPhiPt10_GenMuPt_dxy0to5, GenMuPt_dxy0to5),
                 TEfficiency(DPhiPt10_GenMuPt_dxy5to50, GenMuPt_dxy5to50),
                 TEfficiency(DPhiPt10_GenMuPt_dxy50to100, GenMuPt_dxy50to100),
-                targetDir + "DPhiPt10_GenMuPt_dxy0to500.png", True)
+                targetDir + "DPhiPt10_GenMuPt_dxy0to100.png", True)
 
     makeEffPlot(TEfficiency(DPhiPt15_GenMuPt_dxy0to5, GenMuPt_dxy0to5),
                 TEfficiency(DPhiPt15_GenMuPt_dxy5to50, GenMuPt_dxy5to50),
                 TEfficiency(DPhiPt15_GenMuPt_dxy50to100, GenMuPt_dxy50to100),
-                targetDir + "DPhiPt15_GenMuPt_dxy0to500.png", True)
+                targetDir + "DPhiPt15_GenMuPt_dxy0to100.png", True)
 
     makeEffPlot(TEfficiency(DPhiPt20_GenMuPt_dxy0to5, GenMuPt_dxy0to5),
                 TEfficiency(DPhiPt20_GenMuPt_dxy5to50, GenMuPt_dxy5to50),
                 TEfficiency(DPhiPt20_GenMuPt_dxy50to100, GenMuPt_dxy50to100),
-                targetDir + "DPhiPt20_GenMuPt_dxy0to500.png", True)
+                targetDir + "DPhiPt20_GenMuPt_dxy0to100.png", True)
 
 
     makeEffPlot(TEfficiency(DPhiPt10_GenMuPt_dxy0to5_barrel, GenMuPt_dxy0to5_barrel),
                 TEfficiency(DPhiPt10_GenMuPt_dxy5to50_barrel, GenMuPt_dxy5to50_barrel),
                 TEfficiency(DPhiPt10_GenMuPt_dxy50to100_barrel, GenMuPt_dxy50to100_barrel),
-                targetDir + "DPhiPt10_GenMuPt_dxy0to500_barrel.png", True)
+                targetDir + "DPhiPt10_GenMuPt_dxy0to100_barrel.png", True)
 
     makeEffPlot(TEfficiency(DPhiPt15_GenMuPt_dxy0to5_barrel, GenMuPt_dxy0to5_barrel),
                 TEfficiency(DPhiPt15_GenMuPt_dxy5to50_barrel, GenMuPt_dxy5to50_barrel),
                 TEfficiency(DPhiPt15_GenMuPt_dxy50to100_barrel, GenMuPt_dxy50to100_barrel),
-                targetDir + "DPhiPt15_GenMuPt_dxy0to500_barrel.png", True)
+                targetDir + "DPhiPt15_GenMuPt_dxy0to100_barrel.png", True)
 
     makeEffPlot(TEfficiency(DPhiPt20_GenMuPt_dxy0to5_barrel, GenMuPt_dxy0to5_barrel),
                 TEfficiency(DPhiPt20_GenMuPt_dxy5to50_barrel, GenMuPt_dxy5to50_barrel),
                 TEfficiency(DPhiPt20_GenMuPt_dxy50to100_barrel, GenMuPt_dxy50to100_barrel),
-                targetDir + "DPhiPt20_GenMuPt_dxy0to500_barrel.png", True)
+                targetDir + "DPhiPt20_GenMuPt_dxy0to100_barrel.png", True)
 
 
     makeEffPlot(TEfficiency(DPhiPt10_GenMuPt_dxy0to5_overlap, GenMuPt_dxy0to5_overlap),
                 TEfficiency(DPhiPt10_GenMuPt_dxy5to50_overlap, GenMuPt_dxy5to50_overlap),
                 TEfficiency(DPhiPt10_GenMuPt_dxy50to100_overlap, GenMuPt_dxy50to100_overlap),
-                targetDir + "DPhiPt10_GenMuPt_dxy0to500_overlap.png", True)
+                targetDir + "DPhiPt10_GenMuPt_dxy0to100_overlap.png", True)
 
     makeEffPlot(TEfficiency(DPhiPt15_GenMuPt_dxy0to5_overlap, GenMuPt_dxy0to5_overlap),
                 TEfficiency(DPhiPt15_GenMuPt_dxy5to50_overlap, GenMuPt_dxy5to50_overlap),
                 TEfficiency(DPhiPt15_GenMuPt_dxy50to100_overlap, GenMuPt_dxy50to100_overlap),
-                targetDir + "DPhiPt15_GenMuPt_dxy0to500_overlap.png", True)
+                targetDir + "DPhiPt15_GenMuPt_dxy0to100_overlap.png", True)
 
     makeEffPlot(TEfficiency(DPhiPt20_GenMuPt_dxy0to5_overlap, GenMuPt_dxy0to5_overlap),
                 TEfficiency(DPhiPt20_GenMuPt_dxy5to50_overlap, GenMuPt_dxy5to50_overlap),
                 TEfficiency(DPhiPt20_GenMuPt_dxy50to100_overlap, GenMuPt_dxy50to100_overlap),
-                targetDir + "DPhiPt20_GenMuPt_dxy0to500_overlap.png", True)
+                targetDir + "DPhiPt20_GenMuPt_dxy0to100_overlap.png", True)
 
 
     makeEffPlot(TEfficiency(DPhiPt10_GenMuPt_dxy0to5_endcap, GenMuPt_dxy0to5_endcap),
                 TEfficiency(DPhiPt10_GenMuPt_dxy5to50_endcap, GenMuPt_dxy5to50_endcap),
                 TEfficiency(DPhiPt10_GenMuPt_dxy50to100_endcap, GenMuPt_dxy50to100_endcap),
-                targetDir + "DPhiPt10_GenMuPt_dxy0to500_endcap.png", True)
+                targetDir + "DPhiPt10_GenMuPt_dxy0to100_endcap.png", True)
 
     makeEffPlot(TEfficiency(DPhiPt15_GenMuPt_dxy0to5_endcap, GenMuPt_dxy0to5_endcap),
                 TEfficiency(DPhiPt15_GenMuPt_dxy5to50_endcap, GenMuPt_dxy5to50_endcap),
                 TEfficiency(DPhiPt15_GenMuPt_dxy50to100_endcap, GenMuPt_dxy50to100_endcap),
-                targetDir + "DPhiPt15_GenMuPt_dxy0to500_endcap.png", True)
+                targetDir + "DPhiPt15_GenMuPt_dxy0to100_endcap.png", True)
 
     makeEffPlot(TEfficiency(DPhiPt20_GenMuPt_dxy0to5_endcap, GenMuPt_dxy0to5_endcap),
                 TEfficiency(DPhiPt20_GenMuPt_dxy5to50_endcap, GenMuPt_dxy5to50_endcap),
                 TEfficiency(DPhiPt20_GenMuPt_dxy50to100_endcap, GenMuPt_dxy50to100_endcap),
-                targetDir + "DPhiPt20_GenMuPt_dxy0to500_endcap.png", True)
+                targetDir + "DPhiPt20_GenMuPt_dxy0to100_endcap.png", True)
 
     
     ## properly normalized bending angle plots
     makeEffPlot(TEfficiency(DPhiPt10_GenMuPt_dxy0to5, GenMuPt_phiDTst1_phiDTst4_dxy0to5),
                 TEfficiency(DPhiPt10_GenMuPt_dxy5to50, GenMuPt_phiDTst1_phiDTst4_dxy5to50),
                 TEfficiency(DPhiPt10_GenMuPt_dxy50to100, GenMuPt_phiDTst1_phiDTst4_dxy50to100),
-                targetDir + "DPhiPt10_GenMuPt_dxy0to500.png", True)
+                targetDir + "DPhiPt10_GenMuPt_dxy0to100.png", True)
 
     makeEffPlot(TEfficiency(DPhiPt15_GenMuPt_dxy0to5, GenMuPt_phiDTst1_phiDTst4_dxy0to5),
                 TEfficiency(DPhiPt15_GenMuPt_dxy5to50, GenMuPt_phiDTst1_phiDTst4_dxy5to50),
                 TEfficiency(DPhiPt15_GenMuPt_dxy50to100, GenMuPt_phiDTst1_phiDTst4_dxy50to100),
-                targetDir + "DPhiPt15_GenMuPt_dxy0to500.png", True)
+                targetDir + "DPhiPt15_GenMuPt_dxy0to100.png", True)
 
     makeEffPlot(TEfficiency(DPhiPt20_GenMuPt_dxy0to5, GenMuPt_phiDTst1_phiDTst4_dxy0to5),
                 TEfficiency(DPhiPt20_GenMuPt_dxy5to50, GenMuPt_phiDTst1_phiDTst4_dxy5to50),
                 TEfficiency(DPhiPt20_GenMuPt_dxy50to100, GenMuPt_phiDTst1_phiDTst4_dxy50to100),
-                targetDir + "DPhiPt20_GenMuPt_dxy0to500.png", True)
+                targetDir + "DPhiPt20_GenMuPt_dxy0to100.png", True)
 
 
   displacedTriggerEfficiency()

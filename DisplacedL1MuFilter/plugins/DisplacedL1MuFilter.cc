@@ -280,6 +280,7 @@ struct MyEvent
   Int_t CSCTF_phi1[kMaxCSCTF], CSCTF_phi2[kMaxCSCTF], CSCTF_phi3[kMaxCSCTF], CSCTF_phi4[kMaxCSCTF];
   Int_t CSCTF_phib1[kMaxCSCTF], CSCTF_phib2[kMaxCSCTF], CSCTF_phib3[kMaxCSCTF], CSCTF_phib4[kMaxCSCTF];
 
+  Float_t CSCTF_gemdphi1[kMaxCSCTF], CSCTF_gemdphi2[kMaxCSCTF];
 
   // Matching the L1Mu to RPCb  
   Int_t nRPCb;
@@ -442,10 +443,10 @@ private:
   GlobalPoint getCSCSpecificPoint(unsigned int rawid, const CSCCorrelatedLCTDigi& tp) const;
   bool isCSCCounterClockwise(const std::unique_ptr<const CSCLayer>& layer) const;
 
-  GlobalPoint extrapolateGP(const reco::GenParticle &tk);
-  GlobalPoint extrapolateGP(const TTTrack< Ref_PixelDigi_ > &tk);
-  GlobalPoint propagateToZ(const GlobalPoint &inner_point, const GlobalVector &inner_vec, double, double) const;
-  GlobalPoint propagateToR(const GlobalPoint &inner_point, const GlobalVector &inner_vec, double, double) const;
+  void extrapolate(const reco::GenParticle &tk, int station, GlobalPoint&, GlobalVector&);
+  void extrapolate(const TTTrack< Ref_PixelDigi_ > &tk, int station, GlobalPoint&, GlobalVector&);
+  TrajectoryStateOnSurface propagateToZ(const GlobalPoint &inner_point, const GlobalVector &inner_vec, double, double) const;
+  TrajectoryStateOnSurface propagateToR(const GlobalPoint &inner_point, const GlobalVector &inner_vec, double, double) const;
   FreeTrajectoryState startingState(const reco::GenParticle &tk) const;
   FreeTrajectoryState startingState(const TTTrack< Ref_PixelDigi_ > &tk) const;
 
@@ -1191,6 +1192,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.CSCTF_clctpat1[j] = stub.getCLCTPattern();
             event_.CSCTF_val1[j] = stub.isValid();
             event_.CSCTF_phi1[j] = calcCSCSpecificPhi(id.rawId(), stub);
+            event_.CSCTF_gemdphi1[j] = stub.getGEMDPhi();;
             break;
           case 2:
             event_.CSCTF_st2[j] = id.station();
@@ -1207,6 +1209,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.CSCTF_clctpat2[j] = stub.getCLCTPattern();
             event_.CSCTF_val2[j] = stub.isValid();
             event_.CSCTF_phi2[j] = calcCSCSpecificPhi(id.rawId(), stub);
+            event_.CSCTF_gemdphi2[j] = stub.getGEMDPhi();
             break;
           case 3:
             event_.CSCTF_st3[j] = id.station();
@@ -2269,48 +2272,64 @@ DisplacedL1MuFilter::isCSCCounterClockwise(const std::unique_ptr<const CSCLayer>
            (std::abs(phi1 - phiN) >= M_PI && phi1 < phiN)     );  
 }
 
-GlobalPoint 
-DisplacedL1MuFilter::extrapolateGP(const reco::GenParticle &tk)
+void 
+DisplacedL1MuFilter::extrapolate(const reco::GenParticle &tk, int station, GlobalPoint& gp, GlobalVector& gv)
 {
+  TrajectoryStateOnSurface tsos;
   GlobalPoint inner_point(tk.vx(), tk.vy(), tk.vz());
   GlobalVector inner_vec (tk.px(), tk.py(), tk.pz());
-  if (std::abs(tk.eta())<1.2) {
-    GlobalPoint loc_barrel(propagateToR(inner_point, inner_vec, tk.charge(), 523.));
-    return loc_barrel;
-  } 
-  else if (tk.eta()>1.2) {
-    GlobalPoint loc_endcap_pos(propagateToZ(inner_point, inner_vec, tk.charge(), 828));
-    return loc_endcap_pos;
-  } 
-  else if (tk.eta()<-1.2) {
-    GlobalPoint loc_endcap_neg(propagateToZ(inner_point, inner_vec, tk.charge(), -828));
-    return loc_endcap_neg;
+  double R, Zmin, Zmax;
+  if (station == 1){
+    R = 440.; Zmax = 600.; Zmin = -600.;
   }
-  return GlobalPoint();
+  else if (station == 2){
+    R = 523.; Zmax = 828.; Zmin = -828.;
+  }
+
+  if (std::abs(tk.eta())<1.2) tsos = propagateToR(inner_point, inner_vec, tk.charge(), R);
+  else if (tk.eta()>1.2)      tsos = propagateToZ(inner_point, inner_vec, tk.charge(), Zmax);
+  else if (tk.eta()<-1.2)     tsos = propagateToZ(inner_point, inner_vec, tk.charge(), Zmin);
+  else                        tsos = TrajectoryStateOnSurface();
+
+  if (tsos.isValid()){
+    gp = tsos.globalPosition();
+    gv = tsos.globalMomentum();
+  } else {
+    gp = GlobalPoint();
+    gv = GlobalVector();
+  }
 }
 
-GlobalPoint 
-DisplacedL1MuFilter::extrapolateGP(const TTTrack< Ref_PixelDigi_ > &tk)
+void 
+DisplacedL1MuFilter::extrapolate(const TTTrack< Ref_PixelDigi_ > &tk, int station, GlobalPoint& gp, GlobalVector& gv)
 {
+  TrajectoryStateOnSurface tsos;
   GlobalPoint inner_point(tk.getPOCA());
   GlobalVector inner_vec (tk.getMomentum());
   double charge(tk.getRInv()>0? 1: -1);
-  if (std::abs(tk.getMomentum().eta())<1.2) {
-    GlobalPoint loc_barrel(propagateToR(inner_point, inner_vec, charge, 523.));
-    return loc_barrel;
-  } 
-  else if (tk.getMomentum().eta()>1.2) {
-    GlobalPoint loc_endcap_pos(propagateToZ(inner_point, inner_vec, charge, 828));
-    return loc_endcap_pos;
-  } 
-  else if (tk.getMomentum().eta()<-1.2){
-    GlobalPoint loc_endcap_neg(propagateToZ(inner_point, inner_vec, charge, -828));
-    return loc_endcap_neg;
+  double R, Zmin, Zmax;
+  if (station == 1){
+    R = 440.; Zmax = 600.; Zmin = -600.;
   }
-  return GlobalPoint();
+  else if (station == 2){
+    R = 523.; Zmax = 828.; Zmin = -828.;
+  }
+
+  if (std::abs(tk.getMomentum().eta())<1.2) tsos = propagateToR(inner_point, inner_vec, charge, R);
+  else if (tk.getMomentum().eta()>1.2)      tsos = propagateToZ(inner_point, inner_vec, charge, Zmax);
+  else if (tk.getMomentum().eta()<-1.2)     tsos = propagateToZ(inner_point, inner_vec, charge, Zmin);
+  else                                      tsos = TrajectoryStateOnSurface();
+
+  if (tsos.isValid()){
+    gp = tsos.globalPosition();
+    gv = tsos.globalMomentum();
+  } else {
+    gp = GlobalPoint();
+    gv = GlobalVector();
+  }
 }
 
-GlobalPoint
+TrajectoryStateOnSurface
 DisplacedL1MuFilter::propagateToZ(const GlobalPoint &inner_point, const GlobalVector &inner_vec, double charge, double z) const
 {
   Plane::PositionType pos(0.f, 0.f, z);
@@ -2321,12 +2340,10 @@ DisplacedL1MuFilter::propagateToZ(const GlobalPoint &inner_point, const GlobalVe
 
   TrajectoryStateOnSurface tsos(propagator_->propagate(state_start, *my_plane));
   if (!tsos.isValid()) tsos = propagatorOpposite_->propagate(state_start, *my_plane);
-  if (tsos.isValid()) return tsos.globalPosition();
-
-  return GlobalPoint();
+  return tsos;
 }
 
-GlobalPoint
+TrajectoryStateOnSurface
 DisplacedL1MuFilter::propagateToR(const GlobalPoint &inner_point, const GlobalVector &inner_vec, double charge, double R) const
 {
   Cylinder::CylinderPointer my_cyl(Cylinder::build(Surface::PositionType(0,0,0), Surface::RotationType(), R));
@@ -2335,9 +2352,7 @@ DisplacedL1MuFilter::propagateToR(const GlobalPoint &inner_point, const GlobalVe
 
   TrajectoryStateOnSurface tsos(propagator_->propagate(state_start, *my_cyl));
   if (!tsos.isValid()) tsos = propagatorOpposite_->propagate(state_start, *my_cyl);
-  if (tsos.isValid()) return tsos.globalPosition();
-
-  return GlobalPoint();
+  return tsos;
 }
 
 FreeTrajectoryState 
@@ -2721,7 +2736,8 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_phi4", event_.CSCTF_phi4,"CSCTF_phi4[nCSCTF]/F");
   event_tree_->Branch("CSCTF_phib4", event_.CSCTF_phib4,"CSCTF_phib4[nCSCTF]/F");
 
-  
+  event_tree_->Branch("CSCTF_gemdphi1", event_.CSCTF_gemdphi1,"CSCTF_gemdphi1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_gemdphi2", event_.CSCTF_gemdphi2,"CSCTF_gemdphi2[nCSCTF]/F");
 
   event_tree_->Branch("nRPCb", &event_.nRPCb);
   event_tree_->Branch("L1Mu_RPCb_index", event_.L1Mu_RPCb_index,"L1Mu_RPCb_index[nL1Mu]/I");
@@ -3161,6 +3177,9 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_val4[i] = 99;
     event_.CSCTF_phi4[i] = 99;;
     event_.CSCTF_phib4[i] = 99;;
+
+    event_.CSCTF_gemdphi1[i] = 99;
+    event_.CSCTF_gemdphi2[i] = 99;
   }
 
   event_.nRPCb = 0;

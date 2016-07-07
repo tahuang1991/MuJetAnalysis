@@ -187,6 +187,10 @@ struct MyEvent
   Float_t genGdMu_deta_prop[2][2];
   Float_t genGdMu_dphi_prop[2][2];
   Float_t genGdMu_dR_prop[2][2];
+  Float_t genGdMu_etav_prop1[2][2];
+  Float_t genGdMu_phiv_prop1[2][2];
+  Float_t genGdMu_etav_prop2[2][2];
+  Float_t genGdMu_phiv_prop2[2][2];
 
   Float_t genGdMu_vx[2][2];
   Float_t genGdMu_vy[2][2];
@@ -445,24 +449,10 @@ private:
 
   void extrapolate(const reco::GenParticle &tk, int station, GlobalPoint&, GlobalVector&);
   void extrapolate(const TTTrack< Ref_PixelDigi_ > &tk, int station, GlobalPoint&, GlobalVector&);
-  TrajectoryStateOnSurface propagateToZ(const GlobalPoint &inner_point, const GlobalVector &inner_vec, double, double) const;
-  TrajectoryStateOnSurface propagateToR(const GlobalPoint &inner_point, const GlobalVector &inner_vec, double, double) const;
-  FreeTrajectoryState startingState(const reco::GenParticle &tk) const;
-  FreeTrajectoryState startingState(const TTTrack< Ref_PixelDigi_ > &tk) const;
+  GlobalPoint extrapolateGP(const TTTrack< Ref_PixelDigi_ > &tk, int station=2);
+  TrajectoryStateOnSurface propagateToZ(const GlobalPoint &, const GlobalVector &, double, double) const;
+  TrajectoryStateOnSurface propagateToR(const GlobalPoint &, const GlobalVector &, double, double) const;
 
-  TrajectoryStateOnSurface extrapolate(const FreeTrajectoryState &start) const;
-  /// Extrapolate reco::Candidate to the muon station 2, return an invalid TSOS if it fails
-  TrajectoryStateOnSurface extrapolate(const reco::GenParticle &tk) const { 
-    return extrapolate(startingState(tk)); 
-  }
-  TrajectoryStateOnSurface extrapolate(const TTTrack< Ref_PixelDigi_ > &tk) const { 
-    return extrapolate(startingState(tk)); 
-  }
-  
-  /// Get the best TSOS on one of the chambres of this DetLayer, or an invalid TSOS if none match
-  TrajectoryStateOnSurface getBestDet(const TrajectoryStateOnSurface &tsos, const DetLayer *station) const;
-
-  
   // ----------member data ---------------------------
 
   enum WhichTrack { None, TrackerTk, MuonTk, GlobalTk };
@@ -880,14 +870,28 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         //                              int(tk.charge()),
         //                              magfield_.product());
         
-        GlobalPoint ex_point(extrapolateGP(*genMuonGroups[i][j]));
-        if (!(ex_point == GlobalPoint())){
-          event_.genGdMu_eta_prop[i][j] = ex_point.eta();
-          event_.genGdMu_phi_prop[i][j] = ex_point.phi();
+        GlobalPoint ex_p1;
+        GlobalPoint ex_p2;
+        GlobalVector ex_v1;
+        GlobalVector ex_v2;
+        extrapolate(*genMuonGroups[i][j], 1, ex_p1, ex_v1);
+        extrapolate(*genMuonGroups[i][j], 2, ex_p2, ex_v2);
+
+        if (!(ex_p1 == GlobalPoint())){
+          event_.genGdMu_eta_prop[i][j] = ex_p1.eta();
+          event_.genGdMu_phi_prop[i][j] = ex_p1.phi();
           event_.genGdMu_deta_prop[i][j] = std::abs(event_.genGdMu_eta[i][j] - event_.genGdMu_eta_prop[i][j]);
           event_.genGdMu_dphi_prop[i][j] = My_dPhi(event_.genGdMu_phi[i][j], event_.genGdMu_phi_prop[i][j]);
           event_.genGdMu_dR_prop[i][j] = reco::deltaR(event_.genGdMu_eta[i][j], event_.genGdMu_phi[i][j],
                                                       event_.genGdMu_eta_prop[i][j], event_.genGdMu_phi_prop[i][j]);
+        }
+        if (!(ex_v1 == GlobalVector())){
+          event_.genGdMu_etav_prop1[i][j] = ex_v1.eta();
+          event_.genGdMu_phiv_prop1[i][j] = ex_v1.phi();
+        }
+        if (!(ex_v2 == GlobalVector())){
+          event_.genGdMu_etav_prop2[i][j] = ex_v2.eta();
+          event_.genGdMu_phiv_prop2[i][j] = ex_v2.phi();
         }
       }
     }
@@ -2285,6 +2289,9 @@ DisplacedL1MuFilter::extrapolate(const reco::GenParticle &tk, int station, Globa
   else if (station == 2){
     R = 523.; Zmax = 828.; Zmin = -828.;
   }
+  else {
+    R = 0.; Zmax = 0.; Zmin = 0.;
+  }
 
   if (std::abs(tk.eta())<1.2) tsos = propagateToR(inner_point, inner_vec, tk.charge(), R);
   else if (tk.eta()>1.2)      tsos = propagateToZ(inner_point, inner_vec, tk.charge(), Zmax);
@@ -2314,6 +2321,9 @@ DisplacedL1MuFilter::extrapolate(const TTTrack< Ref_PixelDigi_ > &tk, int statio
   else if (station == 2){
     R = 523.; Zmax = 828.; Zmin = -828.;
   }
+  else {
+    R = 0.; Zmax = 0.; Zmin = 0.;
+  }
 
   if (std::abs(tk.getMomentum().eta())<1.2) tsos = propagateToR(inner_point, inner_vec, charge, R);
   else if (tk.getMomentum().eta()>1.2)      tsos = propagateToZ(inner_point, inner_vec, charge, Zmax);
@@ -2327,6 +2337,33 @@ DisplacedL1MuFilter::extrapolate(const TTTrack< Ref_PixelDigi_ > &tk, int statio
     gp = GlobalPoint();
     gv = GlobalVector();
   }
+}
+
+GlobalPoint
+DisplacedL1MuFilter::extrapolateGP(const TTTrack< Ref_PixelDigi_ > &tk, int station)
+{
+  TrajectoryStateOnSurface tsos;
+  GlobalPoint inner_point(tk.getPOCA());
+  GlobalVector inner_vec (tk.getMomentum());
+  double charge(tk.getRInv()>0? 1: -1);
+  double R, Zmin, Zmax;
+  if (station == 1){
+    R = 440.; Zmax = 600.; Zmin = -600.;
+  }
+  else if (station == 2){
+    R = 523.; Zmax = 828.; Zmin = -828.;
+  }
+  else {
+    R = 0.; Zmax = 0.; Zmin = 0.;
+  }
+
+  if (std::abs(tk.getMomentum().eta())<1.2) tsos = propagateToR(inner_point, inner_vec, charge, R);
+  else if (tk.getMomentum().eta()>1.2)      tsos = propagateToZ(inner_point, inner_vec, charge, Zmax);
+  else if (tk.getMomentum().eta()<-1.2)     tsos = propagateToZ(inner_point, inner_vec, charge, Zmin);
+  else                                      tsos = TrajectoryStateOnSurface();
+  
+  if (tsos.isValid()) return tsos.globalPosition();
+  else                return GlobalPoint();
 }
 
 TrajectoryStateOnSurface
@@ -2353,111 +2390,6 @@ DisplacedL1MuFilter::propagateToR(const GlobalPoint &inner_point, const GlobalVe
   TrajectoryStateOnSurface tsos(propagator_->propagate(state_start, *my_cyl));
   if (!tsos.isValid()) tsos = propagatorOpposite_->propagate(state_start, *my_cyl);
   return tsos;
-}
-
-FreeTrajectoryState 
-DisplacedL1MuFilter::startingState(const reco::GenParticle &tk) const {
-  if (!magfield_.isValid()) throw cms::Exception("NotInitialized") << "PropagateToMuon: You must call init(const edm::EventSetup &iSetup) before using this object.\n"; 
-  return FreeTrajectoryState(  GlobalPoint(tk.vx(), tk.vy(), tk.vz()),
-                               GlobalVector(tk.px(), tk.py(), tk.pz()),
-                               int(tk.charge()),
-                               magfield_.product());
-}
-
-FreeTrajectoryState 
-DisplacedL1MuFilter::startingState(const TTTrack< Ref_PixelDigi_ > &tk) const {
-  if (!magfield_.isValid()) throw cms::Exception("NotInitialized") << "PropagateToMuon: You must call init(const edm::EventSetup &iSetup) before using this object.\n"; 
-  const double l1Tk_charge = tk.getRInv()>0? 1: -1;
-  return FreeTrajectoryState(  tk.getPOCA(),
-                               tk.getMomentum(),      
-                               int(l1Tk_charge),
-                               magfield_.product());
-}
-
-TrajectoryStateOnSurface
-DisplacedL1MuFilter::extrapolate(const FreeTrajectoryState &start) const {
-  if (!magfield_.isValid() || barrelCylinder_ == 0) {
-    throw cms::Exception("NotInitialized") << "PropagateToMuon: You must call init(const edm::EventSetup &iSetup) before using this object.\n"; 
-  }
-
-  TrajectoryStateOnSurface final;
-  if (start.momentum().mag() == 0) return final;
-  double eta = start.momentum().eta();
-
-  const Propagator * propagatorBarrel  = &*propagator_;
-  const Propagator * propagatorEndcaps = &*propagator_;
-  if (whichState_ != AtVertex) { 
-    if (start.position().perp()    > barrelCylinder_->radius())         propagatorBarrel  = &*propagatorOpposite_;
-    if (fabs(start.position().z()) > endcapDiskPos_[useMB2_?2:1]->position().z()) propagatorEndcaps = &*propagatorOpposite_;
-  }
-  if (cosmicPropagation_) {
-    if (start.momentum().dot(GlobalVector(start.position().x(), start.position().y(), start.position().z())) < 0) {
-      // must flip the propagations
-      propagatorBarrel  = (propagatorBarrel  == &*propagator_ ? &*propagatorOpposite_ : &*propagator_);
-      propagatorEndcaps = (propagatorEndcaps == &*propagator_ ? &*propagatorOpposite_ : &*propagator_);
-    }
-  }
-
-  TrajectoryStateOnSurface tsos = propagatorBarrel->propagate(start, *barrelCylinder_);
-  if (tsos.isValid()) {
-    //    std::cout << "TSOS is valid" << std::endl;
-    if (useSimpleGeometry_) {
-      //std::cout << "  propagated to barrel, z = " << tsos.globalPosition().z() << ", bound = " << barrelHalfLength_ << std::endl;
-      if (fabs(tsos.globalPosition().z()) <= barrelHalfLength_){
-        //std::cout << "    acquired final position from TSOS" << std::endl;
-        final = tsos;
-      }
-    } else {
-      final = getBestDet(tsos, muonGeometry_->allDTLayers()[1]);
-      //std::cout << "  obtained final position using DT layer geometry" << std::endl;
-    }
-  }
-  // at this point we have a final state
-  // if valid, return if
-  // if not, check the endcap
-  if (final.isValid()) {
-    //std::cout << "Valid barrel TSOS" << std::endl;
-    return final;
-  }
- 
-  if (!final.isValid()) {
-    //std::cout << "final position is invalid" << std::endl;
-    for (int ie = (useMB2_ ? 2 : 1); ie >= 0; --ie) {
-      tsos = propagatorEndcaps->propagate(start, (eta > 0 ? *endcapDiskPos_[ie] : *endcapDiskNeg_[ie]));
-      if (tsos.isValid()) {
-        //std::cout << "TSOS is invalid" << std::endl;
-        if (useSimpleGeometry_) {
-          float rho = tsos.globalPosition().perp();
-          //std::cout << "  propagated to endcap " << ie << ", rho = " << rho << ", bounds [ " << endcapRadii_[ie].first << ", " << endcapRadii_[ie].second << "]" << std::endl;
-          if ((rho >= endcapRadii_[ie].first) && (rho <= endcapRadii_[ie].second)) {
-            //std::cout << "    acquired final position from TSOS" << std::endl;
-            final = tsos;
-          }
-        } else {
-          final = getBestDet(tsos, (eta > 0 ? muonGeometry_->forwardCSCLayers()[ie] : muonGeometry_->backwardCSCLayers()[ie]));
-        }
-      } 
-      // else 
-      //   std::cout << "  failed to propagated to endcap " << ie  << std::endl;
-      if (final.isValid()) {
-        //std::cout << "Valid endcap TSOS" <<std::endl;
-        break;
-      }
-      if (ie == 2 && !fallbackToME1_) break;
-    }
-  }
-  return final;
-}
-
-TrajectoryStateOnSurface 
-DisplacedL1MuFilter::getBestDet(const TrajectoryStateOnSurface &tsos, const DetLayer *layer) const {
-  TrajectoryStateOnSurface ret; // start as null
-  Chi2MeasurementEstimator estimator(1e10, 3.); // require compatibility at 3 sigma
-  std::vector<GeometricSearchDet::DetWithState> dets = layer->compatibleDets(tsos, *propagatorAny_, estimator);
-  if (!dets.empty()) {
-    ret = dets.front().second;
-  }
-  return ret;
 }
 
 void DisplacedL1MuFilter::bookL1MuTree()

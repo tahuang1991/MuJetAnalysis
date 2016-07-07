@@ -163,6 +163,15 @@ def getQuantilesX(hist2d):
   SetOwnership( hist1d, True )
   return hist1d
 
+
+#______________________________________________________________________________                                                                                                  
+def getMedian(yintegral):
+  if (yintegral%2 == 1):
+    return (yintegral-1)/2 + 1
+  else:
+    return (yintegral/2) + 0.5
+  
+
 #______________________________________________________________________________                                                                                                  
 def get1DHistogramMedianY(hist2d):
     '''this function returns a 1d histogram
@@ -174,47 +183,41 @@ def get1DHistogramMedianY(hist2d):
     xmaxBin = hist2d.GetXaxis().GetXmax()
     yminBin = hist2d.GetYaxis().GetXmin()
     ymaxBin = hist2d.GetYaxis().GetXmax()
-  
+    """
+    print "xBins", xBins
+    print "yBins", yBins
+    print "xminBin", xminBin
+    print "xmaxBin", xmaxBin
+    print "yminBin", yminBin
+    print "ymaxBin", ymaxBin
+    """
+    
     printa = 0
-    b1 = hist2d
-    r1 = TH1F("r1","1/abs(\Delta\phi) vs p^{Sim}",xBins,xminBin,xmaxBin)
+    r1 = TH1F("r1","",xBins,xminBin,xmaxBin)
     for x in range(0,xBins):
 
         if (printa > 0):
             print "*********** For bin x: %d **********************"%x
             
-        
         # Find the total number of frequencies
-        totalfreq = b1.Integral(x,x,0,yBins+1)
-
-        # Calculate half of the frequencies
-        med = 0
+        yintegral = hist2d.Integral(x,x,0,yBins+1)
+        median = getMedian(yintegral)
         
-        if (totalfreq%2 ==1) :
-            med = (totalfreq-1)/2 + 1            # Set the value of the median
-
-        if (totalfreq%2 ==0):
-            med = (totalfreq/2) + 0.5               # This might need to be added 0.5
-
         temporal = 0
         midbin = 0
         
         for m in range (0,yBins+1):
-                temporal = b1.Integral(x,x,0,m)
+          temporal = hist2d.Integral(x,x,0,m)
 
-                if (temporal >= med):
-                    midbin = m              # Break once I get to the median
-                    break
-
-       
+          if (temporal >= median):
+            midbin = m              # Break once I get to the median
+            break
+          
         if (printa > 0):
-
-                print "suma: ",totalfreq
-                print "Midbin: ",midbin
-                print "mediana count: ",temporal
-
-
-        
+          print "suma: ",yintegral
+          print "Midbin: ",midbin
+          print "mediana count: ",temporal
+          
         # midbin is the actual value to be stored in (x, midbin) histogram.    
         # Find the error above the median
         
@@ -222,28 +225,26 @@ def get1DHistogramMedianY(hist2d):
         binerrup = 0                       # Bin which has the 34% of events
         
         for k in range (midbin, yBins+1): # Looping over the midbin up to 10000 
-            sumerrup = b1.Integral(x,x,midbin,k)
+            sumerrup = hist2d.Integral(x,x,midbin,k)
   
-            if (sumerrup >= 0.33*totalfreq):     # If the summ is bigger or equal to 34% of the total number of entries, break
+            if (sumerrup >= 0.33*yintegral):
                 binerrup = k
                 break
         
         sumerrlow = 0
         binerrlow = 0
-
         
         for r in range (0, midbin):
-            sumerrlow = b1.Integral(x,x,midbin,midbin-r)
+            sumerrlow = hist2d.Integral(x,x,midbin-r,midbin)
 
-            if (sumerrlow >= 0.33*totalfreq):
-                binerrlow = midbin-r        # Store the bin which has the 34% value 
+            if (sumerrlow >= 0.33*yintegral):
+                binerrlow = r 
                 break
         
         # error is the difference averaged on the bin low and bin up
- 
-        errorbin = abs(binerrup - binerrlow)/2
-        if (totalfreq > 0):
-            errorbin = errorbin / sqrt (totalfreq)
+        errorbin = abs(binerrup - binerrlow)/2.
+        if (yintegral > 0):
+            errorbin = errorbin / sqrt(yintegral)
         
         if (printa > 0):
             print " X position: ",x
@@ -255,20 +256,15 @@ def get1DHistogramMedianY(hist2d):
             print " Sum err high: ",sumerrup
 
         # Store in a histogram the values of (x, midbin) with an error given by errorbin
-
-        
         if errorbin ==0:
-            errorbin == 1
-
+            errorbin == yBins
             
-        scale = yBins / ymaxBin
-        if ymaxBin < yBins:
-            scale = ymaxBin / yBins
-
+        scale = ymaxBin / yBins
 
         r1.SetBinContent(x, midbin*scale)
         r1.SetBinError(x, errorbin*scale)
 
+    SetOwnership(r1, False)
     return r1                               #Return the histogram 1D 
 
 #______________________________________________________________________________                                                                                                  
@@ -291,7 +287,7 @@ if __name__ == "__main__":
   ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/', ext=".root")
 
   treeHits = ch
-  label = "DisplacedL1MuTrigger_20160628"
+  label = "DisplacedL1MuTrigger_20160707"
   targetDir = label + "/"
   
   verbose = False
@@ -358,19 +354,12 @@ if __name__ == "__main__":
     GenMuPt_vs_abs_phiDTst2_phiDTst4 = TH2F("GenMuPt_vs_abs_phiDTst2_phiDTst4","", 60,0.,60,100,0.,1.)
     GenMuPt_vs_abs_phiDTst3_phiDTst4 = TH2F("GenMuPt_vs_abs_phiDTst3_phiDTst4","", 60,0.,60,100,0.,1.)
 
-    GenMuPt_vs_phiDTst1_phiDTst2_inv = TH2F("GenMuPt_vs_phiDTst1_phiDTst2_inv","", 60,0.,60.,100,0.,120)
-    GenMuPt_vs_phiDTst1_phiDTst3_inv = TH2F("GenMuPt_vs_phiDTst1_phiDTst3_inv","", 60,0.,60.,100,0.,120)
-    GenMuPt_vs_phiDTst1_phiDTst4_inv = TH2F("GenMuPt_vs_phiDTst1_phiDTst4_inv","", 60,0.,60.,100,0.,120)
-    GenMuPt_vs_phiDTst2_phiDTst3_inv = TH2F("GenMuPt_vs_phiDTst2_phiDTst3_inv","", 60,0.,60.,100,0.,120)
-    GenMuPt_vs_phiDTst2_phiDTst4_inv = TH2F("GenMuPt_vs_phiDTst2_phiDTst4_inv","", 60,0.,60.,100,0.,120)
-    GenMuPt_vs_phiDTst3_phiDTst4_inv = TH2F("GenMuPt_vs_phiDTst3_phiDTst4_inv","", 60,0.,60.,100,0.,120)
-
-    GenMuPt_vs_abs_phiDTst1_phiDTst2_inv = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst2_inv","", 60,0.,60.,100,0.,120)
-    GenMuPt_vs_abs_phiDTst1_phiDTst3_inv = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst3_inv","", 60,0.,60.,100,0.,120)
-    GenMuPt_vs_abs_phiDTst1_phiDTst4_inv = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst4_inv","", 60,0.,60.,100,0.,120)
-    GenMuPt_vs_abs_phiDTst2_phiDTst3_inv = TH2F("GenMuPt_vs_abs_phiDTst2_phiDTst3_inv","", 60,0.,60.,100,0.,120)
-    GenMuPt_vs_abs_phiDTst2_phiDTst4_inv = TH2F("GenMuPt_vs_abs_phiDTst2_phiDTst4_inv","", 60,0.,60.,100,0.,120)
-    GenMuPt_vs_abs_phiDTst3_phiDTst4_inv = TH2F("GenMuPt_vs_abs_phiDTst3_phiDTst4_inv","", 60,0.,60.,100,0.,120)
+    GenMuPt_vs_abs_phiDTst1_phiDTst2_inv = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst2_inv","", 60,0.,60.,60,0.,120)
+    GenMuPt_vs_abs_phiDTst1_phiDTst3_inv = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst3_inv","", 60,0.,60.,60,0.,120)
+    GenMuPt_vs_abs_phiDTst1_phiDTst4_inv = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst4_inv","", 60,0.,60.,60,0.,120)
+    GenMuPt_vs_abs_phiDTst2_phiDTst3_inv = TH2F("GenMuPt_vs_abs_phiDTst2_phiDTst3_inv","", 60,0.,60.,60,0.,120)
+    GenMuPt_vs_abs_phiDTst2_phiDTst4_inv = TH2F("GenMuPt_vs_abs_phiDTst2_phiDTst4_inv","", 60,0.,60.,60,0.,120)
+    GenMuPt_vs_abs_phiDTst3_phiDTst4_inv = TH2F("GenMuPt_vs_abs_phiDTst3_phiDTst4_inv","", 60,0.,60.,60,0.,120)
 
     GenMuPt = TH1F("GenMuPt","", 60,0.,60)
     GenMuPt_phiDTst1_phiDTst2 = TH1F("GenMuPt_phiDTst1_phiDTst2","", 60,0.,60)
@@ -636,9 +625,6 @@ if __name__ == "__main__":
     L1MuPt15_GenMuPt_dxy50to100_endcap = TH1F("L1MuPt15_GenMuPt_dxy50to100_endcap","", 60,0.,60)
     L1MuPt20_GenMuPt_dxy50to100_endcap = TH1F("L1MuPt20_GenMuPt_dxy50to100_endcap","", 60,0.,60)
 
-
-
-
     for k in range(0,treeHits.GetEntries()):
       treeHits.GetEntry(k)
       if k%1000==0: print "Event", k+1, "nL1Mu", treeHits.nL1Mu
@@ -674,7 +660,7 @@ if __name__ == "__main__":
             continue
           if vz > 500:
             continue
-          if abs(eta_prop)>2.4:
+          if abs(eta_prop)>0.9:
             continue
           if pt<5:
             continue
@@ -683,28 +669,27 @@ if __name__ == "__main__":
           muon_overlap = abs(eta_prop)>0.9 and abs(eta_prop)<=1.2
           muon_endcap = abs(eta_prop)>1.2 and abs(eta_prop)<=2.4
 
-
           GenMuPt.Fill(pt)
-          if dxy <= 5:                 GenMuPt_dxy0to5.Fill(pt)
-          if 5 < dxy  and dxy <= 50: GenMuPt_dxy5to50.Fill(pt)
+          if dxy <= 5:                GenMuPt_dxy0to5.Fill(pt)
+          if 5 < dxy  and dxy <= 50:  GenMuPt_dxy5to50.Fill(pt)
           if 50 < dxy and dxy <= 100: GenMuPt_dxy50to100.Fill(pt)
 
           if muon_barrel:
             GenMuPt_barrel.Fill(pt)
-            if dxy <= 5:                 GenMuPt_dxy0to5_barrel.Fill(pt)
-            if 5 < dxy  and dxy <= 50: GenMuPt_dxy5to50_barrel.Fill(pt)
+            if dxy <= 5:                GenMuPt_dxy0to5_barrel.Fill(pt)
+            if 5 < dxy  and dxy <= 50:  GenMuPt_dxy5to50_barrel.Fill(pt)
             if 50 < dxy and dxy <= 100: GenMuPt_dxy50to100_barrel.Fill(pt)
 
           if muon_overlap:
             GenMuPt_overlap.Fill(pt)
-            if dxy <= 5:                 GenMuPt_dxy0to5_overlap.Fill(pt)
-            if 5 < dxy  and dxy <= 50: GenMuPt_dxy5to50_overlap.Fill(pt)
+            if dxy <= 5:                GenMuPt_dxy0to5_overlap.Fill(pt)
+            if 5 < dxy  and dxy <= 50:  GenMuPt_dxy5to50_overlap.Fill(pt)
             if 50 < dxy and dxy <= 100: GenMuPt_dxy50to100_overlap.Fill(pt)
 
           if muon_endcap:
             GenMuPt_endcap.Fill(pt)
-            if dxy <= 5:                 GenMuPt_dxy0to5_endcap.Fill(pt)
-            if 5 < dxy  and dxy <= 50: GenMuPt_dxy5to50_endcap.Fill(pt)
+            if dxy <= 5:                GenMuPt_dxy0to5_endcap.Fill(pt)
+            if 5 < dxy  and dxy <= 50:  GenMuPt_dxy5to50_endcap.Fill(pt)
             if 50 < dxy and dxy <= 100: GenMuPt_dxy50to100_endcap.Fill(pt)
 
           ## this is to make sure there are no freak L1Mu-GenMu matches!!
@@ -744,71 +729,71 @@ if __name__ == "__main__":
             ## L1Mu pT trigger turn-on curves
             if L1Mu_pt>=10:
               L1MuPt10_GenMuPt.Fill(pt)
-              if dxy <= 5:                 L1MuPt10_GenMuPt_dxy0to5.Fill(pt)
-              if 5 < dxy  and dxy <= 50: L1MuPt10_GenMuPt_dxy5to50.Fill(pt)
+              if dxy <= 5:                L1MuPt10_GenMuPt_dxy0to5.Fill(pt)
+              if 5 < dxy  and dxy <= 50:  L1MuPt10_GenMuPt_dxy5to50.Fill(pt)
               if 50 < dxy and dxy <= 100: L1MuPt10_GenMuPt_dxy50to100.Fill(pt)
             if L1Mu_pt>=15:
               L1MuPt15_GenMuPt.Fill(pt)
-              if dxy <= 5:                 L1MuPt15_GenMuPt_dxy0to5.Fill(pt)
-              if 5 < dxy  and dxy <= 50: L1MuPt15_GenMuPt_dxy5to50.Fill(pt)
+              if dxy <= 5:                L1MuPt15_GenMuPt_dxy0to5.Fill(pt)
+              if 5 < dxy  and dxy <= 50:  L1MuPt15_GenMuPt_dxy5to50.Fill(pt)
               if 50 < dxy and dxy <= 100: L1MuPt15_GenMuPt_dxy50to100.Fill(pt)
             if L1Mu_pt>=20:
               L1MuPt20_GenMuPt.Fill(pt)
-              if dxy <= 5:                 L1MuPt20_GenMuPt_dxy0to5.Fill(pt)
-              if 5 < dxy  and dxy <= 50: L1MuPt20_GenMuPt_dxy5to50.Fill(pt)
+              if dxy <= 5:                L1MuPt20_GenMuPt_dxy0to5.Fill(pt)
+              if 5 < dxy  and dxy <= 50:  L1MuPt20_GenMuPt_dxy5to50.Fill(pt)
               if 50 < dxy and dxy <= 100: L1MuPt20_GenMuPt_dxy50to100.Fill(pt)
 
             if muon_barrel:
               if L1Mu_pt>=10:
                 L1MuPt10_GenMuPt_barrel.Fill(pt)
-                if dxy <= 5:                 L1MuPt10_GenMuPt_dxy0to5_barrel.Fill(pt)
-                if 5 < dxy  and dxy <= 50: L1MuPt10_GenMuPt_dxy5to50_barrel.Fill(pt)
+                if dxy <= 5:                L1MuPt10_GenMuPt_dxy0to5_barrel.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  L1MuPt10_GenMuPt_dxy5to50_barrel.Fill(pt)
                 if 50 < dxy and dxy <= 100: L1MuPt10_GenMuPt_dxy50to100_barrel.Fill(pt)
               if L1Mu_pt>=15:
                 L1MuPt15_GenMuPt_barrel.Fill(pt)
-                if dxy <= 5:                 L1MuPt15_GenMuPt_dxy0to5_barrel.Fill(pt)
-                if 5 < dxy  and dxy <= 50: L1MuPt15_GenMuPt_dxy5to50_barrel.Fill(pt)
+                if dxy <= 5:                L1MuPt15_GenMuPt_dxy0to5_barrel.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  L1MuPt15_GenMuPt_dxy5to50_barrel.Fill(pt)
                 if 50 < dxy and dxy <= 100: L1MuPt15_GenMuPt_dxy50to100_barrel.Fill(pt)
               if L1Mu_pt>=20:
                 L1MuPt20_GenMuPt_barrel.Fill(pt)
-                if dxy <= 5:                 L1MuPt20_GenMuPt_dxy0to5_barrel.Fill(pt)
-                if 5 < dxy  and dxy <= 50: L1MuPt20_GenMuPt_dxy5to50_barrel.Fill(pt)
+                if dxy <= 5:                L1MuPt20_GenMuPt_dxy0to5_barrel.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  L1MuPt20_GenMuPt_dxy5to50_barrel.Fill(pt)
                 if 50 < dxy and dxy <= 100: L1MuPt20_GenMuPt_dxy50to100_barrel.Fill(pt)
 
 
             if muon_overlap:
               if L1Mu_pt>=10:
                 L1MuPt10_GenMuPt_overlap.Fill(pt)
-                if dxy <= 5:                 L1MuPt10_GenMuPt_dxy0to5_overlap.Fill(pt)
-                if 5 < dxy  and dxy <= 50: L1MuPt10_GenMuPt_dxy5to50_overlap.Fill(pt)
+                if dxy <= 5:                L1MuPt10_GenMuPt_dxy0to5_overlap.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  L1MuPt10_GenMuPt_dxy5to50_overlap.Fill(pt)
                 if 50 < dxy and dxy <= 100: L1MuPt10_GenMuPt_dxy50to100_overlap.Fill(pt)
               if L1Mu_pt>=15:
                 L1MuPt15_GenMuPt_overlap.Fill(pt)
-                if dxy <= 5:                 L1MuPt15_GenMuPt_dxy0to5_overlap.Fill(pt)
-                if 5 < dxy  and dxy <= 50: L1MuPt15_GenMuPt_dxy5to50_overlap.Fill(pt)
+                if dxy <= 5:                L1MuPt15_GenMuPt_dxy0to5_overlap.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  L1MuPt15_GenMuPt_dxy5to50_overlap.Fill(pt)
                 if 50 < dxy and dxy <= 100: L1MuPt15_GenMuPt_dxy50to100_overlap.Fill(pt)
               if L1Mu_pt>=20:
                 L1MuPt20_GenMuPt_overlap.Fill(pt)
-                if dxy <= 5:                 L1MuPt20_GenMuPt_dxy0to5_overlap.Fill(pt)
-                if 5 < dxy  and dxy <= 50: L1MuPt20_GenMuPt_dxy5to50_overlap.Fill(pt)
+                if dxy <= 5:                L1MuPt20_GenMuPt_dxy0to5_overlap.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  L1MuPt20_GenMuPt_dxy5to50_overlap.Fill(pt)
                 if 50 < dxy and dxy <= 100: L1MuPt20_GenMuPt_dxy50to100_overlap.Fill(pt)
 
 
             if muon_endcap:
               if L1Mu_pt>=10:
                 L1MuPt10_GenMuPt_endcap.Fill(pt)
-                if dxy <= 5:                 L1MuPt10_GenMuPt_dxy0to5_endcap.Fill(pt)
-                if 5 < dxy  and dxy <= 50: L1MuPt10_GenMuPt_dxy5to50_endcap.Fill(pt)
+                if dxy <= 5:                L1MuPt10_GenMuPt_dxy0to5_endcap.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  L1MuPt10_GenMuPt_dxy5to50_endcap.Fill(pt)
                 if 50 < dxy and dxy <= 100: L1MuPt10_GenMuPt_dxy50to100_endcap.Fill(pt)
               if L1Mu_pt>=15:
                 L1MuPt15_GenMuPt_endcap.Fill(pt)
-                if dxy <= 5:                 L1MuPt15_GenMuPt_dxy0to5_endcap.Fill(pt)
-                if 5 < dxy  and dxy <= 50: L1MuPt15_GenMuPt_dxy5to50_endcap.Fill(pt)
+                if dxy <= 5:                L1MuPt15_GenMuPt_dxy0to5_endcap.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  L1MuPt15_GenMuPt_dxy5to50_endcap.Fill(pt)
                 if 50 < dxy and dxy <= 100: L1MuPt15_GenMuPt_dxy50to100_endcap.Fill(pt)
               if L1Mu_pt>=20:
                 L1MuPt20_GenMuPt_endcap.Fill(pt)
-                if dxy <= 5:                 L1MuPt20_GenMuPt_dxy0to5_endcap.Fill(pt)
-                if 5 < dxy  and dxy <= 50: L1MuPt20_GenMuPt_dxy5to50_endcap.Fill(pt)
+                if dxy <= 5:                L1MuPt20_GenMuPt_dxy0to5_endcap.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  L1MuPt20_GenMuPt_dxy5to50_endcap.Fill(pt)
                 if 50 < dxy and dxy <= 100: L1MuPt20_GenMuPt_dxy50to100_endcap.Fill(pt)
 
 
@@ -1060,27 +1045,32 @@ if __name__ == "__main__":
               if ok_DTTF_phib2 and ok_DTTF_phib4 and DTTF_phib2!=DTTF_phib4: GenMuPt_vs_abs_phiDTst2_phiDTst4_inv.Fill(pt, 1./abs_DTTF_phib2_phib4)
               if ok_DTTF_phib3 and ok_DTTF_phib4 and DTTF_phib3!=DTTF_phib4: GenMuPt_vs_abs_phiDTst3_phiDTst4_inv.Fill(pt, 1./abs_DTTF_phib3_phib4)
 
-              if ok_DTTF_phib1 and ok_DTTF_phib4 and DTTF_phib1!=DTTF_phib4: 
-                pt_special = ( ( 1./abs_DTTF_phib1_phib4) + 2.902 ) / 1.06
+              if ok_DTTF_phib1 and ok_DTTF_phib4:
+
+                pt_special = 0
+                if DTTF_phib1 != DTTF_phib4:
+                  pt_special = ( ( 1./abs_DTTF_phib1_phib4) + 1.36530742479  ) /  0.910909856086
+                else:
+                  pt_special = 140 ## max pT  
 
                 if pt_special>=10: 
                   DPhiPt10_GenMuPt.Fill(pt)
-                  if dxy <= 5:                 DPhiPt10_GenMuPt_dxy0to5.Fill(pt)
-                  if 5 < dxy  and dxy <= 50: DPhiPt10_GenMuPt_dxy5to50.Fill(pt)
+                  if dxy <= 5:                DPhiPt10_GenMuPt_dxy0to5.Fill(pt)
+                  if 5 < dxy  and dxy <= 50:  DPhiPt10_GenMuPt_dxy5to50.Fill(pt)
                   if 50 < dxy and dxy <= 100: DPhiPt10_GenMuPt_dxy50to100.Fill(pt)
                 if pt_special>=15:
                   DPhiPt15_GenMuPt.Fill(pt)
-                  if dxy <= 5:                 DPhiPt15_GenMuPt_dxy0to5.Fill(pt)
-                  if 5 < dxy  and dxy <= 50: DPhiPt15_GenMuPt_dxy5to50.Fill(pt)
+                  if dxy <= 5:                DPhiPt15_GenMuPt_dxy0to5.Fill(pt)
+                  if 5 < dxy  and dxy <= 50:  DPhiPt15_GenMuPt_dxy5to50.Fill(pt)
                   if 50 < dxy and dxy <= 100: DPhiPt15_GenMuPt_dxy50to100.Fill(pt)
  
                 if pt_special>=20: 
                   DPhiPt20_GenMuPt.Fill(pt)
-                  if dxy <= 5:                 DPhiPt20_GenMuPt_dxy0to5.Fill(pt)
-                  if 5 < dxy  and dxy <= 50: DPhiPt20_GenMuPt_dxy5to50.Fill(pt)
+                  if dxy <= 5:                DPhiPt20_GenMuPt_dxy0to5.Fill(pt)
+                  if 5 < dxy  and dxy <= 50:  DPhiPt20_GenMuPt_dxy5to50.Fill(pt)
                   if 50 < dxy and dxy <= 100: DPhiPt20_GenMuPt_dxy50to100.Fill(pt)
 
-
+                
             else:
               if printExtraInfo:
                 print "\t\t>>>>INFO: No Matching DTTF!!! Print all available DTTF..."
@@ -1290,10 +1280,10 @@ if __name__ == "__main__":
       gPad.SetTickx(1)
       gPad.SetTicky(1)
       hist2 = hist.Clone()
-      hist2.Draw(option)
       hist2.GetXaxis().SetTitle('GEN Mu p_{T} [GeV]')
-      hist2.GetYaxis().SetTitle('#DeltaPhi')
-      g = hist2.ProfileX()
+      hist2.GetYaxis().SetTitle('#Delta#Phi')
+      hist2.Draw(option)
+      #g = hist2.ProfileX()
       g = get1DHistogramMedianY(hist2)
       #g.SetMarkerColor(kRed)
       g.SetTitle(title)
@@ -1328,7 +1318,6 @@ if __name__ == "__main__":
         r->GetConfidenceIntervals(1, 1, 1, x, err, 0.683, false);
         cout << " function value at " << x[0] << " = " << myFunction->Eval(x[0]) << " +/- " << err[0] << endl;
         """
-
 
       if plotColz:
         hist2.Draw(option + "same")
@@ -1379,7 +1368,6 @@ if __name__ == "__main__":
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst4, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst4_pol1.png")
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst3_phiDTst4, targetDir + "GenMuPt_vs_abs_phiDTst3_phiDTst4_pol1.png")
 
-
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol1.png", False, True, "pol1")
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst3_inv_pol1.png", False, True, "pol1")
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_pol1.png", False, True, "pol1")
@@ -1393,21 +1381,6 @@ if __name__ == "__main__":
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst3_inv_pol1_v2.png", True, True, "pol1")
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst4_inv_pol1_v2.png", True, True, "pol1")
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst3_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst3_phiDTst4_inv_pol1_v2.png", True, True, "pol1")
-
-
-    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol2.png", False, True, "pol2")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst3_inv_pol2.png", False, True, "pol2")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_pol2.png", False, True, "pol2")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst3_inv_pol2.png", False, True, "pol2")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst4_inv_pol2.png", False, True, "pol2")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst3_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst3_phiDTst4_inv_pol2.png", False, True, "pol2")
-    
-    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol2_v2.png", True, True, "pol2")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst3_inv_pol2_v2.png", True, True, "pol2")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_pol2_v2.png", True, True, "pol2")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst3_inv_pol2_v2.png", True, True, "pol2")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst2_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst4_inv_pol2_v2.png", True, True, "pol2")
-    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst3_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst3_phiDTst4_inv_pol2_v2.png", True, True, "pol2")
 
 
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol3.png", False, True, "pol3")
@@ -1463,9 +1436,9 @@ if __name__ == "__main__":
 
       ## get the pT cut from the title
       index = title.find('L1MuPt')
+      if index == -1:
+        index = title.find('DPhiPt')
       ptCut = title[index+6:index+8]
-      print "title", title
-      print "ptCut", ptCut
 
       leg = TLegend(0.6,0.2,0.9,0.45,"","brNDC")
       leg.SetFillColor(kWhite)
@@ -1613,17 +1586,17 @@ if __name__ == "__main__":
     makeEffPlot(TEfficiency(DPhiPt10_GenMuPt_dxy0to5, GenMuPt_phiDTst1_phiDTst4_dxy0to5),
                 TEfficiency(DPhiPt10_GenMuPt_dxy5to50, GenMuPt_phiDTst1_phiDTst4_dxy5to50),
                 TEfficiency(DPhiPt10_GenMuPt_dxy50to100, GenMuPt_phiDTst1_phiDTst4_dxy50to100),
-                targetDir + "DPhiPt10_GenMuPt_dxy0to100.png", True)
+                targetDir + "DPhiPt10_GenMuPt_phiDTst1_phiDTst4_dxy0to100.png", True)
 
     makeEffPlot(TEfficiency(DPhiPt15_GenMuPt_dxy0to5, GenMuPt_phiDTst1_phiDTst4_dxy0to5),
                 TEfficiency(DPhiPt15_GenMuPt_dxy5to50, GenMuPt_phiDTst1_phiDTst4_dxy5to50),
                 TEfficiency(DPhiPt15_GenMuPt_dxy50to100, GenMuPt_phiDTst1_phiDTst4_dxy50to100),
-                targetDir + "DPhiPt15_GenMuPt_dxy0to100.png", True)
+                targetDir + "DPhiPt15_GenMuPt_phiDTst1_phiDTst4_dxy0to100.png", True)
 
     makeEffPlot(TEfficiency(DPhiPt20_GenMuPt_dxy0to5, GenMuPt_phiDTst1_phiDTst4_dxy0to5),
                 TEfficiency(DPhiPt20_GenMuPt_dxy5to50, GenMuPt_phiDTst1_phiDTst4_dxy5to50),
                 TEfficiency(DPhiPt20_GenMuPt_dxy50to100, GenMuPt_phiDTst1_phiDTst4_dxy50to100),
-                targetDir + "DPhiPt20_GenMuPt_dxy0to100.png", True)
+                targetDir + "DPhiPt20_GenMuPt_phiDTst1_phiDTst4_dxy0to100.png", True)
 
 
   displacedTriggerEfficiency()

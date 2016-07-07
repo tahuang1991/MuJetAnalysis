@@ -2464,6 +2464,11 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("genGdMu_dphi_prop", event_.genGdMu_dphi_prop, "genGdMu_dphi_prop[2][2]/F");
   event_tree_->Branch("genGdMu_dR_prop", event_.genGdMu_dR_prop, "genGdMu_dR_prop[2][2]/F");
 
+  event_tree_->Branch("genGdMu_etav_prop1", event_.genGdMu_etav_prop1, "genGdMu_etav_prop1[2][2]/F");
+  event_tree_->Branch("genGdMu_phiv_prop1", event_.genGdMu_phiv_prop1, "genGdMu_phiv_prop1[2][2]/F");
+  event_tree_->Branch("genGdMu_etav_prop2", event_.genGdMu_etav_prop2, "genGdMu_etav_prop2[2][2]/F");
+  event_tree_->Branch("genGdMu_phiv_prop2", event_.genGdMu_phiv_prop2, "genGdMu_phiv_prop2[2][2]/F");
+
   event_tree_->Branch("genGdMu_vx", event_.genGdMu_vx, "genGdMu_vx[2][2]/F");
   event_tree_->Branch("genGdMu_vy", event_.genGdMu_vy, "genGdMu_vy[2][2]/F");
   event_tree_->Branch("genGdMu_vz", event_.genGdMu_vz, "genGdMu_vz[2][2]/F");
@@ -2907,6 +2912,11 @@ DisplacedL1MuFilter::clearBranches()
       event_.genGdMu_deta_prop[i][j] = 99;
       event_.genGdMu_dphi_prop[i][j] = 99;
       event_.genGdMu_dR_prop[i][j] = 99;
+
+      event_.genGdMu_etav_prop1[i][j] = -99;
+      event_.genGdMu_phiv_prop1[i][j] = -99;
+      event_.genGdMu_etav_prop2[i][j] = -99;
+      event_.genGdMu_phiv_prop2[i][j] = -99;
 
       event_.genGdMu_vx[i][j] = -99;;
       event_.genGdMu_vy[i][j] = -99;;

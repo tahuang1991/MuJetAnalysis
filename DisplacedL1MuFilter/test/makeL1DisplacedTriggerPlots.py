@@ -303,8 +303,8 @@ if __name__ == "__main__":
   label = "DisplacedL1MuTrigger_20160707_v2"
   targetDir = label + "/"
   
-  verbose = True
-  printExtraInfo = True
+  verbose = False
+  printExtraInfo = False
   
   def displacedTriggerEfficiency():
     print treeHits.GetEntries()
@@ -894,10 +894,10 @@ if __name__ == "__main__":
               ok_DTTF_st3 = DTTF_phib3 != 99 and DTTF_phi3 != 99
               ok_DTTF_st4 = DTTF_phib4 != 99 and DTTF_phi4 != 99
 
-              DTTF_phib1p = normalizedPhi(DTTF_phib1 + DTTF_phi1)
-              DTTF_phib2p = normalizedPhi(DTTF_phib2 + DTTF_phi2)
-              DTTF_phib3p = normalizedPhi(DTTF_phib3 + DTTF_phi3)
-              DTTF_phib4p = normalizedPhi(DTTF_phib4 + DTTF_phi4)
+              DTTF_phib1 = normalizedPhi(DTTF_phib1 + DTTF_phi1)
+              DTTF_phib2 = normalizedPhi(DTTF_phib2 + DTTF_phi2)
+              DTTF_phib3 = normalizedPhi(DTTF_phib3 + DTTF_phi3)
+              DTTF_phib4 = normalizedPhi(DTTF_phib4 + DTTF_phi4)
 
               """
               DTTF_pt_1_2 = getPtFromDphi(1,2,DTTF_phib1,DTTF_phib2, 'pol3')
@@ -923,10 +923,10 @@ if __name__ == "__main__":
                 print "\t\tDTTF_phi2", DTTF_phi2
                 print "\t\tDTTF_phi3", DTTF_phi3
                 print "\t\tDTTF_phi4", DTTF_phi4
-                print "\t\tDTTF_phib1p", DTTF_phib1p 
-                print "\t\tDTTF_phib2p", DTTF_phib2p
-                print "\t\tDTTF_phib3p", DTTF_phib3p
-                print "\t\tDTTF_phib4p", DTTF_phib4p
+                #print "\t\tDTTF_phib1p", DTTF_phib1p 
+                #print "\t\tDTTF_phib2p", DTTF_phib2p
+                #print "\t\tDTTF_phib3p", DTTF_phib3p
+                #print "\t\tDTTF_phib4p", DTTF_phib4p
                 print
                 """
                 print "Pt from 1, 2", DTTF_pt_1_2 
@@ -1100,7 +1100,7 @@ if __name__ == "__main__":
               if ok_DTTF_st1 and ok_DTTF_st4:
                 pt_special = 0
                 if DTTF_phib1 != DTTF_phib4:
-                  pt_special = ( ( 1./abs_DTTF_phib1_phib4) + 1.36530742479  ) /  0.910909856086
+                  pt_special = ( ( 1./abs_DTTF_phib1_phib4) + 3.86872357483  ) /  1.48212936934
                 else:
                   pt_special = 140 ## max pT  
 

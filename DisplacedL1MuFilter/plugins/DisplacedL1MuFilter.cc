@@ -101,6 +101,7 @@
 #include "CondFormats/DataRecord/interface/L1MuTriggerScalesRcd.h"
 #include <L1Trigger/CSCCommonTrigger/interface/CSCConstants.h>
 #include <L1Trigger/CSCTrackFinder/interface/CSCTFPtLUT.h>
+#include "GEMCode/GEMValidation/interface/SimTrackMatchManager.h"
 
 //
 // class declaration
@@ -187,10 +188,10 @@ struct MyEvent
   Float_t genGdMu_deta_prop[2][2];
   Float_t genGdMu_dphi_prop[2][2];
   Float_t genGdMu_dR_prop[2][2];
-  Float_t genGdMu_etav_prop1[2][2];
-  Float_t genGdMu_phiv_prop1[2][2];
-  Float_t genGdMu_etav_prop2[2][2];
-  Float_t genGdMu_phiv_prop2[2][2];
+  Float_t genGdMu_etav_prop_GE11[2][2];
+  Float_t genGdMu_phiv_prop_GE11[2][2];
+  Float_t genGdMu_etav_prop_GE21[2][2];
+  Float_t genGdMu_phiv_prop_GE21[2][2];
 
   Float_t genGdMu_vx[2][2];
   Float_t genGdMu_vy[2][2];
@@ -234,6 +235,7 @@ struct MyEvent
   Float_t genGdMu_L1Mu_dR_prop[2][2];
   Int_t genGdMu_L1Mu_index_prop[2][2];
 
+  Int_t genGdMu_SIM_index[2][2];
   Int_t has_sim;
   Float_t pt_sim, eta_sim, phi_sim, charge_sim;
   Float_t eta_sim_prop, phi_sim_prop;
@@ -508,6 +510,8 @@ private:
 
   edm::ESHandle< L1MuTriggerScales > muScales;
   edm::ESHandle< L1MuTriggerPtScale > muPtScale;
+
+  edm::ParameterSet cfg_;
 };
 
 DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) : 
@@ -515,7 +519,8 @@ DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) :
   useMB2_(iConfig.existsAs<bool>("useStation2") ? iConfig.getParameter<bool>("useStation2") : true),
   fallbackToME1_(iConfig.existsAs<bool>("fallbackToME1") ? iConfig.getParameter<bool>("fallbackToME1") : false),
   whichTrack_(None), whichState_(AtVertex),
-  cosmicPropagation_(iConfig.getParameter<bool>("cosmicPropagationHypothesis"))
+  cosmicPropagation_(iConfig.getParameter<bool>("cosmicPropagationHypothesis")),
+  cfg_(iConfig.getParameterSet("simTrackMatching"))
 {
   //now do what ever initialization is needed
   min_L1Mu_Quality = iConfig.getParameter<int>("min_L1Mu_Quality");
@@ -619,13 +624,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByLabel("TTTracksFromPixelDigis", "Level1TTTracks", TTTrackHandle);
   const std::vector< TTTrack< Ref_PixelDigi_ > >& TTTracks = *TTTrackHandle.product();
 
-  // edm::Handle<edm::SimTrackContainer> sim_tracks;
-  // iEvent.getByLabel("g4SimHits", sim_tracks);
-  // const edm::SimTrackContainer & sim_trks = *sim_tracks.product();
+  edm::Handle<edm::SimTrackContainer> sim_tracks;
+  iEvent.getByLabel("g4SimHits", sim_tracks);
+  const edm::SimTrackContainer & sim_trks = *sim_tracks.product();
 
-  // edm::Handle<edm::SimVertexContainer> sim_vertices;
-  // iEvent.getByLabel("g4SimHits", sim_vertices);
-  // const edm::SimVertexContainer & sim_vtxs = *sim_vertices.product();
+  edm::Handle<edm::SimVertexContainer> sim_vertices;
+  iEvent.getByLabel("g4SimHits", sim_vertices);
+  const edm::SimVertexContainer & sim_vtxs = *sim_vertices.product();
   
   event_.lumi = iEvent.id().luminosityBlock();
   event_.run = iEvent.id().run();
@@ -870,28 +875,32 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         //                              int(tk.charge()),
         //                              magfield_.product());
         
-        GlobalPoint ex_p1;
-        GlobalPoint ex_p2;
-        GlobalVector ex_v1;
-        GlobalVector ex_v2;
-        extrapolate(*genMuonGroups[i][j], 1, ex_p1, ex_v1);
-        extrapolate(*genMuonGroups[i][j], 2, ex_p2, ex_v2);
+        GlobalPoint ex_pMS2;
+        GlobalVector ex_vMS2;
 
-        if (!(ex_p1 == GlobalPoint())){
-          event_.genGdMu_eta_prop[i][j] = ex_p1.eta();
-          event_.genGdMu_phi_prop[i][j] = ex_p1.phi();
+        GlobalPoint ex_pGE11;
+        GlobalPoint ex_pGE21;
+        GlobalVector ex_vGE11;
+        GlobalVector ex_vGE21;
+        extrapolate(*genMuonGroups[i][j], 1, ex_pMS2, ex_vMS2);
+        extrapolate(*genMuonGroups[i][j], 11, ex_pGE11, ex_vGE11);
+        extrapolate(*genMuonGroups[i][j], 21, ex_pGE21, ex_vGE21);
+
+        if (!(ex_pMS2 == GlobalPoint())){
+          event_.genGdMu_eta_prop[i][j] = ex_pMS2.eta();
+          event_.genGdMu_phi_prop[i][j] = ex_pMS2.phi();
           event_.genGdMu_deta_prop[i][j] = std::abs(event_.genGdMu_eta[i][j] - event_.genGdMu_eta_prop[i][j]);
           event_.genGdMu_dphi_prop[i][j] = My_dPhi(event_.genGdMu_phi[i][j], event_.genGdMu_phi_prop[i][j]);
           event_.genGdMu_dR_prop[i][j] = reco::deltaR(event_.genGdMu_eta[i][j], event_.genGdMu_phi[i][j],
                                                       event_.genGdMu_eta_prop[i][j], event_.genGdMu_phi_prop[i][j]);
         }
-        if (!(ex_v1 == GlobalVector())){
-          event_.genGdMu_etav_prop1[i][j] = ex_v1.eta();
-          event_.genGdMu_phiv_prop1[i][j] = ex_v1.phi();
+        if (!(ex_pGE11 == GlobalPoint())){
+          event_.genGdMu_etav_prop_GE11[i][j] = ex_vGE11.eta();
+          event_.genGdMu_phiv_prop_GE11[i][j] = ex_vGE11.phi();
         }
-        if (!(ex_v2 == GlobalVector())){
-          event_.genGdMu_etav_prop2[i][j] = ex_v2.eta();
-          event_.genGdMu_phiv_prop2[i][j] = ex_v2.phi();
+        if (!(ex_pGE21 == GlobalPoint())){
+          event_.genGdMu_etav_prop_GE21[i][j] = ex_vGE21.eta();
+          event_.genGdMu_phiv_prop_GE21[i][j] = ex_vGE21.phi();
         }
       }
     }
@@ -946,10 +955,59 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           cout << "genGd"<<i<<"Mu"<<j<<"_eta_prop " << event_.genGdMu_eta_prop[i][j] << endl;
           cout << "genGd"<<i<<"Mu"<<j<<"_phi_prop " << event_.genGdMu_phi_prop[i][j] << endl;
           cout << "genGd"<<i<<"Mu"<<j<<"_dxy " << event_.genGdMu_dxy[i][j] << endl;
+
+          cout << "genGd"<<i<<"Mu"<<j<<"_etav_prop_GE11 " << event_.genGdMu_etav_prop_GE11[i][j] << endl;
+          cout << "genGd"<<i<<"Mu"<<j<<"_phiv_prop_GE11 " << event_.genGdMu_phiv_prop_GE11[i][j] << endl;
+          cout << "genGd"<<i<<"Mu"<<j<<"_etav_prop_GE21 " << event_.genGdMu_etav_prop_GE21[i][j] << endl;
+          cout << "genGd"<<i<<"Mu"<<j<<"_phiv_prop_GE21 " << event_.genGdMu_phiv_prop_GE21[i][j] << endl;
+
+          //////////////////////
+          // pre-SIM analysis //
+          //////////////////////
+          
+          for (unsigned int k=0; k<sim_trks.size(); ++k) {
+            auto sim_muon = sim_trks[k];
+            if (!isSimTrackGood(sim_muon)) continue;
+            event_.pt_sim = sim_muon.momentum().pt();
+            event_.eta_sim = sim_muon.momentum().eta();
+            event_.phi_sim = sim_muon.momentum().phi();
+            event_.charge_sim = sim_muon.charge();
+            // cout << "SIM_pt " << event_.pt_sim << endl;
+            // cout << "SIM_eta " << event_.eta_sim << endl;
+            // cout << "SIM_phi " << event_.phi_sim << endl;
+            // cout << "SIM_charge " << event_.charge_sim << endl;
+            if (abs(event_.pt_sim - event_.genGdMu_pt[i][j]) < 0.001){
+              event_.genGdMu_SIM_index[i][j] = k;
+              break;
+            } 
+          } 
         }
       }
     }
   }
+ 
+  //////////////////////
+  // SIM analysis //
+  //////////////////////
+
+  for (unsigned int k=0; k<sim_trks.size(); ++k) {
+    auto sim_muon = sim_trks[k];
+    if (!isSimTrackGood(sim_muon)) continue;
+    auto sim_vertex = sim_vtxs[sim_muon.vertIndex()];
+    SimTrackMatchManager match(sim_muon, sim_vertex, cfg_, iEvent, iSetup);
+    const GEMDigiMatcher& match_gd = match.gemDigis();
+    // GEM digis and pads in superchambers
+    std::cout << "Matching GEM pads " << std::endl;
+    for(auto d: match_gd.superChamberIdsPad()) {
+      for (auto p: match_gd.gemPadsInSuperChamber(d)){
+        std::cout << "\t" << p << std::endl;
+      }
+    }
+  }
+
+  /////////////////
+  // L1 analysis //
+  /////////////////
 
   for (int i=0; i<2; ++i){         
     for (int j=0; j<2; ++j){
@@ -1015,9 +1073,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   } // end of loop on TTTracks
   
   
-  /////////////////
-  // L1 analysis //
-  /////////////////
   
   if(verbose) std::cout << "Number of L1Mu candidates before selections " << event_.nL1Mu << std::endl; 
 
@@ -2289,6 +2344,14 @@ DisplacedL1MuFilter::extrapolate(const reco::GenParticle &tk, int station, Globa
   else if (station == 2){
     R = 523.; Zmax = 828.; Zmin = -828.;
   }
+  // GE11
+  else if (station == 11){
+    R = 523.; Zmax = 569.; Zmin = -569.;
+  }
+  // GE21
+  else if (station == 21){
+    R = 523.; Zmax = 798.; Zmin = -798.;
+  }
   else {
     R = 0.; Zmax = 0.; Zmin = 0.;
   }
@@ -2301,6 +2364,8 @@ DisplacedL1MuFilter::extrapolate(const reco::GenParticle &tk, int station, Globa
   if (tsos.isValid()){
     gp = tsos.globalPosition();
     gv = tsos.globalMomentum();
+    //LocalVector lv = tsos.localMomentum();
+    //std::cout << "Local momentum vector: " << lv.eta() << " " << lv.phi() << std::endl;
   } else {
     gp = GlobalPoint();
     gv = GlobalVector();
@@ -2464,10 +2529,10 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("genGdMu_dphi_prop", event_.genGdMu_dphi_prop, "genGdMu_dphi_prop[2][2]/F");
   event_tree_->Branch("genGdMu_dR_prop", event_.genGdMu_dR_prop, "genGdMu_dR_prop[2][2]/F");
 
-  event_tree_->Branch("genGdMu_etav_prop1", event_.genGdMu_etav_prop1, "genGdMu_etav_prop1[2][2]/F");
-  event_tree_->Branch("genGdMu_phiv_prop1", event_.genGdMu_phiv_prop1, "genGdMu_phiv_prop1[2][2]/F");
-  event_tree_->Branch("genGdMu_etav_prop2", event_.genGdMu_etav_prop2, "genGdMu_etav_prop2[2][2]/F");
-  event_tree_->Branch("genGdMu_phiv_prop2", event_.genGdMu_phiv_prop2, "genGdMu_phiv_prop2[2][2]/F");
+  event_tree_->Branch("genGdMu_etav_prop_GE11", event_.genGdMu_etav_prop_GE11, "genGdMu_etav_prop_GE11[2][2]/F");
+  event_tree_->Branch("genGdMu_phiv_prop_GE11", event_.genGdMu_phiv_prop_GE11, "genGdMu_phiv_prop_GE11[2][2]/F");
+  event_tree_->Branch("genGdMu_etav_prop_GE21", event_.genGdMu_etav_prop_GE21, "genGdMu_etav_prop_GE21[2][2]/F");
+  event_tree_->Branch("genGdMu_phiv_prop_GE21", event_.genGdMu_phiv_prop_GE21, "genGdMu_phiv_prop_GE21[2][2]/F");
 
   event_tree_->Branch("genGdMu_vx", event_.genGdMu_vx, "genGdMu_vx[2][2]/F");
   event_tree_->Branch("genGdMu_vy", event_.genGdMu_vy, "genGdMu_vy[2][2]/F");
@@ -2486,6 +2551,8 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("genGd_genMu_dEta",   event_.genGd_genMu_dEta,   "genGd_genMu_dEta[2][2]/F");
   event_tree_->Branch("genGd_genMu_dPhi",   event_.genGd_genMu_dPhi,   "genGd_genMu_dPhi[2][2]/F");
   event_tree_->Branch("genGd_genMu_dR",   event_.genGd_genMu_dR,   "genGd_genMu_dR[2][2]/F");
+
+  event_tree_->Branch("genGdMu_SIM_index", event_.genGdMu_SIM_index, "genGdMu_SIM_index[2][2]/I");
 
   event_tree_->Branch("nL1Mu", &event_.nL1Mu);
   event_tree_->Branch("nL1Tk", &event_.nL1Tk);
@@ -2912,11 +2979,12 @@ DisplacedL1MuFilter::clearBranches()
       event_.genGdMu_deta_prop[i][j] = 99;
       event_.genGdMu_dphi_prop[i][j] = 99;
       event_.genGdMu_dR_prop[i][j] = 99;
+      event_.genGdMu_SIM_index[i][j] = -99;
 
-      event_.genGdMu_etav_prop1[i][j] = -99;
-      event_.genGdMu_phiv_prop1[i][j] = -99;
-      event_.genGdMu_etav_prop2[i][j] = -99;
-      event_.genGdMu_phiv_prop2[i][j] = -99;
+      event_.genGdMu_etav_prop_GE11[i][j] = -99;
+      event_.genGdMu_phiv_prop_GE11[i][j] = -99;
+      event_.genGdMu_etav_prop_GE21[i][j] = -99;
+      event_.genGdMu_phiv_prop_GE21[i][j] = -99;
 
       event_.genGdMu_vx[i][j] = -99;;
       event_.genGdMu_vy[i][j] = -99;;

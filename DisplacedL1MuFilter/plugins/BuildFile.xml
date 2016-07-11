@@ -33,7 +33,7 @@
 <use name="CondFormats/L1TObjects/"/>
 <use name="RecoMuon/DetLayers"/>
 <use name="RecoMuon/Records"/>
-
+<use name="GEMCode/GEMValidation"/>
 <use name="root"/>
 
 <flags EDM_PLUGIN="1"/>

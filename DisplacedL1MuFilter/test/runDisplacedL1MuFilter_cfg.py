@@ -22,7 +22,7 @@ process.load("L1Trigger.TrackTrigger.TrackTrigger_cff")
 process.load('L1TriggerConfig.L1ScalesProducers.L1MuTriggerScalesConfig_cff')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(10000)
 )
 
 """

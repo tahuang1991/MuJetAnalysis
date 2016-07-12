@@ -355,10 +355,10 @@ struct MyEvent
   Float_t GE11_phi_L2[kMaxGEM];
   Float_t GE21_phi_L1[kMaxGEM];
   Float_t GE21_phi_L2[kMaxGEM];
-  Float_t GE11_bx_L1[kMaxGEM];
-  Float_t GE11_bx_L2[kMaxGEM];
-  Float_t GE21_bx_L1[kMaxGEM];
-  Float_t GE21_bx_L2[kMaxGEM];
+  Int_t GE11_bx_L1[kMaxGEM];
+  Int_t GE11_bx_L2[kMaxGEM];
+  Int_t GE21_bx_L1[kMaxGEM];
+  Int_t GE21_bx_L2[kMaxGEM];
 
   Float_t GE0_phi[kMaxGEM];
   Float_t GE0_phib[kMaxGEM];
@@ -1029,27 +1029,29 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     event_.GE11_phi_L2[k] = 99.;
     event_.GE21_phi_L1[k] = 99.;
     event_.GE21_phi_L2[k] = 99.;
-    event_.GE11_bx_L1[k] = 99.;
-    event_.GE11_bx_L2[k] = 99.;
-    event_.GE21_bx_L1[k] = 99.;
-    event_.GE21_bx_L2[k] = 99.;
+    event_.GE11_bx_L1[k] = 99;
+    event_.GE11_bx_L2[k] = 99;
+    event_.GE21_bx_L1[k] = 99;
+    event_.GE21_bx_L2[k] = 99;
     event_.GE0_phi[k] = 99.;
     event_.GE0_phib[k] = 99.;
       
     auto sim_muon = skim_sim_trks[k];
     auto sim_vertex = sim_vtxs[sim_muon.vertIndex()];
     SimTrackMatchManager match(sim_muon, sim_vertex, cfg_, iEvent, iSetup);
+
+    // ME0
+    /*
     const SimHitMatcher& match_sh = match.simhits();
-    for (auto sc: match_sh.superChamberIdsME0()) {
-      std::cout << "\tME0 " << sc << " " << ME0DetId(sc) << std::endl;
-      auto hits = match_sh.hitsInSuperChamber(sc);
-      auto gp = match_sh.simHitsMeanPosition(hits);
-      std::cout << "\t\tgp " << gp << std::endl;
-      auto gv = match_sh.simHitsMeanMomentum(hits);
-      std::cout << "\t\tgv " << gv << std::endl;
-      event_.GE0_phi[k] = gp.phi();
-      event_.GE0_phib[k] = gv.phi();
-    }
+    auto hits = match_sh.simHitsME0();
+    std::cout << "Number of ME0 hits " << hits.size() << std::endl;
+    auto gp = match_sh.simHitsMeanPosition(hits);
+    std::cout << "\t\tgp " << gp << std::endl;
+    auto gv = match_sh.simHitsMeanMomentum(hits);
+    std::cout << "\t\tgv " << gv << std::endl;
+    event_.GE0_phi[k] = gp.phi();
+    event_.GE0_phib[k] = gv.phi();
+    */
     
     const GEMDigiMatcher& match_gd = match.gemDigis();
     // GEM digis and pads in superchambers
@@ -1062,7 +1064,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       if(verbose) std::cout << "\tId " << detId << std::endl;
       for (auto p: match_gd.gemPadsInDetId(d)){
         double gem_phi = calcGEMSpecificPhi(d, p);
-        double gem_bx = p.bx();
+        int gem_bx = p.bx();
         if(verbose){
           std::cout << "\t\tPad " << p << std::endl;
           std::cout << "\t\t\tPosition " << gem_phi << std::endl;

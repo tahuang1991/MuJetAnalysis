@@ -128,6 +128,10 @@ if __name__ == "__main__":
 
     nL1MuNotMatched = 0
     
+    nL1MuMatched_GE11_GE21 = 0
+    nL1MuMatched_GE0_GE21 = 0
+    nL1MuMatched_GE11_GE0_GE21 = 0
+
     nL1MuMatched_CSCTF = 0
     nL1MuMatched_DTTF  = 0
     nL1MuMatched_RPCb  = 0
@@ -999,26 +1003,41 @@ if __name__ == "__main__":
               CSCTF_gemdphi2 = treeHits.CSCTF_gemdphi2[L1Mu_CSCTF_index]
               ## get SIM index
               GEN_SIM_index = int(treeHits.genGdMu_SIM_index[ij])
-              GE11_phi_L1 = 99
-              GE11_phi_L2 = 99
-              GE21_phi_L1 = 99
-              GE21_phi_L2 = 99
-              GE11_bx_L1 = 99
-              GE11_bx_L2 = 99
-              GE21_bx_L1 = 99
-              GE21_bx_L2 = 99 
 
-              if GEN_SIM_index != -99.:
-                print "OK"
-                GE11_phi_L1 = treeHits.GE11_phi_L1[GEN_SIM_index]
-                GE11_phi_L2 = treeHits.GE11_phi_L2[GEN_SIM_index]
-                GE21_phi_L1 = normalizedPhi(treeHits.GE21_phi_L1[GEN_SIM_index])
-                GE21_phi_L2 = normalizedPhi(treeHits.GE21_phi_L2[GEN_SIM_index])
+              if GEN_SIM_index != -99:
                 GE11_bx_L1 = treeHits.GE11_bx_L1[GEN_SIM_index]
                 GE11_bx_L2 = treeHits.GE11_bx_L2[GEN_SIM_index]
                 GE21_bx_L1 = treeHits.GE21_bx_L1[GEN_SIM_index]
-                GE21_bx_L2 = treeHits.GE21_bx_L2[GEN_SIM_index] 
-                
+                GE21_bx_L2 = treeHits.GE21_bx_L2[GEN_SIM_index]
+                GE11_phi_L1 = treeHits.GE11_phi_L1[GEN_SIM_index]
+                GE11_phi_L2 = treeHits.GE11_phi_L2[GEN_SIM_index]
+                GE21_phi_L1 = treeHits.GE21_phi_L1[GEN_SIM_index]
+                GE21_phi_L2 = treeHits.GE21_phi_L2[GEN_SIM_index]
+                GE0_phi = treeHits.GE0_phi[GEN_SIM_index]
+                GE0_phib = treeHits.GE0_phib[GEN_SIM_index]
+                ## normalize the angles
+                if GE11_phi_L1 != 99: GE11_phi_L1 = normalizedPhi(GE11_phi_L1)
+                if GE11_phi_L2 != 99: GE11_phi_L2 = normalizedPhi(GE11_phi_L2)
+                if GE21_phi_L1 != 99: GE21_phi_L1 = normalizedPhi(GE21_phi_L1)
+                if GE21_phi_L2 != 99: GE21_phi_L2 = normalizedPhi(GE21_phi_L2)
+                if GE0_phi != 99: GE0_phi = normalizedPhi(GE21_phi_L2)
+
+              ok_GE11_L1 = GE11_bx_L1 != 99 and GE11_phi_L1 != 99 
+              ok_GE11_L2 = GE11_bx_L2 != 99 and GE11_phi_L2 != 99 
+              ok_GE21_L1 = GE21_bx_L1 != 99 and GE21_phi_L1 != 99 
+              ok_GE21_L2 = GE21_bx_L2 != 99 and GE21_phi_L2 != 99
+ 
+              ok_GE0 = GE0_phi != 99
+              ok_GE11 = ok_GE11_L1 or ok_GE11_L2
+              ok_GE21 = ok_GE21_L1 or ok_GE21_L2
+
+              if ok_GE11 and ok_GE21:
+                nL1MuMatched_GE11_GE21 += 1
+              if ok_GE0 and ok_GE21:
+                nL1MuMatched_GE0_GE21 += 1
+              if (ok_GE0 or ok_GE11) and ok_GE21:
+                nL1MuMatched_GE11_GE0_GE21 += 1
+
               if verbose:
                 print "\t\tCSCTF", L1Mu_CSCTF_index
                 print "\t\tCSCTF_pt", CSCTF_pt
@@ -1032,41 +1051,40 @@ if __name__ == "__main__":
                 print "\t\tCSCTF_phi4", CSCTF_phi4
                 print "\t\tCSCTF_gemdphi1", CSCTF_gemdphi1
                 print "\t\tCSCTF_gemdphi2", CSCTF_gemdphi2
-                print "\t\tGEN_SIM_index", GEN_SIM_index, len(treeHits.GE11_phi_L1), len(treeHits.GE11_phi_L2), len(treeHits.GE21_phi_L1), len(treeHits.GE21_phi_L2)
-                for iii in range(0,len(treeHits.GE11_bx_L1)):
-                  print "\t\t\t+", treeHits.GE11_bx_L1[iii]
-                  if iii is GEN_SIM_index:
-                    print "\t\t\t\ This is it"
-                for p in treeHits.GE11_phi_L2:
-                  print "\t\t\t-", p
-                for p in treeHits.GE21_phi_L1:
-                  print "\t\t\t+", p
-                for p in treeHits.GE21_phi_L2:
-                  print "\t\t\t-", p
-                print "\t\tGE11_phi_L1", GE11_phi_L1, CSCTF_gemdphi1 + GE11_phi_L1
-                print "\t\tGE11_phi_L2", GE11_phi_L2, CSCTF_gemdphi1 + GE11_phi_L2
-                print "\t\tGE21_phi_L1", GE21_phi_L1, CSCTF_gemdphi2 + GE21_phi_L1
-                print "\t\tGE21_phi_L2", GE21_phi_L2, CSCTF_gemdphi2 + GE21_phi_L2
-                print "\t\tGE11_bx_L1", GE11_bx_L1
-                print "\t\tGE11_bx_L2", GE11_bx_L2
-                print "\t\tGE21_bx_L1", GE21_bx_L1
-                print "\t\tGE21_bx_L2", GE21_bx_L2
+                print "\t\tGEN_SIM_index", GEN_SIM_index
+                print "\t\tok_GE11_L1", ok_GE11_L1, "GE11_phi_L1", GE11_phi_L1, "GE11_bx_L1", GE11_bx_L1
+                print "\t\tok_GE11_L2", ok_GE11_L2, "GE11_phi_L2", GE11_phi_L2, "GE11_bx_L2", GE11_bx_L2
+                print "\t\tok_GE21_L1", ok_GE21_L1, "GE21_phi_L1", GE21_phi_L1, "GE21_bx_L1", GE21_bx_L1
+                print "\t\tok_GE21_L2", ok_GE21_L2, "GE21_phi_L2", GE21_phi_L2, "GE21_bx_L2", GE21_bx_L2
+                print "\t\tok_GE0", ok_GE0, "GE0_phi", GE0_phi, "GE0_phib", GE0_phib
                 print               
 
+              ## stub directions
+              if ok_GE11 and ok_GE21:
+                GEM_phib1 = CSCTF_gemdphi1
+                GEM_phib2 = CSCTF_gemdphi2
 
-              """
-              phiGEMst1_phiGEMst2 = TH1F("phiGEMst1_phiGEMst2","", 100,-1.,1.)
-              abs_phiGEMst1_phiGEMst2 = TH1F("abs_phiGEMst1_phiGEMst2","", 100,-1.,1.)
-              phiGEMst1_vs_phiGEMst2_dxy0to5 = TH2F("phiGEMst1_phiGEMst2_dxy0to5","", 100,0,6.3,100,0.,6.3)
-              phiGEMst1_vs_phiGEMst2_dxy5to50 = TH2F("phiGEMst1_phiGEMst2_dxy5to50","", 100,0,6.3,100,0.,6.3)
-              phiGEMst1_vs_phiGEMst2_dxy50to100 = TH2F("phiGEMst1_phiGEMst2_dxy50to100","", 100,0,6.3,100,0.,6.3)
-              GenMuPt_vs_phiGEMst1_phiGEMst2 = TH2F("GenMuPt_vs_phiGEMst1_phiGEMst2","", 60,0.,60,100,-1.,1.)
-              GenMuPt_vs_abs_phiGEMst1_phiGEMst2 = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2","", 60,0.,60,100,0.,1.)
-              GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv","", 60,0.,60.,60,0.,120)
-              GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5 = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5","", 60,0.,60.,60,0.,120)
-              GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50 = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50","", 60,0.,60.,60,0.,120)
-              GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100 = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100","", 60,0.,60.,60,0.,120)
-              """
+                GEM_phib1_phib2 = deltaPhi(GEM_phib1, GEM_phib2)
+                abs_GEM_phib1_phib2 = abs(GEM_phib1_phib2)
+
+                #phiGEMst1_phiGEMst2.Fill()
+                #abs_phiGEMst1_phiGEMst2
+                if dxy <= 5:
+                  phiGEMst1_vs_phiGEMst2_dxy0to5.Fill(GEM_phib1, GEM_phib2)
+                if 5 < dxy  and dxy <= 50:
+                  phiGEMst1_vs_phiGEMst2_dxy5to50.Fill(GEM_phib1, GEM_phib2)
+                if 50 < dxy and dxy <= 100:
+                  phiGEMst1_vs_phiGEMst2_dxy50to100.Fill(GEM_phib1, GEM_phib2)
+
+                GenMuPt_vs_phiGEMst1_phiGEMst2.Fill(pt, GEM_phib1_phib2)
+                GenMuPt_vs_abs_phiGEMst1_phiGEMst2.Fill(pt, abs_GEM_phib1_phib2)
+                GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv.Fill(pt, 1./abs_GEM_phib1_phib2)
+                if dxy <= 5:
+                  GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5.Fill(pt, 1./abs_GEM_phib1_phib2)
+                if 5 < dxy  and dxy <= 50:
+                  GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50.Fill(pt, 1./abs_GEM_phib1_phib2)
+                if 50 < dxy and dxy <= 100:
+                  GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100.Fill(pt, 1./abs_GEM_phib1_phib2)
 
             else:
               if printExtraInfo:
@@ -1177,6 +1195,9 @@ if __name__ == "__main__":
       print 
       print "Total                       ", nL1MuTotal
       print "Not Matched                 ", nL1MuNotMatched
+      print "Matched GE11_GE21           ", nL1MuMatched_GE11_GE21
+      print "Matched ME0_GE21            ", nL1MuMatched_GE0_GE21
+      print "Matched GE11_ME0_GE21       ", nL1MuMatched_GE11_GE0_GE21
       print "Matched CSCTF               ", nL1MuMatched_CSCTF
       print "Matched DTTF                ", nL1MuMatched_DTTF
       print "Matched RPCb                ", nL1MuMatched_RPCb
@@ -1272,6 +1293,10 @@ if __name__ == "__main__":
 
     ### close makeGenPtVsDPhiPlot
 
+      
+    
+
+
     makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst2, targetDir + "GenMuPt_vs_phiDTst1_phiDTst2.png", ";p_{T} [GeV]; #Delta#Phi_{12}", "COLZ")
     makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst3, targetDir + "GenMuPt_vs_phiDTst1_phiDTst3.png", ";p_{T} [GeV]; #Delta#Phi_{13}", "COLZ")
     makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst4, targetDir + "GenMuPt_vs_phiDTst1_phiDTst4.png", ";p_{T} [GeV]; #Delta#Phi_{14}", "COLZ")
@@ -1285,7 +1310,6 @@ if __name__ == "__main__":
     makeSimplePlot(phiDTst1_vs_phiDTst4_dxy0to5, targetDir + "phiDTst1_vs_phiDTst4_dxy0to5.png", "; #Delta#Phi_1; #Delta#Phi_4", "COLZ")
     makeSimplePlot(phiDTst1_vs_phiDTst4_dxy5to50, targetDir + "phiDTst1_vs_phiDTst4_dxy5to50.png", "; #Delta#Phi_1; #Delta#Phi_4", "COLZ")
     makeSimplePlot(phiDTst1_vs_phiDTst4_dxy50to100, targetDir + "phiDTst1_vs_phiDTst4_dxy50to100.png", "; #Delta#Phi_1; #Delta#Phi_4", "COLZ")
-
 
     makeSimplePlot(phiDTst1_phiDTst2, targetDir + "phiDTst1_phiDTst2.png", ";#Delta#Phi_{12}; Entries")
     makeSimplePlot(phiDTst1_phiDTst3, targetDir + "phiDTst1_phiDTst3.png", ";#Delta#Phi_{13}; Entries")
@@ -1336,6 +1360,26 @@ if __name__ == "__main__":
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy0to5, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy0to5_pol1.png", True, True, "pol1")
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy5to50, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy5to50_pol1.png", True, True, "pol1")
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100_pol1.png", True, True, "pol1")
+
+
+    ## plots with GEMs :-)
+    makeSimplePlot(phiGEMst1_vs_phiGEMst2_dxy0to5, targetDir + "phiGEMst1_vs_phiGEMst2_dxy0to5", "; #Delta#Phi_1; #Delta#Phi_2", "COLZ") 
+    makeSimplePlot(phiGEMst1_vs_phiGEMst2_dxy5to50, targetDir + "phiGEMst1_vs_phiGEMst2_dxy5to50", "; #Delta#Phi_1; #Delta#Phi_2", "COLZ")
+    makeSimplePlot(phiGEMst1_vs_phiGEMst2_dxy50to100, targetDir + "phiGEMst1_vs_phiGEMst2_dxy50to100", "; #Delta#Phi_1; #Delta#Phi_2", "COLZ")
+
+    makeGenPtVsDPhiPlot(GenMuPt_vs_phiGEMst1_phiGEMst2, targetDir + "GenMuPt_vs_phiGEMst1_phiGEMst2_pol1.png")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_pol1.png")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_pol1.png", False, True, "pol1")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_pol1_v2.png", True, True, "pol1")
+
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5_pol1.png", False, True, "pol1")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50_pol1.png", False, True, "pol1")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100_pol1.png", False, True, "pol1")
+
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5_pol1.png", True, True, "pol1")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50_pol1.png", True, True, "pol1")
+    makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100_pol1.png", True, True, "pol1")
+
 
     """
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol3.png", False, True, "pol3")

@@ -112,6 +112,7 @@ const Int_t kMaxDTTF = 50;
 const Int_t kMaxCSCTF = 50;
 const Int_t kMaxRPCb = 50;
 const Int_t kMaxRPCf = 50;
+const Int_t kMaxGEM = 50;
 const Int_t kMaxL1Tk = 500;
 const int nGlu = 2;
 const int nGd = 2;
@@ -283,7 +284,7 @@ struct MyEvent
   Int_t CSCTF_pat4[kMaxCSCTF], CSCTF_bend4[kMaxCSCTF], CSCTF_bx4[kMaxCSCTF], CSCTF_clctpat4[kMaxCSCTF];
 
   Int_t CSCTF_val1[kMaxCSCTF], CSCTF_val2[kMaxCSCTF], CSCTF_val3[kMaxCSCTF], CSCTF_val4[kMaxCSCTF];
-  Int_t CSCTF_phi1[kMaxCSCTF], CSCTF_phi2[kMaxCSCTF], CSCTF_phi3[kMaxCSCTF], CSCTF_phi4[kMaxCSCTF];
+  Float_t CSCTF_phi1[kMaxCSCTF], CSCTF_phi2[kMaxCSCTF], CSCTF_phi3[kMaxCSCTF], CSCTF_phi4[kMaxCSCTF];
   Int_t CSCTF_phib1[kMaxCSCTF], CSCTF_phib2[kMaxCSCTF], CSCTF_phib3[kMaxCSCTF], CSCTF_phib4[kMaxCSCTF];
 
   Float_t CSCTF_gemdphi1[kMaxCSCTF], CSCTF_gemdphi2[kMaxCSCTF];
@@ -346,6 +347,13 @@ struct MyEvent
   Int_t RPCf_bx6[kMaxRPCf], RPCf_strip6[kMaxRPCf], RPCf_phi6[kMaxRPCf];
   Int_t RPCf_re6[kMaxRPCf], RPCf_ri6[kMaxRPCf], RPCf_st6[kMaxRPCf], RPCf_se6[kMaxRPCf];
   Int_t RPCf_la6[kMaxRPCf], RPCf_su6[kMaxRPCf], RPCf_ro6[kMaxRPCf];
+
+  // Matching the SIM Mu to GEM pad (really no other way to do this)
+  Int_t nGEM;
+  Float_t GE11_phi_L1[kMaxGEM];
+  Float_t GE11_phi_L2[kMaxGEM];
+  Float_t GE21_phi_L1[kMaxGEM];
+  Float_t GE21_phi_L2[kMaxGEM];
 };
 
 bool 
@@ -446,6 +454,7 @@ private:
 
   float getGlobalPhi(unsigned int rawid, int stripN);
   double calcCSCSpecificPhi(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const;
+  double calcGEMSpecificPhi(unsigned int rawId, const GEMCSCPadDigi& tp) const;
   GlobalPoint getCSCSpecificPoint(unsigned int rawid, const CSCCorrelatedLCTDigi& tp) const;
   bool isCSCCounterClockwise(const std::unique_ptr<const CSCLayer>& layer) const;
 
@@ -485,7 +494,8 @@ private:
 
   const RPCGeometry* rpcGeometry_;
   const CSCGeometry* cscGeometry_;
-
+  const GEMGeometry* gemGeometry_;
+ 
   edm::InputTag L1Mu_input;
   edm::InputTag L1TkMu_input;
   
@@ -496,6 +506,7 @@ private:
   edm::ESHandle<MuonDetLayerGeometry> muonGeometry_;
   edm::ESHandle<RPCGeometry> rpc_geom_;
   edm::ESHandle<CSCGeometry> csc_geom_;
+  edm::ESHandle<GEMGeometry> gem_geom_;
   
   const  BoundCylinder *barrelCylinder_;
   const  BoundDisk *endcapDiskPos_[3], *endcapDiskNeg_[3];
@@ -579,6 +590,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iSetup.get<MuonGeometryRecord>().get(csc_geom_);
   cscGeometry_ = &*csc_geom_;
 
+  iSetup.get<MuonGeometryRecord>().get(gem_geom_);
+  gemGeometry_ = &*gem_geom_;
+
   typedef std::vector<L1MuGMTCand> GMTs;
   edm::Handle<GMTs> aH;
   iEvent.getByLabel("simGmtDigis", aH);
@@ -627,6 +641,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   edm::Handle<edm::SimTrackContainer> sim_tracks;
   iEvent.getByLabel("g4SimHits", sim_tracks);
   const edm::SimTrackContainer & sim_trks = *sim_tracks.product();
+  edm::SimTrackContainer skim_sim_trks;
+
+  // define a skimmed simtrack collection
+  for (unsigned int k=0; k<sim_trks.size(); ++k) {
+    auto sim_muon = sim_trks[k];
+    if (!isSimTrackGood(sim_muon)) continue;
+    skim_sim_trks.push_back(sim_muon);
+  }        
 
   edm::Handle<edm::SimVertexContainer> sim_vertices;
   iEvent.getByLabel("g4SimHits", sim_vertices);
@@ -956,18 +978,17 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           cout << "genGd"<<i<<"Mu"<<j<<"_phi_prop " << event_.genGdMu_phi_prop[i][j] << endl;
           cout << "genGd"<<i<<"Mu"<<j<<"_dxy " << event_.genGdMu_dxy[i][j] << endl;
 
-          cout << "genGd"<<i<<"Mu"<<j<<"_etav_prop_GE11 " << event_.genGdMu_etav_prop_GE11[i][j] << endl;
-          cout << "genGd"<<i<<"Mu"<<j<<"_phiv_prop_GE11 " << event_.genGdMu_phiv_prop_GE11[i][j] << endl;
-          cout << "genGd"<<i<<"Mu"<<j<<"_etav_prop_GE21 " << event_.genGdMu_etav_prop_GE21[i][j] << endl;
-          cout << "genGd"<<i<<"Mu"<<j<<"_phiv_prop_GE21 " << event_.genGdMu_phiv_prop_GE21[i][j] << endl;
+          // cout << "genGd"<<i<<"Mu"<<j<<"_etav_prop_GE11 " << event_.genGdMu_etav_prop_GE11[i][j] << endl;
+          // cout << "genGd"<<i<<"Mu"<<j<<"_phiv_prop_GE11 " << event_.genGdMu_phiv_prop_GE11[i][j] << endl;
+          // cout << "genGd"<<i<<"Mu"<<j<<"_etav_prop_GE21 " << event_.genGdMu_etav_prop_GE21[i][j] << endl;
+          // cout << "genGd"<<i<<"Mu"<<j<<"_phiv_prop_GE21 " << event_.genGdMu_phiv_prop_GE21[i][j] << endl;
 
           //////////////////////
           // pre-SIM analysis //
           //////////////////////
           
-          for (unsigned int k=0; k<sim_trks.size(); ++k) {
-            auto sim_muon = sim_trks[k];
-            if (!isSimTrackGood(sim_muon)) continue;
+          for (unsigned int k=0; k<skim_sim_trks.size(); ++k) {
+            auto sim_muon = skim_sim_trks[k];
             event_.pt_sim = sim_muon.momentum().pt();
             event_.eta_sim = sim_muon.momentum().eta();
             event_.phi_sim = sim_muon.momentum().phi();
@@ -987,24 +1008,52 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   }
  
   //////////////////////
-  // SIM analysis //
+  // SIM-L1  analysis //
   //////////////////////
 
-  for (unsigned int k=0; k<sim_trks.size(); ++k) {
-    auto sim_muon = sim_trks[k];
-    if (!isSimTrackGood(sim_muon)) continue;
+  for (unsigned int k=0; k<skim_sim_trks.size(); ++k) {
+    auto sim_muon = skim_sim_trks[k];
     auto sim_vertex = sim_vtxs[sim_muon.vertIndex()];
     SimTrackMatchManager match(sim_muon, sim_vertex, cfg_, iEvent, iSetup);
     const GEMDigiMatcher& match_gd = match.gemDigis();
     // GEM digis and pads in superchambers
-    std::cout << "Matching GEM pads " << std::endl;
-    for(auto d: match_gd.superChamberIdsPad()) {
-      for (auto p: match_gd.gemPadsInSuperChamber(d)){
-        std::cout << "\t" << p << std::endl;
-      }
+    if(verbose){
+      std::cout << "Total number of matching pads to simtrack " << match_gd.nPads() << std::endl;
+      std::cout << "Matching GEM pad Ids " << match_gd.superChamberIdsPad().size() << std::endl;
+    }
+    for (auto d: match_gd.detIdsPad()){
+      auto detId = GEMDetId(d);
+      if(verbose)std::cout << "\tId " << detId << std::endl;
+      for (auto p: match_gd.gemPadsInDetId(d)){
+        double gem_phi = calcGEMSpecificPhi(d, p);
+        if(verbose){
+          std::cout << "\t\tPad " << p << std::endl;
+          std::cout << "\t\t\tPosition " << gem_phi << std::endl;
+        }
+        if (detId.station()==1) {
+          if (detId.layer()==1) {
+            if (event_.GE11_phi_L1[k] == 99)  event_.GE11_phi_L1[k] = gem_phi;
+            else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
+          }
+          if (detId.layer()==2) {
+            if (event_.GE11_phi_L2[k] == 99)  event_.GE11_phi_L2[k] = gem_phi;
+            else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
+          }
+        }
+        if (detId.station()==3) {
+          if (detId.layer()==1) {
+            if (event_.GE21_phi_L1[k] == 99)  event_.GE21_phi_L1[k] = gem_phi;
+            else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
+          }
+          if (detId.layer()==2) {
+            if (event_.GE21_phi_L2[k] == 99)  event_.GE21_phi_L2[k] = gem_phi;
+            else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
+          }
+        }
+      } 
     }
   }
-
+  
   /////////////////
   // L1 analysis //
   /////////////////
@@ -2259,6 +2308,16 @@ DisplacedL1MuFilter::calcCSCSpecificPhi(unsigned int rawId, const CSCCorrelatedL
   return getCSCSpecificPoint(rawId, tp).phi();
 }
 
+double 
+DisplacedL1MuFilter::calcGEMSpecificPhi(unsigned int rawId, const GEMCSCPadDigi& tp) const
+{
+  GEMDetId gem_id(rawId);
+  LocalPoint gem_lp = gemGeometry_->etaPartition(gem_id)->centreOfPad(tp.pad());
+  GlobalPoint gem_gp = gemGeometry_->idToDet(gem_id)->surface().toGlobal(gem_lp);
+  return gem_gp.phi();
+}
+
+
 GlobalPoint 
 DisplacedL1MuFilter::getCSCSpecificPoint(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const {
   const CSCDetId id(rawId); 
@@ -2895,6 +2954,12 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("RPCf_la6", event_.RPCf_la6,"RPCf_la6[nRPCf]/F");
   event_tree_->Branch("RPCf_su6", event_.RPCf_su6,"RPCf_su6[nRPCf]/F");
   event_tree_->Branch("RPCf_ro6", event_.RPCf_ro6,"RPCf_ro6[nRPCf]/F");
+
+  event_tree_->Branch("nGEM", &event_.nGEM);
+  event_tree_->Branch("GE11_phi_L1", event_.GE11_phi_L1,"GE11_phi_L1[nGEM]/F");
+  event_tree_->Branch("GE11_phi_L2", event_.GE11_phi_L2,"GE11_phi_L2[nGEM]/F");
+  event_tree_->Branch("GE21_phi_L1", event_.GE21_phi_L1,"GE21_phi_L1[nGEM]/F");
+  event_tree_->Branch("GE21_phi_L2", event_.GE21_phi_L2,"GE21_phi_L2[nGEM]/F");
 }
 
 
@@ -3344,6 +3409,15 @@ DisplacedL1MuFilter::clearBranches()
     event_.RPCf_la6[i] = 99;
     event_.RPCf_su6[i] = 99;
     event_.RPCf_ro6[i] = 99;
+  }
+
+
+  event_.nGEM = 0;
+  for (int i=0; i<kMaxGEM; ++i){
+    event_.GE11_phi_L1[i] = 99;
+    event_.GE11_phi_L2[i] = 99;
+    event_.GE21_phi_L1[i] = 99;
+    event_.GE21_phi_L2[i] = 99;
   }
 }
 

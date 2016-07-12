@@ -12,76 +12,6 @@ import numpy as np
 #______________________________________________________________________________                                                                                                  
 M_PI = 4*math.atan(1)
 
-
-#______________________________________________________________________________                                                                                                  
-def L1Mu_status(st1, st2, st3, st4):
-  def ok(st):
-    return st != 99
-  def nok(st):
-    return st==99
-
-  ## should not happen!
-  if nok(st1) and nok(st2) and nok(st3) and nok(st4): status = 0
-
-  if ok(st1) and nok(st2) and nok(st3) and nok(st4):  status = 1
-  if nok(st1) and ok(st2) and nok(st3) and nok(st4):  status = 2
-  if nok(st1) and nok(st2) and ok(st3) and nok(st4):  status = 3
-  if nok(st1) and nok(st2) and nok(st3) and ok(st4):  status = 4
-
-  ## low quality
-  if ok(st1) and ok(st2) and nok(st3) and nok(st4):  status = 5
-  if ok(st1) and nok(st2) and ok(st3) and nok(st4):  status = 6
-  if ok(st1) and nok(st2) and nok(st3) and ok(st4):  status = 7
-  if nok(st1) and ok(st2) and ok(st3) and nok(st4):  status = 8
-  if nok(st1) and ok(st2) and nok(st3) and ok(st4):  status = 9
-  if nok(st1) and nok(st2) and ok(st3) and ok(st4):  status = 10
-
-  ## high quality
-  if nok(st1) and ok(st2) and ok(st3) and ok(st4):  status = 11
-  if ok(st1) and nok(st2) and ok(st3) and ok(st4):  status = 12
-  if ok(st1) and ok(st2) and nok(st3) and ok(st4):  status = 13
-  if ok(st1) and ok(st2) and ok(st3) and nok(st4):  status = 14
-
-  ## highest quality
-  if ok(st1) and ok(st2) and ok(st3) and ok(st4):  status = 15
-
-  return status
-
-#______________________________________________________________________________                                                                                                  
-def addfiles(ch, dirname=".", ext=".root"):
-  theInputFiles = []
-  if not os.path.isdir(dirname):
-    print "ERROR: This is not a valid directory: ", dirname
-    exit()
-  ls = os.listdir(dirname)
-  theInputFiles.extend([dirname[:] + x for x in ls if x.endswith(ext)])
-  for pfile in theInputFiles:
-    print pfile
-    ch.Add(pfile)
-
-  return ch
-
-
-#______________________________________________________________________________                                                                                                  
-def deltaPhi(phi1, phi2):
-  result = phi1 - phi2;
-  while (result > 2*M_PI): 
-    result -= 4*M_PI;
-  while (result <= -2*M_PI):
-    result += 4*M_PI;
-  return result;
-
-
-#______________________________________________________________________________                       
-def normalizedPhi(phi1):
-  result = phi1;
-  while (result > 2*M_PI): 
-    result -= 4*M_PI;
-  while (result <= -2*M_PI):
-    result += 4*M_PI;
-  return result;
-
-
 #______________________________________________________________________________                                                                                                  
 def poly_library(st1, st2, pol):
   if pol == 'pol1':
@@ -168,117 +98,6 @@ def getPtErrorFromDphi(st1, st2, dphi1, dphi2, pol):
   else: 
     return 0
 
-#______________________________________________________________________________                                                                                                  
-def getQuantilesX(hist2d):
-  probs = array.array('d', [0.025, 0.16, 0.5, 1 - 0.16, 0.975] )
-  q = array.array('d', [0.0]*len(probs))
-  hist1d = hist2d.QuantilesX(len(probs), q, probs)
-  SetOwnership( hist1d, True )
-  return hist1d
-
-
-#______________________________________________________________________________                                                                                                  
-def getMedian(yintegral):
-  if (yintegral%2 == 1):
-    return (yintegral-1)/2 + 1
-  else:
-    return (yintegral/2) + 0.5
-  
-
-#______________________________________________________________________________                                                                                                  
-def get1DHistogramMedianY(hist2d):
-    '''this function returns a 1d histogram
-    for a 2d histgram using the median and the x-sigma resolution on the median'''
-
-    xBins = hist2d.GetXaxis().GetNbins()
-    yBins = hist2d.GetYaxis().GetNbins()
-    xminBin = hist2d.GetXaxis().GetXmin()
-    xmaxBin = hist2d.GetXaxis().GetXmax()
-    yminBin = hist2d.GetYaxis().GetXmin()
-    ymaxBin = hist2d.GetYaxis().GetXmax()
-    """
-    print "xBins", xBins
-    print "yBins", yBins
-    print "xminBin", xminBin
-    print "xmaxBin", xmaxBin
-    print "yminBin", yminBin
-    print "ymaxBin", ymaxBin
-    """
-    
-    printa = 0
-    r1 = TH1F("r1","",xBins,xminBin,xmaxBin)
-    for x in range(0,xBins):
-
-        if (printa > 0):
-            print "*********** For bin x: %d **********************"%x
-            
-        # Find the total number of frequencies
-        yintegral = hist2d.Integral(x,x,0,yBins+1)
-        median = getMedian(yintegral)
-        
-        temporal = 0
-        midbin = 0
-        
-        for m in range (0,yBins+1):
-          temporal = hist2d.Integral(x,x,0,m)
-
-          if (temporal >= median):
-            midbin = m              # Break once I get to the median
-            break
-          
-        if (printa > 0):
-          print "suma: ",yintegral
-          print "Midbin: ",midbin
-          print "mediana count: ",temporal
-          
-        # midbin is the actual value to be stored in (x, midbin) histogram.    
-        # Find the error above the median
-        
-        sumerrup = 0                       # Sum of events up
-        binerrup = 0                       # Bin which has the 34% of events
-        
-        for k in range (midbin, yBins+1): # Looping over the midbin up to 10000 
-            sumerrup = hist2d.Integral(x,x,midbin,k)
-  
-            if (sumerrup >= 0.33*yintegral):
-                binerrup = k
-                break
-        
-        sumerrlow = 0
-        binerrlow = 0
-        
-        for r in range (0, midbin):
-            sumerrlow = hist2d.Integral(x,x,midbin-r,midbin)
-
-            if (sumerrlow >= 0.33*yintegral):
-                binerrlow = r 
-                break
-        
-        # error is the difference averaged on the bin low and bin up
-        errorbin = abs(binerrup - binerrlow)/2.
-        if (yintegral > 0):
-            errorbin = errorbin / sqrt(yintegral)
-        
-        if (printa > 0):
-            print " X position: ",x
-            print " Bin y: ",midbin
-            print " Error: ",errorbin
-            print " Error low: ",binerrlow
-            print " Sum err low: ",sumerrlow
-            print " Error high: ",binerrup
-            print " Sum err high: ",sumerrup
-
-        # Store in a histogram the values of (x, midbin) with an error given by errorbin
-        if errorbin ==0:
-            errorbin == yBins
-            
-        scale = ymaxBin / yBins
-
-        r1.SetBinContent(x, midbin*scale)
-        r1.SetBinError(x, errorbin*scale)
-
-    SetOwnership(r1, False)
-    return r1                               #Return the histogram 1D 
 
 #______________________________________________________________________________                                                                                                  
 if __name__ == "__main__":  
@@ -293,14 +112,14 @@ if __name__ == "__main__":
 
   set_style()
 
-  #file = TFile("/uscms/home/dildick/nobackup/work/MuonPhaseIITDRStudies/CMSSW_6_2_0_SLHC28_patch1/src/out_ana_ctau_1000_PU140.root")
-  #treeHits = file.Get("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
+  file = TFile("/uscms/home/dildick/nobackup/work/MuonPhaseIITDRStudies/CMSSW_6_2_0_SLHC28_patch1/src/out_ana_ctau_1000_PU140_GEM.test.root")
+  treeHits = file.Get("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
 
-  ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
-  ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/', ext=".root")
+  #ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
+  #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/', ext=".root")
 
-  treeHits = ch
-  label = "DisplacedL1MuTrigger_20160707_v2"
+  #treeHits = ch
+  label = "DisplacedL1MuTrigger_20160711_GEM_test"
   targetDir = label + "/"
   
   verbose = False
@@ -346,11 +165,9 @@ if __name__ == "__main__":
     phiDTst2_phiDTst4 = TH1F("phiDTst2_phiDTst4","", 100,-1.,1.)
     phiDTst3_phiDTst4 = TH1F("phiDTst3_phiDTst4","", 100,-1.,1.)
 
-    """
-    phiDTst1_vs_phiDTst4_dxy0to5 = TH2F("phiDTst1_phiDTst4_dxy0to5","", 100,-1.,1.)
-    phiDTst1_vs_phiDTst4_dxy5to50 = TH2F("phiDTst1_phiDTst4_dxy5to50","", 100,-1.,1.)
-    phiDTst1_vs_phiDTst4_dxy50to100 = TH2F("phiDTst1_phiDTst4_dxy50to100","", 100,-1.,1.)
-    """
+    phiDTst1_vs_phiDTst4_dxy0to5 = TH2F("phiDTst1_phiDTst4_dxy0to5","", 100,0,6.3,100,0.,6.3)
+    phiDTst1_vs_phiDTst4_dxy5to50 = TH2F("phiDTst1_phiDTst4_dxy5to50","", 100,0,6.3,100,0.,6.3)
+    phiDTst1_vs_phiDTst4_dxy50to100 = TH2F("phiDTst1_phiDTst4_dxy50to100","", 100,0,6.3,100,0.,6.3)
     
     abs_phiDTst1_phiDTst2 = TH1F("abs_phiDTst1_phiDTst2","", 100,-1.,1.)
     abs_phiDTst1_phiDTst3 = TH1F("abs_phiDTst1_phiDTst3","", 100,-1.,1.)
@@ -865,7 +682,7 @@ if __name__ == "__main__":
             if m_CSCTF and m_DTTF and m_RPCb and m_RPCf: nL1MuMatched_DTTF_CSCTF_RPCb_RPCf +=1
 
 
-            ## Matched to CSC
+            ## Matched to DT
             if verbose:
               print "\t\t>>>>INFO: Number of DTTFs", treeHits.nDTTF
               print
@@ -991,21 +808,27 @@ if __name__ == "__main__":
               if dxy <= 5:
                 if ok_DTTF_st1 and ok_DTTF_st2: GenMuPt_phiDTst1_phiDTst2_dxy0to5.Fill(pt)
                 if ok_DTTF_st1 and ok_DTTF_st3: GenMuPt_phiDTst1_phiDTst3_dxy0to5.Fill(pt)
-                if ok_DTTF_st1 and ok_DTTF_st4: GenMuPt_phiDTst1_phiDTst4_dxy0to5.Fill(pt)
+                if ok_DTTF_st1 and ok_DTTF_st4: 
+                  GenMuPt_phiDTst1_phiDTst4_dxy0to5.Fill(pt)
+                  phiDTst1_vs_phiDTst4_dxy0to5.Fill(DTTF_phi1, DTTF_phi4)
                 if ok_DTTF_st2 and ok_DTTF_st3: GenMuPt_phiDTst2_phiDTst3_dxy0to5.Fill(pt)
                 if ok_DTTF_st2 and ok_DTTF_st4: GenMuPt_phiDTst2_phiDTst4_dxy0to5.Fill(pt)
                 if ok_DTTF_st3 and ok_DTTF_st4: GenMuPt_phiDTst3_phiDTst4_dxy0to5.Fill(pt)
               if 5 < dxy  and dxy <= 50:
                 if ok_DTTF_st1 and ok_DTTF_st2: GenMuPt_phiDTst1_phiDTst2_dxy5to50.Fill(pt)
                 if ok_DTTF_st1 and ok_DTTF_st3: GenMuPt_phiDTst1_phiDTst3_dxy5to50.Fill(pt)
-                if ok_DTTF_st1 and ok_DTTF_st4: GenMuPt_phiDTst1_phiDTst4_dxy5to50.Fill(pt)
+                if ok_DTTF_st1 and ok_DTTF_st4: 
+                  GenMuPt_phiDTst1_phiDTst4_dxy5to50.Fill(pt)
+                  phiDTst1_vs_phiDTst4_dxy5to50.Fill(DTTF_phi1, DTTF_phi4)
                 if ok_DTTF_st2 and ok_DTTF_st3: GenMuPt_phiDTst2_phiDTst3_dxy5to50.Fill(pt)
                 if ok_DTTF_st2 and ok_DTTF_st4: GenMuPt_phiDTst2_phiDTst4_dxy5to50.Fill(pt)
                 if ok_DTTF_st3 and ok_DTTF_st4: GenMuPt_phiDTst3_phiDTst4_dxy5to50.Fill(pt)
               if 50 < dxy and dxy <= 100:
                 if ok_DTTF_st1 and ok_DTTF_st2: GenMuPt_phiDTst1_phiDTst2_dxy50to100.Fill(pt)
                 if ok_DTTF_st1 and ok_DTTF_st3: GenMuPt_phiDTst1_phiDTst3_dxy50to100.Fill(pt)
-                if ok_DTTF_st1 and ok_DTTF_st4: GenMuPt_phiDTst1_phiDTst4_dxy50to100.Fill(pt)
+                if ok_DTTF_st1 and ok_DTTF_st4: 
+                  GenMuPt_phiDTst1_phiDTst4_dxy50to100.Fill(pt)
+                  phiDTst1_vs_phiDTst4_dxy50to100.Fill(DTTF_phi1, DTTF_phi4)
                 if ok_DTTF_st2 and ok_DTTF_st3: GenMuPt_phiDTst2_phiDTst3_dxy50to100.Fill(pt)
                 if ok_DTTF_st2 and ok_DTTF_st4: GenMuPt_phiDTst2_phiDTst4_dxy50to100.Fill(pt)
                 if ok_DTTF_st3 and ok_DTTF_st4: GenMuPt_phiDTst3_phiDTst4_dxy50to100.Fill(pt)
@@ -1161,10 +984,15 @@ if __name__ == "__main__":
               CSCTF_phi = treeHits.CSCTF_phi[L1Mu_CSCTF_index]
               CSCTF_bx = treeHits.CSCTF_bx[L1Mu_CSCTF_index]
               CSCTF_nStubs = treeHits.CSCTF_nStubs[L1Mu_CSCTF_index]
-              CSCTF_pat1 = treeHits.CSCTF_pat1[L1Mu_CSCTF_index]
-              CSCTF_pat2 = treeHits.CSCTF_pat2[L1Mu_CSCTF_index]
-              CSCTF_pat3 = treeHits.CSCTF_pat3[L1Mu_CSCTF_index]
-              CSCTF_pat4 = treeHits.CSCTF_pat4[L1Mu_CSCTF_index]
+              CSCTF_phi1 = treeHits.CSCTF_phi1[L1Mu_CSCTF_index]
+              CSCTF_phi2 = treeHits.CSCTF_phi2[L1Mu_CSCTF_index]
+              CSCTF_phi3 = treeHits.CSCTF_phi3[L1Mu_CSCTF_index]
+              CSCTF_phi4 = treeHits.CSCTF_phi4[L1Mu_CSCTF_index]
+              CSCTF_gemdphi1 = treeHits.CSCTF_gemdphi1[L1Mu_CSCTF_index]
+              CSCTF_gemdphi2 = treeHits.CSCTF_gemdphi2[L1Mu_CSCTF_index]
+              ## get SIM index
+              GEN_SIM_index = treeHits.genGdMu_SIM_index[i][j]
+              
               if verbose:
                 print "\t\tCSCTF", L1Mu_CSCTF_index
                 print "\t\tCSCTF_pt", CSCTF_pt
@@ -1172,10 +1000,16 @@ if __name__ == "__main__":
                 print "\t\tCSCTF_phi", CSCTF_phi
                 print "\t\tCSCTF_bx", CSCTF_bx
                 print "\t\tCSCTF_nStubs", CSCTF_nStubs
-                print "\t\tCSCTF_pat1", CSCTF_pat1 
-                print "\t\tCSCTF_pat2", CSCTF_pat2
-                print "\t\tCSCTF_pat3", CSCTF_pat3
-                print "\t\tCSCTF_pat4", CSCTF_pat4
+                print "\t\tCSCTF_phi1", CSCTF_phi1 
+                print "\t\tCSCTF_phi2", CSCTF_phi2
+                print "\t\tCSCTF_phi3", CSCTF_phi3
+                print "\t\tCSCTF_phi4", CSCTF_phi4
+                print "\t\tCSCTF_gemdphi1", CSCTF_gemdphi1
+                print "\t\tCSCTF_gemdphi2", CSCTF_gemdphi2
+                print "\t\GE11_phi_L1", treeHits.GE11_phi_L1[GEN_SIM_index]
+                print "\t\GE11_phi_L2", treeHits.GE11_phi_L2[GEN_SIM_index]
+                print "\t\GE21_phi_L1", treeHits.GE21_phi_L1[GEN_SIM_index]
+                print "\t\GE21_phi_L2", treeHits.GE21_phi_L2[GEN_SIM_index]
                 print               
             else:
               if printExtraInfo:
@@ -1390,6 +1224,11 @@ if __name__ == "__main__":
 
     makeSimplePlot(nDT_stubs, targetDir + "nDT_stubs.png", "; status; Number of entries")
     makeSimplePlot(nDT_stubs_vs_dxy, targetDir + "nDT_stubs_vs_dxy.png", "; status; d_{xy} [cm]", "COLZ")
+
+    makeSimplePlot(phiDTst1_vs_phiDTst4_dxy0to5, targetDir + "phiDTst1_vs_phiDTst4_dxy0to5.png", "; #Delta#Phi_1; #Delta#Phi_4", "COLZ")
+    makeSimplePlot(phiDTst1_vs_phiDTst4_dxy5to50, targetDir + "phiDTst1_vs_phiDTst4_dxy5to50.png", "; #Delta#Phi_1; #Delta#Phi_4", "COLZ")
+    makeSimplePlot(phiDTst1_vs_phiDTst4_dxy50to100, targetDir + "phiDTst1_vs_phiDTst4_dxy50to100.png", "; #Delta#Phi_1; #Delta#Phi_4", "COLZ")
+
 
     makeSimplePlot(phiDTst1_phiDTst2, targetDir + "phiDTst1_phiDTst2.png", ";#Delta#Phi_{12}; Entries")
     makeSimplePlot(phiDTst1_phiDTst3, targetDir + "phiDTst1_phiDTst3.png", ";#Delta#Phi_{13}; Entries")

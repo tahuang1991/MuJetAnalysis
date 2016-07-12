@@ -23,6 +23,187 @@ etabin = [
     2.0, 2.1, 2.2, 2.3, 2.4, 2.5]
 myetabin = np.asarray(etabin)
 
+#______________________________________________________________________________                                                                                                  
+def L1Mu_status(st1, st2, st3, st4):
+  def ok(st):
+    return st != 99
+  def nok(st):
+    return st==99
+
+  ## should not happen!
+  if nok(st1) and nok(st2) and nok(st3) and nok(st4): status = 0
+
+  if ok(st1) and nok(st2) and nok(st3) and nok(st4):  status = 1
+  if nok(st1) and ok(st2) and nok(st3) and nok(st4):  status = 2
+  if nok(st1) and nok(st2) and ok(st3) and nok(st4):  status = 3
+  if nok(st1) and nok(st2) and nok(st3) and ok(st4):  status = 4
+
+  ## low quality
+  if ok(st1) and ok(st2) and nok(st3) and nok(st4):  status = 5
+  if ok(st1) and nok(st2) and ok(st3) and nok(st4):  status = 6
+  if ok(st1) and nok(st2) and nok(st3) and ok(st4):  status = 7
+  if nok(st1) and ok(st2) and ok(st3) and nok(st4):  status = 8
+  if nok(st1) and ok(st2) and nok(st3) and ok(st4):  status = 9
+  if nok(st1) and nok(st2) and ok(st3) and ok(st4):  status = 10
+
+  ## high quality
+  if nok(st1) and ok(st2) and ok(st3) and ok(st4):  status = 11
+  if ok(st1) and nok(st2) and ok(st3) and ok(st4):  status = 12
+  if ok(st1) and ok(st2) and nok(st3) and ok(st4):  status = 13
+  if ok(st1) and ok(st2) and ok(st3) and nok(st4):  status = 14
+
+  ## highest quality
+  if ok(st1) and ok(st2) and ok(st3) and ok(st4):  status = 15
+
+  return status
+
+#______________________________________________________________________________                                                                                                  
+def addfiles(ch, dirname=".", ext=".root"):
+  theInputFiles = []
+  if not os.path.isdir(dirname):
+    print "ERROR: This is not a valid directory: ", dirname
+    exit()
+  ls = os.listdir(dirname)
+  theInputFiles.extend([dirname[:] + x for x in ls if x.endswith(ext)])
+  for pfile in theInputFiles:
+    print pfile
+    ch.Add(pfile)
+
+  return ch
+
+
+#______________________________________________________________________________                                                                                                  
+def deltaPhi(phi1, phi2):
+  result = phi1 - phi2;
+  while (result > 2*M_PI): 
+    result -= 4*M_PI;
+  while (result <= -2*M_PI):
+    result += 4*M_PI;
+  return result;
+
+
+#______________________________________________________________________________                       
+def normalizedPhi(phi1):
+  result = phi1;
+  while (result > 2*M_PI): 
+    result -= 4*M_PI;
+  while (result <= -2*M_PI):
+    result += 4*M_PI;
+  return result;
+
+#______________________________________________________________________________                                                                                                  
+def getQuantilesX(hist2d):
+  probs = array.array('d', [0.025, 0.16, 0.5, 1 - 0.16, 0.975] )
+  q = array.array('d', [0.0]*len(probs))
+  hist1d = hist2d.QuantilesX(len(probs), q, probs)
+  SetOwnership( hist1d, True )
+  return hist1d
+
+
+#______________________________________________________________________________                                                                                                  
+def getMedian(yintegral):
+  if (yintegral%2 == 1):
+    return (yintegral-1)/2 + 1
+  else:
+    return (yintegral/2) + 0.5
+  
+
+#______________________________________________________________________________                                                                                                  
+def get1DHistogramMedianY(hist2d):
+    '''this function returns a 1d histogram
+    for a 2d histgram using the median and the x-sigma resolution on the median'''
+
+    xBins = hist2d.GetXaxis().GetNbins()
+    yBins = hist2d.GetYaxis().GetNbins()
+    xminBin = hist2d.GetXaxis().GetXmin()
+    xmaxBin = hist2d.GetXaxis().GetXmax()
+    yminBin = hist2d.GetYaxis().GetXmin()
+    ymaxBin = hist2d.GetYaxis().GetXmax()
+    """
+    print "xBins", xBins
+    print "yBins", yBins
+    print "xminBin", xminBin
+    print "xmaxBin", xmaxBin
+    print "yminBin", yminBin
+    print "ymaxBin", ymaxBin
+    """
+    
+    printa = 0
+    r1 = TH1F("r1","",xBins,xminBin,xmaxBin)
+    for x in range(0,xBins):
+
+        if (printa > 0):
+            print "*********** For bin x: %d **********************"%x
+            
+        # Find the total number of frequencies
+        yintegral = hist2d.Integral(x,x,0,yBins+1)
+        median = getMedian(yintegral)
+        
+        temporal = 0
+        midbin = 0
+        
+        for m in range (0,yBins+1):
+          temporal = hist2d.Integral(x,x,0,m)
+
+          if (temporal >= median):
+            midbin = m              # Break once I get to the median
+            break
+          
+        if (printa > 0):
+          print "suma: ",yintegral
+          print "Midbin: ",midbin
+          print "mediana count: ",temporal
+          
+        # midbin is the actual value to be stored in (x, midbin) histogram.    
+        # Find the error above the median
+        
+        sumerrup = 0                       # Sum of events up
+        binerrup = 0                       # Bin which has the 34% of events
+        
+        for k in range (midbin, yBins+1): # Looping over the midbin up to 10000 
+            sumerrup = hist2d.Integral(x,x,midbin,k)
+  
+            if (sumerrup >= 0.33*yintegral):
+                binerrup = k
+                break
+        
+        sumerrlow = 0
+        binerrlow = 0
+        
+        for r in range (0, midbin):
+            sumerrlow = hist2d.Integral(x,x,midbin-r,midbin)
+
+            if (sumerrlow >= 0.33*yintegral):
+                binerrlow = r 
+                break
+        
+        # error is the difference averaged on the bin low and bin up
+        errorbin = abs(binerrup - binerrlow)/2.
+        if (yintegral > 0):
+            errorbin = errorbin / sqrt(yintegral)
+        
+        if (printa > 0):
+            print " X position: ",x
+            print " Bin y: ",midbin
+            print " Error: ",errorbin
+            print " Error low: ",binerrlow
+            print " Sum err low: ",sumerrlow
+            print " Error high: ",binerrup
+            print " Sum err high: ",sumerrup
+
+        # Store in a histogram the values of (x, midbin) with an error given by errorbin
+        if errorbin ==0:
+            errorbin == yBins
+            
+        scale = ymaxBin / yBins
+
+        r1.SetBinContent(x, midbin*scale)
+        r1.SetBinError(x, errorbin*scale)
+
+    SetOwnership(r1, False)
+    return r1                               #Return the histogram 1D 
+
+
 #_______________________________________________________________________________
 def applyTdrStyle():
     cmsText     = "CMS Phase II Simulation"

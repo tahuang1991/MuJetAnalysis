@@ -1,0 +1,208 @@
+Loading FW Lite setup.
+Making the plots
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_1.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_10.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_12.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_13.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_14.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_15.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_16.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_17.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_19.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_2.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_20.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_21.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_22.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_23.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_24.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_25.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_26.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_27.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_28.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_29.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_3.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_30.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_31.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_32.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_33.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_34.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_35.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_36.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_37.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_38.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_39.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_4.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_40.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_41.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_42.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_43.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_44.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_45.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_46.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_47.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_48.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_49.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_5.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_50.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_51.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_6.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_7.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_8.root
+/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/out_ana_ctau_1000_PU140_9.root
+65967
+Event 1 nL1Mu 5
+Event 1001 nL1Mu 4
+Event 2001 nL1Mu 4
+Event 3001 nL1Mu 4
+Event 4001 nL1Mu 7
+Event 5001 nL1Mu 2
+Event 6001 nL1Mu 5
+Event 7001 nL1Mu 2
+Event 8001 nL1Mu 5
+Event 9001 nL1Mu 5
+Event 10001 nL1Mu 3
+Event 11001 nL1Mu 5
+Event 12001 nL1Mu 2
+Event 13001 nL1Mu 2
+Event 14001 nL1Mu 5
+Event 15001 nL1Mu 4
+Event 16001 nL1Mu 7
+Event 17001 nL1Mu 4
+Event 18001 nL1Mu 3
+Event 19001 nL1Mu 7
+Event 20001 nL1Mu 8
+Event 21001 nL1Mu 4
+Event 22001 nL1Mu 5
+Event 23001 nL1Mu 6
+Event 24001 nL1Mu 4
+Event 25001 nL1Mu 6
+Event 26001 nL1Mu 3
+Event 27001 nL1Mu 5
+Event 28001 nL1Mu 6
+Event 29001 nL1Mu 6
+Event 30001 nL1Mu 6
+Event 31001 nL1Mu 5
+Event 32001 nL1Mu 5
+Event 33001 nL1Mu 6
+Event 34001 nL1Mu 4
+Event 35001 nL1Mu 6
+Event 36001 nL1Mu 4
+Event 37001 nL1Mu 4
+Event 38001 nL1Mu 6
+Event 39001 nL1Mu 5
+Event 40001 nL1Mu 8
+Event 41001 nL1Mu 1
+Event 42001 nL1Mu 6
+Event 43001 nL1Mu 8
+Event 44001 nL1Mu 6
+Event 45001 nL1Mu 3
+Event 46001 nL1Mu 8
+Event 47001 nL1Mu 5
+Event 48001 nL1Mu 4
+Event 49001 nL1Mu 2
+Event 50001 nL1Mu 5
+Event 51001 nL1Mu 5
+Event 52001 nL1Mu 5
+Event 53001 nL1Mu 5
+Event 54001 nL1Mu 6
+Event 55001 nL1Mu 5
+Event 56001 nL1Mu 4
+Event 57001 nL1Mu 6
+Event 58001 nL1Mu 6
+Event 59001 nL1Mu 3
+Event 60001 nL1Mu 3
+Event 61001 nL1Mu 2
+Event 62001 nL1Mu 0
+Event 63001 nL1Mu 6
+Event 64001 nL1Mu 3
+Event 65001 nL1Mu 5
+[ -1.93782482032 ,  1.66451038629 ,  0 ,  0 ]
+[ -1.01125992225 ,  0.805572216753 ,  0 ,  0 ]
+[ -0.960767903531 ,  0.618297620017 ,  0 ,  0 ]
+[ -1.71728660897 ,  1.44428470182 ,  0 ,  0 ]
+[ -1.99237890798 ,  0.947526810903 ,  0 ,  0 ]
+[ -3.309041322 ,  1.87659422311 ,  0 ,  0 ]
+[ -1.93782482032 ,  1.66451038629 ,  0 ,  0 ]
+[ -1.01125992225 ,  0.805572216753 ,  0 ,  0 ]
+[ -0.960767903531 ,  0.618297620017 ,  0 ,  0 ]
+[ -1.71728660897 ,  1.44428470182 ,  0 ,  0 ]
+[ -1.99237890798 ,  0.947526810903 ,  0 ,  0 ]
+[ -3.309041322 ,  1.87659422311 ,  0 ,  0 ]
+[ -4.59151384807 ,  2.18305318916 ,  -0.018828614048 ,  0 ]
+[ -1.67030458925 ,  0.916995833133 ,  -0.00386509508288 ,  0 ]
+[ -1.08096092484 ,  0.634958416569 ,  -0.000510204299686 ,  0 ]
+[ -4.62468464251 ,  1.97977519736 ,  -0.0180940905242 ,  0 ]
+[ -2.27424997555 ,  0.998134660067 ,  -0.0018598992623 ,  0 ]
+[ -10.291483914 ,  3.12378247724 ,  -0.0421524652843 ,  0 ]
+[ -4.59151384807 ,  2.18305318916 ,  -0.018828614048 ,  0 ]
+[ -1.67030458925 ,  0.916995833133 ,  -0.00386509508288 ,  0 ]
+[ -1.08096092484 ,  0.634958416569 ,  -0.000510204299686 ,  0 ]
+[ -4.62468464251 ,  1.97977519736 ,  -0.0180940905242 ,  0 ]
+[ -2.27424997555 ,  0.998134660067 ,  -0.0018598992623 ,  0 ]
+[ -10.291483914 ,  3.12378247724 ,  -0.0421524652843 ,  0 ]
+[ -3.7633911215 ,  1.97502056242 ,  -0.0050712581866 ,  -0.000238268788773 ]
+[ -0.883130520516 ,  0.745410850446 ,  0.00652771592182 ,  -0.000162992924403 ]
+[ -0.780208185215 ,  0.579594300701 ,  0.00248601032558 ,  -4.58246778958e-05 ]
+[ -2.29930352838 ,  1.41928107597 ,  0.0172721135243 ,  -0.000567640596145 ]
+[ -2.53454419136 ,  1.05965961706 ,  -0.00588843366512 ,  6.91964421131e-05 ]
+[ -6.18372360645 ,  2.1584850179 ,  0.0181089182453 ,  -0.000993375349356 ]
+[ -3.7633911215 ,  1.97502056242 ,  -0.0050712581866 ,  -0.000238268788773 ]
+[ -0.883130520516 ,  0.745410850446 ,  0.00652771592182 ,  -0.000162992924403 ]
+[ -0.780208185215 ,  0.579594300701 ,  0.00248601032558 ,  -4.58246778958e-05 ]
+[ -2.29930352838 ,  1.41928107597 ,  0.0172721135243 ,  -0.000567640596145 ]
+[ -2.53454419136 ,  1.05965961706 ,  -0.00588843366512 ,  6.91964421131e-05 ]
+[ -6.18372360645 ,  2.1584850179 ,  0.0181089182453 ,  -0.000993375349356 ]
+title DisplacedL1MuTrigger_20160628/L1MuPt10_GenMuPt_dxy0to100.png
+ptCut 10
+title DisplacedL1MuTrigger_20160628/L1MuPt15_GenMuPt_dxy0to100.png
+ptCut 15
+title DisplacedL1MuTrigger_20160628/L1MuPt20_GenMuPt_dxy0to100.png
+ptCut 20
+title DisplacedL1MuTrigger_20160628/L1MuPt10_GenMuPt_dxy0to100_barrel.png
+ptCut 10
+title DisplacedL1MuTrigger_20160628/L1MuPt15_GenMuPt_dxy0to100_barrel.png
+ptCut 15
+title DisplacedL1MuTrigger_20160628/L1MuPt20_GenMuPt_dxy0to100_barrel.png
+ptCut 20
+title DisplacedL1MuTrigger_20160628/L1MuPt10_GenMuPt_dxy0to100_overlap.png
+ptCut 10
+title DisplacedL1MuTrigger_20160628/L1MuPt15_GenMuPt_dxy0to100_overlap.png
+ptCut 15
+title DisplacedL1MuTrigger_20160628/L1MuPt20_GenMuPt_dxy0to100_overlap.png
+ptCut 20
+title DisplacedL1MuTrigger_20160628/L1MuPt10_GenMuPt_dxy0to100_endcap.png
+ptCut 10
+title DisplacedL1MuTrigger_20160628/L1MuPt15_GenMuPt_dxy0to100_endcap.png
+ptCut 15
+title DisplacedL1MuTrigger_20160628/L1MuPt20_GenMuPt_dxy0to100_endcap.png
+ptCut 20
+title DisplacedL1MuTrigger_20160628/DPhiPt10_GenMuPt_dxy0to100.png
+ptCut ac
+title DisplacedL1MuTrigger_20160628/DPhiPt15_GenMuPt_dxy0to100.png
+ptCut ac
+title DisplacedL1MuTrigger_20160628/DPhiPt20_GenMuPt_dxy0to100.png
+ptCut ac
+title DisplacedL1MuTrigger_20160628/DPhiPt10_GenMuPt_dxy0to100_barrel.png
+ptCut ac
+title DisplacedL1MuTrigger_20160628/DPhiPt15_GenMuPt_dxy0to100_barrel.png
+ptCut ac
+title DisplacedL1MuTrigger_20160628/DPhiPt20_GenMuPt_dxy0to100_barrel.png
+ptCut ac
+title DisplacedL1MuTrigger_20160628/DPhiPt10_GenMuPt_dxy0to100_overlap.png
+ptCut ac
+title DisplacedL1MuTrigger_20160628/DPhiPt15_GenMuPt_dxy0to100_overlap.png
+ptCut ac
+title DisplacedL1MuTrigger_20160628/DPhiPt20_GenMuPt_dxy0to100_overlap.png
+ptCut ac
+title DisplacedL1MuTrigger_20160628/DPhiPt10_GenMuPt_dxy0to100_endcap.png
+ptCut ac
+title DisplacedL1MuTrigger_20160628/DPhiPt15_GenMuPt_dxy0to100_endcap.png
+ptCut ac
+title DisplacedL1MuTrigger_20160628/DPhiPt20_GenMuPt_dxy0to100_endcap.png
+ptCut ac
+title DisplacedL1MuTrigger_20160628/DPhiPt10_GenMuPt_dxy0to100.png
+ptCut ac
+title DisplacedL1MuTrigger_20160628/DPhiPt15_GenMuPt_dxy0to100.png
+ptCut ac
+title DisplacedL1MuTrigger_20160628/DPhiPt20_GenMuPt_dxy0to100.png
+ptCut ac

@@ -9,9 +9,11 @@ process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
 process.load('TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorOpposite_cfi')
 process.load('TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorAlong_cfi')
 process.load('TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorAny_cfi')
-process.load('Configuration.Geometry.GeometryExtended2023TTIReco_cff')
 process.load('Geometry.TrackerGeometryBuilder.StackedTrackerGeometry_cfi')
 process.load('Configuration.Geometry.GeometryExtended2023TTI_cff')
+process.load('Configuration.Geometry.GeometryExtended2023TTIReco_cff')
+process.load('Geometry.GEMGeometryBuilder.gemGeometry_cfi')
+process.load('Geometry.GEMGeometryBuilder.me0Geometry_cfi')
 
 process.load('Configuration.StandardSequences.L1Reco_cff')
 process.load("SLHCUpgradeSimulations.L1TrackTrigger.L1TkMuonSequence_cfi")
@@ -20,7 +22,7 @@ process.load("L1Trigger.TrackTrigger.TrackTrigger_cff")
 process.load('L1TriggerConfig.L1ScalesProducers.L1MuTriggerScalesConfig_cff')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(-1)
+    input = cms.untracked.int32(100)
 )
 
 """
@@ -42,6 +44,7 @@ from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_1000_1
 #from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_0400_ctau_0_14TeV import files
 from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_DTTF import files
 
+from GEMCode.GEMValidation.simTrackMatching_cfi import SimTrackMatching
 process.DisplacedL1MuFilter_PhaseIIGE21 = cms.EDFilter("DisplacedL1MuFilter",
     useTrack = cms.string("tracker"),  # 'none' to use Candidate P4; or 'tracker', 'muon', 'global'
     useState = cms.string("atVertex"), # 'innermost' and 'outermost' require the TrackExtra
@@ -57,6 +60,7 @@ process.DisplacedL1MuFilter_PhaseIIGE21 = cms.EDFilter("DisplacedL1MuFilter",
     verbose = cms.int32(0),
     L1Mu_input = cms.InputTag("simGmtDigis"),
     L1TkMu_input = cms.InputTag("L1TkMuonsMerge"),
+    simTrackMatching = SimTrackMatching,
 )
 
 process.source = cms.Source(
@@ -80,7 +84,7 @@ process.TFileService = cms.Service(
 #    fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140.test.root")
     #fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU0.root")
     #fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140.root")
-    fileName = cms.string("out_ana_ctau_1000_PU140.root")
+    fileName = cms.string("out_ana_ctau_1000_PU140_GEMs.test.root")
 )
 
 

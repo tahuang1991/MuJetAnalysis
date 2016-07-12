@@ -1,16 +1,11 @@
 # run quiet mode
 import sys
 sys.argv.append( '-b' )
-import math
-from ROOT import *
 import ROOT 
 ROOT.gROOT.SetBatch(1)
 from Helpers import *
 ROOT.gErrorIgnoreLevel=1001
-import numpy as np
-
-#______________________________________________________________________________                                                                                                  
-M_PI = 4*math.atan(1)
+from ROOT import * 
 
 #______________________________________________________________________________                                                                                                  
 def poly_library(st1, st2, pol):
@@ -112,18 +107,18 @@ if __name__ == "__main__":
 
   set_style()
 
-  file = TFile("/uscms/home/dildick/nobackup/work/MuonPhaseIITDRStudies/CMSSW_6_2_0_SLHC28_patch1/src/out_ana_ctau_1000_PU140_GEM.test.root")
+  file = TFile("/uscms/home/dildick/nobackup/work/MuonPhaseIITDRStudies/CMSSW_6_2_0_SLHC28_patch1/src/out_ana_ctau_1000_PU140_GEMs.test.root")
   treeHits = file.Get("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
 
   #ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
   #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/', ext=".root")
-
   #treeHits = ch
+
   label = "DisplacedL1MuTrigger_20160711_GEM_test"
   targetDir = label + "/"
   
-  verbose = False
-  printExtraInfo = False
+  verbose = True
+  printExtraInfo = True
   
   def displacedTriggerEfficiency():
     print treeHits.GetEntries()
@@ -169,6 +164,18 @@ if __name__ == "__main__":
     phiDTst1_vs_phiDTst4_dxy5to50 = TH2F("phiDTst1_phiDTst4_dxy5to50","", 100,0,6.3,100,0.,6.3)
     phiDTst1_vs_phiDTst4_dxy50to100 = TH2F("phiDTst1_phiDTst4_dxy50to100","", 100,0,6.3,100,0.,6.3)
     
+    phiGEMst1_phiGEMst2 = TH1F("phiGEMst1_phiGEMst2","", 100,-1.,1.)
+    abs_phiGEMst1_phiGEMst2 = TH1F("abs_phiGEMst1_phiGEMst2","", 100,-1.,1.)
+    phiGEMst1_vs_phiGEMst2_dxy0to5 = TH2F("phiGEMst1_phiGEMst2_dxy0to5","", 100,0,6.3,100,0.,6.3)
+    phiGEMst1_vs_phiGEMst2_dxy5to50 = TH2F("phiGEMst1_phiGEMst2_dxy5to50","", 100,0,6.3,100,0.,6.3)
+    phiGEMst1_vs_phiGEMst2_dxy50to100 = TH2F("phiGEMst1_phiGEMst2_dxy50to100","", 100,0,6.3,100,0.,6.3)
+    GenMuPt_vs_phiGEMst1_phiGEMst2 = TH2F("GenMuPt_vs_phiGEMst1_phiGEMst2","", 60,0.,60,100,-1.,1.)
+    GenMuPt_vs_abs_phiGEMst1_phiGEMst2 = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2","", 60,0.,60,100,0.,1.)
+    GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv","", 60,0.,60.,60,0.,120)
+    GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5 = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5","", 60,0.,60.,60,0.,120)
+    GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50 = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50","", 60,0.,60.,60,0.,120)
+    GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100 = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100","", 60,0.,60.,60,0.,120)
+
     abs_phiDTst1_phiDTst2 = TH1F("abs_phiDTst1_phiDTst2","", 100,-1.,1.)
     abs_phiDTst1_phiDTst3 = TH1F("abs_phiDTst1_phiDTst3","", 100,-1.,1.)
     abs_phiDTst1_phiDTst4 = TH1F("abs_phiDTst1_phiDTst4","", 100,-1.,1.)
@@ -500,7 +507,7 @@ if __name__ == "__main__":
             continue
           if vz > 500:
             continue
-          if abs(eta_prop)>0.9:
+          if abs(eta_prop)>2.4:
             continue
           if pt<5:
             continue
@@ -984,15 +991,34 @@ if __name__ == "__main__":
               CSCTF_phi = treeHits.CSCTF_phi[L1Mu_CSCTF_index]
               CSCTF_bx = treeHits.CSCTF_bx[L1Mu_CSCTF_index]
               CSCTF_nStubs = treeHits.CSCTF_nStubs[L1Mu_CSCTF_index]
-              CSCTF_phi1 = treeHits.CSCTF_phi1[L1Mu_CSCTF_index]
-              CSCTF_phi2 = treeHits.CSCTF_phi2[L1Mu_CSCTF_index]
-              CSCTF_phi3 = treeHits.CSCTF_phi3[L1Mu_CSCTF_index]
-              CSCTF_phi4 = treeHits.CSCTF_phi4[L1Mu_CSCTF_index]
+              CSCTF_phi1 = normalizedPhi(treeHits.CSCTF_phi1[L1Mu_CSCTF_index])
+              CSCTF_phi2 = normalizedPhi(treeHits.CSCTF_phi2[L1Mu_CSCTF_index])
+              CSCTF_phi3 = normalizedPhi(treeHits.CSCTF_phi3[L1Mu_CSCTF_index])
+              CSCTF_phi4 = normalizedPhi(treeHits.CSCTF_phi4[L1Mu_CSCTF_index])
               CSCTF_gemdphi1 = treeHits.CSCTF_gemdphi1[L1Mu_CSCTF_index]
               CSCTF_gemdphi2 = treeHits.CSCTF_gemdphi2[L1Mu_CSCTF_index]
               ## get SIM index
-              GEN_SIM_index = treeHits.genGdMu_SIM_index[i][j]
-              
+              GEN_SIM_index = int(treeHits.genGdMu_SIM_index[ij])
+              GE11_phi_L1 = 99
+              GE11_phi_L2 = 99
+              GE21_phi_L1 = 99
+              GE21_phi_L2 = 99
+              GE11_bx_L1 = 99
+              GE11_bx_L2 = 99
+              GE21_bx_L1 = 99
+              GE21_bx_L2 = 99 
+
+              if GEN_SIM_index != -99.:
+                print "OK"
+                GE11_phi_L1 = treeHits.GE11_phi_L1[GEN_SIM_index]
+                GE11_phi_L2 = treeHits.GE11_phi_L2[GEN_SIM_index]
+                GE21_phi_L1 = normalizedPhi(treeHits.GE21_phi_L1[GEN_SIM_index])
+                GE21_phi_L2 = normalizedPhi(treeHits.GE21_phi_L2[GEN_SIM_index])
+                GE11_bx_L1 = treeHits.GE11_bx_L1[GEN_SIM_index]
+                GE11_bx_L2 = treeHits.GE11_bx_L2[GEN_SIM_index]
+                GE21_bx_L1 = treeHits.GE21_bx_L1[GEN_SIM_index]
+                GE21_bx_L2 = treeHits.GE21_bx_L2[GEN_SIM_index] 
+                
               if verbose:
                 print "\t\tCSCTF", L1Mu_CSCTF_index
                 print "\t\tCSCTF_pt", CSCTF_pt
@@ -1006,11 +1032,42 @@ if __name__ == "__main__":
                 print "\t\tCSCTF_phi4", CSCTF_phi4
                 print "\t\tCSCTF_gemdphi1", CSCTF_gemdphi1
                 print "\t\tCSCTF_gemdphi2", CSCTF_gemdphi2
-                print "\t\GE11_phi_L1", treeHits.GE11_phi_L1[GEN_SIM_index]
-                print "\t\GE11_phi_L2", treeHits.GE11_phi_L2[GEN_SIM_index]
-                print "\t\GE21_phi_L1", treeHits.GE21_phi_L1[GEN_SIM_index]
-                print "\t\GE21_phi_L2", treeHits.GE21_phi_L2[GEN_SIM_index]
+                print "\t\tGEN_SIM_index", GEN_SIM_index, len(treeHits.GE11_phi_L1), len(treeHits.GE11_phi_L2), len(treeHits.GE21_phi_L1), len(treeHits.GE21_phi_L2)
+                for iii in range(0,len(treeHits.GE11_bx_L1)):
+                  print "\t\t\t+", treeHits.GE11_bx_L1[iii]
+                  if iii is GEN_SIM_index:
+                    print "\t\t\t\ This is it"
+                for p in treeHits.GE11_phi_L2:
+                  print "\t\t\t-", p
+                for p in treeHits.GE21_phi_L1:
+                  print "\t\t\t+", p
+                for p in treeHits.GE21_phi_L2:
+                  print "\t\t\t-", p
+                print "\t\tGE11_phi_L1", GE11_phi_L1, CSCTF_gemdphi1 + GE11_phi_L1
+                print "\t\tGE11_phi_L2", GE11_phi_L2, CSCTF_gemdphi1 + GE11_phi_L2
+                print "\t\tGE21_phi_L1", GE21_phi_L1, CSCTF_gemdphi2 + GE21_phi_L1
+                print "\t\tGE21_phi_L2", GE21_phi_L2, CSCTF_gemdphi2 + GE21_phi_L2
+                print "\t\tGE11_bx_L1", GE11_bx_L1
+                print "\t\tGE11_bx_L2", GE11_bx_L2
+                print "\t\tGE21_bx_L1", GE21_bx_L1
+                print "\t\tGE21_bx_L2", GE21_bx_L2
                 print               
+
+
+              """
+              phiGEMst1_phiGEMst2 = TH1F("phiGEMst1_phiGEMst2","", 100,-1.,1.)
+              abs_phiGEMst1_phiGEMst2 = TH1F("abs_phiGEMst1_phiGEMst2","", 100,-1.,1.)
+              phiGEMst1_vs_phiGEMst2_dxy0to5 = TH2F("phiGEMst1_phiGEMst2_dxy0to5","", 100,0,6.3,100,0.,6.3)
+              phiGEMst1_vs_phiGEMst2_dxy5to50 = TH2F("phiGEMst1_phiGEMst2_dxy5to50","", 100,0,6.3,100,0.,6.3)
+              phiGEMst1_vs_phiGEMst2_dxy50to100 = TH2F("phiGEMst1_phiGEMst2_dxy50to100","", 100,0,6.3,100,0.,6.3)
+              GenMuPt_vs_phiGEMst1_phiGEMst2 = TH2F("GenMuPt_vs_phiGEMst1_phiGEMst2","", 60,0.,60,100,-1.,1.)
+              GenMuPt_vs_abs_phiGEMst1_phiGEMst2 = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2","", 60,0.,60,100,0.,1.)
+              GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv","", 60,0.,60.,60,0.,120)
+              GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5 = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5","", 60,0.,60.,60,0.,120)
+              GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50 = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50","", 60,0.,60.,60,0.,120)
+              GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100 = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100","", 60,0.,60.,60,0.,120)
+              """
+
             else:
               if printExtraInfo:
                 print "\t\t>>>>INFO: No Matching CSCTF!!! Print all available CSCTF..."

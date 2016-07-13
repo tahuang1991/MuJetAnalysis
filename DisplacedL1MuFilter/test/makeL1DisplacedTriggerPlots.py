@@ -107,14 +107,15 @@ if __name__ == "__main__":
 
   set_style()
 
-  file = TFile("/uscms/home/dildick/nobackup/work/MuonPhaseIITDRStudies/CMSSW_6_2_0_SLHC28_patch1/src/out_ana_ctau_1000_PU140_GEMs.test.root")
-  treeHits = file.Get("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
+  #file = TFile("/uscms/home/dildick/nobackup/work/MuonPhaseIITDRStudies/CMSSW_6_2_0_SLHC28_patch1/src/out_ana_ctau_1000_PU140_GEMs.test.root")
+  #treeHits = file.Get("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
 
-  #ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
+  ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
   #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/', ext=".root")
-  #treeHits = ch
+  ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v2/160712_224712/0000/', ext=".root")
+  treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160711_GEM_test"
+  label = "DisplacedL1MuTrigger_20160712_GEM"
   targetDir = label + "/"
   
   verbose = True
@@ -479,6 +480,7 @@ if __name__ == "__main__":
     for k in range(0,treeHits.GetEntries()):
       treeHits.GetEntry(k)
       if k%1000==0: print "Event", k+1, "nL1Mu", treeHits.nL1Mu
+      #if k>100: break
 
       for i in range(0,2):
         for j in range(0,2):
@@ -492,6 +494,9 @@ if __name__ == "__main__":
           dxy = abs(treeHits.genGdMu_dxy[ij])
           vz = abs(treeHits.genGd_vz[i])
           lxy =  abs(treeHits.genGd_lxy[i])
+          SIM_index = treeHits.genGdMu_SIM_index[ij]
+          SIM_dR = treeHits.genGdMu_SIM_dR[ij]
+
           ## exclude all the bad muons
           #if (abs(treeHits.genGdMu_eta_prop[i*2+0])>2.4): 
           #  continue
@@ -560,6 +565,8 @@ if __name__ == "__main__":
             print "abs(dxy)", abs(treeHits.genGdMu_dxy[ij]),
             print "lxy", lxy,
             print "vz", vz
+            print "SIM_index", SIM_index
+            print "SIM_dR", SIM_dR
 
           if L1Mu_index != 99 and L1Mu_dR_prop < 0.2:
             L1Mu_quality = treeHits.L1Mu_quality[L1Mu_index]
@@ -1026,7 +1033,12 @@ if __name__ == "__main__":
               ok_GE11_L2 = GE11_bx_L2 != 99 and GE11_phi_L2 != 99 
               ok_GE21_L1 = GE21_bx_L1 != 99 and GE21_phi_L1 != 99 
               ok_GE21_L2 = GE21_bx_L2 != 99 and GE21_phi_L2 != 99
- 
+              
+              ok_GE11_L1 = abs(CSCTF_gemdphi1) != 99 
+              ok_GE11_L2 = abs(CSCTF_gemdphi1) != 99 
+              ok_GE21_L1 = abs(CSCTF_gemdphi2) != 99 
+              ok_GE21_L2 = abs(CSCTF_gemdphi2) != 99 
+
               ok_GE0 = GE0_phi != 99
               ok_GE11 = ok_GE11_L1 or ok_GE11_L2
               ok_GE21 = ok_GE21_L1 or ok_GE21_L2
@@ -1061,12 +1073,37 @@ if __name__ == "__main__":
 
               ## stub directions
               if ok_GE11 and ok_GE21:
-                GEM_phib1 = CSCTF_gemdphi1
-                GEM_phib2 = CSCTF_gemdphi2
+                delta_GE11_ME11 = 99
+                delta_GE21_ME11 = 99
+
+                if GE11_phi_L1 != 99: 
+                  delta_GE11_ME11 = deltaPhi(CSCTF_phi1, GE11_phi_L1)
+                if GE11_phi_L1 == 99 and GE11_phi_L2 != 99:
+                  delta_GE11_ME11 = deltaPhi(CSCTF_phi1, GE11_phi_L2)
+                if GE21_phi_L1 != 99: 
+                  delta_GE21_ME21 = deltaPhi(CSCTF_phi2, GE21_phi_L1)
+                if GE21_phi_L1 == 99 and GE21_phi_L2 != 99:
+                  delta_GE21_ME21 = deltaPhi(CSCTF_phi2, GE21_phi_L2)
+
+                print "\t\tdelta_GE11_ME11", delta_GE11_ME11
+                print "\t\tdelta_GE21_ME21", delta_GE21_ME21
+                print 
+
+                GEM_phib1 = CSCTF_gemdphi1 #delta_GE11_ME11
+                GEM_phib2 = CSCTF_gemdphi2 #delta_GE21_ME21
+                
+                GEM_phib1 = delta_GE11_ME11
+                GEM_phib1 = delta_GE21_ME21
+
 
                 GEM_phib1_phib2 = deltaPhi(GEM_phib1, GEM_phib2)
                 abs_GEM_phib1_phib2 = abs(GEM_phib1_phib2)
+                if GEM_phib1 != GEM_phib2 and abs(GEM_phib1) != 99 and abs(GEM_phib2) != 99:
+                  abs_GEM_phib1_phib2_inv = 1./abs_GEM_phib1_phib2
+                else: 
+                  abs_GEM_phib1_phib2_inv = 140
 
+                  
                 #phiGEMst1_phiGEMst2.Fill()
                 #abs_phiGEMst1_phiGEMst2
                 if dxy <= 5:
@@ -1078,13 +1115,13 @@ if __name__ == "__main__":
 
                 GenMuPt_vs_phiGEMst1_phiGEMst2.Fill(pt, GEM_phib1_phib2)
                 GenMuPt_vs_abs_phiGEMst1_phiGEMst2.Fill(pt, abs_GEM_phib1_phib2)
-                GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv.Fill(pt, 1./abs_GEM_phib1_phib2)
+                GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv.Fill(pt, abs_GEM_phib1_phib2_inv)
                 if dxy <= 5:
-                  GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5.Fill(pt, 1./abs_GEM_phib1_phib2)
+                  GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5.Fill(pt, abs_GEM_phib1_phib2_inv)
                 if 5 < dxy  and dxy <= 50:
-                  GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50.Fill(pt, 1./abs_GEM_phib1_phib2)
+                  GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50.Fill(pt, abs_GEM_phib1_phib2_inv)
                 if 50 < dxy and dxy <= 100:
-                  GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100.Fill(pt, 1./abs_GEM_phib1_phib2)
+                  GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100.Fill(pt, abs_GEM_phib1_phib2_inv)
 
             else:
               if printExtraInfo:

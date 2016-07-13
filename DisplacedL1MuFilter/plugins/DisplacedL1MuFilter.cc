@@ -254,7 +254,8 @@ struct MyEvent
   // Matching the L1Mu to DTTF
   Int_t nDTTF;
   Int_t L1Mu_DTTF_index[kMaxL1Mu];
-  Float_t DTTF_pt[kMaxDTTF], DTTF_eta[kMaxDTTF], DTTF_phi[kMaxDTTF], DTTF_bx[kMaxDTTF], DTTF_nStubs[kMaxDTTF], DTTF_quality[kMaxDTTF];
+  Float_t DTTF_pt[kMaxDTTF], DTTF_eta[kMaxDTTF], DTTF_phi[kMaxDTTF];
+  Int_t DTTF_bx[kMaxDTTF], DTTF_nStubs[kMaxDTTF], DTTF_quality[kMaxDTTF];
   Float_t DTTF_phi1[kMaxDTTF], DTTF_phi2[kMaxDTTF], DTTF_phi3[kMaxDTTF], DTTF_phi4[kMaxDTTF];
   Float_t DTTF_phib1[kMaxDTTF], DTTF_phib2[kMaxDTTF], DTTF_phib3[kMaxDTTF], DTTF_phib4[kMaxDTTF];
   Int_t DTTF_quality1[kMaxDTTF], DTTF_quality2[kMaxDTTF], DTTF_quality3[kMaxDTTF], DTTF_quality4[kMaxDTTF];
@@ -266,7 +267,8 @@ struct MyEvent
   // Matching the L1Mu to CSCTF  
   Int_t nCSCTF;
   Int_t L1Mu_CSCTF_index[kMaxL1Mu];
-  Float_t CSCTF_pt[kMaxCSCTF], CSCTF_eta[kMaxCSCTF], CSCTF_phi[kMaxCSCTF], CSCTF_bx[kMaxCSCTF], CSCTF_nStubs[kMaxCSCTF], CSCTF_quality[kMaxCSCTF];
+  Float_t CSCTF_pt[kMaxCSCTF], CSCTF_eta[kMaxCSCTF], CSCTF_phi[kMaxCSCTF];
+  Int_t CSCTF_bx[kMaxCSCTF], CSCTF_nStubs[kMaxCSCTF], CSCTF_quality[kMaxCSCTF];
 
   Int_t CSCTF_st1[kMaxCSCTF], CSCTF_ri1[kMaxCSCTF], CSCTF_ch1[kMaxCSCTF], CSCTF_en1[kMaxCSCTF];
   Int_t CSCTF_trk1[kMaxCSCTF], CSCTF_quality1[kMaxCSCTF], CSCTF_wg1[kMaxCSCTF], CSCTF_hs1[kMaxCSCTF]; 
@@ -286,36 +288,40 @@ struct MyEvent
 
   Int_t CSCTF_val1[kMaxCSCTF], CSCTF_val2[kMaxCSCTF], CSCTF_val3[kMaxCSCTF], CSCTF_val4[kMaxCSCTF];
   Float_t CSCTF_phi1[kMaxCSCTF], CSCTF_phi2[kMaxCSCTF], CSCTF_phi3[kMaxCSCTF], CSCTF_phi4[kMaxCSCTF];
-  Int_t CSCTF_phib1[kMaxCSCTF], CSCTF_phib2[kMaxCSCTF], CSCTF_phib3[kMaxCSCTF], CSCTF_phib4[kMaxCSCTF];
+  Float_t CSCTF_phib1[kMaxCSCTF], CSCTF_phib2[kMaxCSCTF], CSCTF_phib3[kMaxCSCTF], CSCTF_phib4[kMaxCSCTF];
 
   Float_t CSCTF_gemdphi1[kMaxCSCTF], CSCTF_gemdphi2[kMaxCSCTF];
   
   // Matching the L1Mu to RPCb  
   Int_t nRPCb;
   Int_t L1Mu_RPCb_index[kMaxL1Mu];
-  Float_t RPCb_pt[kMaxRPCb], RPCb_eta[kMaxRPCb], RPCb_phi[kMaxRPCb], RPCb_bx[kMaxRPCb], RPCb_nStubs[kMaxRPCb], RPCb_quality[kMaxRPCb];
+  Float_t RPCb_pt[kMaxRPCb], RPCb_eta[kMaxRPCb], RPCb_phi[kMaxRPCb];
+  Int_t RPCb_bx[kMaxRPCb], RPCb_nStubs[kMaxRPCb], RPCb_quality[kMaxRPCb];
 
-  Int_t RPCb_bx1[kMaxRPCb], RPCb_strip1[kMaxRPCb], RPCb_phi1[kMaxRPCb];
+  Float_t RPCb_phi1[kMaxRPCb], RPCb_phi2[kMaxRPCb], RPCb_phi3[kMaxRPCb];
+  Float_t RPCb_phi4[kMaxRPCb], RPCb_phi5[kMaxRPCb], RPCb_phi6[kMaxRPCb];
+
+  Int_t RPCb_bx1[kMaxRPCb], RPCb_strip1[kMaxRPCb];
   Int_t RPCb_re1[kMaxRPCb], RPCb_ri1[kMaxRPCb], RPCb_st1[kMaxRPCb], RPCb_se1[kMaxRPCb];
   Int_t RPCb_la1[kMaxRPCb], RPCb_su1[kMaxRPCb], RPCb_ro1[kMaxRPCb];
  
-  Int_t RPCb_bx2[kMaxRPCb], RPCb_strip2[kMaxRPCb], RPCb_phi2[kMaxRPCb];
+  Int_t RPCb_bx2[kMaxRPCb], RPCb_strip2[kMaxRPCb];
   Int_t RPCb_re2[kMaxRPCb], RPCb_ri2[kMaxRPCb], RPCb_st2[kMaxRPCb], RPCb_se2[kMaxRPCb];
   Int_t RPCb_la2[kMaxRPCb], RPCb_su2[kMaxRPCb], RPCb_ro2[kMaxRPCb];
 
-  Int_t RPCb_bx3[kMaxRPCb], RPCb_strip3[kMaxRPCb], RPCb_phi3[kMaxRPCb];
+  Int_t RPCb_bx3[kMaxRPCb], RPCb_strip3[kMaxRPCb];
   Int_t RPCb_re3[kMaxRPCb], RPCb_ri3[kMaxRPCb], RPCb_st3[kMaxRPCb], RPCb_se3[kMaxRPCb];
   Int_t RPCb_la3[kMaxRPCb], RPCb_su3[kMaxRPCb], RPCb_ro3[kMaxRPCb];
 
-  Int_t RPCb_bx4[kMaxRPCb], RPCb_strip4[kMaxRPCb], RPCb_phi4[kMaxRPCb];
+  Int_t RPCb_bx4[kMaxRPCb], RPCb_strip4[kMaxRPCb];
   Int_t RPCb_re4[kMaxRPCb], RPCb_ri4[kMaxRPCb], RPCb_st4[kMaxRPCb], RPCb_se4[kMaxRPCb];
   Int_t RPCb_la4[kMaxRPCb], RPCb_su4[kMaxRPCb], RPCb_ro4[kMaxRPCb];
 
-  Int_t RPCb_bx5[kMaxRPCb], RPCb_strip5[kMaxRPCb], RPCb_phi5[kMaxRPCb];
+  Int_t RPCb_bx5[kMaxRPCb], RPCb_strip5[kMaxRPCb];
   Int_t RPCb_re5[kMaxRPCb], RPCb_ri5[kMaxRPCb], RPCb_st5[kMaxRPCb], RPCb_se5[kMaxRPCb];
   Int_t RPCb_la5[kMaxRPCb], RPCb_su5[kMaxRPCb], RPCb_ro5[kMaxRPCb];
 
-  Int_t RPCb_bx6[kMaxRPCb], RPCb_strip6[kMaxRPCb], RPCb_phi6[kMaxRPCb];
+  Int_t RPCb_bx6[kMaxRPCb], RPCb_strip6[kMaxRPCb];
   Int_t RPCb_re6[kMaxRPCb], RPCb_ri6[kMaxRPCb], RPCb_st6[kMaxRPCb], RPCb_se6[kMaxRPCb];
   Int_t RPCb_la6[kMaxRPCb], RPCb_su6[kMaxRPCb], RPCb_ro6[kMaxRPCb];
 
@@ -323,42 +329,41 @@ struct MyEvent
   // Matching the L1Mu to RPCf  
   Int_t nRPCf;
   Int_t L1Mu_RPCf_index[kMaxL1Mu];
-  Float_t RPCf_pt[kMaxRPCf], RPCf_eta[kMaxRPCf], RPCf_phi[kMaxRPCf], RPCf_bx[kMaxRPCf], RPCf_nStubs[kMaxRPCf], RPCf_quality[kMaxRPCf];
+  Float_t RPCf_pt[kMaxRPCf], RPCf_eta[kMaxRPCf], RPCf_phi[kMaxRPCf];
+  Int_t RPCf_bx[kMaxRPCf], RPCf_nStubs[kMaxRPCf], RPCf_quality[kMaxRPCf];
 
-  Int_t RPCf_bx1[kMaxRPCf], RPCf_strip1[kMaxRPCf], RPCf_phi1[kMaxRPCf];
+  Float_t RPCf_phi1[kMaxRPCf], RPCf_phi2[kMaxRPCf], RPCf_phi3[kMaxRPCf];
+  Float_t RPCf_phi4[kMaxRPCf], RPCf_phi5[kMaxRPCf], RPCf_phi6[kMaxRPCf];
+
+  Int_t RPCf_bx1[kMaxRPCf], RPCf_strip1[kMaxRPCf];
   Int_t RPCf_re1[kMaxRPCf], RPCf_ri1[kMaxRPCf], RPCf_st1[kMaxRPCf], RPCf_se1[kMaxRPCf];
   Int_t RPCf_la1[kMaxRPCf], RPCf_su1[kMaxRPCf], RPCf_ro1[kMaxRPCf];
  
-  Int_t RPCf_bx2[kMaxRPCf], RPCf_strip2[kMaxRPCf], RPCf_phi2[kMaxRPCf];
+  Int_t RPCf_bx2[kMaxRPCf], RPCf_strip2[kMaxRPCf];
   Int_t RPCf_re2[kMaxRPCf], RPCf_ri2[kMaxRPCf], RPCf_st2[kMaxRPCf], RPCf_se2[kMaxRPCf];
   Int_t RPCf_la2[kMaxRPCf], RPCf_su2[kMaxRPCf], RPCf_ro2[kMaxRPCf];
 
-  Int_t RPCf_bx3[kMaxRPCf], RPCf_strip3[kMaxRPCf], RPCf_phi3[kMaxRPCf];
+  Int_t RPCf_bx3[kMaxRPCf], RPCf_strip3[kMaxRPCf];
   Int_t RPCf_re3[kMaxRPCf], RPCf_ri3[kMaxRPCf], RPCf_st3[kMaxRPCf], RPCf_se3[kMaxRPCf];
   Int_t RPCf_la3[kMaxRPCf], RPCf_su3[kMaxRPCf], RPCf_ro3[kMaxRPCf];
 
-  Int_t RPCf_bx4[kMaxRPCf], RPCf_strip4[kMaxRPCf], RPCf_phi4[kMaxRPCf];
+  Int_t RPCf_bx4[kMaxRPCf], RPCf_strip4[kMaxRPCf];
   Int_t RPCf_re4[kMaxRPCf], RPCf_ri4[kMaxRPCf], RPCf_st4[kMaxRPCf], RPCf_se4[kMaxRPCf];
   Int_t RPCf_la4[kMaxRPCf], RPCf_su4[kMaxRPCf], RPCf_ro4[kMaxRPCf];
 
-  Int_t RPCf_bx5[kMaxRPCf], RPCf_strip5[kMaxRPCf], RPCf_phi5[kMaxRPCf];
+  Int_t RPCf_bx5[kMaxRPCf], RPCf_strip5[kMaxRPCf];
   Int_t RPCf_re5[kMaxRPCf], RPCf_ri5[kMaxRPCf], RPCf_st5[kMaxRPCf], RPCf_se5[kMaxRPCf];
   Int_t RPCf_la5[kMaxRPCf], RPCf_su5[kMaxRPCf], RPCf_ro5[kMaxRPCf];
 
-  Int_t RPCf_bx6[kMaxRPCf], RPCf_strip6[kMaxRPCf], RPCf_phi6[kMaxRPCf];
+  Int_t RPCf_bx6[kMaxRPCf], RPCf_strip6[kMaxRPCf];
   Int_t RPCf_re6[kMaxRPCf], RPCf_ri6[kMaxRPCf], RPCf_st6[kMaxRPCf], RPCf_se6[kMaxRPCf];
   Int_t RPCf_la6[kMaxRPCf], RPCf_su6[kMaxRPCf], RPCf_ro6[kMaxRPCf];
 
   // Matching the SIM Mu to GEM pad (really no other way to do this)
   Int_t nGEM;
-  Float_t GE11_phi_L1[kMaxGEM];
-  Float_t GE11_phi_L2[kMaxGEM];
-  Float_t GE21_phi_L1[kMaxGEM];
-  Float_t GE21_phi_L2[kMaxGEM];
-  Int_t GE11_bx_L1[kMaxGEM];
-  Int_t GE11_bx_L2[kMaxGEM];
-  Int_t GE21_bx_L1[kMaxGEM];
-  Int_t GE21_bx_L2[kMaxGEM];
+  Float_t GE11_phi_L1[kMaxGEM], GE11_phi_L2[kMaxGEM], GE21_phi_L1[kMaxGEM], GE21_phi_L2[kMaxGEM];
+  Int_t GE11_bx_L1[kMaxGEM], GE11_bx_L2[kMaxGEM], GE21_bx_L1[kMaxGEM], GE21_bx_L2[kMaxGEM];
+  Int_t GE11_ch_L1[kMaxGEM], GE11_ch_L2[kMaxGEM], GE21_ch_L1[kMaxGEM], GE21_ch_L2[kMaxGEM];
 
   Float_t GE0_phi[kMaxGEM];
   Float_t GE0_phib[kMaxGEM];
@@ -1064,6 +1069,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       if(verbose) std::cout << "\tId " << detId << std::endl;
       for (auto p: match_gd.gemPadsInDetId(d)){
         double gem_phi = calcGEMSpecificPhi(d, p);
+        int gem_ch = detId.chamber();
         int gem_bx = p.bx();
         if(verbose){
           std::cout << "\t\tPad " << p << std::endl;
@@ -1073,12 +1079,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           if (detId.layer()==1) {
             event_.GE11_phi_L1[k] = gem_phi;
             event_.GE11_bx_L1[k] = gem_bx;
+            event_.GE11_ch_L1[k] = gem_ch;
             // if (std::abs(event_.GE11_phi_L1[k] - 99.)<0.001)  event_.GE11_phi_L1[k] = gem_phi;
             // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
           }
           if (detId.layer()==2) {
             event_.GE11_phi_L2[k] = gem_phi;
             event_.GE11_bx_L2[k] = gem_bx;
+            event_.GE11_ch_L2[k] = gem_ch;
             // if (std::abs(event_.GE11_phi_L2[k] - 99.)<0.001)  event_.GE11_phi_L2[k] = gem_phi;
             // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
           }
@@ -1087,12 +1095,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           if (detId.layer()==1) {
             event_.GE21_phi_L1[k] = gem_phi;
             event_.GE21_bx_L1[k] = gem_bx;
+            event_.GE21_ch_L1[k] = gem_ch;
             // if (std::abs(event_.GE21_phi_L1[k] - 99.)<0.001)  event_.GE21_phi_L1[k] = gem_phi;
             // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
           }
           if (detId.layer()==2) {
             event_.GE21_phi_L2[k] = gem_phi;
             event_.GE21_bx_L2[k] = gem_bx;
+            event_.GE21_ch_L2[k] = gem_ch;
             // if (std::abs(event_.GE21_phi_L2[k] - 99.)<0.001)  event_.GE21_phi_L2[k] = gem_phi;
             // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
           }
@@ -2783,71 +2793,71 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_pt", event_.CSCTF_pt,"CSCTF_pt[nCSCTF]/F");
   event_tree_->Branch("CSCTF_eta", event_.CSCTF_eta,"CSCTF_eta[nCSCTF]/F");
   event_tree_->Branch("CSCTF_phi", event_.CSCTF_phi,"CSCTF_phi[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_bx", event_.CSCTF_bx,"CSCTF_bx[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_nStubs", event_.CSCTF_nStubs,"CSCTF_nStubs[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_quality", event_.CSCTF_quality,"CSCTF_quality[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_bx", event_.CSCTF_bx,"CSCTF_bx[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_nStubs", event_.CSCTF_nStubs,"CSCTF_nStubs[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_quality", event_.CSCTF_quality,"CSCTF_quality[nCSCTF]/I");
 
-  event_tree_->Branch("CSCTF_st1", event_.CSCTF_st1,"CSCTF_st1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_ri1", event_.CSCTF_ri1,"CSCTF_ri1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_ch1", event_.CSCTF_ch1,"CSCTF_ch1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_en1", event_.CSCTF_en1,"CSCTF_en1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_trk1", event_.CSCTF_trk1,"CSCTF_trk1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_quality1", event_.CSCTF_quality1,"CSCTF_quality1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_wg1", event_.CSCTF_wg1,"CSCTF_wg1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_hs1", event_.CSCTF_hs1,"CSCTF_hs1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_pat1", event_.CSCTF_pat1,"CSCTF_pat1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_bend1", event_.CSCTF_bend1,"CSCTF_bend1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_bx1", event_.CSCTF_bx1,"CSCTF_bx1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_clctpat1", event_.CSCTF_clctpat1,"CSCTF_clctpat1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_val1", event_.CSCTF_val1,"CSCTF_val1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_st1", event_.CSCTF_st1,"CSCTF_st1[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_ri1", event_.CSCTF_ri1,"CSCTF_ri1[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_ch1", event_.CSCTF_ch1,"CSCTF_ch1[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_en1", event_.CSCTF_en1,"CSCTF_en1[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_trk1", event_.CSCTF_trk1,"CSCTF_trk1[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_quality1", event_.CSCTF_quality1,"CSCTF_quality1[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_wg1", event_.CSCTF_wg1,"CSCTF_wg1[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_hs1", event_.CSCTF_hs1,"CSCTF_hs1[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_pat1", event_.CSCTF_pat1,"CSCTF_pat1[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_bend1", event_.CSCTF_bend1,"CSCTF_bend1[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_bx1", event_.CSCTF_bx1,"CSCTF_bx1[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_clctpat1", event_.CSCTF_clctpat1,"CSCTF_clctpat1[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_val1", event_.CSCTF_val1,"CSCTF_val1[nCSCTF]/I");
   event_tree_->Branch("CSCTF_phi1", event_.CSCTF_phi1,"CSCTF_phi1[nCSCTF]/F");
   event_tree_->Branch("CSCTF_phib1", event_.CSCTF_phib1,"CSCTF_phib1[nCSCTF]/F");
 
-  event_tree_->Branch("CSCTF_st2", event_.CSCTF_st2,"CSCTF_st2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_ri2", event_.CSCTF_ri2,"CSCTF_ri2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_ch2", event_.CSCTF_ch2,"CSCTF_ch2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_en2", event_.CSCTF_en2,"CSCTF_en2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_trk2", event_.CSCTF_trk2,"CSCTF_trk2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_quality2", event_.CSCTF_quality2,"CSCTF_quality2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_wg2", event_.CSCTF_wg2,"CSCTF_wg2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_hs2", event_.CSCTF_hs2,"CSCTF_hs2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_pat2", event_.CSCTF_pat2,"CSCTF_pat2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_bend2", event_.CSCTF_bend2,"CSCTF_bend2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_bx2", event_.CSCTF_bx2,"CSCTF_bx2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_clctpat2", event_.CSCTF_clctpat2,"CSCTF_clctpat2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_val2", event_.CSCTF_val2,"CSCTF_val2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_st2", event_.CSCTF_st2,"CSCTF_st2[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_ri2", event_.CSCTF_ri2,"CSCTF_ri2[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_ch2", event_.CSCTF_ch2,"CSCTF_ch2[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_en2", event_.CSCTF_en2,"CSCTF_en2[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_trk2", event_.CSCTF_trk2,"CSCTF_trk2[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_quality2", event_.CSCTF_quality2,"CSCTF_quality2[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_wg2", event_.CSCTF_wg2,"CSCTF_wg2[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_hs2", event_.CSCTF_hs2,"CSCTF_hs2[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_pat2", event_.CSCTF_pat2,"CSCTF_pat2[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_bend2", event_.CSCTF_bend2,"CSCTF_bend2[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_bx2", event_.CSCTF_bx2,"CSCTF_bx2[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_clctpat2", event_.CSCTF_clctpat2,"CSCTF_clctpat2[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_val2", event_.CSCTF_val2,"CSCTF_val2[nCSCTF]/I");
   event_tree_->Branch("CSCTF_phi2", event_.CSCTF_phi2,"CSCTF_phi2[nCSCTF]/F");
   event_tree_->Branch("CSCTF_phib2", event_.CSCTF_phib2,"CSCTF_phib2[nCSCTF]/F");
 
-  event_tree_->Branch("CSCTF_st3", event_.CSCTF_st3,"CSCTF_st3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_ri3", event_.CSCTF_ri3,"CSCTF_ri3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_ch3", event_.CSCTF_ch3,"CSCTF_ch3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_en3", event_.CSCTF_en3,"CSCTF_en3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_trk3", event_.CSCTF_trk3,"CSCTF_trk3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_quality3", event_.CSCTF_quality3,"CSCTF_quality3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_wg3", event_.CSCTF_wg3,"CSCTF_wg3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_hs3", event_.CSCTF_hs3,"CSCTF_hs3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_pat3", event_.CSCTF_pat3,"CSCTF_pat3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_bend3", event_.CSCTF_bend3,"CSCTF_bend3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_bx3", event_.CSCTF_bx3,"CSCTF_bx3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_clctpat3", event_.CSCTF_clctpat3,"CSCTF_clctpat3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_val3", event_.CSCTF_val3,"CSCTF_val3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_st3", event_.CSCTF_st3,"CSCTF_st3[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_ri3", event_.CSCTF_ri3,"CSCTF_ri3[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_ch3", event_.CSCTF_ch3,"CSCTF_ch3[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_en3", event_.CSCTF_en3,"CSCTF_en3[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_trk3", event_.CSCTF_trk3,"CSCTF_trk3[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_quality3", event_.CSCTF_quality3,"CSCTF_quality3[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_wg3", event_.CSCTF_wg3,"CSCTF_wg3[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_hs3", event_.CSCTF_hs3,"CSCTF_hs3[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_pat3", event_.CSCTF_pat3,"CSCTF_pat3[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_bend3", event_.CSCTF_bend3,"CSCTF_bend3[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_bx3", event_.CSCTF_bx3,"CSCTF_bx3[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_clctpat3", event_.CSCTF_clctpat3,"CSCTF_clctpat3[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_val3", event_.CSCTF_val3,"CSCTF_val3[nCSCTF]/I");
   event_tree_->Branch("CSCTF_phi3", event_.CSCTF_phi3,"CSCTF_phi3[nCSCTF]/F");
   event_tree_->Branch("CSCTF_phib3", event_.CSCTF_phib3,"CSCTF_phib3[nCSCTF]/F");
 
-  event_tree_->Branch("CSCTF_st4", event_.CSCTF_st4,"CSCTF_st4[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_ri4", event_.CSCTF_ri4,"CSCTF_ri4[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_ch4", event_.CSCTF_ch4,"CSCTF_ch4[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_en4", event_.CSCTF_en4,"CSCTF_en4[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_trk4", event_.CSCTF_trk4,"CSCTF_trk4[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_quality4", event_.CSCTF_quality4,"CSCTF_quality4[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_wg4", event_.CSCTF_wg4,"CSCTF_wg4[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_hs4", event_.CSCTF_hs4,"CSCTF_hs4[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_pat4", event_.CSCTF_pat4,"CSCTF_pat4[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_bend4", event_.CSCTF_bend4,"CSCTF_bend4[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_bx4", event_.CSCTF_bx4,"CSCTF_bx4[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_clctpat4", event_.CSCTF_clctpat4,"CSCTF_clctpat4[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_val4", event_.CSCTF_val4,"CSCTF_val4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_st4", event_.CSCTF_st4,"CSCTF_st4[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_ri4", event_.CSCTF_ri4,"CSCTF_ri4[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_ch4", event_.CSCTF_ch4,"CSCTF_ch4[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_en4", event_.CSCTF_en4,"CSCTF_en4[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_trk4", event_.CSCTF_trk4,"CSCTF_trk4[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_quality4", event_.CSCTF_quality4,"CSCTF_quality4[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_wg4", event_.CSCTF_wg4,"CSCTF_wg4[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_hs4", event_.CSCTF_hs4,"CSCTF_hs4[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_pat4", event_.CSCTF_pat4,"CSCTF_pat4[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_bend4", event_.CSCTF_bend4,"CSCTF_bend4[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_bx4", event_.CSCTF_bx4,"CSCTF_bx4[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_clctpat4", event_.CSCTF_clctpat4,"CSCTF_clctpat4[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_val4", event_.CSCTF_val4,"CSCTF_val4[nCSCTF]/I");
   event_tree_->Branch("CSCTF_phi4", event_.CSCTF_phi4,"CSCTF_phi4[nCSCTF]/F");
   event_tree_->Branch("CSCTF_phib4", event_.CSCTF_phib4,"CSCTF_phib4[nCSCTF]/F");
 
@@ -2860,75 +2870,75 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("RPCb_pt", event_.RPCb_pt,"RPCb_pt[nRPCb]/F");
   event_tree_->Branch("RPCb_eta", event_.RPCb_eta,"RPCb_eta[nRPCb]/F");
   event_tree_->Branch("RPCb_phi", event_.RPCb_phi,"RPCb_phi[nRPCb]/F");
-  event_tree_->Branch("RPCb_bx", event_.RPCb_bx,"RPCb_bx[nRPCb]/F");
-  event_tree_->Branch("RPCb_nStubs", event_.RPCb_nStubs,"RPCb_nStubs[nRPCb]/F");
-  event_tree_->Branch("RPCb_quality", event_.RPCb_quality,"RPCb_quality[nRPCb]/F");
+  event_tree_->Branch("RPCb_bx", event_.RPCb_bx,"RPCb_bx[nRPCb]/I");
+  event_tree_->Branch("RPCb_nStubs", event_.RPCb_nStubs,"RPCb_nStubs[nRPCb]/I");
+  event_tree_->Branch("RPCb_quality", event_.RPCb_quality,"RPCb_quality[nRPCb]/I");
 
-  event_tree_->Branch("RPCb_bx1", event_.RPCb_bx1,"RPCb_bx1[nRPCb]/F");
-  event_tree_->Branch("RPCb_strip1", event_.RPCb_strip1,"RPCb_strip1[nRPCb]/F");
+  event_tree_->Branch("RPCb_bx1", event_.RPCb_bx1,"RPCb_bx1[nRPCb]/I");
+  event_tree_->Branch("RPCb_strip1", event_.RPCb_strip1,"RPCb_strip1[nRPCb]/I");
   event_tree_->Branch("RPCb_phi1", event_.RPCb_phi1,"RPCb_phi1[nRPCb]/F");
-  event_tree_->Branch("RPCb_re1", event_.RPCb_re1,"RPCb_re1[nRPCb]/F");
-  event_tree_->Branch("RPCb_ri1", event_.RPCb_ri1,"RPCb_ri1[nRPCb]/F");
-  event_tree_->Branch("RPCb_st1", event_.RPCb_st1,"RPCb_st1[nRPCb]/F");
-  event_tree_->Branch("RPCb_se1", event_.RPCb_se1,"RPCb_se1[nRPCb]/F");
-  event_tree_->Branch("RPCb_la1", event_.RPCb_la1,"RPCb_la1[nRPCb]/F");
-  event_tree_->Branch("RPCb_su1", event_.RPCb_su1,"RPCb_su1[nRPCb]/F");
-  event_tree_->Branch("RPCb_ro1", event_.RPCb_ro1,"RPCb_ro1[nRPCb]/F");
+  event_tree_->Branch("RPCb_re1", event_.RPCb_re1,"RPCb_re1[nRPCb]/I");
+  event_tree_->Branch("RPCb_ri1", event_.RPCb_ri1,"RPCb_ri1[nRPCb]/I");
+  event_tree_->Branch("RPCb_st1", event_.RPCb_st1,"RPCb_st1[nRPCb]/I");
+  event_tree_->Branch("RPCb_se1", event_.RPCb_se1,"RPCb_se1[nRPCb]/I");
+  event_tree_->Branch("RPCb_la1", event_.RPCb_la1,"RPCb_la1[nRPCb]/I");
+  event_tree_->Branch("RPCb_su1", event_.RPCb_su1,"RPCb_su1[nRPCb]/I");
+  event_tree_->Branch("RPCb_ro1", event_.RPCb_ro1,"RPCb_ro1[nRPCb]/I");
   
-  event_tree_->Branch("RPCb_bx2", event_.RPCb_bx2,"RPCb_bx2[nRPCb]/F");
-  event_tree_->Branch("RPCb_strip2", event_.RPCb_strip2,"RPCb_strip2[nRPCb]/F");
+  event_tree_->Branch("RPCb_bx2", event_.RPCb_bx2,"RPCb_bx2[nRPCb]/I");
+  event_tree_->Branch("RPCb_strip2", event_.RPCb_strip2,"RPCb_strip2[nRPCb]/I");
   event_tree_->Branch("RPCb_phi2", event_.RPCb_phi2,"RPCb_phi2[nRPCb]/F");
-  event_tree_->Branch("RPCb_re2", event_.RPCb_re2,"RPCb_re2[nRPCb]/F");
-  event_tree_->Branch("RPCb_ri2", event_.RPCb_ri2,"RPCb_ri2[nRPCb]/F");
-  event_tree_->Branch("RPCb_st2", event_.RPCb_st2,"RPCb_st2[nRPCb]/F");
-  event_tree_->Branch("RPCb_se2", event_.RPCb_se2,"RPCb_se2[nRPCb]/F");
-  event_tree_->Branch("RPCb_la2", event_.RPCb_la2,"RPCb_la2[nRPCb]/F");
-  event_tree_->Branch("RPCb_su2", event_.RPCb_su2,"RPCb_su2[nRPCb]/F");
-  event_tree_->Branch("RPCb_ro2", event_.RPCb_ro2,"RPCb_ro2[nRPCb]/F");
+  event_tree_->Branch("RPCb_re2", event_.RPCb_re2,"RPCb_re2[nRPCb]/I");
+  event_tree_->Branch("RPCb_ri2", event_.RPCb_ri2,"RPCb_ri2[nRPCb]/I");
+  event_tree_->Branch("RPCb_st2", event_.RPCb_st2,"RPCb_st2[nRPCb]/I");
+  event_tree_->Branch("RPCb_se2", event_.RPCb_se2,"RPCb_se2[nRPCb]/I");
+  event_tree_->Branch("RPCb_la2", event_.RPCb_la2,"RPCb_la2[nRPCb]/I");
+  event_tree_->Branch("RPCb_su2", event_.RPCb_su2,"RPCb_su2[nRPCb]/I");
+  event_tree_->Branch("RPCb_ro2", event_.RPCb_ro2,"RPCb_ro2[nRPCb]/I");
 
-  event_tree_->Branch("RPCb_bx3", event_.RPCb_bx3,"RPCb_bx3[nRPCb]/F");
-  event_tree_->Branch("RPCb_strip3", event_.RPCb_strip3,"RPCb_strip3[nRPCb]/F");
+  event_tree_->Branch("RPCb_bx3", event_.RPCb_bx3,"RPCb_bx3[nRPCb]/I");
+  event_tree_->Branch("RPCb_strip3", event_.RPCb_strip3,"RPCb_strip3[nRPCb]/I");
   event_tree_->Branch("RPCb_phi3", event_.RPCb_phi3,"RPCb_phi3[nRPCb]/F");
-  event_tree_->Branch("RPCb_re3", event_.RPCb_re3,"RPCb_re3[nRPCb]/F");
-  event_tree_->Branch("RPCb_ri3", event_.RPCb_ri3,"RPCb_ri3[nRPCb]/F");
-  event_tree_->Branch("RPCb_st3", event_.RPCb_st3,"RPCb_st3[nRPCb]/F");
-  event_tree_->Branch("RPCb_se3", event_.RPCb_se3,"RPCb_se3[nRPCb]/F");
-  event_tree_->Branch("RPCb_la3", event_.RPCb_la3,"RPCb_la3[nRPCb]/F");
-  event_tree_->Branch("RPCb_su3", event_.RPCb_su3,"RPCb_su3[nRPCb]/F");
-  event_tree_->Branch("RPCb_ro3", event_.RPCb_ro3,"RPCb_ro3[nRPCb]/F");
+  event_tree_->Branch("RPCb_re3", event_.RPCb_re3,"RPCb_re3[nRPCb]/I");
+  event_tree_->Branch("RPCb_ri3", event_.RPCb_ri3,"RPCb_ri3[nRPCb]/I");
+  event_tree_->Branch("RPCb_st3", event_.RPCb_st3,"RPCb_st3[nRPCb]/I");
+  event_tree_->Branch("RPCb_se3", event_.RPCb_se3,"RPCb_se3[nRPCb]/I");
+  event_tree_->Branch("RPCb_la3", event_.RPCb_la3,"RPCb_la3[nRPCb]/I");
+  event_tree_->Branch("RPCb_su3", event_.RPCb_su3,"RPCb_su3[nRPCb]/I");
+  event_tree_->Branch("RPCb_ro3", event_.RPCb_ro3,"RPCb_ro3[nRPCb]/I");
 
-  event_tree_->Branch("RPCb_bx4", event_.RPCb_bx4,"RPCb_bx4[nRPCb]/F");
-  event_tree_->Branch("RPCb_strip4", event_.RPCb_strip4,"RPCb_strip4[nRPCb]/F");
+  event_tree_->Branch("RPCb_bx4", event_.RPCb_bx4,"RPCb_bx4[nRPCb]/I");
+  event_tree_->Branch("RPCb_strip4", event_.RPCb_strip4,"RPCb_strip4[nRPCb]/I");
   event_tree_->Branch("RPCb_phi4", event_.RPCb_phi4,"RPCb_phi4[nRPCb]/F");
-  event_tree_->Branch("RPCb_re4", event_.RPCb_re4,"RPCb_re4[nRPCb]/F");
-  event_tree_->Branch("RPCb_ri4", event_.RPCb_ri4,"RPCb_ri4[nRPCb]/F");
-  event_tree_->Branch("RPCb_st4", event_.RPCb_st4,"RPCb_st4[nRPCb]/F");
-  event_tree_->Branch("RPCb_se4", event_.RPCb_se4,"RPCb_se4[nRPCb]/F");
-  event_tree_->Branch("RPCb_la4", event_.RPCb_la4,"RPCb_la4[nRPCb]/F");
-  event_tree_->Branch("RPCb_su4", event_.RPCb_su4,"RPCb_su4[nRPCb]/F");
-  event_tree_->Branch("RPCb_ro4", event_.RPCb_ro4,"RPCb_ro4[nRPCb]/F");
+  event_tree_->Branch("RPCb_re4", event_.RPCb_re4,"RPCb_re4[nRPCb]/I");
+  event_tree_->Branch("RPCb_ri4", event_.RPCb_ri4,"RPCb_ri4[nRPCb]/I");
+  event_tree_->Branch("RPCb_st4", event_.RPCb_st4,"RPCb_st4[nRPCb]/I");
+  event_tree_->Branch("RPCb_se4", event_.RPCb_se4,"RPCb_se4[nRPCb]/I");
+  event_tree_->Branch("RPCb_la4", event_.RPCb_la4,"RPCb_la4[nRPCb]/I");
+  event_tree_->Branch("RPCb_su4", event_.RPCb_su4,"RPCb_su4[nRPCb]/I");
+  event_tree_->Branch("RPCb_ro4", event_.RPCb_ro4,"RPCb_ro4[nRPCb]/I");
 
-  event_tree_->Branch("RPCb_bx5", event_.RPCb_bx5,"RPCb_bx5[nRPCb]/F");
-  event_tree_->Branch("RPCb_strip5", event_.RPCb_strip5,"RPCb_strip5[nRPCb]/F");
+  event_tree_->Branch("RPCb_bx5", event_.RPCb_bx5,"RPCb_bx5[nRPCb]/I");
+  event_tree_->Branch("RPCb_strip5", event_.RPCb_strip5,"RPCb_strip5[nRPCb]/I");
   event_tree_->Branch("RPCb_phi5", event_.RPCb_phi5,"RPCb_phi5[nRPCb]/F");
-  event_tree_->Branch("RPCb_re5", event_.RPCb_re5,"RPCb_re5[nRPCb]/F");
-  event_tree_->Branch("RPCb_ri5", event_.RPCb_ri5,"RPCb_ri5[nRPCb]/F");
-  event_tree_->Branch("RPCb_st5", event_.RPCb_st5,"RPCb_st5[nRPCb]/F");
-  event_tree_->Branch("RPCb_se5", event_.RPCb_se5,"RPCb_se5[nRPCb]/F");
-  event_tree_->Branch("RPCb_la5", event_.RPCb_la5,"RPCb_la5[nRPCb]/F");
-  event_tree_->Branch("RPCb_su5", event_.RPCb_su5,"RPCb_su5[nRPCb]/F");
-  event_tree_->Branch("RPCb_ro5", event_.RPCb_ro5,"RPCb_ro5[nRPCb]/F");
+  event_tree_->Branch("RPCb_re5", event_.RPCb_re5,"RPCb_re5[nRPCb]/I");
+  event_tree_->Branch("RPCb_ri5", event_.RPCb_ri5,"RPCb_ri5[nRPCb]/I");
+  event_tree_->Branch("RPCb_st5", event_.RPCb_st5,"RPCb_st5[nRPCb]/I");
+  event_tree_->Branch("RPCb_se5", event_.RPCb_se5,"RPCb_se5[nRPCb]/I");
+  event_tree_->Branch("RPCb_la5", event_.RPCb_la5,"RPCb_la5[nRPCb]/I");
+  event_tree_->Branch("RPCb_su5", event_.RPCb_su5,"RPCb_su5[nRPCb]/I");
+  event_tree_->Branch("RPCb_ro5", event_.RPCb_ro5,"RPCb_ro5[nRPCb]/I");
 
-  event_tree_->Branch("RPCb_bx6", event_.RPCb_bx6,"RPCb_bx6[nRPCb]/F");
-  event_tree_->Branch("RPCb_strip6", event_.RPCb_strip6,"RPCb_strip6[nRPCb]/F");
+  event_tree_->Branch("RPCb_bx6", event_.RPCb_bx6,"RPCb_bx6[nRPCb]/I");
+  event_tree_->Branch("RPCb_strip6", event_.RPCb_strip6,"RPCb_strip6[nRPCb]/I");
   event_tree_->Branch("RPCb_phi6", event_.RPCb_phi6,"RPCb_phi6[nRPCb]/F");
-  event_tree_->Branch("RPCb_re6", event_.RPCb_re6,"RPCb_re6[nRPCb]/F");
-  event_tree_->Branch("RPCb_ri6", event_.RPCb_ri6,"RPCb_ri6[nRPCb]/F");
-  event_tree_->Branch("RPCb_st6", event_.RPCb_st6,"RPCb_st6[nRPCb]/F");
-  event_tree_->Branch("RPCb_se6", event_.RPCb_se6,"RPCb_se6[nRPCb]/F");
-  event_tree_->Branch("RPCb_la6", event_.RPCb_la6,"RPCb_la6[nRPCb]/F");
-  event_tree_->Branch("RPCb_su6", event_.RPCb_su6,"RPCb_su6[nRPCb]/F");
-  event_tree_->Branch("RPCb_ro6", event_.RPCb_ro6,"RPCb_ro6[nRPCb]/F");
+  event_tree_->Branch("RPCb_re6", event_.RPCb_re6,"RPCb_re6[nRPCb]/I");
+  event_tree_->Branch("RPCb_ri6", event_.RPCb_ri6,"RPCb_ri6[nRPCb]/I");
+  event_tree_->Branch("RPCb_st6", event_.RPCb_st6,"RPCb_st6[nRPCb]/I");
+  event_tree_->Branch("RPCb_se6", event_.RPCb_se6,"RPCb_se6[nRPCb]/I");
+  event_tree_->Branch("RPCb_la6", event_.RPCb_la6,"RPCb_la6[nRPCb]/I");
+  event_tree_->Branch("RPCb_su6", event_.RPCb_su6,"RPCb_su6[nRPCb]/I");
+  event_tree_->Branch("RPCb_ro6", event_.RPCb_ro6,"RPCb_ro6[nRPCb]/I");
 
 
   event_tree_->Branch("nRPCf", &event_.nRPCf);
@@ -2937,75 +2947,75 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("RPCf_pt", event_.RPCf_pt,"RPCf_pt[nRPCf]/F");
   event_tree_->Branch("RPCf_eta", event_.RPCf_eta,"RPCf_eta[nRPCf]/F");
   event_tree_->Branch("RPCf_phi", event_.RPCf_phi,"RPCf_phi[nRPCf]/F");
-  event_tree_->Branch("RPCf_bx", event_.RPCf_bx,"RPCf_bx[nRPCf]/F");
-  event_tree_->Branch("RPCf_nStubs", event_.RPCf_nStubs,"RPCf_nStubs[nRPCf]/F");
-  event_tree_->Branch("RPCf_quality", event_.RPCf_quality,"RPCf_quality[nRPCf]/F");
+  event_tree_->Branch("RPCf_bx", event_.RPCf_bx,"RPCf_bx[nRPCf]/I");
+  event_tree_->Branch("RPCf_nStubs", event_.RPCf_nStubs,"RPCf_nStubs[nRPCf]/I");
+  event_tree_->Branch("RPCf_quality", event_.RPCf_quality,"RPCf_quality[nRPCf]/I");
 
-  event_tree_->Branch("RPCf_bx1", event_.RPCf_bx1,"RPCf_bx1[nRPCf]/F");
-  event_tree_->Branch("RPCf_strip1", event_.RPCf_strip1,"RPCf_strip1[nRPCf]/F");
+  event_tree_->Branch("RPCf_bx1", event_.RPCf_bx1,"RPCf_bx1[nRPCf]/I");
+  event_tree_->Branch("RPCf_strip1", event_.RPCf_strip1,"RPCf_strip1[nRPCf]/I");
   event_tree_->Branch("RPCf_phi1", event_.RPCf_phi1,"RPCf_phi1[nRPCf]/F");
-  event_tree_->Branch("RPCf_re1", event_.RPCf_re1,"RPCf_re1[nRPCf]/F");
-  event_tree_->Branch("RPCf_ri1", event_.RPCf_ri1,"RPCf_ri1[nRPCf]/F");
-  event_tree_->Branch("RPCf_st1", event_.RPCf_st1,"RPCf_st1[nRPCf]/F");
-  event_tree_->Branch("RPCf_se1", event_.RPCf_se1,"RPCf_se1[nRPCf]/F");
-  event_tree_->Branch("RPCf_la1", event_.RPCf_la1,"RPCf_la1[nRPCf]/F");
-  event_tree_->Branch("RPCf_su1", event_.RPCf_su1,"RPCf_su1[nRPCf]/F");
-  event_tree_->Branch("RPCf_ro1", event_.RPCf_ro1,"RPCf_ro1[nRPCf]/F");
+  event_tree_->Branch("RPCf_re1", event_.RPCf_re1,"RPCf_re1[nRPCf]/I");
+  event_tree_->Branch("RPCf_ri1", event_.RPCf_ri1,"RPCf_ri1[nRPCf]/I");
+  event_tree_->Branch("RPCf_st1", event_.RPCf_st1,"RPCf_st1[nRPCf]/I");
+  event_tree_->Branch("RPCf_se1", event_.RPCf_se1,"RPCf_se1[nRPCf]/I");
+  event_tree_->Branch("RPCf_la1", event_.RPCf_la1,"RPCf_la1[nRPCf]/I");
+  event_tree_->Branch("RPCf_su1", event_.RPCf_su1,"RPCf_su1[nRPCf]/I");
+  event_tree_->Branch("RPCf_ro1", event_.RPCf_ro1,"RPCf_ro1[nRPCf]/I");
   
-  event_tree_->Branch("RPCf_bx2", event_.RPCf_bx2,"RPCf_bx2[nRPCf]/F");
-  event_tree_->Branch("RPCf_strip2", event_.RPCf_strip2,"RPCf_strip2[nRPCf]/F");
+  event_tree_->Branch("RPCf_bx2", event_.RPCf_bx2,"RPCf_bx2[nRPCf]/I");
+  event_tree_->Branch("RPCf_strip2", event_.RPCf_strip2,"RPCf_strip2[nRPCf]/I");
   event_tree_->Branch("RPCf_phi2", event_.RPCf_phi2,"RPCf_phi2[nRPCf]/F");
-  event_tree_->Branch("RPCf_re2", event_.RPCf_re2,"RPCf_re2[nRPCf]/F");
-  event_tree_->Branch("RPCf_ri2", event_.RPCf_ri2,"RPCf_ri2[nRPCf]/F");
-  event_tree_->Branch("RPCf_st2", event_.RPCf_st2,"RPCf_st2[nRPCf]/F");
-  event_tree_->Branch("RPCf_se2", event_.RPCf_se2,"RPCf_se2[nRPCf]/F");
-  event_tree_->Branch("RPCf_la2", event_.RPCf_la2,"RPCf_la2[nRPCf]/F");
-  event_tree_->Branch("RPCf_su2", event_.RPCf_su2,"RPCf_su2[nRPCf]/F");
-  event_tree_->Branch("RPCf_ro2", event_.RPCf_ro2,"RPCf_ro2[nRPCf]/F");
+  event_tree_->Branch("RPCf_re2", event_.RPCf_re2,"RPCf_re2[nRPCf]/I");
+  event_tree_->Branch("RPCf_ri2", event_.RPCf_ri2,"RPCf_ri2[nRPCf]/I");
+  event_tree_->Branch("RPCf_st2", event_.RPCf_st2,"RPCf_st2[nRPCf]/I");
+  event_tree_->Branch("RPCf_se2", event_.RPCf_se2,"RPCf_se2[nRPCf]/I");
+  event_tree_->Branch("RPCf_la2", event_.RPCf_la2,"RPCf_la2[nRPCf]/I");
+  event_tree_->Branch("RPCf_su2", event_.RPCf_su2,"RPCf_su2[nRPCf]/I");
+  event_tree_->Branch("RPCf_ro2", event_.RPCf_ro2,"RPCf_ro2[nRPCf]/I");
 
-  event_tree_->Branch("RPCf_bx3", event_.RPCf_bx3,"RPCf_bx3[nRPCf]/F");
-  event_tree_->Branch("RPCf_strip3", event_.RPCf_strip3,"RPCf_strip3[nRPCf]/F");
+  event_tree_->Branch("RPCf_bx3", event_.RPCf_bx3,"RPCf_bx3[nRPCf]/I");
+  event_tree_->Branch("RPCf_strip3", event_.RPCf_strip3,"RPCf_strip3[nRPCf]/I");
   event_tree_->Branch("RPCf_phi3", event_.RPCf_phi3,"RPCf_phi3[nRPCf]/F");
-  event_tree_->Branch("RPCf_re3", event_.RPCf_re3,"RPCf_re3[nRPCf]/F");
-  event_tree_->Branch("RPCf_ri3", event_.RPCf_ri3,"RPCf_ri3[nRPCf]/F");
-  event_tree_->Branch("RPCf_st3", event_.RPCf_st3,"RPCf_st3[nRPCf]/F");
-  event_tree_->Branch("RPCf_se3", event_.RPCf_se3,"RPCf_se3[nRPCf]/F");
-  event_tree_->Branch("RPCf_la3", event_.RPCf_la3,"RPCf_la3[nRPCf]/F");
-  event_tree_->Branch("RPCf_su3", event_.RPCf_su3,"RPCf_su3[nRPCf]/F");
-  event_tree_->Branch("RPCf_ro3", event_.RPCf_ro3,"RPCf_ro3[nRPCf]/F");
+  event_tree_->Branch("RPCf_re3", event_.RPCf_re3,"RPCf_re3[nRPCf]/I");
+  event_tree_->Branch("RPCf_ri3", event_.RPCf_ri3,"RPCf_ri3[nRPCf]/I");
+  event_tree_->Branch("RPCf_st3", event_.RPCf_st3,"RPCf_st3[nRPCf]/I");
+  event_tree_->Branch("RPCf_se3", event_.RPCf_se3,"RPCf_se3[nRPCf]/I");
+  event_tree_->Branch("RPCf_la3", event_.RPCf_la3,"RPCf_la3[nRPCf]/I");
+  event_tree_->Branch("RPCf_su3", event_.RPCf_su3,"RPCf_su3[nRPCf]/I");
+  event_tree_->Branch("RPCf_ro3", event_.RPCf_ro3,"RPCf_ro3[nRPCf]/I");
 
-  event_tree_->Branch("RPCf_bx4", event_.RPCf_bx4,"RPCf_bx4[nRPCf]/F");
-  event_tree_->Branch("RPCf_strip4", event_.RPCf_strip4,"RPCf_strip4[nRPCf]/F");
+  event_tree_->Branch("RPCf_bx4", event_.RPCf_bx4,"RPCf_bx4[nRPCf]/I");
+  event_tree_->Branch("RPCf_strip4", event_.RPCf_strip4,"RPCf_strip4[nRPCf]/I");
   event_tree_->Branch("RPCf_phi4", event_.RPCf_phi4,"RPCf_phi4[nRPCf]/F");
-  event_tree_->Branch("RPCf_re4", event_.RPCf_re4,"RPCf_re4[nRPCf]/F");
-  event_tree_->Branch("RPCf_ri4", event_.RPCf_ri4,"RPCf_ri4[nRPCf]/F");
-  event_tree_->Branch("RPCf_st4", event_.RPCf_st4,"RPCf_st4[nRPCf]/F");
-  event_tree_->Branch("RPCf_se4", event_.RPCf_se4,"RPCf_se4[nRPCf]/F");
-  event_tree_->Branch("RPCf_la4", event_.RPCf_la4,"RPCf_la4[nRPCf]/F");
-  event_tree_->Branch("RPCf_su4", event_.RPCf_su4,"RPCf_su4[nRPCf]/F");
-  event_tree_->Branch("RPCf_ro4", event_.RPCf_ro4,"RPCf_ro4[nRPCf]/F");
+  event_tree_->Branch("RPCf_re4", event_.RPCf_re4,"RPCf_re4[nRPCf]/I");
+  event_tree_->Branch("RPCf_ri4", event_.RPCf_ri4,"RPCf_ri4[nRPCf]/I");
+  event_tree_->Branch("RPCf_st4", event_.RPCf_st4,"RPCf_st4[nRPCf]/I");
+  event_tree_->Branch("RPCf_se4", event_.RPCf_se4,"RPCf_se4[nRPCf]/I");
+  event_tree_->Branch("RPCf_la4", event_.RPCf_la4,"RPCf_la4[nRPCf]/I");
+  event_tree_->Branch("RPCf_su4", event_.RPCf_su4,"RPCf_su4[nRPCf]/I");
+  event_tree_->Branch("RPCf_ro4", event_.RPCf_ro4,"RPCf_ro4[nRPCf]/I");
 
-  event_tree_->Branch("RPCf_bx5", event_.RPCf_bx5,"RPCf_bx5[nRPCf]/F");
-  event_tree_->Branch("RPCf_strip5", event_.RPCf_strip5,"RPCf_strip5[nRPCf]/F");
+  event_tree_->Branch("RPCf_bx5", event_.RPCf_bx5,"RPCf_bx5[nRPCf]/I");
+  event_tree_->Branch("RPCf_strip5", event_.RPCf_strip5,"RPCf_strip5[nRPCf]/I");
   event_tree_->Branch("RPCf_phi5", event_.RPCf_phi5,"RPCf_phi5[nRPCf]/F");
-  event_tree_->Branch("RPCf_re5", event_.RPCf_re5,"RPCf_re5[nRPCf]/F");
-  event_tree_->Branch("RPCf_ri5", event_.RPCf_ri5,"RPCf_ri5[nRPCf]/F");
-  event_tree_->Branch("RPCf_st5", event_.RPCf_st5,"RPCf_st5[nRPCf]/F");
-  event_tree_->Branch("RPCf_se5", event_.RPCf_se5,"RPCf_se5[nRPCf]/F");
-  event_tree_->Branch("RPCf_la5", event_.RPCf_la5,"RPCf_la5[nRPCf]/F");
-  event_tree_->Branch("RPCf_su5", event_.RPCf_su5,"RPCf_su5[nRPCf]/F");
-  event_tree_->Branch("RPCf_ro5", event_.RPCf_ro5,"RPCf_ro5[nRPCf]/F");
+  event_tree_->Branch("RPCf_re5", event_.RPCf_re5,"RPCf_re5[nRPCf]/I");
+  event_tree_->Branch("RPCf_ri5", event_.RPCf_ri5,"RPCf_ri5[nRPCf]/I");
+  event_tree_->Branch("RPCf_st5", event_.RPCf_st5,"RPCf_st5[nRPCf]/I");
+  event_tree_->Branch("RPCf_se5", event_.RPCf_se5,"RPCf_se5[nRPCf]/I");
+  event_tree_->Branch("RPCf_la5", event_.RPCf_la5,"RPCf_la5[nRPCf]/I");
+  event_tree_->Branch("RPCf_su5", event_.RPCf_su5,"RPCf_su5[nRPCf]/I");
+  event_tree_->Branch("RPCf_ro5", event_.RPCf_ro5,"RPCf_ro5[nRPCf]/I");
 
-  event_tree_->Branch("RPCf_bx6", event_.RPCf_bx6,"RPCf_bx6[nRPCf]/F");
-  event_tree_->Branch("RPCf_strip6", event_.RPCf_strip6,"RPCf_strip6[nRPCf]/F");
+  event_tree_->Branch("RPCf_bx6", event_.RPCf_bx6,"RPCf_bx6[nRPCf]/I");
+  event_tree_->Branch("RPCf_strip6", event_.RPCf_strip6,"RPCf_strip6[nRPCf]/I");
   event_tree_->Branch("RPCf_phi6", event_.RPCf_phi6,"RPCf_phi6[nRPCf]/F");
-  event_tree_->Branch("RPCf_re6", event_.RPCf_re6,"RPCf_re6[nRPCf]/F");
-  event_tree_->Branch("RPCf_ri6", event_.RPCf_ri6,"RPCf_ri6[nRPCf]/F");
-  event_tree_->Branch("RPCf_st6", event_.RPCf_st6,"RPCf_st6[nRPCf]/F");
-  event_tree_->Branch("RPCf_se6", event_.RPCf_se6,"RPCf_se6[nRPCf]/F");
-  event_tree_->Branch("RPCf_la6", event_.RPCf_la6,"RPCf_la6[nRPCf]/F");
-  event_tree_->Branch("RPCf_su6", event_.RPCf_su6,"RPCf_su6[nRPCf]/F");
-  event_tree_->Branch("RPCf_ro6", event_.RPCf_ro6,"RPCf_ro6[nRPCf]/F");
+  event_tree_->Branch("RPCf_re6", event_.RPCf_re6,"RPCf_re6[nRPCf]/I");
+  event_tree_->Branch("RPCf_ri6", event_.RPCf_ri6,"RPCf_ri6[nRPCf]/I");
+  event_tree_->Branch("RPCf_st6", event_.RPCf_st6,"RPCf_st6[nRPCf]/I");
+  event_tree_->Branch("RPCf_se6", event_.RPCf_se6,"RPCf_se6[nRPCf]/I");
+  event_tree_->Branch("RPCf_la6", event_.RPCf_la6,"RPCf_la6[nRPCf]/I");
+  event_tree_->Branch("RPCf_su6", event_.RPCf_su6,"RPCf_su6[nRPCf]/I");
+  event_tree_->Branch("RPCf_ro6", event_.RPCf_ro6,"RPCf_ro6[nRPCf]/I");
 
   event_tree_->Branch("nGEM", &event_.nGEM);
   event_tree_->Branch("GE11_phi_L1", event_.GE11_phi_L1,"GE11_phi_L1[nGEM]/F");
@@ -3016,6 +3026,10 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("GE11_bx_L2", event_.GE11_bx_L2,"GE11_bx_L2[nGEM]/I");
   event_tree_->Branch("GE21_bx_L1", event_.GE21_bx_L1,"GE21_bx_L1[nGEM]/I");
   event_tree_->Branch("GE21_bx_L2", event_.GE21_bx_L2,"GE21_bx_L2[nGEM]/I");
+  event_tree_->Branch("GE11_ch_L1", event_.GE11_ch_L1,"GE11_ch_L1[nGEM]/I");
+  event_tree_->Branch("GE11_ch_L2", event_.GE11_ch_L2,"GE11_ch_L2[nGEM]/I");
+  event_tree_->Branch("GE21_ch_L1", event_.GE21_ch_L1,"GE21_ch_L1[nGEM]/I");
+  event_tree_->Branch("GE21_ch_L2", event_.GE21_ch_L2,"GE21_ch_L2[nGEM]/I");
 
   event_tree_->Branch("GE0_phi", event_.GE0_phi,"GE0_phi[nGEM]/F");
   event_tree_->Branch("GE0_phib", event_.GE0_phib,"GE0_phib[nGEM]/F");
@@ -3482,7 +3496,10 @@ DisplacedL1MuFilter::clearBranches()
     event_.GE11_bx_L2[i] = 99;
     event_.GE21_bx_L1[i] = 99;
     event_.GE21_bx_L2[i] = 99;
-
+    event_.GE11_ch_L1[i] = 99;
+    event_.GE11_ch_L2[i] = 99;
+    event_.GE21_ch_L1[i] = 99;
+    event_.GE21_ch_L2[i] = 99;
     event_.GE0_phi[i] = 99;
     event_.GE0_phib[i] = 99;
   }

@@ -116,7 +116,7 @@ if __name__ == "__main__":
   ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v3/160713_025853/0000/', ext=".root")
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160712_GEM_v2"
+  label = "DisplacedL1MuTrigger_20160713_GEM"
   targetDir = label + "/"
   
   verbose = False
@@ -1012,10 +1012,10 @@ if __name__ == "__main__":
               ok_CSCTF_st2 = CSCTF_phi2 != 99
               ok_CSCTF_st3 = CSCTF_phi3 != 99
               ok_CSCTF_st4 = CSCTF_phi4 != 99
-              if ok_CSCTF_st1: CSCTF_phi1 = normalizedPhi(treeHits.CSCTF_phi1[L1Mu_CSCTF_index])
-              if ok_CSCTF_st2: CSCTF_phi2 = normalizedPhi(treeHits.CSCTF_phi2[L1Mu_CSCTF_index])
-              if ok_CSCTF_st3: CSCTF_phi3 = normalizedPhi(treeHits.CSCTF_phi3[L1Mu_CSCTF_index])
-              if ok_CSCTF_st4: CSCTF_phi4 = normalizedPhi(treeHits.CSCTF_phi4[L1Mu_CSCTF_index])
+              if ok_CSCTF_st1: CSCTF_phi1 = normalizedPhi2(treeHits.CSCTF_phi1[L1Mu_CSCTF_index])
+              if ok_CSCTF_st2: CSCTF_phi2 = normalizedPhi2(treeHits.CSCTF_phi2[L1Mu_CSCTF_index])
+              if ok_CSCTF_st3: CSCTF_phi3 = normalizedPhi2(treeHits.CSCTF_phi3[L1Mu_CSCTF_index])
+              if ok_CSCTF_st4: CSCTF_phi4 = normalizedPhi2(treeHits.CSCTF_phi4[L1Mu_CSCTF_index])
               
               CSCTF_ch1 = treeHits.CSCTF_ch1[L1Mu_CSCTF_index]
               CSCTF_ch2 = treeHits.CSCTF_ch2[L1Mu_CSCTF_index]
@@ -1042,10 +1042,10 @@ if __name__ == "__main__":
                 GE0_phi = treeHits.GE0_phi[GEN_SIM_index]
                 GE0_phib = treeHits.GE0_phib[GEN_SIM_index]
                 ## normalize the angles
-                if GE11_phi_L1 != 99: GE11_phi_L1 = normalizedPhi(GE11_phi_L1)
-                if GE11_phi_L2 != 99: GE11_phi_L2 = normalizedPhi(GE11_phi_L2)
-                if GE21_phi_L1 != 99: GE21_phi_L1 = normalizedPhi(GE21_phi_L1)
-                if GE21_phi_L2 != 99: GE21_phi_L2 = normalizedPhi(GE21_phi_L2)
+                if GE11_phi_L1 != 99: GE11_phi_L1 = normalizedPhi2(GE11_phi_L1)
+                if GE11_phi_L2 != 99: GE11_phi_L2 = normalizedPhi2(GE11_phi_L2)
+                if GE21_phi_L1 != 99: GE21_phi_L1 = normalizedPhi2(GE21_phi_L1)
+                if GE21_phi_L2 != 99: GE21_phi_L2 = normalizedPhi2(GE21_phi_L2)
                 if GE0_phi != 99: GE0_phi = normalizedPhi(GE21_phi_L2)
 
               ok_GE11_L1 = GE11_bx_L1 != 99 and GE11_phi_L1 != 99 
@@ -1102,13 +1102,13 @@ if __name__ == "__main__":
                 delta_GE21_ME11 = 99
 
                 if GE11_phi_L1 != 99: 
-                  delta_GE11_ME11 = -1*deltaPhi(CSCTF_phi1, GE11_phi_L1)
+                  delta_GE11_ME11 = deltaPhi2(CSCTF_phi1, GE11_phi_L1)
                 if GE11_phi_L1 == 99 and GE11_phi_L2 != 99:
-                  delta_GE11_ME11 = -1*deltaPhi(CSCTF_phi1, GE11_phi_L2)
+                  delta_GE11_ME11 = deltaPhi2(CSCTF_phi1, GE11_phi_L2)
                 if GE21_phi_L1 != 99: 
-                  delta_GE21_ME21 = -1*deltaPhi(CSCTF_phi2, GE21_phi_L1)
+                  delta_GE21_ME21 = deltaPhi2(CSCTF_phi2, GE21_phi_L1)
                 if GE21_phi_L1 == 99 and GE21_phi_L2 != 99:
-                  delta_GE21_ME21 = -1*deltaPhi(CSCTF_phi2, GE21_phi_L2)
+                  delta_GE21_ME21 = deltaPhi2(CSCTF_phi2, GE21_phi_L2)
 
                 if verbose:
                   print "\t\tdelta_GE11_ME11", delta_GE11_ME11
@@ -1138,10 +1138,10 @@ if __name__ == "__main__":
                 if CSCTF_isOdd2: fit_slope_ME21 = 17.7
                 else:            fit_slope_ME21 = 37
 
-                GEM_phib1 = GE11_phi_L1 + delta_GE11_ME11 * fit_slope_ME11
-                GEM_phib2 = GE21_phi_L1 + delta_GE21_ME21 * fit_slope_ME21
+                GEM_phib1 = normalizedPhi2(CSCTF_phi1) - delta_GE11_ME11 * fit_slope_ME11
+                GEM_phib2 = normalizedPhi2(CSCTF_phi2) - delta_GE21_ME21 * fit_slope_ME21
 
-                GEM_phib1_phib2 = deltaPhi(GEM_phib1, GEM_phib2)
+                GEM_phib1_phib2 = deltaPhi2(GEM_phib1, GEM_phib2)
                 abs_GEM_phib1_phib2 = abs(GEM_phib1_phib2)
 
                 if GEM_phib1 != GEM_phib2 and abs(GEM_phib1) != 99. and abs(GEM_phib2) != 99.:

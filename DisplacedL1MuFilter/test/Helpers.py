@@ -86,6 +86,15 @@ def deltaPhi(phi1, phi2):
   return result;
 
 
+#______________________________________________________________________________                                                                                                  
+def deltaPhi2(phi1, phi2):
+  result = phi1 - phi2;
+  while (result > M_PI): 
+    result -= 2*M_PI;
+  while (result <= -M_PI):
+    result += 2*M_PI;
+  return result;
+
 #______________________________________________________________________________                       
 def normalizedPhi(phi1):
   result = phi1;
@@ -93,6 +102,15 @@ def normalizedPhi(phi1):
     result -= 4*M_PI;
   while (result <= -2*M_PI):
     result += 4*M_PI;
+  return result;
+
+#______________________________________________________________________________                       
+def normalizedPhi2(phi1):
+  result = phi1;
+  while (result > M_PI): 
+    result -= 2*M_PI;
+  while (result <= -M_PI):
+    result += 2*M_PI;
   return result;
 
 #______________________________________________________________________________                                                                                                  

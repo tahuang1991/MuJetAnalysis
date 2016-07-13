@@ -293,9 +293,9 @@ struct MyEvent
   Float_t CSCTF_gemdphi1[kMaxCSCTF], CSCTF_gemdphi2[kMaxCSCTF];
   
   // recovered stubs (stubs not used in track building...)
-  Int_t CSCTF_rec_st1[kMaxCSCTF], CSCTF_rec_ri1[kMaxCSCTF], CSCTF_rec_ch1[kMaxCSCTF], CSCTF_rec_en1[kMaxCSCTF];
-  Int_t CSCTF_rec_st2[kMaxCSCTF], CSCTF_rec_ri2[kMaxCSCTF], CSCTF_rec_ch2[kMaxCSCTF], CSCTF_rec_en2[kMaxCSCTF];
+  Int_t CSCTF_rec_ch1[kMaxCSCTF], CSCTF_rec_ch2[kMaxCSCTF];
   Float_t CSCTF_rec_phi1[kMaxCSCTF], CSCTF_rec_phi2[kMaxCSCTF];
+  Float_t CSCTF_rec_phib1[kMaxCSCTF], CSCTF_rec_phib2[kMaxCSCTF];
 
   // Matching the L1Mu to RPCb  
   Int_t nRPCb;
@@ -1034,6 +1034,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   // SIM-L1  analysis //
   //////////////////////
 
+  if(verbose) cout << "Number of good simtracks " << skim_sim_trks.size() << endl;
   for (unsigned int k=0; k<skim_sim_trks.size(); ++k) {
     event_.GE11_phi_L1[k] = 99.;
     event_.GE11_phi_L2[k] = 99.;
@@ -1047,6 +1048,11 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     event_.GE0_phib[k] = 99.;
       
     auto sim_muon = skim_sim_trks[k];
+    if(verbose) {
+    cout << "\tSIM_pt " << sim_muon.momentum().pt() << endl;
+    cout << "\tSIM_eta " << sim_muon.momentum().eta() << endl;
+    cout << "\tSIM_phi " << sim_muon.momentum().phi() << endl;
+    }
     auto sim_vertex = sim_vtxs[sim_muon.vertIndex()];
     SimTrackMatchManager match(sim_muon, sim_vertex, cfg_, iEvent, iSetup);
 
@@ -1117,11 +1123,37 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     // recover the missing stubs in station 1 and 2... (because they were not used in the track building)
     // GEM digis and pads in superchambers
-    // const CSCStubMatcher& match_csc = match.cscStubs();
-    // if(verbose){
-    //   std::cout << "Total number of matching CSC stubs to simtrack " << match_csc.nPads() << std::endl;
-    //   std::cout << "Matching GEM pad Ids " << match_gd.superChamberIdsPad().size() << std::endl;
-    // }
+    const SimHitMatcher& match_sh = match.simhits();
+    const CSCStubMatcher& match_csc = match.cscStubs();
+    if(verbose){
+      std::cout << "Total number of matching CSC stubs to simtrack " << std::endl;
+      std::cout << "Matching CSC stub Ids " << match_csc.chamberIdsAllLCT().size() << std::endl;
+    }
+    for (auto d: match_csc.chamberIdsLCT()){
+      auto detId = CSCDetId(d);
+      auto simhits = match_sh.hitsInChamber(d);
+      auto csc_sh_gv = match_sh.simHitsMeanMomentum(simhits);
+      if(verbose) std::cout << "\tId " << d << " " << detId << std::endl;
+      std::cout << "\tNumber of LCTs " << match_csc.cscLctsInChamber(d).size() << std::endl;
+      for (auto p: match_csc.cscLctsInChamber(d)){
+        double csc_phi = calcCSCSpecificPhi(d, p);
+        if(verbose){
+          std::cout << "\t\tStub " << p << std::endl;
+          std::cout << "\t\t\tPosition " << csc_phi << std::endl;
+          std::cout << "\t\t\tDirection " << csc_sh_gv.phi() << std::endl;
+        }
+        if (detId.station()==1) {
+          event_.CSCTF_rec_ch1[k] = detId.station();
+          event_.CSCTF_rec_phi1[k] = csc_phi;
+          event_.CSCTF_rec_phib1[k] = csc_sh_gv.phi();
+        }        
+        if (detId.station()==2) {
+          event_.CSCTF_rec_ch2[k] = detId.station();
+          event_.CSCTF_rec_phi2[k] = csc_phi;
+          event_.CSCTF_rec_phib2[k] = csc_sh_gv.phi();
+        }        
+      }      
+    }
   }
   
   /////////////////
@@ -2373,9 +2405,24 @@ DisplacedL1MuFilter::getGlobalPhi(unsigned int rawid, int stripN)
 }
 
 double 
-DisplacedL1MuFilter::calcCSCSpecificPhi(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const
+DisplacedL1MuFilter::calcCSCSpecificPhi(unsigned int rawId, const CSCCorrelatedLCTDigi& lct) const
 {
-  return getCSCSpecificPoint(rawId, tp).phi();
+  // taken from https://github.com/cms-sw/cmssw/blob/dc9f78b6af4ad56c9342cf14041b6485a60b0691/L1Trigger/CSCTriggerPrimitives/src/CSCMotherboardME11GEM.cc
+  CSCDetId cscId = CSCDetId(rawId);
+  CSCDetId key_id(cscId.endcap(), cscId.station(), cscId.ring(), cscId.chamber(), CSCConstants::KEY_CLCT_LAYER);
+  
+  auto cscChamber = cscGeometry_->chamber(cscId);
+  // "strip" here is actually a half-strip in geometry's terms
+  // note that LCT::getStrip() starts from 0
+  float fractional_strip = 0.5 * (lct.getStrip() + 1) - 0.25;
+  auto layer_geo = cscChamber->layer(CSCConstants::KEY_CLCT_LAYER)->geometry();
+  // LCT::getKeyWG() also starts from 0
+  float wire = layer_geo->middleWireOfGroup(lct.getKeyWG() + 1);
+  LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, wire);
+  GlobalPoint csc_gp = cscGeometry_->idToDet(key_id)->surface().toGlobal(csc_intersect);
+  //std::cout << "\t\t>>> other CSC LCT phi " << csc_gp.phi() << std::endl;
+  //return getCSCSpecificPoint(rawId, lct).phi();
+  return csc_gp.phi();
 }
 
 double 
@@ -2873,18 +2920,12 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_gemdphi1", event_.CSCTF_gemdphi1,"CSCTF_gemdphi1[nCSCTF]/F");
   event_tree_->Branch("CSCTF_gemdphi2", event_.CSCTF_gemdphi2,"CSCTF_gemdphi2[nCSCTF]/F");
 
-
-  event_tree_->Branch("CSCTF_rec_st1", event_.CSCTF_rec_st1,"CSCTF_rec_st1[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_rec_ri1", event_.CSCTF_rec_ri1,"CSCTF_rec_ri1[nCSCTF]/I");
   event_tree_->Branch("CSCTF_rec_ch1", event_.CSCTF_rec_ch1,"CSCTF_rec_ch1[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_rec_en1", event_.CSCTF_rec_en1,"CSCTF_rec_en1[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_rec_phi1", event_.CSCTF_rec_phi1,"CSCTF_rec_phi1[nCSCTF]/F");
-
-  event_tree_->Branch("CSCTF_rec_st2", event_.CSCTF_rec_st2,"CSCTF_rec_st2[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_rec_ri2", event_.CSCTF_rec_ri2,"CSCTF_rec_ri2[nCSCTF]/I");
   event_tree_->Branch("CSCTF_rec_ch2", event_.CSCTF_rec_ch2,"CSCTF_rec_ch2[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_rec_en2", event_.CSCTF_rec_en2,"CSCTF_rec_en2[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_rec_phi1", event_.CSCTF_rec_phi1,"CSCTF_rec_phi1[nCSCTF]/F");
   event_tree_->Branch("CSCTF_rec_phi2", event_.CSCTF_rec_phi2,"CSCTF_rec_phi2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_rec_phib1", event_.CSCTF_rec_phib1,"CSCTF_rec_phib1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_rec_phib2", event_.CSCTF_rec_phib2,"CSCTF_rec_phib2[nCSCTF]/F");
 
 
   event_tree_->Branch("nRPCb", &event_.nRPCb);
@@ -3352,6 +3393,14 @@ DisplacedL1MuFilter::clearBranches()
 
     event_.CSCTF_gemdphi1[i] = 99;
     event_.CSCTF_gemdphi2[i] = 99;
+    
+    event_.CSCTF_rec_ch1[i] = 99;
+    event_.CSCTF_rec_ch2[i] = 99;
+    event_.CSCTF_rec_phi1[i] = 99;
+    event_.CSCTF_rec_phi2[i] = 99;
+    event_.CSCTF_rec_phib1[i] = 99;
+    event_.CSCTF_rec_phib2[i] = 99;
+
   }
 
   event_.nRPCb = 0;

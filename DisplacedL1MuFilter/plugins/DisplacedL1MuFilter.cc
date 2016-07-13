@@ -292,6 +292,11 @@ struct MyEvent
 
   Float_t CSCTF_gemdphi1[kMaxCSCTF], CSCTF_gemdphi2[kMaxCSCTF];
   
+  // recovered stubs (stubs not used in track building...)
+  Int_t CSCTF_rec_st1[kMaxCSCTF], CSCTF_rec_ri1[kMaxCSCTF], CSCTF_rec_ch1[kMaxCSCTF], CSCTF_rec_en1[kMaxCSCTF];
+  Int_t CSCTF_rec_st2[kMaxCSCTF], CSCTF_rec_ri2[kMaxCSCTF], CSCTF_rec_ch2[kMaxCSCTF], CSCTF_rec_en2[kMaxCSCTF];
+  Float_t CSCTF_rec_phi1[kMaxCSCTF], CSCTF_rec_phi2[kMaxCSCTF];
+
   // Matching the L1Mu to RPCb  
   Int_t nRPCb;
   Int_t L1Mu_RPCb_index[kMaxL1Mu];
@@ -1058,8 +1063,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     event_.GE0_phib[k] = gv.phi();
     */
     
-    const GEMDigiMatcher& match_gd = match.gemDigis();
     // GEM digis and pads in superchambers
+    const GEMDigiMatcher& match_gd = match.gemDigis();
     if(verbose){
       std::cout << "Total number of matching pads to simtrack " << match_gd.nPads() << std::endl;
       std::cout << "Matching GEM pad Ids " << match_gd.superChamberIdsPad().size() << std::endl;
@@ -1109,10 +1114,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
       } 
     }
-    // std::cout << "\t\tGE11_bx_L1 " << event_.GE11_bx_L1[k] << std::endl;
-    // std::cout << "\t\tGE11_bx_L2 " << event_.GE11_bx_L2[k] << std::endl;
-    // std::cout << "\t\tGE21_bx_L1 " << event_.GE21_bx_L1[k] << std::endl;
-    // std::cout << "\t\tGE21_bx_L2 " << event_.GE21_bx_L2[k] << std::endl;
+
+    // recover the missing stubs in station 1 and 2... (because they were not used in the track building)
+    // GEM digis and pads in superchambers
+    // const CSCStubMatcher& match_csc = match.cscStubs();
+    // if(verbose){
+    //   std::cout << "Total number of matching CSC stubs to simtrack " << match_csc.nPads() << std::endl;
+    //   std::cout << "Matching GEM pad Ids " << match_gd.superChamberIdsPad().size() << std::endl;
+    // }
   }
   
   /////////////////
@@ -2863,6 +2872,20 @@ void DisplacedL1MuFilter::bookL1MuTree()
 
   event_tree_->Branch("CSCTF_gemdphi1", event_.CSCTF_gemdphi1,"CSCTF_gemdphi1[nCSCTF]/F");
   event_tree_->Branch("CSCTF_gemdphi2", event_.CSCTF_gemdphi2,"CSCTF_gemdphi2[nCSCTF]/F");
+
+
+  event_tree_->Branch("CSCTF_rec_st1", event_.CSCTF_rec_st1,"CSCTF_rec_st1[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_rec_ri1", event_.CSCTF_rec_ri1,"CSCTF_rec_ri1[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_rec_ch1", event_.CSCTF_rec_ch1,"CSCTF_rec_ch1[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_rec_en1", event_.CSCTF_rec_en1,"CSCTF_rec_en1[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_rec_phi1", event_.CSCTF_rec_phi1,"CSCTF_rec_phi1[nCSCTF]/F");
+
+  event_tree_->Branch("CSCTF_rec_st2", event_.CSCTF_rec_st2,"CSCTF_rec_st2[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_rec_ri2", event_.CSCTF_rec_ri2,"CSCTF_rec_ri2[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_rec_ch2", event_.CSCTF_rec_ch2,"CSCTF_rec_ch2[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_rec_en2", event_.CSCTF_rec_en2,"CSCTF_rec_en2[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_rec_phi2", event_.CSCTF_rec_phi2,"CSCTF_rec_phi2[nCSCTF]/F");
+
 
   event_tree_->Branch("nRPCb", &event_.nRPCb);
   event_tree_->Branch("L1Mu_RPCb_index", event_.L1Mu_RPCb_index,"L1Mu_RPCb_index[nL1Mu]/I");

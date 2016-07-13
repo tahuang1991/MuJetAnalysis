@@ -119,8 +119,8 @@ if __name__ == "__main__":
   label = "DisplacedL1MuTrigger_20160712_GEM_v2"
   targetDir = label + "/"
   
-  verbose = True
-  printExtraInfo = True
+  verbose = False
+  printExtraInfo = False
   
   def displacedTriggerEfficiency():
     print treeHits.GetEntries()
@@ -171,12 +171,12 @@ if __name__ == "__main__":
     phiDTst1_vs_phiDTst4_dxy5to50 = TH2F("phiDTst1_phiDTst4_dxy5to50","", 100,0,6.3,100,0.,6.3)
     phiDTst1_vs_phiDTst4_dxy50to100 = TH2F("phiDTst1_phiDTst4_dxy50to100","", 100,0,6.3,100,0.,6.3)
     
-    phiGEMst1_phiGEMst2 = TH1F("phiGEMst1_phiGEMst2","", 100,-0.1,0.1)
-    abs_phiGEMst1_phiGEMst2 = TH1F("abs_phiGEMst1_phiGEMst2","", 100,-0.1,0.1)
-    phiGEMst1_vs_phiGEMst2_dxy0to5 = TH2F("phiGEMst1_phiGEMst2_dxy0to5","", 100,-0.1,0.1,100,-0.1,0.1)
-    phiGEMst1_vs_phiGEMst2_dxy5to50 = TH2F("phiGEMst1_phiGEMst2_dxy5to50","", 100,-0.1,0.1,100,-0.1,0.1)
-    phiGEMst1_vs_phiGEMst2_dxy50to100 = TH2F("phiGEMst1_phiGEMst2_dxy50to100","", 100,-0.1,0.1,100,-0.1,0.1)
-    GenMuPt_vs_phiGEMst1_phiGEMst2 = TH2F("GenMuPt_vs_phiGEMst1_phiGEMst2","", 60,0.,60,100,-0.1,0.1)
+    phiGEMst1_phiGEMst2 = TH1F("phiGEMst1_phiGEMst2","", 100,-1,1)
+    abs_phiGEMst1_phiGEMst2 = TH1F("abs_phiGEMst1_phiGEMst2","", 100,-1,1)
+    phiGEMst1_vs_phiGEMst2_dxy0to5 = TH2F("phiGEMst1_phiGEMst2_dxy0to5","", 100,-1,1,100,-1,1)
+    phiGEMst1_vs_phiGEMst2_dxy5to50 = TH2F("phiGEMst1_phiGEMst2_dxy5to50","", 100,-1,1,100,-1,1)
+    phiGEMst1_vs_phiGEMst2_dxy50to100 = TH2F("phiGEMst1_phiGEMst2_dxy50to100","", 100,-1,1,100,-1,1)
+    GenMuPt_vs_phiGEMst1_phiGEMst2 = TH2F("GenMuPt_vs_phiGEMst1_phiGEMst2","", 60,0.,60,100,-1,1)
     GenMuPt_vs_abs_phiGEMst1_phiGEMst2 = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2","", 60,0.,60,100,0.,1.)
     GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv","", 60,0.,60.,60,0.,120)
     GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5 = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5","", 60,0.,60.,60,0.,120)
@@ -481,8 +481,8 @@ if __name__ == "__main__":
 
     for k in range(0,treeHits.GetEntries()):
       treeHits.GetEntry(k)
-      if k%1==0: print "Event", k+1, "nL1Mu", treeHits.nL1Mu
-      #if k>100: break
+      if k%1000==0: print "Event", k+1, "nL1Mu", treeHits.nL1Mu
+      #      if k>100: break
 
       for i in range(0,2):
         for j in range(0,2):
@@ -518,7 +518,7 @@ if __name__ == "__main__":
             continue
           if vz > 500:
             continue
-          if abs(eta_prop)>2.2 or abs(eta_prop)<1.5:
+          if abs(eta_prop)>2.5:
             continue
           if pt<5:
             continue
@@ -1102,24 +1102,24 @@ if __name__ == "__main__":
                 delta_GE21_ME11 = 99
 
                 if GE11_phi_L1 != 99: 
-                  delta_GE11_ME11 = deltaPhi(CSCTF_phi1, GE11_phi_L1)
+                  delta_GE11_ME11 = -1*deltaPhi(CSCTF_phi1, GE11_phi_L1)
                 if GE11_phi_L1 == 99 and GE11_phi_L2 != 99:
-                  delta_GE11_ME11 = deltaPhi(CSCTF_phi1, GE11_phi_L2)
+                  delta_GE11_ME11 = -1*deltaPhi(CSCTF_phi1, GE11_phi_L2)
                 if GE21_phi_L1 != 99: 
-                  delta_GE21_ME21 = deltaPhi(CSCTF_phi2, GE21_phi_L1)
+                  delta_GE21_ME21 = -1*deltaPhi(CSCTF_phi2, GE21_phi_L1)
                 if GE21_phi_L1 == 99 and GE21_phi_L2 != 99:
-                  delta_GE21_ME21 = deltaPhi(CSCTF_phi2, GE21_phi_L2)
+                  delta_GE21_ME21 = -1*deltaPhi(CSCTF_phi2, GE21_phi_L2)
 
                 if verbose:
                   print "\t\tdelta_GE11_ME11", delta_GE11_ME11
                   print "\t\tdelta_GE21_ME21", delta_GE21_ME21
                   print 
 
-                GEM_phib1 = CSCTF_gemdphi1 #delta_GE11_ME11
-                GEM_phib2 = CSCTF_gemdphi2 #delta_GE21_ME21
+                #GEM_phib1 = CSCTF_gemdphi1 #delta_GE11_ME11
+                #GEM_phib2 = CSCTF_gemdphi2 #delta_GE21_ME21
                 
-                GEM_phib1 = delta_GE11_ME11
-                GEM_phib2 = delta_GE21_ME21
+                #GEM_phib1 = delta_GE11_ME11
+                #GEM_phib2 = delta_GE21_ME21
 
                 ## following Tao's updates from July 12 2016...
                 ## phi_momentum = phi_pos(GEM) + GEMCSC_dphi * slope
@@ -1143,6 +1143,7 @@ if __name__ == "__main__":
 
                 GEM_phib1_phib2 = deltaPhi(GEM_phib1, GEM_phib2)
                 abs_GEM_phib1_phib2 = abs(GEM_phib1_phib2)
+
                 if GEM_phib1 != GEM_phib2 and abs(GEM_phib1) != 99. and abs(GEM_phib2) != 99.:
                   abs_GEM_phib1_phib2_inv = 1./abs_GEM_phib1_phib2
                 else: 

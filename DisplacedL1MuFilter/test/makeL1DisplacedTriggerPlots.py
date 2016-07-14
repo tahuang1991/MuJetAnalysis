@@ -113,10 +113,13 @@ if __name__ == "__main__":
   ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
   #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/', ext=".root")
   #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v2/160712_224712/0000/', ext=".root")
-  ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v3/160713_025853/0000/', ext=".root")
+  #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v3/160713_025853/0000/', ext=".root")
+
+  ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v5/160714_040828/0000/')
+
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160713_GEM"
+  label = "DisplacedL1MuTrigger_20160714"
   targetDir = label + "/"
   
   verbose = False
@@ -172,6 +175,10 @@ if __name__ == "__main__":
     phiDTst1_vs_phiDTst4_dxy50to100 = TH2F("phiDTst1_phiDTst4_dxy50to100","", 100,0,6.3,100,0.,6.3)
     
     phiGEMst1_phiGEMst2 = TH1F("phiGEMst1_phiGEMst2","", 100,-1,1)
+    dPhist1_vs_dPhiBendst1_even = TH2F("dPhist1_vs_dPhiBendst1_even","", 100,-1,1,100,-1,1)
+    dPhist1_vs_dPhiBendst1_odd = TH2F("dPhist1_vs_dPhiBendst1_odd","", 100,-1,1,100,-1,1)
+    dPhist2_vs_dPhiBendst2_even = TH2F("dPhist2_vs_dPhiBendst2_even","", 100,-1,1,100,-1,1)
+    dPhist2_vs_dPhiBendst2_odd = TH2F("dPhist2_vs_dPhiBendst2_odd","", 100,-1,1,100,-1,1)
     abs_phiGEMst1_phiGEMst2 = TH1F("abs_phiGEMst1_phiGEMst2","", 100,-1,1)
     phiGEMst1_vs_phiGEMst2_dxy0to5 = TH2F("phiGEMst1_phiGEMst2_dxy0to5","", 100,-1,1,100,-1,1)
     phiGEMst1_vs_phiGEMst2_dxy5to50 = TH2F("phiGEMst1_phiGEMst2_dxy5to50","", 100,-1,1,100,-1,1)
@@ -1012,6 +1019,12 @@ if __name__ == "__main__":
               ok_CSCTF_st2 = CSCTF_phi2 != 99
               ok_CSCTF_st3 = CSCTF_phi3 != 99
               ok_CSCTF_st4 = CSCTF_phi4 != 99
+
+              ok_CSCTF_rec_st1 = False
+              ok_CSCTF_rec_st2 = False
+              ok_CSCTF_rec_st3 = False
+              ok_CSCTF_rec_st4 = False
+
               if ok_CSCTF_st1: CSCTF_phi1 = normalizedPhi2(treeHits.CSCTF_phi1[L1Mu_CSCTF_index])
               if ok_CSCTF_st2: CSCTF_phi2 = normalizedPhi2(treeHits.CSCTF_phi2[L1Mu_CSCTF_index])
               if ok_CSCTF_st3: CSCTF_phi3 = normalizedPhi2(treeHits.CSCTF_phi3[L1Mu_CSCTF_index])
@@ -1027,6 +1040,20 @@ if __name__ == "__main__":
               GEN_SIM_index = int(treeHits.genGdMu_SIM_index[ij])
 
               if GEN_SIM_index != -99:
+                CSCTF_rec_ch1 = treeHits.CSCTF_rec_ch1[GEN_SIM_index]
+                CSCTF_rec_ch2 = treeHits.CSCTF_rec_ch1[GEN_SIM_index]
+                CSCTF_rec_phi1 = treeHits.CSCTF_rec_phi1[GEN_SIM_index]
+                CSCTF_rec_phi2 = treeHits.CSCTF_rec_phi2[GEN_SIM_index]
+                CSCTF_rec_phib1 = treeHits.CSCTF_rec_phib1[GEN_SIM_index]
+                CSCTF_rec_phib2 = treeHits.CSCTF_rec_phib2[GEN_SIM_index]
+                ok_CSCTF_rec_st1 = CSCTF_rec_phi1 != 99
+                ok_CSCTF_rec_st2 = CSCTF_rec_phi2 != 99
+
+                if ok_CSCTF_rec_st1: CSCTF_rec_phi1 = normalizedPhi2(CSCTF_rec_phi1)
+                if ok_CSCTF_rec_st2: CSCTF_rec_phi2 = normalizedPhi2(CSCTF_rec_phi2)
+                if not ok_CSCTF_st1 and ok_CSCTF_rec_st1: CSCTF_phi1 = CSCTF_rec_phi1
+                if not ok_CSCTF_st2 and ok_CSCTF_rec_st2: CSCTF_phi1 = CSCTF_rec_phi1
+
                 GE11_bx_L1 = treeHits.GE11_bx_L1[GEN_SIM_index]
                 GE11_bx_L2 = treeHits.GE11_bx_L2[GEN_SIM_index]
                 GE21_bx_L1 = treeHits.GE21_bx_L1[GEN_SIM_index]
@@ -1048,10 +1075,10 @@ if __name__ == "__main__":
                 if GE21_phi_L2 != 99: GE21_phi_L2 = normalizedPhi2(GE21_phi_L2)
                 if GE0_phi != 99: GE0_phi = normalizedPhi(GE21_phi_L2)
 
-              ok_GE11_L1 = GE11_bx_L1 != 99 and GE11_phi_L1 != 99 
-              ok_GE11_L2 = GE11_bx_L2 != 99 and GE11_phi_L2 != 99 
-              ok_GE21_L1 = GE21_bx_L1 != 99 and GE21_phi_L1 != 99 
-              ok_GE21_L2 = GE21_bx_L2 != 99 and GE21_phi_L2 != 99
+              ok_GE11_L1 = GE11_bx_L1 != 99 
+              ok_GE11_L2 = GE11_bx_L2 != 99 
+              ok_GE21_L1 = GE21_bx_L1 != 99 
+              ok_GE21_L2 = GE21_bx_L2 != 99
               
               #ok_GE11_L1 = abs(CSCTF_gemdphi1) != 99 
               #ok_GE11_L2 = abs(CSCTF_gemdphi1) != 99 
@@ -1069,6 +1096,9 @@ if __name__ == "__main__":
               if (ok_GE0 or ok_GE11) and ok_GE21:
                 nL1MuMatched_GE11_GE0_GE21 += 1
 
+              ok_CSCTF_st1 = ok_CSCTF_st1 or ok_CSCTF_rec_st1
+              ok_CSCTF_st1 = ok_CSCTF_st2 or ok_CSCTF_rec_st2
+
               if verbose:
                 print "\t\tCSCTF", L1Mu_CSCTF_index
                 print "\t\tCSCTF_pt", CSCTF_pt
@@ -1085,6 +1115,12 @@ if __name__ == "__main__":
                 print "\t\tCSCTF_gemdphi1", CSCTF_gemdphi1
                 print "\t\tCSCTF_gemdphi2", CSCTF_gemdphi2
                 print "\t\tGEN_SIM_index", GEN_SIM_index
+                print "\t\tCSCTF_rec_ch1", CSCTF_rec_ch1
+                print "\t\tCSCTF_rec_ch2", CSCTF_rec_ch2
+                print "\t\tCSCTF_rec_phi1", CSCTF_rec_phi1 
+                print "\t\tCSCTF_rec_phi2", CSCTF_rec_phi2
+                print "\t\tCSCTF_rec_phib1", CSCTF_rec_phib1 
+                print "\t\tCSCTF_rec_phib2", CSCTF_rec_phib2
                 print "\t\tGE11_ch1", GE11_ch1 
                 print "\t\tGE21_ch2", GE21_ch2
                 print "\t\tok_GE11_L1", ok_GE11_L1, "GE11_phi_L1", GE11_phi_L1, "GE11_bx_L1", GE11_bx_L1
@@ -1095,7 +1131,11 @@ if __name__ == "__main__":
                 print               
 
               ## stub directions
-              if ok_GE11 and ok_GE21 and ok_CSCTF_st1 and ok_CSCTF_st2:
+              ok_direction_based_endcap = ok_GE11 and ok_GE21 and ok_CSCTF_st1 and ok_CSCTF_st2
+              #if not ok_direction_based_endcap:
+              #print "\t\t>>>ERROR<<<"
+
+              if ok_direction_based_endcap:
                 nL1MuMatched_GE11_ME11_GE21_ME21 += 1
 
                 delta_GE11_ME11 = 99
@@ -1114,6 +1154,14 @@ if __name__ == "__main__":
                   print "\t\tdelta_GE11_ME11", delta_GE11_ME11
                   print "\t\tdelta_GE21_ME21", delta_GE21_ME21
                   print 
+
+                GE11_phi = 0
+                if GE11_phi_L1 != 99: GE11_phi = GE11_phi_L1
+                else:                 GE11_phi = GE11_phi_L2
+
+                GE21_phi = 0
+                if GE21_phi_L1 != 99: GE21_phi = GE21_phi_L1
+                else:                 GE21_phi = GE21_phi_L2
 
                 #GEM_phib1 = CSCTF_gemdphi1 #delta_GE11_ME11
                 #GEM_phib2 = CSCTF_gemdphi2 #delta_GE21_ME21
@@ -1151,6 +1199,19 @@ if __name__ == "__main__":
 
                 if verbose:
                   print "\t\tabs_GEM_phib1_phib2_inv", abs_GEM_phib1_phib2_inv
+
+                dphi_mom_dphi_pos_st1 = deltaPhi2(CSCTF_rec_phib1, GE11_phi) 
+                dphi_mom_dphi_pos_st2 = deltaPhi2(CSCTF_rec_phib2, GE21_phi)
+
+                if not GE11_isOdd1:
+                  dPhist1_vs_dPhiBendst1_even.Fill(delta_GE11_ME11, dphi_mom_dphi_pos_st1)
+                else:
+                  dPhist1_vs_dPhiBendst1_odd.Fill(delta_GE11_ME11, dphi_mom_dphi_pos_st1)
+
+                if not GE21_isOdd1:
+                  dPhist2_vs_dPhiBendst2_even.Fill(delta_GE21_ME21, dphi_mom_dphi_pos_st2)
+                else:
+                  dPhist2_vs_dPhiBendst2_odd.Fill(delta_GE21_ME21, dphi_mom_dphi_pos_st2)
 
                 phiGEMst1_phiGEMst2.Fill(GEM_phib1, GEM_phib2)
                 #abs_phiGEMst1_phiGEMst2
@@ -1274,7 +1335,7 @@ if __name__ == "__main__":
 
 
     ## print out
-    if verbose:
+    if verbose or True:
       print "-----------------------------------"
       print "Summary of the L1Mu matches: "
       print 
@@ -1452,6 +1513,11 @@ if __name__ == "__main__":
     makeSimplePlot(phiGEMst1_vs_phiGEMst2_dxy0to5, targetDir + "phiGEMst1_vs_phiGEMst2_dxy0to5", "; #Delta#Phi_1; #Delta#Phi_2", "COLZ") 
     makeSimplePlot(phiGEMst1_vs_phiGEMst2_dxy5to50, targetDir + "phiGEMst1_vs_phiGEMst2_dxy5to50", "; #Delta#Phi_1; #Delta#Phi_2", "COLZ")
     makeSimplePlot(phiGEMst1_vs_phiGEMst2_dxy50to100, targetDir + "phiGEMst1_vs_phiGEMst2_dxy50to100", "; #Delta#Phi_1; #Delta#Phi_2", "COLZ")
+
+    makeGenPtVsDPhiPlot(dPhist1_vs_dPhiBendst1_even, targetDir + "dPhist1_vs_dPhiBendst1_even_pol1.png", False, True, "pol1")
+    makeGenPtVsDPhiPlot(dPhist1_vs_dPhiBendst1_odd, targetDir + "dPhist1_vs_dPhiBendst1_odd_pol1.png", False, True, "pol1")
+    makeGenPtVsDPhiPlot(dPhist2_vs_dPhiBendst2_even, targetDir + "dPhist2_vs_dPhiBendst2_even_pol1.png", False, True, "pol1")
+    makeGenPtVsDPhiPlot(dPhist2_vs_dPhiBendst2_odd, targetDir + "dPhist2_vs_dPhiBendst2_odd_pol1.png", False, True, "pol1")
 
     makeGenPtVsDPhiPlot(GenMuPt_vs_phiGEMst1_phiGEMst2, targetDir + "GenMuPt_vs_phiGEMst1_phiGEMst2_pol1.png")
     makeGenPtVsDPhiPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_pol1.png")

@@ -113,6 +113,7 @@ const Int_t kMaxCSCTF = 50;
 const Int_t kMaxRPCb = 50;
 const Int_t kMaxRPCf = 50;
 const Int_t kMaxGEM = 50;
+const Int_t kMaxSIM = 4;
 const Int_t kMaxL1Tk = 500;
 const int nGlu = 2;
 const int nGd = 2;
@@ -1127,33 +1128,37 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     const CSCStubMatcher& match_csc = match.cscStubs();
     if(verbose){
       std::cout << "Total number of matching CSC stubs to simtrack " << std::endl;
-      std::cout << "Matching CSC stub Ids " << match_csc.chamberIdsAllLCT().size() << std::endl;
+      std::cout << "Matching CSC stub Ids " << match_csc.chamberIdsLCT().size() << std::endl;
     }
     for (auto d: match_csc.chamberIdsLCT()){
       auto detId = CSCDetId(d);
       auto simhits = match_sh.hitsInChamber(d);
       auto csc_sh_gv = match_sh.simHitsMeanMomentum(simhits);
-      if(verbose) std::cout << "\tId " << d << " " << detId << std::endl;
-      std::cout << "\tNumber of LCTs " << match_csc.cscLctsInChamber(d).size() << std::endl;
-      for (auto p: match_csc.cscLctsInChamber(d)){
-        double csc_phi = calcCSCSpecificPhi(d, p);
-        if(verbose){
-          std::cout << "\t\tStub " << p << std::endl;
-          std::cout << "\t\t\tPosition " << csc_phi << std::endl;
-          std::cout << "\t\t\tDirection " << csc_sh_gv.phi() << std::endl;
-        }
-        if (detId.station()==1) {
-          event_.CSCTF_rec_ch1[k] = detId.station();
-          event_.CSCTF_rec_phi1[k] = csc_phi;
-          event_.CSCTF_rec_phib1[k] = csc_sh_gv.phi();
-        }        
-        if (detId.station()==2) {
-          event_.CSCTF_rec_ch2[k] = detId.station();
-          event_.CSCTF_rec_phi2[k] = csc_phi;
-          event_.CSCTF_rec_phib2[k] = csc_sh_gv.phi();
-        }        
-      }      
-    }
+      if(verbose) {
+        std::cout << "\tId " << d << " " << detId << std::endl;
+        std::cout << "\tNumber of LCTs " << match_csc.cscLctsInChamber(d).size() << std::endl;
+      }
+      int nStubs = match_csc.cscLctsInChamber(d).size();
+      if (nStubs==0) continue;
+      // pick the first stub in the list...
+      auto stub = match_csc.cscLctsInChamber(d)[0];
+      double csc_phi = calcCSCSpecificPhi(d, stub);
+      if(verbose){
+        std::cout << "\t\tStub " << stub << std::endl;
+        std::cout << "\t\t\tPosition " << csc_phi << std::endl;
+        std::cout << "\t\t\tDirection " << csc_sh_gv.phi() << std::endl;
+      }
+      if (detId.station()==1) {
+        event_.CSCTF_rec_ch1[k] = detId.chamber();
+        event_.CSCTF_rec_phi1[k] = csc_phi;
+        event_.CSCTF_rec_phib1[k] = csc_sh_gv.phi();
+      }        
+      if (detId.station()==2) {
+        event_.CSCTF_rec_ch2[k] = detId.chamber();
+        event_.CSCTF_rec_phi2[k] = csc_phi;
+        event_.CSCTF_rec_phib2[k] = csc_sh_gv.phi();
+      }        
+    }      
   }
   
   /////////////////
@@ -1386,6 +1391,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           //if (!(*digiIt).isValid()) continue;
           event_.CSCTF_nStubs[j] += 1;
           auto stub = *digiIt;
+          double csc_phi = calcCSCSpecificPhi(id.rawId(), stub);
           switch(id.station()) {
           case 1:
             event_.CSCTF_st1[j] = id.station();
@@ -1401,7 +1407,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.CSCTF_bx1[j] = stub.getBX();
             event_.CSCTF_clctpat1[j] = stub.getCLCTPattern();
             event_.CSCTF_val1[j] = stub.isValid();
-            event_.CSCTF_phi1[j] = calcCSCSpecificPhi(id.rawId(), stub);
+            event_.CSCTF_phi1[j] = csc_phi;
             event_.CSCTF_gemdphi1[j] = stub.getGEMDPhi();;
             break;
           case 2:
@@ -1418,7 +1424,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.CSCTF_bx2[j] = stub.getBX();
             event_.CSCTF_clctpat2[j] = stub.getCLCTPattern();
             event_.CSCTF_val2[j] = stub.isValid();
-            event_.CSCTF_phi2[j] = calcCSCSpecificPhi(id.rawId(), stub);
+            event_.CSCTF_phi2[j] = csc_phi;
             event_.CSCTF_gemdphi2[j] = stub.getGEMDPhi();
             break;
           case 3:
@@ -1435,7 +1441,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.CSCTF_bx3[j] = stub.getBX();
             event_.CSCTF_clctpat3[j] = stub.getCLCTPattern();
             event_.CSCTF_val3[j] = stub.isValid();
-            event_.CSCTF_phi3[j] = calcCSCSpecificPhi(id.rawId(), stub);
+            event_.CSCTF_phi3[j] = csc_phi;
             break;
           case 4:
             event_.CSCTF_st4[j] = id.station();
@@ -1451,7 +1457,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.CSCTF_bx4[j] = stub.getBX();
             event_.CSCTF_clctpat4[j] = stub.getCLCTPattern();
             event_.CSCTF_val4[j] = stub.isValid();
-            event_.CSCTF_phi4[j] = calcCSCSpecificPhi(id.rawId(), stub);
+            event_.CSCTF_phi4[j] = csc_phi;
             break;
           };
         }
@@ -1492,6 +1498,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           const auto range = (*detUnitIt).second;
           for (auto digiIt = range.first; digiIt != range.second; digiIt++) {
             //if (!(*digiIt).isValid()) continue;
+            double csc_phi = calcCSCSpecificPhi(id.rawId(), *digiIt);
+            std::cout << "\t\tPosition " << csc_phi << std::endl;
             std::cout << "\t\t" << *digiIt << std::endl;
           }
         }
@@ -2920,12 +2928,12 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_gemdphi1", event_.CSCTF_gemdphi1,"CSCTF_gemdphi1[nCSCTF]/F");
   event_tree_->Branch("CSCTF_gemdphi2", event_.CSCTF_gemdphi2,"CSCTF_gemdphi2[nCSCTF]/F");
 
-  event_tree_->Branch("CSCTF_rec_ch1", event_.CSCTF_rec_ch1,"CSCTF_rec_ch1[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_rec_ch2", event_.CSCTF_rec_ch2,"CSCTF_rec_ch2[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_rec_phi1", event_.CSCTF_rec_phi1,"CSCTF_rec_phi1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_rec_phi2", event_.CSCTF_rec_phi2,"CSCTF_rec_phi2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_rec_phib1", event_.CSCTF_rec_phib1,"CSCTF_rec_phib1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_rec_phib2", event_.CSCTF_rec_phib2,"CSCTF_rec_phib2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_rec_ch1", event_.CSCTF_rec_ch1,"CSCTF_rec_ch1[4]/I");
+  event_tree_->Branch("CSCTF_rec_ch2", event_.CSCTF_rec_ch2,"CSCTF_rec_ch2[4]/I");
+  event_tree_->Branch("CSCTF_rec_phi1", event_.CSCTF_rec_phi1,"CSCTF_rec_phi1[4]/F");
+  event_tree_->Branch("CSCTF_rec_phi2", event_.CSCTF_rec_phi2,"CSCTF_rec_phi2[4]/F");
+  event_tree_->Branch("CSCTF_rec_phib1", event_.CSCTF_rec_phib1,"CSCTF_rec_phib1[4]/F");
+  event_tree_->Branch("CSCTF_rec_phib2", event_.CSCTF_rec_phib2,"CSCTF_rec_phib2[4]/F");
 
 
   event_tree_->Branch("nRPCb", &event_.nRPCb);
@@ -3082,21 +3090,21 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("RPCf_ro6", event_.RPCf_ro6,"RPCf_ro6[nRPCf]/I");
 
   event_tree_->Branch("nGEM", &event_.nGEM);
-  event_tree_->Branch("GE11_phi_L1", event_.GE11_phi_L1,"GE11_phi_L1[nGEM]/F");
-  event_tree_->Branch("GE11_phi_L2", event_.GE11_phi_L2,"GE11_phi_L2[nGEM]/F");
-  event_tree_->Branch("GE21_phi_L1", event_.GE21_phi_L1,"GE21_phi_L1[nGEM]/F");
-  event_tree_->Branch("GE21_phi_L2", event_.GE21_phi_L2,"GE21_phi_L2[nGEM]/F");
-  event_tree_->Branch("GE11_bx_L1", event_.GE11_bx_L1,"GE11_bx_L1[nGEM]/I");
-  event_tree_->Branch("GE11_bx_L2", event_.GE11_bx_L2,"GE11_bx_L2[nGEM]/I");
-  event_tree_->Branch("GE21_bx_L1", event_.GE21_bx_L1,"GE21_bx_L1[nGEM]/I");
-  event_tree_->Branch("GE21_bx_L2", event_.GE21_bx_L2,"GE21_bx_L2[nGEM]/I");
-  event_tree_->Branch("GE11_ch_L1", event_.GE11_ch_L1,"GE11_ch_L1[nGEM]/I");
-  event_tree_->Branch("GE11_ch_L2", event_.GE11_ch_L2,"GE11_ch_L2[nGEM]/I");
-  event_tree_->Branch("GE21_ch_L1", event_.GE21_ch_L1,"GE21_ch_L1[nGEM]/I");
-  event_tree_->Branch("GE21_ch_L2", event_.GE21_ch_L2,"GE21_ch_L2[nGEM]/I");
+  event_tree_->Branch("GE11_phi_L1", event_.GE11_phi_L1,"GE11_phi_L1[4]/F");
+  event_tree_->Branch("GE11_phi_L2", event_.GE11_phi_L2,"GE11_phi_L2[4]/F");
+  event_tree_->Branch("GE21_phi_L1", event_.GE21_phi_L1,"GE21_phi_L1[4]/F");
+  event_tree_->Branch("GE21_phi_L2", event_.GE21_phi_L2,"GE21_phi_L2[4]/F");
+  event_tree_->Branch("GE11_bx_L1", event_.GE11_bx_L1,"GE11_bx_L1[4]/I");
+  event_tree_->Branch("GE11_bx_L2", event_.GE11_bx_L2,"GE11_bx_L2[4]/I");
+  event_tree_->Branch("GE21_bx_L1", event_.GE21_bx_L1,"GE21_bx_L1[4]/I");
+  event_tree_->Branch("GE21_bx_L2", event_.GE21_bx_L2,"GE21_bx_L2[4]/I");
+  event_tree_->Branch("GE11_ch_L1", event_.GE11_ch_L1,"GE11_ch_L1[4]/I");
+  event_tree_->Branch("GE11_ch_L2", event_.GE11_ch_L2,"GE11_ch_L2[4]/I");
+  event_tree_->Branch("GE21_ch_L1", event_.GE21_ch_L1,"GE21_ch_L1[4]/I");
+  event_tree_->Branch("GE21_ch_L2", event_.GE21_ch_L2,"GE21_ch_L2[4]/I");
 
-  event_tree_->Branch("GE0_phi", event_.GE0_phi,"GE0_phi[nGEM]/F");
-  event_tree_->Branch("GE0_phib", event_.GE0_phib,"GE0_phib[nGEM]/F");
+  event_tree_->Branch("GE0_phi", event_.GE0_phi,"GE0_phi[4]/F");
+  event_tree_->Branch("GE0_phib", event_.GE0_phib,"GE0_phib[4]/F");
 }
 
 
@@ -3393,13 +3401,6 @@ DisplacedL1MuFilter::clearBranches()
 
     event_.CSCTF_gemdphi1[i] = 99;
     event_.CSCTF_gemdphi2[i] = 99;
-    
-    event_.CSCTF_rec_ch1[i] = 99;
-    event_.CSCTF_rec_ch2[i] = 99;
-    event_.CSCTF_rec_phi1[i] = 99;
-    event_.CSCTF_rec_phi2[i] = 99;
-    event_.CSCTF_rec_phib1[i] = 99;
-    event_.CSCTF_rec_phib2[i] = 99;
 
   }
 
@@ -3559,7 +3560,7 @@ DisplacedL1MuFilter::clearBranches()
 
 
   event_.nGEM = 4;
-  for (int i=0; i<kMaxGEM; ++i){
+  for (int i=0; i<kMaxSIM; ++i){
     event_.GE11_phi_L1[i] = 99.;
     event_.GE11_phi_L2[i] = 99.;
     event_.GE21_phi_L1[i] = 99.;
@@ -3574,6 +3575,14 @@ DisplacedL1MuFilter::clearBranches()
     event_.GE21_ch_L2[i] = 99;
     event_.GE0_phi[i] = 99;
     event_.GE0_phib[i] = 99;
+
+    
+    event_.CSCTF_rec_ch1[i] = 99;
+    event_.CSCTF_rec_ch2[i] = 99;
+    event_.CSCTF_rec_phi1[i] = 99;
+    event_.CSCTF_rec_phi2[i] = 99;
+    event_.CSCTF_rec_phib1[i] = 99;
+    event_.CSCTF_rec_phib2[i] = 99;
   }
 }
 

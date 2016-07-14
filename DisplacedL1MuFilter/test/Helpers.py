@@ -137,94 +137,64 @@ def get1DHistogramMedianY(hist2d):
 
     xBins = hist2d.GetXaxis().GetNbins()
     yBins = hist2d.GetYaxis().GetNbins()
-    xminBin = hist2d.GetXaxis().GetXmin()
-    xmaxBin = hist2d.GetXaxis().GetXmax()
-    yminBin = hist2d.GetYaxis().GetXmin()
-    ymaxBin = hist2d.GetYaxis().GetXmax()
+    xmin = hist2d.GetXaxis().GetXmin()
+    xmax = hist2d.GetXaxis().GetXmax()
+    ymin = hist2d.GetYaxis().GetXmin()
+    ymax = hist2d.GetYaxis().GetXmax()
+ 
+    xs = []
+    ys = []
+    xs_e_up = []
+    xs_e_dw = []
+    ys_e_up = []
+    ys_e_dw = []
+
+    for x in range(1,xBins+1):
+      #print "bin:", x
+      probSum = array.array('d', [.32, .5, .68])
+      q = array.array('d', [0.0]*len(probSum))
+      entries = hist2d.Integral(x,x,0,yBins+1)
+      ## do not compute quantiles for empty histograms!!!
+      if entries == 0:
+        continue
+      tempHist = hist2d.ProjectionY("bin1",x,x)
+      tempHist.GetQuantiles(len(probSum), q, probSum)
+      #print "q", q
+
+      xval = hist2d.GetBinCenter(x)
+      xval_e_up = hist2d.GetBinWidth(x)/2.
+      xval_e_dw = hist2d.GetBinWidth(x)/2.
+      yval = q[1]
+      yval_e_up = q[2] - yval
+      yval_e_dw = yval - q[0]
+
+      xs.append(xval) 
+      xs_e_up.append(xval_e_up)
+      xs_e_dw.append(xval_e_dw)
+      ys.append(yval)
+      ys_e_up.append(yval_e_up)
+      ys_e_dw.append(yval_e_dw)
+      
     """
-    print "xBins", xBins
-    print "yBins", yBins
-    print "xminBin", xminBin
-    print "xmaxBin", xmaxBin
-    print "yminBin", yminBin
-    print "ymaxBin", ymaxBin
+    print "xval", xs
+    print
+    print "yval", ys
+    print
+    print "yval_e_up", ys_e_up
+    print
+    print "yval_e_dw", ys_e_dw
     """
+
+    tgraph = TGraphAsymmErrors(len(xs), 
+                               array.array("f",xs), 
+                               array.array("f",ys), 
+                               array.array("f",xs_e_dw), 
+                               array.array("f",xs_e_up), 
+                               array.array("f",ys_e_dw), 
+                               array.array("f",ys_e_up))
+    SetOwnership( tgraph, False )
+    return tgraph
     
-    printa = 0
-    r1 = TH1F("r1","",xBins,xminBin,xmaxBin)
-    for x in range(0,xBins):
-
-        if (printa > 0):
-            print "*********** For bin x: %d **********************"%x
-            
-        # Find the total number of frequencies
-        yintegral = hist2d.Integral(x,x,0,yBins+1)
-        median = getMedian(yintegral)
-        
-        temporal = 0
-        midbin = 0
-        
-        for m in range (0,yBins+1):
-          temporal = hist2d.Integral(x,x,0,m)
-
-          if (temporal >= median):
-            midbin = m              # Break once I get to the median
-            break
-          
-        if (printa > 0):
-          print "suma: ",yintegral
-          print "Midbin: ",midbin
-          print "mediana count: ",temporal
-          
-        # midbin is the actual value to be stored in (x, midbin) histogram.    
-        # Find the error above the median
-        
-        sumerrup = 0                       # Sum of events up
-        binerrup = 0                       # Bin which has the 34% of events
-        
-        for k in range (midbin, yBins+1): # Looping over the midbin up to 10000 
-            sumerrup = hist2d.Integral(x,x,midbin,k)
-  
-            if (sumerrup >= 0.33*yintegral):
-                binerrup = k
-                break
-        
-        sumerrlow = 0
-        binerrlow = 0
-        
-        for r in range (0, midbin):
-            sumerrlow = hist2d.Integral(x,x,midbin-r,midbin)
-
-            if (sumerrlow >= 0.33*yintegral):
-                binerrlow = r 
-                break
-        
-        # error is the difference averaged on the bin low and bin up
-        errorbin = abs(binerrup - binerrlow)/2.
-        if (yintegral > 0):
-            errorbin = errorbin / sqrt(yintegral)
-        
-        if (printa > 0):
-            print " X position: ",x
-            print " Bin y: ",midbin
-            print " Error: ",errorbin
-            print " Error low: ",binerrlow
-            print " Sum err low: ",sumerrlow
-            print " Error high: ",binerrup
-            print " Sum err high: ",sumerrup
-
-        # Store in a histogram the values of (x, midbin) with an error given by errorbin
-        if errorbin ==0:
-            errorbin == yBins
-            
-        scale = ymaxBin / yBins
-
-        r1.SetBinContent(x, midbin*scale)
-        r1.SetBinError(x, errorbin*scale)
-
-    SetOwnership(r1, False)
-    return r1                               #Return the histogram 1D 
-
 
 #_______________________________________________________________________________
 def applyTdrStyle():

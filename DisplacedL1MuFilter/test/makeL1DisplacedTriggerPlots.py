@@ -175,10 +175,14 @@ if __name__ == "__main__":
     phiDTst1_vs_phiDTst4_dxy50to100 = TH2F("phiDTst1_phiDTst4_dxy50to100","", 100,0,6.3,100,0.,6.3)
     
     phiGEMst1_phiGEMst2 = TH1F("phiGEMst1_phiGEMst2","", 100,-1,1)
-    dPhist1_vs_dPhiBendst1_even = TH2F("dPhist1_vs_dPhiBendst1_even","", 50,-0.005,0.005,50,-0.1,0.1)
-    dPhist1_vs_dPhiBendst1_odd = TH2F("dPhist1_vs_dPhiBendst1_odd","", 50,-0.005,0.005,50,-0.1,0.1)
-    dPhist2_vs_dPhiBendst2_even = TH2F("dPhist2_vs_dPhiBendst2_even","", 50,-0.005,0.005,50,-0.1,0.1)
-    dPhist2_vs_dPhiBendst2_odd = TH2F("dPhist2_vs_dPhiBendst2_odd","", 50,-0.005,0.005,50,-0.1,0.1)
+    dPhist1_vs_dPhiBendst1_even = TH2F("dPhist1_vs_dPhiBendst1_even","", 50,-0.005,0.005,50,-0.125,0.125)
+    dPhist1_vs_dPhiBendst1_odd = TH2F("dPhist1_vs_dPhiBendst1_odd","", 50,-0.005,0.005,50,-0.125,0.125)
+    dPhist2_vs_dPhiBendst2_even = TH2F("dPhist2_vs_dPhiBendst2_even","", 50,-0.005,0.005,50,-0.125,0.125)
+    dPhist2_vs_dPhiBendst2_odd = TH2F("dPhist2_vs_dPhiBendst2_odd","", 50,-0.005,0.005,50,-0.125,0.125)
+    dPhist1_vs_dPhiBendst1_even_pt10 = TH2F("dPhist1_vs_dPhiBendst1_even_pt10","", 50,-0.005,0.005,50,-0.125,0.125)
+    dPhist1_vs_dPhiBendst1_odd_pt10 = TH2F("dPhist1_vs_dPhiBendst1_odd_pt10","", 50,-0.005,0.005,50,-0.125,0.125)
+    dPhist2_vs_dPhiBendst2_even_pt10 = TH2F("dPhist2_vs_dPhiBendst2_even_pt10","", 50,-0.005,0.005,50,-0.125,0.125)
+    dPhist2_vs_dPhiBendst2_odd_pt10 = TH2F("dPhist2_vs_dPhiBendst2_odd_pt10","", 50,-0.005,0.005,50,-0.125,0.125)
     abs_phiGEMst1_phiGEMst2 = TH1F("abs_phiGEMst1_phiGEMst2","", 100,-1,1)
     phiGEMst1_vs_phiGEMst2_dxy0to5 = TH2F("phiGEMst1_phiGEMst2_dxy0to5","", 100,-1,1,100,-1,1)
     phiGEMst1_vs_phiGEMst2_dxy5to50 = TH2F("phiGEMst1_phiGEMst2_dxy5to50","", 100,-1,1,100,-1,1)
@@ -489,7 +493,7 @@ if __name__ == "__main__":
     for k in range(0,treeHits.GetEntries()):
       treeHits.GetEntry(k)
       if k%1000==0: print "Event", k+1, "nL1Mu", treeHits.nL1Mu
-      #      if k>100: break
+      if k>1000: break
 
       for i in range(0,2):
         for j in range(0,2):
@@ -1211,6 +1215,7 @@ if __name__ == "__main__":
                   print "\t\tdelta_GE11_ME11", delta_GE11_ME11, "dphi_mom_dphi_pos_st1", dphi_mom_dphi_pos_st1
                   print "\t\tdelta_GE21_ME21", delta_GE21_ME21, "dphi_mom_dphi_pos_st2", dphi_mom_dphi_pos_st2
 
+                ## dphi-dphi plots
                 if not GE11_isOdd:
                   dPhist1_vs_dPhiBendst1_even.Fill(delta_GE11_ME11, dphi_mom_dphi_pos_st1)
                 else:
@@ -1220,6 +1225,19 @@ if __name__ == "__main__":
                   dPhist2_vs_dPhiBendst2_even.Fill(delta_GE21_ME21, dphi_mom_dphi_pos_st2)
                 else:
                   dPhist2_vs_dPhiBendst2_odd.Fill(delta_GE21_ME21, dphi_mom_dphi_pos_st2)
+
+
+                ## dphi-dphi plots with 10 GeV pt cut
+                if pt>=10:
+                  if not GE11_isOdd:
+                    dPhist1_vs_dPhiBendst1_even_pt10.Fill(delta_GE11_ME11, dphi_mom_dphi_pos_st1)
+                  else:
+                    dPhist1_vs_dPhiBendst1_odd_pt10.Fill(delta_GE11_ME11, dphi_mom_dphi_pos_st1)
+
+                  if not GE21_isOdd:
+                    dPhist2_vs_dPhiBendst2_even_pt10.Fill(delta_GE21_ME21, dphi_mom_dphi_pos_st2)
+                  else:
+                    dPhist2_vs_dPhiBendst2_odd_pt10.Fill(delta_GE21_ME21, dphi_mom_dphi_pos_st2)
 
                 phiGEMst1_phiGEMst2.Fill(GEM_phib1, GEM_phib2)
                 #abs_phiGEMst1_phiGEMst2
@@ -1398,16 +1416,14 @@ if __name__ == "__main__":
       gPad.SetTickx(1)
       gPad.SetTicky(1)
       hist2 = hist.Clone()
-      #hist2.GetXaxis().SetTitle('GEN Mu p_{T} [GeV]')
-      #hist2.GetYaxis().SetTitle('#Delta#Phi')
+      hist2.SetTitle(title)
       hist2.Draw(option)
-      #g = hist2.ProfileX()
       g = get1DHistogramMedianY(hist2)
       #g.SetMarkerColor(kRed)
       g.SetTitle(title)
       if doFit:
-        p1fit = TF1("p1fit", fitfunction, 0, 60);
-        g.Fit(p1fit,"RQ")
+        p1fit = TF1("p1fit", fitfunction, g.GetXaxis().GetXmin(), g.GetXaxis().GetXmax())
+        g.Fit(p1fit,"LQ")
         npar = g.GetFunction("p1fit").GetNpar()
         
         p0 = g.GetFunction("p1fit").GetParameter("p0")
@@ -1436,10 +1452,16 @@ if __name__ == "__main__":
         r->GetConfidenceIntervals(1, 1, 1, x, err, 0.683, false);
         cout << " function value at " << x[0] << " = " << myFunction->Eval(x[0]) << " +/- " << err[0] << endl;
         """
-
+      gPad.Update()
       if plotColz:
         hist2.Draw(option + "same")
-      g.Draw("s same")
+      g.Draw("p same")
+      gPad.Update()
+      st = g.FindObject("stats")
+      if st:
+        st.SetY1NDC(0.2)#; //new y start position
+        st.SetY2NDC(0.4)#; //new y end position
+        gPad.Modified()
       #g2.Draw("same")
       c.SaveAs(ctitle)
       SetOwnership( g, True )
@@ -1480,18 +1502,19 @@ if __name__ == "__main__":
     makeSimplePlot(abs_phiDTst2_phiDTst4, targetDir + "abs_phiDTst2_phiDTst4.png", ";|#Delta#Phi_{24}|; Entries")
     makeSimplePlot(abs_phiDTst3_phiDTst4, targetDir + "abs_phiDTst3_phiDTst4.png", ";|#Delta#Phi_{34}|; Entries")
 
+    """
     make2DMedianPlot(GenMuPt_vs_phiDTst1_phiDTst2, targetDir + "GenMuPt_vs_phiDTst1_phiDTst2_pol1.png", 
-                        "GenMuPt_vs_phiDTst1_phiDTst2_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(1,2)")
+                        "GenMuPt_vs_phiDTst1_phiDTst2_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(1,2)", False, True)
     make2DMedianPlot(GenMuPt_vs_phiDTst1_phiDTst3, targetDir + "GenMuPt_vs_phiDTst1_phiDTst3_pol1.png", 
-                        "GenMuPt_vs_phiDTst1_phiDTst3_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(1,3)")
+                        "GenMuPt_vs_phiDTst1_phiDTst3_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(1,3)", False, True)
     make2DMedianPlot(GenMuPt_vs_phiDTst1_phiDTst4, targetDir + "GenMuPt_vs_phiDTst1_phiDTst4_pol1.png", 
-                        "GenMuPt_vs_phiDTst1_phiDTst4_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(1,4)")
+                        "GenMuPt_vs_phiDTst1_phiDTst4_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(1,4)", False, True)
     make2DMedianPlot(GenMuPt_vs_phiDTst2_phiDTst3, targetDir + "GenMuPt_vs_phiDTst2_phiDTst3_pol1.png", 
-                        "GenMuPt_vs_phiDTst2_phiDTst3_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(2,3)")
+                        "GenMuPt_vs_phiDTst2_phiDTst3_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(2,3)", False, True)
     make2DMedianPlot(GenMuPt_vs_phiDTst2_phiDTst4, targetDir + "GenMuPt_vs_phiDTst2_phiDTst4_pol1.png", 
-                        "GenMuPt_vs_phiDTst2_phiDTst4_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(2,4)")
+                        "GenMuPt_vs_phiDTst2_phiDTst4_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(2,4)", False, True)
     make2DMedianPlot(GenMuPt_vs_phiDTst3_phiDTst4, targetDir + "GenMuPt_vs_phiDTst3_phiDTst4_pol1.png", 
-                        "GenMuPt_vs_phiDTst3_phiDTst4_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(3,4)")
+                        "GenMuPt_vs_phiDTst3_phiDTst4_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(3,4)", False, True)
 
     make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_pol1.png", 
                         "GenMuPt_vs_phiDTst1_phiDTst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{dir}(1,2)|")
@@ -1545,7 +1568,7 @@ if __name__ == "__main__":
                         "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy5to50_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,4)|", True, True, "pol1")
     make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100_pol1.png", 
                         "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,4)|", True, True, "pol1")
-
+    """
 
     ## plots with GEMs :-)
     makeSimplePlot(phiGEMst1_vs_phiGEMst2_dxy0to5, targetDir + "phiGEMst1_vs_phiGEMst2_dxy0to5.png", "; #Phi_{direction}(GE11); #Phi_{direction}(GE21)", "COLZ") 
@@ -1553,16 +1576,44 @@ if __name__ == "__main__":
     makeSimplePlot(phiGEMst1_vs_phiGEMst2_dxy50to100, targetDir + "phiGEMst1_vs_phiGEMst2_dxy50to100.png", "; #Phi_{direction}(GE11); #Phi_{direction}(GE21)", "COLZ")
 
     make2DMedianPlot(dPhist1_vs_dPhiBendst1_even, targetDir + "dPhist1_vs_dPhiBendst1_even_pol1.png", 
-                        "dPhist1_vs_dPhiBendst1_even_pol1; #Delta#Phi(GEM,CSC); #Phi_{momentum} - #Phi_{position}", False, False, "pol1")
+                        "ME11 even chamber; #Delta#Phi(GE11,ME11); #Phi_{momentum} - #Phi_{position}", True, False, "pol1")
     make2DMedianPlot(dPhist1_vs_dPhiBendst1_odd, targetDir + "dPhist1_vs_dPhiBendst1_odd_pol1.png", 
-                        "dPhist1_vs_dPhiBendst1_odd_pol1; #Delta#Phi(GEM,CSC); #Phi_{momentum} - #Phi_{position}", False, False, "pol1")
+                        "ME11 odd chamber; #Delta#Phi(GE11,ME11); #Phi_{momentum} - #Phi_{position}", True, False, "pol1")
     make2DMedianPlot(dPhist2_vs_dPhiBendst2_even, targetDir + "dPhist2_vs_dPhiBendst2_even_pol1.png", 
-                        "dPhist2_vs_dPhiBendst2_even_pol1; #Delta#Phi(GEM,CSC); #Phi_{momentum} - #Phi_{position}", True,  True, "pol1")
+                        "ME21 even chamber; #Delta#Phi(GE21,ME21); #Phi_{momentum} - #Phi_{position}", True, False, "pol1")
     make2DMedianPlot(dPhist2_vs_dPhiBendst2_odd, targetDir + "dPhist2_vs_dPhiBendst2_odd_pol1.png", 
-                        "dPhist2_vs_dPhiBendst2_odd_pol1; #Delta#Phi(GEM,CSC); #Phi_{momentum} - #Phi_{position}", False, False, "pol1")
+                        "ME21 odd chamber; #Delta#Phi(GE21,ME21); #Phi_{momentum} - #Phi_{position}", True, False, "pol1")
+  
+    make2DMedianPlot(dPhist1_vs_dPhiBendst1_even_pt10, targetDir + "dPhist1_vs_dPhiBendst1_even_pt10_pol1.png", 
+                        "ME11 even chamber, p_{T} #geq 10 GeV; #Delta#Phi(GE11,ME11); #Phi_{momentum} - #Phi_{position}", True, False, "pol1")
+    make2DMedianPlot(dPhist1_vs_dPhiBendst1_odd_pt10, targetDir + "dPhist1_vs_dPhiBendst1_odd_pt10_pol1.png", 
+                        "ME11 odd chamber, p_{T} #geq 10 GeV; #Delta#Phi(GE11,ME11); #Phi_{momentum} - #Phi_{position}", True, False, "pol1")
+    make2DMedianPlot(dPhist2_vs_dPhiBendst2_even_pt10, targetDir + "dPhist2_vs_dPhiBendst2_even_pt10_pol1.png", 
+                        "ME21 even chamber, p_{T} #geq 10 GeV; #Delta#Phi(GE21,ME21); #Phi_{momentum} - #Phi_{position}", True, False, "pol1")
+    make2DMedianPlot(dPhist2_vs_dPhiBendst2_odd_pt10, targetDir + "dPhist2_vs_dPhiBendst2_odd_pt10_pol1.png", 
+                        "ME21 odd chamber, p_{T} #geq 10 GeV; #Delta#Phi(GE21,ME21); #Phi_{momentum} - #Phi_{position}", True, False, "pol1")
 
+    make2DMedianPlot(dPhist1_vs_dPhiBendst1_even, targetDir + "dPhist1_vs_dPhiBendst1_even_pol1_v2.png", 
+                        "ME11 even chamber; #Delta#Phi(GE11,ME11); #Phi_{momentum} - #Phi_{position}", False, True, "pol1")
+    make2DMedianPlot(dPhist1_vs_dPhiBendst1_odd, targetDir + "dPhist1_vs_dPhiBendst1_odd_pol1_v2.png", 
+                        "ME11 odd chamber; #Delta#Phi(GE11,ME11); #Phi_{momentum} - #Phi_{position}", False, True, "pol1")
+    make2DMedianPlot(dPhist2_vs_dPhiBendst2_even, targetDir + "dPhist2_vs_dPhiBendst2_even_pol1_v2.png", 
+                        "ME21 even chamber; #Delta#Phi(GE21,ME21); #Phi_{momentum} - #Phi_{position}", False, True, "pol1")
+    make2DMedianPlot(dPhist2_vs_dPhiBendst2_odd, targetDir + "dPhist2_vs_dPhiBendst2_odd_pol1_v2.png", 
+                        "ME21 odd chamber; #Delta#Phi(GE21,ME21); #Phi_{momentum} - #Phi_{position}", False, True, "pol1")
+  
+    make2DMedianPlot(dPhist1_vs_dPhiBendst1_even_pt10, targetDir + "dPhist1_vs_dPhiBendst1_even_pt10_pol1_v2.png", 
+                        "ME11 even chamber, p_{T} #geq 10 GeV; #Delta#Phi(GE11,ME11); #Phi_{momentum} - #Phi_{position}", False, True, "pol1")
+    make2DMedianPlot(dPhist1_vs_dPhiBendst1_odd_pt10, targetDir + "dPhist1_vs_dPhiBendst1_odd_pt10_pol1_v2.png", 
+                        "ME11 odd chamber, p_{T} #geq 10 GeV; #Delta#Phi(GE11,ME11); #Phi_{momentum} - #Phi_{position}", False, True, "pol1")
+    make2DMedianPlot(dPhist2_vs_dPhiBendst2_even_pt10, targetDir + "dPhist2_vs_dPhiBendst2_even_pt10_pol1_v2.png", 
+                        "ME21 even chamber, p_{T} #geq 10 GeV; #Delta#Phi(GE21,ME21); #Phi_{momentum} - #Phi_{position}", False, True, "pol1")
+    make2DMedianPlot(dPhist2_vs_dPhiBendst2_odd_pt10, targetDir + "dPhist2_vs_dPhiBendst2_odd_pt10_pol1_v2.png", 
+                        "ME21 odd chamber, p_{T} #geq 10 GeV; #Delta#Phi(GE21,ME21); #Phi_{momentum} - #Phi_{position}", False, True, "pol1")
+
+    """
     make2DMedianPlot(GenMuPt_vs_phiGEMst1_phiGEMst2, targetDir + "GenMuPt_vs_phiGEMst1_phiGEMst2_pol1.png", 
-                        "GenMuPt_vs_phiGEMst1_phiGEMst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{direction}(GE11,GE21)|")
+                        "GenMuPt_vs_phiGEMst1_phiGEMst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{direction}(GE11,GE21)|", False, True)
     make2DMedianPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_pol1.png", 
                         "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{direction}(GE11,GE21)|")
     make2DMedianPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_pol1.png", 
@@ -1583,7 +1634,7 @@ if __name__ == "__main__":
                         "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{direction}(GE11,GE21)|^{-1}", True, True, "pol1")
     make2DMedianPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100_pol1.png", 
                         "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{direction}(GE11,GE21)|^{-1}", True, True, "pol1")
-
+    """
 
     """
     make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol3.png", False, True, "pol3")

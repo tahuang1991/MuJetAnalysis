@@ -149,6 +149,7 @@ def get1DHistogramMedianY(hist2d):
     ys_e_up = []
     ys_e_dw = []
 
+    r1 = TH1F("r1","",xBins,xmin,xmax)
     for x in range(1,xBins+1):
       #print "bin:", x
       probSum = array.array('d', [.32, .5, .68])
@@ -168,13 +169,19 @@ def get1DHistogramMedianY(hist2d):
       yval_e_up = q[2] - yval
       yval_e_dw = yval - q[0]
 
+      r1.SetBinContent(x, yval)
+      error = (q[2]- q[0])/(2*sqrt(entries))
+      r1.SetBinError(x, error)
+
+      """
       xs.append(xval) 
       xs_e_up.append(xval_e_up)
       xs_e_dw.append(xval_e_dw)
       ys.append(yval)
       ys_e_up.append(yval_e_up)
       ys_e_dw.append(yval_e_dw)
-      
+      """
+
     """
     print "xval", xs
     print
@@ -184,7 +191,9 @@ def get1DHistogramMedianY(hist2d):
     print
     print "yval_e_dw", ys_e_dw
     """
-
+    SetOwnership( r1, False )
+    return r1
+    """
     tgraph = TGraphAsymmErrors(len(xs), 
                                array.array("f",xs), 
                                array.array("f",ys), 
@@ -194,7 +203,7 @@ def get1DHistogramMedianY(hist2d):
                                array.array("f",ys_e_up))
     SetOwnership( tgraph, False )
     return tgraph
-    
+    """
 
 #_______________________________________________________________________________
 def applyTdrStyle():

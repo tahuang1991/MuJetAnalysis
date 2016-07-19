@@ -28,6 +28,93 @@ M_PI = 4*math.atan(1)
 
 
 #______________________________________________________________________________                                                                                                  
+def poly_library(st1, st2, pol):
+  if pol == 'pol1':
+    if st1==1 and st2==2: return [5.746, 1.787, 0, 0]
+    if st1==1 and st2==3: return [-2.232, 1.316, 0, 0]
+    if st1==1 and st2==4: return [2.902, 1.06, 0, 0]
+    if st1==2 and st2==3: return [5.673, 1.509, 0, 0]
+    if st1==2 and st2==4: return [-1.954, 1.387, 0, 0]
+    if st1==3 and st2==4: return [9.49, 1.701, 0, 0]
+
+  if pol == 'pol2':
+    if st1==1 and st2==2: return [-5.242, 3.51, -0.05, 0]
+    if st1==1 and st2==3: return [-4.949, 1.803, -0.01521, 0]
+    if st1==1 and st2==4: return [-3.815, 1.25, -0.0059, 0]
+    if st1==2 and st2==3: return [-5.676, 3.146, -0.04168, 0]
+    if st1==2 and st2==4: return [-6.098, 2.019, -0.01753, 0]
+    if st1==3 and st2==4: return [-5.73,  4.098, -0.06534, 0]
+
+  if pol == 'pol3':
+    if st1==1 and st2==2: return [-9.07, 4.337, -0.09737, 0.0007264]
+    if st1==1 and st2==3: return [-3.847, 1.544, 0.0003261, -0.0002424]
+    if st1==1 and st2==4: return [2.217, 0.8523, 0.01741, -0.0003688]
+    if st1==2 and st2==3: return [-8.221, 3.66, -0.06812, 0.0003513]
+    if st1==2 and st2==4: return [-7.146, 2.234, -0.02903, 0.0001623]
+    if st1==3 and st2==4: return [-12.02, 4.979, -0.1118, 0.0006741]
+
+
+#______________________________________________________________________________                                                                                                  
+def poly_resolution_library(st1, st2, pol):
+  if pol == 'pol1':
+    if st1==1 and st2==2: return [ 0.232997504786 ,  0.017828278707 ,  0 ,  0 ]
+    if st1==1 and st2==3: return [ 0.104940544565 ,  0.0106112367459 ,  0 ,  0 ]
+    if st1==1 and st2==4: return [ 0.0925582264163 ,  0.00956934260453 ,  0 ,  0 ]
+    if st1==2 and st2==3: return [ 0.216945979301 ,  0.016118034413 ,  0 ,  0 ]
+    if st1==2 and st2==4: return [ 0.163140326149 ,  0.0135758108182 ,  0 ,  0 ]
+    if st1==3 and st2==4: return [ 0.330823642594 ,  0.0231212343975 ,  0 ,  0 ]
+
+  if pol == 'pol2':
+    if st1==1 and st2==2: return [ 0.425399442245 ,  0.0586066270926 ,  0.00163445427321 ,  0 ]
+    if st1==1 and st2==3: return [ 0.192621978027 ,  0.0308062180816 ,  0.000904397271426 ,  0 ]
+    if st1==1 and st2==4: return [ 0.178716461728 ,  0.0277746891351 ,  0.000852731696197 ,  0 ]
+    if st1==2 and st2==3: return [ 0.366360930694 ,  0.0455322268289 ,  0.00108424619265 ,  0 ]
+    if st1==2 and st2==4: return [ 0.296314120328 ,  0.0400845995546 ,  0.00104606620245 ,  0 ]
+    if st1==3 and st2==4: return [ 0.610542572048 ,  0.0758914148344 ,  0.00197003210269 ,  0 ]
+
+  if pol == 'pol3':
+    if st1==1 and st2==2: return [ 0.761866989134 ,  0.148505001684 ,  0.00791521266201 ,  0.000119935087897 ]
+    if st1==1 and st2==3: return [ 0.349128668505 ,  0.0750168990651 ,  0.00420312018117 ,  6.40341791597e-05 ]
+    if st1==1 and st2==4: return [ 0.329886125573 ,  0.0688219584793 ,  0.00399634981601 ,  6.39899740996e-05 ]
+    if st1==2 and st2==3: return [ 0.695634434177 ,  0.127903932904 ,  0.00623745201508 ,  8.16246655536e-05 ]
+    if st1==2 and st2==4: return [ 0.553850340289 ,  0.103963455628 ,  0.00524106684519 ,  7.24391536905e-05 ]
+    if st1==3 and st2==4: return [ 1.10865695068 ,  0.196820380084 ,  0.00978414190039 ,  0.000138975821929 ]
+    
+
+#______________________________________________________________________________                                                                                                  
+def getPtFromDphi(st1, st2, dphi1, dphi2, pol):
+  if dphi1 != 99 and dphi2 != 99 and dphi1 != dphi2:
+    values = poly_library(st1, st2, pol)
+    abs_deltaPhi_inv = 1./abs(deltaPhi(dphi1, dphi2))
+    values_corr = [values[3], values[2], values[1], values[0] - abs_deltaPhi_inv]
+    
+    roots = np.roots(values_corr)
+    #print roots
+    #p0_term = values[0]
+    #p1_term = abs_deltaPhi_inv*values[1]
+    #p2_term = abs_deltaPhi_inv*abs_deltaPhi_inv*values[2]
+    #p3_term = abs_deltaPhi_inv*abs_deltaPhi_inv*abs_deltaPhi_inv*values[3]
+    return 0#p0_term + p1_term + p2_term + p3_term
+  else: 
+    return 0
+ 
+
+#______________________________________________________________________________                                                                                                  
+def getPtErrorFromDphi(st1, st2, dphi1, dphi2, pol):
+  if dphi1 != 99 and dphi2 != 99 and dphi1 != dphi2:
+    values = poly_library(st1, st2, pol)
+    abs_deltaPhi_inv = 1./abs(deltaPhi(dphi1, dphi2))
+
+    p0_term = values[0]
+    p1_term = abs_deltaPhi_inv*values[1]
+    p2_term = abs_deltaPhi_inv*abs_deltaPhi_inv*values[2]
+    p3_term = abs_deltaPhi_inv*abs_deltaPhi_inv*abs_deltaPhi_inv*values[3]
+    return p0_term + p1_term + p2_term + p3_term
+  else: 
+    return 0
+
+
+#______________________________________________________________________________                                                                                                  
 def L1Mu_status(st1, st2, st3, st4):
   def ok(st):
     return st != 99

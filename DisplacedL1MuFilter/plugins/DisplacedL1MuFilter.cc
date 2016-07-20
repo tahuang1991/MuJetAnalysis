@@ -3147,10 +3147,10 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("GE11_ch_L2", event_.GE11_ch_L2,"GE11_ch_L2[4]/I");
   event_tree_->Branch("GE21_ch_L1", event_.GE21_ch_L1,"GE21_ch_L1[4]/I");
   event_tree_->Branch("GE21_ch_L2", event_.GE21_ch_L2,"GE21_ch_L2[4]/I");
-  event_tree_->Branch("GE11_z_L1", event_.GE11_z_L1,"GE11_z_L1[4]/I");
-  event_tree_->Branch("GE11_z_L2", event_.GE11_z_L2,"GE11_z_L2[4]/I");
-  event_tree_->Branch("GE21_z_L1", event_.GE21_z_L1,"GE21_z_L1[4]/I");
-  event_tree_->Branch("GE21_z_L2", event_.GE21_z_L2,"GE21_z_L2[4]/I");
+  event_tree_->Branch("GE11_z_L1", event_.GE11_z_L1,"GE11_z_L1[4]/F");
+  event_tree_->Branch("GE11_z_L2", event_.GE11_z_L2,"GE11_z_L2[4]/F");
+  event_tree_->Branch("GE21_z_L1", event_.GE21_z_L1,"GE21_z_L1[4]/F");
+  event_tree_->Branch("GE21_z_L2", event_.GE21_z_L2,"GE21_z_L2[4]/F");
 
   event_tree_->Branch("GE0_phi", event_.GE0_phi,"GE0_phi[4]/F");
   event_tree_->Branch("GE0_phib", event_.GE0_phib,"GE0_phib[4]/F");

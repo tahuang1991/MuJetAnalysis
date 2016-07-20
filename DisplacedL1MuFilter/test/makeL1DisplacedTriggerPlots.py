@@ -28,8 +28,9 @@ if __name__ == "__main__":
   #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v2/160712_224712/0000/', ext=".root")
   #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v3/160713_025853/0000/', ext=".root")
 
-  ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v5/160714_040828/0000/')
-
+  #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v5/160714_040828/0000/')
+  #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v6/160719_220646/0000/')
+  ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v7/160720_011325/0000/')
   treeHits = ch
 
   label = "DisplacedL1MuTrigger_20160719"
@@ -86,6 +87,7 @@ if __name__ == "__main__":
     phiGEMst1_phiGEMst2_pt5to10 = TH1F("phiGEMst1_phiGEMst2_pt5to10","", 100,-1,1)
     phiGEMst1_phiGEMst2_pt10to20 = TH1F("phiGEMst1_phiGEMst2_pt10to20","", 100,-1,1)
     phiGEMst1_phiGEMst2_pt20 = TH1F("phiGEMst1_phiGEMst2_pt20","", 100,-1,1)
+
     dPhist1_vs_dPhiBendst1_even = TH2F("dPhist1_vs_dPhiBendst1_even","", 100,-0.01,0.01,100,-0.2,0.2)
     dPhist1_vs_dPhiBendst1_odd = TH2F("dPhist1_vs_dPhiBendst1_odd","", 100,-0.01,0.01,100,-0.2,0.2)
     dPhist2_vs_dPhiBendst2_even = TH2F("dPhist2_vs_dPhiBendst2_even","", 100,-0.01,0.01,100,-0.2,0.2)
@@ -116,15 +118,15 @@ if __name__ == "__main__":
     GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50 = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50","", 60,0.,60.,75,0.,150)
     GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100 = TH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100","", 60,0.,60.,75,0.,150)
 
-    alpha_vs_GenMuEta_GE11_even =  TH2F("alpha_vs_GenMuEta_GE11_even","", 20,1.5,2.5,200,-25.,75.)
-    alpha_vs_GenMuEta_GE11_odd =  TH2F("alpha_vs_GenMuEta_GE11_odd","", 20,1.5,2.5,200,-25.,75.)
-    alpha_vs_GenMuEta_GE21_even =  TH2F("alpha_vs_GenMuEta_GE21_even","", 20,1.5,2.5,200,-25.,75.)
-    alpha_vs_GenMuEta_GE21_odd =  TH2F("alpha_vs_GenMuEta_GE21_odd","", 20,1.5,2.5,200,-25.,75.)
+    slope_vs_GenMuEta_GE11_even =  TH2F("slope_vs_GenMuEta_GE11_even","", 20,1.5,2.5,200,-25.,75.)
+    slope_vs_GenMuEta_GE11_odd =  TH2F("slope_vs_GenMuEta_GE11_odd","", 20,1.5,2.5,200,-25.,75.)
+    slope_vs_GenMuEta_GE21_even =  TH2F("slope_vs_GenMuEta_GE21_even","", 20,1.5,2.5,200,-25.,75.)
+    slope_vs_GenMuEta_GE21_odd =  TH2F("slope_vs_GenMuEta_GE21_odd","", 20,1.5,2.5,200,-25.,75.)
 
-    alpha_GE11_even = TH1F("alpha_GE11_even","", 200,-25.,75.)
-    alpha_GE11_odd = TH1F("alpha_GE11_odd","", 200,-25.,75.)
-    alpha_GE21_even = TH1F("alpha_GE21_even","", 200,-25.,75.)
-    alpha_GE21_odd = TH1F("alpha_GE21_odd","", 200,-25.,75.)
+    slope_GE11_even = TH1F("slope_GE11_even","", 200,-25.,75.)
+    slope_GE11_odd = TH1F("slope_GE11_odd","", 200,-25.,75.)
+    slope_GE21_even = TH1F("slope_GE21_even","", 200,-25.,75.)
+    slope_GE21_odd = TH1F("slope_GE21_odd","", 200,-25.,75.)
 
     GenMuPt_phiGEMst1_phiGEMst2 = TH1F("GenMuPt_phiGEMst1_phiGEMst2","", 60,0.,60)
     GenMuPt_phiGEMst1_phiGEMst2_dxy0to5 = TH1F("GenMuPt_phiGEMst1_phiGEMst2_dxy0to5","", 60,0.,60)
@@ -146,6 +148,54 @@ if __name__ == "__main__":
     DPhiPt10_GenMuPt_phiGEMst1_phiGEMst2_dxy50to100 = TH1F("DPhiPt10_GenMuPt_phiGEMst1_phiGEMst2_dxy50to100","", 60,0.,60)
     DPhiPt15_GenMuPt_phiGEMst1_phiGEMst2_dxy50to100 = TH1F("DPhiPt15_GenMuPt_phiGEMst1_phiGEMst2_dxy50to100","", 60,0.,60)
     DPhiPt20_GenMuPt_phiGEMst1_phiGEMst2_dxy50to100 = TH1F("DPhiPt20_GenMuPt_phiGEMst1_phiGEMst2_dxy50to100","", 60,0.,60)
+
+    alphaGEMst1_alphaGEMst2 = TH1F("alphaGEMst1_alphaGEMst2 ","", 100,-1,1)
+    alphaGEMst1_alphaGEMst2_pt5to10 = TH1F("alphaGEMst1_alphaGEMst2_pt5to10","", 100,-1,1)
+    alphaGEMst1_alphaGEMst2_pt10to20 = TH1F("alphaGEMst1_alphaGEMst2_pt10to20","", 100,-1,1)
+    alphaGEMst1_alphaGEMst2_pt20 = TH1F("alphaGEMst1_alphaGEMst2_pt20","", 100,-1,1)
+
+    abs_alphaGEMst1_alphaGEMst2 = TH1F("abs_alphaGEMst1_alphaGEMst2","", 100,-1,1)
+    alphaGEMst1_vs_alphaGEMst2 = TH2F("alphaGEMst1_vs_alphaGEMst2","", 100,-0.2,0.2,100,-0.2,0.2)
+    alphaGEMst1_vs_alphaGEMst2_dxy0to5 = TH2F("alphaGEMst1_vs_alphaGEMst2_dxy0to5","", 100,-0.04,0.04,100,-0.04,0.04)
+    alphaGEMst1_vs_alphaGEMst2_dxy5to50 = TH2F("alphaGEMst1_vs_alphaGEMst2_dxy5to50","", 100,-0.05,0.05,100,-0.05,0.05)
+    alphaGEMst1_vs_alphaGEMst2_dxy50to100 = TH2F("alphaGEMst1_vs_alphaGEMst2_dxy50to100","", 100,-0.2,0.2,100,-0.2,0.2)
+    GenMuPt_vs_alphaGEMst1_alphaGEMst2 = TH2F("GenMuPt_vs_alphaGEMst1_alphaGEMst2","", 60,0.,60,100,-1,1)
+    GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2 = TH2F("GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2","", 60,0.,60,100,0.,1.)
+    GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv = TH2F("GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv","", 60,0.,60.,75,0.,150)
+    GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy0to5 = TH2F("GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy0to5","", 60,0.,60.,75,0.,150)
+    GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy5to50 = TH2F("GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy5to50","", 60,0.,60.,75,0.,150)
+    GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy50to100 = TH2F("GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy50to100","", 60,0.,60.,75,0.,150)
+
+    GenMuPt_vs_alphaGEMst1_inv = TH2F("GenMuPt_vs_alphaGEMst1_inv","", 60,0.,60.,75,0.,150)
+    GenMuPt_vs_alphaGEMst1_inv_dxy0to5 = TH2F("GenMuPt_vs_alphaGEMst1_inv_dxy0to5","", 60,0.,60.,75,0.,150)
+    GenMuPt_vs_alphaGEMst1_inv_dxy5to50 = TH2F("GenMuPt_vs_alphaGEMst1_inv_dxy5to50","", 60,0.,60.,75,0.,150)
+    GenMuPt_vs_alphaGEMst1_inv_dxy50to100 = TH2F("GenMuPt_vs_alphaGEMst1_inv_dxy50to100","", 60,0.,60.,75,0.,150)
+
+    GenMuPt_vs_alphaGEMst2_inv = TH2F("GenMuPt_vs_alphaGEMst2_inv","", 60,0.,60.,75,0.,150)
+    GenMuPt_vs_alphaGEMst2_inv_dxy0to5 = TH2F("GenMuPt_vs_alphaGEMst2_inv_dxy0to5","", 60,0.,60.,75,0.,150)
+    GenMuPt_vs_alphaGEMst2_inv_dxy5to50 = TH2F("GenMuPt_vs_alphaGEMst2_inv_dxy5to50","", 60,0.,60.,75,0.,150)
+    GenMuPt_vs_alphaGEMst2_inv_dxy50to100 = TH2F("GenMuPt_vs_alphaGEMst2_inv_dxy50to100","", 60,0.,60.,75,0.,150)
+
+    GenMuPt_alphaGEMst1_alphaGEMst2 = TH1F("GenMuPt_alphaGEMst1_alphaGEMst2","", 60,0.,60)
+    GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to5 = TH1F("GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to5","", 60,0.,60)
+    GenMuPt_alphaGEMst1_alphaGEMst2_dxy5to50 = TH1F("GenMuPt_alphaGEMst1_alphaGEMst2_dxy5to50","", 60,0.,60)
+    GenMuPt_alphaGEMst1_alphaGEMst2_dxy50to100 = TH1F("GenMuPt_alphaGEMst1_alphaGEMst2_dxy50to100","", 60,0.,60)
+
+    DAlphaPt10_GenMuPt_alphaGEMst1_alphaGEMst2 = TH1F("DAlphaPt10_GenMuPt_alphaGEMst1_alphaGEMst2","", 60,0.,60)
+    DAlphaPt15_GenMuPt_alphaGEMst1_alphaGEMst2 = TH1F("DAlphaPt15_GenMuPt_alphaGEMst1_alphaGEMst2","", 60,0.,60)
+    DAlphaPt20_GenMuPt_alphaGEMst1_alphaGEMst2 = TH1F("DAlphaPt20_GenMuPt_alphaGEMst1_alphaGEMst2","", 60,0.,60)
+
+    DAlphaPt10_GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to5 = TH1F("DAlphaPt10_GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to5","", 60,0.,60)
+    DAlphaPt15_GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to5 = TH1F("DAlphaPt15_GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to5","", 60,0.,60)
+    DAlphaPt20_GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to5 = TH1F("DAlphaPt20_GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to5","", 60,0.,60)
+
+    DAlphaPt10_GenMuPt_alphaGEMst1_alphaGEMst2_dxy5to50 = TH1F("DAlphaPt10_GenMuPt_alphaGEMst1_alphaGEMst2_dxy5to50","", 60,0.,60)
+    DAlphaPt15_GenMuPt_alphaGEMst1_alphaGEMst2_dxy5to50 = TH1F("DAlphaPt15_GenMuPt_alphaGEMst1_alphaGEMst2_dxy5to50","", 60,0.,60)
+    DAlphaPt20_GenMuPt_alphaGEMst1_alphaGEMst2_dxy5to50 = TH1F("DAlphaPt20_GenMuPt_alphaGEMst1_alphaGEMst2_dxy5to50","", 60,0.,60)
+
+    DAlphaPt10_GenMuPt_alphaGEMst1_alphaGEMst2_dxy50to100 = TH1F("DAlphaPt10_GenMuPt_alphaGEMst1_alphaGEMst2_dxy50to100","", 60,0.,60)
+    DAlphaPt15_GenMuPt_alphaGEMst1_alphaGEMst2_dxy50to100 = TH1F("DAlphaPt15_GenMuPt_alphaGEMst1_alphaGEMst2_dxy50to100","", 60,0.,60)
+    DAlphaPt20_GenMuPt_alphaGEMst1_alphaGEMst2_dxy50to100 = TH1F("DAlphaPt20_GenMuPt_alphaGEMst1_alphaGEMst2_dxy50to100","", 60,0.,60)
 
 
 
@@ -1011,6 +1061,11 @@ if __name__ == "__main__":
               CSCTF_isOdd2 = CSCTF_ch2%2==1
               CSCTF_gemdphi1 = treeHits.CSCTF_gemdphi1[L1Mu_CSCTF_index]
               CSCTF_gemdphi2 = treeHits.CSCTF_gemdphi2[L1Mu_CSCTF_index]
+              CSCTF_z1 = treeHits.CSCTF_z1[L1Mu_CSCTF_index]
+              CSCTF_z2 = treeHits.CSCTF_z2[L1Mu_CSCTF_index]
+              CSCTF_R1 = treeHits.CSCTF_R1[L1Mu_CSCTF_index]
+              CSCTF_R2 = treeHits.CSCTF_R2[L1Mu_CSCTF_index]
+
               ## get SIM index
               GEN_SIM_index = int(treeHits.genGdMu_SIM_index[ij])
 
@@ -1021,6 +1076,12 @@ if __name__ == "__main__":
                 CSCTF_rec_phi2 = treeHits.CSCTF_rec_phi2[GEN_SIM_index]
                 CSCTF_rec_phib1 = treeHits.CSCTF_rec_phib1[GEN_SIM_index]
                 CSCTF_rec_phib2 = treeHits.CSCTF_rec_phib2[GEN_SIM_index]
+                CSCTF_rec_z1 = treeHits.CSCTF_rec_z1[GEN_SIM_index]
+                CSCTF_rec_z2 = treeHits.CSCTF_rec_z2[GEN_SIM_index]
+                CSCTF_rec_R1 = treeHits.CSCTF_rec_R1[GEN_SIM_index]
+                CSCTF_rec_R2 = treeHits.CSCTF_rec_R2[GEN_SIM_index]
+
+
                 ok_CSCTF_rec_st1 = CSCTF_rec_phi1 != 99
                 ok_CSCTF_rec_st2 = CSCTF_rec_phi2 != 99
 
@@ -1032,8 +1093,14 @@ if __name__ == "__main__":
 
                 ## in case the CSC stub was not found in the CSCTF track, check if it can be recovered
                 ## this is done by matching the SIM muon to the CSC stubs
-                if not ok_CSCTF_st1 and ok_CSCTF_rec_st1: CSCTF_phi1 = CSCTF_rec_phi1
-                if not ok_CSCTF_st2 and ok_CSCTF_rec_st2: CSCTF_phi1 = CSCTF_rec_phi1
+                if not ok_CSCTF_st1 and ok_CSCTF_rec_st1: 
+                  CSCTF_phi1 = CSCTF_rec_phi1
+                  CSCTF_z1 = CSCTF_rec_z1 
+                  CSCTF_R1 = CSCTF_rec_R1 
+                if not ok_CSCTF_st2 and ok_CSCTF_rec_st2: 
+                  CSCTF_phi2 = CSCTF_rec_phi2
+                  CSCTF_z2 = CSCTF_rec_z2
+                  CSCTF_R2 = CSCTF_rec_R2 
 
                 GE11_bx_L1 = treeHits.GE11_bx_L1[GEN_SIM_index]
                 GE11_bx_L2 = treeHits.GE11_bx_L2[GEN_SIM_index]
@@ -1043,6 +1110,10 @@ if __name__ == "__main__":
                 GE11_phi_L2 = treeHits.GE11_phi_L2[GEN_SIM_index]
                 GE21_phi_L1 = treeHits.GE21_phi_L1[GEN_SIM_index]
                 GE21_phi_L2 = treeHits.GE21_phi_L2[GEN_SIM_index]
+                GE11_z_L1 = treeHits.GE11_z_L1[GEN_SIM_index]
+                GE11_z_L2 = treeHits.GE11_z_L2[GEN_SIM_index]
+                GE21_z_L1 = treeHits.GE21_z_L1[GEN_SIM_index]
+                GE21_z_L2 = treeHits.GE21_z_L2[GEN_SIM_index]
                 GE11_ch1 = treeHits.GE11_ch_L1[GEN_SIM_index]
                 GE21_ch2 = treeHits.GE21_ch_L1[GEN_SIM_index]
                 GE11_isOdd = GE11_ch1%2==1
@@ -1090,6 +1161,9 @@ if __name__ == "__main__":
                 print "\t\tCSCTF_phi4", CSCTF_phi4
                 print "\t\tCSCTF_ch1", CSCTF_ch1 
                 print "\t\tCSCTF_ch2", CSCTF_ch2
+                print "\t\tCSCTF_z1", CSCTF_z1 
+                print "\t\tCSCTF_z2", CSCTF_z2
+
                 print "\t\tCSCTF_gemdphi1", CSCTF_gemdphi1
                 print "\t\tCSCTF_gemdphi2", CSCTF_gemdphi2
                 print "\t\tGEN_SIM_index", GEN_SIM_index
@@ -1101,10 +1175,10 @@ if __name__ == "__main__":
                 print "\t\tCSCTF_rec_phib2", CSCTF_rec_phib2
                 print "\t\tGE11_ch1", GE11_ch1 
                 print "\t\tGE21_ch2", GE21_ch2
-                print "\t\tok_GE11_L1", ok_GE11_L1, "GE11_phi_L1", GE11_phi_L1, "GE11_bx_L1", GE11_bx_L1
-                print "\t\tok_GE11_L2", ok_GE11_L2, "GE11_phi_L2", GE11_phi_L2, "GE11_bx_L2", GE11_bx_L2
-                print "\t\tok_GE21_L1", ok_GE21_L1, "GE21_phi_L1", GE21_phi_L1, "GE21_bx_L1", GE21_bx_L1
-                print "\t\tok_GE21_L2", ok_GE21_L2, "GE21_phi_L2", GE21_phi_L2, "GE21_bx_L2", GE21_bx_L2
+                print "\t\tok_GE11_L1", ok_GE11_L1, "GE11_phi_L1", GE11_phi_L1, "GE11_bx_L1", GE11_bx_L1, "GE11_z_L1", GE11_z_L1
+                print "\t\tok_GE11_L2", ok_GE11_L2, "GE11_phi_L2", GE11_phi_L2, "GE11_bx_L2", GE11_bx_L2, "GE11_z_L2", GE11_z_L2
+                print "\t\tok_GE21_L1", ok_GE21_L1, "GE21_phi_L1", GE21_phi_L1, "GE21_bx_L1", GE21_bx_L1, "GE21_z_L1", GE21_z_L1
+                print "\t\tok_GE21_L2", ok_GE21_L2, "GE21_phi_L2", GE21_phi_L2, "GE21_bx_L2", GE21_bx_L2, "GE21_z_L2", GE21_z_L2
                 print "\t\tok_GE0", ok_GE0, "GE0_phi", GE0_phi, "GE0_phib", GE0_phib
                 print               
 
@@ -1132,53 +1206,84 @@ if __name__ == "__main__":
                 if GE21_phi_L1 != 99: GE21_phi = GE21_phi_L1
                 else:                 GE21_phi = GE21_phi_L2
 
+                ## get GEM z positions...
+                GE11_z = 0
+                if GE11_z_L1 != 99: GE11_z = GE11_z_L1
+                else:                 GE11_z = GE11_z_L2
+
+                GE21_z = 0
+                if GE21_z_L1 != 99: GE21_z = GE21_z_L1
+                else:                 GE21_z = GE21_z_L2
+                
+
                 ## calculate GEM-CSC bending angles...
-                delta_GE11_ME11 = deltaPhi2(CSCTF_phi1, GE11_phi)
-                delta_GE21_ME21 = deltaPhi2(CSCTF_phi2, GE21_phi)
+                delta_phi_GE11_ME11 = deltaPhi2(CSCTF_phi1, GE11_phi)
+                delta_phi_GE21_ME21 = deltaPhi2(CSCTF_phi2, GE21_phi)
 
                 if verbose:
-                  print "\t\tdelta_GE11_ME11", delta_GE11_ME11
-                  print "\t\tdelta_GE21_ME21", delta_GE21_ME21
+                  print "\t\tdelta_phi_GE11_ME11", delta_phi_GE11_ME11
+                  print "\t\tdelta_phi_GE21_ME21", delta_phi_GE21_ME21
                   print 
+
+                if verbose:
+                  print "\t\tCSCTF_z1", CSCTF_z1
+                  print "\t\tCSCTF_z2", CSCTF_z2
+                  print "\t\tGEM_z1", GE11_z
+                  print "\t\tGEM_z2", GE21_z
+
+                delta_z_GE11_ME11 = abs(CSCTF_z1 - GE11_z)
+                delta_z_GE21_ME21 = abs(CSCTF_z2 - GE21_z)
+
+                ## alphas (true bending angles)
+                if verbose:
+                  print "\t\tCSCTF_R1", CSCTF_R1
+                  print "\t\tCSCTF_R2", CSCTF_R2
+                  print "\t\tdelta_z_GE11_ME11", delta_z_GE11_ME11
+                  print "\t\tdelta_z_GE21_ME21", delta_z_GE21_ME21
+                  print "\t\tdelta_phi_GE11_ME11", delta_phi_GE11_ME11
+                  print "\t\tdelta_phi_GE21_ME21", delta_phi_GE21_ME21
+
+                GEM_alpha_st1 = TMath.ATan(CSCTF_R1/delta_z_GE11_ME11*delta_phi_GE11_ME11)
+                GEM_alpha_st2 = TMath.ATan(CSCTF_R2/delta_z_GE21_ME21*delta_phi_GE21_ME21)
 
                 ## difference between phi_direction(CSC) - phi_position(GEM)
                 dphi_mom_dphi_pos_st1 = deltaPhi2(CSCTF_rec_phib1, GE11_phi)
                 dphi_mom_dphi_pos_st2 = deltaPhi2(CSCTF_rec_phib2, GE21_phi)
 
                 if verbose:
-                  print "\t\tdelta_GE11_ME11", delta_GE11_ME11, "dphi_mom_dphi_pos_st1", dphi_mom_dphi_pos_st1
-                  print "\t\tdelta_GE21_ME21", delta_GE21_ME21, "dphi_mom_dphi_pos_st2", dphi_mom_dphi_pos_st2
+                  print "\t\tdelta_phi_GE11_ME11", delta_phi_GE11_ME11, "dphi_mom_dphi_pos_st1", dphi_mom_dphi_pos_st1
+                  print "\t\tdelta_phi_GE21_ME21", delta_phi_GE21_ME21, "dphi_mom_dphi_pos_st2", dphi_mom_dphi_pos_st2
 
                 ## dphi-dphi plots
                 if not GE11_isOdd: 
-                  dPhist1_vs_dPhiBendst1_even.Fill(delta_GE11_ME11, dphi_mom_dphi_pos_st1)
-                  dPhist1_vs_dPhiBendst1_even_v2.Fill(GE11_phi + delta_GE11_ME11, CSCTF_phi1)
+                  dPhist1_vs_dPhiBendst1_even.Fill(delta_phi_GE11_ME11, dphi_mom_dphi_pos_st1)
+                  dPhist1_vs_dPhiBendst1_even_v2.Fill(GE11_phi + delta_phi_GE11_ME11, CSCTF_phi1)
                 else:              
-                  dPhist1_vs_dPhiBendst1_odd.Fill(delta_GE11_ME11, dphi_mom_dphi_pos_st1)
-                  dPhist1_vs_dPhiBendst1_odd_v2.Fill(GE11_phi + delta_GE11_ME11, CSCTF_phi1)
+                  dPhist1_vs_dPhiBendst1_odd.Fill(delta_phi_GE11_ME11, dphi_mom_dphi_pos_st1)
+                  dPhist1_vs_dPhiBendst1_odd_v2.Fill(GE11_phi + delta_phi_GE11_ME11, CSCTF_phi1)
 
                 if not GE21_isOdd: 
-                  dPhist2_vs_dPhiBendst2_even.Fill(delta_GE21_ME21, dphi_mom_dphi_pos_st2)
-                  dPhist2_vs_dPhiBendst2_even_v2.Fill(GE21_phi + delta_GE21_ME21, CSCTF_phi2)
+                  dPhist2_vs_dPhiBendst2_even.Fill(delta_phi_GE21_ME21, dphi_mom_dphi_pos_st2)
+                  dPhist2_vs_dPhiBendst2_even_v2.Fill(GE21_phi + delta_phi_GE21_ME21, CSCTF_phi2)
                 else:              
-                  dPhist2_vs_dPhiBendst2_odd.Fill(delta_GE21_ME21, dphi_mom_dphi_pos_st2)
-                  dPhist2_vs_dPhiBendst2_odd_v2.Fill(GE21_phi + delta_GE21_ME21, CSCTF_phi2)
+                  dPhist2_vs_dPhiBendst2_odd.Fill(delta_phi_GE21_ME21, dphi_mom_dphi_pos_st2)
+                  dPhist2_vs_dPhiBendst2_odd_v2.Fill(GE21_phi + delta_phi_GE21_ME21, CSCTF_phi2)
 
                 ## dphi-dphi plots with 10 GeV pt cut
                 if pt>=10:
                   if not GE11_isOdd: 
-                    dPhist1_vs_dPhiBendst1_even_pt10.Fill(delta_GE11_ME11, dphi_mom_dphi_pos_st1)
-                    dPhist1_vs_dPhiBendst1_even_pt10_v2.Fill(GE11_phi + delta_GE11_ME11, CSCTF_phi1)
+                    dPhist1_vs_dPhiBendst1_even_pt10.Fill(delta_phi_GE11_ME11, dphi_mom_dphi_pos_st1)
+                    dPhist1_vs_dPhiBendst1_even_pt10_v2.Fill(GE11_phi + delta_phi_GE11_ME11, CSCTF_phi1)
                   else:              
-                    dPhist1_vs_dPhiBendst1_odd_pt10.Fill(delta_GE11_ME11, dphi_mom_dphi_pos_st1)
-                    dPhist1_vs_dPhiBendst1_odd_pt10_v2.Fill(GE11_phi + delta_GE11_ME11, CSCTF_phi1)
+                    dPhist1_vs_dPhiBendst1_odd_pt10.Fill(delta_phi_GE11_ME11, dphi_mom_dphi_pos_st1)
+                    dPhist1_vs_dPhiBendst1_odd_pt10_v2.Fill(GE11_phi + delta_phi_GE11_ME11, CSCTF_phi1)
 
                   if not GE21_isOdd: 
-                    dPhist2_vs_dPhiBendst2_even_pt10.Fill(delta_GE21_ME21, dphi_mom_dphi_pos_st2)
-                    dPhist2_vs_dPhiBendst2_even_pt10_v2.Fill(GE21_phi + delta_GE21_ME21, CSCTF_phi2)
+                    dPhist2_vs_dPhiBendst2_even_pt10.Fill(delta_phi_GE21_ME21, dphi_mom_dphi_pos_st2)
+                    dPhist2_vs_dPhiBendst2_even_pt10_v2.Fill(GE21_phi + delta_phi_GE21_ME21, CSCTF_phi2)
                   else:              
-                    dPhist2_vs_dPhiBendst2_odd_pt10.Fill(delta_GE21_ME21, dphi_mom_dphi_pos_st2)
-                    dPhist2_vs_dPhiBendst2_odd_pt10_v2.Fill(GE21_phi + delta_GE21_ME21, CSCTF_phi2)
+                    dPhist2_vs_dPhiBendst2_odd_pt10.Fill(delta_phi_GE21_ME21, dphi_mom_dphi_pos_st2)
+                    dPhist2_vs_dPhiBendst2_odd_pt10_v2.Fill(GE21_phi + delta_phi_GE21_ME21, CSCTF_phi2)
 
 
                 ## following Tao's updates from July 12 2016...
@@ -1194,27 +1299,27 @@ if __name__ == "__main__":
                 if CSCTF_isOdd2: fit_slope_ME21 = 17.8
                 else:            fit_slope_ME21 = 25.
 
-                GEM_phib1 = GE11_phi + fit_slope_ME11 * delta_GE11_ME11
-                GEM_phib2 = GE21_phi + fit_slope_ME21 * delta_GE21_ME21
+                GEM_phib1 = GE11_phi + fit_slope_ME11 * delta_phi_GE11_ME11
+                GEM_phib2 = GE21_phi + fit_slope_ME21 * delta_phi_GE21_ME21
 
 
-                if delta_GE11_ME11 != 0.:
-                  alpha_GE11 = dphi_mom_dphi_pos_st1/delta_GE11_ME11                  
+                if delta_phi_GE11_ME11 != 0.:
+                  slope_GE11 = dphi_mom_dphi_pos_st1/delta_phi_GE11_ME11                  
                   if CSCTF_isOdd1:
-                    alpha_GE11_odd.Fill(alpha_GE11) 
-                    alpha_vs_GenMuEta_GE11_odd.Fill(abs(eta_prop), alpha_GE11)
+                    slope_GE11_odd.Fill(slope_GE11) 
+                    slope_vs_GenMuEta_GE11_odd.Fill(abs(eta_prop), slope_GE11)
                   else:
-                    alpha_GE11_even.Fill(alpha_GE11)            
-                    alpha_vs_GenMuEta_GE11_even.Fill(abs(eta_prop), alpha_GE11)
+                    slope_GE11_even.Fill(slope_GE11)            
+                    slope_vs_GenMuEta_GE11_even.Fill(abs(eta_prop), slope_GE11)
 
-                if delta_GE21_ME21 != 0.:
-                  alpha_GE21 = dphi_mom_dphi_pos_st2/delta_GE21_ME21
+                if delta_phi_GE21_ME21 != 0.:
+                  slope_GE21 = dphi_mom_dphi_pos_st2/delta_phi_GE21_ME21
                   if CSCTF_isOdd2:
-                    alpha_GE21_odd.Fill(alpha_GE21) 
-                    alpha_vs_GenMuEta_GE21_odd.Fill(abs(eta_prop), alpha_GE21)
+                    slope_GE21_odd.Fill(slope_GE21) 
+                    slope_vs_GenMuEta_GE21_odd.Fill(abs(eta_prop), slope_GE21)
                   else:
-                    alpha_GE21_even.Fill(alpha_GE21)            
-                    alpha_vs_GenMuEta_GE21_even.Fill(abs(eta_prop), alpha_GE21)
+                    slope_GE21_even.Fill(slope_GE21)            
+                    slope_vs_GenMuEta_GE21_even.Fill(abs(eta_prop), slope_GE21)
 
 
                 if not GE11_isOdd: phiGEMst1_even.Fill(GEM_phib1)
@@ -1232,6 +1337,19 @@ if __name__ == "__main__":
 
                 if verbose:
                   print "\t\tabs_GEM_phib1_phib2_inv", abs_GEM_phib1_phib2_inv
+
+
+                GEM_alphab1_alphab2 = GEM_alpha_st1 - GEM_alpha_st2
+                abs_GEM_alphab1_alphab2 = abs(GEM_alphab1_alphab2)
+
+                if GEM_alpha_st1 != GEM_alpha_st2 and abs(GEM_alpha_st1) != 99. and abs(GEM_alpha_st2) != 99.:
+                  abs_GEM_alphab1_alphab2_inv = 1./abs_GEM_alphab1_alphab2
+                else: 
+                  abs_GEM_alphab1_alphab2_inv = 140
+
+                if verbose:
+                  print "\t\tabs_GEM_alphab1_alphab2_inv", abs_GEM_alphab1_alphab2_inv
+
                     
                 #correlation plots for pT measurement...
                 phiGEMst1_phiGEMst2.Fill(GEM_phib1 - GEM_phib2)
@@ -1250,7 +1368,37 @@ if __name__ == "__main__":
                 if dxy <= 5:                GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5.Fill(pt, abs_GEM_phib1_phib2_inv)
                 if 5 < dxy  and dxy <= 50:  GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50.Fill(pt, abs_GEM_phib1_phib2_inv)
                 if 50 < dxy and dxy <= 100: GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100.Fill(pt, abs_GEM_phib1_phib2_inv)
-                  
+
+                ## alpha versions
+                alphaGEMst1_alphaGEMst2.Fill(GEM_alpha_st1 - GEM_alpha_st2)
+                if 5<=pt  and pt < 10: alphaGEMst1_alphaGEMst2_pt5to10.Fill(GEM_alpha_st1 - GEM_alpha_st2)
+                if 10<=pt and pt < 20: alphaGEMst1_alphaGEMst2_pt10to20.Fill(GEM_alpha_st1 - GEM_alpha_st2)
+                if 20<=pt:             alphaGEMst1_alphaGEMst2_pt20.Fill(GEM_alpha_st1 - GEM_alpha_st2)
+
+                if dxy <= 5:                alphaGEMst1_vs_alphaGEMst2_dxy0to5.Fill(GEM_alpha_st1, GEM_alpha_st2)
+                if 5 < dxy  and dxy <= 50:  alphaGEMst1_vs_alphaGEMst2_dxy5to50.Fill(GEM_alpha_st1, GEM_alpha_st2)
+                if 50 < dxy and dxy <= 100: alphaGEMst1_vs_alphaGEMst2_dxy50to100.Fill(GEM_alpha_st1, GEM_alpha_st2)
+
+                GenMuPt_vs_alphaGEMst1_alphaGEMst2.Fill(pt, GEM_alphab1_alphab2)
+                GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2.Fill(pt, abs_GEM_alphab1_alphab2)
+
+                GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv.Fill(pt, abs_GEM_alphab1_alphab2_inv)
+                if (GEM_alpha_st1 != 0.): GenMuPt_vs_alphaGEMst1_inv.Fill(pt, 1./GEM_alpha_st1)
+                if (GEM_alpha_st2 != 0.): GenMuPt_vs_alphaGEMst2_inv.Fill(pt, 1./GEM_alpha_st2)
+
+                if dxy <= 5:                
+                  GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy0to5.Fill(pt, abs_GEM_alphab1_alphab2_inv)
+                  if (GEM_alpha_st1 != 0.): GenMuPt_vs_alphaGEMst1_inv_dxy0to5.Fill(pt, 1./GEM_alpha_st1)
+                  if (GEM_alpha_st2 != 0.): GenMuPt_vs_alphaGEMst2_inv_dxy0to5.Fill(pt, 1./GEM_alpha_st2)
+                if 5 < dxy  and dxy <= 50:  
+                  GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy5to50.Fill(pt, abs_GEM_alphab1_alphab2_inv)
+                  if (GEM_alpha_st1 != 0.): GenMuPt_vs_alphaGEMst1_inv_dxy5to50.Fill(pt, 1./GEM_alpha_st1)
+                  if (GEM_alpha_st2 != 0.): GenMuPt_vs_alphaGEMst2_inv_dxy5to50.Fill(pt, 1./GEM_alpha_st2)
+                if 50 < dxy and dxy <= 100: 
+                  GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy50to100.Fill(pt, abs_GEM_alphab1_alphab2_inv)
+                  if (GEM_alpha_st1 != 0.): GenMuPt_vs_alphaGEMst1_inv_dxy50to100.Fill(pt, 1./GEM_alpha_st1)
+                  if (GEM_alpha_st2 != 0.): GenMuPt_vs_alphaGEMst2_inv_dxy50to100.Fill(pt, 1./GEM_alpha_st2)
+
                 ## displaced pT assignment plots
                 pT_special = 0
                 if dxy <= 100:
@@ -1486,7 +1634,7 @@ if __name__ == "__main__":
       
     
 
-
+    ## plots with DTs
     makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst2, targetDir + "GenMuPt_vs_phiDTst1_phiDTst2.png", ";p_{T} [GeV]; #Delta#Phi_{12}", "COLZ")
     makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst3, targetDir + "GenMuPt_vs_phiDTst1_phiDTst3.png", ";p_{T} [GeV]; #Delta#Phi_{13}", "COLZ")
     makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst4, targetDir + "GenMuPt_vs_phiDTst1_phiDTst4.png", ";p_{T} [GeV]; #Delta#Phi_{14}", "COLZ")
@@ -1587,6 +1735,29 @@ if __name__ == "__main__":
     makeSimplePlot(phiGEMst1_vs_phiGEMst2_dxy5to50, targetDir + "phiGEMst1_vs_phiGEMst2_dxy5to50.png", "; #Phi_{direction}(GE11); #Phi_{direction}(GE21)", "COLZ")
     makeSimplePlot(phiGEMst1_vs_phiGEMst2_dxy50to100, targetDir + "phiGEMst1_vs_phiGEMst2_dxy50to100.png", "; #Phi_{direction}(GE11); #Phi_{direction}(GE21)", "COLZ")
 
+    makeSimplePlot(alphaGEMst1_vs_alphaGEMst2_dxy0to5, targetDir + "alphaGEMst1_vs_alphaGEMst2_dxy0to5.png", "; #alpha_{direction}(GE11); #alpha_{direction}(GE21)", "COLZ") 
+    makeSimplePlot(alphaGEMst1_vs_alphaGEMst2_dxy5to50, targetDir + "alphaGEMst1_vs_alphaGEMst2_dxy5to50.png", "; #alpha_{direction}(GE11); #alpha_{direction}(GE21)", "COLZ")
+    makeSimplePlot(alphaGEMst1_vs_alphaGEMst2_dxy50to100, targetDir + "alphaGEMst1_vs_alphaGEMst2_dxy50to100.png", "; #alpha_{direction}(GE11); #alpha_{direction}(GE21)", "COLZ")
+    
+    make2DMedianPlot(alphaGEMst1_vs_alphaGEMst2_dxy0to5, targetDir + "alphaGEMst1_vs_alphaGEMst2_dxy0to5_pol1.png", 
+                     "; #alpha_{direction}(GE11); #alpha_{direction}(GE21)", True, True, "pol1")
+    make2DMedianPlot(alphaGEMst1_vs_alphaGEMst2_dxy5to50, targetDir + "alphaGEMst1_vs_alphaGEMst2_dxy5to50_pol1.png", 
+                     "; #alpha_{direction}(GE11); #alpha_{direction}(GE21)", True, True, "pol1")
+    make2DMedianPlot(alphaGEMst1_vs_alphaGEMst2_dxy50to100, targetDir + "alphaGEMst1_vs_alphaGEMst2_dxy50to100_pol1.png", 
+                     "; #alpha_{direction}(GE11); #alpha_{direction}(GE21)", True, True, "pol1")
+
+
+    makeSimplePlot(GenMuPt_vs_alphaGEMst1_inv, targetDir + "GenMuPt_vs_alphaGEMst1_inv.png", "; GEN Mu p_{T} [GeV]; #alpha_{direction}(GE11)", "COLZ") 
+    makeSimplePlot(GenMuPt_vs_alphaGEMst1_inv_dxy0to5, targetDir + "GenMuPt_vs_alphaGEMst1_inv_dxy0to5.png", "; GEN Mu p_{T} [GeV]; #alpha_{direction}(GE11)", "COLZ") 
+    makeSimplePlot(GenMuPt_vs_alphaGEMst1_inv_dxy5to50, targetDir + "GenMuPt_vs_alphaGEMst1_inv_dxy5to50.png", "; GEN Mu p_{T} [GeV]; #alpha_{direction}(GE11)", "COLZ") 
+    makeSimplePlot(GenMuPt_vs_alphaGEMst1_inv_dxy50to100, targetDir + "GenMuPt_vs_alphaGEMst1_inv_dxy50to100.png", "; GEN Mu p_{T} [GeV]; #alpha_{direction}(GE11)", "COLZ") 
+
+    makeSimplePlot(GenMuPt_vs_alphaGEMst2_inv, targetDir + "GenMuPt_vs_alphaGEMst2_inv.png", "; GEN Mu p_{T} [GeV]; #alpha_{direction}(GE21)", "COLZ") 
+    makeSimplePlot(GenMuPt_vs_alphaGEMst2_inv_dxy0to5, targetDir + "GenMuPt_vs_alphaGEMst2_inv_dxy0to5.png", "; GEN Mu p_{T} [GeV]; #alpha_{direction}(GE21)", "COLZ") 
+    makeSimplePlot(GenMuPt_vs_alphaGEMst2_inv_dxy5to50, targetDir + "GenMuPt_vs_alphaGEMst2_inv_dxy5to50.png", "; GEN Mu p_{T} [GeV]; #alpha_{direction}(GE21)", "COLZ") 
+    makeSimplePlot(GenMuPt_vs_alphaGEMst2_inv_dxy50to100, targetDir + "GenMuPt_vs_alphaGEMst2_inv_dxy50to100.png", "; GEN Mu p_{T} [GeV]; #alpha_{direction}(GE21)", "COLZ") 
+
+
     make2DMedianPlot(dPhist1_vs_dPhiBendst1_even, targetDir + "dPhist1_vs_dPhiBendst1_even_pol1.png", 
                         "ME11 even chamber; #Delta#Phi(GE11,ME11); #Phi_{momentum} - #Phi_{position}", True, False, "pol1")
     make2DMedianPlot(dPhist1_vs_dPhiBendst1_odd, targetDir + "dPhist1_vs_dPhiBendst1_odd_pol1.png", 
@@ -1686,21 +1857,51 @@ if __name__ == "__main__":
     make2DMedianPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100_pol1.png", 
                         "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{direction}(GE11,GE21)|^{-1}", True, True, "pol1")
 
+    make2DMedianPlot(GenMuPt_vs_alphaGEMst1_alphaGEMst2, targetDir + "GenMuPt_vs_alphaGEMst1_alphaGEMst2.png", 
+                     "GenMuPt_vs_alphaGEMst1_alphaGEMst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|", False, True)
+    make2DMedianPlot(GenMuPt_vs_alphaGEMst1_alphaGEMst2, targetDir + "GenMuPt_vs_alphaGEMst1_alphaGEMst2_fit.png", 
+                     "GenMuPt_vs_alphaGEMst1_alphaGEMst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|", True, True)
+    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_pol1.png", 
+                     "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|")
+    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_pol1.png", 
+                     "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{dir ection}(GE11,GE21)|", False, True, "pol1")
+    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_pol1_v2.png", 
+                     "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_pol1_v2; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|", True, True, "pol1")
+
+    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy0to5, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy0to5_pol1.png", 
+                        "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy0to5_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|^{-1}", False, True, "pol1")
+    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy5to50, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy5to50_pol1.png", 
+                        "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy5to50_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|^{-1}", False, True, "pol1")
+    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy50to100, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy50to100_pol1.png", 
+                        "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy50to100_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|^{-1}", False, True, "pol1")
+
+    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy0to5, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy0to5_pol1.png", 
+                        "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy0to5_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|^{-1}", True, True, "pol1")
+    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy5to50, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy5to50_pol1.png", 
+                        "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy5to50_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|^{-1}", True, True, "pol1")
+    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy50to100, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy50to100_pol1.png", 
+                        "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy50to100_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|^{-1}", True, True, "pol1")
+
 
     makeSimplePlot(phiGEMst1_phiGEMst2, targetDir + "phiGEMst1_phiGEMst2.png", "; #Phi_{dir}(GE11)-#Phi_{dir}(GE21); Entries")
     makeSimplePlot(phiGEMst1_phiGEMst2_pt5to10, targetDir + "phiGEMst1_phiGEMst2_pt5to10.png", "; #Phi_{dir}(GE11)-#Phi_{dir}(GE21); Entries")
     makeSimplePlot(phiGEMst1_phiGEMst2_pt10to20, targetDir + "phiGEMst1_phiGEMst2_pt10to20.png", "; #Phi_{dir}(GE11)-#Phi_{dir}(GE21); Entries")
     makeSimplePlot(phiGEMst1_phiGEMst2_pt20, targetDir + "phiGEMst1_phiGEMst2_pt20.png", "; #Phi_{dir}(GE11)-#Phi_{dir}(GE21); Entries")
 
-    makeSimplePlot(alpha_vs_GenMuEta_GE11_even, targetDir + "alpha_vs_GenMuEta_GE11_even.png", "; GEN Mu #eta; #alpha", "COLZ") 
-    makeSimplePlot(alpha_vs_GenMuEta_GE11_odd, targetDir + "alpha_vs_GenMuEta_GE11_odd.png", "; GEN Mu #eta; #alpha", "COLZ") 
-    makeSimplePlot(alpha_vs_GenMuEta_GE21_even, targetDir + "alpha_vs_GenMuEta_GE21_even.png", "; GEN Mu #eta; #alpha", "COLZ") 
-    makeSimplePlot(alpha_vs_GenMuEta_GE21_odd, targetDir + "alpha_vs_GenMuEta_GE21_odd.png", "; GEN Mu #eta; #alpha", "COLZ") 
+    makeSimplePlot(alphaGEMst1_alphaGEMst2, targetDir + "alphaGEMst1_alphaGEMst2.png", "; #alpha_{dir}(GE11)-#alpha_{dir}(GE21); Entries")
+    makeSimplePlot(alphaGEMst1_alphaGEMst2_pt5to10, targetDir + "alphaGEMst1_alphaGEMst2_pt5to10.png", "; #alpha_{dir}(GE11)-#alpha_{dir}(GE21); Entries")
+    makeSimplePlot(alphaGEMst1_alphaGEMst2_pt10to20, targetDir + "alphaGEMst1_alphaGEMst2_pt10to20.png", "; #alpha_{dir}(GE11)-#alpha_{dir}(GE21); Entries")
+    makeSimplePlot(alphaGEMst1_alphaGEMst2_pt20, targetDir + "alphaGEMst1_alphaGEMst2_pt20.png", "; #alpha_{dir}(GE11)-#alpha_{dir}(GE21); Entries")
 
-    makeSimplePlot(alpha_GE11_even, targetDir + "alpha_GE11_even.png", "; #alpha") 
-    makeSimplePlot(alpha_GE11_odd, targetDir + "alpha_GE11_odd.png", "; #alpha") 
-    makeSimplePlot(alpha_GE21_even, targetDir + "alpha_GE21_even.png", "; #alpha") 
-    makeSimplePlot(alpha_GE21_odd, targetDir + "alpha_GE21_odd.png", "; #alpha") 
+    makeSimplePlot(slope_vs_GenMuEta_GE11_even, targetDir + "slope_vs_GenMuEta_GE11_even.png", "; GEN Mu #eta; slope", "COLZ") 
+    makeSimplePlot(slope_vs_GenMuEta_GE11_odd, targetDir + "slope_vs_GenMuEta_GE11_odd.png", "; GEN Mu #eta; slope", "COLZ") 
+    makeSimplePlot(slope_vs_GenMuEta_GE21_even, targetDir + "slope_vs_GenMuEta_GE21_even.png", "; GEN Mu #eta; slope", "COLZ") 
+    makeSimplePlot(slope_vs_GenMuEta_GE21_odd, targetDir + "slope_vs_GenMuEta_GE21_odd.png", "; GEN Mu #eta; slope", "COLZ") 
+
+    makeSimplePlot(slope_GE11_even, targetDir + "slope_GE11_even.png", "; slope") 
+    makeSimplePlot(slope_GE11_odd, targetDir + "slope_GE11_odd.png", "; slope") 
+    makeSimplePlot(slope_GE21_even, targetDir + "slope_GE21_even.png", "; slope") 
+    makeSimplePlot(slope_GE21_odd, targetDir + "slope_GE21_odd.png", "; slope") 
 
 
     """
@@ -1935,6 +2136,23 @@ if __name__ == "__main__":
                 TEfficiency(DPhiPt20_GenMuPt_phiGEMst1_phiGEMst2_dxy5to50,   GenMuPt_phiGEMst1_phiGEMst2_dxy5to50),
                 TEfficiency(DPhiPt20_GenMuPt_phiGEMst1_phiGEMst2_dxy50to100, GenMuPt_phiGEMst1_phiGEMst2_dxy50to100),
                 targetDir + "DPhiPt20_GenMuPt_phiGEMst1_phiGEMst2_dxy0to100.png", True)
+
+
+    makeEffPlot(TEfficiency(DAlphaPt10_GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to5,    GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to5),
+                TEfficiency(DAlphaPt10_GenMuPt_alphaGEMst1_alphaGEMst2_dxy5to50,   GenMuPt_alphaGEMst1_alphaGEMst2_dxy5to50),
+                TEfficiency(DAlphaPt10_GenMuPt_alphaGEMst1_alphaGEMst2_dxy50to100, GenMuPt_alphaGEMst1_alphaGEMst2_dxy50to100),
+                targetDir + "DAlphaPt10_GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to100.png", True)
+
+    makeEffPlot(TEfficiency(DAlphaPt15_GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to5,    GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to5),
+                TEfficiency(DAlphaPt15_GenMuPt_alphaGEMst1_alphaGEMst2_dxy5to50,   GenMuPt_alphaGEMst1_alphaGEMst2_dxy5to50),
+                TEfficiency(DAlphaPt15_GenMuPt_alphaGEMst1_alphaGEMst2_dxy50to100, GenMuPt_alphaGEMst1_alphaGEMst2_dxy50to100),
+                targetDir + "DAlphaPt15_GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to100.png", True)
+
+    makeEffPlot(TEfficiency(DAlphaPt20_GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to5,    GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to5),
+                TEfficiency(DAlphaPt20_GenMuPt_alphaGEMst1_alphaGEMst2_dxy5to50,   GenMuPt_alphaGEMst1_alphaGEMst2_dxy5to50),
+                TEfficiency(DAlphaPt20_GenMuPt_alphaGEMst1_alphaGEMst2_dxy50to100, GenMuPt_alphaGEMst1_alphaGEMst2_dxy50to100),
+                targetDir + "DAlphaPt20_GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to100.png", True)
+
 
 
   displacedTriggerEfficiency()

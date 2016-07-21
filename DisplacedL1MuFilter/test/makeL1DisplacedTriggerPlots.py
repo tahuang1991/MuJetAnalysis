@@ -252,7 +252,7 @@ if __name__ == "__main__":
     GenMuPt_DT1_DT3 = TH1F("GenMuPt_DT1_DT3","", 60,0.,60)
     GenMuPt_DT1_DT4 = TH1F("GenMuPt_DT1_DT4","", 60,0.,60)
     GenMuPt_DT2_DT3 = TH1F("GenMuPt_DT2_DT3","", 60,0.,60)
-    GenMuPt_phiDTst2_phiDTst4 = TH1F("GenMuPt_phiDTst2_phiDTst4","", 60,0.,60)
+    GenMuPt_DT2_DT4 = TH1F("GenMuPt_DT2_DT4","", 60,0.,60)
     GenMuPt_DT3_DT4 = TH1F("GenMuPt_DT3_DT4","", 60,0.,60)
 
     GenMuPt_dxy0to5 = TH1F("GenMuPt_dxy0to5","", 60,0.,60)
@@ -260,7 +260,7 @@ if __name__ == "__main__":
     GenMuPt_DT1_DT3_dxy0to5 = TH1F("GenMuPt_DT1_DT3_dxy0to5","", 60,0.,60)
     GenMuPt_DT1_DT4_dxy0to5 = TH1F("GenMuPt_DT1_DT4_dxy0to5","", 60,0.,60)
     GenMuPt_DT2_DT3_dxy0to5 = TH1F("GenMuPt_DT2_DT3_dxy0to5","", 60,0.,60)
-    GenMuPt_phiDTst2_phiDTst4_dxy0to5 = TH1F("GenMuPt_phiDTst2_phiDTst4_dxy0to5","", 60,0.,60)
+    GenMuPt_DT2_DT4_dxy0to5 = TH1F("GenMuPt_DT2_DT4_dxy0to5","", 60,0.,60)
     GenMuPt_DT3_DT4_dxy0to5 = TH1F("GenMuPt_DT3_DT4_dxy0to5","", 60,0.,60)
 
     GenMuPt_dxy5to50 = TH1F("GenMuPt_dxy5to50","", 60,0.,60)
@@ -2058,11 +2058,13 @@ if __name__ == "__main__":
 
       ## get the pT cut from the title
       len_string = len('Prompt_L1MuPt')
+      
       index = title.find('Prompt_L1MuPt')
       if index == -1:
         len_string = len('Displaced_L1MuPt')
         index = title.find('Displaced_L1MuPt')
-      ptCut = title[len_string:len_string+2]
+      ptCut = title[index+len_string:index+len_string+2]
+      print len_string, ptCut
 
       leg = TLegend(0.6,0.2,0.9,0.45,"","brNDC")
       leg.SetFillColor(kWhite)

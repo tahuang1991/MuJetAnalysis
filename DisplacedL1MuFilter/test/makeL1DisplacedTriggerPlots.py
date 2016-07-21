@@ -391,39 +391,39 @@ if __name__ == "__main__":
     GenMuPt_phiDTst3_phiDTst4_dxy50to100_endcap = TH1F("GenMuPt_phiDTst3_phiDTst4_dxy50to100_endcap","", 60,0.,60)
 
 
-    L1MuPt10_GenMuPt = TH1F("L1MuPt10_GenMuPt","", 60,0.,60)
-    L1MuPt15_GenMuPt = TH1F("L1MuPt15_GenMuPt","", 60,0.,60)
-    L1MuPt20_GenMuPt = TH1F("L1MuPt20_GenMuPt","", 60,0.,60)
+    Prompt_L1MuPt10_GenMuPt = TH1F("Prompt_L1MuPt10_GenMuPt","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt = TH1F("Prompt_L1MuPt15_GenMuPt","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt = TH1F("Prompt_L1MuPt20_GenMuPt","", 60,0.,60)
 
-    L1MuPt10_GenMuPt_eta16to22 = TH1F("L1MuPt10_GenMuPt_eta16to22","", 60,0.,60)
-    L1MuPt15_GenMuPt_eta16to22 = TH1F("L1MuPt15_GenMuPt_eta16to22","", 60,0.,60)
-    L1MuPt20_GenMuPt_eta16to22 = TH1F("L1MuPt20_GenMuPt_eta16to22","", 60,0.,60)
-
-
-    L1MuPt10_GenMuPt_dxy0to5 = TH1F("L1MuPt10_GenMuPt_dxy0to5","", 60,0.,60)
-    L1MuPt15_GenMuPt_dxy0to5 = TH1F("L1MuPt15_GenMuPt_dxy0to5","", 60,0.,60)
-    L1MuPt20_GenMuPt_dxy0to5 = TH1F("L1MuPt20_GenMuPt_dxy0to5","", 60,0.,60)
-
-    L1MuPt10_GenMuPt_dxy5to50 = TH1F("L1MuPt10_GenMuPt_dxy5to50","", 60,0.,60)
-    L1MuPt15_GenMuPt_dxy5to50 = TH1F("L1MuPt15_GenMuPt_dxy5to50","", 60,0.,60)
-    L1MuPt20_GenMuPt_dxy5to50 = TH1F("L1MuPt20_GenMuPt_dxy5to50","", 60,0.,60)
-
-    L1MuPt10_GenMuPt_dxy50to100 = TH1F("L1MuPt10_GenMuPt_dxy50to100","", 60,0.,60)
-    L1MuPt15_GenMuPt_dxy50to100 = TH1F("L1MuPt15_GenMuPt_dxy50to100","", 60,0.,60)
-    L1MuPt20_GenMuPt_dxy50to100 = TH1F("L1MuPt20_GenMuPt_dxy50to100","", 60,0.,60)
+    Prompt_L1MuPt10_GenMuPt_eta16to22 = TH1F("Prompt_L1MuPt10_GenMuPt_eta16to22","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt_eta16to22 = TH1F("Prompt_L1MuPt15_GenMuPt_eta16to22","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt_eta16to22 = TH1F("Prompt_L1MuPt20_GenMuPt_eta16to22","", 60,0.,60)
 
 
-    L1MuPt10_GenMuPt_dxy0to5_eta16to22 = TH1F("L1MuPt10_GenMuPt_dxy0to5_eta16to22","", 60,0.,60)
-    L1MuPt15_GenMuPt_dxy0to5_eta16to22 = TH1F("L1MuPt15_GenMuPt_dxy0to5_eta16to22","", 60,0.,60)
-    L1MuPt20_GenMuPt_dxy0to5_eta16to22 = TH1F("L1MuPt20_GenMuPt_dxy0to5_eta16to22","", 60,0.,60)
+    Prompt_L1MuPt10_GenMuPt_dxy0to5 = TH1F("Prompt_L1MuPt10_GenMuPt_dxy0to5","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt_dxy0to5 = TH1F("Prompt_L1MuPt15_GenMuPt_dxy0to5","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt_dxy0to5 = TH1F("Prompt_L1MuPt20_GenMuPt_dxy0to5","", 60,0.,60)
 
-    L1MuPt10_GenMuPt_dxy5to50_eta16to22 = TH1F("L1MuPt10_GenMuPt_dxy5to50_eta16to22","", 60,0.,60)
-    L1MuPt15_GenMuPt_dxy5to50_eta16to22 = TH1F("L1MuPt15_GenMuPt_dxy5to50_eta16to22","", 60,0.,60)
-    L1MuPt20_GenMuPt_dxy5to50_eta16to22 = TH1F("L1MuPt20_GenMuPt_dxy5to50_eta16to22","", 60,0.,60)
+    Prompt_L1MuPt10_GenMuPt_dxy5to50 = TH1F("Prompt_L1MuPt10_GenMuPt_dxy5to50","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt_dxy5to50 = TH1F("Prompt_L1MuPt15_GenMuPt_dxy5to50","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt_dxy5to50 = TH1F("Prompt_L1MuPt20_GenMuPt_dxy5to50","", 60,0.,60)
 
-    L1MuPt10_GenMuPt_dxy50to100_eta16to22 = TH1F("L1MuPt10_GenMuPt_dxy50to100_eta16to22","", 60,0.,60)
-    L1MuPt15_GenMuPt_dxy50to100_eta16to22 = TH1F("L1MuPt15_GenMuPt_dxy50to100_eta16to22","", 60,0.,60)
-    L1MuPt20_GenMuPt_dxy50to100_eta16to22 = TH1F("L1MuPt20_GenMuPt_dxy50to100_eta16to22","", 60,0.,60)
+    Prompt_L1MuPt10_GenMuPt_dxy50to100 = TH1F("Prompt_L1MuPt10_GenMuPt_dxy50to100","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt_dxy50to100 = TH1F("Prompt_L1MuPt15_GenMuPt_dxy50to100","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt_dxy50to100 = TH1F("Prompt_L1MuPt20_GenMuPt_dxy50to100","", 60,0.,60)
+
+
+    Prompt_L1MuPt10_GenMuPt_dxy0to5_eta16to22 = TH1F("Prompt_L1MuPt10_GenMuPt_dxy0to5_eta16to22","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt_dxy0to5_eta16to22 = TH1F("Prompt_L1MuPt15_GenMuPt_dxy0to5_eta16to22","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt_dxy0to5_eta16to22 = TH1F("Prompt_L1MuPt20_GenMuPt_dxy0to5_eta16to22","", 60,0.,60)
+
+    Prompt_L1MuPt10_GenMuPt_dxy5to50_eta16to22 = TH1F("Prompt_L1MuPt10_GenMuPt_dxy5to50_eta16to22","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt_dxy5to50_eta16to22 = TH1F("Prompt_L1MuPt15_GenMuPt_dxy5to50_eta16to22","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt_dxy5to50_eta16to22 = TH1F("Prompt_L1MuPt20_GenMuPt_dxy5to50_eta16to22","", 60,0.,60)
+
+    Prompt_L1MuPt10_GenMuPt_dxy50to100_eta16to22 = TH1F("Prompt_L1MuPt10_GenMuPt_dxy50to100_eta16to22","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt_dxy50to100_eta16to22 = TH1F("Prompt_L1MuPt15_GenMuPt_dxy50to100_eta16to22","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt_dxy50to100_eta16to22 = TH1F("Prompt_L1MuPt20_GenMuPt_dxy50to100_eta16to22","", 60,0.,60)
 
 
     DPhiPt10_GenMuPt = TH1F("DPhiPt10_GenMuPt","", 60,0.,60)
@@ -491,54 +491,54 @@ if __name__ == "__main__":
     DPhiPt20_GenMuPt_dxy50to100_endcap = TH1F("DPhiPt20_GenMuPt_dxy50to100_endcap","", 60,0.,60)
 
 
-    L1MuPt10_GenMuPt_barrel = TH1F("L1MuPt10_GenMuPt_barrel","", 60,0.,60)
-    L1MuPt15_GenMuPt_barrel = TH1F("L1MuPt15_GenMuPt_barrel","", 60,0.,60)
-    L1MuPt20_GenMuPt_barrel = TH1F("L1MuPt20_GenMuPt_barrel","", 60,0.,60)
+    Prompt_L1MuPt10_GenMuPt_barrel = TH1F("Prompt_L1MuPt10_GenMuPt_barrel","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt_barrel = TH1F("Prompt_L1MuPt15_GenMuPt_barrel","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt_barrel = TH1F("Prompt_L1MuPt20_GenMuPt_barrel","", 60,0.,60)
 
-    L1MuPt10_GenMuPt_dxy0to5_barrel = TH1F("L1MuPt10_GenMuPt_dxy0to5_barrel","", 60,0.,60)
-    L1MuPt15_GenMuPt_dxy0to5_barrel = TH1F("L1MuPt15_GenMuPt_dxy0to5_barrel","", 60,0.,60)
-    L1MuPt20_GenMuPt_dxy0to5_barrel = TH1F("L1MuPt20_GenMuPt_dxy0to5_barrel","", 60,0.,60)
+    Prompt_L1MuPt10_GenMuPt_dxy0to5_barrel = TH1F("Prompt_L1MuPt10_GenMuPt_dxy0to5_barrel","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt_dxy0to5_barrel = TH1F("Prompt_L1MuPt15_GenMuPt_dxy0to5_barrel","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt_dxy0to5_barrel = TH1F("Prompt_L1MuPt20_GenMuPt_dxy0to5_barrel","", 60,0.,60)
 
-    L1MuPt10_GenMuPt_dxy5to50_barrel = TH1F("L1MuPt10_GenMuPt_dxy5to50_barrel","", 60,0.,60)
-    L1MuPt15_GenMuPt_dxy5to50_barrel = TH1F("L1MuPt15_GenMuPt_dxy5to50_barrel","", 60,0.,60)
-    L1MuPt20_GenMuPt_dxy5to50_barrel = TH1F("L1MuPt20_GenMuPt_dxy5to50_barrel","", 60,0.,60)
+    Prompt_L1MuPt10_GenMuPt_dxy5to50_barrel = TH1F("Prompt_L1MuPt10_GenMuPt_dxy5to50_barrel","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt_dxy5to50_barrel = TH1F("Prompt_L1MuPt15_GenMuPt_dxy5to50_barrel","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt_dxy5to50_barrel = TH1F("Prompt_L1MuPt20_GenMuPt_dxy5to50_barrel","", 60,0.,60)
 
-    L1MuPt10_GenMuPt_dxy50to100_barrel = TH1F("L1MuPt10_GenMuPt_dxy50to100_barrel","", 60,0.,60)
-    L1MuPt15_GenMuPt_dxy50to100_barrel = TH1F("L1MuPt15_GenMuPt_dxy50to100_barrel","", 60,0.,60)
-    L1MuPt20_GenMuPt_dxy50to100_barrel = TH1F("L1MuPt20_GenMuPt_dxy50to100_barrel","", 60,0.,60)
+    Prompt_L1MuPt10_GenMuPt_dxy50to100_barrel = TH1F("Prompt_L1MuPt10_GenMuPt_dxy50to100_barrel","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt_dxy50to100_barrel = TH1F("Prompt_L1MuPt15_GenMuPt_dxy50to100_barrel","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt_dxy50to100_barrel = TH1F("Prompt_L1MuPt20_GenMuPt_dxy50to100_barrel","", 60,0.,60)
 
-    L1MuPt10_GenMuPt_overlap = TH1F("L1MuPt10_GenMuPt_overlap","", 60,0.,60)
-    L1MuPt15_GenMuPt_overlap = TH1F("L1MuPt15_GenMuPt_overlap","", 60,0.,60)
-    L1MuPt20_GenMuPt_overlap = TH1F("L1MuPt20_GenMuPt_overlap","", 60,0.,60)
+    Prompt_L1MuPt10_GenMuPt_overlap = TH1F("Prompt_L1MuPt10_GenMuPt_overlap","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt_overlap = TH1F("Prompt_L1MuPt15_GenMuPt_overlap","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt_overlap = TH1F("Prompt_L1MuPt20_GenMuPt_overlap","", 60,0.,60)
 
-    L1MuPt10_GenMuPt_dxy0to5_overlap = TH1F("L1MuPt10_GenMuPt_dxy0to5_overlap","", 60,0.,60)
-    L1MuPt15_GenMuPt_dxy0to5_overlap = TH1F("L1MuPt15_GenMuPt_dxy0to5_overlap","", 60,0.,60)
-    L1MuPt20_GenMuPt_dxy0to5_overlap = TH1F("L1MuPt20_GenMuPt_dxy0to5_overlap","", 60,0.,60)
+    Prompt_L1MuPt10_GenMuPt_dxy0to5_overlap = TH1F("Prompt_L1MuPt10_GenMuPt_dxy0to5_overlap","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt_dxy0to5_overlap = TH1F("Prompt_L1MuPt15_GenMuPt_dxy0to5_overlap","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt_dxy0to5_overlap = TH1F("Prompt_L1MuPt20_GenMuPt_dxy0to5_overlap","", 60,0.,60)
 
-    L1MuPt10_GenMuPt_dxy5to50_overlap = TH1F("L1MuPt10_GenMuPt_dxy5to50_overlap","", 60,0.,60)
-    L1MuPt15_GenMuPt_dxy5to50_overlap = TH1F("L1MuPt15_GenMuPt_dxy5to50_overlap","", 60,0.,60)
-    L1MuPt20_GenMuPt_dxy5to50_overlap = TH1F("L1MuPt20_GenMuPt_dxy5to50_overlap","", 60,0.,60)
+    Prompt_L1MuPt10_GenMuPt_dxy5to50_overlap = TH1F("Prompt_L1MuPt10_GenMuPt_dxy5to50_overlap","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt_dxy5to50_overlap = TH1F("Prompt_L1MuPt15_GenMuPt_dxy5to50_overlap","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt_dxy5to50_overlap = TH1F("Prompt_L1MuPt20_GenMuPt_dxy5to50_overlap","", 60,0.,60)
 
-    L1MuPt10_GenMuPt_dxy50to100_overlap = TH1F("L1MuPt10_GenMuPt_dxy50to100_overlap","", 60,0.,60)
-    L1MuPt15_GenMuPt_dxy50to100_overlap = TH1F("L1MuPt15_GenMuPt_dxy50to100_overlap","", 60,0.,60)
-    L1MuPt20_GenMuPt_dxy50to100_overlap = TH1F("L1MuPt20_GenMuPt_dxy50to100_overlap","", 60,0.,60)
+    Prompt_L1MuPt10_GenMuPt_dxy50to100_overlap = TH1F("Prompt_L1MuPt10_GenMuPt_dxy50to100_overlap","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt_dxy50to100_overlap = TH1F("Prompt_L1MuPt15_GenMuPt_dxy50to100_overlap","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt_dxy50to100_overlap = TH1F("Prompt_L1MuPt20_GenMuPt_dxy50to100_overlap","", 60,0.,60)
 
 
-    L1MuPt10_GenMuPt_endcap = TH1F("L1MuPt10_GenMuPt_endcap","", 60,0.,60)
-    L1MuPt15_GenMuPt_endcap = TH1F("L1MuPt15_GenMuPt_endcap","", 60,0.,60)
-    L1MuPt20_GenMuPt_endcap = TH1F("L1MuPt20_GenMuPt_endcap","", 60,0.,60)
+    Prompt_L1MuPt10_GenMuPt_endcap = TH1F("Prompt_L1MuPt10_GenMuPt_endcap","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt_endcap = TH1F("Prompt_L1MuPt15_GenMuPt_endcap","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt_endcap = TH1F("Prompt_L1MuPt20_GenMuPt_endcap","", 60,0.,60)
 
-    L1MuPt10_GenMuPt_dxy0to5_endcap = TH1F("L1MuPt10_GenMuPt_dxy0to5_endcap","", 60,0.,60)
-    L1MuPt15_GenMuPt_dxy0to5_endcap = TH1F("L1MuPt15_GenMuPt_dxy0to5_endcap","", 60,0.,60)
-    L1MuPt20_GenMuPt_dxy0to5_endcap = TH1F("L1MuPt20_GenMuPt_dxy0to5_endcap","", 60,0.,60)
+    Prompt_L1MuPt10_GenMuPt_dxy0to5_endcap = TH1F("Prompt_L1MuPt10_GenMuPt_dxy0to5_endcap","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt_dxy0to5_endcap = TH1F("Prompt_L1MuPt15_GenMuPt_dxy0to5_endcap","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt_dxy0to5_endcap = TH1F("Prompt_L1MuPt20_GenMuPt_dxy0to5_endcap","", 60,0.,60)
 
-    L1MuPt10_GenMuPt_dxy5to50_endcap = TH1F("L1MuPt10_GenMuPt_dxy5to50_endcap","", 60,0.,60)
-    L1MuPt15_GenMuPt_dxy5to50_endcap = TH1F("L1MuPt15_GenMuPt_dxy5to50_endcap","", 60,0.,60)
-    L1MuPt20_GenMuPt_dxy5to50_endcap = TH1F("L1MuPt20_GenMuPt_dxy5to50_endcap","", 60,0.,60)
+    Prompt_L1MuPt10_GenMuPt_dxy5to50_endcap = TH1F("Prompt_L1MuPt10_GenMuPt_dxy5to50_endcap","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt_dxy5to50_endcap = TH1F("Prompt_L1MuPt15_GenMuPt_dxy5to50_endcap","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt_dxy5to50_endcap = TH1F("Prompt_L1MuPt20_GenMuPt_dxy5to50_endcap","", 60,0.,60)
 
-    L1MuPt10_GenMuPt_dxy50to100_endcap = TH1F("L1MuPt10_GenMuPt_dxy50to100_endcap","", 60,0.,60)
-    L1MuPt15_GenMuPt_dxy50to100_endcap = TH1F("L1MuPt15_GenMuPt_dxy50to100_endcap","", 60,0.,60)
-    L1MuPt20_GenMuPt_dxy50to100_endcap = TH1F("L1MuPt20_GenMuPt_dxy50to100_endcap","", 60,0.,60)
+    Prompt_L1MuPt10_GenMuPt_dxy50to100_endcap = TH1F("Prompt_L1MuPt10_GenMuPt_dxy50to100_endcap","", 60,0.,60)
+    Prompt_L1MuPt15_GenMuPt_dxy50to100_endcap = TH1F("Prompt_L1MuPt15_GenMuPt_dxy50to100_endcap","", 60,0.,60)
+    Prompt_L1MuPt20_GenMuPt_dxy50to100_endcap = TH1F("Prompt_L1MuPt20_GenMuPt_dxy50to100_endcap","", 60,0.,60)
 
     for k in range(0,treeHits.GetEntries()):
       treeHits.GetEntry(k)
@@ -657,91 +657,91 @@ if __name__ == "__main__":
      
             ## L1Mu pT trigger turn-on curves
             if L1Mu_pt>=10:
-              L1MuPt10_GenMuPt.Fill(pt)
-              if dxy <= 5:                L1MuPt10_GenMuPt_dxy0to5.Fill(pt)
-              if 5 < dxy  and dxy <= 50:  L1MuPt10_GenMuPt_dxy5to50.Fill(pt)
-              if 50 < dxy and dxy <= 100: L1MuPt10_GenMuPt_dxy50to100.Fill(pt)
+              Prompt_L1MuPt10_GenMuPt.Fill(pt)
+              if dxy <= 5:                Prompt_L1MuPt10_GenMuPt_dxy0to5.Fill(pt)
+              if 5 < dxy  and dxy <= 50:  Prompt_L1MuPt10_GenMuPt_dxy5to50.Fill(pt)
+              if 50 < dxy and dxy <= 100: Prompt_L1MuPt10_GenMuPt_dxy50to100.Fill(pt)
             if L1Mu_pt>=15:
-              L1MuPt15_GenMuPt.Fill(pt)
-              if dxy <= 5:                L1MuPt15_GenMuPt_dxy0to5.Fill(pt)
-              if 5 < dxy  and dxy <= 50:  L1MuPt15_GenMuPt_dxy5to50.Fill(pt)
-              if 50 < dxy and dxy <= 100: L1MuPt15_GenMuPt_dxy50to100.Fill(pt)
+              Prompt_L1MuPt15_GenMuPt.Fill(pt)
+              if dxy <= 5:                Prompt_L1MuPt15_GenMuPt_dxy0to5.Fill(pt)
+              if 5 < dxy  and dxy <= 50:  Prompt_L1MuPt15_GenMuPt_dxy5to50.Fill(pt)
+              if 50 < dxy and dxy <= 100: Prompt_L1MuPt15_GenMuPt_dxy50to100.Fill(pt)
             if L1Mu_pt>=20:
-              L1MuPt20_GenMuPt.Fill(pt)
-              if dxy <= 5:                L1MuPt20_GenMuPt_dxy0to5.Fill(pt)
-              if 5 < dxy  and dxy <= 50:  L1MuPt20_GenMuPt_dxy5to50.Fill(pt)
-              if 50 < dxy and dxy <= 100: L1MuPt20_GenMuPt_dxy50to100.Fill(pt)
+              Prompt_L1MuPt20_GenMuPt.Fill(pt)
+              if dxy <= 5:                Prompt_L1MuPt20_GenMuPt_dxy0to5.Fill(pt)
+              if 5 < dxy  and dxy <= 50:  Prompt_L1MuPt20_GenMuPt_dxy5to50.Fill(pt)
+              if 50 < dxy and dxy <= 100: Prompt_L1MuPt20_GenMuPt_dxy50to100.Fill(pt)
 
             if (1.6 < abs(eta_prop) and abs(eta_prop) < 2.2):
               if L1Mu_pt>=10:
-                L1MuPt10_GenMuPt_eta16to22.Fill(pt)
-                if dxy <= 5:                L1MuPt10_GenMuPt_dxy0to5_eta16to22.Fill(pt)
-                if 5 < dxy  and dxy <= 50:  L1MuPt10_GenMuPt_dxy5to50_eta16to22.Fill(pt)
-                if 50 < dxy and dxy <= 100: L1MuPt10_GenMuPt_dxy50to100_eta16to22.Fill(pt)
+                Prompt_L1MuPt10_GenMuPt_eta16to22.Fill(pt)
+                if dxy <= 5:                Prompt_L1MuPt10_GenMuPt_dxy0to5_eta16to22.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  Prompt_L1MuPt10_GenMuPt_dxy5to50_eta16to22.Fill(pt)
+                if 50 < dxy and dxy <= 100: Prompt_L1MuPt10_GenMuPt_dxy50to100_eta16to22.Fill(pt)
               if L1Mu_pt>=15:
-                L1MuPt15_GenMuPt_eta16to22.Fill(pt)
-                if dxy <= 5:                L1MuPt15_GenMuPt_dxy0to5_eta16to22.Fill(pt)
-                if 5 < dxy  and dxy <= 50:  L1MuPt15_GenMuPt_dxy5to50_eta16to22.Fill(pt)
-                if 50 < dxy and dxy <= 100: L1MuPt15_GenMuPt_dxy50to100_eta16to22.Fill(pt)
+                Prompt_L1MuPt15_GenMuPt_eta16to22.Fill(pt)
+                if dxy <= 5:                Prompt_L1MuPt15_GenMuPt_dxy0to5_eta16to22.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  Prompt_L1MuPt15_GenMuPt_dxy5to50_eta16to22.Fill(pt)
+                if 50 < dxy and dxy <= 100: Prompt_L1MuPt15_GenMuPt_dxy50to100_eta16to22.Fill(pt)
               if L1Mu_pt>=20:
-                L1MuPt20_GenMuPt_eta16to22.Fill(pt)
-                if dxy <= 5:                L1MuPt20_GenMuPt_dxy0to5_eta16to22.Fill(pt)
-                if 5 < dxy  and dxy <= 50:  L1MuPt20_GenMuPt_dxy5to50_eta16to22.Fill(pt)
-                if 50 < dxy and dxy <= 100: L1MuPt20_GenMuPt_dxy50to100_eta16to22.Fill(pt)
+                Prompt_L1MuPt20_GenMuPt_eta16to22.Fill(pt)
+                if dxy <= 5:                Prompt_L1MuPt20_GenMuPt_dxy0to5_eta16to22.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  Prompt_L1MuPt20_GenMuPt_dxy5to50_eta16to22.Fill(pt)
+                if 50 < dxy and dxy <= 100: Prompt_L1MuPt20_GenMuPt_dxy50to100_eta16to22.Fill(pt)
 
 
             if muon_barrel:
               if L1Mu_pt>=10:
-                L1MuPt10_GenMuPt_barrel.Fill(pt)
-                if dxy <= 5:                L1MuPt10_GenMuPt_dxy0to5_barrel.Fill(pt)
-                if 5 < dxy  and dxy <= 50:  L1MuPt10_GenMuPt_dxy5to50_barrel.Fill(pt)
-                if 50 < dxy and dxy <= 100: L1MuPt10_GenMuPt_dxy50to100_barrel.Fill(pt)
+                Prompt_L1MuPt10_GenMuPt_barrel.Fill(pt)
+                if dxy <= 5:                Prompt_L1MuPt10_GenMuPt_dxy0to5_barrel.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  Prompt_L1MuPt10_GenMuPt_dxy5to50_barrel.Fill(pt)
+                if 50 < dxy and dxy <= 100: Prompt_L1MuPt10_GenMuPt_dxy50to100_barrel.Fill(pt)
               if L1Mu_pt>=15:
-                L1MuPt15_GenMuPt_barrel.Fill(pt)
-                if dxy <= 5:                L1MuPt15_GenMuPt_dxy0to5_barrel.Fill(pt)
-                if 5 < dxy  and dxy <= 50:  L1MuPt15_GenMuPt_dxy5to50_barrel.Fill(pt)
-                if 50 < dxy and dxy <= 100: L1MuPt15_GenMuPt_dxy50to100_barrel.Fill(pt)
+                Prompt_L1MuPt15_GenMuPt_barrel.Fill(pt)
+                if dxy <= 5:                Prompt_L1MuPt15_GenMuPt_dxy0to5_barrel.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  Prompt_L1MuPt15_GenMuPt_dxy5to50_barrel.Fill(pt)
+                if 50 < dxy and dxy <= 100: Prompt_L1MuPt15_GenMuPt_dxy50to100_barrel.Fill(pt)
               if L1Mu_pt>=20:
-                L1MuPt20_GenMuPt_barrel.Fill(pt)
-                if dxy <= 5:                L1MuPt20_GenMuPt_dxy0to5_barrel.Fill(pt)
-                if 5 < dxy  and dxy <= 50:  L1MuPt20_GenMuPt_dxy5to50_barrel.Fill(pt)
-                if 50 < dxy and dxy <= 100: L1MuPt20_GenMuPt_dxy50to100_barrel.Fill(pt)
+                Prompt_L1MuPt20_GenMuPt_barrel.Fill(pt)
+                if dxy <= 5:                Prompt_L1MuPt20_GenMuPt_dxy0to5_barrel.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  Prompt_L1MuPt20_GenMuPt_dxy5to50_barrel.Fill(pt)
+                if 50 < dxy and dxy <= 100: Prompt_L1MuPt20_GenMuPt_dxy50to100_barrel.Fill(pt)
 
 
             if muon_overlap:
               if L1Mu_pt>=10:
-                L1MuPt10_GenMuPt_overlap.Fill(pt)
-                if dxy <= 5:                L1MuPt10_GenMuPt_dxy0to5_overlap.Fill(pt)
-                if 5 < dxy  and dxy <= 50:  L1MuPt10_GenMuPt_dxy5to50_overlap.Fill(pt)
-                if 50 < dxy and dxy <= 100: L1MuPt10_GenMuPt_dxy50to100_overlap.Fill(pt)
+                Prompt_L1MuPt10_GenMuPt_overlap.Fill(pt)
+                if dxy <= 5:                Prompt_L1MuPt10_GenMuPt_dxy0to5_overlap.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  Prompt_L1MuPt10_GenMuPt_dxy5to50_overlap.Fill(pt)
+                if 50 < dxy and dxy <= 100: Prompt_L1MuPt10_GenMuPt_dxy50to100_overlap.Fill(pt)
               if L1Mu_pt>=15:
-                L1MuPt15_GenMuPt_overlap.Fill(pt)
-                if dxy <= 5:                L1MuPt15_GenMuPt_dxy0to5_overlap.Fill(pt)
-                if 5 < dxy  and dxy <= 50:  L1MuPt15_GenMuPt_dxy5to50_overlap.Fill(pt)
-                if 50 < dxy and dxy <= 100: L1MuPt15_GenMuPt_dxy50to100_overlap.Fill(pt)
+                Prompt_L1MuPt15_GenMuPt_overlap.Fill(pt)
+                if dxy <= 5:                Prompt_L1MuPt15_GenMuPt_dxy0to5_overlap.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  Prompt_L1MuPt15_GenMuPt_dxy5to50_overlap.Fill(pt)
+                if 50 < dxy and dxy <= 100: Prompt_L1MuPt15_GenMuPt_dxy50to100_overlap.Fill(pt)
               if L1Mu_pt>=20:
-                L1MuPt20_GenMuPt_overlap.Fill(pt)
-                if dxy <= 5:                L1MuPt20_GenMuPt_dxy0to5_overlap.Fill(pt)
-                if 5 < dxy  and dxy <= 50:  L1MuPt20_GenMuPt_dxy5to50_overlap.Fill(pt)
-                if 50 < dxy and dxy <= 100: L1MuPt20_GenMuPt_dxy50to100_overlap.Fill(pt)
+                Prompt_L1MuPt20_GenMuPt_overlap.Fill(pt)
+                if dxy <= 5:                Prompt_L1MuPt20_GenMuPt_dxy0to5_overlap.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  Prompt_L1MuPt20_GenMuPt_dxy5to50_overlap.Fill(pt)
+                if 50 < dxy and dxy <= 100: Prompt_L1MuPt20_GenMuPt_dxy50to100_overlap.Fill(pt)
 
 
             if muon_endcap:
               if L1Mu_pt>=10:
-                L1MuPt10_GenMuPt_endcap.Fill(pt)
-                if dxy <= 5:                L1MuPt10_GenMuPt_dxy0to5_endcap.Fill(pt)
-                if 5 < dxy  and dxy <= 50:  L1MuPt10_GenMuPt_dxy5to50_endcap.Fill(pt)
-                if 50 < dxy and dxy <= 100: L1MuPt10_GenMuPt_dxy50to100_endcap.Fill(pt)
+                Prompt_L1MuPt10_GenMuPt_endcap.Fill(pt)
+                if dxy <= 5:                Prompt_L1MuPt10_GenMuPt_dxy0to5_endcap.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  Prompt_L1MuPt10_GenMuPt_dxy5to50_endcap.Fill(pt)
+                if 50 < dxy and dxy <= 100: Prompt_L1MuPt10_GenMuPt_dxy50to100_endcap.Fill(pt)
               if L1Mu_pt>=15:
-                L1MuPt15_GenMuPt_endcap.Fill(pt)
-                if dxy <= 5:                L1MuPt15_GenMuPt_dxy0to5_endcap.Fill(pt)
-                if 5 < dxy  and dxy <= 50:  L1MuPt15_GenMuPt_dxy5to50_endcap.Fill(pt)
-                if 50 < dxy and dxy <= 100: L1MuPt15_GenMuPt_dxy50to100_endcap.Fill(pt)
+                Prompt_L1MuPt15_GenMuPt_endcap.Fill(pt)
+                if dxy <= 5:                Prompt_L1MuPt15_GenMuPt_dxy0to5_endcap.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  Prompt_L1MuPt15_GenMuPt_dxy5to50_endcap.Fill(pt)
+                if 50 < dxy and dxy <= 100: Prompt_L1MuPt15_GenMuPt_dxy50to100_endcap.Fill(pt)
               if L1Mu_pt>=20:
-                L1MuPt20_GenMuPt_endcap.Fill(pt)
-                if dxy <= 5:                L1MuPt20_GenMuPt_dxy0to5_endcap.Fill(pt)
-                if 5 < dxy  and dxy <= 50:  L1MuPt20_GenMuPt_dxy5to50_endcap.Fill(pt)
-                if 50 < dxy and dxy <= 100: L1MuPt20_GenMuPt_dxy50to100_endcap.Fill(pt)
+                Prompt_L1MuPt20_GenMuPt_endcap.Fill(pt)
+                if dxy <= 5:                Prompt_L1MuPt20_GenMuPt_dxy0to5_endcap.Fill(pt)
+                if 5 < dxy  and dxy <= 50:  Prompt_L1MuPt20_GenMuPt_dxy5to50_endcap.Fill(pt)
+                if 50 < dxy and dxy <= 100: Prompt_L1MuPt20_GenMuPt_dxy50to100_endcap.Fill(pt)
 
 
             if verbose:
@@ -1292,7 +1292,7 @@ if __name__ == "__main__":
                 X = (CSCTF_R2/CSCTF_R1 - 1)/delta_z_ME11_ME21
                 phi_dir_st1_Tao_20160720 = GE11_phi - TMath.ATan( TMath.Sin(delta_phi_GE11_ME11) / (1 - TMath.Cos(delta_phi_GE11_ME11) - delta_z_GE11_ME11 * X) )
                 phi_dir_st2_Tao_20160720 = GE21_phi - TMath.ATan( TMath.Sin(delta_phi_GE21_ME21) / 
-                                                                  (1 - TMath.Cos(delta_phi_GE21_ME21) - (delta_z_GE21_ME21 * X / (delta_z_ME11_ME21 * (X+1) ) ) ) )
+                                                                  (1 - TMath.Cos(delta_phi_GE21_ME21) - (delta_z_GE21_ME21 * X / (delta_z_ME11_ME21 * X+1 ) ) ) )
 
                 ## alphas (true bending angles)
                 if verbose:
@@ -1405,7 +1405,7 @@ if __name__ == "__main__":
                   print "\t\tabs_GEM_phib1_phib2_inv", abs_GEM_phib1_phib2_inv
 
 
-                GEM_alphab1_alphab2 = GEM_alpha_st1 - GEM_alpha_st2
+                GEM_alphab1_alphab2 = deltaPhi2(GEM_alpha_st1, GEM_alpha_st2)
                 abs_GEM_alphab1_alphab2 = abs(GEM_alphab1_alphab2)
 
                 if GEM_alpha_st1 != GEM_alpha_st2 and abs(GEM_alpha_st1) != 99. and abs(GEM_alpha_st2) != 99.:
@@ -1490,6 +1490,26 @@ if __name__ == "__main__":
                   if pT_special >= 10: DPhiPt10_GenMuPt_phiGEMst1_phiGEMst2_dxy50to100.Fill(pt)
                   if pT_special >= 15: DPhiPt15_GenMuPt_phiGEMst1_phiGEMst2_dxy50to100.Fill(pt)
                   if pT_special >= 20: DPhiPt20_GenMuPt_phiGEMst1_phiGEMst2_dxy50to100.Fill(pt)
+
+                ## displaced pT assignment plots
+                pT_special_Tao_20160721 = abs_GEM_alphab1_alphab2_inv/0.4 - 21.7
+                if dxy <= 100:
+                  if pT_special >= 10: DAlphaPt10_GenMuPt_alphaGEMst1_alphaGEMst2.Fill(pt)
+                  if pT_special >= 15: DAlphaPt15_GenMuPt_alphaGEMst1_alphaGEMst2.Fill(pt)
+                  if pT_special >= 20: DAlphaPt20_GenMuPt_alphaGEMst1_alphaGEMst2.Fill(pt)
+                if dxy <= 5:
+                  if pT_special >= 10: DAlphaPt10_GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to5.Fill(pt)
+                  if pT_special >= 15: DAlphaPt15_GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to5.Fill(pt)
+                  if pT_special >= 20: DAlphaPt20_GenMuPt_alphaGEMst1_alphaGEMst2_dxy0to5.Fill(pt)
+                if 5 < dxy  and dxy <= 50:
+                  if pT_special >= 10: DAlphaPt10_GenMuPt_alphaGEMst1_alphaGEMst2_dxy5to50.Fill(pt)
+                  if pT_special >= 15: DAlphaPt15_GenMuPt_alphaGEMst1_alphaGEMst2_dxy5to50.Fill(pt)
+                  if pT_special >= 20: DAlphaPt20_GenMuPt_alphaGEMst1_alphaGEMst2_dxy5to50.Fill(pt)
+                if 50 < dxy and dxy <= 100:
+                  if pT_special >= 10: DAlphaPt10_GenMuPt_alphaGEMst1_alphaGEMst2_dxy50to100.Fill(pt)
+                  if pT_special >= 15: DAlphaPt15_GenMuPt_alphaGEMst1_alphaGEMst2_dxy50to100.Fill(pt)
+                  if pT_special >= 20: DAlphaPt20_GenMuPt_alphaGEMst1_alphaGEMst2_dxy50to100.Fill(pt)
+
 
             else:
               if printExtraInfo:
@@ -2042,7 +2062,7 @@ if __name__ == "__main__":
       latex = applyTdrStyle()
 
       ## get the pT cut from the title
-      index = title.find('L1MuPt')
+      index = title.find('Prompt_L1MuPt')
       if index == -1:
         index = title.find('DPhiPt')
       ptCut = title[index+6:index+8]
@@ -2061,52 +2081,52 @@ if __name__ == "__main__":
       c.SaveAs(title)
     
     ## pt effciency plots
-    makeEffPlot(TEfficiency(L1MuPt10_GenMuPt_dxy0to5, GenMuPt_dxy0to5),
-                TEfficiency(L1MuPt10_GenMuPt_dxy5to50, GenMuPt_dxy5to50),
-                TEfficiency(L1MuPt10_GenMuPt_dxy50to100, GenMuPt_dxy50to100),
-                targetDir + "L1MuPt10_GenMuPt_dxy0to100.png", True)
+    makeEffPlot(TEfficiency(Prompt_L1MuPt10_GenMuPt_dxy0to5, GenMuPt_dxy0to5),
+                TEfficiency(Prompt_L1MuPt10_GenMuPt_dxy5to50, GenMuPt_dxy5to50),
+                TEfficiency(Prompt_L1MuPt10_GenMuPt_dxy50to100, GenMuPt_dxy50to100),
+                targetDir + "Prompt_L1MuPt10_GenMuPt_dxy0to100.png", True)
 
-    makeEffPlot(TEfficiency(L1MuPt15_GenMuPt_dxy0to5, GenMuPt_dxy0to5),
-                TEfficiency(L1MuPt15_GenMuPt_dxy5to50, GenMuPt_dxy5to50),
-                TEfficiency(L1MuPt15_GenMuPt_dxy50to100, GenMuPt_dxy50to100),
-                targetDir + "L1MuPt15_GenMuPt_dxy0to100.png", True)
+    makeEffPlot(TEfficiency(Prompt_L1MuPt15_GenMuPt_dxy0to5, GenMuPt_dxy0to5),
+                TEfficiency(Prompt_L1MuPt15_GenMuPt_dxy5to50, GenMuPt_dxy5to50),
+                TEfficiency(Prompt_L1MuPt15_GenMuPt_dxy50to100, GenMuPt_dxy50to100),
+                targetDir + "Prompt_L1MuPt15_GenMuPt_dxy0to100.png", True)
 
-    makeEffPlot(TEfficiency(L1MuPt20_GenMuPt_dxy0to5, GenMuPt_dxy0to5),
-                TEfficiency(L1MuPt20_GenMuPt_dxy5to50, GenMuPt_dxy5to50),
-                TEfficiency(L1MuPt20_GenMuPt_dxy50to100, GenMuPt_dxy50to100),
-                targetDir + "L1MuPt20_GenMuPt_dxy0to100.png", True)
-
-
-    makeEffPlot(TEfficiency(L1MuPt10_GenMuPt_dxy0to5_eta16to22, GenMuPt_dxy0to5_eta16to22),
-                TEfficiency(L1MuPt10_GenMuPt_dxy5to50_eta16to22, GenMuPt_dxy5to50_eta16to22),
-                TEfficiency(L1MuPt10_GenMuPt_dxy50to100_eta16to22, GenMuPt_dxy50to100_eta16to22),
-                targetDir + "L1MuPt10_GenMuPt_dxy0to100_eta16to22.png", True)
-
-    makeEffPlot(TEfficiency(L1MuPt15_GenMuPt_dxy0to5_eta16to22, GenMuPt_dxy0to5_eta16to22),
-                TEfficiency(L1MuPt15_GenMuPt_dxy5to50_eta16to22, GenMuPt_dxy5to50_eta16to22),
-                TEfficiency(L1MuPt15_GenMuPt_dxy50to100_eta16to22, GenMuPt_dxy50to100_eta16to22),
-                targetDir + "L1MuPt15_GenMuPt_dxy0to100_eta16to22.png", True)
-
-    makeEffPlot(TEfficiency(L1MuPt20_GenMuPt_dxy0to5_eta16to22, GenMuPt_dxy0to5_eta16to22),
-                TEfficiency(L1MuPt20_GenMuPt_dxy5to50_eta16to22, GenMuPt_dxy5to50_eta16to22),
-                TEfficiency(L1MuPt20_GenMuPt_dxy50to100_eta16to22, GenMuPt_dxy50to100_eta16to22),
-                targetDir + "L1MuPt20_GenMuPt_dxy0to100_eta16to22.png", True)
+    makeEffPlot(TEfficiency(Prompt_L1MuPt20_GenMuPt_dxy0to5, GenMuPt_dxy0to5),
+                TEfficiency(Prompt_L1MuPt20_GenMuPt_dxy5to50, GenMuPt_dxy5to50),
+                TEfficiency(Prompt_L1MuPt20_GenMuPt_dxy50to100, GenMuPt_dxy50to100),
+                targetDir + "Prompt_L1MuPt20_GenMuPt_dxy0to100.png", True)
 
 
-    makeEffPlot(TEfficiency(L1MuPt10_GenMuPt_dxy0to5_eta16to22, GenMuPt_dxy0to5_eta16to22),
-                TEfficiency(L1MuPt10_GenMuPt_dxy5to50_eta16to22, GenMuPt_dxy5to50_eta16to22),
+    makeEffPlot(TEfficiency(Prompt_L1MuPt10_GenMuPt_dxy0to5_eta16to22, GenMuPt_dxy0to5_eta16to22),
+                TEfficiency(Prompt_L1MuPt10_GenMuPt_dxy5to50_eta16to22, GenMuPt_dxy5to50_eta16to22),
+                TEfficiency(Prompt_L1MuPt10_GenMuPt_dxy50to100_eta16to22, GenMuPt_dxy50to100_eta16to22),
+                targetDir + "Prompt_L1MuPt10_GenMuPt_dxy0to100_eta16to22.png", True)
+
+    makeEffPlot(TEfficiency(Prompt_L1MuPt15_GenMuPt_dxy0to5_eta16to22, GenMuPt_dxy0to5_eta16to22),
+                TEfficiency(Prompt_L1MuPt15_GenMuPt_dxy5to50_eta16to22, GenMuPt_dxy5to50_eta16to22),
+                TEfficiency(Prompt_L1MuPt15_GenMuPt_dxy50to100_eta16to22, GenMuPt_dxy50to100_eta16to22),
+                targetDir + "Prompt_L1MuPt15_GenMuPt_dxy0to100_eta16to22.png", True)
+
+    makeEffPlot(TEfficiency(Prompt_L1MuPt20_GenMuPt_dxy0to5_eta16to22, GenMuPt_dxy0to5_eta16to22),
+                TEfficiency(Prompt_L1MuPt20_GenMuPt_dxy5to50_eta16to22, GenMuPt_dxy5to50_eta16to22),
+                TEfficiency(Prompt_L1MuPt20_GenMuPt_dxy50to100_eta16to22, GenMuPt_dxy50to100_eta16to22),
+                targetDir + "Prompt_L1MuPt20_GenMuPt_dxy0to100_eta16to22.png", True)
+
+
+    makeEffPlot(TEfficiency(Prompt_L1MuPt10_GenMuPt_dxy0to5_eta16to22, GenMuPt_dxy0to5_eta16to22),
+                TEfficiency(Prompt_L1MuPt10_GenMuPt_dxy5to50_eta16to22, GenMuPt_dxy5to50_eta16to22),
                 None,
-                targetDir + "L1MuPt10_GenMuPt_dxy0to50_eta16to22.png", True)
+                targetDir + "Prompt_L1MuPt10_GenMuPt_dxy0to50_eta16to22.png", True)
 
-    makeEffPlot(TEfficiency(L1MuPt15_GenMuPt_dxy0to5_eta16to22, GenMuPt_dxy0to5_eta16to22),
-                TEfficiency(L1MuPt15_GenMuPt_dxy5to50_eta16to22, GenMuPt_dxy5to50_eta16to22),
+    makeEffPlot(TEfficiency(Prompt_L1MuPt15_GenMuPt_dxy0to5_eta16to22, GenMuPt_dxy0to5_eta16to22),
+                TEfficiency(Prompt_L1MuPt15_GenMuPt_dxy5to50_eta16to22, GenMuPt_dxy5to50_eta16to22),
                 None,
-                targetDir + "L1MuPt15_GenMuPt_dxy0to50_eta16to22.png", True)
+                targetDir + "Prompt_L1MuPt15_GenMuPt_dxy0to50_eta16to22.png", True)
 
-    makeEffPlot(TEfficiency(L1MuPt20_GenMuPt_dxy0to5_eta16to22, GenMuPt_dxy0to5_eta16to22),
-                TEfficiency(L1MuPt20_GenMuPt_dxy5to50_eta16to22, GenMuPt_dxy5to50_eta16to22),
+    makeEffPlot(TEfficiency(Prompt_L1MuPt20_GenMuPt_dxy0to5_eta16to22, GenMuPt_dxy0to5_eta16to22),
+                TEfficiency(Prompt_L1MuPt20_GenMuPt_dxy5to50_eta16to22, GenMuPt_dxy5to50_eta16to22),
                 None,
-                targetDir + "L1MuPt20_GenMuPt_dxy0to50_eta16to22.png", True)
+                targetDir + "Prompt_L1MuPt20_GenMuPt_dxy0to50_eta16to22.png", True)
 
     
     ## properly normalized bending angle plots DT
@@ -2176,52 +2196,52 @@ if __name__ == "__main__":
 
 
     """
-    makeEffPlot(TEfficiency(L1MuPt10_GenMuPt_dxy0to5_barrel, GenMuPt_dxy0to5_barrel),
-                TEfficiency(L1MuPt10_GenMuPt_dxy5to50_barrel, GenMuPt_dxy5to50_barrel),
-                TEfficiency(L1MuPt10_GenMuPt_dxy50to100_barrel, GenMuPt_dxy50to100_barrel),
-                targetDir + "L1MuPt10_GenMuPt_dxy0to100_barrel.png", True)
+    makeEffPlot(TEfficiency(Prompt_L1MuPt10_GenMuPt_dxy0to5_barrel, GenMuPt_dxy0to5_barrel),
+                TEfficiency(Prompt_L1MuPt10_GenMuPt_dxy5to50_barrel, GenMuPt_dxy5to50_barrel),
+                TEfficiency(Prompt_L1MuPt10_GenMuPt_dxy50to100_barrel, GenMuPt_dxy50to100_barrel),
+                targetDir + "Prompt_L1MuPt10_GenMuPt_dxy0to100_barrel.png", True)
 
-    makeEffPlot(TEfficiency(L1MuPt15_GenMuPt_dxy0to5_barrel, GenMuPt_dxy0to5_barrel),
-                TEfficiency(L1MuPt15_GenMuPt_dxy5to50_barrel, GenMuPt_dxy5to50_barrel),
-                TEfficiency(L1MuPt15_GenMuPt_dxy50to100_barrel, GenMuPt_dxy50to100_barrel),
-                targetDir + "L1MuPt15_GenMuPt_dxy0to100_barrel.png", True)
+    makeEffPlot(TEfficiency(Prompt_L1MuPt15_GenMuPt_dxy0to5_barrel, GenMuPt_dxy0to5_barrel),
+                TEfficiency(Prompt_L1MuPt15_GenMuPt_dxy5to50_barrel, GenMuPt_dxy5to50_barrel),
+                TEfficiency(Prompt_L1MuPt15_GenMuPt_dxy50to100_barrel, GenMuPt_dxy50to100_barrel),
+                targetDir + "Prompt_L1MuPt15_GenMuPt_dxy0to100_barrel.png", True)
 
-    makeEffPlot(TEfficiency(L1MuPt20_GenMuPt_dxy0to5_barrel, GenMuPt_dxy0to5_barrel),
-                TEfficiency(L1MuPt20_GenMuPt_dxy5to50_barrel, GenMuPt_dxy5to50_barrel),
-                TEfficiency(L1MuPt20_GenMuPt_dxy50to100_barrel, GenMuPt_dxy50to100_barrel),
-                targetDir + "L1MuPt20_GenMuPt_dxy0to100_barrel.png", True)
-
-
-    makeEffPlot(TEfficiency(L1MuPt10_GenMuPt_dxy0to5_overlap, GenMuPt_dxy0to5_overlap),
-                TEfficiency(L1MuPt10_GenMuPt_dxy5to50_overlap, GenMuPt_dxy5to50_overlap),
-                TEfficiency(L1MuPt10_GenMuPt_dxy50to100_overlap, GenMuPt_dxy50to100_overlap),
-                targetDir + "L1MuPt10_GenMuPt_dxy0to100_overlap.png", True)
-
-    makeEffPlot(TEfficiency(L1MuPt15_GenMuPt_dxy0to5_overlap, GenMuPt_dxy0to5_overlap),
-                TEfficiency(L1MuPt15_GenMuPt_dxy5to50_overlap, GenMuPt_dxy5to50_overlap),
-                TEfficiency(L1MuPt15_GenMuPt_dxy50to100_overlap, GenMuPt_dxy50to100_overlap),
-                targetDir + "L1MuPt15_GenMuPt_dxy0to100_overlap.png", True)
-
-    makeEffPlot(TEfficiency(L1MuPt20_GenMuPt_dxy0to5_overlap, GenMuPt_dxy0to5_overlap),
-                TEfficiency(L1MuPt20_GenMuPt_dxy5to50_overlap, GenMuPt_dxy5to50_overlap),
-                TEfficiency(L1MuPt20_GenMuPt_dxy50to100_overlap, GenMuPt_dxy50to100_overlap),
-                targetDir + "L1MuPt20_GenMuPt_dxy0to100_overlap.png", True)
+    makeEffPlot(TEfficiency(Prompt_L1MuPt20_GenMuPt_dxy0to5_barrel, GenMuPt_dxy0to5_barrel),
+                TEfficiency(Prompt_L1MuPt20_GenMuPt_dxy5to50_barrel, GenMuPt_dxy5to50_barrel),
+                TEfficiency(Prompt_L1MuPt20_GenMuPt_dxy50to100_barrel, GenMuPt_dxy50to100_barrel),
+                targetDir + "Prompt_L1MuPt20_GenMuPt_dxy0to100_barrel.png", True)
 
 
-    makeEffPlot(TEfficiency(L1MuPt10_GenMuPt_dxy0to5_endcap, GenMuPt_dxy0to5_endcap),
-                TEfficiency(L1MuPt10_GenMuPt_dxy5to50_endcap, GenMuPt_dxy5to50_endcap),
-                TEfficiency(L1MuPt10_GenMuPt_dxy50to100_endcap, GenMuPt_dxy50to100_endcap),
-                targetDir + "L1MuPt10_GenMuPt_dxy0to100_endcap.png", True)
+    makeEffPlot(TEfficiency(Prompt_L1MuPt10_GenMuPt_dxy0to5_overlap, GenMuPt_dxy0to5_overlap),
+                TEfficiency(Prompt_L1MuPt10_GenMuPt_dxy5to50_overlap, GenMuPt_dxy5to50_overlap),
+                TEfficiency(Prompt_L1MuPt10_GenMuPt_dxy50to100_overlap, GenMuPt_dxy50to100_overlap),
+                targetDir + "Prompt_L1MuPt10_GenMuPt_dxy0to100_overlap.png", True)
 
-    makeEffPlot(TEfficiency(L1MuPt15_GenMuPt_dxy0to5_endcap, GenMuPt_dxy0to5_endcap),
-                TEfficiency(L1MuPt15_GenMuPt_dxy5to50_endcap, GenMuPt_dxy5to50_endcap),
-                TEfficiency(L1MuPt15_GenMuPt_dxy50to100_endcap, GenMuPt_dxy50to100_endcap),
-                targetDir + "L1MuPt15_GenMuPt_dxy0to100_endcap.png", True)
+    makeEffPlot(TEfficiency(Prompt_L1MuPt15_GenMuPt_dxy0to5_overlap, GenMuPt_dxy0to5_overlap),
+                TEfficiency(Prompt_L1MuPt15_GenMuPt_dxy5to50_overlap, GenMuPt_dxy5to50_overlap),
+                TEfficiency(Prompt_L1MuPt15_GenMuPt_dxy50to100_overlap, GenMuPt_dxy50to100_overlap),
+                targetDir + "Prompt_L1MuPt15_GenMuPt_dxy0to100_overlap.png", True)
 
-    makeEffPlot(TEfficiency(L1MuPt20_GenMuPt_dxy0to5_endcap, GenMuPt_dxy0to5_endcap),
-                TEfficiency(L1MuPt20_GenMuPt_dxy5to50_endcap, GenMuPt_dxy5to50_endcap),
-                TEfficiency(L1MuPt20_GenMuPt_dxy50to100_endcap, GenMuPt_dxy50to100_endcap),
-                targetDir + "L1MuPt20_GenMuPt_dxy0to100_endcap.png", True)
+    makeEffPlot(TEfficiency(Prompt_L1MuPt20_GenMuPt_dxy0to5_overlap, GenMuPt_dxy0to5_overlap),
+                TEfficiency(Prompt_L1MuPt20_GenMuPt_dxy5to50_overlap, GenMuPt_dxy5to50_overlap),
+                TEfficiency(Prompt_L1MuPt20_GenMuPt_dxy50to100_overlap, GenMuPt_dxy50to100_overlap),
+                targetDir + "Prompt_L1MuPt20_GenMuPt_dxy0to100_overlap.png", True)
+
+
+    makeEffPlot(TEfficiency(Prompt_L1MuPt10_GenMuPt_dxy0to5_endcap, GenMuPt_dxy0to5_endcap),
+                TEfficiency(Prompt_L1MuPt10_GenMuPt_dxy5to50_endcap, GenMuPt_dxy5to50_endcap),
+                TEfficiency(Prompt_L1MuPt10_GenMuPt_dxy50to100_endcap, GenMuPt_dxy50to100_endcap),
+                targetDir + "Prompt_L1MuPt10_GenMuPt_dxy0to100_endcap.png", True)
+
+    makeEffPlot(TEfficiency(Prompt_L1MuPt15_GenMuPt_dxy0to5_endcap, GenMuPt_dxy0to5_endcap),
+                TEfficiency(Prompt_L1MuPt15_GenMuPt_dxy5to50_endcap, GenMuPt_dxy5to50_endcap),
+                TEfficiency(Prompt_L1MuPt15_GenMuPt_dxy50to100_endcap, GenMuPt_dxy50to100_endcap),
+                targetDir + "Prompt_L1MuPt15_GenMuPt_dxy0to100_endcap.png", True)
+
+    makeEffPlot(TEfficiency(Prompt_L1MuPt20_GenMuPt_dxy0to5_endcap, GenMuPt_dxy0to5_endcap),
+                TEfficiency(Prompt_L1MuPt20_GenMuPt_dxy5to50_endcap, GenMuPt_dxy5to50_endcap),
+                TEfficiency(Prompt_L1MuPt20_GenMuPt_dxy50to100_endcap, GenMuPt_dxy50to100_endcap),
+                targetDir + "Prompt_L1MuPt20_GenMuPt_dxy0to100_endcap.png", True)
 
 
 

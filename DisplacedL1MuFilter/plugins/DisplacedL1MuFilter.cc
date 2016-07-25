@@ -376,8 +376,16 @@ struct MyEvent
   Int_t GE11_ch_L1[kMaxGEM], GE11_ch_L2[kMaxGEM], GE21_ch_L1[kMaxGEM], GE21_ch_L2[kMaxGEM];
   Float_t GE11_z_L1[kMaxGEM], GE11_z_L2[kMaxGEM], GE21_z_L1[kMaxGEM], GE21_z_L2[kMaxGEM];
 
+  Float_t Sim_GE11_phi_L1[kMaxGEM], Sim_GE11_phi_L2[kMaxGEM], Sim_GE21_phi_L1[kMaxGEM], Sim_GE21_phi_L2[kMaxGEM];
+  Float_t Sim_GE11_bx_L1[kMaxGEM], Sim_GE11_bx_L2[kMaxGEM], Sim_GE21_bx_L1[kMaxGEM], Sim_GE21_bx_L2[kMaxGEM];
+  Int_t Sim_GE11_ch_L1[kMaxGEM], Sim_GE11_ch_L2[kMaxGEM], Sim_GE21_ch_L1[kMaxGEM], Sim_GE21_ch_L2[kMaxGEM];
+  Float_t Sim_GE11_z_L1[kMaxGEM], Sim_GE11_z_L2[kMaxGEM], Sim_GE21_z_L1[kMaxGEM], Sim_GE21_z_L2[kMaxGEM];
+
   Float_t GE0_phi[kMaxGEM];
   Float_t GE0_phib[kMaxGEM];
+
+  Float_t Sim_GE0_phi[kMaxGEM];
+  Float_t Sim_GE0_phib[kMaxGEM];
 };
 
 bool 
@@ -1064,6 +1072,69 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     auto sim_vertex = sim_vtxs[sim_muon.vertIndex()];
     SimTrackMatchManager match(sim_muon, sim_vertex, cfg_, iEvent, iSetup);
 
+    // GEM simhit
+    const SimHitMatcher& match_sh = match.simhits();
+    auto hits = match_sh.simHitsGEM();
+    std::cout << "Number of GEM hits " << hits.size() << std::endl;
+    // auto gp = match_sh.simHitsMeanPosition(hits);
+    // std::cout << "\t\tgp " << gp << std::endl;
+    // auto gv = match_sh.simHitsMeanMomentum(hits);
+    // std::cout << "\t\tgv " << gv << std::endl;
+
+    for (auto d: match_sh.detIdsGEM()){
+      auto detId = GEMDetId(d);
+      if(verbose) std::cout << "\tId " << detId << std::endl;
+      for (auto p: match_sh.hitsInDetId(d)){
+        const LocalPoint p0(0., 0., 0.);
+        auto gem_gp = gemGeometry_->idToDet(p.detUnitId())->surface().toGlobal(p0);
+        double gem_phi = gem_gp.phi();
+        int gem_ch = detId.chamber();
+        int gem_bx = p.timeOfFlight();
+        double gem_z = gem_gp.z();
+        if(verbose){
+          std::cout << "\t\tPad " << p << std::endl;
+          std::cout << "\t\t\tPosition " << gem_phi << std::endl;
+        }
+        if (detId.station()==1) {
+          if (detId.layer()==1) {
+            event_.Sim_GE11_phi_L1[k] = gem_phi;
+            event_.Sim_GE11_bx_L1[k] = gem_bx;
+            event_.Sim_GE11_ch_L1[k] = gem_ch;
+            event_.Sim_GE11_z_L1[k] = gem_z;
+            // if (std::abs(event_.Sim_GE11_phi_L1[k] - 99.)<0.001)  event_.Sim_GE11_phi_L1[k] = gem_phi;
+            // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
+          }
+          if (detId.layer()==2) {
+            event_.Sim_GE11_phi_L2[k] = gem_phi;
+            event_.Sim_GE11_bx_L2[k] = gem_bx;
+            event_.Sim_GE11_ch_L2[k] = gem_ch;
+            event_.Sim_GE11_z_L2[k] = gem_z;
+            // if (std::abs(event_.Sim_GE11_phi_L2[k] - 99.)<0.001)  event_.Sim_GE11_phi_L2[k] = gem_phi;
+            // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
+          }
+        }
+        if (detId.station()==3) {
+          if (detId.layer()==1) {
+            event_.Sim_GE21_phi_L1[k] = gem_phi;
+            event_.Sim_GE21_bx_L1[k] = gem_bx;
+            event_.Sim_GE21_ch_L1[k] = gem_ch;
+            event_.Sim_GE21_z_L1[k] = gem_z;
+            // if (std::abs(event_.Sim_GE21_phi_L1[k] - 99.)<0.001)  event_.Sim_GE21_phi_L1[k] = gem_phi;
+            // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
+          }
+          if (detId.layer()==2) {
+            event_.Sim_GE21_phi_L2[k] = gem_phi;
+            event_.Sim_GE21_bx_L2[k] = gem_bx;
+            event_.Sim_GE21_ch_L2[k] = gem_ch;
+            event_.Sim_GE21_z_L2[k] = gem_z;
+            // if (std::abs(event_.Sim_GE21_phi_L2[k] - 99.)<0.001)  event_.Sim_GE21_phi_L2[k] = gem_phi;
+            // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
+          }
+        }
+      } 
+    }
+
+
     // ME0
     /*
     const SimHitMatcher& match_sh = match.simhits();
@@ -1137,7 +1208,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
     // recover the missing stubs in station 1 and 2... (because they were not used in the track building)
     // GEM digis and pads in superchambers
-    const SimHitMatcher& match_sh = match.simhits();
     const CSCStubMatcher& match_csc = match.cscStubs();
     if(verbose){
       std::cout << "Total number of matching CSC stubs to simtrack " << std::endl;
@@ -3154,6 +3224,26 @@ void DisplacedL1MuFilter::bookL1MuTree()
 
   event_tree_->Branch("GE0_phi", event_.GE0_phi,"GE0_phi[4]/F");
   event_tree_->Branch("GE0_phib", event_.GE0_phib,"GE0_phib[4]/F");
+
+  event_tree_->Branch("Sim_GE11_phi_L1", event_.Sim_GE11_phi_L1,"Sim_GE11_phi_L1[4]/F");
+  event_tree_->Branch("Sim_GE11_phi_L2", event_.Sim_GE11_phi_L2,"Sim_GE11_phi_L2[4]/F");
+  event_tree_->Branch("Sim_GE21_phi_L1", event_.Sim_GE21_phi_L1,"Sim_GE21_phi_L1[4]/F");
+  event_tree_->Branch("Sim_GE21_phi_L2", event_.Sim_GE21_phi_L2,"Sim_GE21_phi_L2[4]/F");
+  event_tree_->Branch("Sim_GE11_bx_L1", event_.Sim_GE11_bx_L1,"Sim_GE11_bx_L1[4]/F");
+  event_tree_->Branch("Sim_GE11_bx_L2", event_.Sim_GE11_bx_L2,"Sim_GE11_bx_L2[4]/F");
+  event_tree_->Branch("Sim_GE21_bx_L1", event_.Sim_GE21_bx_L1,"Sim_GE21_bx_L1[4]/F");
+  event_tree_->Branch("Sim_GE21_bx_L2", event_.Sim_GE21_bx_L2,"Sim_GE21_bx_L2[4]/F");
+  event_tree_->Branch("Sim_GE11_ch_L1", event_.Sim_GE11_ch_L1,"Sim_GE11_ch_L1[4]/I");
+  event_tree_->Branch("Sim_GE11_ch_L2", event_.Sim_GE11_ch_L2,"Sim_GE11_ch_L2[4]/I");
+  event_tree_->Branch("Sim_GE21_ch_L1", event_.Sim_GE21_ch_L1,"Sim_GE21_ch_L1[4]/I");
+  event_tree_->Branch("Sim_GE21_ch_L2", event_.Sim_GE21_ch_L2,"Sim_GE21_ch_L2[4]/I");
+  event_tree_->Branch("Sim_GE11_z_L1", event_.Sim_GE11_z_L1,"Sim_GE11_z_L1[4]/F");
+  event_tree_->Branch("Sim_GE11_z_L2", event_.Sim_GE11_z_L2,"Sim_GE11_z_L2[4]/F");
+  event_tree_->Branch("Sim_GE21_z_L1", event_.Sim_GE21_z_L1,"Sim_GE21_z_L1[4]/F");
+  event_tree_->Branch("Sim_GE21_z_L2", event_.Sim_GE21_z_L2,"Sim_GE21_z_L2[4]/F");
+
+  event_tree_->Branch("Sim_GE0_phi", event_.Sim_GE0_phi,"Sim_GE0_phi[4]/F");
+  event_tree_->Branch("Sim_GE0_phib", event_.Sim_GE0_phib,"Sim_GE0_phib[4]/F");
 }
 
 
@@ -3633,6 +3723,24 @@ DisplacedL1MuFilter::clearBranches()
     event_.GE0_phi[i] = 99;
     event_.GE0_phib[i] = 99;
 
+    event_.Sim_GE11_phi_L1[i] = 99.;
+    event_.Sim_GE11_phi_L2[i] = 99.;
+    event_.Sim_GE21_phi_L1[i] = 99.;
+    event_.Sim_GE21_phi_L2[i] = 99.;
+    event_.Sim_GE11_bx_L1[i] = 99;
+    event_.Sim_GE11_bx_L2[i] = 99;
+    event_.Sim_GE21_bx_L1[i] = 99;
+    event_.Sim_GE21_bx_L2[i] = 99;
+    event_.Sim_GE11_ch_L1[i] = 99;
+    event_.Sim_GE11_ch_L2[i] = 99;
+    event_.Sim_GE21_ch_L1[i] = 99;
+    event_.Sim_GE21_ch_L2[i] = 99;
+    event_.Sim_GE11_z_L1[i] = 99;
+    event_.Sim_GE11_z_L2[i] = 99;
+    event_.Sim_GE21_z_L1[i] = 99;
+    event_.Sim_GE21_z_L2[i] = 99;
+    event_.Sim_GE0_phi[i] = 99;
+    event_.Sim_GE0_phib[i] = 99;
     
     event_.CSCTF_rec_ch1[i] = 99;
     event_.CSCTF_rec_ch2[i] = 99;

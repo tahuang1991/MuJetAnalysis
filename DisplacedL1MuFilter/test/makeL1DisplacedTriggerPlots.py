@@ -39,6 +39,10 @@ if __name__ == "__main__":
   verbose = False
   printExtraInfo = False
   
+  ## copy index file
+  import shutil
+  shutil.copy2('index.php', targetDir + 'index.php')
+
   def displacedTriggerEfficiency():
     print treeHits.GetEntries()
     
@@ -77,6 +81,13 @@ if __name__ == "__main__":
     nDT_stubs_vs_dxy = TH2F("nDT_stubs_vs_dxy","", 16,0.,16,100,0,100)
     nCSC_stubs = TH1F("nCSC_stubs","", 16,0.,16)
     
+    ## Gen muon eta 
+    GenMuEta0_MS2 = TH1F("GenMuEta0_MS2","", 100,-5,5)
+    GenMuEta1_MS2 = TH1F("GenMuEta1_MS2","", 100,-5,5)
+    GenMuEta2_MS2 = TH1F("GenMuEta2_MS2","", 100,-5,5)
+    GenMuEta3_MS2 = TH1F("GenMuEta3_MS2","", 100,-5,5)
+    GenMuEta_MS2 = TH1F("GenMuEta_MS2","", 100,-5,5)
+
     ## GEM plots
     phiGEMst1_even = TH1F("phiGEMst1_even","", 100,-1,1)
     phiGEMst2_even = TH1F("phiGEMst2_even","", 100,-1,1)
@@ -555,6 +566,12 @@ if __name__ == "__main__":
           lxy =  abs(treeHits.genGd_lxy[i])
           SIM_index = treeHits.genGdMu_SIM_index[ij]
           SIM_dR = treeHits.genGdMu_SIM_dR[ij]
+
+          if ij==0: GenMuEta0_MS2.Fill(eta_prop)
+          if ij==1: GenMuEta1_MS2.Fill(eta_prop)
+          if ij==2: GenMuEta2_MS2.Fill(eta_prop)
+          if ij==3: GenMuEta3_MS2.Fill(eta_prop)
+          GenMuEta_MS2.Fill(eta_prop)
 
           ## exclude all the bad muons
           #if (abs(treeHits.genGdMu_eta_prop[i*2+0])>2.4): 
@@ -1487,7 +1504,7 @@ if __name__ == "__main__":
                   if pT_special >= 20: Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_dxy50to100.Fill(pt)
 
                 ## displaced pT assignment plots
-                pT_special_Tao_20160721 = abs_GEM_alphab1_alphab2_inv/0.4 - 21.7
+                pT_special_Tao_20160721 = abs_GEM_alphab1_alphab2_inv/2 - 5
                 if dxy <= 100:
                   if pT_special_Tao_20160721 >= 10: Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_proto2.Fill(pt)
                   if pT_special_Tao_20160721 >= 15: Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_proto2.Fill(pt)
@@ -1721,6 +1738,12 @@ if __name__ == "__main__":
 
       
     
+
+    makeSimplePlot(GenMuEta0_MS2, targetDir + "GenMuEta0_MS2.png", ";Muon #eta at 2nd muon station; Entries", "")
+    makeSimplePlot(GenMuEta1_MS2, targetDir + "GenMuEta1_MS2.png", ";Muon #eta at 2nd muon station; Entries", "")
+    makeSimplePlot(GenMuEta2_MS2, targetDir + "GenMuEta2_MS2.png", ";Muon #eta at 2nd muon station; Entries", "")
+    makeSimplePlot(GenMuEta3_MS2, targetDir + "GenMuEta3_MS2.png", ";Muon #eta at 2nd muon station; Entries", "")
+    makeSimplePlot(GenMuEta_MS2, targetDir + "GenMuEta_MS2.png", ";Muon #eta at 2nd muon station; Entries", "")
 
     ## plots with DTs
     makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst2, targetDir + "GenMuPt_vs_phiDTst1_phiDTst2.png", ";p_{T} [GeV]; #Delta#Phi_{12}", "COLZ")

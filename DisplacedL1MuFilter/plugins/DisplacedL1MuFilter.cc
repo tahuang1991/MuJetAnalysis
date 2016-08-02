@@ -456,6 +456,20 @@ phiL1CSCTrack(const csc::L1Track& track)
   return phi_packed;
 }
 
+void calculateAlphaBeta(const std::vector<float>& v, const std::vector<float>& w, float& alpha, float& beta)
+{
+  float vbar = std::accumulate( v.begin(), v.end(), 0.0)/v.size();
+  float wbar = std::accumulate( w.begin(), w.end(), 0.0)/w.size();
+  
+  double sum1=0., sum2=0.; 
+  for (unsigned int i=0; i<v.size(); ++i){
+    sum1 += (v[i] - vbar)*(w[i] - wbar);
+    sum2 += (v[i] - vbar)*(v[i] - vbar);
+  }
+  beta = sum1/sum2;
+  alpha = wbar - beta * vbar;
+}
+
 bool 
 isSimTrackGood(const SimTrack &t)
 {
@@ -1213,18 +1227,59 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       } 
     }
     // pad positions for GE21...
-    for (auto d: match_gd.detIdsPad(GEMType::GE21)){
-      for (auto p: match_gd.positionPad1InDetId(d)) std::cout << "Positions1 " << p << std::endl;
-      for (auto p: match_gd.positionPad2InDetId(d)) std::cout << "Positions2 " << p << std::endl;
-      for (auto p: match_gd.positionPad4InDetId(d)) std::cout << "Positions4 " << p << std::endl;
-      for (auto p: match_gd.positionPad8InDetId(d)) std::cout << "Positions8 " << p << std::endl;
+    if(verbose) std::cout << "Skinny and Fat pads " << match_gd.detIdsPad().size() << std::endl;
+    for (auto d: match_gd.detIdsPad(GEMType::GEM_ME21)){
+      auto detId = GEMDetId(d);
+      if(verbose) std::cout << "\tId " << detId << std::endl;
+      double firstPositionPad1 = match_gd.positionPad1InDetId(d).front().phi();
+      double firstPositionPad2 = match_gd.positionPad2InDetId(d).front().phi();
+      double firstPositionPad4 = match_gd.positionPad4InDetId(d).front().phi();
+      double firstPositionPad8 = match_gd.positionPad8InDetId(d).front().phi();
+      if(verbose) {
+        std::cout << "firstPositionPad1 " << firstPositionPad1 << std::endl;
+        std::cout << "firstPositionPad2 " << firstPositionPad2 << std::endl;
+        std::cout << "firstPositionPad4 " << firstPositionPad4 << std::endl;
+        std::cout << "firstPositionPad8 " << firstPositionPad8 << std::endl;  
+      }
+      // pick the first position in the list (in case there is more than 1)
+      // for (auto p: match_gd.gemPadsInDetId(d)){
+      //   auto gem_gp = getGEMSpecificPoint(d,p);
+      //   double gem_phi = gem_gp.phi();
+      //   int gem_ch = detId.chamber();
+      //   int gem_bx = p.bx();
+      //   double gem_z = gem_gp.z();
+      //   if(verbose){
+      //     std::cout << "\t\tPad " << p << std::endl;
+      //     std::cout << "\t\t\tPosition " << gem_phi << std::endl;
+      //   }
+      // for (auto p: match_gd.positionPad1InDetId(d)) std::cout << "Positions1 " << p << std::endl;
+      // for (auto p: match_gd.positionPad2InDetId(d)) std::cout << "Positions2 " << p << std::endl;
+      // for (auto p: match_gd.positionPad4InDetId(d)) std::cout << "Positions4 " << p << std::endl;
+      // for (auto p: match_gd.positionPad8InDetId(d)) std::cout << "Positions8 " << p << std::endl;
+      if (detId.station()==2) {
+        if (detId.layer()==1) {
+          event_.GE21_pad1_phi_L1[k] = firstPositionPad1; 
+          event_.GE21_pad2_phi_L1[k] = firstPositionPad2; 
+          event_.GE21_pad4_phi_L1[k] = firstPositionPad4; 
+          event_.GE21_pad8_phi_L1[k] = firstPositionPad8; 
+        }
+        if (detId.layer()==2) {
+          event_.GE21_pad1_phi_L2[k] = firstPositionPad1;
+          event_.GE21_pad2_phi_L2[k] = firstPositionPad2;
+          event_.GE21_pad4_phi_L2[k] = firstPositionPad4;
+          event_.GE21_pad8_phi_L2[k] = firstPositionPad8;
+        }
+      }
     }
+    
     // CSC digis in chambers
     const CSCDigiMatcher& match_cd = match.cscDigis();
     const CSCStubMatcher& match_csc = match.cscStubs();
     for (auto d: match_csc.chamberIdsLCT()){
       auto detId = CSCDetId(d);
       std::cout << "\tNumber of matching CSC comparator strips " << match_cd.cscStripDigisInChamber(d).size() << std::endl;
+      std::vector<float> phis;
+      std::vector<float> zs;
       for (int l=1; l<=6; l++){
         CSCDetId l_id(detId.endcap(), detId.station(), detId.ring(), detId.chamber(), l);
         if(verbose) std::cout << "\tCSCId " << l_id << std::endl;
@@ -1238,8 +1293,21 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           //std::cout << "\t\t>>> other CSC LCT phi " << csc_gp.phi() << std::endl;
           //return getCSCSpecificPoint(rawId, lct).phi();
           std::cout << "\t" << l_id << " " << p << " " << csc_gp.phi() << std::endl;
+          phis.push_back(csc_gp.phi());
+          zs.push_back(csc_gp.z());
         }
       }
+      float alpha = 0., beta = 0.;
+      calculateAlphaBeta(zs, phis, alpha, beta);
+      GlobalPoint csc_gp = cscGeometry_->idToDet(detId)->surface().toGlobal(LocalPoint(0,0,0));
+      float bestFitPhi = alpha + beta*csc_gp.z();
+      std::cout << "best fit phi position " << bestFitPhi << std::endl;
+      if (detId.station()==1) {
+        event_.CSCTF_fit_phi1[k] = bestFitPhi;
+      }        
+      if (detId.station()==2) {
+        event_.CSCTF_fit_phi2[k] = bestFitPhi;
+      }        
     }
     // if(verbose){
     //   //std::cout << "Total number of matching pads to simtrack " << match_cd.nPads() << std::endl;
@@ -3875,10 +3943,14 @@ DisplacedL1MuFilter::clearBranches()
     event_.GE0_phi[i] = 99;
     event_.GE0_phib[i] = 99;
 
-    GE21_pad1_phi_L1[i] = 99.; GE21_pad1_phi_L2[i] = 99.;
-    GE21_pad2_phi_L1[i] = 99.; GE21_pad2_phi_L2[i] = 99.;
-    GE21_pad4_phi_L1[i] = 99.; GE21_pad4_phi_L2[i] = 99.;
-    GE21_pad8_phi_L1[i] = 99.; GE21_pad8_phi_L2[i] = 99.;
+    event_.GE21_pad1_phi_L1[i] = 99.; 
+    event_.GE21_pad1_phi_L2[i] = 99.;
+    event_.GE21_pad2_phi_L1[i] = 99.; 
+    event_.GE21_pad2_phi_L2[i] = 99.;
+    event_.GE21_pad4_phi_L1[i] = 99.; 
+    event_.GE21_pad4_phi_L2[i] = 99.;
+    event_.GE21_pad8_phi_L1[i] = 99.; 
+    event_.GE21_pad8_phi_L2[i] = 99.;
     
     event_.Sim_GE11_phi_L1[i] = 99.;
     event_.Sim_GE11_phi_L2[i] = 99.;

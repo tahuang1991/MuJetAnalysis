@@ -6,7 +6,7 @@ ROOT.gROOT.SetBatch(1)
 from Helpers import *
 ROOT.gErrorIgnoreLevel=1001
 from ROOT import * 
-
+import random
 #______________________________________________________________________________ 
 if __name__ == "__main__":  
 
@@ -30,10 +30,11 @@ if __name__ == "__main__":
 
   #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v5/160714_040828/0000/')
   #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v6/160719_220646/0000/')
-  ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v7/160720_011325/0000/')
+  #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v7/160720_011325/0000/')
+  ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v8/160725_235053/0000/')
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160721"
+  label = "DisplacedL1MuTrigger_20160727"
   targetDir = label + "/"
   
   verbose = False
@@ -87,6 +88,8 @@ if __name__ == "__main__":
     GenMuEta2_MS2 = TH1F("GenMuEta2_MS2","", 100,-5,5)
     GenMuEta3_MS2 = TH1F("GenMuEta3_MS2","", 100,-5,5)
     GenMuEta_MS2 = TH1F("GenMuEta_MS2","", 100,-5,5)
+    GenMuEta_leading_MS2_random_pt10 = TH1F("GenMuEta_leading_MS2_random_pt10","", 100,-5,5)
+    GenMuEta_leading_random_pt10 = TH1F("GenMuEta_leading_random_pt10","", 100,-5,5)
 
     ## GEM plots
     phiGEMst1_even = TH1F("phiGEMst1_even","", 100,-1,1)
@@ -551,7 +554,37 @@ if __name__ == "__main__":
       if k%1000==0: print "Event", k+1, "nL1Mu", treeHits.nL1Mu
       #if k>1000: break
 
+      ## plots for Alexei July 27 2016
+      random_number = random.random()
+      if random_number<0.5:
+        choose_dark_boson = 0
+      else:
+        choose_dark_boson = 1
+
+      pt_muon1_choose_dark_boson = abs(treeHits.genGdMu_pt[choose_dark_boson*2+0])
+      pt_muon2_choose_dark_boson = abs(treeHits.genGdMu_pt[choose_dark_boson*2+1])
+
+      if pt_muon1_choose_dark_boson > 10 and pt_muon2_choose_dark_boson > 10:
+        
+        eta_muon1_choose_dark_boson = treeHits.genGdMu_eta[choose_dark_boson*2+0]
+        eta_muon2_choose_dark_boson = treeHits.genGdMu_eta[choose_dark_boson*2+1]
+        
+        eta_prop_muon1_choose_dark_boson = treeHits.genGdMu_eta_prop[choose_dark_boson*2+0]
+        eta_prop_muon2_choose_dark_boson = treeHits.genGdMu_eta_prop[choose_dark_boson*2+1]
+
+        if abs(eta_muon1_choose_dark_boson) > abs(eta_muon2_choose_dark_boson):
+          GenMuEta_leading_random_pt10.Fill(eta_muon1_choose_dark_boson)
+        else:
+          GenMuEta_leading_random_pt10.Fill(eta_muon2_choose_dark_boson)
+
+        if abs(eta_prop_muon1_choose_dark_boson) > abs(eta_prop_muon2_choose_dark_boson):
+          GenMuEta_leading_MS2_random_pt10.Fill(eta_prop_muon1_choose_dark_boson)
+        else:
+          GenMuEta_leading_MS2_random_pt10.Fill(eta_prop_muon2_choose_dark_boson)
+        
+
       for i in range(0,2):
+
         for j in range(0,2):
           ij = i*2+j
           
@@ -1187,12 +1220,33 @@ if __name__ == "__main__":
                 GE21_isOdd = GE21_ch2%2==1
                 GE0_phi = treeHits.GE0_phi[GEN_SIM_index]
                 GE0_phib = treeHits.GE0_phib[GEN_SIM_index]
+
+                Sim_GE11_bx_L1 = treeHits.Sim_GE11_bx_L1[GEN_SIM_index]
+                Sim_GE11_bx_L2 = treeHits.Sim_GE11_bx_L2[GEN_SIM_index]
+                Sim_GE21_bx_L1 = treeHits.Sim_GE21_bx_L1[GEN_SIM_index]
+                Sim_GE21_bx_L2 = treeHits.Sim_GE21_bx_L2[GEN_SIM_index]
+                Sim_GE11_phi_L1 = treeHits.Sim_GE11_phi_L1[GEN_SIM_index]
+                Sim_GE11_phi_L2 = treeHits.Sim_GE11_phi_L2[GEN_SIM_index]
+                Sim_GE21_phi_L1 = treeHits.Sim_GE21_phi_L1[GEN_SIM_index]
+                Sim_GE21_phi_L2 = treeHits.Sim_GE21_phi_L2[GEN_SIM_index]
+                Sim_GE11_z_L1 = treeHits.Sim_GE11_z_L1[GEN_SIM_index]
+                Sim_GE11_z_L2 = treeHits.Sim_GE11_z_L2[GEN_SIM_index]
+                Sim_GE21_z_L1 = treeHits.Sim_GE21_z_L1[GEN_SIM_index]
+                Sim_GE21_z_L2 = treeHits.Sim_GE21_z_L2[GEN_SIM_index]
+                Sim_GE11_ch1 = treeHits.Sim_GE11_ch_L1[GEN_SIM_index]
+                Sim_GE21_ch2 = treeHits.Sim_GE21_ch_L1[GEN_SIM_index]
+                Sim_GE11_isOdd = Sim_GE11_ch1%2==1
+                Sim_GE21_isOdd = Sim_GE21_ch2%2==1
+                Sim_GE0_phi = treeHits.Sim_GE0_phi[GEN_SIM_index]
+                Sim_GE0_phib = treeHits.Sim_GE0_phib[GEN_SIM_index]
+
                 ## normalize the GEM position angles
                 if GE11_phi_L1 != 99: GE11_phi_L1 = normalizedPhi2(GE11_phi_L1)
                 if GE11_phi_L2 != 99: GE11_phi_L2 = normalizedPhi2(GE11_phi_L2)
                 if GE21_phi_L1 != 99: GE21_phi_L1 = normalizedPhi2(GE21_phi_L1)
                 if GE21_phi_L2 != 99: GE21_phi_L2 = normalizedPhi2(GE21_phi_L2)
                 if GE0_phi != 99: GE0_phi = normalizedPhi(GE21_phi_L2)
+
 
               ## check if GEM hits are present
               ok_GE11_L1 = GE11_bx_L1 != 99 
@@ -1737,7 +1791,10 @@ if __name__ == "__main__":
     ### close make2DMedianPlot
 
       
-    
+    makeSimplePlot(GenMuEta_leading_MS2_random_pt10, targetDir + "GenMuEta_leading_MS2_random_pt10.png", ";Muon #eta at 2nd muon station; Entries", "")
+    makeSimplePlot(GenMuEta_leading_random_pt10, targetDir + "GenMuEta_leading_random_pt10.png", ";Muon #eta; Entries", "")
+    makeSimplePlot(GenMuEta_leading_MS2_random_pt10, targetDir + "GenMuEta_leading_MS2_random_pt10.C", ";Muon #eta at 2nd muon station; Entries", "")
+    makeSimplePlot(GenMuEta_leading_random_pt10, targetDir + "GenMuEta_leading_random_pt10.C", ";Muon #eta; Entries", "")
 
     makeSimplePlot(GenMuEta0_MS2, targetDir + "GenMuEta0_MS2.png", ";Muon #eta at 2nd muon station; Entries", "")
     makeSimplePlot(GenMuEta1_MS2, targetDir + "GenMuEta1_MS2.png", ";Muon #eta at 2nd muon station; Entries", "")

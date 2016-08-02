@@ -119,6 +119,72 @@
    GenMuEta_leading_MS2_random_pt10->SetBinContent(101,2);
    GenMuEta_leading_MS2_random_pt10->SetEntries(23018);
    
+   // fraction 0-0.9
+   double sum_0_0p9;
+   double sum_0p9_1p2;
+   double sum_1p2_1p6;
+   double sum_1p6_2p4;
+   double sum_2p4_5p0;
+
+   double sum_0p9_0;
+   double sum_1p2_0p9;
+   double sum_1p6_1p2;
+   double sum_2p4_1p6;
+   double sum_5p0_2p4;
+
+   for (int iBin=51; iBin<=60; iBin++)  sum_0_0p9 += GenMuEta_leading_MS2_random_pt10.GetBinContent(iBin);
+   for (int iBin=61; iBin<=63; iBin++)  sum_0p9_1p2 += GenMuEta_leading_MS2_random_pt10.GetBinContent(iBin);
+   for (int iBin=64; iBin<=67; iBin++)  sum_1p2_1p6 += GenMuEta_leading_MS2_random_pt10.GetBinContent(iBin);
+   for (int iBin=68; iBin<=75; iBin++)  sum_1p6_2p4 += GenMuEta_leading_MS2_random_pt10.GetBinContent(iBin);
+   for (int iBin=76; iBin<=101; iBin++) sum_2p4_5p0 += GenMuEta_leading_MS2_random_pt10.GetBinContent(iBin);
+
+   for (int iBin=0; iBin<=25; iBin++) sum_5p0_2p4 += GenMuEta_leading_MS2_random_pt10.GetBinContent(iBin);
+   for (int iBin=26; iBin<=33; iBin++) sum_2p4_1p6 += GenMuEta_leading_MS2_random_pt10.GetBinContent(iBin);
+   for (int iBin=34; iBin<=37; iBin++) sum_1p6_1p2 += GenMuEta_leading_MS2_random_pt10.GetBinContent(iBin);
+   for (int iBin=38; iBin<=40; iBin++) sum_1p2_0p9 += GenMuEta_leading_MS2_random_pt10.GetBinContent(iBin);
+   for (int iBin=41; iBin<=50; iBin++) sum_0p9_0 += GenMuEta_leading_MS2_random_pt10.GetBinContent(iBin);
+
+     // cout << iBin << " " 
+     //      << GenMuEta_leading_MS2_random_pt10.GetBinCenter(iBin) -0.05 << " " 
+     //      << GenMuEta_leading_MS2_random_pt10.GetBinContent(iBin) << endl;
+   cout << "sum_0p0_0p9 " << sum_0_0p9 << endl;
+   cout << "sum_0p9_1p2 " << sum_0p9_1p2 << endl;
+   cout << "sum_1p2_1p6 " << sum_1p2_1p6 << endl;
+   cout << "sum_1p6_2p4 " << sum_1p6_2p4 << endl;
+   cout << "sum_2p4_5p0 " << sum_2p4_5p0 << endl;
+ 
+   cout << "sum_0p9_0p0 " << sum_0p9_0 << endl;
+   cout << "sum_1p2_0p9 " << sum_1p2_0p9 << endl;
+   cout << "sum_1p6_1p2 " << sum_1p6_1p2 << endl;
+   cout << "sum_2p4_1p6 " << sum_2p4_1p6 << endl;
+   cout << "sum_5p0_2p4 " << sum_5p0_2p4 << endl;
+   
+   double sum_plus = sum_0_0p9 + sum_0p9_1p2 + sum_1p2_1p6 + sum_1p6_2p4 + sum_2p4_5p0;
+   double sum_minus = sum_0p9_0 + sum_1p2_0p9 + sum_1p6_1p2 + sum_2p4_1p6 + sum_5p0_2p4;
+   cout << "Total sum + " << sum_plus << endl;
+   cout << "Total sum - " << sum_minus << endl;
+   cout << "Toal sum " << sum_plus + sum_minus << " 23018" << endl;
+   
+   sum_0_0p9 += sum_0p9_0;
+   sum_0p9_1p2 += sum_1p2_0p9;
+   sum_1p2_1p6 += sum_1p6_1p2;
+   sum_1p6_2p4 += sum_2p4_1p6;
+   sum_2p4_5p0 += sum_5p0_2p4;
+
+   double frac_sum_0_0p9 = sum_0_0p9/23018.;
+   double frac_sum_0p9_1p2 = sum_0p9_1p2/23018.;
+   double frac_sum_1p2_1p6 = sum_1p2_1p6/23018.;
+   double frac_sum_1p6_2p4 = sum_1p6_2p4/23018.;
+   double frac_sum_2p4_5p0 = sum_2p4_5p0/23018.;
+   double sum_frac_sum = frac_sum_0_0p9 + frac_sum_0p9_1p2 + frac_sum_1p2_1p6 + frac_sum_1p6_2p4 + frac_sum_2p4_5p0;
+
+   cout << "frac_sum_0_0p9 " << frac_sum_0_0p9 << endl;
+   cout << "frac_sum_0p9_1p2 " << frac_sum_0p9_1p2 << endl;
+   cout << "frac_sum_1p2_1p6 " << frac_sum_1p2_1p6 << endl;
+   cout << "frac_sum_1p6_2p4 " << frac_sum_1p6_2p4 << endl;
+   cout << "frac_sum_2p4_5p0 " << frac_sum_2p4_5p0 << endl;
+   cout << sum_frac_sum << endl;
+   
    TPaveStats *ptstats = new TPaveStats(0.78,0.615,0.98,0.935,"brNDC");
    ptstats->SetName("stats");
    ptstats->SetBorderSize(1);

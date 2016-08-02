@@ -386,6 +386,12 @@ struct MyEvent
 
   Float_t Sim_GE0_phi[kMaxGEM];
   Float_t Sim_GE0_phib[kMaxGEM];
+
+  // positions from artificial pads
+  Float_t GE21_pad1_phi_L1[kMaxGEM], GE21_pad1_phi_L2[kMaxGEM];
+  Float_t GE21_pad2_phi_L1[kMaxGEM], GE21_pad2_phi_L2[kMaxGEM];
+  Float_t GE21_pad4_phi_L1[kMaxGEM], GE21_pad4_phi_L2[kMaxGEM];
+  Float_t GE21_pad8_phi_L1[kMaxGEM], GE21_pad8_phi_L2[kMaxGEM];
 };
 
 bool 
@@ -487,9 +493,10 @@ private:
   float getGlobalPhi(unsigned int rawid, int stripN);
   double calcCSCSpecificPhi(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const;
   double calcGEMSpecificPhi(unsigned int rawId, const GEMCSCPadDigi& tp) const;
-  GlobalPoint getGEMSpecificPoint(unsigned int rawId, const GEMCSCPadDigi& tp) const; 
+  GlobalPoint getGEMSpecificPoint(unsigned int rawId, const GEMCSCPadDigi& tp) const;
   GlobalPoint getCSCSpecificPoint(unsigned int rawid, const CSCCorrelatedLCTDigi& tp) const;
-  GlobalPoint getCSCSpecificPoint2(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const; 
+  GlobalPoint getCSCSpecificPoint2(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const;
+  GlobalPoint getCSCSpecificPointStrips(const SimTrackMatchManager& tp) const;
   bool isCSCCounterClockwise(const std::unique_ptr<const CSCLayer>& layer) const;
 
   void extrapolate(const reco::GenParticle &tk, int station, GlobalPoint&, GlobalVector&);
@@ -1205,10 +1212,89 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
       } 
     }
+    // pad positions for GE21...
+    for (auto d: match_gd.detIdsPad(GEMType::GE21)){
+      for (auto p: match_gd.positionPad1InDetId(d)) std::cout << "Positions1 " << p << std::endl;
+      for (auto p: match_gd.positionPad2InDetId(d)) std::cout << "Positions2 " << p << std::endl;
+      for (auto p: match_gd.positionPad4InDetId(d)) std::cout << "Positions4 " << p << std::endl;
+      for (auto p: match_gd.positionPad8InDetId(d)) std::cout << "Positions8 " << p << std::endl;
+    }
+    // CSC digis in chambers
+    const CSCDigiMatcher& match_cd = match.cscDigis();
+    const CSCStubMatcher& match_csc = match.cscStubs();
+    for (auto d: match_csc.chamberIdsLCT()){
+      auto detId = CSCDetId(d);
+      std::cout << "\tNumber of matching CSC comparator strips " << match_cd.cscStripDigisInChamber(d).size() << std::endl;
+      for (int l=1; l<=6; l++){
+        CSCDetId l_id(detId.endcap(), detId.station(), detId.ring(), detId.chamber(), l);
+        if(verbose) std::cout << "\tCSCId " << l_id << std::endl;
+        std::cout << "\tPrinting available comparator strips in detId: " << match_cd.cscStripDigisInDetId(l_id.rawId()).size() << std::endl;
+        for (auto p: match_cd.cscStripDigisInDetId(l_id.rawId())){
+          float fractional_strip = 0.5 * (p.getStrip() + 1) - 0.25;
+          auto cscChamber = cscGeometry_->chamber(detId);
+          auto layer_geo = cscChamber->layer(l)->geometry();
+          LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, 10);
+          GlobalPoint csc_gp = cscGeometry_->idToDet(l_id)->surface().toGlobal(csc_intersect);
+          //std::cout << "\t\t>>> other CSC LCT phi " << csc_gp.phi() << std::endl;
+          //return getCSCSpecificPoint(rawId, lct).phi();
+          std::cout << "\t" << l_id << " " << p << " " << csc_gp.phi() << std::endl;
+        }
+      }
+    }
+    // if(verbose){
+    //   //std::cout << "Total number of matching pads to simtrack " << match_cd.nPads() << std::endl;
+    //   std::cout << "Matching CSC Ids " << match_cd.chamberIdsStrip().size() << std::endl;
+    // }
+    // auto csc_gp = getCSCSpecificPointStrips(match);
+    // double csc_phi = csc_gp.phi();
+    // std::cout << "\tPosition phi " << csc_phi << std::endl;
+
+    
+      //int csc_ch = detId.chamber();
+      //double csc_z = csc_gp.z();
+      // if(verbose){
+      //   //std::cout << "\t\tStrip " << p << std::endl;
+      // }
+      // if (detId.station()==1) {
+      //   if (detId.layer()==1) {
+      //     event_.GE11_phi_L1[k] = gem_phi;
+      //     event_.GE11_bx_L1[k] = gem_bx;
+      //     event_.GE11_ch_L1[k] = gem_ch;
+      //     event_.GE11_z_L1[k] = gem_z;
+      //     // if (std::abs(event_.GE11_phi_L1[k] - 99.)<0.001)  event_.GE11_phi_L1[k] = gem_phi;
+      //     // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
+      //   }
+      //   if (detId.layer()==2) {
+      //     event_.GE11_phi_L2[k] = gem_phi;
+      //     event_.GE11_bx_L2[k] = gem_bx;
+      //     event_.GE11_ch_L2[k] = gem_ch;
+      //     event_.GE11_z_L2[k] = gem_z;
+      //     // if (std::abs(event_.GE11_phi_L2[k] - 99.)<0.001)  event_.GE11_phi_L2[k] = gem_phi;
+      //     // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
+      //   }
+      // }
+      // if (detId.station()==3) {
+      //   if (detId.layer()==1) {
+      //     event_.GE21_phi_L1[k] = gem_phi;
+      //     event_.GE21_bx_L1[k] = gem_bx;
+      //     event_.GE21_ch_L1[k] = gem_ch;
+      //     event_.GE21_z_L1[k] = gem_z;
+      //     // if (std::abs(event_.GE21_phi_L1[k] - 99.)<0.001)  event_.GE21_phi_L1[k] = gem_phi;
+      //     // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
+      //   }
+      //   if (detId.layer()==2) {
+      //     event_.GE21_phi_L2[k] = gem_phi;
+      //     event_.GE21_bx_L2[k] = gem_bx;
+      //     event_.GE21_ch_L2[k] = gem_ch;
+      //     event_.GE21_z_L2[k] = gem_z;
+      //     // if (std::abs(event_.GE21_phi_L2[k] - 99.)<0.001)  event_.GE21_phi_L2[k] = gem_phi;
+      //     // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
+      //   }
+      // }
+    // }
 
     // recover the missing stubs in station 1 and 2... (because they were not used in the track building)
     // GEM digis and pads in superchambers
-    const CSCStubMatcher& match_csc = match.cscStubs();
     if(verbose){
       std::cout << "Total number of matching CSC stubs to simtrack " << std::endl;
       std::cout << "Matching CSC stub Ids " << match_csc.chamberIdsLCT().size() << std::endl;
@@ -2614,6 +2700,63 @@ DisplacedL1MuFilter::getCSCSpecificPoint(unsigned int rawId, const CSCCorrelated
   return final_gp;
 }
 
+GlobalPoint 
+DisplacedL1MuFilter::getCSCSpecificPointStrips(const SimTrackMatchManager& match) const
+{
+  // do a fit through the comparator digis in this chamber
+  // for the phi resolution, use the numbers
+  // ME11: 0.00020
+  // ME21: 0.00036
+  const CSCDigiMatcher& match_cd = match.cscDigis();
+    
+  for (auto d: match_cd.chamberIdsStrip()){
+    auto detId = CSCDetId(d);
+    std::cout << "\tNumber of matching CSC comparator strips " << match_cd.cscStripDigisInChamber(d).size() << std::endl;
+    for (int l=1; l<=6; l++){
+      CSCDetId l_id(detId.endcap(), detId.station(), detId.ring(), detId.chamber(), l);
+      if(verbose) std::cout << "\tCSCId " << l_id << std::endl;
+      std::cout << "\tPrinting available comparator strips in detId: " << match_cd.cscStripDigisInDetId(l_id.rawId()).size() << std::endl;
+      for (auto p: match_cd.cscStripDigisInDetId(l_id.rawId())){
+        float fractional_strip = 0.5 * (p.getStrip() + 1) - 0.25;
+        auto cscChamber = cscGeometry_->chamber(detId);
+        auto layer_geo = cscChamber->layer(l)->geometry();
+        LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, 10);
+        GlobalPoint csc_gp = cscGeometry_->idToDet(l_id)->surface().toGlobal(csc_intersect);
+        //std::cout << "\t\t>>> other CSC LCT phi " << csc_gp.phi() << std::endl;
+        //return getCSCSpecificPoint(rawId, lct).phi();
+        std::cout << "\t" << l_id << " " << p << " " << csc_gp.phi() << std::endl;
+      }
+    }
+  }
+
+    
+  // std::cout << "Printing available comparator strips in detId " << CSCDetId(rawId) << std::endl;
+  // for (auto p: tp){
+    
+  // }
+
+  // taken from https://github.com/cms-sw/cmssw/blob/dc9f78b6af4ad56c9342cf14041b6485a60b0691/L1Trigger/CSCTriggerPrimitives/src/CSCMotherboardME11GEM.cc
+    /*
+  CSCDetId cscId = CSCDetId(rawId);
+  CSCDetId key_id(cscId.endcap(), cscId.station(), cscId.ring(), cscId.chamber(), CSCConstants::KEY_CLCT_LAYER);
+  
+  auto cscChamber = cscGeometry_->chamber(cscId);
+  // "strip" here is actually a half-strip in geometry's terms
+  // note that LCT::getStrip() starts from 0
+  float fractional_strip = 0.5 * (lct.getStrip() + 1) - 0.25;
+  auto layer_geo = cscChamber->layer(CSCConstants::KEY_CLCT_LAYER)->geometry();
+  // LCT::getKeyWG() also starts from 0
+  float wire = layer_geo->middleWireOfGroup(lct.getKeyWG() + 1);
+  LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, wire);
+  GlobalPoint csc_gp = cscGeometry_->idToDet(key_id)->surface().toGlobal(csc_intersect);
+  //std::cout << "\t\t>>> other CSC LCT phi " << csc_gp.phi() << std::endl;
+  //return getCSCSpecificPoint(rawId, lct).phi();
+  */
+
+
+  return GlobalPoint();
+}
+
 bool 
 DisplacedL1MuFilter::isCSCCounterClockwise(const std::unique_ptr<const CSCLayer>& layer) const {
   const int nStrips = layer->geometry()->numberOfStrips();
@@ -3244,6 +3387,15 @@ void DisplacedL1MuFilter::bookL1MuTree()
 
   event_tree_->Branch("Sim_GE0_phi", event_.Sim_GE0_phi,"Sim_GE0_phi[4]/F");
   event_tree_->Branch("Sim_GE0_phib", event_.Sim_GE0_phib,"Sim_GE0_phib[4]/F");
+
+  event_tree_->Branch("GE21_pad1_phi_L1", event_.GE21_pad1_phi_L1,"GE21_pad1_phi_L1[4]/F");
+  event_tree_->Branch("GE21_pad1_phi_L2", event_.GE21_pad1_phi_L2,"GE21_pad1_phi_L2[4]/F");
+  event_tree_->Branch("GE21_pad2_phi_L1", event_.GE21_pad2_phi_L1,"GE21_pad2_phi_L1[4]/F");
+  event_tree_->Branch("GE21_pad2_phi_L2", event_.GE21_pad2_phi_L2,"GE21_pad2_phi_L2[4]/F");
+  event_tree_->Branch("GE21_pad4_phi_L1", event_.GE21_pad4_phi_L1,"GE21_pad4_phi_L1[4]/F");
+  event_tree_->Branch("GE21_pad4_phi_L2", event_.GE21_pad4_phi_L2,"GE21_pad4_phi_L2[4]/F");
+  event_tree_->Branch("GE21_pad8_phi_L1", event_.GE21_pad8_phi_L1,"GE21_pad8_phi_L1[4]/F");
+  event_tree_->Branch("GE21_pad8_phi_L2", event_.GE21_pad8_phi_L2,"GE21_pad8_phi_L2[4]/F");
 }
 
 
@@ -3723,6 +3875,11 @@ DisplacedL1MuFilter::clearBranches()
     event_.GE0_phi[i] = 99;
     event_.GE0_phib[i] = 99;
 
+    GE21_pad1_phi_L1[i] = 99.; GE21_pad1_phi_L2[i] = 99.;
+    GE21_pad2_phi_L1[i] = 99.; GE21_pad2_phi_L2[i] = 99.;
+    GE21_pad4_phi_L1[i] = 99.; GE21_pad4_phi_L2[i] = 99.;
+    GE21_pad8_phi_L1[i] = 99.; GE21_pad8_phi_L2[i] = 99.;
+    
     event_.Sim_GE11_phi_L1[i] = 99.;
     event_.Sim_GE11_phi_L2[i] = 99.;
     event_.Sim_GE21_phi_L1[i] = 99.;

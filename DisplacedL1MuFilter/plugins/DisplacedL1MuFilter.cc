@@ -13,7 +13,7 @@
    parallel muons, coming from e.g. low mass dark photon decay, this may cut significantly 
    on the signal. To suppress the fake rate, one might set an upper cut, e.g. pT<10 GeV.
 
-   To estimate the rate reduction Sven will take a MinBias sample from Slava and build a 
+ 1;95;0c  To estimate the rate reduction Sven will take a MinBias sample from Slava and build a 
    filter. We reject all events that have at least one muon that pass the requirements 
    for a prompt muon: (1) Q>=4 and matched to L1Tk within dR<0.12 or (2) unmatched to 
    L1Tk but with at least one L1Tk within  dR<0.4 with pt>4
@@ -33,9 +33,19 @@
 
 // system include files
 #include <memory>
+#include <iostream>
+#include <iomanip>
+#include <ctime>
+#include <sstream>
 
 #include "TTree.h"
+#include "TCanvas.h"
 #include "TFile.h"
+#include "TGraph.h"
+#include "TF1.h"
+#include "TGraphErrors.h"
+#include "TDatime.h"
+#include "TTimeStamp.h"
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -302,6 +312,12 @@ struct MyEvent
   Float_t CSCTF_rec_R1[kMaxCSCTF], CSCTF_rec_R2[kMaxCSCTF];
   Float_t CSCTF_rec_z1[kMaxCSCTF], CSCTF_rec_z2[kMaxCSCTF];
 
+  // fitted positions -- at key layer
+  Float_t CSCTF_fit_phi1[kMaxCSCTF], CSCTF_fit_phi2[kMaxCSCTF];
+
+  // fitted positions - at key layer
+  Float_t CSCTF_sim_phi1[kMaxCSCTF], CSCTF_sim_phi2[kMaxCSCTF];
+
   // Matching the L1Mu to RPCb  
   Int_t nRPCb;
   Int_t L1Mu_RPCb_index[kMaxL1Mu];
@@ -376,16 +392,16 @@ struct MyEvent
   Int_t GE11_ch_L1[kMaxGEM], GE11_ch_L2[kMaxGEM], GE21_ch_L1[kMaxGEM], GE21_ch_L2[kMaxGEM];
   Float_t GE11_z_L1[kMaxGEM], GE11_z_L2[kMaxGEM], GE21_z_L1[kMaxGEM], GE21_z_L2[kMaxGEM];
 
-  Float_t Sim_GE11_phi_L1[kMaxGEM], Sim_GE11_phi_L2[kMaxGEM], Sim_GE21_phi_L1[kMaxGEM], Sim_GE21_phi_L2[kMaxGEM];
-  Float_t Sim_GE11_bx_L1[kMaxGEM], Sim_GE11_bx_L2[kMaxGEM], Sim_GE21_bx_L1[kMaxGEM], Sim_GE21_bx_L2[kMaxGEM];
-  Int_t Sim_GE11_ch_L1[kMaxGEM], Sim_GE11_ch_L2[kMaxGEM], Sim_GE21_ch_L1[kMaxGEM], Sim_GE21_ch_L2[kMaxGEM];
-  Float_t Sim_GE11_z_L1[kMaxGEM], Sim_GE11_z_L2[kMaxGEM], Sim_GE21_z_L1[kMaxGEM], Sim_GE21_z_L2[kMaxGEM];
+  Float_t GE11_sim_phi_L1[kMaxGEM], GE11_sim_phi_L2[kMaxGEM], GE21_sim_phi_L1[kMaxGEM], GE21_sim_phi_L2[kMaxGEM];
+  Float_t GE11_sim_bx_L1[kMaxGEM], GE11_sim_bx_L2[kMaxGEM], GE21_sim_bx_L1[kMaxGEM], GE21_sim_bx_L2[kMaxGEM];
+  Int_t GE11_sim_ch_L1[kMaxGEM], GE11_sim_ch_L2[kMaxGEM], GE21_sim_ch_L1[kMaxGEM], GE21_sim_ch_L2[kMaxGEM];
+  Float_t GE11_sim_z_L1[kMaxGEM], GE11_sim_z_L2[kMaxGEM], GE21_sim_z_L1[kMaxGEM], GE21_sim_z_L2[kMaxGEM];
 
   Float_t GE0_phi[kMaxGEM];
   Float_t GE0_phib[kMaxGEM];
 
-  Float_t Sim_GE0_phi[kMaxGEM];
-  Float_t Sim_GE0_phib[kMaxGEM];
+  Float_t GE0_sim_phi[kMaxGEM];
+  Float_t GE0_sim_phib[kMaxGEM];
 
   // positions from artificial pads
   Float_t GE21_pad1_phi_L1[kMaxGEM], GE21_pad1_phi_L2[kMaxGEM];
@@ -456,6 +472,7 @@ phiL1CSCTrack(const csc::L1Track& track)
   return phi_packed;
 }
 
+/*
 void calculateAlphaBeta(const std::vector<float>& v, const std::vector<float>& w, float& alpha, float& beta)
 {
   float vbar = std::accumulate( v.begin(), v.end(), 0.0)/v.size();
@@ -469,6 +486,91 @@ void calculateAlphaBeta(const std::vector<float>& v, const std::vector<float>& w
   beta = sum1/sum2;
   alpha = wbar - beta * vbar;
 }
+*/
+
+void calculateAlphaBeta(const std::vector<float>& v, 
+                        const std::vector<float>& w, 
+                        const std::vector<float>& ev, 
+                        const std::vector<float>& ew, float& alpha, float& beta)
+{
+  std::cout << "size of v: "<<v.size() << std::endl; 
+  
+  if (v.size()>=2) {
+  
+  float zmin;
+  float zmax;
+  if (v.front() < v.back()){
+    zmin = v.front();
+    zmax = v.back();
+  }
+  else{
+    zmin = v.back();
+    zmax = v.front();
+  }
+
+  TF1 *fit1 = new TF1("fit1","pol1",zmin,zmax); 
+  //where 0 = x-axis_lowest and 48 = x_axis_highest 
+  TGraphErrors* gr = new TGraphErrors(v.size(),&(v[0]),&(w[0]),&(ev[0]),&(ew[0]));
+  gr->Fit(fit1,"R"); 
+  
+  
+  alpha = fit1->GetParameter(0); //value of 0th parameter
+  beta  = fit1->GetParameter(1); //value of 1st parameter
+ 
+  bool debug = false;
+  if (debug){
+  TCanvas* c1 = new TCanvas("c1","A Simple Graph with error bars",200,10,700,500);
+  c1->cd();
+  c1->SetFillColor(42);
+  c1->SetGrid();
+  // c1->GetFrame()->SetFillColor(21);
+  // c1->GetFrame()->SetBorderSize(12);
+  
+  gr->SetTitle("Linear fit");
+  gr->SetMarkerColor(4);
+  gr->SetMarkerStyle(21);
+  gr->Draw("ALP");
+
+  auto thistime = TTimeStamp();
+  auto date = thistime.GetDate();
+  // auto month = thistime.GetMonth();
+  // auto day = thistime.GetDay();
+  auto hour = thistime.GetTime();
+  auto nanosec = thistime.GetNanoSec();
+
+  // auto minute = thistime.GetMinute();
+  // auto second = thistime.GetSecond();
+  
+  // TString syear;   syear.Form("%d",   year);
+  // TString smonth;  smonth.Form("%d",  month);
+  TString sday;    sday.Form("%d",    date);
+  TString shour;   shour.Form("%d",   hour);
+  TString sminute; sminute.Form("%d", nanosec);
+  // TString ssecond; ssecond.Form("%d", second);
+
+  // TString sthistime = ;
+  // auto t = std::time(nullptr);
+  // auto tm = *std::localtime(&t);
+  
+  // std::ostringstream oss;
+  
+  // oss << std::put_time(&tm, "%Y%m%d_%H%M%S");
+  // auto str = oss.str();
+  // std::cout << "Time for plot " << sthistime << std::endl;
+  c1->SaveAs("c_debug_fit_" + sday + "_" + shour + "_" + sminute + ".png");
+  delete c1;
+  }
+  }
+}
+
+//   Double_t x[] = {1,2,3,4,5,6,7,8};
+//   Double_t y[] = {35,57,25,22,55,47,89,44};
+//   TGraph *g = new TGraph((sizeof(x) / sizeof(Double_t)), x, y);
+//   TF1 *f = new TF1("f", "[2] * x * x + [1] * x + [0]");
+//   g->Fit(f, "R");
+//   g->Draw("AL")
+//     gr1->Fit(fit1, "R"); 
+// }
 
 bool 
 isSimTrackGood(const SimTrack &t)
@@ -1093,10 +1195,37 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     auto sim_vertex = sim_vtxs[sim_muon.vertIndex()];
     SimTrackMatchManager match(sim_muon, sim_vertex, cfg_, iEvent, iSetup);
 
-    // GEM simhit
+    // CSC simhits
     const SimHitMatcher& match_sh = match.simhits();
+    for (auto d: match_sh.detIdsCSC()){
+      auto detId = CSCDetId(d);
+      if (detId.station()!=1 and detId.station()!=2) continue;
+      if (detId.ring()!=1 and detId.ring()!=4) continue;
+      if (detId.layer()!=CSCConstants::KEY_CLCT_LAYER) continue;
+      
+      auto simhits = match_sh.hitsInDetId(d);
+      auto csc_gp = match_sh.simHitsMeanPosition(simhits);
+      if(verbose) std::cout << "\tId " << detId 
+                            << " N csc simhits " << simhits.size() 
+                            << " gp " << csc_gp 
+                            << std::endl;
+      
+      double csc_phi = csc_gp.phi();
+      if (detId.station()==1 and (detId.ring()==1 or detId.ring()==4)) {
+        if (detId.layer()==CSCConstants::KEY_CLCT_LAYER) {
+          event_.CSCTF_sim_phi1[k] = csc_phi;
+        }
+      }
+      if (detId.station()==2 and detId.ring()==1) {
+        if (detId.layer()==CSCConstants::KEY_CLCT_LAYER) {
+          event_.CSCTF_sim_phi2[k] = csc_phi;
+        }
+      }
+    }
+    
+    // GEM simhit
     auto hits = match_sh.simHitsGEM();
-    std::cout << "Number of GEM hits " << hits.size() << std::endl;
+    if(verbose) std::cout << "Number of GEM hits " << hits.size() << std::endl;
     // auto gp = match_sh.simHitsMeanPosition(hits);
     // std::cout << "\t\tgp " << gp << std::endl;
     // auto gv = match_sh.simHitsMeanMomentum(hits);
@@ -1118,37 +1247,37 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
         if (detId.station()==1) {
           if (detId.layer()==1) {
-            event_.Sim_GE11_phi_L1[k] = gem_phi;
-            event_.Sim_GE11_bx_L1[k] = gem_bx;
-            event_.Sim_GE11_ch_L1[k] = gem_ch;
-            event_.Sim_GE11_z_L1[k] = gem_z;
-            // if (std::abs(event_.Sim_GE11_phi_L1[k] - 99.)<0.001)  event_.Sim_GE11_phi_L1[k] = gem_phi;
+            event_.GE11_sim_phi_L1[k] = gem_phi;
+            event_.GE11_sim_bx_L1[k] = gem_bx;
+            event_.GE11_sim_ch_L1[k] = gem_ch;
+            event_.GE11_sim_z_L1[k] = gem_z;
+            // if (std::abs(event_.GE11_sim_phi_L1[k] - 99.)<0.001)  event_.GE11_sim_phi_L1[k] = gem_phi;
             // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
           }
           if (detId.layer()==2) {
-            event_.Sim_GE11_phi_L2[k] = gem_phi;
-            event_.Sim_GE11_bx_L2[k] = gem_bx;
-            event_.Sim_GE11_ch_L2[k] = gem_ch;
-            event_.Sim_GE11_z_L2[k] = gem_z;
-            // if (std::abs(event_.Sim_GE11_phi_L2[k] - 99.)<0.001)  event_.Sim_GE11_phi_L2[k] = gem_phi;
+            event_.GE11_sim_phi_L2[k] = gem_phi;
+            event_.GE11_sim_bx_L2[k] = gem_bx;
+            event_.GE11_sim_ch_L2[k] = gem_ch;
+            event_.GE11_sim_z_L2[k] = gem_z;
+            // if (std::abs(event_.GE11_sim_phi_L2[k] - 99.)<0.001)  event_.GE11_sim_phi_L2[k] = gem_phi;
             // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
           }
         }
         if (detId.station()==3) {
           if (detId.layer()==1) {
-            event_.Sim_GE21_phi_L1[k] = gem_phi;
-            event_.Sim_GE21_bx_L1[k] = gem_bx;
-            event_.Sim_GE21_ch_L1[k] = gem_ch;
-            event_.Sim_GE21_z_L1[k] = gem_z;
-            // if (std::abs(event_.Sim_GE21_phi_L1[k] - 99.)<0.001)  event_.Sim_GE21_phi_L1[k] = gem_phi;
+            event_.GE21_sim_phi_L1[k] = gem_phi;
+            event_.GE21_sim_bx_L1[k] = gem_bx;
+            event_.GE21_sim_ch_L1[k] = gem_ch;
+            event_.GE21_sim_z_L1[k] = gem_z;
+            // if (std::abs(event_.GE21_sim_phi_L1[k] - 99.)<0.001)  event_.GE21_sim_phi_L1[k] = gem_phi;
             // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
           }
           if (detId.layer()==2) {
-            event_.Sim_GE21_phi_L2[k] = gem_phi;
-            event_.Sim_GE21_bx_L2[k] = gem_bx;
-            event_.Sim_GE21_ch_L2[k] = gem_ch;
-            event_.Sim_GE21_z_L2[k] = gem_z;
-            // if (std::abs(event_.Sim_GE21_phi_L2[k] - 99.)<0.001)  event_.Sim_GE21_phi_L2[k] = gem_phi;
+            event_.GE21_sim_phi_L2[k] = gem_phi;
+            event_.GE21_sim_bx_L2[k] = gem_bx;
+            event_.GE21_sim_ch_L2[k] = gem_ch;
+            event_.GE21_sim_z_L2[k] = gem_z;
+            // if (std::abs(event_.GE21_sim_phi_L2[k] - 99.)<0.001)  event_.GE21_sim_phi_L2[k] = gem_phi;
             // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
           }
         }
@@ -1256,7 +1385,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       // for (auto p: match_gd.positionPad2InDetId(d)) std::cout << "Positions2 " << p << std::endl;
       // for (auto p: match_gd.positionPad4InDetId(d)) std::cout << "Positions4 " << p << std::endl;
       // for (auto p: match_gd.positionPad8InDetId(d)) std::cout << "Positions8 " << p << std::endl;
-      if (detId.station()==2) {
+      if (detId.station()==3) {
         if (detId.layer()==1) {
           event_.GE21_pad1_phi_L1[k] = firstPositionPad1; 
           event_.GE21_pad2_phi_L1[k] = firstPositionPad2; 
@@ -1277,32 +1406,49 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     const CSCStubMatcher& match_csc = match.cscStubs();
     for (auto d: match_csc.chamberIdsLCT()){
       auto detId = CSCDetId(d);
-      std::cout << "\tNumber of matching CSC comparator strips " << match_cd.cscStripDigisInChamber(d).size() << std::endl;
+      if (detId.station()!=1 and detId.station()!=2) continue;
+      if (detId.ring()!=1 and detId.ring()!=4) continue;
+      auto cscChamber = cscGeometry_->chamber(detId);
+      if(verbose) std::cout << "\tNumber of matching CSC comparator strips " << match_cd.cscComparatorDigisInChamber(d).size() << std::endl;
+      if(verbose) std::cout << "\tNumber of matching CSC stubs " << match_csc.cscLctsInChamber(d).size() << std::endl;
+      if(verbose) for (auto p: match_csc.cscLctsInChamber(d)) std::cout << "\t " <<p << std::endl;
       std::vector<float> phis;
       std::vector<float> zs;
+      std::vector<float> ephis;
+      std::vector<float> ezs;
+      // get the key halfstrip of the LCT in this chamber
+      
       for (int l=1; l<=6; l++){
         CSCDetId l_id(detId.endcap(), detId.station(), detId.ring(), detId.chamber(), l);
         if(verbose) std::cout << "\tCSCId " << l_id << std::endl;
-        std::cout << "\tPrinting available comparator strips in detId: " << match_cd.cscStripDigisInDetId(l_id.rawId()).size() << std::endl;
-        for (auto p: match_cd.cscStripDigisInDetId(l_id.rawId())){
-          float fractional_strip = 0.5 * (p.getStrip() + 1) - 0.25;
-          auto cscChamber = cscGeometry_->chamber(detId);
+        if(verbose) std::cout << "\tPrinting available comparator strips in detId: " << match_cd.cscComparatorDigisInDetId(l_id.rawId()).size() << std::endl;
+        for (auto p: match_cd.cscComparatorDigisInDetId(l_id.rawId())){
+          float fractional_strip = (2*p.getStrip() - 1 + p.getComparator())/2.;
           auto layer_geo = cscChamber->layer(l)->geometry();
-          LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, 10);
+          if(verbose) std::cout << "Number of wiregroups in this detid " << match_cd.wiregroupsInDetId(l_id.rawId()).size() << std::endl;
+          auto wiregroups = match_cd.wiregroupsInDetId(l_id.rawId());
+          if(verbose) for (auto p: wiregroups) std::cout << "\t" << p << std::endl;
+          float wire = layer_geo->middleWireOfGroup(*wiregroups.begin() + 1);
+          LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, wire);
           GlobalPoint csc_gp = cscGeometry_->idToDet(l_id)->surface().toGlobal(csc_intersect);
           //std::cout << "\t\t>>> other CSC LCT phi " << csc_gp.phi() << std::endl;
           //return getCSCSpecificPoint(rawId, lct).phi();
-          std::cout << "\t" << l_id << " " << p << " " << csc_gp.phi() << std::endl;
-          phis.push_back(csc_gp.phi());
+          //std::cout << "\t" << l_id << " " << p << " " << csc_gp.phi() << std::endl;
           zs.push_back(csc_gp.z());
+          ezs.push_back(0);
+          phis.push_back(csc_gp.phi());
+          if (detId.station()==1) ephis.push_back(0.00136353847/sqrt(12));
+          if (detId.station()==2) ephis.push_back(0.00218166156/sqrt(12));
         }
       }
       float alpha = 0., beta = 0.;
-      calculateAlphaBeta(zs, phis, alpha, beta);
-      GlobalPoint csc_gp = cscGeometry_->idToDet(detId)->surface().toGlobal(LocalPoint(0,0,0));
-      float bestFitPhi = alpha + beta*csc_gp.z();
-      std::cout << "best fit phi position " << bestFitPhi << std::endl;
-      if (detId.station()==1) {
+      calculateAlphaBeta(zs, phis, ezs, ephis, alpha, beta);
+      
+      float z_pos_L3 = cscChamber->layer(CSCConstants::KEY_CLCT_LAYER)->centerOfStrip(20).z();
+      float bestFitPhi = alpha + beta * z_pos_L3;
+      if(verbose) std::cout << "best fit phi position " << z_pos_L3 << " " << bestFitPhi << std::endl;
+ 
+     if (detId.station()==1) {
         event_.CSCTF_fit_phi1[k] = bestFitPhi;
       }        
       if (detId.station()==2) {
@@ -2779,12 +2925,12 @@ DisplacedL1MuFilter::getCSCSpecificPointStrips(const SimTrackMatchManager& match
     
   for (auto d: match_cd.chamberIdsStrip()){
     auto detId = CSCDetId(d);
-    std::cout << "\tNumber of matching CSC comparator strips " << match_cd.cscStripDigisInChamber(d).size() << std::endl;
+    std::cout << "\tNumber of matching CSC comparator strips " << match_cd.cscComparatorDigisInChamber(d).size() << std::endl;
     for (int l=1; l<=6; l++){
       CSCDetId l_id(detId.endcap(), detId.station(), detId.ring(), detId.chamber(), l);
       if(verbose) std::cout << "\tCSCId " << l_id << std::endl;
-      std::cout << "\tPrinting available comparator strips in detId: " << match_cd.cscStripDigisInDetId(l_id.rawId()).size() << std::endl;
-      for (auto p: match_cd.cscStripDigisInDetId(l_id.rawId())){
+      std::cout << "\tPrinting available comparator strips in detId: " << match_cd.cscComparatorDigisInDetId(l_id.rawId()).size() << std::endl;
+      for (auto p: match_cd.cscComparatorDigisInDetId(l_id.rawId())){
         float fractional_strip = 0.5 * (p.getStrip() + 1) - 0.25;
         auto cscChamber = cscGeometry_->chamber(detId);
         auto layer_geo = cscChamber->layer(l)->geometry();
@@ -3262,6 +3408,12 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_rec_z1", event_.CSCTF_rec_z1,"CSCTF_rec_z1[4]/F");
   event_tree_->Branch("CSCTF_rec_z2", event_.CSCTF_rec_z2,"CSCTF_rec_z2[4]/F");
 
+  event_tree_->Branch("CSCTF_fit_phi1", event_.CSCTF_fit_phi1,"CSCTF_fit_phi1[4]/F");
+  event_tree_->Branch("CSCTF_fit_phi2", event_.CSCTF_fit_phi2,"CSCTF_fit_phi2[4]/F");
+  event_tree_->Branch("CSCTF_sim_phi1", event_.CSCTF_sim_phi1,"CSCTF_sim_phi1[4]/F");
+  event_tree_->Branch("CSCTF_sim_phi2", event_.CSCTF_sim_phi2,"CSCTF_sim_phi2[4]/F");
+
+
   event_tree_->Branch("nRPCb", &event_.nRPCb);
   event_tree_->Branch("L1Mu_RPCb_index", event_.L1Mu_RPCb_index,"L1Mu_RPCb_index[nL1Mu]/I");
 
@@ -3436,25 +3588,25 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("GE0_phi", event_.GE0_phi,"GE0_phi[4]/F");
   event_tree_->Branch("GE0_phib", event_.GE0_phib,"GE0_phib[4]/F");
 
-  event_tree_->Branch("Sim_GE11_phi_L1", event_.Sim_GE11_phi_L1,"Sim_GE11_phi_L1[4]/F");
-  event_tree_->Branch("Sim_GE11_phi_L2", event_.Sim_GE11_phi_L2,"Sim_GE11_phi_L2[4]/F");
-  event_tree_->Branch("Sim_GE21_phi_L1", event_.Sim_GE21_phi_L1,"Sim_GE21_phi_L1[4]/F");
-  event_tree_->Branch("Sim_GE21_phi_L2", event_.Sim_GE21_phi_L2,"Sim_GE21_phi_L2[4]/F");
-  event_tree_->Branch("Sim_GE11_bx_L1", event_.Sim_GE11_bx_L1,"Sim_GE11_bx_L1[4]/F");
-  event_tree_->Branch("Sim_GE11_bx_L2", event_.Sim_GE11_bx_L2,"Sim_GE11_bx_L2[4]/F");
-  event_tree_->Branch("Sim_GE21_bx_L1", event_.Sim_GE21_bx_L1,"Sim_GE21_bx_L1[4]/F");
-  event_tree_->Branch("Sim_GE21_bx_L2", event_.Sim_GE21_bx_L2,"Sim_GE21_bx_L2[4]/F");
-  event_tree_->Branch("Sim_GE11_ch_L1", event_.Sim_GE11_ch_L1,"Sim_GE11_ch_L1[4]/I");
-  event_tree_->Branch("Sim_GE11_ch_L2", event_.Sim_GE11_ch_L2,"Sim_GE11_ch_L2[4]/I");
-  event_tree_->Branch("Sim_GE21_ch_L1", event_.Sim_GE21_ch_L1,"Sim_GE21_ch_L1[4]/I");
-  event_tree_->Branch("Sim_GE21_ch_L2", event_.Sim_GE21_ch_L2,"Sim_GE21_ch_L2[4]/I");
-  event_tree_->Branch("Sim_GE11_z_L1", event_.Sim_GE11_z_L1,"Sim_GE11_z_L1[4]/F");
-  event_tree_->Branch("Sim_GE11_z_L2", event_.Sim_GE11_z_L2,"Sim_GE11_z_L2[4]/F");
-  event_tree_->Branch("Sim_GE21_z_L1", event_.Sim_GE21_z_L1,"Sim_GE21_z_L1[4]/F");
-  event_tree_->Branch("Sim_GE21_z_L2", event_.Sim_GE21_z_L2,"Sim_GE21_z_L2[4]/F");
+  event_tree_->Branch("GE11_sim_phi_L1", event_.GE11_sim_phi_L1,"GE11_sim_phi_L1[4]/F");
+  event_tree_->Branch("GE11_sim_phi_L2", event_.GE11_sim_phi_L2,"GE11_sim_phi_L2[4]/F");
+  event_tree_->Branch("GE21_sim_phi_L1", event_.GE21_sim_phi_L1,"GE21_sim_phi_L1[4]/F");
+  event_tree_->Branch("GE21_sim_phi_L2", event_.GE21_sim_phi_L2,"GE21_sim_phi_L2[4]/F");
+  event_tree_->Branch("GE11_sim_bx_L1", event_.GE11_sim_bx_L1,"GE11_sim_bx_L1[4]/F");
+  event_tree_->Branch("GE11_sim_bx_L2", event_.GE11_sim_bx_L2,"GE11_sim_bx_L2[4]/F");
+  event_tree_->Branch("GE21_sim_bx_L1", event_.GE21_sim_bx_L1,"GE21_sim_bx_L1[4]/F");
+  event_tree_->Branch("GE21_sim_bx_L2", event_.GE21_sim_bx_L2,"GE21_sim_bx_L2[4]/F");
+  event_tree_->Branch("GE11_sim_ch_L1", event_.GE11_sim_ch_L1,"GE11_sim_ch_L1[4]/I");
+  event_tree_->Branch("GE11_sim_ch_L2", event_.GE11_sim_ch_L2,"GE11_sim_ch_L2[4]/I");
+  event_tree_->Branch("GE21_sim_ch_L1", event_.GE21_sim_ch_L1,"GE21_sim_ch_L1[4]/I");
+  event_tree_->Branch("GE21_sim_ch_L2", event_.GE21_sim_ch_L2,"GE21_sim_ch_L2[4]/I");
+  event_tree_->Branch("GE11_sim_z_L1", event_.GE11_sim_z_L1,"GE11_sim_z_L1[4]/F");
+  event_tree_->Branch("GE11_sim_z_L2", event_.GE11_sim_z_L2,"GE11_sim_z_L2[4]/F");
+  event_tree_->Branch("GE21_sim_z_L1", event_.GE21_sim_z_L1,"GE21_sim_z_L1[4]/F");
+  event_tree_->Branch("GE21_sim_z_L2", event_.GE21_sim_z_L2,"GE21_sim_z_L2[4]/F");
 
-  event_tree_->Branch("Sim_GE0_phi", event_.Sim_GE0_phi,"Sim_GE0_phi[4]/F");
-  event_tree_->Branch("Sim_GE0_phib", event_.Sim_GE0_phib,"Sim_GE0_phib[4]/F");
+  event_tree_->Branch("GE0_sim_phi", event_.GE0_sim_phi,"GE0_sim_phi[4]/F");
+  event_tree_->Branch("GE0_sim_phib", event_.GE0_sim_phib,"GE0_sim_phib[4]/F");
 
   event_tree_->Branch("GE21_pad1_phi_L1", event_.GE21_pad1_phi_L1,"GE21_pad1_phi_L1[4]/F");
   event_tree_->Branch("GE21_pad1_phi_L2", event_.GE21_pad1_phi_L2,"GE21_pad1_phi_L2[4]/F");
@@ -3952,24 +4104,24 @@ DisplacedL1MuFilter::clearBranches()
     event_.GE21_pad8_phi_L1[i] = 99.; 
     event_.GE21_pad8_phi_L2[i] = 99.;
     
-    event_.Sim_GE11_phi_L1[i] = 99.;
-    event_.Sim_GE11_phi_L2[i] = 99.;
-    event_.Sim_GE21_phi_L1[i] = 99.;
-    event_.Sim_GE21_phi_L2[i] = 99.;
-    event_.Sim_GE11_bx_L1[i] = 99;
-    event_.Sim_GE11_bx_L2[i] = 99;
-    event_.Sim_GE21_bx_L1[i] = 99;
-    event_.Sim_GE21_bx_L2[i] = 99;
-    event_.Sim_GE11_ch_L1[i] = 99;
-    event_.Sim_GE11_ch_L2[i] = 99;
-    event_.Sim_GE21_ch_L1[i] = 99;
-    event_.Sim_GE21_ch_L2[i] = 99;
-    event_.Sim_GE11_z_L1[i] = 99;
-    event_.Sim_GE11_z_L2[i] = 99;
-    event_.Sim_GE21_z_L1[i] = 99;
-    event_.Sim_GE21_z_L2[i] = 99;
-    event_.Sim_GE0_phi[i] = 99;
-    event_.Sim_GE0_phib[i] = 99;
+    event_.GE11_sim_phi_L1[i] = 99.;
+    event_.GE11_sim_phi_L2[i] = 99.;
+    event_.GE21_sim_phi_L1[i] = 99.;
+    event_.GE21_sim_phi_L2[i] = 99.;
+    event_.GE11_sim_bx_L1[i] = 99;
+    event_.GE11_sim_bx_L2[i] = 99;
+    event_.GE21_sim_bx_L1[i] = 99;
+    event_.GE21_sim_bx_L2[i] = 99;
+    event_.GE11_sim_ch_L1[i] = 99;
+    event_.GE11_sim_ch_L2[i] = 99;
+    event_.GE21_sim_ch_L1[i] = 99;
+    event_.GE21_sim_ch_L2[i] = 99;
+    event_.GE11_sim_z_L1[i] = 99;
+    event_.GE11_sim_z_L2[i] = 99;
+    event_.GE21_sim_z_L1[i] = 99;
+    event_.GE21_sim_z_L2[i] = 99;
+    event_.GE0_sim_phi[i] = 99;
+    event_.GE0_sim_phib[i] = 99;
     
     event_.CSCTF_rec_ch1[i] = 99;
     event_.CSCTF_rec_ch2[i] = 99;
@@ -3981,6 +4133,11 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_rec_R2[i] = 99;
     event_.CSCTF_rec_z1[i] = 99;
     event_.CSCTF_rec_z2[i] = 99;
+
+    event_.CSCTF_fit_phi1[i] = 99;
+    event_.CSCTF_fit_phi2[i] = 99;
+    event_.CSCTF_sim_phi1[i] = 99;
+    event_.CSCTF_sim_phi2[i] = 99;
   }
 }
 

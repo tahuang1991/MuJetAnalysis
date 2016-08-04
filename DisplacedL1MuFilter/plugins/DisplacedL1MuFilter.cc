@@ -495,7 +495,7 @@ void calculateAlphaBeta(const std::vector<float>& v,
 {
   std::cout << "size of v: "<<v.size() << std::endl; 
   
-  if (v.size()>=2) {
+  if (v.size()>=3) {
   
   float zmin;
   float zmax;
@@ -1356,8 +1356,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       } 
     }
     // pad positions for GE21...
-    if(verbose) std::cout << "Skinny and Fat pads " << match_gd.detIdsPad().size() << std::endl;
-    for (auto d: match_gd.detIdsPad(GEMType::GEM_ME21)){
+    if(verbose) std::cout << "Skinny and Fat pads; N detids with digis " << match_gd.detIdsDigi(GEMType::GEM_ME21).size() << std::endl;
+    for (auto d: match_gd.detIdsDigi(GEMType::GEM_ME21)){
       auto detId = GEMDetId(d);
       if(verbose) std::cout << "\tId " << detId << std::endl;
       double firstPositionPad1 = match_gd.positionPad1InDetId(d).front().phi();
@@ -1406,8 +1406,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     const CSCStubMatcher& match_csc = match.cscStubs();
     for (auto d: match_csc.chamberIdsLCT()){
       auto detId = CSCDetId(d);
-      if (detId.station()!=1 and detId.station()!=2) continue;
-      if (detId.ring()!=1 and detId.ring()!=4) continue;
+      if (detId.station()!=2) continue;
+      if (detId.ring()!=1) continue;
       auto cscChamber = cscGeometry_->chamber(detId);
       if(verbose) std::cout << "\tNumber of matching CSC comparator strips " << match_cd.cscComparatorDigisInChamber(d).size() << std::endl;
       if(verbose) std::cout << "\tNumber of matching CSC stubs " << match_csc.cscLctsInChamber(d).size() << std::endl;
@@ -1423,17 +1423,17 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         if(verbose) std::cout << "\tCSCId " << l_id << std::endl;
         if(verbose) std::cout << "\tPrinting available comparator strips in detId: " << match_cd.cscComparatorDigisInDetId(l_id.rawId()).size() << std::endl;
         for (auto p: match_cd.cscComparatorDigisInDetId(l_id.rawId())){
+          // if(verbose) std::cout << "Number of wiregroups in this detid " << match_cd.wiregroupsInDetId(l_id.rawId()).size() << std::endl;
+          // auto wiregroups = match_cd.wiregroupsInDetId(l_id.rawId());
+          // if(verbose) for (auto p: wiregroups) std::cout << "\t" << p << std::endl;
+          // float wire = layer_geo->middleWireOfGroup(*wiregroups.begin() + 1);
           float fractional_strip = (2*p.getStrip() - 1 + p.getComparator())/2.;
           auto layer_geo = cscChamber->layer(l)->geometry();
-          if(verbose) std::cout << "Number of wiregroups in this detid " << match_cd.wiregroupsInDetId(l_id.rawId()).size() << std::endl;
-          auto wiregroups = match_cd.wiregroupsInDetId(l_id.rawId());
-          if(verbose) for (auto p: wiregroups) std::cout << "\t" << p << std::endl;
-          float wire = layer_geo->middleWireOfGroup(*wiregroups.begin() + 1);
-          LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, wire);
+          LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, 20);
           GlobalPoint csc_gp = cscGeometry_->idToDet(l_id)->surface().toGlobal(csc_intersect);
           //std::cout << "\t\t>>> other CSC LCT phi " << csc_gp.phi() << std::endl;
           //return getCSCSpecificPoint(rawId, lct).phi();
-          //std::cout << "\t" << l_id << " " << p << " " << csc_gp.phi() << std::endl;
+          std::cout << "\t" << l_id << " " << p << " " << csc_gp.phi() << std::endl;
           zs.push_back(csc_gp.z());
           ezs.push_back(0);
           phis.push_back(csc_gp.phi());

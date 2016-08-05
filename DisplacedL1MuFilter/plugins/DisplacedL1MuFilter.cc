@@ -491,7 +491,11 @@ void calculateAlphaBeta(const std::vector<float>& v, const std::vector<float>& w
 void calculateAlphaBeta(const std::vector<float>& v, 
                         const std::vector<float>& w, 
                         const std::vector<float>& ev, 
-                        const std::vector<float>& ew, float& alpha, float& beta)
+                        const std::vector<float>& ew, 
+                        const std::vector<float>& status,
+                        float& alpha, float& beta, 
+                        int lumi, int run, int event, int muon,
+                        int keyStrip, int Pattern)
 {
   std::cout << "size of v: "<<v.size() << std::endl; 
   
@@ -511,8 +515,10 @@ void calculateAlphaBeta(const std::vector<float>& v,
   TF1 *fit1 = new TF1("fit1","pol1",zmin,zmax); 
   //where 0 = x-axis_lowest and 48 = x_axis_highest 
   TGraphErrors* gr = new TGraphErrors(v.size(),&(v[0]),&(w[0]),&(ev[0]),&(ew[0]));
-  gr->Fit(fit1,"R"); 
-  
+  gr->SetMinimum(w[2]-5*0.00222);
+  gr->SetMaximum(w[2]+5*0.00222);
+ 
+  gr->Fit(fit1,"RQ"); 
   
   alpha = fit1->GetParameter(0); //value of 0th parameter
   beta  = fit1->GetParameter(1); //value of 1st parameter
@@ -525,39 +531,18 @@ void calculateAlphaBeta(const std::vector<float>& v,
   c1->SetGrid();
   // c1->GetFrame()->SetFillColor(21);
   // c1->GetFrame()->SetBorderSize(12);
+
+  TString slumi;  slumi.Form("%d", lumi);
+  TString srun;   srun.Form("%d", run);
+  TString sevent; sevent.Form("%d", event);
+  TString smuon;  smuon.Form("%d", muon);
   
-  gr->SetTitle("Linear fit");
+  gr->SetTitle("Linear fit to ComparatorDigis for Lumi " + slumi + " Run " + srun + " Event " + sevent + " Muon " + smuon);
   gr->SetMarkerColor(4);
   gr->SetMarkerStyle(21);
   gr->Draw("ALP");
 
-  auto thistime = TTimeStamp();
-  auto date = thistime.GetDate();
-  // auto month = thistime.GetMonth();
-  // auto day = thistime.GetDay();
-  auto hour = thistime.GetTime();
-  auto nanosec = thistime.GetNanoSec();
-
-  // auto minute = thistime.GetMinute();
-  // auto second = thistime.GetSecond();
-  
-  // TString syear;   syear.Form("%d",   year);
-  // TString smonth;  smonth.Form("%d",  month);
-  TString sday;    sday.Form("%d",    date);
-  TString shour;   shour.Form("%d",   hour);
-  TString sminute; sminute.Form("%d", nanosec);
-  // TString ssecond; ssecond.Form("%d", second);
-
-  // TString sthistime = ;
-  // auto t = std::time(nullptr);
-  // auto tm = *std::localtime(&t);
-  
-  // std::ostringstream oss;
-  
-  // oss << std::put_time(&tm, "%Y%m%d_%H%M%S");
-  // auto str = oss.str();
-  // std::cout << "Time for plot " << sthistime << std::endl;
-  c1->SaveAs("c_debug_fit_" + sday + "_" + shour + "_" + sminute + ".png");
+  c1->SaveAs("c_debug_fit_L" + slumi + "_R" + srun + "_E" + sevent + "_M" + smuon + ".png");
   delete c1;
   }
   }
@@ -615,6 +600,7 @@ private:
   GlobalPoint getCSCSpecificPointStrips(const SimTrackMatchManager& tp) const;
   bool isCSCCounterClockwise(const std::unique_ptr<const CSCLayer>& layer) const;
 
+  void extrapolate(const SimTrack&tk, const SimVertex&, GlobalPoint&);
   void extrapolate(const reco::GenParticle &tk, int station, GlobalPoint&, GlobalVector&);
   void extrapolate(const TTTrack< Ref_PixelDigi_ > &tk, int station, GlobalPoint&, GlobalVector&);
   GlobalPoint extrapolateGP(const TTTrack< Ref_PixelDigi_ > &tk, int station=2);
@@ -1405,44 +1391,89 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     const CSCDigiMatcher& match_cd = match.cscDigis();
     const CSCStubMatcher& match_csc = match.cscStubs();
     for (auto d: match_csc.chamberIdsLCT()){
+    
+
       auto detId = CSCDetId(d);
       if (detId.station()!=2) continue;
       if (detId.ring()!=1) continue;
       auto cscChamber = cscGeometry_->chamber(detId);
       if(verbose) std::cout << "\tNumber of matching CSC comparator strips " << match_cd.cscComparatorDigisInChamber(d).size() << std::endl;
-      if(verbose) std::cout << "\tNumber of matching CSC stubs " << match_csc.cscLctsInChamber(d).size() << std::endl;
-      if(verbose) for (auto p: match_csc.cscLctsInChamber(d)) std::cout << "\t " <<p << std::endl;
+      if(verbose) std::cout << "\tNumber of matching CSC LCTs " << match_csc.cscLctsInChamber(d).size() << std::endl;
+      // if(verbose) for (auto p: match_csc.cscLctsInChamber(d)) std::cout << "\t " <<p << std::endl;
+      auto bestMatchingLCT = match_csc.bestCscLctInChamber(detId);
+      if(verbose) std::cout << " BEST LCT " << match_csc.bestCscLctInChamber(detId) << std::endl;
+      if(verbose) std::cout << "\tNumber of matching CSC CLCTs " << match_csc.cscClctsInChamber(d).size() << std::endl;
+      if(verbose) for (auto p: match_csc.cscClctsInChamber(d)) std::cout << "\t " <<p << std::endl;
+
+      // //LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, 20);
+      // CSCDetId l3_id(detId.endcap(), detId.station(), detId.ring(), detId.chamber(), 3);
+      // GlobalPoint csct_gp = cscGeometry_->idToDet(l3_id)->surface().toGlobal(LocalPoint(0,0,0));
+      
+      // double posSimTrackKey = csct_gp.phi();;
+      // // position of the simTrack at the keylayer
+      // GlobalPoint temp_pMS2;
+      // extrapolate(sim_muon, sim_vertex, csct_gp.z(), temp_pMS2);
+
+      // average position of the simtrack in the chamber!!
+      // double average_phi = match_sh.simHitsMeanPosition(match_sh.hitsInChamber(d)).phi();
+      
       std::vector<float> phis;
       std::vector<float> zs;
       std::vector<float> ephis;
       std::vector<float> ezs;
+      std::vector<float> status;
       // get the key halfstrip of the LCT in this chamber
       
       for (int l=1; l<=6; l++){
         CSCDetId l_id(detId.endcap(), detId.station(), detId.ring(), detId.chamber(), l);
         if(verbose) std::cout << "\tCSCId " << l_id << std::endl;
         if(verbose) std::cout << "\tPrinting available comparator strips in detId: " << match_cd.cscComparatorDigisInDetId(l_id.rawId()).size() << std::endl;
+        int closestCompDigi = -1;
+        double minDist = 99;
+        int jj=0;
+        double bestz = 99;
+        double bestphi = 99;
         for (auto p: match_cd.cscComparatorDigisInDetId(l_id.rawId())){
           // if(verbose) std::cout << "Number of wiregroups in this detid " << match_cd.wiregroupsInDetId(l_id.rawId()).size() << std::endl;
           // auto wiregroups = match_cd.wiregroupsInDetId(l_id.rawId());
           // if(verbose) for (auto p: wiregroups) std::cout << "\t" << p << std::endl;
-          // float wire = layer_geo->middleWireOfGroup(*wiregroups.begin() + 1);
-          float fractional_strip = (2*p.getStrip() - 1 + p.getComparator())/2.;
+          // float wire = layer_geo->middleWireOfGroup(*wiregroups.begin() + 1);   
+          float fractional_strip = match_cd.getHalfStrip(l_id.rawId(), p)/2.;
           auto layer_geo = cscChamber->layer(l)->geometry();
           LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, 20);
           GlobalPoint csc_gp = cscGeometry_->idToDet(l_id)->surface().toGlobal(csc_intersect);
+          double delta = reco::deltaPhi(csc_gp.phi(), match_sh.simHitsMeanPosition(match_sh.hitsInChamber(d)).phi());
+          if (delta<minDist){
+            minDist = delta;
+            closestCompDigi = jj;
+            bestz = csc_gp.z();
+            bestphi = csc_gp.phi();
+            if(verbose) std::cout << "minDist closestCompDigi bestz bestphi " << " " << minDist 
+                      << " " << closestCompDigi << " " << bestz << " " << bestphi << std::endl;
+          }
           //std::cout << "\t\t>>> other CSC LCT phi " << csc_gp.phi() << std::endl;
           //return getCSCSpecificPoint(rawId, lct).phi();
-          std::cout << "\t" << l_id << " " << p << " " << csc_gp.phi() << std::endl;
-          zs.push_back(csc_gp.z());
+          // std::cout << "\t" << l_id << " Comp " << p << " HS " << match_cd.getHalfStrip(l_id.rawId(), p) << " Phi " << csc_gp.phi() << std::endl;
+          ++jj;
+        }
+        if (minDist<99){
+          zs.push_back(bestz);
           ezs.push_back(0);
-          phis.push_back(csc_gp.phi());
-          if (detId.station()==1) ephis.push_back(0.00136353847/sqrt(12));
+          phis.push_back(bestphi);
           if (detId.station()==2) ephis.push_back(0.00218166156/sqrt(12));
         }
+        //        status.push_back(0);
+        // if (detId.station()==1) ephis.push_back(0.00136353847/sqrt(12));
+          
+        if(verbose) std::cout << std::endl;
       }
+      auto compDigis = match_csc.matchingComparatorDigisLCT(detId, bestMatchingLCT);
+      if(verbose) std::cout << "Matching compDigis " << compDigis.size() << std::endl;
+
       float alpha = 0., beta = 0.;
-      calculateAlphaBeta(zs, phis, ezs, ephis, alpha, beta);
+      calculateAlphaBeta(zs, phis, ezs, ephis, status,
+                         alpha, beta, 
+                         event_.lumi, event_.run, event_.event, k, 0, 0);
       
       float z_pos_L3 = cscChamber->layer(CSCConstants::KEY_CLCT_LAYER)->centerOfStrip(20).z();
       float bestFitPhi = alpha + beta * z_pos_L3;
@@ -3052,6 +3083,48 @@ DisplacedL1MuFilter::extrapolate(const TTTrack< Ref_PixelDigi_ > &tk, int statio
     gv = GlobalVector();
   }
 }
+
+// void 
+// DisplacedL1MuFilter::extrapolate(const SimTrack&tk, const SimVertex& vtx, double z, GlobalPoint& gp)
+// {
+//   TrajectoryStateOnSurface tsos;
+//   GlobalPoint inner_point(vtx.position().vx(), vtx.position().vy(), vtx.position().vz());
+//   GlobalVector inner_vec (tk.px(), tk.py(), tk.pz());
+//   // double R, Zmin, Zmax;
+//   // if (station == 1){
+//   //   R = 440.; Zmax = 600.; Zmin = -600.;
+//   // }
+//   // else if (station == 2){
+//   //   R = 523.; Zmax = 828.; Zmin = -828.;
+//   // }
+//   // // GE11
+//   // else if (station == 11){
+//   //   R = 523.; Zmax = 569.; Zmin = -569.;
+//   // }
+//   // // GE21
+//   // else if (station == 21){
+//   //   R = 523.; Zmax = 798.; Zmin = -798.;
+//   // }
+//   // else {
+//   //   R = 0.; Zmax = 0.; Zmin = 0.;
+//   // }
+//   tsos = propagateToZ(inner_point, inner_vec, tk.charge(), z);
+
+//   // if (std::abs(tk.eta())<1.2) tsos = propagateToR(inner_point, inner_vec, tk.charge(), R);
+//   // else if (tk.eta()>1.2)      
+//   // else if (tk.eta()<-1.2)     tsos = propagateToZ(inner_point, inner_vec, tk.charge(), Zmin);
+//   // else                        tsos = TrajectoryStateOnSurface();
+
+//   if (tsos.isValid()){
+//     gp = tsos.globalPosition();
+//     // gv = tsos.globalMomentum();
+//     //LocalVector lv = tsos.localMomentum();
+//     //std::cout << "Local momentum vector: " << lv.eta() << " " << lv.phi() << std::endl;
+//   } else {
+//     gp = GlobalPoint();
+//     // gv = GlobalVector();
+//   }
+// }
 
 GlobalPoint
 DisplacedL1MuFilter::extrapolateGP(const TTTrack< Ref_PixelDigi_ > &tk, int station)

@@ -495,9 +495,9 @@ void calculateAlphaBeta(const std::vector<float>& v,
                         const std::vector<float>& status,
                         float& alpha, float& beta, 
                         int lumi, int run, int event, int muon,
-                        int keyStrip, int Pattern)
+                        int keyStrip, int Pattern, bool debug)
 {
-  std::cout << "size of v: "<<v.size() << std::endl; 
+  //std::cout << "size of v: "<<v.size() << std::endl; 
   
   if (v.size()>=3) {
   
@@ -515,15 +515,14 @@ void calculateAlphaBeta(const std::vector<float>& v,
   TF1 *fit1 = new TF1("fit1","pol1",zmin,zmax); 
   //where 0 = x-axis_lowest and 48 = x_axis_highest 
   TGraphErrors* gr = new TGraphErrors(v.size(),&(v[0]),&(w[0]),&(ev[0]),&(ew[0]));
-  gr->SetMinimum(w[2]-5*0.00222);
-  gr->SetMaximum(w[2]+5*0.00222);
+  gr->SetMinimum(w[2]-5*0.002);
+  gr->SetMaximum(w[2]+5*0.002);
  
   gr->Fit(fit1,"RQ"); 
   
   alpha = fit1->GetParameter(0); //value of 0th parameter
   beta  = fit1->GetParameter(1); //value of 1st parameter
- 
-  bool debug = false;
+
   if (debug){
   TCanvas* c1 = new TCanvas("c1","A Simple Graph with error bars",200,10,700,500);
   c1->cd();
@@ -542,9 +541,12 @@ void calculateAlphaBeta(const std::vector<float>& v,
   gr->SetMarkerStyle(21);
   gr->Draw("ALP");
 
-  c1->SaveAs("c_debug_fit_L" + slumi + "_R" + srun + "_E" + sevent + "_M" + smuon + ".png");
+  c1->SaveAs("ComparatoDigiLinearFits/c_debug_fit_L" + slumi + "_R" + srun + "_E" + sevent + "_M" + smuon + ".png");
   delete c1;
   }
+  }
+  else{
+    //std::cout << "ERROR: LCT without at least 3 comparator digis in the chamber!!" << std::endl;
   }
 }
 
@@ -634,6 +636,7 @@ private:
   double min_pT_L1Tk;
   double max_pT_L1Tk;
   int verbose;
+  bool produceFitPlots_;
 
   const RPCGeometry* rpcGeometry_;
   const CSCGeometry* cscGeometry_;
@@ -683,6 +686,7 @@ DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) :
   min_pT_L1Tk = iConfig.getParameter<double>("min_pT_L1Tk");
   max_pT_L1Tk = iConfig.getParameter<double>("max_pT_L1Tk");
   verbose = iConfig.getParameter<int>("verbose");
+  produceFitPlots_ = iConfig.getParameter<bool>("produceFitPlots");
   
   L1Mu_input = iConfig.getParameter<edm::InputTag>("L1Mu_input");
   L1TkMu_input = iConfig.getParameter<edm::InputTag>("L1TkMu_input");
@@ -1181,13 +1185,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     auto sim_vertex = sim_vtxs[sim_muon.vertIndex()];
     SimTrackMatchManager match(sim_muon, sim_vertex, cfg_, iEvent, iSetup);
 
-    // CSC simhits
+    // True position of the CSC hits in a chamber with an LCT
     const SimHitMatcher& match_sh = match.simhits();
     for (auto d: match_sh.detIdsCSC()){
       auto detId = CSCDetId(d);
-      if (detId.station()!=1 and detId.station()!=2) continue;
-      if (detId.ring()!=1 and detId.ring()!=4) continue;
-      if (detId.layer()!=CSCConstants::KEY_CLCT_LAYER) continue;
+      // if (detId.station()!=1 and detId.station()!=2) continue;
+      // if (detId.ring()!=1 and detId.ring()!=4) continue;
+      //if (detId.layer()!=CSCConstants::KEY_CLCT_LAYER) continue;
       
       auto simhits = match_sh.hitsInDetId(d);
       auto csc_gp = match_sh.simHitsMeanPosition(simhits);
@@ -1197,7 +1201,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                             << std::endl;
       
       double csc_phi = csc_gp.phi();
-      if (detId.station()==1 and (detId.ring()==1 or detId.ring()==4)) {
+      if (detId.station()==1 and (detId.ring()==1)) {
         if (detId.layer()==CSCConstants::KEY_CLCT_LAYER) {
           event_.CSCTF_sim_phi1[k] = csc_phi;
         }
@@ -1394,8 +1398,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     
 
       auto detId = CSCDetId(d);
-      if (detId.station()!=2) continue;
-      if (detId.ring()!=1) continue;
+      if (not (detId.station()!=1 or detId.station()!=2)) continue;
+      if (detId.ring()!=1) continue; // dont consider me1a for this part
       auto cscChamber = cscGeometry_->chamber(detId);
       if(verbose) std::cout << "\tNumber of matching CSC comparator strips " << match_cd.cscComparatorDigisInChamber(d).size() << std::endl;
       if(verbose) std::cout << "\tNumber of matching CSC LCTs " << match_csc.cscLctsInChamber(d).size() << std::endl;
@@ -1460,10 +1464,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           zs.push_back(bestz);
           ezs.push_back(0);
           phis.push_back(bestphi);
-          if (detId.station()==2) ephis.push_back(0.00218166156/sqrt(12));
+          if (detId.station()==1 and detId.ring()==1) ephis.push_back(0.00136353847/sqrt(12));
+          if (detId.station()==2 and detId.ring()==1) ephis.push_back(0.00218166156/sqrt(12));
         }
         //        status.push_back(0);
-        // if (detId.station()==1) ephis.push_back(0.00136353847/sqrt(12));
           
         if(verbose) std::cout << std::endl;
       }
@@ -1473,18 +1477,18 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       float alpha = 0., beta = 0.;
       calculateAlphaBeta(zs, phis, ezs, ephis, status,
                          alpha, beta, 
-                         event_.lumi, event_.run, event_.event, k, 0, 0);
+                         event_.lumi, event_.run, event_.event, k, 0, 0, produceFitPlots_);
       
       float z_pos_L3 = cscChamber->layer(CSCConstants::KEY_CLCT_LAYER)->centerOfStrip(20).z();
       float bestFitPhi = alpha + beta * z_pos_L3;
       if(verbose) std::cout << "best fit phi position " << z_pos_L3 << " " << bestFitPhi << std::endl;
- 
-     if (detId.station()==1) {
+      
+      if (detId.station()==1 and detId.ring()==1) {
         event_.CSCTF_fit_phi1[k] = bestFitPhi;
-      }        
-      if (detId.station()==2) {
+      }
+      if (detId.station()==2 and detId.ring()==1) {
         event_.CSCTF_fit_phi2[k] = bestFitPhi;
-      }        
+      }
     }
     // if(verbose){
     //   //std::cout << "Total number of matching pads to simtrack " << match_cd.nPads() << std::endl;
@@ -1556,7 +1560,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       if (nStubs==0) continue;
       // pick the first stub in the list...
       auto stub = match_csc.cscLctsInChamber(d)[0];
-      auto csc_gp = getCSCSpecificPoint(d, stub);
+      auto csc_gp = getCSCSpecificPoint2(d, stub);
       double csc_phi = csc_gp.phi();
       double csc_z = csc_gp.z();
       double csc_R = TMath::Sqrt(csc_gp.y() * csc_gp.y() + csc_gp.x() * csc_gp.x());
@@ -1565,14 +1569,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         std::cout << "\t\t\tPosition " << csc_phi << std::endl;
         std::cout << "\t\t\tDirection " << csc_sh_gv.phi() << std::endl;
       }
-      if (detId.station()==1) {
+      if (detId.station()==1 and detId.ring()==1 ) {
         event_.CSCTF_rec_ch1[k] = detId.chamber();
         event_.CSCTF_rec_phi1[k] = csc_phi;
         event_.CSCTF_rec_phib1[k] = csc_sh_gv.phi();
         event_.CSCTF_rec_z1[k] = csc_z;
         event_.CSCTF_rec_R1[k] = csc_R;
-      }        
-      if (detId.station()==2) {
+      }
+      if (detId.station()==2 and detId.ring()==1) {
         event_.CSCTF_rec_ch2[k] = detId.chamber();
         event_.CSCTF_rec_phi2[k] = csc_phi;
         event_.CSCTF_rec_phib2[k] = csc_sh_gv.phi();
@@ -1817,23 +1821,25 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           double csc_R = TMath::Sqrt(gp.y()*gp.y() + gp.x()*gp.x());
           switch(id.station()) {
           case 1:
-            event_.CSCTF_st1[j] = id.station();
-            event_.CSCTF_ri1[j] = id.ring(); 
-            event_.CSCTF_ch1[j] = id.chamber();
-            event_.CSCTF_en1[j] = id.zendcap();
-            event_.CSCTF_trk1[j] = stub.getTrknmb(); 
-            event_.CSCTF_quality1[j] = stub.getQuality();
-            event_.CSCTF_wg1[j] = stub.getKeyWG();
-            event_.CSCTF_hs1[j] = stub.getStrip();
-            event_.CSCTF_pat1[j] = stub.getPattern();
-            event_.CSCTF_bend1[j] = stub.getBend();
-            event_.CSCTF_bx1[j] = stub.getBX();
-            event_.CSCTF_clctpat1[j] = stub.getCLCTPattern();
-            event_.CSCTF_val1[j] = stub.isValid();
-            event_.CSCTF_phi1[j] = gp.phi();
-            event_.CSCTF_gemdphi1[j] = stub.getGEMDPhi();
-            event_.CSCTF_R1[j] = csc_R;
-            event_.CSCTF_z1[j] = csc_z;
+            if (id.ring()==1){
+              event_.CSCTF_st1[j] = id.station();
+              event_.CSCTF_ri1[j] = id.ring(); 
+              event_.CSCTF_ch1[j] = id.chamber();
+              event_.CSCTF_en1[j] = id.zendcap();
+              event_.CSCTF_trk1[j] = stub.getTrknmb(); 
+              event_.CSCTF_quality1[j] = stub.getQuality();
+              event_.CSCTF_wg1[j] = stub.getKeyWG();
+              event_.CSCTF_hs1[j] = stub.getStrip();
+              event_.CSCTF_pat1[j] = stub.getPattern();
+              event_.CSCTF_bend1[j] = stub.getBend();
+              event_.CSCTF_bx1[j] = stub.getBX();
+              event_.CSCTF_clctpat1[j] = stub.getCLCTPattern();
+              event_.CSCTF_val1[j] = stub.isValid();
+              event_.CSCTF_phi1[j] = gp.phi();
+              event_.CSCTF_gemdphi1[j] = stub.getGEMDPhi();
+              event_.CSCTF_R1[j] = csc_R;
+              event_.CSCTF_z1[j] = csc_z;
+            }
             break;
           case 2:
             event_.CSCTF_st2[j] = id.station();

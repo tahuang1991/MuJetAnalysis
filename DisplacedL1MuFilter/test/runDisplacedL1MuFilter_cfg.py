@@ -22,7 +22,7 @@ process.load("L1Trigger.TrackTrigger.TrackTrigger_cff")
 process.load('L1TriggerConfig.L1ScalesProducers.L1MuTriggerScalesConfig_cff')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(2500)
 )
 
 """
@@ -58,6 +58,7 @@ process.DisplacedL1MuFilter_PhaseIIGE21 = cms.EDFilter("DisplacedL1MuFilter",
     min_pT_L1Tk = cms.double(4),
     max_pT_L1Tk = cms.double(9999),
     verbose = cms.int32(0),
+    produceFitPlots = cms.bool(False),
     L1Mu_input = cms.InputTag("simGmtDigis"),
     L1TkMu_input = cms.InputTag("L1TkMuonsMerge"),
     simTrackMatching = SimTrackMatching,

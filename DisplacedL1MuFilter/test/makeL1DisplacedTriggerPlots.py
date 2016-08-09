@@ -20,10 +20,10 @@ if __name__ == "__main__":
 
   set_style()
 
-  file = TFile("/uscms/home/dildick/nobackup/work/MuonPhaseIITDRStudies/CMSSW_6_2_0_SLHC28_patch1/src/out_ana_ctau_1000_PU140_GEM.root")
-  treeHits = file.Get("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
+  #file = TFile("/uscms/home/dildick/nobackup/work/MuonPhaseIITDRStudies/CMSSW_6_2_0_SLHC28_patch1/src/out_ana_ctau_1000_PU140_GEM.root")
+  #treeHits = file.Get("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
 
-  #ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
+  ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
 #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/', ext=".root")
   #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v2/160712_224712/0000/', ext=".root")
   #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v3/160713_025853/0000/', ext=".root")
@@ -37,9 +37,10 @@ if __name__ == "__main__":
   
   #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v17/160806_230658/0000/')
   #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v18/160806_234830/0000/')
-  #treeHits = ch
+  ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v20/160808_194408/0000/')
+  treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160808"
+  label = "DisplacedL1MuTrigger_20160809"
   targetDir = label + "/"
   
   verbose = False
@@ -247,19 +248,19 @@ if __name__ == "__main__":
     csc_pos_sh_vs_fit_ME1b_20to22_odd = TH2F("csc_pos_sh_vs_fit_ME1b_20to22_odd","", 300,-3.2,3.2,300,-3.2,3.2)
 
 
-    csc_pos_sh_lct_ME21_16to18_even = TH1F("csc_pos_sh_lct_ME21_16to18_even","", 100,-0.01,0.01)
-    csc_pos_sh_lct_ME21_18to20_even = TH1F("csc_pos_sh_lct_ME21_18to20_even","", 100,-0.01,0.01)
-    csc_pos_sh_lct_ME21_20to22_even = TH1F("csc_pos_sh_lct_ME21_20to22_even","", 100,-0.01,0.01)
-    csc_pos_sh_lct_ME21_16to18_odd = TH1F("csc_pos_sh_lct_ME21_16to18_odd","", 100,-0.01,0.01)
-    csc_pos_sh_lct_ME21_18to20_odd = TH1F("csc_pos_sh_lct_ME21_18to20_odd","", 100,-0.01,0.01)
-    csc_pos_sh_lct_ME21_20to22_odd = TH1F("csc_pos_sh_lct_ME21_20to22_odd","", 100,-0.01,0.01)
+    csc_pos_sh_lct_ME21_16to18_even = TH1F("csc_pos_sh_lct_ME21_16to18_even","", 200,-0.01,0.01)
+    csc_pos_sh_lct_ME21_18to20_even = TH1F("csc_pos_sh_lct_ME21_18to20_even","", 200,-0.01,0.01)
+    csc_pos_sh_lct_ME21_20to22_even = TH1F("csc_pos_sh_lct_ME21_20to22_even","", 200,-0.01,0.01)
+    csc_pos_sh_lct_ME21_16to18_odd = TH1F("csc_pos_sh_lct_ME21_16to18_odd","", 200,-0.01,0.01)
+    csc_pos_sh_lct_ME21_18to20_odd = TH1F("csc_pos_sh_lct_ME21_18to20_odd","", 200,-0.01,0.01)
+    csc_pos_sh_lct_ME21_20to22_odd = TH1F("csc_pos_sh_lct_ME21_20to22_odd","", 200,-0.01,0.01)
     
-    csc_pos_sh_fit_ME21_16to18_even = TH1F("csc_pos_sh_fit_ME21_16to18_even","", 100,-0.01,0.01)
-    csc_pos_sh_fit_ME21_18to20_even = TH1F("csc_pos_sh_fit_ME21_18to20_even","", 100,-0.01,0.01)
-    csc_pos_sh_fit_ME21_20to22_even = TH1F("csc_pos_sh_fit_ME21_20to22_even","", 100,-0.01,0.01)
-    csc_pos_sh_fit_ME21_16to18_odd = TH1F("csc_pos_sh_fit_ME21_16to18_odd","", 100,-0.01,0.01)
-    csc_pos_sh_fit_ME21_18to20_odd = TH1F("csc_pos_sh_fit_ME21_18to20_odd","", 100,-0.01,0.01)
-    csc_pos_sh_fit_ME21_20to22_odd = TH1F("csc_pos_sh_fit_ME21_20to22_odd","", 100,-0.01,0.01)
+    csc_pos_sh_fit_ME21_16to18_even = TH1F("csc_pos_sh_fit_ME21_16to18_even","", 200,-0.01,0.01)
+    csc_pos_sh_fit_ME21_18to20_even = TH1F("csc_pos_sh_fit_ME21_18to20_even","", 200,-0.01,0.01)
+    csc_pos_sh_fit_ME21_20to22_even = TH1F("csc_pos_sh_fit_ME21_20to22_even","", 200,-0.01,0.01)
+    csc_pos_sh_fit_ME21_16to18_odd = TH1F("csc_pos_sh_fit_ME21_16to18_odd","", 200,-0.01,0.01)
+    csc_pos_sh_fit_ME21_18to20_odd = TH1F("csc_pos_sh_fit_ME21_18to20_odd","", 200,-0.01,0.01)
+    csc_pos_sh_fit_ME21_20to22_odd = TH1F("csc_pos_sh_fit_ME21_20to22_odd","", 200,-0.01,0.01)
 
 
 
@@ -1309,7 +1310,6 @@ if __name__ == "__main__":
                     if (2.0 < abs(eta_prop) and abs(eta_prop) <= 2.2):
                       csc_pos_sh_lct_ME1b_20to22_odd.Fill(CSCTF_phi1 - CSCTF_sim_phi1)
                       csc_pos_sh_vs_lct_ME1b_20to22_odd.Fill(CSCTF_phi1,CSCTF_sim_phi1)
- 
                   if (CSCTF_fit_phi1!=99 and CSCTF_sim_phi1 != 99):
                     if (1.6 < abs(eta_prop) and abs(eta_prop) <= 1.8): 
                       csc_pos_sh_fit_ME1b_16to18_odd.Fill(CSCTF_fit_phi1 - CSCTF_sim_phi1)
@@ -1354,7 +1354,6 @@ if __name__ == "__main__":
                     if (2.0 < abs(eta_prop) and abs(eta_prop) <= 2.2):
                       csc_pos_sh_lct_ME21_20to22_odd.Fill(CSCTF_phi2 - CSCTF_sim_phi2)
                       csc_pos_sh_vs_lct_ME21_20to22_odd.Fill(CSCTF_phi2,CSCTF_sim_phi2)
- 
                   if (CSCTF_fit_phi2!=99 and CSCTF_sim_phi2 != 99):
                     if (1.6 < abs(eta_prop) and abs(eta_prop) <= 1.8): 
                       csc_pos_sh_fit_ME21_16to18_odd.Fill(CSCTF_fit_phi2 - CSCTF_sim_phi2)
@@ -1549,11 +1548,13 @@ if __name__ == "__main__":
                   print "\t\tCSCTF_z2", CSCTF_z2
                   print "\t\tGEM_z1", GE11_z
                   print "\t\tGEM_z2", GE21_z
-
+                
+                ## these variable do not depend on the thickness of a pad
                 delta_z_GE11_ME11 = abs(CSCTF_z1 - GE11_z)
                 delta_z_GE21_ME21 = abs(CSCTF_z2 - GE21_z)
                 delta_z_ME11_ME21 = abs(CSCTF_z1 - CSCTF_z2)
                 X = (CSCTF_R2/CSCTF_R1 - 1)/delta_z_ME11_ME21
+
                 phi_dir_st1_Tao_20160720 = GE11_phi - TMath.ATan( TMath.Sin(delta_phi_GE11_ME11) / (1 - TMath.Cos(delta_phi_GE11_ME11) - delta_z_GE11_ME11 * X) )
                 phi_dir_st2_Tao_20160720 = GE21_phi - TMath.ATan( TMath.Sin(delta_phi_GE21_ME21) / 
                                                                   (1 - TMath.Cos(delta_phi_GE21_ME21) - (delta_z_GE21_ME21 * X / (delta_z_ME11_ME21 * X+1 ) ) ) )

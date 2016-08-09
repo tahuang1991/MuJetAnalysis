@@ -1034,16 +1034,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         event_.genGdMu_vy[i][j] = genMuonGroups[i][j]->vy();
         event_.genGdMu_vz[i][j] = genMuonGroups[i][j]->vz();
 
-        // TrajectoryStateOnSurface stateAtMB2 = extrapolate(*genMuonGroups[i][j]);
-        // if (stateAtMB2.isValid()) {
-        //   event_.genGdMu_eta_prop[i][j] = stateAtMB2.globalPosition().eta();
-        //   event_.genGdMu_phi_prop[i][j] = stateAtMB2.globalPosition().phi();
-        // }
-        // return FreeTrajectoryState(  GlobalPoint(tk.vx(), tk.vy(), tk.vz()),
-        //                              GlobalVector(tk.px(), tk.py(), tk.pz()),
-        //                              int(tk.charge()),
-        //                              magfield_.product());
-        
         GlobalPoint ex_pMS2;
         GlobalVector ex_vMS2;
 
@@ -1139,23 +1129,30 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
     }
     if(verbose) { 
+      std::cout << "++++ GEN Mu analysis ++++" << std::endl; 
+      std::cout << std::setw(4) << std::left << "Mu"
+                << std::setw(10) << std::left << "pt"
+                << std::setw(10) << std::left << "eta"
+                << std::setw(10) << std::left << "phi"
+                << std::setw(10) << std::left << "etaProp"
+                << std::setw(10) << std::left << "phiProp"
+                << std::setw(10) << std::left << "dxy"
+                << std::endl;
+
       for (int i=0; i<2; ++i){ 
         for (int j=0; j<2; ++j){
-          cout << "genGd"<<i<<"Mu"<<j<<"_pt " << event_.genGdMu_pt[i][j] << endl;
-          cout << "genGd"<<i<<"Mu"<<j<<"_eta " << event_.genGdMu_eta[i][j] << endl;
-          cout << "genGd"<<i<<"Mu"<<j<<"_phi " << event_.genGdMu_phi[i][j] << endl;
-          cout << "genGd"<<i<<"Mu"<<j<<"_phi_corr " << event_.genGdMu_phi_corr[i][j] << endl;
-          cout << "genGd"<<i<<"Mu"<<j<<"_eta_prop " << event_.genGdMu_eta_prop[i][j] << endl;
-          cout << "genGd"<<i<<"Mu"<<j<<"_phi_prop " << event_.genGdMu_phi_prop[i][j] << endl;
-          cout << "genGd"<<i<<"Mu"<<j<<"_dxy " << event_.genGdMu_dxy[i][j] << endl;
-
-          // cout << "genGd"<<i<<"Mu"<<j<<"_etav_prop_GE11 " << event_.genGdMu_etav_prop_GE11[i][j] << endl;
-          // cout << "genGd"<<i<<"Mu"<<j<<"_phiv_prop_GE11 " << event_.genGdMu_phiv_prop_GE11[i][j] << endl;
-          // cout << "genGd"<<i<<"Mu"<<j<<"_etav_prop_GE21 " << event_.genGdMu_etav_prop_GE21[i][j] << endl;
-          // cout << "genGd"<<i<<"Mu"<<j<<"_phiv_prop_GE21 " << event_.genGdMu_phiv_prop_GE21[i][j] << endl;
-
+          std::string ijs(std::to_string(i) + std::to_string(j));
+          std::cout << std::setw(4) << std::left << ijs
+                    << std::setw(10) << std::left << event_.genGdMu_pt[i][j]
+                    << std::setw(10) << std::left << event_.genGdMu_eta[i][j]
+                    << std::setw(10) << std::left << event_.genGdMu_phi[i][j]
+                    << std::setw(10) << std::left << event_.genGdMu_eta_prop[i][j]
+                    << std::setw(10) << std::left << event_.genGdMu_phi_prop[i][j]
+                    << std::setw(10) << std::left << event_.genGdMu_dxy[i][j]
+                    << std::endl;
         }
       }
+      std::cout << std::endl;
     }
   }
  
@@ -1163,53 +1160,45 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   // SIM-L1  analysis //
   //////////////////////
 
-  if(verbose) cout << "Number of good simtracks " << skim_sim_trks.size() << endl;
+  if(verbose) {
+    cout << "++++ SIM Mu analysis ++++" << endl;
+    cout << "Number of good simtracks " << skim_sim_trks.size() << endl;
+  }
   for (unsigned int k=0; k<skim_sim_trks.size(); ++k) {
-    event_.GE11_phi_L1[k] = 99.;
-    event_.GE11_phi_L2[k] = 99.;
-    event_.GE21_phi_L1[k] = 99.;
-    event_.GE21_phi_L2[k] = 99.;
-    event_.GE11_bx_L1[k] = 99;
-    event_.GE11_bx_L2[k] = 99;
-    event_.GE21_bx_L1[k] = 99;
-    event_.GE21_bx_L2[k] = 99;
-    event_.GE0_phi[k] = 99.;
-    event_.GE0_phib[k] = 99.;
-      
+    
     auto sim_muon = skim_sim_trks[k];
     if(verbose) {
-    cout << "\tSIM_pt " << sim_muon.momentum().pt() << endl;
-    cout << "\tSIM_eta " << sim_muon.momentum().eta() << endl;
-    cout << "\tSIM_phi " << sim_muon.momentum().phi() << endl;
+      cout << "Mu "<< k
+           <<" pT " << sim_muon.momentum().pt() 
+           <<" eta "<< sim_muon.momentum().eta()
+           <<" phi "<< sim_muon.momentum().phi() << endl << endl;
     }
     auto sim_vertex = sim_vtxs[sim_muon.vertIndex()];
     SimTrackMatchManager match(sim_muon, sim_vertex, cfg_, iEvent, iSetup);
 
-    // True position of the CSC hits in a chamber with an LCT
     const SimHitMatcher& match_sh = match.simhits();
-    for (auto d: match_sh.detIdsCSC()){
+    const CSCDigiMatcher& match_cd = match.cscDigis();
+    const CSCStubMatcher& match_csc = match.cscStubs();
+    const GEMDigiMatcher& match_gd = match.gemDigis();
+
+    // True position of the CSC hits in a chamber with an LCT
+    for (auto d: match_csc.chamberIdsLCT()){
       auto detId = CSCDetId(d);
-      // if (detId.station()!=1 and detId.station()!=2) continue;
-      // if (detId.ring()!=1 and detId.ring()!=4) continue;
-      //if (detId.layer()!=CSCConstants::KEY_CLCT_LAYER) continue;
+      // only analyze ME1b and ME21
+      if (detId.station()!=1 and detId.station()!=2) continue;
+      if (detId.ring()!=1) continue;
       
-      auto simhits = match_sh.hitsInDetId(d);
-      auto csc_gp = match_sh.simHitsMeanPosition(simhits);
-      if(verbose) std::cout << "\tId " << detId 
-                            << " N csc simhits " << simhits.size() 
-                            << " gp " << csc_gp 
-                            << std::endl;
-      
-      double csc_phi = csc_gp.phi();
-      if (detId.station()==1 and (detId.ring()==1)) {
-        if (detId.layer()==CSCConstants::KEY_CLCT_LAYER) {
-          event_.CSCTF_sim_phi1[k] = csc_phi;
-        }
+      edm::PSimHitContainer simhits = match_sh.hitsInChamber(d);
+      float csc_phi = match_sh.simHitPositionKeyLayer(d);
+      if(verbose) std::cout << detId 
+                            << " n CSC hits " << simhits.size() 
+                            << " key phi " << csc_phi 
+                            << std::endl << endl;
+      if (detId.station()==1 and detId.ring()==1) {
+        event_.CSCTF_sim_phi1[k] = csc_phi;
       }
       if (detId.station()==2 and detId.ring()==1) {
-        if (detId.layer()==CSCConstants::KEY_CLCT_LAYER) {
-          event_.CSCTF_sim_phi2[k] = csc_phi;
-        }
+        event_.CSCTF_sim_phi2[k] = csc_phi;
       }
     }
     
@@ -1221,19 +1210,18 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     // auto gv = match_sh.simHitsMeanMomentum(hits);
     // std::cout << "\t\tgv " << gv << std::endl;
 
+    if (verbose) cout << "GEM SimHit analysis" << std::endl;
     for (auto d: match_sh.detIdsGEM()){
       auto detId = GEMDetId(d);
-      if(verbose) std::cout << "\tId " << detId << std::endl;
+      if(verbose) std::cout << "GEMId " << detId << std::endl;
       for (auto p: match_sh.hitsInDetId(d)){
-        const LocalPoint p0(0., 0., 0.);
-        auto gem_gp = gemGeometry_->idToDet(p.detUnitId())->surface().toGlobal(p0);
+        auto gem_gp = gemGeometry_->idToDet(p.detUnitId())->surface().toGlobal(p.entryPoint());
         double gem_phi = gem_gp.phi();
         int gem_ch = detId.chamber();
         int gem_bx = p.timeOfFlight();
         double gem_z = gem_gp.z();
         if(verbose){
-          std::cout << "\t\tPad " << p << std::endl;
-          std::cout << "\t\t\tPosition " << gem_phi << std::endl;
+          std::cout << "\tHit " << p << " Position " << gem_phi << std::endl;
         }
         if (detId.station()==1) {
           if (detId.layer()==1) {
@@ -1289,14 +1277,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     */
     
     // GEM digis and pads in superchambers
-    const GEMDigiMatcher& match_gd = match.gemDigis();
     if(verbose){
-      std::cout << "Total number of matching pads to simtrack " << match_gd.nPads() << std::endl;
-      std::cout << "Matching GEM pad Ids " << match_gd.superChamberIdsPad().size() << std::endl;
+      std::cout << std::endl<<"GEM pad analysis" <<std::endl;
     }
     for (auto d: match_gd.detIdsPad()){
       auto detId = GEMDetId(d);
-      if(verbose) std::cout << "\tId " << detId << std::endl;
+      if(verbose) std::cout << "Id " << detId << std::endl;
       for (auto p: match_gd.gemPadsInDetId(d)){
         auto gem_gp = getGEMSpecificPoint(d,p);
         double gem_phi = gem_gp.phi();
@@ -1304,8 +1290,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         int gem_bx = p.bx();
         double gem_z = gem_gp.z();
         if(verbose){
-          std::cout << "\t\tPad " << p << std::endl;
-          std::cout << "\t\t\tPosition " << gem_phi << std::endl;
+          std::cout << "\tPad " << p << " Position " << gem_phi << std::endl;
         }
         if (detId.station()==1) {
           if (detId.layer()==1) {
@@ -1392,11 +1377,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
     
     // CSC digis in chambers
-    const CSCDigiMatcher& match_cd = match.cscDigis();
-    const CSCStubMatcher& match_csc = match.cscStubs();
+    std::cout<<std::endl<<"++++ CSC digi  and stub analysis ++++"<<std::endl;
     for (auto d: match_csc.chamberIdsLCT()){
-    
-
       auto detId = CSCDetId(d);
       if (not (detId.station()!=1 or detId.station()!=2)) continue;
       if (detId.ring()!=1) continue; // dont consider me1a for this part
@@ -1409,18 +1391,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       if(verbose) std::cout << "\tNumber of matching CSC CLCTs " << match_csc.cscClctsInChamber(d).size() << std::endl;
       if(verbose) for (auto p: match_csc.cscClctsInChamber(d)) std::cout << "\t " <<p << std::endl;
 
-      // //LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, 20);
-      // CSCDetId l3_id(detId.endcap(), detId.station(), detId.ring(), detId.chamber(), 3);
-      // GlobalPoint csct_gp = cscGeometry_->idToDet(l3_id)->surface().toGlobal(LocalPoint(0,0,0));
-      
-      // double posSimTrackKey = csct_gp.phi();;
-      // // position of the simTrack at the keylayer
-      // GlobalPoint temp_pMS2;
-      // extrapolate(sim_muon, sim_vertex, csct_gp.z(), temp_pMS2);
-
-      // average position of the simtrack in the chamber!!
-      // double average_phi = match_sh.simHitsMeanPosition(match_sh.hitsInChamber(d)).phi();
-      
       std::vector<float> phis;
       std::vector<float> zs;
       std::vector<float> ephis;

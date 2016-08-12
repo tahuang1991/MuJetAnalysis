@@ -2162,173 +2162,24 @@ if __name__ == "__main__":
     makeSimplePlot(phiGEMst1_vs_phiGEMst2_dxy5to50, targetDir + "phiGEMst1_vs_phiGEMst2_dxy5to50.png", "; #Phi_{direction}(GE11); #Phi_{direction}(GE21)", "COLZ")
     makeSimplePlot(phiGEMst1_vs_phiGEMst2_dxy50to100, targetDir + "phiGEMst1_vs_phiGEMst2_dxy50to100.png", "; #Phi_{direction}(GE11); #Phi_{direction}(GE21)", "COLZ")
 
-    makeSimplePlot(alphaGEMst1_vs_alphaGEMst2_dxy0to5, targetDir + "alphaGEMst1_vs_alphaGEMst2_dxy0to5.png", "; #alpha_{direction}(GE11); #alpha_{direction}(GE21)", "COLZ") 
-    makeSimplePlot(alphaGEMst1_vs_alphaGEMst2_dxy0to5_even, targetDir + "alphaGEMst1_vs_alphaGEMst2_dxy0to5_even.png", "; #alpha_{direction}(GE11); #alpha_{direction}(GE21)", "COLZ") 
-    makeSimplePlot(alphaGEMst1_vs_alphaGEMst2_dxy5to50, targetDir + "alphaGEMst1_vs_alphaGEMst2_dxy5to50.png", "; #alpha_{direction}(GE11); #alpha_{direction}(GE21)", "COLZ")
-    makeSimplePlot(alphaGEMst1_vs_alphaGEMst2_dxy50to100, targetDir + "alphaGEMst1_vs_alphaGEMst2_dxy50to100.png", "; #alpha_{direction}(GE11); #alpha_{direction}(GE21)", "COLZ")
+
+    evenOddCases = ['ee','eo','oe','oo']
+    etaRanges = ['16to18','18to20','20to22 ']
+    padSizes = ['pad1','pad2','pad4','pad8']
     
-    make2DMedianPlot(alphaGEMst1_vs_alphaGEMst2_dxy0to5, targetDir + "alphaGEMst1_vs_alphaGEMst2_dxy0to5_pol1.png", 
-                     "; #alpha_{direction}(GE11); #alpha_{direction}(GE21)", True, True, "pol1")
-    make2DMedianPlot(alphaGEMst1_vs_alphaGEMst2_dxy5to50, targetDir + "alphaGEMst1_vs_alphaGEMst2_dxy5to50_pol1.png", 
-                     "; #alpha_{direction}(GE11); #alpha_{direction}(GE21)", True, True, "pol1")
-    make2DMedianPlot(alphaGEMst1_vs_alphaGEMst2_dxy50to100, targetDir + "alphaGEMst1_vs_alphaGEMst2_dxy50to100_pol1.png", 
-                     "; #alpha_{direction}(GE11); #alpha_{direction}(GE21)", True, True, "pol1")
+    for pp in evenOddCases:
+      for qq in etaRanges:
+        for rr in padSizes:
+          plotTitle = "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta" + qq + "_" + pp + "_" + rr
+          print plotTitle
+          make2DMedianPlot(mapTH2F[plotTitle], targetDir + plotTitle + ".png", ";GEN Mu p_{T} [GeV];1/|#Delta#Phi_{dir}(GE11,GE21)|")
 
-
-    makeSimplePlot(GenMuPt_vs_alphaGEMst1_inv, targetDir + "GenMuPt_vs_alphaGEMst1_inv.png", "; GEN Mu p_{T} [GeV]; #alpha_{direction}(GE11)", "COLZ") 
-    makeSimplePlot(GenMuPt_vs_alphaGEMst1_inv_dxy0to5, targetDir + "GenMuPt_vs_alphaGEMst1_inv_dxy0to5.png", "; GEN Mu p_{T} [GeV]; #alpha_{direction}(GE11)", "COLZ") 
-    makeSimplePlot(GenMuPt_vs_alphaGEMst1_inv_dxy5to50, targetDir + "GenMuPt_vs_alphaGEMst1_inv_dxy5to50.png", "; GEN Mu p_{T} [GeV]; #alpha_{direction}(GE11)", "COLZ") 
-    makeSimplePlot(GenMuPt_vs_alphaGEMst1_inv_dxy50to100, targetDir + "GenMuPt_vs_alphaGEMst1_inv_dxy50to100.png", "; GEN Mu p_{T} [GeV]; #alpha_{direction}(GE11)", "COLZ") 
-
-    makeSimplePlot(GenMuPt_vs_alphaGEMst2_inv, targetDir + "GenMuPt_vs_alphaGEMst2_inv.png", "; GEN Mu p_{T} [GeV]; #alpha_{direction}(GE21)", "COLZ") 
-    makeSimplePlot(GenMuPt_vs_alphaGEMst2_inv_dxy0to5, targetDir + "GenMuPt_vs_alphaGEMst2_inv_dxy0to5.png", "; GEN Mu p_{T} [GeV]; #alpha_{direction}(GE21)", "COLZ") 
-    makeSimplePlot(GenMuPt_vs_alphaGEMst2_inv_dxy5to50, targetDir + "GenMuPt_vs_alphaGEMst2_inv_dxy5to50.png", "; GEN Mu p_{T} [GeV]; #alpha_{direction}(GE21)", "COLZ") 
-    makeSimplePlot(GenMuPt_vs_alphaGEMst2_inv_dxy50to100, targetDir + "GenMuPt_vs_alphaGEMst2_inv_dxy50to100.png", "; GEN Mu p_{T} [GeV]; #alpha_{direction}(GE21)", "COLZ") 
-
-
-
-    make2DMedianPlot(dPhist1_vs_dPhiBendst1_even, targetDir + "dPhist1_vs_dPhiBendst1_even_pol1.png", 
-                        "ME11 even chamber; #Delta#Phi(GE11,ME11); #Phi_{momentum} - #Phi_{position}", True, False, "pol1")
-    make2DMedianPlot(dPhist1_vs_dPhiBendst1_odd, targetDir + "dPhist1_vs_dPhiBendst1_odd_pol1.png", 
-                        "ME11 odd chamber; #Delta#Phi(GE11,ME11); #Phi_{momentum} - #Phi_{position}", True, False, "pol1")
-    make2DMedianPlot(dPhist2_vs_dPhiBendst2_even, targetDir + "dPhist2_vs_dPhiBendst2_even_pol1.png", 
-                        "ME21 even chamber; #Delta#Phi(GE21,ME21); #Phi_{momentum} - #Phi_{position}", True, False, "pol1")
-    make2DMedianPlot(dPhist2_vs_dPhiBendst2_odd, targetDir + "dPhist2_vs_dPhiBendst2_odd_pol1.png", 
-                        "ME21 odd chamber; #Delta#Phi(GE21,ME21); #Phi_{momentum} - #Phi_{position}", True, False, "pol1")
-  
-    make2DMedianPlot(dPhist1_vs_dPhiBendst1_even_pt10, targetDir + "dPhist1_vs_dPhiBendst1_even_pt10_pol1.png", 
-                        "ME11 even chamber, p_{T} #geq 10 GeV; #Delta#Phi(GE11,ME11); #Phi_{momentum} - #Phi_{position}", True, False, "pol1")
-    make2DMedianPlot(dPhist1_vs_dPhiBendst1_odd_pt10, targetDir + "dPhist1_vs_dPhiBendst1_odd_pt10_pol1.png", 
-                        "ME11 odd chamber, p_{T} #geq 10 GeV; #Delta#Phi(GE11,ME11); #Phi_{momentum} - #Phi_{position}", True, False, "pol1")
-    make2DMedianPlot(dPhist2_vs_dPhiBendst2_even_pt10, targetDir + "dPhist2_vs_dPhiBendst2_even_pt10_pol1.png", 
-                        "ME21 even chamber, p_{T} #geq 10 GeV; #Delta#Phi(GE21,ME21); #Phi_{momentum} - #Phi_{position}", True, False, "pol1")
-    make2DMedianPlot(dPhist2_vs_dPhiBendst2_odd_pt10, targetDir + "dPhist2_vs_dPhiBendst2_odd_pt10_pol1.png", 
-                        "ME21 odd chamber, p_{T} #geq 10 GeV; #Delta#Phi(GE21,ME21); #Phi_{momentum} - #Phi_{position}", True, False, "pol1")
-
-
-    make2DMedianPlot(dPhist1_vs_dPhiBendst1_even, targetDir + "dPhist1_vs_dPhiBendst1_even_pol1_fit.png", 
-                        "ME11 even chamber; #Delta#Phi(GE11,ME11); #Phi_{momentum} - #Phi_{position}", False, True, "pol1")
-    make2DMedianPlot(dPhist1_vs_dPhiBendst1_odd, targetDir + "dPhist1_vs_dPhiBendst1_odd_pol1_fit.png", 
-                        "ME11 odd chamber; #Delta#Phi(GE11,ME11); #Phi_{momentum} - #Phi_{position}", False, True, "pol1")
-    make2DMedianPlot(dPhist2_vs_dPhiBendst2_even, targetDir + "dPhist2_vs_dPhiBendst2_even_pol1_fit.png", 
-                        "ME21 even chamber; #Delta#Phi(GE21,ME21); #Phi_{momentum} - #Phi_{position}", False, True, "pol1")
-    make2DMedianPlot(dPhist2_vs_dPhiBendst2_odd, targetDir + "dPhist2_vs_dPhiBendst2_odd_pol1_fit.png", 
-                        "ME21 odd chamber; #Delta#Phi(GE21,ME21); #Phi_{momentum} - #Phi_{position}", False, True, "pol1")
-  
-    make2DMedianPlot(dPhist1_vs_dPhiBendst1_even_pt10, targetDir + "dPhist1_vs_dPhiBendst1_even_pt10_pol1_fit.png", 
-                        "ME11 even chamber, p_{T} #geq 10 GeV; #Delta#Phi(GE11,ME11); #Phi_{momentum} - #Phi_{position}", False, True, "pol1")
-    make2DMedianPlot(dPhist1_vs_dPhiBendst1_odd_pt10, targetDir + "dPhist1_vs_dPhiBendst1_odd_pt10_pol1_fit.png", 
-                        "ME11 odd chamber, p_{T} #geq 10 GeV; #Delta#Phi(GE11,ME11); #Phi_{momentum} - #Phi_{position}", False, True, "pol1")
-    make2DMedianPlot(dPhist2_vs_dPhiBendst2_even_pt10, targetDir + "dPhist2_vs_dPhiBendst2_even_pt10_pol1_fit.png", 
-                        "ME21 even chamber, p_{T} #geq 10 GeV; #Delta#Phi(GE21,ME21); #Phi_{momentum} - #Phi_{position}", False, True, "pol1")
-    make2DMedianPlot(dPhist2_vs_dPhiBendst2_odd_pt10, targetDir + "dPhist2_vs_dPhiBendst2_odd_pt10_pol1_fit.png", 
-                        "ME21 odd chamber, p_{T} #geq 10 GeV; #Delta#Phi(GE21,ME21); #Phi_{momentum} - #Phi_{position}", False, True, "pol1")
-
-
-    make2DMedianPlot(dPhist1_vs_dPhiBendst1_even_v2, targetDir + "dPhist1_vs_dPhiBendst1_even_pol1_v2.png", 
-                        "ME11 even chamber; #Phi_{position}(GE11) + #Delta#Phi(GE11,ME11); #Phi_{momentum}", True, False, "pol1")
-    make2DMedianPlot(dPhist1_vs_dPhiBendst1_odd_v2, targetDir + "dPhist1_vs_dPhiBendst1_odd_pol1_v2.png", 
-                        "ME11 odd chamber; #Phi_{position}(GE11) + #Delta#Phi(GE11,ME11); #Phi_{momentum}", True, False, "pol1")
-    make2DMedianPlot(dPhist2_vs_dPhiBendst2_even_v2, targetDir + "dPhist2_vs_dPhiBendst2_even_pol1_v2OA.png", 
-                        "ME21 even chamber; #Phi_{position}(GE11) + #Delta#Phi(GE21,ME21); #Phi_{momentum}", True, False, "pol1")
-    make2DMedianPlot(dPhist2_vs_dPhiBendst2_odd_v2, targetDir + "dPhist2_vs_dPhiBendst2_odd_pol1_v2.png", 
-                        "ME21 odd chamber; #Phi_{position}(GE11) + #Delta#Phi(GE21,ME21); #Phi_{momentum}", True, False, "pol1")
-  
-    make2DMedianPlot(dPhist1_vs_dPhiBendst1_even_pt10_v2, targetDir + "dPhist1_vs_dPhiBendst1_even_pt10_pol1_v2.png", 
-                        "ME11 even chamber, p_{T} #geq 10 GeV; #Phi_{position}(GE11) + #Delta#Phi(GE11,ME11); #Phi_{momentum}", True, False, "pol1")
-    make2DMedianPlot(dPhist1_vs_dPhiBendst1_odd_pt10_v2, targetDir + "dPhist1_vs_dPhiBendst1_odd_pt10_pol1_v2.png", 
-                        "ME11 odd chamber, p_{T} #geq 10 GeV; #Phi_{position}(GE11) + #Delta#Phi(GE11,ME11); #Phi_{momentum}", True, False, "pol1")
-    make2DMedianPlot(dPhist2_vs_dPhiBendst2_even_pt10_v2, targetDir + "dPhist2_vs_dPhiBendst2_even_pt10_pol1_v2.png", 
-                        "ME21 even chamber, p_{T} #geq 10 GeV; #Phi_{position}(GE11) + #Delta#Phi(GE21,ME21); #Phi_{momentum}", True, False, "pol1")
-    make2DMedianPlot(dPhist2_vs_dPhiBendst2_odd_pt10_v2, targetDir + "dPhist2_vs_dPhiBendst2_odd_pt10_pol1_v2.png", 
-                        "ME21 odd chamber, p_{T} #geq 10 GeV; #Phi_{position}(GE11) + #Delta#Phi(GE21,ME21); #Phi_{momentum}", True, False, "pol1")
-
+          
     """
-    make2DMedianPlot(dPhist1_vs_dPhiBendst1_even_v2, targetDir + "dPhist1_vs_dPhiBendst1_even_pol1_fit_v2.png", 
-                        "ME11 even chamber; #Phi_{position} + #Delta#Phi(GE11,ME11); #Phi_{position}", False, True, "pol1")
-    make2DMedianPlot(dPhist1_vs_dPhiBendst1_odd_v2, targetDir + "dPhist1_vs_dPhiBendst1_odd_pol1_fit_v2.png", 
-                        "ME11 odd chamber; #Phi_{position} + #Delta#Phi(GE11,ME11); #Phi_{momentum}", False, True, "pol1")
-    make2DMedianPlot(dPhist2_vs_dPhiBendst2_even_v2, targetDir + "dPhist2_vs_dPhiBendst2_even_pol1_fit_v2.png", 
-                        "ME21 even chamber; #Phi_{position} + #Delta#Phi(GE21,ME21); #Phi_{momentum}", False, True, "pol1")
-    make2DMedianPlot(dPhist2_vs_dPhiBendst2_odd_v2, targetDir + "dPhist2_vs_dPhiBendst2_odd_pol1_fit_v2.png", 
-                        "ME21 odd chamber; #Phi_{position} + #Delta#Phi(GE21,ME21); #Phi_{momentum}", False, True, "pol1")
-  
-    make2DMedianPlot(dPhist1_vs_dPhiBendst1_even_pt10_v2, targetDir + "dPhist1_vs_dPhiBendst1_even_pt10_pol1_fit_v2.png", 
-                        "ME11 even chamber, p_{T} #geq 10 GeV; #Phi_{momentum} + #Delta#Phi(GE11,ME11); #Phi_{momentum}", False, True, "pol1")
-    make2DMedianPlot(dPhist1_vs_dPhiBendst1_odd_pt10_v2, targetDir + "dPhist1_vs_dPhiBendst1_odd_pt10_pol1_fit_v2.png", 
-                        "ME11 odd chamber, p_{T} #geq 10 GeV; #Phi_{momentum} + #Delta#Phi(GE11,ME11); #Phi_{momentum}", False, True, "pol1")
-    make2DMedianPlot(dPhist2_vs_dPhiBendst2_even_pt10_v2, targetDir + "dPhist2_vs_dPhiBendst2_even_pt10_pol1_fit_v2.png", 
-                        "ME21 even chamber, p_{T} #geq 10 GeV; #Phi_{momentum} + #Delta#Phi(GE21,ME21); #Phi_{momentum}", False, True, "pol1")
-    make2DMedianPlot(dPhist2_vs_dPhiBendst2_odd_pt10_v2, targetDir + "dPhist2_vs_dPhiBendst2_odd_pt10_pol1_fit_v2.png", 
-                        "ME21 odd chamber, p_{T} #geq 10 GeV; #Phi_{momentum} + #Delta#Phi(GE21,ME21); #Phi_{momentum}", False, True, "pol1")
-    """
-
-    make2DMedianPlot(GenMuPt_vs_phiGEMst1_phiGEMst2, targetDir + "GenMuPt_vs_phiGEMst1_phiGEMst2_pol1.png", 
-                        "GenMuPt_vs_phiGEMst1_phiGEMst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{direction}(GE11,GE21)|", False, True)
-    make2DMedianPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_pol1.png", 
-                        "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{direction}(GE11,GE21)|")
-    make2DMedianPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_pol1.png", 
-                        "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{direction}(GE11,GE21)|", False, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_pol1_v2.png", 
-                        "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_pol1_v2; GEN Mu p_{T} [GeV]; |#Delta#Phi_{direction}(GE11,GE21)|", True, True, "pol1")
-
-    make2DMedianPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5_pol1.png", 
-                        "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{direction}(GE11,GE21)|^{-1}", False, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50_pol1.png", 
-                        "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{direction}(GE11,GE21)|^{-1}", False, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100_pol1.png", 
-                        "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{direction}(GE11,GE21)|^{-1}", False, True, "pol1")
-
-    make2DMedianPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5_pol1.png", 
-                        "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy0to5_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{direction}(GE11,GE21)|^{-1}", True, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50_pol1.png", 
-                        "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy5to50_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{direction}(GE11,GE21)|^{-1}", True, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100, targetDir + "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100_pol1.png", 
-                        "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_dxy50to100_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{direction}(GE11,GE21)|^{-1}", True, True, "pol1")
-
-    make2DMedianPlot(GenMuPt_vs_alphaGEMst1_alphaGEMst2, targetDir + "GenMuPt_vs_alphaGEMst1_alphaGEMst2.png", 
-                     "GenMuPt_vs_alphaGEMst1_alphaGEMst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|", False, True)
-    make2DMedianPlot(GenMuPt_vs_alphaGEMst1_alphaGEMst2, targetDir + "GenMuPt_vs_alphaGEMst1_alphaGEMst2_fit.png", 
-                     "GenMuPt_vs_alphaGEMst1_alphaGEMst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|", True, True)
-    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_pol1.png", 
-                     "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|")
-    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_pol1.png", 
-                     "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{dir ection}(GE11,GE21)|", False, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_pol1_v2.png", 
-                     "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_pol1_v2; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|", True, True, "pol1")
-
-    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy0to5, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy0to5_pol1.png", 
-                        "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy0to5_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|^{-1}", False, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy5to50, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy5to50_pol1.png", 
-                        "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy5to50_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|^{-1}", False, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy50to100, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy50to100_pol1.png", 
-                        "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy50to100_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|^{-1}", False, True, "pol1")
-
-    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy0to5, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy0to5_pol1.png", 
-                        "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy0to5_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|^{-1}", True, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy5to50, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy5to50_pol1.png", 
-                        "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy5to50_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|^{-1}", True, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy50to100, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy50to100_pol1.png", 
-                        "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy50to100_pol1; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|^{-1}", True, True, "pol1")
-
-
-    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_eta16to18, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_eta16to18.png", 
-                        "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_eta16to18; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|^{-1}", True, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_eta18to20, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_eta18to20.png", 
-                        "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_eta18to20; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|^{-1}", True, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_eta20to22, targetDir + "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_eta20to22.png", 
-                        "GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_eta20to22; GEN Mu p_{T} [GeV]; |#Delta#alpha_{direction}(GE11,GE21)|^{-1}", True, True, "pol1")
-
-
     makeSimplePlot(phiGEMst1_phiGEMst2, targetDir + "phiGEMst1_phiGEMst2.png", "; #Phi_{dir}(GE11)-#Phi_{dir}(GE21); Entries")
     makeSimplePlot(phiGEMst1_phiGEMst2_pt5to10, targetDir + "phiGEMst1_phiGEMst2_pt5to10.png", "; #Phi_{dir}(GE11)-#Phi_{dir}(GE21); Entries")
     makeSimplePlot(phiGEMst1_phiGEMst2_pt10to20, targetDir + "phiGEMst1_phiGEMst2_pt10to20.png", "; #Phi_{dir}(GE11)-#Phi_{dir}(GE21); Entries")
     makeSimplePlot(phiGEMst1_phiGEMst2_pt20, targetDir + "phiGEMst1_phiGEMst2_pt20.png", "; #Phi_{dir}(GE11)-#Phi_{dir}(GE21); Entries")
-
-    makeSimplePlot(alphaGEMst1_alphaGEMst2, targetDir + "alphaGEMst1_alphaGEMst2.png", "; #alpha_{dir}(GE11)-#alpha_{dir}(GE21); Entries")
-    makeSimplePlot(alphaGEMst1_alphaGEMst2_pt5to10, targetDir + "alphaGEMst1_alphaGEMst2_pt5to10.png", "; #alpha_{dir}(GE11)-#alpha_{dir}(GE21); Entries")
-    makeSimplePlot(alphaGEMst1_alphaGEMst2_pt10to20, targetDir + "alphaGEMst1_alphaGEMst2_pt10to20.png", "; #alpha_{dir}(GE11)-#alpha_{dir}(GE21); Entries")
-    makeSimplePlot(alphaGEMst1_alphaGEMst2_pt20, targetDir + "alphaGEMst1_alphaGEMst2_pt20.png", "; #alpha_{dir}(GE11)-#alpha_{dir}(GE21); Entries")
 
     makeSimplePlot(slope_vs_GenMuEta_GE11_even, targetDir + "slope_vs_GenMuEta_GE11_even.png", "; GEN Mu #eta; slope", "COLZ") 
     makeSimplePlot(slope_vs_GenMuEta_GE11_odd, targetDir + "slope_vs_GenMuEta_GE11_odd.png", "; GEN Mu #eta; slope", "COLZ") 
@@ -2339,7 +2190,7 @@ if __name__ == "__main__":
     makeSimplePlot(slope_GE11_odd, targetDir + "slope_GE11_odd.png", "; slope") 
     makeSimplePlot(slope_GE21_even, targetDir + "slope_GE21_even.png", "; slope") 
     makeSimplePlot(slope_GE21_odd, targetDir + "slope_GE21_odd.png", "; slope") 
-
+    """
 
     """
     make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol3.png", False, True, "pol3")
@@ -2515,21 +2366,6 @@ if __name__ == "__main__":
                 None,
                 targetDir + "Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_dxy0to50.png", True)
 
-
-    makeEffPlot(TEfficiency(Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_proto2_dxy0to5,    GenMuPt_GE11_ME11_GE21_ME21_dxy0to5),
-                TEfficiency(Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_proto2_dxy5to50,   GenMuPt_GE11_ME11_GE21_ME21_dxy5to50),
-                TEfficiency(Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_proto2_dxy50to100, GenMuPt_GE11_ME11_GE21_ME21_dxy50to100),
-                targetDir + "Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_proto2_dxy0to100.png", True)
-
-    makeEffPlot(TEfficiency(Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_proto2_dxy0to5,    GenMuPt_GE11_ME11_GE21_ME21_dxy0to5),
-                TEfficiency(Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_proto2_dxy5to50,   GenMuPt_GE11_ME11_GE21_ME21_dxy5to50),
-                TEfficiency(Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_proto2_dxy50to100, GenMuPt_GE11_ME11_GE21_ME21_dxy50to100),
-                targetDir + "Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_proto2_dxy0to100.png", True)
-
-    makeEffPlot(TEfficiency(Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_proto2_dxy0to5,    GenMuPt_GE11_ME11_GE21_ME21_dxy0to5),
-                TEfficiency(Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_proto2_dxy5to50,   GenMuPt_GE11_ME11_GE21_ME21_dxy5to50),
-                TEfficiency(Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_proto2_dxy50to100, GenMuPt_GE11_ME11_GE21_ME21_dxy50to100),
-                targetDir + "Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_proto2_dxy0to100.png", True)
 
 
 

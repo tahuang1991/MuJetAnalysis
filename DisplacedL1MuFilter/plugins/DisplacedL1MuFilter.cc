@@ -1182,6 +1182,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     const GEMDigiMatcher& match_gd = match.gemDigis();
 
     // True position of the CSC hits in a chamber with an LCT
+    if (verbose) { 
+      cout << endl<<"++++ CSC SimHit analysis ++++" << endl;
+    }
     for (auto d: match_csc.chamberIdsLCT()){
       auto detId = CSCDetId(d);
       // only analyze ME1b and ME21
@@ -1193,7 +1196,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       if(verbose) std::cout << detId 
                             << " n CSC hits " << simhits.size() 
                             << " key phi " << csc_phi 
-                            << std::endl << endl;
+                            << endl;
       if (detId.station()==1 and detId.ring()==1) {
         event_.CSCTF_sim_phi1[k] = csc_phi;
       }
@@ -1204,13 +1207,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     
     // GEM simhit
     auto hits = match_sh.simHitsGEM();
-    if(verbose) std::cout << "Number of GEM hits " << hits.size() << std::endl;
-    // auto gp = match_sh.simHitsMeanPosition(hits);
-    // std::cout << "\t\tgp " << gp << std::endl;
-    // auto gv = match_sh.simHitsMeanMomentum(hits);
-    // std::cout << "\t\tgv " << gv << std::endl;
-
-    if (verbose) cout << "GEM SimHit analysis" << std::endl;
+    if (verbose) { 
+      cout << endl<<"++++ GEM SimHit analysis ++++" << endl;
+      cout << "Number of GEM hits " << hits.size() << endl;
+    }
     for (auto d: match_sh.detIdsGEM()){
       auto detId = GEMDetId(d);
       if(verbose) std::cout << "GEMId " << detId << std::endl;
@@ -1229,16 +1229,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.GE11_sim_bx_L1[k] = gem_bx;
             event_.GE11_sim_ch_L1[k] = gem_ch;
             event_.GE11_sim_z_L1[k] = gem_z;
-            // if (std::abs(event_.GE11_sim_phi_L1[k] - 99.)<0.001)  event_.GE11_sim_phi_L1[k] = gem_phi;
-            // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
           }
           if (detId.layer()==2) {
             event_.GE11_sim_phi_L2[k] = gem_phi;
             event_.GE11_sim_bx_L2[k] = gem_bx;
             event_.GE11_sim_ch_L2[k] = gem_ch;
             event_.GE11_sim_z_L2[k] = gem_z;
-            // if (std::abs(event_.GE11_sim_phi_L2[k] - 99.)<0.001)  event_.GE11_sim_phi_L2[k] = gem_phi;
-            // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
           }
         }
         if (detId.station()==3) {
@@ -1247,16 +1243,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.GE21_sim_bx_L1[k] = gem_bx;
             event_.GE21_sim_ch_L1[k] = gem_ch;
             event_.GE21_sim_z_L1[k] = gem_z;
-            // if (std::abs(event_.GE21_sim_phi_L1[k] - 99.)<0.001)  event_.GE21_sim_phi_L1[k] = gem_phi;
-            // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
           }
           if (detId.layer()==2) {
             event_.GE21_sim_phi_L2[k] = gem_phi;
             event_.GE21_sim_bx_L2[k] = gem_bx;
             event_.GE21_sim_ch_L2[k] = gem_ch;
             event_.GE21_sim_z_L2[k] = gem_z;
-            // if (std::abs(event_.GE21_sim_phi_L2[k] - 99.)<0.001)  event_.GE21_sim_phi_L2[k] = gem_phi;
-            // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
           }
         }
       } 
@@ -1278,7 +1270,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     
     // GEM digis and pads in superchambers
     if(verbose){
-      std::cout << std::endl<<"GEM pad analysis" <<std::endl;
+      std::cout << std::endl<<"++++ GEM pad analysis ++++" <<std::endl;
     }
     for (auto d: match_gd.detIdsPad()){
       auto detId = GEMDetId(d);
@@ -1298,16 +1290,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.GE11_bx_L1[k] = gem_bx;
             event_.GE11_ch_L1[k] = gem_ch;
             event_.GE11_z_L1[k] = gem_z;
-            // if (std::abs(event_.GE11_phi_L1[k] - 99.)<0.001)  event_.GE11_phi_L1[k] = gem_phi;
-            // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
           }
           if (detId.layer()==2) {
             event_.GE11_phi_L2[k] = gem_phi;
             event_.GE11_bx_L2[k] = gem_bx;
             event_.GE11_ch_L2[k] = gem_ch;
             event_.GE11_z_L2[k] = gem_z;
-            // if (std::abs(event_.GE11_phi_L2[k] - 99.)<0.001)  event_.GE11_phi_L2[k] = gem_phi;
-            // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
           }
         }
         if (detId.station()==3) {
@@ -1316,25 +1304,21 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.GE21_bx_L1[k] = gem_bx;
             event_.GE21_ch_L1[k] = gem_ch;
             event_.GE21_z_L1[k] = gem_z;
-            // if (std::abs(event_.GE21_phi_L1[k] - 99.)<0.001)  event_.GE21_phi_L1[k] = gem_phi;
-            // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
           }
           if (detId.layer()==2) {
             event_.GE21_phi_L2[k] = gem_phi;
             event_.GE21_bx_L2[k] = gem_bx;
             event_.GE21_ch_L2[k] = gem_ch;
             event_.GE21_z_L2[k] = gem_z;
-            // if (std::abs(event_.GE21_phi_L2[k] - 99.)<0.001)  event_.GE21_phi_L2[k] = gem_phi;
-            // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
           }
         }
       } 
     }
     // pad positions for GE21...
-    if(verbose) std::cout << "Skinny and Fat pads; N detids with digis " << match_gd.detIdsDigi(GEMType::GEM_ME21).size() << std::endl;
+    if(verbose) std::cout << "++++ GEM pad analysis: pad positions in GE21 ++++" << std::endl;
     for (auto d: match_gd.detIdsDigi(GEMType::GEM_ME21)){
       auto detId = GEMDetId(d);
-      if(verbose) std::cout << "\tId " << detId << std::endl;
+      if(verbose) std::cout << "GEMId " << detId << std::endl;
       double firstPositionPad1 = match_gd.positionPad1InDetId(d).front().phi();
       double firstPositionPad2 = match_gd.positionPad2InDetId(d).front().phi();
       double firstPositionPad4 = match_gd.positionPad4InDetId(d).front().phi();
@@ -1345,21 +1329,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         std::cout << "firstPositionPad4 " << firstPositionPad4 << std::endl;
         std::cout << "firstPositionPad8 " << firstPositionPad8 << std::endl;  
       }
-      // pick the first position in the list (in case there is more than 1)
-      // for (auto p: match_gd.gemPadsInDetId(d)){
-      //   auto gem_gp = getGEMSpecificPoint(d,p);
-      //   double gem_phi = gem_gp.phi();
-      //   int gem_ch = detId.chamber();
-      //   int gem_bx = p.bx();
-      //   double gem_z = gem_gp.z();
-      //   if(verbose){
-      //     std::cout << "\t\tPad " << p << std::endl;
-      //     std::cout << "\t\t\tPosition " << gem_phi << std::endl;
-      //   }
-      // for (auto p: match_gd.positionPad1InDetId(d)) std::cout << "Positions1 " << p << std::endl;
-      // for (auto p: match_gd.positionPad2InDetId(d)) std::cout << "Positions2 " << p << std::endl;
-      // for (auto p: match_gd.positionPad4InDetId(d)) std::cout << "Positions4 " << p << std::endl;
-      // for (auto p: match_gd.positionPad8InDetId(d)) std::cout << "Positions8 " << p << std::endl;
       if (detId.station()==3) {
         if (detId.layer()==1) {
           event_.GE21_pad1_phi_L1[k] = firstPositionPad1; 
@@ -1396,7 +1365,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       std::vector<float> ephis;
       std::vector<float> ezs;
       std::vector<float> status;
-      // get the key halfstrip of the LCT in this chamber
       
       for (int l=1; l<=6; l++){
         CSCDetId l_id(detId.endcap(), detId.station(), detId.ring(), detId.chamber(), l);
@@ -1408,11 +1376,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         double bestz = 99;
         double bestphi = 99;
         for (auto p: match_cd.cscComparatorDigisInDetId(l_id.rawId())){
-          // if(verbose) std::cout << "Number of wiregroups in this detid " << match_cd.wiregroupsInDetId(l_id.rawId()).size() << std::endl;
-          // auto wiregroups = match_cd.wiregroupsInDetId(l_id.rawId());
-          // if(verbose) for (auto p: wiregroups) std::cout << "\t" << p << std::endl;
-          // float wire = layer_geo->middleWireOfGroup(*wiregroups.begin() + 1);   
-          float fractional_strip = match_cd.getHalfStrip(l_id.rawId(), p)/2.;
+          int hs = match_cd.getHalfStrip(l_id.rawId(), p);
+          float fractional_strip = match_cd.getFractionalStrip(hs);
           auto layer_geo = cscChamber->layer(l)->geometry();
           LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, 20);
           GlobalPoint csc_gp = cscGeometry_->idToDet(l_id)->surface().toGlobal(csc_intersect);
@@ -1423,11 +1388,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             bestz = csc_gp.z();
             bestphi = csc_gp.phi();
             if(verbose) std::cout << "minDist closestCompDigi bestz bestphi " << " " << minDist 
-                      << " " << closestCompDigi << " " << bestz << " " << bestphi << std::endl;
+                                  << " " << closestCompDigi << " " << bestz << " " << bestphi << std::endl;
           }
-          //std::cout << "\t\t>>> other CSC LCT phi " << csc_gp.phi() << std::endl;
-          //return getCSCSpecificPoint(rawId, lct).phi();
-          // std::cout << "\t" << l_id << " Comp " << p << " HS " << match_cd.getHalfStrip(l_id.rawId(), p) << " Phi " << csc_gp.phi() << std::endl;
           ++jj;
         }
         if (minDist<99){
@@ -1460,57 +1422,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         event_.CSCTF_fit_phi2[k] = bestFitPhi;
       }
     }
-    // if(verbose){
-    //   //std::cout << "Total number of matching pads to simtrack " << match_cd.nPads() << std::endl;
-    //   std::cout << "Matching CSC Ids " << match_cd.chamberIdsStrip().size() << std::endl;
-    // }
-    // auto csc_gp = getCSCSpecificPointStrips(match);
-    // double csc_phi = csc_gp.phi();
-    // std::cout << "\tPosition phi " << csc_phi << std::endl;
-
-    
-      //int csc_ch = detId.chamber();
-      //double csc_z = csc_gp.z();
-      // if(verbose){
-      //   //std::cout << "\t\tStrip " << p << std::endl;
-      // }
-      // if (detId.station()==1) {
-      //   if (detId.layer()==1) {
-      //     event_.GE11_phi_L1[k] = gem_phi;
-      //     event_.GE11_bx_L1[k] = gem_bx;
-      //     event_.GE11_ch_L1[k] = gem_ch;
-      //     event_.GE11_z_L1[k] = gem_z;
-      //     // if (std::abs(event_.GE11_phi_L1[k] - 99.)<0.001)  event_.GE11_phi_L1[k] = gem_phi;
-      //     // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
-      //   }
-      //   if (detId.layer()==2) {
-      //     event_.GE11_phi_L2[k] = gem_phi;
-      //     event_.GE11_bx_L2[k] = gem_bx;
-      //     event_.GE11_ch_L2[k] = gem_ch;
-      //     event_.GE11_z_L2[k] = gem_z;
-      //     // if (std::abs(event_.GE11_phi_L2[k] - 99.)<0.001)  event_.GE11_phi_L2[k] = gem_phi;
-      //     // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
-      //   }
-      // }
-      // if (detId.station()==3) {
-      //   if (detId.layer()==1) {
-      //     event_.GE21_phi_L1[k] = gem_phi;
-      //     event_.GE21_bx_L1[k] = gem_bx;
-      //     event_.GE21_ch_L1[k] = gem_ch;
-      //     event_.GE21_z_L1[k] = gem_z;
-      //     // if (std::abs(event_.GE21_phi_L1[k] - 99.)<0.001)  event_.GE21_phi_L1[k] = gem_phi;
-      //     // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
-      //   }
-      //   if (detId.layer()==2) {
-      //     event_.GE21_phi_L2[k] = gem_phi;
-      //     event_.GE21_bx_L2[k] = gem_bx;
-      //     event_.GE21_ch_L2[k] = gem_ch;
-      //     event_.GE21_z_L2[k] = gem_z;
-      //     // if (std::abs(event_.GE21_phi_L2[k] - 99.)<0.001)  event_.GE21_phi_L2[k] = gem_phi;
-      //     // else {if(verbose) std::cout << "\t\t\t>>>IGNORE this pad" << std::endl;}
-      //   }
-      // }
-    // }
 
     // recover the missing stubs in station 1 and 2... (because they were not used in the track building)
     // GEM digis and pads in superchambers
@@ -1528,9 +1439,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
       int nStubs = match_csc.cscLctsInChamber(d).size();
       if (nStubs==0) continue;
-      // pick the first stub in the list...
-      auto stub = match_csc.cscLctsInChamber(d)[0];
-      auto csc_gp = getCSCSpecificPoint2(d, stub);
+      // pick the best matching stub in the chamber
+      auto stub = match_csc.bestCscLctInChamber(d);
+      auto csc_gp = match_csc.getGlobalPosition(d, stub);
       double csc_phi = csc_gp.phi();
       double csc_z = csc_gp.z();
       double csc_R = TMath::Sqrt(csc_gp.y() * csc_gp.y() + csc_gp.x() * csc_gp.x());
@@ -2949,32 +2860,6 @@ DisplacedL1MuFilter::getCSCSpecificPointStrips(const SimTrackMatchManager& match
       }
     }
   }
-
-    
-  // std::cout << "Printing available comparator strips in detId " << CSCDetId(rawId) << std::endl;
-  // for (auto p: tp){
-    
-  // }
-
-  // taken from https://github.com/cms-sw/cmssw/blob/dc9f78b6af4ad56c9342cf14041b6485a60b0691/L1Trigger/CSCTriggerPrimitives/src/CSCMotherboardME11GEM.cc
-    /*
-  CSCDetId cscId = CSCDetId(rawId);
-  CSCDetId key_id(cscId.endcap(), cscId.station(), cscId.ring(), cscId.chamber(), CSCConstants::KEY_CLCT_LAYER);
-  
-  auto cscChamber = cscGeometry_->chamber(cscId);
-  // "strip" here is actually a half-strip in geometry's terms
-  // note that LCT::getStrip() starts from 0
-  float fractional_strip = 0.5 * (lct.getStrip() + 1) - 0.25;
-  auto layer_geo = cscChamber->layer(CSCConstants::KEY_CLCT_LAYER)->geometry();
-  // LCT::getKeyWG() also starts from 0
-  float wire = layer_geo->middleWireOfGroup(lct.getKeyWG() + 1);
-  LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, wire);
-  GlobalPoint csc_gp = cscGeometry_->idToDet(key_id)->surface().toGlobal(csc_intersect);
-  //std::cout << "\t\t>>> other CSC LCT phi " << csc_gp.phi() << std::endl;
-  //return getCSCSpecificPoint(rawId, lct).phi();
-  */
-
-
   return GlobalPoint();
 }
 
@@ -3207,6 +3092,7 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("genGdMu_dxy_max", event_.genGdMu_dxy_max, "genGdMu_dxy_max[2]/F");
 
   // Dimuons
+  event_tree_->Branch("genGdMu_q", event_.genGdMu_q, "genGdMu_q[2][2]/F");
   event_tree_->Branch("genGdMu_p", event_.genGdMu_p, "genGdMu_p[2][2]/F");
   event_tree_->Branch("genGdMu_pt", event_.genGdMu_pt, "genGdMu_pt[2][2]/F");
   event_tree_->Branch("genGdMu_px", event_.genGdMu_px, "genGdMu_px[2][2]/F");

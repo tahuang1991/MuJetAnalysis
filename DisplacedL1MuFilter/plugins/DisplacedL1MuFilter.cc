@@ -595,8 +595,6 @@ private:
 
   float getGlobalPhi(unsigned int rawid, int stripN);
   double calcCSCSpecificPhi(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const;
-  double calcGEMSpecificPhi(unsigned int rawId, const GEMCSCPadDigi& tp) const;
-  GlobalPoint getGEMSpecificPoint(unsigned int rawId, const GEMCSCPadDigi& tp) const;
   GlobalPoint getCSCSpecificPoint(unsigned int rawid, const CSCCorrelatedLCTDigi& tp) const;
   GlobalPoint getCSCSpecificPoint2(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const;
   GlobalPoint getCSCSpecificPointStrips(const SimTrackMatchManager& tp) const;
@@ -1276,7 +1274,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       auto detId = GEMDetId(d);
       if(verbose) std::cout << "Id " << detId << std::endl;
       for (auto p: match_gd.gemPadsInDetId(d)){
-        auto gem_gp = getGEMSpecificPoint(d,p);
+        auto gem_gp = match_gd.getGlobalPointPad(d,p);
         double gem_phi = gem_gp.phi();
         int gem_ch = detId.chamber();
         int gem_bx = p.bx();
@@ -1346,7 +1344,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
     
     // CSC digis in chambers
-    std::cout<<std::endl<<"++++ CSC digi  and stub analysis ++++"<<std::endl;
+    if(verbose) std::cout<<std::endl<<"++++ CSC digi  and stub analysis ++++"<<std::endl;
     for (auto d: match_csc.chamberIdsLCT()){
       auto detId = CSCDetId(d);
       if (not (detId.station()!=1 or detId.station()!=2)) continue;
@@ -1376,8 +1374,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         double bestz = 99;
         double bestphi = 99;
         for (auto p: match_cd.cscComparatorDigisInDetId(l_id.rawId())){
-          int hs = match_cd.getHalfStrip(l_id.rawId(), p);
-          float fractional_strip = match_cd.getFractionalStrip(hs);
+          float fractional_strip = match_cd.getFractionalStrip(p);
           auto layer_geo = cscChamber->layer(l)->geometry();
           LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, 20);
           GlobalPoint csc_gp = cscGeometry_->idToDet(l_id)->surface().toGlobal(csc_intersect);
@@ -2730,21 +2727,6 @@ double
 DisplacedL1MuFilter::calcCSCSpecificPhi(unsigned int rawId, const CSCCorrelatedLCTDigi& lct) const
 {
   return getCSCSpecificPoint2(rawId, lct).phi();
-}
-
-double 
-DisplacedL1MuFilter::calcGEMSpecificPhi(unsigned int rawId, const GEMCSCPadDigi& tp) const
-{
-  return getGEMSpecificPoint(rawId, tp).phi();
-}
-
-GlobalPoint
-DisplacedL1MuFilter::getGEMSpecificPoint(unsigned int rawId, const GEMCSCPadDigi& tp) const 
-{
-  GEMDetId gem_id(rawId);
-  LocalPoint gem_lp = gemGeometry_->etaPartition(gem_id)->centreOfPad(tp.pad());
-  GlobalPoint gem_gp = gemGeometry_->idToDet(gem_id)->surface().toGlobal(gem_lp);
-  return gem_gp;
 }
 
 GlobalPoint

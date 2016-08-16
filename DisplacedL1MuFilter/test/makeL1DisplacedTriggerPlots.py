@@ -255,7 +255,7 @@ if __name__ == "__main__":
 
     ## plots for position based pT measurement
     parityCases = ['eee','eoo','oee','ooo']
-    etaRanges = ['10to12','12to14','14to16','16to18''18to20','20to22','22to24']
+    etaRanges = ['12to14','14to16','16to18''18to20','20to22','22to24']
     
     for pp in parityCases:
       for qq in etaRanges:
@@ -1307,6 +1307,8 @@ if __name__ == "__main__":
                   CSCTF_y1 = CSCTF_rec_y1 
                   CSCTF_R1 = CSCTF_rec_R1 
                   CSCTF_ch1 = CSCTF_rec_ch1
+                  CSCTF_isOdd1 = CSCTF_ch1%2==1
+                  CSCTF_isEven1 = not CSCTF_isOdd1
                 if not ok_CSCTF_st2 and ok_CSCTF_rec_st2: 
                   CSCTF_phi2 = CSCTF_rec_phi2
                   CSCTF_z2 = CSCTF_rec_z2 
@@ -1314,6 +1316,8 @@ if __name__ == "__main__":
                   CSCTF_y2 = CSCTF_rec_y2 
                   CSCTF_R2 = CSCTF_rec_R2 
                   CSCTF_ch2 = CSCTF_rec_ch2
+                  CSCTF_isOdd2 = CSCTF_ch2%2==1
+                  CSCTF_isEven2 = not CSCTF_isOdd2
                 if not ok_CSCTF_st3 and ok_CSCTF_rec_st3: 
                   CSCTF_phi3 = CSCTF_rec_phi3
                   CSCTF_z3 = CSCTF_rec_z3 
@@ -1321,6 +1325,8 @@ if __name__ == "__main__":
                   CSCTF_y3 = CSCTF_rec_y3 
                   CSCTF_R3 = CSCTF_rec_R3 
                   CSCTF_ch3 = CSCTF_rec_ch3
+                  CSCTF_isOdd3 = CSCTF_ch3%2==1
+                  CSCTF_isEven3 = not CSCTF_isOdd3
                 if not ok_CSCTF_st4 and ok_CSCTF_rec_st4: 
                   CSCTF_phi4 = CSCTF_rec_phi4
                   CSCTF_z4 = CSCTF_rec_z4 
@@ -1328,8 +1334,10 @@ if __name__ == "__main__":
                   CSCTF_y4 = CSCTF_rec_y4 
                   CSCTF_R4 = CSCTF_rec_R4 
                   CSCTF_ch4 = CSCTF_rec_ch4
-
-
+                  CSCTF_isOdd4 = CSCTF_ch4%2==1
+                  CSCTF_isEven4 = not CSCTF_isOdd4
+                  
+                ## simulated and fitted positions in a chamber
                 CSCTF_sim_phi1 = treeHits.CSCTF_sim_phi1[GEN_SIM_index]
                 CSCTF_sim_phi2 = treeHits.CSCTF_sim_phi2[GEN_SIM_index]
                 CSCTF_sim_phi3 = treeHits.CSCTF_sim_phi3[GEN_SIM_index]
@@ -1357,7 +1365,7 @@ if __name__ == "__main__":
                   if (CSCTF_fit_phi1!=99 and CSCTF_sim_phi1 != 99): mapTH1F["csc_pos_sh_fit_ME1b_20to22"].Fill(CSCTF_fit_phi1 - CSCTF_sim_phi1)
                   if (CSCTF_fit_phi2!=99 and CSCTF_sim_phi2 != 99): mapTH1F["csc_pos_sh_fit_ME21_20to22"].Fill(CSCTF_fit_phi2 - CSCTF_sim_phi2)
                   
-                
+                ## split up resolution in even/odd
                 if not CSCTF_isOdd1:
                   if (CSCTF_phi1!=99 and CSCTF_sim_phi1 != 99):
                     if (1.6 < abs(eta_prop) and abs(eta_prop) <= 1.8):
@@ -1516,12 +1524,10 @@ if __name__ == "__main__":
               ok_GE11 = ok_GE11_L1 or ok_GE11_L2
               ok_GE21 = ok_GE21_L1 or ok_GE21_L2
 
-              if ok_GE11 and ok_GE21:
-                nL1MuMatched_GE11_GE21 += 1
-              if ok_GE0 and ok_GE21:
-                nL1MuMatched_GE0_GE21 += 1
-              if (ok_GE0 or ok_GE11) and ok_GE21:
-                nL1MuMatched_GE11_GE0_GE21 += 1
+              ## L1MU counters
+              if ok_GE11 and ok_GE21:             nL1MuMatched_GE11_GE21 += 1
+              if ok_GE0 and ok_GE21:              nL1MuMatched_GE0_GE21 += 1
+              if (ok_GE0 or ok_GE11) and ok_GE21: nL1MuMatched_GE11_GE0_GE21 += 1
 
               ## check if CSC hits are present
               ok_CSCTF_st1 = ok_CSCTF_st1 or ok_CSCTF_rec_st1
@@ -1797,9 +1803,21 @@ if __name__ == "__main__":
               ## stub positions
               ok_position_based_endcap =  ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3
               if ok_position_based_endcap:
-                
-              deltay12_vs_deltay23_
 
+                ## get the parity
+                parityCases = ['eee','eoo','oee','ooo']
+                parity = get_parity(CSCTF_isEven1, CSCTF_isEven2, CSCTF_isEven3, CSCTF_isEven4)
+                
+                
+                etaPartition = get_eta_partition(eta_prop)
+                etaRanges = ['12to14','14to16','16to18''18to20','20to22','22to24']
+                
+                ## get the deltaYs
+                deltay12, deltay13 = deltays12_deltay23(CSCTF_x1, CSCTF_y1, CSCTF_phi1,
+                                                        CSCTF_x2, CSCTF_y2, CSCTF_phi2,
+                                                        CSCTF_x3, CSCTF_y3, CSCTF_phi3)
+
+                mapTH2F["deltay12_vs_deltay23_eta" + etaRanges[etaPartition] + "_" + parityCases[parity]].Fill(deltay12, deltay13)
 
 
               ## End of directional/position pT assignment

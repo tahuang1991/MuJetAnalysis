@@ -30,12 +30,12 @@ M_PI = 4*math.atan(1)
 def get_eta_partition(eta):
 
   etaPartition = -1
-  if      (fabs(eta)>=1.2 and fabs(eta)<1.4): etaPartition = 0
-  elif (fabs(eta)>=1.4 and fabs(eta)<1.6): etaPartition = 1
-  elif (fabs(eta)>=1.6 and fabs(eta)<1.8): etaPartition = 2
-  elif (fabs(eta)>=1.8 and fabs(eta)<2.0): etaPartition = 3
-  elif (fabs(eta)>=2.0 and fabs(eta)<2.2): etaPartition = 4
-  elif (fabs(eta)>=2.2 and fabs(eta)<2.4): etaPartition = 5
+  if   (abs(eta)>=1.2 and abs(eta)<1.4): etaPartition = 0
+  elif (abs(eta)>=1.4 and abs(eta)<1.6): etaPartition = 1
+  elif (abs(eta)>=1.6 and abs(eta)<1.8): etaPartition = 2
+  elif (abs(eta)>=1.8 and abs(eta)<2.0): etaPartition = 3
+  elif (abs(eta)>=2.0 and abs(eta)<2.2): etaPartition = 4
+  elif (abs(eta)>=2.2 and abs(eta)<2.4): etaPartition = 5
   return etaPartition
  
 
@@ -45,7 +45,8 @@ def deltays12_deltay23(x1, y1, phi1,
   ## reference angle
   referenceAngle = phi2
 
-  
+  ## calculate the difference between the y' after the transformation
+  ## this function needs more information August 16th 2016
   y1_prime = - x1 * sin(referenceAngle) + y1 * cos(referenceAngle) 
   y2_prime = - x2 * sin(referenceAngle) + y2 * cos(referenceAngle) 
   y3_prime = - x3 * sin(referenceAngle) + y3 * cos(referenceAngle) 
@@ -54,19 +55,24 @@ def deltays12_deltay23(x1, y1, phi1,
   deltay23 = y3_prime - y2_prime
   return deltay12, deltay23
 
+
+def get_parity(isEven1, isEven2, isEven3, isEven4):
+  ## parity cases
+  if not isEven1 and     isEven2 and     isEven3: totalParity = 0
+  if not isEven1 and not isEven2 and not isEven3: totalParity = 1
+  if     isEven1 and     isEven2 and     isEven3: totalParity = 2
+  if     isEven1 and not isEven2 and not isEven3: totalParity = 3
+  return totalParity
+
+
 def pt_from_position(x1, y1, z1, phi1, isEven1,
                      x2, y2, z2, phi2, isEven2,
                      x3, y3, z3, phi3, isEven3,
                      x4, y4, z4, phi4, isEven4,
                      eta):
 
-  ## parity cases
-  if not isEven1 and     isEven2 and     isEven3: totalParity = 0
-  if not isEven1 and not isEven2 and not isEven3: totalParity = 1
-  if     isEven1 and     isEven2 and     isEven3: totalParity = 2
-  if     isEven1 and not isEven2 and not isEven3: totalParity = 3
-
   etaPartition = get_eta_partition(eta)
+  parity = get_parity(isEven1, isEven2, isEven3, isEven4)
 
   ## dictionary with:
   ## 1. proportionality factor

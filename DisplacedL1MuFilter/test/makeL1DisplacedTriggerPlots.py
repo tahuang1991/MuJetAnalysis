@@ -37,10 +37,10 @@ if __name__ == "__main__":
   
   #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v17/160806_230658/0000/')
   #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v18/160806_234830/0000/')
-  ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v20/160808_194408/0000/')
+  ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v23/160812_090122/0000/')
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160811"
+  label = "DisplacedL1MuTrigger_20160815"
   targetDir = label + "/"
   
   verbose = False
@@ -178,7 +178,7 @@ if __name__ == "__main__":
     Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_dxy50to100 = TH1F("Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_dxy50to100","", 60,0.,60)
 
     evenOddCases = ['ee','eo','oe','oo']
-    etaRanges = ['16to18','18to20','20to22 ']
+    etaRanges = ['16to18','18to20','20to22']
     padSizes = ['pad1','pad2','pad4','pad8']
     
     for pp in evenOddCases:
@@ -187,19 +187,25 @@ if __name__ == "__main__":
           addPlotToMapTH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta" + qq + "_" + pp + "_" + rr, 60,0.,60.,75,0.,150)
 
     ## CSC position resolution plots
-    csc_pos_sh_lct_ME1b_16to18_even = TH1F("csc_pos_sh_lct_ME1b_16to18_even","", 100,-0.01,0.01)
-    csc_pos_sh_lct_ME1b_18to20_even = TH1F("csc_pos_sh_lct_ME1b_18to20_even","", 100,-0.01,0.01)
-    csc_pos_sh_lct_ME1b_20to22_even = TH1F("csc_pos_sh_lct_ME1b_20to22_even","", 100,-0.01,0.01)
-    csc_pos_sh_lct_ME1b_16to18_odd = TH1F("csc_pos_sh_lct_ME1b_16to18_odd","", 100,-0.01,0.01)
-    csc_pos_sh_lct_ME1b_18to20_odd = TH1F("csc_pos_sh_lct_ME1b_18to20_odd","", 100,-0.01,0.01)
-    csc_pos_sh_lct_ME1b_20to22_odd = TH1F("csc_pos_sh_lct_ME1b_20to22_odd","", 100,-0.01,0.01)
+    for qq in etaRanges:
+      addPlotToMapTH1F("csc_pos_sh_lct_ME1b_" + qq, 100,-0.002,0.002)
+      addPlotToMapTH1F("csc_pos_sh_lct_ME21_" + qq, 100,-0.003,0.003)
+      addPlotToMapTH1F("csc_pos_sh_fit_ME1b_" + qq, 200,-0.002,0.002)
+      addPlotToMapTH1F("csc_pos_sh_fit_ME21_" + qq, 200,-0.003,0.003)
+
+    csc_pos_sh_lct_ME1b_16to18_even = TH1F("csc_pos_sh_lct_ME1b_16to18_even","", 400,-0.01,0.01)
+    csc_pos_sh_lct_ME1b_18to20_even = TH1F("csc_pos_sh_lct_ME1b_18to20_even","", 400,-0.01,0.01)
+    csc_pos_sh_lct_ME1b_20to22_even = TH1F("csc_pos_sh_lct_ME1b_20to22_even","", 400,-0.01,0.01)
+    csc_pos_sh_lct_ME1b_16to18_odd = TH1F("csc_pos_sh_lct_ME1b_16to18_odd","", 400,-0.01,0.01)
+    csc_pos_sh_lct_ME1b_18to20_odd = TH1F("csc_pos_sh_lct_ME1b_18to20_odd","", 400,-0.01,0.01)
+    csc_pos_sh_lct_ME1b_20to22_odd = TH1F("csc_pos_sh_lct_ME1b_20to22_odd","", 400,-0.01,0.01)
     
-    csc_pos_sh_fit_ME1b_16to18_even = TH1F("csc_pos_sh_fit_ME1b_16to18_even","", 100,-0.01,0.01)
-    csc_pos_sh_fit_ME1b_18to20_even = TH1F("csc_pos_sh_fit_ME1b_18to20_even","", 100,-0.01,0.01)
-    csc_pos_sh_fit_ME1b_20to22_even = TH1F("csc_pos_sh_fit_ME1b_20to22_even","", 100,-0.01,0.01)
-    csc_pos_sh_fit_ME1b_16to18_odd = TH1F("csc_pos_sh_fit_ME1b_16to18_odd","", 100,-0.01,0.01)
-    csc_pos_sh_fit_ME1b_18to20_odd = TH1F("csc_pos_sh_fit_ME1b_18to20_odd","", 100,-0.01,0.01)
-    csc_pos_sh_fit_ME1b_20to22_odd = TH1F("csc_pos_sh_fit_ME1b_20to22_odd","", 100,-0.01,0.01)
+    csc_pos_sh_fit_ME1b_16to18_even = TH1F("csc_pos_sh_fit_ME1b_16to18_even","", 400,-0.01,0.01)
+    csc_pos_sh_fit_ME1b_18to20_even = TH1F("csc_pos_sh_fit_ME1b_18to20_even","", 400,-0.01,0.01)
+    csc_pos_sh_fit_ME1b_20to22_even = TH1F("csc_pos_sh_fit_ME1b_20to22_even","", 400,-0.01,0.01)
+    csc_pos_sh_fit_ME1b_16to18_odd = TH1F("csc_pos_sh_fit_ME1b_16to18_odd","", 400,-0.01,0.01)
+    csc_pos_sh_fit_ME1b_18to20_odd = TH1F("csc_pos_sh_fit_ME1b_18to20_odd","", 400,-0.01,0.01)
+    csc_pos_sh_fit_ME1b_20to22_odd = TH1F("csc_pos_sh_fit_ME1b_20to22_odd","", 400,-0.01,0.01)
 
     
     csc_pos_sh_vs_lct_ME1b_16to18_even = TH2F("csc_pos_sh_vs_lct_ME1b_16to18_even","", 300,-3.2,3.2,300,-3.2,3.2)
@@ -217,19 +223,19 @@ if __name__ == "__main__":
     csc_pos_sh_vs_fit_ME1b_20to22_odd = TH2F("csc_pos_sh_vs_fit_ME1b_20to22_odd","", 300,-3.2,3.2,300,-3.2,3.2)
 
 
-    csc_pos_sh_lct_ME21_16to18_even = TH1F("csc_pos_sh_lct_ME21_16to18_even","", 200,-0.01,0.01)
-    csc_pos_sh_lct_ME21_18to20_even = TH1F("csc_pos_sh_lct_ME21_18to20_even","", 200,-0.01,0.01)
-    csc_pos_sh_lct_ME21_20to22_even = TH1F("csc_pos_sh_lct_ME21_20to22_even","", 200,-0.01,0.01)
-    csc_pos_sh_lct_ME21_16to18_odd = TH1F("csc_pos_sh_lct_ME21_16to18_odd","", 200,-0.01,0.01)
-    csc_pos_sh_lct_ME21_18to20_odd = TH1F("csc_pos_sh_lct_ME21_18to20_odd","", 200,-0.01,0.01)
-    csc_pos_sh_lct_ME21_20to22_odd = TH1F("csc_pos_sh_lct_ME21_20to22_odd","", 200,-0.01,0.01)
+    csc_pos_sh_lct_ME21_16to18_even = TH1F("csc_pos_sh_lct_ME21_16to18_even","", 400,-0.01,0.01)
+    csc_pos_sh_lct_ME21_18to20_even = TH1F("csc_pos_sh_lct_ME21_18to20_even","", 400,-0.01,0.01)
+    csc_pos_sh_lct_ME21_20to22_even = TH1F("csc_pos_sh_lct_ME21_20to22_even","", 400,-0.01,0.01)
+    csc_pos_sh_lct_ME21_16to18_odd = TH1F("csc_pos_sh_lct_ME21_16to18_odd","", 400,-0.01,0.01)
+    csc_pos_sh_lct_ME21_18to20_odd = TH1F("csc_pos_sh_lct_ME21_18to20_odd","", 400,-0.01,0.01)
+    csc_pos_sh_lct_ME21_20to22_odd = TH1F("csc_pos_sh_lct_ME21_20to22_odd","", 400,-0.01,0.01)
     
-    csc_pos_sh_fit_ME21_16to18_even = TH1F("csc_pos_sh_fit_ME21_16to18_even","", 200,-0.01,0.01)
-    csc_pos_sh_fit_ME21_18to20_even = TH1F("csc_pos_sh_fit_ME21_18to20_even","", 200,-0.01,0.01)
-    csc_pos_sh_fit_ME21_20to22_even = TH1F("csc_pos_sh_fit_ME21_20to22_even","", 200,-0.01,0.01)
-    csc_pos_sh_fit_ME21_16to18_odd = TH1F("csc_pos_sh_fit_ME21_16to18_odd","", 200,-0.01,0.01)
-    csc_pos_sh_fit_ME21_18to20_odd = TH1F("csc_pos_sh_fit_ME21_18to20_odd","", 200,-0.01,0.01)
-    csc_pos_sh_fit_ME21_20to22_odd = TH1F("csc_pos_sh_fit_ME21_20to22_odd","", 200,-0.01,0.01)
+    csc_pos_sh_fit_ME21_16to18_even = TH1F("csc_pos_sh_fit_ME21_16to18_even","", 400,-0.01,0.01)
+    csc_pos_sh_fit_ME21_18to20_even = TH1F("csc_pos_sh_fit_ME21_18to20_even","", 400,-0.01,0.01)
+    csc_pos_sh_fit_ME21_20to22_even = TH1F("csc_pos_sh_fit_ME21_20to22_even","", 400,-0.01,0.01)
+    csc_pos_sh_fit_ME21_16to18_odd = TH1F("csc_pos_sh_fit_ME21_16to18_odd","", 400,-0.01,0.01)
+    csc_pos_sh_fit_ME21_18to20_odd = TH1F("csc_pos_sh_fit_ME21_18to20_odd","", 400,-0.01,0.01)
+    csc_pos_sh_fit_ME21_20to22_odd = TH1F("csc_pos_sh_fit_ME21_20to22_odd","", 400,-0.01,0.01)
 
 
 
@@ -247,6 +253,13 @@ if __name__ == "__main__":
     csc_pos_sh_vs_fit_ME21_18to20_odd = TH2F("csc_pos_sh_vs_fit_ME21_18to20_odd","", 300,-3.2,3.2,300,-3.2,3.2)
     csc_pos_sh_vs_fit_ME21_20to22_odd = TH2F("csc_pos_sh_vs_fit_ME21_20to22_odd","", 300,-3.2,3.2,300,-3.2,3.2)
 
+    ## plots for position based pT measurement
+    parityCases = ['eee','eoo','oee','ooo']
+    etaRanges = ['10to12','12to14','14to16','16to18''18to20','20to22','22to24']
+    
+    for pp in parityCases:
+      for qq in etaRanges:
+          addPlotToMapTH2F("deltay12_vs_deltay23_eta" + qq + "_" + pp, 60,0.,60.,75,0.,150)
 
     ## DT plots
     phiDTst1_phiDTst2 = TH1F("phiDTst1_phiDTst2","", 100,-1.,1.)
@@ -587,7 +600,7 @@ if __name__ == "__main__":
     for k in range(0,treeHits.GetEntries()):
       treeHits.GetEntry(k)
       if k%1000==0: print "Event", k+1, "nL1Mu", treeHits.nL1Mu
-      #if k>1000: break
+      #if k>10000: break
 
       ## plots for Alexei July 27 2016
       random_number = random.random()
@@ -1171,10 +1184,12 @@ if __name__ == "__main__":
               CSCTF_phi = treeHits.CSCTF_phi[L1Mu_CSCTF_index]
               CSCTF_bx = treeHits.CSCTF_bx[L1Mu_CSCTF_index]
               CSCTF_nStubs = treeHits.CSCTF_nStubs[L1Mu_CSCTF_index]
+
               CSCTF_phi1 = treeHits.CSCTF_phi1[L1Mu_CSCTF_index]
               CSCTF_phi2 = treeHits.CSCTF_phi2[L1Mu_CSCTF_index]
               CSCTF_phi3 = treeHits.CSCTF_phi3[L1Mu_CSCTF_index]
               CSCTF_phi4 = treeHits.CSCTF_phi4[L1Mu_CSCTF_index]
+
               ok_CSCTF_st1 = CSCTF_phi1 != 99
               ok_CSCTF_st2 = CSCTF_phi2 != 99
               ok_CSCTF_st3 = CSCTF_phi3 != 99
@@ -1192,16 +1207,41 @@ if __name__ == "__main__":
               
               CSCTF_ch1 = treeHits.CSCTF_ch1[L1Mu_CSCTF_index]
               CSCTF_ch2 = treeHits.CSCTF_ch2[L1Mu_CSCTF_index]
+              CSCTF_ch3 = treeHits.CSCTF_ch3[L1Mu_CSCTF_index]
+              CSCTF_ch4 = treeHits.CSCTF_ch4[L1Mu_CSCTF_index]
+
               CSCTF_isOdd1 = CSCTF_ch1%2==1
               CSCTF_isOdd2 = CSCTF_ch2%2==1
+              CSCTF_isOdd3 = CSCTF_ch3%2==1
+              CSCTF_isOdd4 = CSCTF_ch4%2==1
+
               CSCTF_isEven1 = not CSCTF_isOdd1
               CSCTF_isEven2 = not CSCTF_isOdd2
+              CSCTF_isEven3 = not CSCTF_isOdd3
+              CSCTF_isEven4 = not CSCTF_isOdd4
+
               CSCTF_gemdphi1 = treeHits.CSCTF_gemdphi1[L1Mu_CSCTF_index]
               CSCTF_gemdphi2 = treeHits.CSCTF_gemdphi2[L1Mu_CSCTF_index]
+
               CSCTF_z1 = treeHits.CSCTF_z1[L1Mu_CSCTF_index]
               CSCTF_z2 = treeHits.CSCTF_z2[L1Mu_CSCTF_index]
+              CSCTF_z3 = treeHits.CSCTF_z3[L1Mu_CSCTF_index]
+              CSCTF_z4 = treeHits.CSCTF_z4[L1Mu_CSCTF_index]
+
+              CSCTF_x1 = treeHits.CSCTF_x1[L1Mu_CSCTF_index]
+              CSCTF_x2 = treeHits.CSCTF_x2[L1Mu_CSCTF_index]
+              CSCTF_x3 = treeHits.CSCTF_x3[L1Mu_CSCTF_index]
+              CSCTF_x4 = treeHits.CSCTF_x4[L1Mu_CSCTF_index]
+
+              CSCTF_y1 = treeHits.CSCTF_y1[L1Mu_CSCTF_index]
+              CSCTF_y2 = treeHits.CSCTF_y2[L1Mu_CSCTF_index]
+              CSCTF_y3 = treeHits.CSCTF_y3[L1Mu_CSCTF_index]
+              CSCTF_y4 = treeHits.CSCTF_y4[L1Mu_CSCTF_index]
+
               CSCTF_R1 = treeHits.CSCTF_R1[L1Mu_CSCTF_index]
               CSCTF_R2 = treeHits.CSCTF_R2[L1Mu_CSCTF_index]
+              CSCTF_R3 = treeHits.CSCTF_R3[L1Mu_CSCTF_index]
+              CSCTF_R4 = treeHits.CSCTF_R4[L1Mu_CSCTF_index]
 
               ## get SIM index
               GEN_SIM_index = int(treeHits.genGdMu_SIM_index[ij])
@@ -1209,45 +1249,115 @@ if __name__ == "__main__":
               if GEN_SIM_index != -99:
                 CSCTF_rec_ch1 = treeHits.CSCTF_rec_ch1[GEN_SIM_index]
                 CSCTF_rec_ch2 = treeHits.CSCTF_rec_ch1[GEN_SIM_index]
+                CSCTF_rec_ch3 = treeHits.CSCTF_rec_ch3[GEN_SIM_index]
+                CSCTF_rec_ch4 = treeHits.CSCTF_rec_ch4[GEN_SIM_index]
+
                 CSCTF_rec_phi1 = treeHits.CSCTF_rec_phi1[GEN_SIM_index]
                 CSCTF_rec_phi2 = treeHits.CSCTF_rec_phi2[GEN_SIM_index]
+                CSCTF_rec_phi3 = treeHits.CSCTF_rec_phi3[GEN_SIM_index]
+                CSCTF_rec_phi4 = treeHits.CSCTF_rec_phi4[GEN_SIM_index]
+
                 CSCTF_rec_phib1 = treeHits.CSCTF_rec_phib1[GEN_SIM_index]
                 CSCTF_rec_phib2 = treeHits.CSCTF_rec_phib2[GEN_SIM_index]
+                CSCTF_rec_phib3 = treeHits.CSCTF_rec_phib3[GEN_SIM_index]
+                CSCTF_rec_phib4 = treeHits.CSCTF_rec_phib4[GEN_SIM_index]
+
                 CSCTF_rec_z1 = treeHits.CSCTF_rec_z1[GEN_SIM_index]
                 CSCTF_rec_z2 = treeHits.CSCTF_rec_z2[GEN_SIM_index]
+                CSCTF_rec_z3 = treeHits.CSCTF_rec_z3[GEN_SIM_index]
+                CSCTF_rec_z4 = treeHits.CSCTF_rec_z4[GEN_SIM_index]
+
+                CSCTF_rec_x1 = treeHits.CSCTF_rec_x1[GEN_SIM_index]
+                CSCTF_rec_x2 = treeHits.CSCTF_rec_x2[GEN_SIM_index]
+                CSCTF_rec_x3 = treeHits.CSCTF_rec_x3[GEN_SIM_index]
+                CSCTF_rec_x4 = treeHits.CSCTF_rec_x4[GEN_SIM_index]
+
+                CSCTF_rec_y1 = treeHits.CSCTF_rec_y1[GEN_SIM_index]
+                CSCTF_rec_y2 = treeHits.CSCTF_rec_y2[GEN_SIM_index]
+                CSCTF_rec_y3 = treeHits.CSCTF_rec_y3[GEN_SIM_index]
+                CSCTF_rec_y4 = treeHits.CSCTF_rec_y4[GEN_SIM_index]
+
                 CSCTF_rec_R1 = treeHits.CSCTF_rec_R1[GEN_SIM_index]
                 CSCTF_rec_R2 = treeHits.CSCTF_rec_R2[GEN_SIM_index]
-
-
-
+                CSCTF_rec_R3 = treeHits.CSCTF_rec_R3[GEN_SIM_index]
+                CSCTF_rec_R4 = treeHits.CSCTF_rec_R4[GEN_SIM_index]
 
                 ok_CSCTF_rec_st1 = CSCTF_rec_phi1 != 99
                 ok_CSCTF_rec_st2 = CSCTF_rec_phi2 != 99
+                ok_CSCTF_rec_st3 = CSCTF_rec_phi3 != 99
+                ok_CSCTF_rec_st4 = CSCTF_rec_phi4 != 99
 
                 ## recovered stub positions and directions
                 if ok_CSCTF_rec_st1: CSCTF_rec_phi1 = normalizedPhi2(CSCTF_rec_phi1)
                 if ok_CSCTF_rec_st2: CSCTF_rec_phi2 = normalizedPhi2(CSCTF_rec_phi2)
+                if ok_CSCTF_rec_st3: CSCTF_rec_phi3 = normalizedPhi2(CSCTF_rec_phi3)
+                if ok_CSCTF_rec_st4: CSCTF_rec_phi4 = normalizedPhi2(CSCTF_rec_phi4)
+
                 if ok_CSCTF_rec_st1: CSCTF_rec_phib1 = normalizedPhi2(CSCTF_rec_phib1)
                 if ok_CSCTF_rec_st2: CSCTF_rec_phib2 = normalizedPhi2(CSCTF_rec_phib2)
+                if ok_CSCTF_rec_st3: CSCTF_rec_phib3 = normalizedPhi2(CSCTF_rec_phib3)
+                if ok_CSCTF_rec_st4: CSCTF_rec_phib4 = normalizedPhi2(CSCTF_rec_phib4)
 
                 ## in case the CSC stub was not found in the CSCTF track, check if it can be recovered
                 ## this is done by matching the SIM muon to the CSC stubs
                 if not ok_CSCTF_st1 and ok_CSCTF_rec_st1: 
                   CSCTF_phi1 = CSCTF_rec_phi1
                   CSCTF_z1 = CSCTF_rec_z1 
+                  CSCTF_x1 = CSCTF_rec_x1 
+                  CSCTF_y1 = CSCTF_rec_y1 
                   CSCTF_R1 = CSCTF_rec_R1 
+                  CSCTF_ch1 = CSCTF_rec_ch1
                 if not ok_CSCTF_st2 and ok_CSCTF_rec_st2: 
                   CSCTF_phi2 = CSCTF_rec_phi2
-                  CSCTF_z2 = CSCTF_rec_z2
+                  CSCTF_z2 = CSCTF_rec_z2 
+                  CSCTF_x2 = CSCTF_rec_x2 
+                  CSCTF_y2 = CSCTF_rec_y2 
                   CSCTF_R2 = CSCTF_rec_R2 
+                  CSCTF_ch2 = CSCTF_rec_ch2
+                if not ok_CSCTF_st3 and ok_CSCTF_rec_st3: 
+                  CSCTF_phi3 = CSCTF_rec_phi3
+                  CSCTF_z3 = CSCTF_rec_z3 
+                  CSCTF_x3 = CSCTF_rec_x3 
+                  CSCTF_y3 = CSCTF_rec_y3 
+                  CSCTF_R3 = CSCTF_rec_R3 
+                  CSCTF_ch3 = CSCTF_rec_ch3
+                if not ok_CSCTF_st4 and ok_CSCTF_rec_st4: 
+                  CSCTF_phi4 = CSCTF_rec_phi4
+                  CSCTF_z4 = CSCTF_rec_z4 
+                  CSCTF_x4 = CSCTF_rec_x4 
+                  CSCTF_y4 = CSCTF_rec_y4 
+                  CSCTF_R4 = CSCTF_rec_R4 
+                  CSCTF_ch4 = CSCTF_rec_ch4
+
 
                 CSCTF_sim_phi1 = treeHits.CSCTF_sim_phi1[GEN_SIM_index]
                 CSCTF_sim_phi2 = treeHits.CSCTF_sim_phi2[GEN_SIM_index]
+                CSCTF_sim_phi3 = treeHits.CSCTF_sim_phi3[GEN_SIM_index]
+                CSCTF_sim_phi4 = treeHits.CSCTF_sim_phi4[GEN_SIM_index]
+
                 CSCTF_fit_phi1 = treeHits.CSCTF_fit_phi1[GEN_SIM_index]
                 CSCTF_fit_phi2 = treeHits.CSCTF_fit_phi2[GEN_SIM_index]
+                CSCTF_fit_phi3 = treeHits.CSCTF_fit_phi3[GEN_SIM_index]
+                CSCTF_fit_phi4 = treeHits.CSCTF_fit_phi4[GEN_SIM_index]
 
                 ## plot with position resolution of the CSC stubs
-
+                if (1.6 < abs(eta_prop) and abs(eta_prop) <= 1.8):
+                  if (CSCTF_phi1!=99 and CSCTF_sim_phi1 != 99):     mapTH1F["csc_pos_sh_lct_ME1b_16to18"].Fill(CSCTF_phi1 - CSCTF_sim_phi1)
+                  if (CSCTF_phi2!=99 and CSCTF_sim_phi2 != 99):     mapTH1F["csc_pos_sh_lct_ME21_16to18"].Fill(CSCTF_phi2 - CSCTF_sim_phi2)
+                  if (CSCTF_fit_phi1!=99 and CSCTF_sim_phi1 != 99): mapTH1F["csc_pos_sh_fit_ME1b_16to18"].Fill(CSCTF_fit_phi1 - CSCTF_sim_phi1)
+                  if (CSCTF_fit_phi2!=99 and CSCTF_sim_phi2 != 99): mapTH1F["csc_pos_sh_fit_ME21_16to18"].Fill(CSCTF_fit_phi2 - CSCTF_sim_phi2)
+                if (1.8 < abs(eta_prop) and abs(eta_prop) <= 2.0):
+                  if (CSCTF_phi1!=99 and CSCTF_sim_phi1 != 99):     mapTH1F["csc_pos_sh_lct_ME1b_18to20"].Fill(CSCTF_phi1 - CSCTF_sim_phi1)
+                  if (CSCTF_phi2!=99 and CSCTF_sim_phi2 != 99):     mapTH1F["csc_pos_sh_lct_ME21_18to20"].Fill(CSCTF_phi2 - CSCTF_sim_phi2)
+                  if (CSCTF_fit_phi1!=99 and CSCTF_sim_phi1 != 99): mapTH1F["csc_pos_sh_fit_ME1b_18to20"].Fill(CSCTF_fit_phi1 - CSCTF_sim_phi1)
+                  if (CSCTF_fit_phi2!=99 and CSCTF_sim_phi2 != 99): mapTH1F["csc_pos_sh_fit_ME21_18to20"].Fill(CSCTF_fit_phi2 - CSCTF_sim_phi2)
+                if (2.0 < abs(eta_prop) and abs(eta_prop) <= 2.2):
+                  if (CSCTF_phi1!=99 and CSCTF_sim_phi1 != 99):     mapTH1F["csc_pos_sh_lct_ME1b_20to22"].Fill(CSCTF_phi1 - CSCTF_sim_phi1)
+                  if (CSCTF_phi2!=99 and CSCTF_sim_phi2 != 99):     mapTH1F["csc_pos_sh_lct_ME21_20to22"].Fill(CSCTF_phi2 - CSCTF_sim_phi2)
+                  if (CSCTF_fit_phi1!=99 and CSCTF_sim_phi1 != 99): mapTH1F["csc_pos_sh_fit_ME1b_20to22"].Fill(CSCTF_fit_phi1 - CSCTF_sim_phi1)
+                  if (CSCTF_fit_phi2!=99 and CSCTF_sim_phi2 != 99): mapTH1F["csc_pos_sh_fit_ME21_20to22"].Fill(CSCTF_fit_phi2 - CSCTF_sim_phi2)
+                  
+                
                 if not CSCTF_isOdd1:
                   if (CSCTF_phi1!=99 and CSCTF_sim_phi1 != 99):
                     if (1.6 < abs(eta_prop) and abs(eta_prop) <= 1.8):
@@ -1335,32 +1445,9 @@ if __name__ == "__main__":
                     if (2.0 < abs(eta_prop) and abs(eta_prop) <= 2.2): 
                       csc_pos_sh_fit_ME21_20to22_odd.Fill(CSCTF_fit_phi2 - CSCTF_sim_phi2)
                       csc_pos_sh_vs_fit_ME21_20to22_odd.Fill(CSCTF_fit_phi2,CSCTF_sim_phi2)
+                      
 
-
-                """
-                if not CSCTF_isOdd2:
-                  if (CSCTF_phi2!=99 and CSCTF_sim_phi2 != 99):
-                    if (1.6 < abs(eta_prop) and abs(eta_prop) <= 1.8): csc_pos_sh_lct_ME21_16to18_even.Fill(CSCTF_phi2 - CSCTF_sim_phi2)
-                    if (1.8 < abs(eta_prop) and abs(eta_prop) <= 2.0): csc_pos_sh_lct_ME21_18to20_even.Fill(CSCTF_phi2 - CSCTF_sim_phi2)
-                    if (2.0 < abs(eta_prop) and abs(eta_prop) <= 2.2): csc_pos_sh_lct_ME21_20to22_even.Fill(CSCTF_phi2 - CSCTF_sim_phi2)
-                  if (CSCTF_fit_phi2!=99 and CSCTF_sim_phi2 != 99):
-                    if (1.6 < abs(eta_prop) and abs(eta_prop) <= 1.8): csc_pos_sh_fit_ME21_16to18_even.Fill(CSCTF_fit_phi2 - CSCTF_sim_phi2)
-                    if (1.8 < abs(eta_prop) and abs(eta_prop) <= 2.0): csc_pos_sh_fit_ME21_18to20_even.Fill(CSCTF_fit_phi2 - CSCTF_sim_phi2)
-                    if (2.0 < abs(eta_prop) and abs(eta_prop) <= 2.2): csc_pos_sh_fit_ME21_20to22_even.Fill(CSCTF_fit_phi2 - CSCTF_sim_phi2)
-
-                else:
-                  if (CSCTF_phi2!=99 and CSCTF_sim_phi2 != 99):
-                    if (1.6 < abs(eta_prop) and abs(eta_prop) <= 1.8): csc_pos_sh_lct_ME21_16to18_odd.Fill(CSCTF_phi2 - CSCTF_sim_phi2)
-                    if (1.8 < abs(eta_prop) and abs(eta_prop) <= 2.0): csc_pos_sh_lct_ME21_18to20_odd.Fill(CSCTF_phi2 - CSCTF_sim_phi2)
-                    if (2.0 < abs(eta_prop) and abs(eta_prop) <= 2.2): csc_pos_sh_lct_ME21_20to22_odd.Fill(CSCTF_phi2 - CSCTF_sim_phi2)
- 
-                  if (CSCTF_fit_phi2!=99 and CSCTF_sim_phi2 != 99):
-                    if (1.6 < abs(eta_prop) and abs(eta_prop) <= 1.8): csc_pos_sh_fit_ME21_16to18_odd.Fill(CSCTF_fit_phi2 - CSCTF_sim_phi2)
-                    if (1.8 < abs(eta_prop) and abs(eta_prop) <= 2.0): csc_pos_sh_fit_ME21_18to20_odd.Fill(CSCTF_fit_phi2 - CSCTF_sim_phi2)
-                    if (2.0 < abs(eta_prop) and abs(eta_prop) <= 2.2): csc_pos_sh_fit_ME21_20to22_odd.Fill(CSCTF_fit_phi2 - CSCTF_sim_phi2)
-                """
-
-
+                ## GEM variables
                 GE11_bx_L1 = treeHits.GE11_bx_L1[GEN_SIM_index]
                 GE11_bx_L2 = treeHits.GE11_bx_L2[GEN_SIM_index]
                 GE21_bx_L1 = treeHits.GE21_bx_L1[GEN_SIM_index]
@@ -1438,7 +1525,9 @@ if __name__ == "__main__":
 
               ## check if CSC hits are present
               ok_CSCTF_st1 = ok_CSCTF_st1 or ok_CSCTF_rec_st1
-              ok_CSCTF_st1 = ok_CSCTF_st2 or ok_CSCTF_rec_st2
+              ok_CSCTF_st2 = ok_CSCTF_st2 or ok_CSCTF_rec_st2
+              ok_CSCTF_st3 = ok_CSCTF_st3 or ok_CSCTF_rec_st3
+              ok_CSCTF_st4 = ok_CSCTF_st4 or ok_CSCTF_rec_st4
 
               if verbose:
                 print "\t\tCSCTF", L1Mu_CSCTF_index
@@ -1705,6 +1794,15 @@ if __name__ == "__main__":
                   if pT_special_Tao_20160721 >= 20: Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_proto2_dxy50to100.Fill(pt)
                 """
 
+              ## stub positions
+              ok_position_based_endcap =  ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3
+              if ok_position_based_endcap:
+                
+              deltay12_vs_deltay23_
+
+
+
+              ## End of directional/position pT assignment
             else:
               if printExtraInfo:
                 print "\t\t>>>>INFO: No Matching CSCTF!!! Print all available CSCTF..."
@@ -1863,10 +1961,36 @@ if __name__ == "__main__":
       gStyle.SetPadBottomMargin(0.13);
       gPad.SetTickx(1)
       gPad.SetTicky(1)
-      hist.Draw(option)
       hist.SetTitle(title)
-      hist.Fit("gaus","QL")
+      hist.Draw(option)
+      #print hist.GetRMS(), hist.GetStdDev()
+      g1 = TF1("g1","gaus",-hist.GetStdDev(), hist.GetStdDev())
+      hist.Fit(g1,"LRQ")
       c.SaveAs(cTitle)
+
+
+    def makeSimplePlotGaussianFitMap(key, title, option = ''):
+      gStyle.SetOptStat(1111111)
+      gStyle.SetOptFit(1111111);
+      c = TCanvas("c","c",800,600)
+      c.Clear()
+      gStyle.SetTitleBorderSize(0);
+      gStyle.SetPadLeftMargin(0.126);
+      gStyle.SetPadRightMargin(0.04);
+      gStyle.SetPadTopMargin(0.06);
+      gStyle.SetPadBottomMargin(0.13);
+      gPad.SetTickx(1)
+      gPad.SetTicky(1)
+      hist = mapTH1F[key]
+      hist.SetTitle(title)
+      hist.Draw(option)
+      #print hist.GetRMS(), hist.GetStdDev()
+      if "fit" in key:
+        g1 = TF1("g1","gaus",-hist.GetStdDev(), hist.GetStdDev())
+      else:
+        g1 = TF1("g1","gaus",-2*hist.GetStdDev(), 2*hist.GetStdDev())
+      hist.Fit(g1,"LRQ")
+      c.SaveAs(targetDir + key + ".png")
 
 
     def make2DMedianPlot(hist, ctitle, title, plotColz = True, doFit = False, fitfunction = "pol1", option = 'colz'):
@@ -1950,6 +2074,34 @@ if __name__ == "__main__":
     makeSimplePlot(GenMuEta_MS2, targetDir + "GenMuEta_MS2.png", ";Muon #eta at 2nd muon station; Entries", "")
 
     ## CSC position resolutions
+    makeSimplePlotGaussianFitMap("csc_pos_sh_lct_ME1b_16to18", 
+                                 "#Phi resolution in ME1b chamber, 1.6<|#eta|<1.8;#Phi(LCT)-#Phi(SimHit); Entries","")
+    makeSimplePlotGaussianFitMap("csc_pos_sh_lct_ME1b_18to20", 
+                              "#Phi resolution in ME1b chamber, 1.8<|#eta|<2.0;#Phi(LCT)-#Phi(SimHit); Entries","")
+    makeSimplePlotGaussianFitMap("csc_pos_sh_lct_ME1b_20to22", 
+                              "#Phi resolution in ME1b chamber, 2.0<|#eta|<2.2;#Phi(LCT)-#Phi(SimHit); Entries","")
+    makeSimplePlotGaussianFitMap("csc_pos_sh_lct_ME21_16to18", 
+                              "#Phi resolution in ME21 chamber, 1.6<|#eta|<1.8;#Phi(LCT)-#Phi(SimHit); Entries","")
+    makeSimplePlotGaussianFitMap("csc_pos_sh_lct_ME21_18to20", 
+                              "#Phi resolution in ME21 chamber, 1.8<|#eta|<2.0;#Phi(LCT)-#Phi(SimHit); Entries","")
+    makeSimplePlotGaussianFitMap("csc_pos_sh_lct_ME21_20to22", 
+                              "#Phi resolution in ME21 chamber, 2.0<|#eta|<2.2;#Phi(LCT)-#Phi(SimHit); Entries","")
+
+    makeSimplePlotGaussianFitMap("csc_pos_sh_fit_ME1b_16to18", 
+                              "#Phi resolution in ME1b chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
+    makeSimplePlotGaussianFitMap("csc_pos_sh_fit_ME1b_18to20", 
+                              "#Phi resolution in ME1b chamber, 1.8<|#eta|<2.0;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
+    makeSimplePlotGaussianFitMap("csc_pos_sh_fit_ME1b_20to22", 
+                              "#Phi resolution in ME1b chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
+    makeSimplePlotGaussianFitMap("csc_pos_sh_fit_ME21_16to18", 
+                              "#Phi resolution in ME21 chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
+    makeSimplePlotGaussianFitMap("csc_pos_sh_fit_ME21_18to20", 
+                              "#Phi resolution in ME21 chamber, 1.8<|#eta|<2.0;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
+    makeSimplePlotGaussianFitMap("csc_pos_sh_fit_ME21_20to22", 
+                              "#Phi resolution in ME21 chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
+
+
+
     makeSimplePlotGaussianFit(csc_pos_sh_lct_ME1b_16to18_even, targetDir + "csc_pos_sh_lct_ME1b_16to18_even.png", 
                    "#Phi resolution in ME1b even chamber, 1.6<|#eta|<1.8;#Phi(LCT)-#Phi(SimHit); Entries","")
     makeSimplePlotGaussianFit(csc_pos_sh_lct_ME1b_18to20_even, targetDir + "csc_pos_sh_lct_ME1b_18to20_even.png", 
@@ -2164,14 +2316,13 @@ if __name__ == "__main__":
 
 
     evenOddCases = ['ee','eo','oe','oo']
-    etaRanges = ['16to18','18to20','20to22 ']
+    etaRanges = ['16to18','18to20','20to22']
     padSizes = ['pad1','pad2','pad4','pad8']
     
     for pp in evenOddCases:
       for qq in etaRanges:
         for rr in padSizes:
           plotTitle = "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta" + qq + "_" + pp + "_" + rr
-          print plotTitle
           make2DMedianPlot(mapTH2F[plotTitle], targetDir + plotTitle + ".png", ";GEN Mu p_{T} [GeV];1/|#Delta#Phi_{dir}(GE11,GE21)|")
 
           

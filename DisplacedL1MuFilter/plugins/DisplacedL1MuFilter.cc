@@ -302,21 +302,25 @@ struct MyEvent
   Float_t CSCTF_phib1[kMaxCSCTF], CSCTF_phib2[kMaxCSCTF], CSCTF_phib3[kMaxCSCTF], CSCTF_phib4[kMaxCSCTF];
 
   Float_t CSCTF_gemdphi1[kMaxCSCTF], CSCTF_gemdphi2[kMaxCSCTF];
-  Float_t CSCTF_R1[kMaxCSCTF], CSCTF_R2[kMaxCSCTF];
-  Float_t CSCTF_z1[kMaxCSCTF], CSCTF_z2[kMaxCSCTF];
+  Float_t CSCTF_R1[kMaxCSCTF], CSCTF_R2[kMaxCSCTF], CSCTF_R3[kMaxCSCTF], CSCTF_R4[kMaxCSCTF];
+  Float_t CSCTF_x1[kMaxCSCTF], CSCTF_x2[kMaxCSCTF], CSCTF_x3[kMaxCSCTF], CSCTF_x4[kMaxCSCTF];
+  Float_t CSCTF_y1[kMaxCSCTF], CSCTF_y2[kMaxCSCTF], CSCTF_y3[kMaxCSCTF], CSCTF_y4[kMaxCSCTF];
+  Float_t CSCTF_z1[kMaxCSCTF], CSCTF_z2[kMaxCSCTF], CSCTF_z3[kMaxCSCTF], CSCTF_z4[kMaxCSCTF];
   
   // recovered stubs (stubs not used in track building...)
-  Int_t CSCTF_rec_ch1[kMaxCSCTF], CSCTF_rec_ch2[kMaxCSCTF];
-  Float_t CSCTF_rec_phi1[kMaxCSCTF], CSCTF_rec_phi2[kMaxCSCTF];
-  Float_t CSCTF_rec_phib1[kMaxCSCTF], CSCTF_rec_phib2[kMaxCSCTF];
-  Float_t CSCTF_rec_R1[kMaxCSCTF], CSCTF_rec_R2[kMaxCSCTF];
-  Float_t CSCTF_rec_z1[kMaxCSCTF], CSCTF_rec_z2[kMaxCSCTF];
+  Int_t CSCTF_rec_ch1[kMaxCSCTF], CSCTF_rec_ch2[kMaxCSCTF], CSCTF_rec_ch3[kMaxCSCTF], CSCTF_rec_ch4[kMaxCSCTF];
+  Float_t CSCTF_rec_phi1[kMaxCSCTF], CSCTF_rec_phi2[kMaxCSCTF], CSCTF_rec_phi3[kMaxCSCTF], CSCTF_rec_phi4[kMaxCSCTF];
+  Float_t CSCTF_rec_phib1[kMaxCSCTF], CSCTF_rec_phib2[kMaxCSCTF], CSCTF_rec_phib3[kMaxCSCTF], CSCTF_rec_phib4[kMaxCSCTF];
+  Float_t CSCTF_rec_R1[kMaxCSCTF], CSCTF_rec_R2[kMaxCSCTF], CSCTF_rec_R3[kMaxCSCTF], CSCTF_rec_R4[kMaxCSCTF];
+  Float_t CSCTF_rec_x1[kMaxCSCTF], CSCTF_rec_x2[kMaxCSCTF], CSCTF_rec_x3[kMaxCSCTF], CSCTF_rec_x4[kMaxCSCTF];
+  Float_t CSCTF_rec_y1[kMaxCSCTF], CSCTF_rec_y2[kMaxCSCTF], CSCTF_rec_y3[kMaxCSCTF], CSCTF_rec_y4[kMaxCSCTF];
+  Float_t CSCTF_rec_z1[kMaxCSCTF], CSCTF_rec_z2[kMaxCSCTF], CSCTF_rec_z3[kMaxCSCTF], CSCTF_rec_z4[kMaxCSCTF];
 
   // fitted positions -- at key layer
-  Float_t CSCTF_fit_phi1[kMaxCSCTF], CSCTF_fit_phi2[kMaxCSCTF];
+  Float_t CSCTF_fit_phi1[kMaxCSCTF], CSCTF_fit_phi2[kMaxCSCTF], CSCTF_fit_phi3[kMaxCSCTF], CSCTF_fit_phi4[kMaxCSCTF];
 
   // fitted positions - at key layer
-  Float_t CSCTF_sim_phi1[kMaxCSCTF], CSCTF_sim_phi2[kMaxCSCTF];
+  Float_t CSCTF_sim_phi1[kMaxCSCTF], CSCTF_sim_phi2[kMaxCSCTF], CSCTF_sim_phi3[kMaxCSCTF], CSCTF_sim_phi4[kMaxCSCTF];
 
   // Matching the L1Mu to RPCb  
   Int_t nRPCb;
@@ -1195,11 +1199,17 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                             << " n CSC hits " << simhits.size() 
                             << " key phi " << csc_phi 
                             << endl;
-      if (detId.station()==1 and detId.ring()==1) {
+      if (detId.station()==1) {
         event_.CSCTF_sim_phi1[k] = csc_phi;
       }
-      if (detId.station()==2 and detId.ring()==1) {
+      if (detId.station()==2) {
         event_.CSCTF_sim_phi2[k] = csc_phi;
+      }
+      if (detId.station()==3) {
+        event_.CSCTF_sim_phi3[k] = csc_phi;
+      }
+      if (detId.station()==4) {
+        event_.CSCTF_sim_phi4[k] = csc_phi;
       }
     }
     
@@ -1347,8 +1357,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     if(verbose) std::cout<<std::endl<<"++++ CSC digi  and stub analysis ++++"<<std::endl;
     for (auto d: match_csc.chamberIdsLCT()){
       auto detId = CSCDetId(d);
-      if (not (detId.station()!=1 or detId.station()!=2)) continue;
-      if (detId.ring()!=1) continue; // dont consider me1a for this part
+      //if (not (detId.station()!=1 or detId.station()!=2)) continue;
+      //if (detId.ring()!=1) continue; // dont consider me1a for this part
       auto cscChamber = cscGeometry_->chamber(detId);
       if(verbose) std::cout << "\tNumber of matching CSC comparator strips " << match_cd.cscComparatorDigisInChamber(d).size() << std::endl;
       if(verbose) std::cout << "\tNumber of matching CSC LCTs " << match_csc.cscLctsInChamber(d).size() << std::endl;
@@ -1393,8 +1403,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           zs.push_back(bestz);
           ezs.push_back(0);
           phis.push_back(bestphi);
-          if (detId.station()==1 and detId.ring()==1) ephis.push_back(0.00136353847/sqrt(12));
-          if (detId.station()==2 and detId.ring()==1) ephis.push_back(0.00218166156/sqrt(12));
+          ephis.push_back(gemvalidation::cscHalfStripWidth(detId)/sqrt(12));
         }
         //        status.push_back(0);
           
@@ -1412,11 +1421,17 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       float bestFitPhi = alpha + beta * z_pos_L3;
       if(verbose) std::cout << "best fit phi position " << z_pos_L3 << " " << bestFitPhi << std::endl;
       
-      if (detId.station()==1 and detId.ring()==1) {
+      if (detId.station()==1) {
         event_.CSCTF_fit_phi1[k] = bestFitPhi;
       }
-      if (detId.station()==2 and detId.ring()==1) {
+      if (detId.station()==2) {
         event_.CSCTF_fit_phi2[k] = bestFitPhi;
+      }
+      if (detId.station()==3) {
+        event_.CSCTF_fit_phi3[k] = bestFitPhi;
+      }
+      if (detId.station()==4) {
+        event_.CSCTF_fit_phi4[k] = bestFitPhi;
       }
     }
 
@@ -1440,26 +1455,50 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       auto stub = match_csc.bestCscLctInChamber(d);
       auto csc_gp = match_csc.getGlobalPosition(d, stub);
       double csc_phi = csc_gp.phi();
+      double csc_x = csc_gp.x();
+      double csc_y = csc_gp.y();
       double csc_z = csc_gp.z();
-      double csc_R = TMath::Sqrt(csc_gp.y() * csc_gp.y() + csc_gp.x() * csc_gp.x());
+      double csc_R = TMath::Sqrt(csc_y * csc_y + csc_x * csc_x);
       if(verbose){
         std::cout << "\t\tStub " << stub << std::endl;
         std::cout << "\t\t\tPosition " << csc_phi << std::endl;
         std::cout << "\t\t\tDirection " << csc_sh_gv.phi() << std::endl;
       }
-      if (detId.station()==1 and detId.ring()==1 ) {
+      if (detId.station()==1) {
         event_.CSCTF_rec_ch1[k] = detId.chamber();
         event_.CSCTF_rec_phi1[k] = csc_phi;
         event_.CSCTF_rec_phib1[k] = csc_sh_gv.phi();
+        event_.CSCTF_rec_x1[k] = csc_x;
+        event_.CSCTF_rec_y1[k] = csc_y;
         event_.CSCTF_rec_z1[k] = csc_z;
         event_.CSCTF_rec_R1[k] = csc_R;
       }
-      if (detId.station()==2 and detId.ring()==1) {
+      if (detId.station()==2) {
         event_.CSCTF_rec_ch2[k] = detId.chamber();
         event_.CSCTF_rec_phi2[k] = csc_phi;
         event_.CSCTF_rec_phib2[k] = csc_sh_gv.phi();
+        event_.CSCTF_rec_x2[k] = csc_x;
+        event_.CSCTF_rec_y2[k] = csc_y;
         event_.CSCTF_rec_z2[k] = csc_z;
         event_.CSCTF_rec_R2[k] = csc_R;
+      }        
+      if (detId.station()==3) {
+        event_.CSCTF_rec_ch3[k] = detId.chamber();
+        event_.CSCTF_rec_phi3[k] = csc_phi;
+        event_.CSCTF_rec_phib3[k] = csc_sh_gv.phi();
+        event_.CSCTF_rec_x3[k] = csc_x;
+        event_.CSCTF_rec_y3[k] = csc_y;
+        event_.CSCTF_rec_z3[k] = csc_z;
+        event_.CSCTF_rec_R3[k] = csc_R;
+      }        
+      if (detId.station()==4) {
+        event_.CSCTF_rec_ch4[k] = detId.chamber();
+        event_.CSCTF_rec_phi4[k] = csc_phi;
+        event_.CSCTF_rec_phib4[k] = csc_sh_gv.phi();
+        event_.CSCTF_rec_x4[k] = csc_x;
+        event_.CSCTF_rec_y4[k] = csc_y;
+        event_.CSCTF_rec_z4[k] = csc_z;
+        event_.CSCTF_rec_R4[k] = csc_R;
       }        
     }      
   }
@@ -1695,6 +1734,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           event_.CSCTF_nStubs[j] += 1;
           auto stub = *digiIt;
           auto gp = getCSCSpecificPoint2(id.rawId(), stub);
+          double csc_x = gp.x();
+          double csc_y = gp.y();
           double csc_z = gp.z();
           double csc_R = TMath::Sqrt(gp.y()*gp.y() + gp.x()*gp.x());
           switch(id.station()) {
@@ -1716,6 +1757,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
               event_.CSCTF_phi1[j] = gp.phi();
               event_.CSCTF_gemdphi1[j] = stub.getGEMDPhi();
               event_.CSCTF_R1[j] = csc_R;
+              event_.CSCTF_x1[j] = csc_x;
+              event_.CSCTF_y1[j] = csc_y;
               event_.CSCTF_z1[j] = csc_z;
             }
             break;
@@ -1736,6 +1779,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.CSCTF_phi2[j] = gp.phi();
             event_.CSCTF_gemdphi2[j] = stub.getGEMDPhi();
             event_.CSCTF_R2[j] = csc_R;
+            event_.CSCTF_x2[j] = csc_x;
+            event_.CSCTF_y2[j] = csc_y;
             event_.CSCTF_z2[j] = csc_z;
             break;
           case 3:
@@ -1753,6 +1798,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.CSCTF_clctpat3[j] = stub.getCLCTPattern();
             event_.CSCTF_val3[j] = stub.isValid();
             event_.CSCTF_phi3[j] = gp.phi();
+            event_.CSCTF_R3[j] = csc_R;
+            event_.CSCTF_x3[j] = csc_x;
+            event_.CSCTF_y3[j] = csc_y;
+            event_.CSCTF_z3[j] = csc_z;
             break;
           case 4:
             event_.CSCTF_st4[j] = id.station();
@@ -1769,6 +1818,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.CSCTF_clctpat4[j] = stub.getCLCTPattern();
             event_.CSCTF_val4[j] = stub.isValid();
             event_.CSCTF_phi4[j] = gp.phi();
+            event_.CSCTF_R4[j] = csc_R;
+            event_.CSCTF_x4[j] = csc_x;
+            event_.CSCTF_y4[j] = csc_y;
+            event_.CSCTF_z4[j] = csc_z;
             break;
           };
         }
@@ -3247,10 +3300,10 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_ri1", event_.CSCTF_ri1,"CSCTF_ri1[nCSCTF]/I");
   event_tree_->Branch("CSCTF_ch1", event_.CSCTF_ch1,"CSCTF_ch1[nCSCTF]/I");
   event_tree_->Branch("CSCTF_en1", event_.CSCTF_en1,"CSCTF_en1[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_trk1", event_.CSCTF_trk1,"CSCTF_trk1[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_quality1", event_.CSCTF_quality1,"CSCTF_quality1[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_wg1", event_.CSCTF_wg1,"CSCTF_wg1[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_hs1", event_.CSCTF_hs1,"CSCTF_hs1[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_trk1", event_.CSCTF_trk1,"CSCTF_trk1[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_quality1", event_.CSCTF_quality1,"CSCTF_quality1[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_wg1", event_.CSCTF_wg1,"CSCTF_wg1[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_hs1", event_.CSCTF_hs1,"CSCTF_hs1[nCSCTF]/I");
   event_tree_->Branch("CSCTF_pat1", event_.CSCTF_pat1,"CSCTF_pat1[nCSCTF]/I");
   event_tree_->Branch("CSCTF_bend1", event_.CSCTF_bend1,"CSCTF_bend1[nCSCTF]/I");
   event_tree_->Branch("CSCTF_bx1", event_.CSCTF_bx1,"CSCTF_bx1[nCSCTF]/I");
@@ -3263,10 +3316,10 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_ri2", event_.CSCTF_ri2,"CSCTF_ri2[nCSCTF]/I");
   event_tree_->Branch("CSCTF_ch2", event_.CSCTF_ch2,"CSCTF_ch2[nCSCTF]/I");
   event_tree_->Branch("CSCTF_en2", event_.CSCTF_en2,"CSCTF_en2[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_trk2", event_.CSCTF_trk2,"CSCTF_trk2[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_quality2", event_.CSCTF_quality2,"CSCTF_quality2[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_wg2", event_.CSCTF_wg2,"CSCTF_wg2[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_hs2", event_.CSCTF_hs2,"CSCTF_hs2[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_trk2", event_.CSCTF_trk2,"CSCTF_trk2[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_quality2", event_.CSCTF_quality2,"CSCTF_quality2[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_wg2", event_.CSCTF_wg2,"CSCTF_wg2[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_hs2", event_.CSCTF_hs2,"CSCTF_hs2[nCSCTF]/I");
   event_tree_->Branch("CSCTF_pat2", event_.CSCTF_pat2,"CSCTF_pat2[nCSCTF]/I");
   event_tree_->Branch("CSCTF_bend2", event_.CSCTF_bend2,"CSCTF_bend2[nCSCTF]/I");
   event_tree_->Branch("CSCTF_bx2", event_.CSCTF_bx2,"CSCTF_bx2[nCSCTF]/I");
@@ -3279,10 +3332,10 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_ri3", event_.CSCTF_ri3,"CSCTF_ri3[nCSCTF]/I");
   event_tree_->Branch("CSCTF_ch3", event_.CSCTF_ch3,"CSCTF_ch3[nCSCTF]/I");
   event_tree_->Branch("CSCTF_en3", event_.CSCTF_en3,"CSCTF_en3[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_trk3", event_.CSCTF_trk3,"CSCTF_trk3[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_quality3", event_.CSCTF_quality3,"CSCTF_quality3[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_wg3", event_.CSCTF_wg3,"CSCTF_wg3[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_hs3", event_.CSCTF_hs3,"CSCTF_hs3[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_trk3", event_.CSCTF_trk3,"CSCTF_trk3[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_quality3", event_.CSCTF_quality3,"CSCTF_quality3[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_wg3", event_.CSCTF_wg3,"CSCTF_wg3[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_hs3", event_.CSCTF_hs3,"CSCTF_hs3[nCSCTF]/I");
   event_tree_->Branch("CSCTF_pat3", event_.CSCTF_pat3,"CSCTF_pat3[nCSCTF]/I");
   event_tree_->Branch("CSCTF_bend3", event_.CSCTF_bend3,"CSCTF_bend3[nCSCTF]/I");
   event_tree_->Branch("CSCTF_bx3", event_.CSCTF_bx3,"CSCTF_bx3[nCSCTF]/I");
@@ -3295,10 +3348,10 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_ri4", event_.CSCTF_ri4,"CSCTF_ri4[nCSCTF]/I");
   event_tree_->Branch("CSCTF_ch4", event_.CSCTF_ch4,"CSCTF_ch4[nCSCTF]/I");
   event_tree_->Branch("CSCTF_en4", event_.CSCTF_en4,"CSCTF_en4[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_trk4", event_.CSCTF_trk4,"CSCTF_trk4[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_quality4", event_.CSCTF_quality4,"CSCTF_quality4[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_wg4", event_.CSCTF_wg4,"CSCTF_wg4[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_hs4", event_.CSCTF_hs4,"CSCTF_hs4[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_trk4", event_.CSCTF_trk4,"CSCTF_trk4[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_quality4", event_.CSCTF_quality4,"CSCTF_quality4[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_wg4", event_.CSCTF_wg4,"CSCTF_wg4[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_hs4", event_.CSCTF_hs4,"CSCTF_hs4[nCSCTF]/I");
   event_tree_->Branch("CSCTF_pat4", event_.CSCTF_pat4,"CSCTF_pat4[nCSCTF]/I");
   event_tree_->Branch("CSCTF_bend4", event_.CSCTF_bend4,"CSCTF_bend4[nCSCTF]/I");
   event_tree_->Branch("CSCTF_bx4", event_.CSCTF_bx4,"CSCTF_bx4[nCSCTF]/I");
@@ -3309,27 +3362,58 @@ void DisplacedL1MuFilter::bookL1MuTree()
 
   event_tree_->Branch("CSCTF_gemdphi1", event_.CSCTF_gemdphi1,"CSCTF_gemdphi1[nCSCTF]/F");
   event_tree_->Branch("CSCTF_gemdphi2", event_.CSCTF_gemdphi2,"CSCTF_gemdphi2[nCSCTF]/F");
+
+  // true positions
   event_tree_->Branch("CSCTF_R1", event_.CSCTF_R1,"CSCTF_R1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_R2", event_.CSCTF_R2,"CSCTF_R2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_x1", event_.CSCTF_x1,"CSCTF_x1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_y1", event_.CSCTF_y1,"CSCTF_y1[nCSCTF]/F");
   event_tree_->Branch("CSCTF_z1", event_.CSCTF_z1,"CSCTF_z1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_R2", event_.CSCTF_R2,"CSCTF_R2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_x2", event_.CSCTF_x2,"CSCTF_x2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_y2", event_.CSCTF_y2,"CSCTF_y2[nCSCTF]/F");
   event_tree_->Branch("CSCTF_z2", event_.CSCTF_z2,"CSCTF_z2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_R3", event_.CSCTF_R3,"CSCTF_R3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_x3", event_.CSCTF_x3,"CSCTF_x3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_y3", event_.CSCTF_y3,"CSCTF_y3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_z3", event_.CSCTF_z3,"CSCTF_z3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_R4", event_.CSCTF_R4,"CSCTF_R4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_x4", event_.CSCTF_x4,"CSCTF_x4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_y4", event_.CSCTF_y4,"CSCTF_y4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_z4", event_.CSCTF_z4,"CSCTF_z4[nCSCTF]/F");
+
 
   event_tree_->Branch("CSCTF_rec_ch1", event_.CSCTF_rec_ch1,"CSCTF_rec_ch1[4]/I");
-  event_tree_->Branch("CSCTF_rec_ch2", event_.CSCTF_rec_ch2,"CSCTF_rec_ch2[4]/I");
   event_tree_->Branch("CSCTF_rec_phi1", event_.CSCTF_rec_phi1,"CSCTF_rec_phi1[4]/F");
-  event_tree_->Branch("CSCTF_rec_phi2", event_.CSCTF_rec_phi2,"CSCTF_rec_phi2[4]/F");
   event_tree_->Branch("CSCTF_rec_phib1", event_.CSCTF_rec_phib1,"CSCTF_rec_phib1[4]/F");
-  event_tree_->Branch("CSCTF_rec_phib2", event_.CSCTF_rec_phib2,"CSCTF_rec_phib2[4]/F");
   event_tree_->Branch("CSCTF_rec_R1", event_.CSCTF_rec_R1,"CSCTF_rec_R1[4]/F");
-  event_tree_->Branch("CSCTF_rec_R2", event_.CSCTF_rec_R2,"CSCTF_rec_R2[4]/F");
   event_tree_->Branch("CSCTF_rec_z1", event_.CSCTF_rec_z1,"CSCTF_rec_z1[4]/F");
+
+  event_tree_->Branch("CSCTF_rec_ch2", event_.CSCTF_rec_ch2,"CSCTF_rec_ch2[4]/I");
+  event_tree_->Branch("CSCTF_rec_phi2", event_.CSCTF_rec_phi2,"CSCTF_rec_phi2[4]/F");
+  event_tree_->Branch("CSCTF_rec_phib2", event_.CSCTF_rec_phib2,"CSCTF_rec_phib2[4]/F");
+  event_tree_->Branch("CSCTF_rec_R2", event_.CSCTF_rec_R2,"CSCTF_rec_R2[4]/F");
   event_tree_->Branch("CSCTF_rec_z2", event_.CSCTF_rec_z2,"CSCTF_rec_z2[4]/F");
 
-  event_tree_->Branch("CSCTF_fit_phi1", event_.CSCTF_fit_phi1,"CSCTF_fit_phi1[4]/F");
-  event_tree_->Branch("CSCTF_fit_phi2", event_.CSCTF_fit_phi2,"CSCTF_fit_phi2[4]/F");
-  event_tree_->Branch("CSCTF_sim_phi1", event_.CSCTF_sim_phi1,"CSCTF_sim_phi1[4]/F");
-  event_tree_->Branch("CSCTF_sim_phi2", event_.CSCTF_sim_phi2,"CSCTF_sim_phi2[4]/F");
+  event_tree_->Branch("CSCTF_rec_ch3", event_.CSCTF_rec_ch3,"CSCTF_rec_ch3[4]/I");
+  event_tree_->Branch("CSCTF_rec_phi3", event_.CSCTF_rec_phi3,"CSCTF_rec_phi3[4]/F");
+  event_tree_->Branch("CSCTF_rec_phib3", event_.CSCTF_rec_phib3,"CSCTF_rec_phib3[4]/F");
+  event_tree_->Branch("CSCTF_rec_R3", event_.CSCTF_rec_R3,"CSCTF_rec_R3[4]/F");
+  event_tree_->Branch("CSCTF_rec_z3", event_.CSCTF_rec_z3,"CSCTF_rec_z3[4]/F");
 
+  event_tree_->Branch("CSCTF_rec_ch4", event_.CSCTF_rec_ch4,"CSCTF_rec_ch4[4]/I");
+  event_tree_->Branch("CSCTF_rec_phi4", event_.CSCTF_rec_phi4,"CSCTF_rec_phi4[4]/F");
+  event_tree_->Branch("CSCTF_rec_phib4", event_.CSCTF_rec_phib4,"CSCTF_rec_phib4[4]/F");
+  event_tree_->Branch("CSCTF_rec_R4", event_.CSCTF_rec_R4,"CSCTF_rec_R4[4]/F");
+  event_tree_->Branch("CSCTF_rec_z4", event_.CSCTF_rec_z4,"CSCTF_rec_z4[4]/F");
+
+  event_tree_->Branch("CSCTF_fit_phi1", event_.CSCTF_fit_phi1,"CSCTF_fit_phi1[4]/F");
+  event_tree_->Branch("CSCTF_sim_phi1", event_.CSCTF_sim_phi1,"CSCTF_sim_phi1[4]/F");
+  event_tree_->Branch("CSCTF_fit_phi2", event_.CSCTF_fit_phi2,"CSCTF_fit_phi2[4]/F");
+  event_tree_->Branch("CSCTF_sim_phi2", event_.CSCTF_sim_phi2,"CSCTF_sim_phi2[4]/F");
+  event_tree_->Branch("CSCTF_fit_phi3", event_.CSCTF_fit_phi3,"CSCTF_fit_phi3[4]/F");
+  event_tree_->Branch("CSCTF_sim_phi3", event_.CSCTF_sim_phi3,"CSCTF_sim_phi3[4]/F");
+  event_tree_->Branch("CSCTF_fit_phi4", event_.CSCTF_fit_phi4,"CSCTF_fit_phi4[4]/F");
+  event_tree_->Branch("CSCTF_sim_phi4", event_.CSCTF_sim_phi4,"CSCTF_sim_phi4[4]/F");
 
   event_tree_->Branch("nRPCb", &event_.nRPCb);
   event_tree_->Branch("L1Mu_RPCb_index", event_.L1Mu_RPCb_index,"L1Mu_RPCb_index[nL1Mu]/I");
@@ -3829,11 +3913,23 @@ DisplacedL1MuFilter::clearBranches()
 
     event_.CSCTF_gemdphi1[i] = 99;
     event_.CSCTF_gemdphi2[i] = 99;
-    event_.CSCTF_R1[i] = 99;
-    event_.CSCTF_R2[i] = 99;
-    event_.CSCTF_z1[i] = 99;
-    event_.CSCTF_z2[i] = 99;
 
+    event_.CSCTF_R1[i] = 99;
+    event_.CSCTF_x1[i] = 99;
+    event_.CSCTF_y1[i] = 99;
+    event_.CSCTF_z1[i] = 99;
+    event_.CSCTF_R2[i] = 99;
+    event_.CSCTF_x2[i] = 99;
+    event_.CSCTF_y2[i] = 99;
+    event_.CSCTF_z2[i] = 99;
+    event_.CSCTF_R3[i] = 99;
+    event_.CSCTF_x3[i] = 99;
+    event_.CSCTF_y3[i] = 99;
+    event_.CSCTF_z3[i] = 99;
+    event_.CSCTF_R4[i] = 99;
+    event_.CSCTF_x4[i] = 99;
+    event_.CSCTF_y4[i] = 99;
+    event_.CSCTF_z4[i] = 99;
   }
 
   event_.nRPCb = 0;
@@ -4041,20 +4137,34 @@ DisplacedL1MuFilter::clearBranches()
     event_.GE0_sim_phib[i] = 99;
     
     event_.CSCTF_rec_ch1[i] = 99;
-    event_.CSCTF_rec_ch2[i] = 99;
     event_.CSCTF_rec_phi1[i] = 99;
-    event_.CSCTF_rec_phi2[i] = 99;
     event_.CSCTF_rec_phib1[i] = 99;
-    event_.CSCTF_rec_phib2[i] = 99;
     event_.CSCTF_rec_R1[i] = 99;
-    event_.CSCTF_rec_R2[i] = 99;
     event_.CSCTF_rec_z1[i] = 99;
+    event_.CSCTF_rec_ch2[i] = 99;
+    event_.CSCTF_rec_phi2[i] = 99;
+    event_.CSCTF_rec_phib2[i] = 99;
+    event_.CSCTF_rec_R2[i] = 99;
     event_.CSCTF_rec_z2[i] = 99;
+    event_.CSCTF_rec_ch3[i] = 99;
+    event_.CSCTF_rec_phi3[i] = 99;
+    event_.CSCTF_rec_phib3[i] = 99;
+    event_.CSCTF_rec_R3[i] = 99;
+    event_.CSCTF_rec_z3[i] = 99;
+    event_.CSCTF_rec_ch4[i] = 99;
+    event_.CSCTF_rec_phi4[i] = 99;
+    event_.CSCTF_rec_phib4[i] = 99;
+    event_.CSCTF_rec_R4[i] = 99;
+    event_.CSCTF_rec_z4[i] = 99;
 
     event_.CSCTF_fit_phi1[i] = 99;
-    event_.CSCTF_fit_phi2[i] = 99;
     event_.CSCTF_sim_phi1[i] = 99;
+    event_.CSCTF_fit_phi2[i] = 99;
     event_.CSCTF_sim_phi2[i] = 99;
+    event_.CSCTF_fit_phi3[i] = 99;
+    event_.CSCTF_sim_phi3[i] = 99;
+    event_.CSCTF_fit_phi4[i] = 99;
+    event_.CSCTF_sim_phi4[i] = 99;
   }
 }
 

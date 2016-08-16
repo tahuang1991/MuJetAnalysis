@@ -3386,24 +3386,32 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_rec_phi1", event_.CSCTF_rec_phi1,"CSCTF_rec_phi1[4]/F");
   event_tree_->Branch("CSCTF_rec_phib1", event_.CSCTF_rec_phib1,"CSCTF_rec_phib1[4]/F");
   event_tree_->Branch("CSCTF_rec_R1", event_.CSCTF_rec_R1,"CSCTF_rec_R1[4]/F");
+  event_tree_->Branch("CSCTF_rec_x1", event_.CSCTF_rec_x1,"CSCTF_rec_x1[4]/F");
+  event_tree_->Branch("CSCTF_rec_y1", event_.CSCTF_rec_y1,"CSCTF_rec_y1[4]/F");
   event_tree_->Branch("CSCTF_rec_z1", event_.CSCTF_rec_z1,"CSCTF_rec_z1[4]/F");
 
   event_tree_->Branch("CSCTF_rec_ch2", event_.CSCTF_rec_ch2,"CSCTF_rec_ch2[4]/I");
   event_tree_->Branch("CSCTF_rec_phi2", event_.CSCTF_rec_phi2,"CSCTF_rec_phi2[4]/F");
   event_tree_->Branch("CSCTF_rec_phib2", event_.CSCTF_rec_phib2,"CSCTF_rec_phib2[4]/F");
   event_tree_->Branch("CSCTF_rec_R2", event_.CSCTF_rec_R2,"CSCTF_rec_R2[4]/F");
+  event_tree_->Branch("CSCTF_rec_x2", event_.CSCTF_rec_x2,"CSCTF_rec_x2[4]/F");
+  event_tree_->Branch("CSCTF_rec_y2", event_.CSCTF_rec_y2,"CSCTF_rec_y2[4]/F");
   event_tree_->Branch("CSCTF_rec_z2", event_.CSCTF_rec_z2,"CSCTF_rec_z2[4]/F");
 
   event_tree_->Branch("CSCTF_rec_ch3", event_.CSCTF_rec_ch3,"CSCTF_rec_ch3[4]/I");
   event_tree_->Branch("CSCTF_rec_phi3", event_.CSCTF_rec_phi3,"CSCTF_rec_phi3[4]/F");
   event_tree_->Branch("CSCTF_rec_phib3", event_.CSCTF_rec_phib3,"CSCTF_rec_phib3[4]/F");
   event_tree_->Branch("CSCTF_rec_R3", event_.CSCTF_rec_R3,"CSCTF_rec_R3[4]/F");
+  event_tree_->Branch("CSCTF_rec_x3", event_.CSCTF_rec_x3,"CSCTF_rec_x3[4]/F");
+  event_tree_->Branch("CSCTF_rec_y3", event_.CSCTF_rec_y3,"CSCTF_rec_y3[4]/F");
   event_tree_->Branch("CSCTF_rec_z3", event_.CSCTF_rec_z3,"CSCTF_rec_z3[4]/F");
 
   event_tree_->Branch("CSCTF_rec_ch4", event_.CSCTF_rec_ch4,"CSCTF_rec_ch4[4]/I");
   event_tree_->Branch("CSCTF_rec_phi4", event_.CSCTF_rec_phi4,"CSCTF_rec_phi4[4]/F");
   event_tree_->Branch("CSCTF_rec_phib4", event_.CSCTF_rec_phib4,"CSCTF_rec_phib4[4]/F");
   event_tree_->Branch("CSCTF_rec_R4", event_.CSCTF_rec_R4,"CSCTF_rec_R4[4]/F");
+  event_tree_->Branch("CSCTF_rec_x4", event_.CSCTF_rec_x4,"CSCTF_rec_x4[4]/F");
+  event_tree_->Branch("CSCTF_rec_y4", event_.CSCTF_rec_y4,"CSCTF_rec_y4[4]/F");
   event_tree_->Branch("CSCTF_rec_z4", event_.CSCTF_rec_z4,"CSCTF_rec_z4[4]/F");
 
   event_tree_->Branch("CSCTF_fit_phi1", event_.CSCTF_fit_phi1,"CSCTF_fit_phi1[4]/F");

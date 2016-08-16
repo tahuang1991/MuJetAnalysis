@@ -37,10 +37,12 @@ if __name__ == "__main__":
   
   #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v17/160806_230658/0000/')
   #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v18/160806_234830/0000/')
-  ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v23/160812_090122/0000/')
+  #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v23/160812_090122/0000/')
+  ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v24/160815_203328/0000/')
+
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160815"
+  label = "DisplacedL1MuTrigger_20160816"
   targetDir = label + "/"
   
   verbose = False
@@ -1571,8 +1573,6 @@ if __name__ == "__main__":
 
               ## stub directions
               ok_direction_based_endcap = ok_GE11 and ok_GE21 and ok_CSCTF_st1 and ok_CSCTF_st2
-              #if not ok_direction_based_endcap:
-              #print "\t\t>>>ERROR<<<"
 
               ## all necessary elements for the bending angle algorithm are present!
               if ok_direction_based_endcap:
@@ -1967,6 +1967,22 @@ if __name__ == "__main__":
       c.SaveAs(cTitle)
 
 
+    def makeSimplePlotMap(thisMap, key, title, option = ''):
+      c = TCanvas("c","c",800,600)
+      c.Clear()
+      gStyle.SetTitleBorderSize(0);
+      gStyle.SetPadLeftMargin(0.126);
+      gStyle.SetPadRightMargin(0.04);
+      gStyle.SetPadTopMargin(0.06);
+      gStyle.SetPadBottomMargin(0.13);
+      gPad.SetTickx(1)
+      gPad.SetTicky(1)
+      hist = thisMap[key]
+      hist.Draw(option)
+      hist.SetTitle(title)
+      c.SaveAs(targetDir + key + ".png")
+
+
     def makeSimplePlotGaussianFit(hist, cTitle, title, option = ''):
       gStyle.SetOptStat(1111111)
       gStyle.SetOptFit(1111111);
@@ -2229,6 +2245,13 @@ if __name__ == "__main__":
                    "#Phi resolution in ME21 odd chamber, 1.8<|#eta|<2.0;#Phi(Fit to digis);#Phi(SimHit)","")
     makeSimplePlot(csc_pos_sh_vs_fit_ME21_20to22_odd, targetDir + "csc_pos_sh_vs_fit_ME21_20to22_odd.png", 
                    "#Phi resolution in ME21 odd chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis);#Phi(SimHit)","")
+
+
+    ## Plots for position based pT measurement (CSC only!!!)
+    for pp in ['eee','eoo','oee','ooo']:
+      for qq in ['12to14','14to16','16to18''18to20','20to22','22to24']:
+        makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta" + qq + "_" + pp, "#Delta Y_{12} [cm]; #Delta Y_{13} [cm]")
+    
 
 
     ## plots with DTs

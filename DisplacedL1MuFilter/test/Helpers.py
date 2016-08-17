@@ -39,9 +39,9 @@ def get_eta_partition(eta):
   return etaPartition
  
 
-def deltays12_deltay23(x1, y1, phi1,
-                       x2, y2, phi2,
-                       x3, y3, phi3):
+def deltay12_deltay23(x1, y1, phi1,
+                      x2, y2, phi2,
+                      x3, y3, phi3):
   ## reference angle
   referenceAngle = phi2
 
@@ -58,6 +58,7 @@ def deltays12_deltay23(x1, y1, phi1,
 
 def get_parity(isEven1, isEven2, isEven3, isEven4):
   ## parity cases
+  totalParity = -1
   if not isEven1 and     isEven2 and     isEven3: totalParity = 0
   if not isEven1 and not isEven2 and not isEven3: totalParity = 1
   if     isEven1 and     isEven2 and     isEven3: totalParity = 2
@@ -72,8 +73,17 @@ def pt_from_position(x1, y1, z1, phi1, isEven1,
                      eta):
 
   etaPartition = get_eta_partition(eta)
-  parity = get_parity(isEven1, isEven2, isEven3, isEven4)
-
+  totalParity = get_parity(isEven1, isEven2, isEven3, isEven4)
+  deltay12, deltay23 = deltay12_deltay23(x1, y1, phi1,
+                                         x2, y2, phi2,
+                                         x3, y3, phi3)
+  ## debug
+  debug = False
+  if debug:
+    print "etaPartition", etaPartition
+    print "totalParity", totalParity
+    print "deltay12", deltay12, "deltay23", deltay23
+  
   ## dictionary with:
   ## 1. proportionality factor
   ## 2. slope
@@ -81,36 +91,36 @@ def pt_from_position(x1, y1, z1, phi1, isEven1,
   ## numbers derived by Jose Dimas Valle
   dict_prop_slope_intercept = {
     0 : {
-      0 : {1.279, 0.04784, 0.1122},
-      1 : {1.279, 0.65424, 0.09761},
-      2 : {0.648, 0.05527, 0.08944},
-      3 : {0.648, 0.08295, 0.1279},
-      4 : {0.648, 0.1660, 0.2158},
-      5 : {0.648, 0.4952, 0.7103},
+      0 : [1.279, 0.04784, 0.1122],
+      1 : [1.279, 0.65424, 0.09761],
+      2 : [0.648, 0.05527, 0.08944],
+      3 : [0.648, 0.08295, 0.1279],
+      4 : [0.648, 0.1660, 0.2158],
+      5 : [0.648, 0.4952, 0.7103],
     },
     1 : {
-      0 : {0.6357, 0.0827, 0.2021},
-      1 : {0.6357, 0.0906, 0.1773},
-      2 : {0.3542, 0.1067, 0.1957},
-      3 : {0.3542, 0.1561, 0.2645},
-      4 : {0.3542, 0.3156, 0.4514},
-      5 : {0.3542, 0.8242, 1.0712},
+      0 : [0.6357, 0.0827, 0.2021],
+      1 : [0.6357, 0.0906, 0.1773],
+      2 : [0.3542, 0.1067, 0.1957],
+      3 : [0.3542, 0.1561, 0.2645],
+      4 : [0.3542, 0.3156, 0.4514],
+      5 : [0.3542, 0.8242, 1.0712],
     },
     2 : {
-      0 : {1.001, 0.038, 0.008345},
-      1 : {1.001, 0.04157, 0.0617},
-      2 : {0.5636, 0.0562, 0.08417},
-      3 : {0.5636, 0.0870, 0.1426},
-      4 : {0.5636, 0.1676, 0.2198},
-      5 : {0.5636, 0.4953, 0.7272},
+      0 : [1.001, 0.038, 0.008345],
+      1 : [1.001, 0.04157, 0.0617],
+      2 : [0.5636, 0.0562, 0.08417],
+      3 : [0.5636, 0.0870, 0.1426],
+      4 : [0.5636, 0.1676, 0.2198],
+      5 : [0.5636, 0.4953, 0.7272],
     },
     3 : {
-      0 : {0.5252, 0.0739, 0.1714},
-      1 : {0.5252, 0.07838, 0.1307},
-      2 : {0.3217, 0.1066, 0.2026},
-      3 : {0.3217, 0.1435, 0.2118},
-      4 : {0.3217, 0.2874, 0.4055},
-      5 : {0.3217, 0.7625, 1.075},
+      0 : [0.5252, 0.0739, 0.1714],
+      1 : [0.5252, 0.07838, 0.1307],
+      2 : [0.3217, 0.1066, 0.2026],
+      3 : [0.3217, 0.1435, 0.2118],
+      4 : [0.3217, 0.2874, 0.4055],
+      5 : [0.3217, 0.7625, 1.075],
     }
   }
   
@@ -118,7 +128,7 @@ def pt_from_position(x1, y1, z1, phi1, isEven1,
   
   preResult1 = 1./abs(deltay23 - dict_prop_slope_intercept[totalParity][etaPartition][0] * deltay12)
   preResult2 = dict_prop_slope_intercept[totalParity][etaPartition][1]
-  preResult3 = dict_prop_slope_intercept[totalParity][etaPartition][3]
+  preResult3 = dict_prop_slope_intercept[totalParity][etaPartition][2]
   
   result = (preResult1 + preResult2) / preResult3
   return result

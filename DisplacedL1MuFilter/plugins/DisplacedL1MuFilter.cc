@@ -318,9 +318,17 @@ struct MyEvent
 
   // fitted positions -- at key layer
   Float_t CSCTF_fit_phi1[kMaxCSCTF], CSCTF_fit_phi2[kMaxCSCTF], CSCTF_fit_phi3[kMaxCSCTF], CSCTF_fit_phi4[kMaxCSCTF];
+  Float_t CSCTF_fit_R1[kMaxCSCTF], CSCTF_fit_R2[kMaxCSCTF], CSCTF_fit_R3[kMaxCSCTF], CSCTF_fit_R4[kMaxCSCTF];
+  Float_t CSCTF_fit_x1[kMaxCSCTF], CSCTF_fit_x2[kMaxCSCTF], CSCTF_fit_x3[kMaxCSCTF], CSCTF_fit_x4[kMaxCSCTF];
+  Float_t CSCTF_fit_y1[kMaxCSCTF], CSCTF_fit_y2[kMaxCSCTF], CSCTF_fit_y3[kMaxCSCTF], CSCTF_fit_y4[kMaxCSCTF];
+  Float_t CSCTF_fit_z1[kMaxCSCTF], CSCTF_fit_z2[kMaxCSCTF], CSCTF_fit_z3[kMaxCSCTF], CSCTF_fit_z4[kMaxCSCTF];
 
   // fitted positions - at key layer
   Float_t CSCTF_sim_phi1[kMaxCSCTF], CSCTF_sim_phi2[kMaxCSCTF], CSCTF_sim_phi3[kMaxCSCTF], CSCTF_sim_phi4[kMaxCSCTF];
+  Float_t CSCTF_sim_R1[kMaxCSCTF], CSCTF_sim_R2[kMaxCSCTF], CSCTF_sim_R3[kMaxCSCTF], CSCTF_sim_R4[kMaxCSCTF];
+  Float_t CSCTF_sim_x1[kMaxCSCTF], CSCTF_sim_x2[kMaxCSCTF], CSCTF_sim_x3[kMaxCSCTF], CSCTF_sim_x4[kMaxCSCTF];
+  Float_t CSCTF_sim_y1[kMaxCSCTF], CSCTF_sim_y2[kMaxCSCTF], CSCTF_sim_y3[kMaxCSCTF], CSCTF_sim_y4[kMaxCSCTF];
+  Float_t CSCTF_sim_z1[kMaxCSCTF], CSCTF_sim_z2[kMaxCSCTF], CSCTF_sim_z3[kMaxCSCTF], CSCTF_sim_z4[kMaxCSCTF];
 
   // Matching the L1Mu to RPCb  
   Int_t nRPCb;
@@ -528,26 +536,28 @@ void calculateAlphaBeta(const std::vector<float>& v,
   beta  = fit1->GetParameter(1); //value of 1st parameter
 
   if (debug){
-  TCanvas* c1 = new TCanvas("c1","A Simple Graph with error bars",200,10,700,500);
-  c1->cd();
-  c1->SetFillColor(42);
-  c1->SetGrid();
-  // c1->GetFrame()->SetFillColor(21);
-  // c1->GetFrame()->SetBorderSize(12);
-
-  TString slumi;  slumi.Form("%d", lumi);
-  TString srun;   srun.Form("%d", run);
-  TString sevent; sevent.Form("%d", event);
-  TString smuon;  smuon.Form("%d", muon);
-  
-  gr->SetTitle("Linear fit to ComparatorDigis for Lumi " + slumi + " Run " + srun + " Event " + sevent + " Muon " + smuon);
-  gr->SetMarkerColor(4);
-  gr->SetMarkerStyle(21);
-  gr->Draw("ALP");
-
-  c1->SaveAs("ComparatoDigiLinearFits/c_debug_fit_L" + slumi + "_R" + srun + "_E" + sevent + "_M" + smuon + ".png");
-  delete c1;
+    TCanvas* c1 = new TCanvas("c1","A Simple Graph with error bars",200,10,700,500);
+    c1->cd();
+    c1->SetFillColor(42);
+    c1->SetGrid();
+    // c1->GetFrame()->SetFillColor(21);
+    // c1->GetFrame()->SetBorderSize(12);
+    
+    TString slumi;  slumi.Form("%d", lumi);
+    TString srun;   srun.Form("%d", run);
+    TString sevent; sevent.Form("%d", event);
+    TString smuon;  smuon.Form("%d", muon);
+    
+    gr->SetTitle("Linear fit to ComparatorDigis for Lumi " + slumi + " Run " + srun + " Event " + sevent + " Muon " + smuon);
+    gr->SetMarkerColor(4);
+    gr->SetMarkerStyle(21);
+    gr->Draw("ALP");
+    
+    c1->SaveAs("ComparatoDigiLinearFits/c_debug_fit_L" + slumi + "_R" + srun + "_E" + sevent + "_M" + smuon + ".png");
+    delete c1;
   }
+  delete fit1;
+  delete gr;
   }
   else{
     //std::cout << "ERROR: LCT without at least 3 comparator digis in the chamber!!" << std::endl;
@@ -639,6 +649,8 @@ private:
   double max_pT_L1Tk;
   int verbose;
   bool produceFitPlots_;
+  bool processRPCb_;
+  bool processRPCf_;
 
   const RPCGeometry* rpcGeometry_;
   const CSCGeometry* cscGeometry_;
@@ -689,6 +701,8 @@ DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) :
   max_pT_L1Tk = iConfig.getParameter<double>("max_pT_L1Tk");
   verbose = iConfig.getParameter<int>("verbose");
   produceFitPlots_ = iConfig.getParameter<bool>("produceFitPlots");
+  processRPCb_ = iConfig.getParameter<bool>("processRPCb");
+  processRPCf_ = iConfig.getParameter<bool>("processRPCf");
   
   L1Mu_input = iConfig.getParameter<edm::InputTag>("L1Mu_input");
   L1TkMu_input = iConfig.getParameter<edm::InputTag>("L1TkMu_input");
@@ -1194,22 +1208,38 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       if (detId.ring()!=1) continue;
       
       edm::PSimHitContainer simhits = match_sh.hitsInChamber(d);
-      float csc_phi = match_sh.simHitPositionKeyLayer(d);
+      auto gp_csc = match_sh.simHitPositionKeyLayer(d);
       if(verbose) std::cout << detId 
                             << " n CSC hits " << simhits.size() 
                             << " key phi " << csc_phi 
                             << endl;
       if (detId.station()==1) {
-        event_.CSCTF_sim_phi1[k] = csc_phi;
+        event_.CSCTF_sim_phi1[k] = gp_csc.phi();
+        event_.CSCTF_sim_x1[k] = gp_csc.x();
+        event_.CSCTF_sim_y1[k] = gp_csc.y();
+        event_.CSCTF_sim_z1[k] = gp_csc.z();
+        event_.CSCTF_sim_R1[k] = gp_csc.perp();
       }
       if (detId.station()==2) {
-        event_.CSCTF_sim_phi2[k] = csc_phi;
+        event_.CSCTF_sim_phi2[k] = gp_csc.phi();
+        event_.CSCTF_sim_x2[k] = gp_csc.x();
+        event_.CSCTF_sim_y2[k] = gp_csc.y();
+        event_.CSCTF_sim_z2[k] = gp_csc.z();
+        event_.CSCTF_sim_R2[k] = gp_csc.perp();
       }
       if (detId.station()==3) {
-        event_.CSCTF_sim_phi3[k] = csc_phi;
+        event_.CSCTF_sim_phi3[k] = gp_csc.phi();
+        event_.CSCTF_sim_x3[k] = gp_csc.x();
+        event_.CSCTF_sim_y3[k] = gp_csc.y();
+        event_.CSCTF_sim_z3[k] = gp_csc.z();
+        event_.CSCTF_sim_R3[k] = gp_csc.perp();
       }
       if (detId.station()==4) {
-        event_.CSCTF_sim_phi4[k] = csc_phi;
+        event_.CSCTF_sim_phi4[k] = gp_csc.phi();
+        event_.CSCTF_sim_x4[k] = gp_csc.x();
+        event_.CSCTF_sim_y4[k] = gp_csc.y();
+        event_.CSCTF_sim_z4[k] = gp_csc.z();
+        event_.CSCTF_sim_R4[k] = gp_csc.perp();
       }
     }
     
@@ -1373,7 +1403,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       std::vector<float> ephis;
       std::vector<float> ezs;
       std::vector<float> status;
-      
+      int keyWireGroup = bestMatchingLCT.getKeyWG();
+      float localY = cscChamber->layer(3)->geometry()->yOfWireGroup(keyWireGroup);
+      float radius = cscChamber->layer(3)->surface().toGlobal(LocalPoint(0,0,0)).perp() + localY;
       for (int l=1; l<=6; l++){
         CSCDetId l_id(detId.endcap(), detId.station(), detId.ring(), detId.chamber(), l);
         if(verbose) std::cout << "\tCSCId " << l_id << std::endl;
@@ -1423,15 +1455,31 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       
       if (detId.station()==1) {
         event_.CSCTF_fit_phi1[k] = bestFitPhi;
+        event_.CSCTF_fit_x1[k] = radius*cos(bestFitPhi);
+        event_.CSCTF_fit_y1[k] = radius*sin(bestFitPhi);
+        event_.CSCTF_fit_z1[k] = z_pos_L3;
+        event_.CSCTF_fit_R1[k] = radius;
       }
       if (detId.station()==2) {
         event_.CSCTF_fit_phi2[k] = bestFitPhi;
+        event_.CSCTF_fit_x2[k] = radius*cos(bestFitPhi);
+        event_.CSCTF_fit_y2[k] = radius*sin(bestFitPhi);
+        event_.CSCTF_fit_z2[k] = z_pos_L3;
+        event_.CSCTF_fit_R2[k] = radius;
       }
       if (detId.station()==3) {
         event_.CSCTF_fit_phi3[k] = bestFitPhi;
+        event_.CSCTF_fit_x3[k] = radius*cos(bestFitPhi);
+        event_.CSCTF_fit_y3[k] = radius*sin(bestFitPhi);
+        event_.CSCTF_fit_z3[k] = z_pos_L3;
+        event_.CSCTF_fit_R3[k] = radius;
       }
       if (detId.station()==4) {
         event_.CSCTF_fit_phi4[k] = bestFitPhi;
+        event_.CSCTF_fit_x4[k] = radius*cos(bestFitPhi);
+        event_.CSCTF_fit_y4[k] = radius*sin(bestFitPhi);
+        event_.CSCTF_fit_z4[k] = z_pos_L3;
+        event_.CSCTF_fit_R4[k] = radius;
       }
     }
 
@@ -1873,11 +1921,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
     }
 
+
     // Matching to RPCb cands
     double bestDrL1MuL1RPCb = 99;
     if(verbose) std::cout << "Number of l1MuRPCbs: " <<l1MuRPCbs.size() << std::endl;
     event_.nRPCb = l1MuRPCbs.size();
-    for (unsigned int j=0; j<l1MuRPCbs.size(); ++j) { 
+    if (processRPCb_) for (unsigned int j=0; j<l1MuRPCbs.size(); ++j) { 
       auto track = l1MuRPCbs[j];
 
       event_.RPCb_pt[j] = muPtScale->getPtScale()->getLowEdge(track.pt_packed());
@@ -2023,7 +2072,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     double bestDrL1MuL1RPCf = 99;
     if(verbose) std::cout << "Number of l1MuRPCfs: " <<l1MuRPCfs.size() << std::endl;
     event_.nRPCf = l1MuRPCfs.size();
-    for (unsigned int j=0; j<l1MuRPCfs.size(); ++j) { 
+    if (processRPCf_) for (unsigned int j=0; j<l1MuRPCfs.size(); ++j) { 
       auto track = l1MuRPCfs[j];
 
       event_.RPCf_pt[j] = muPtScale->getPtScale()->getLowEdge(track.pt_packed());
@@ -3368,14 +3417,17 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_x1", event_.CSCTF_x1,"CSCTF_x1[nCSCTF]/F");
   event_tree_->Branch("CSCTF_y1", event_.CSCTF_y1,"CSCTF_y1[nCSCTF]/F");
   event_tree_->Branch("CSCTF_z1", event_.CSCTF_z1,"CSCTF_z1[nCSCTF]/F");
+
   event_tree_->Branch("CSCTF_R2", event_.CSCTF_R2,"CSCTF_R2[nCSCTF]/F");
   event_tree_->Branch("CSCTF_x2", event_.CSCTF_x2,"CSCTF_x2[nCSCTF]/F");
   event_tree_->Branch("CSCTF_y2", event_.CSCTF_y2,"CSCTF_y2[nCSCTF]/F");
   event_tree_->Branch("CSCTF_z2", event_.CSCTF_z2,"CSCTF_z2[nCSCTF]/F");
+
   event_tree_->Branch("CSCTF_R3", event_.CSCTF_R3,"CSCTF_R3[nCSCTF]/F");
   event_tree_->Branch("CSCTF_x3", event_.CSCTF_x3,"CSCTF_x3[nCSCTF]/F");
   event_tree_->Branch("CSCTF_y3", event_.CSCTF_y3,"CSCTF_y3[nCSCTF]/F");
   event_tree_->Branch("CSCTF_z3", event_.CSCTF_z3,"CSCTF_z3[nCSCTF]/F");
+
   event_tree_->Branch("CSCTF_R4", event_.CSCTF_R4,"CSCTF_R4[nCSCTF]/F");
   event_tree_->Branch("CSCTF_x4", event_.CSCTF_x4,"CSCTF_x4[nCSCTF]/F");
   event_tree_->Branch("CSCTF_y4", event_.CSCTF_y4,"CSCTF_y4[nCSCTF]/F");
@@ -3415,14 +3467,57 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_rec_z4", event_.CSCTF_rec_z4,"CSCTF_rec_z4[4]/F");
 
   event_tree_->Branch("CSCTF_fit_phi1", event_.CSCTF_fit_phi1,"CSCTF_fit_phi1[4]/F");
-  event_tree_->Branch("CSCTF_sim_phi1", event_.CSCTF_sim_phi1,"CSCTF_sim_phi1[4]/F");
   event_tree_->Branch("CSCTF_fit_phi2", event_.CSCTF_fit_phi2,"CSCTF_fit_phi2[4]/F");
-  event_tree_->Branch("CSCTF_sim_phi2", event_.CSCTF_sim_phi2,"CSCTF_sim_phi2[4]/F");
   event_tree_->Branch("CSCTF_fit_phi3", event_.CSCTF_fit_phi3,"CSCTF_fit_phi3[4]/F");
-  event_tree_->Branch("CSCTF_sim_phi3", event_.CSCTF_sim_phi3,"CSCTF_sim_phi3[4]/F");
   event_tree_->Branch("CSCTF_fit_phi4", event_.CSCTF_fit_phi4,"CSCTF_fit_phi4[4]/F");
+
+  event_tree_->Branch("CSCTF_fit_R1", event_.CSCTF_fit_R1,"CSCTF_fit_R1[4]/F");
+  event_tree_->Branch("CSCTF_fit_R2", event_.CSCTF_fit_R2,"CSCTF_fit_R2[4]/F");
+  event_tree_->Branch("CSCTF_fit_R3", event_.CSCTF_fit_R3,"CSCTF_fit_R3[4]/F");
+  event_tree_->Branch("CSCTF_fit_R4", event_.CSCTF_fit_R4,"CSCTF_fit_R4[4]/F");
+
+  event_tree_->Branch("CSCTF_fit_x1", event_.CSCTF_fit_x1,"CSCTF_fit_x1[4]/F");
+  event_tree_->Branch("CSCTF_fit_x2", event_.CSCTF_fit_x2,"CSCTF_fit_x2[4]/F");
+  event_tree_->Branch("CSCTF_fit_x3", event_.CSCTF_fit_x3,"CSCTF_fit_x3[4]/F");
+  event_tree_->Branch("CSCTF_fit_x4", event_.CSCTF_fit_x4,"CSCTF_fit_x4[4]/F");
+
+  event_tree_->Branch("CSCTF_fit_y1", event_.CSCTF_fit_y1,"CSCTF_fit_y1[4]/F");
+  event_tree_->Branch("CSCTF_fit_y2", event_.CSCTF_fit_y2,"CSCTF_fit_y2[4]/F");
+  event_tree_->Branch("CSCTF_fit_y3", event_.CSCTF_fit_y3,"CSCTF_fit_y3[4]/F");
+  event_tree_->Branch("CSCTF_fit_y4", event_.CSCTF_fit_y4,"CSCTF_fit_y4[4]/F");
+
+  event_tree_->Branch("CSCTF_fit_z1", event_.CSCTF_fit_z1,"CSCTF_fit_z1[4]/F");
+  event_tree_->Branch("CSCTF_fit_z2", event_.CSCTF_fit_z2,"CSCTF_fit_z2[4]/F");
+  event_tree_->Branch("CSCTF_fit_z3", event_.CSCTF_fit_z3,"CSCTF_fit_z3[4]/F");
+  event_tree_->Branch("CSCTF_fit_z4", event_.CSCTF_fit_z4,"CSCTF_fit_z4[4]/F");
+
+  event_tree_->Branch("CSCTF_sim_phi1", event_.CSCTF_sim_phi1,"CSCTF_sim_phi1[4]/F");
+  event_tree_->Branch("CSCTF_sim_phi2", event_.CSCTF_sim_phi2,"CSCTF_sim_phi2[4]/F");
+  event_tree_->Branch("CSCTF_sim_phi3", event_.CSCTF_sim_phi3,"CSCTF_sim_phi3[4]/F");
   event_tree_->Branch("CSCTF_sim_phi4", event_.CSCTF_sim_phi4,"CSCTF_sim_phi4[4]/F");
 
+  event_tree_->Branch("CSCTF_sim_R1", event_.CSCTF_sim_R1,"CSCTF_sim_R1[4]/F");
+  event_tree_->Branch("CSCTF_sim_R2", event_.CSCTF_sim_R2,"CSCTF_sim_R2[4]/F");
+  event_tree_->Branch("CSCTF_sim_R3", event_.CSCTF_sim_R3,"CSCTF_sim_R3[4]/F");
+  event_tree_->Branch("CSCTF_sim_R4", event_.CSCTF_sim_R4,"CSCTF_sim_R4[4]/F");
+
+  event_tree_->Branch("CSCTF_sim_x1", event_.CSCTF_sim_x1,"CSCTF_sim_x1[4]/F");
+  event_tree_->Branch("CSCTF_sim_x2", event_.CSCTF_sim_x2,"CSCTF_sim_x2[4]/F");
+  event_tree_->Branch("CSCTF_sim_x3", event_.CSCTF_sim_x3,"CSCTF_sim_x3[4]/F");
+  event_tree_->Branch("CSCTF_sim_x4", event_.CSCTF_sim_x4,"CSCTF_sim_x4[4]/F");
+
+  event_tree_->Branch("CSCTF_sim_y1", event_.CSCTF_sim_y1,"CSCTF_sim_y1[4]/F");
+  event_tree_->Branch("CSCTF_sim_y2", event_.CSCTF_sim_y2,"CSCTF_sim_y2[4]/F");
+  event_tree_->Branch("CSCTF_sim_y3", event_.CSCTF_sim_y3,"CSCTF_sim_y3[4]/F");
+  event_tree_->Branch("CSCTF_sim_y4", event_.CSCTF_sim_y4,"CSCTF_sim_y4[4]/F");
+
+  event_tree_->Branch("CSCTF_sim_z1", event_.CSCTF_sim_z1,"CSCTF_sim_z1[4]/F");
+  event_tree_->Branch("CSCTF_sim_z2", event_.CSCTF_sim_z2,"CSCTF_sim_z2[4]/F");
+  event_tree_->Branch("CSCTF_sim_z3", event_.CSCTF_sim_z3,"CSCTF_sim_z3[4]/F");
+  event_tree_->Branch("CSCTF_sim_z4", event_.CSCTF_sim_z4,"CSCTF_sim_z4[4]/F");
+
+
+  if (processRPCb_) {
   event_tree_->Branch("nRPCb", &event_.nRPCb);
   event_tree_->Branch("L1Mu_RPCb_index", event_.L1Mu_RPCb_index,"L1Mu_RPCb_index[nL1Mu]/I");
 
@@ -3498,8 +3593,9 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("RPCb_la6", event_.RPCb_la6,"RPCb_la6[nRPCb]/I");
   event_tree_->Branch("RPCb_su6", event_.RPCb_su6,"RPCb_su6[nRPCb]/I");
   event_tree_->Branch("RPCb_ro6", event_.RPCb_ro6,"RPCb_ro6[nRPCb]/I");
+  }
 
-
+  if (processRPCf_) {
   event_tree_->Branch("nRPCf", &event_.nRPCf);
   event_tree_->Branch("L1Mu_RPCf_index", event_.L1Mu_RPCf_index,"L1Mu_RPCf_index[nL1Mu]/I");
 
@@ -3575,6 +3671,7 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("RPCf_la6", event_.RPCf_la6,"RPCf_la6[nRPCf]/I");
   event_tree_->Branch("RPCf_su6", event_.RPCf_su6,"RPCf_su6[nRPCf]/I");
   event_tree_->Branch("RPCf_ro6", event_.RPCf_ro6,"RPCf_ro6[nRPCf]/I");
+  }
 
   event_tree_->Branch("nGEM", &event_.nGEM);
   event_tree_->Branch("GE11_phi_L1", event_.GE11_phi_L1,"GE11_phi_L1[4]/F");

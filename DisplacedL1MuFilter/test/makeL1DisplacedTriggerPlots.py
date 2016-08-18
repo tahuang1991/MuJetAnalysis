@@ -20,25 +20,27 @@ if __name__ == "__main__":
 
   set_style()
 
-  #file = TFile("/uscms/home/dildick/nobackup/work/MuonPhaseIITDRStudies/CMSSW_6_2_0_SLHC28_patch1/src/out_ana_ctau_1000_PU140_GEM.root")
-  #treeHits = file.Get("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
-
-  ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
-#ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/', ext=".root")
-  #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v2/160712_224712/0000/', ext=".root")
-  #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v3/160713_025853/0000/', ext=".root")
-
-  #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v5/160714_040828/0000/')
-  #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v6/160719_220646/0000/')
-  #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v7/160720_011325/0000/')
-  #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v8/160725_235053/0000/')
-  #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v13/160805_221951/0000/')
-  #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v16/160806_183444/0000/')
+  doTest = False
+  if doTest:
+    file = TFile("/uscms/home/dildick/nobackup/work/MuonPhaseIITDRStudies/CMSSW_6_2_0_SLHC28_patch1/src/out_ana_ctau_1000_PU140_GEM.root")
+    treeHits = file.Get("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
   
-  #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v17/160806_230658/0000/')
-  #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v18/160806_234830/0000/')
-  #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v23/160812_090122/0000/')
-  #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v26/160816_221742/0000/')
+  ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
+  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/', ext=".root")
+  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v2/160712_224712/0000/', ext=".root")
+  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v3/160713_025853/0000/', ext=".root")
+
+  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v5/160714_040828/0000/')
+  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v6/160719_220646/0000/')
+  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v7/160720_011325/0000/')
+  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v8/160725_235053/0000/')
+  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v13/160805_221951/0000/')
+  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v16/160806_183444/0000/')
+  
+  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v17/160806_230658/0000/')
+  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v18/160806_234830/0000/')
+  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v23/160812_090122/0000/')
+  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v26/160816_221742/0000/')
   dirname = '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v28/160818_200220/0000/'
   
   ch = addfiles(ch, dirname=dirname)
@@ -270,7 +272,6 @@ if __name__ == "__main__":
       for qq in L1MuPtCuts:
         addPlotToMapTH1F("Displaced_L1MuPt" + qq + "_GenMuPt_ME1_ME2_ME3_withoutLCTFit" + pp, 60,0.,60.)
         addPlotToMapTH1F("Displaced_L1MuPt" + qq + "_GenMuPt_ME1_ME2_ME3_withLCTFit" + pp, 60,0.,60.)
-
 
     ## DT plots
     phiDTst1_phiDTst2 = TH1F("phiDTst1_phiDTst2","", 100,-1.,1.)
@@ -1635,21 +1636,13 @@ if __name__ == "__main__":
                 GE11_z = getBestValue(GE11_z_L1, GE11_z_L2)
                 GE21_z = getBestValue(GE21_z_L1, GE21_z_L2)
 
-                ## calculate GEM-CSC bending angles...
-                delta_phi_GE11_ME11_withoutFitLCT = deltaPhi2(CSCTF_phi1, GE11_phi)
-                delta_phi_GE21_ME21_withoutFitLCT = deltaPhi2(CSCTF_phi2, GE21_phi)
-
-                delta_phi_GE11_ME11_withFitLCT = deltaPhi2(CSCTF_fit_phi1, GE11_phi)
-                delta_phi_GE21_ME21_withFitLCT = deltaPhi2(CSCTF_fit_phi2, GE21_phi)
-
-                if verbose:
-                  print "\t\tdelta_phi_GE11_ME11", delta_phi_GE11_ME11
-                  print "\t\tdelta_phi_GE21_ME21", delta_phi_GE21_ME21
-                  print
-
                 if verbose:
                   print "\t\tCSCTF_z1", CSCTF_z1
                   print "\t\tCSCTF_z2", CSCTF_z2
+                  print "\t\tCSCTF_R1", CSCTF_R1
+                  print "\t\tCSCTF_R2", CSCTF_R2
+                  print "\t\tCSCTF_fit_R1", CSCTF_fit_R1
+                  print "\t\tCSCTF_fit_R2", CSCTF_fit_R2
                   print "\t\tGEM_z1", GE11_z
                   print "\t\tGEM_z2", GE21_z
                 
@@ -1660,7 +1653,7 @@ if __name__ == "__main__":
 
                 ## calculate X values - depend on the LCT position fit
                 X_withoutFitLCT = (CSCTF_R2/CSCTF_R1 - 1)/delta_z_ME11_ME21
-                X_withFitLCT = (CSCTF_fit_R2/CSCTF_fit_R1 - 1)/delta_z_ME11_ME21
+                X_withFitLCT = (CSCTF_R2/CSCTF_R1 - 1)/delta_z_ME11_ME21
 
                 ## calculate the bending in each station
                 def phi_dir_st1_variable_GE21_pad_size(me11_phi, ge11_phi, Xvalue):
@@ -1717,64 +1710,41 @@ if __name__ == "__main__":
                 
                 
                 ## need a function that gets the pT from the inverse directions
-                directionBasedPt = 0
+                directionBasedPt_withoutFitLCT = 0
+                directionBasedPt_withFitLCT = 0
 
                 ## displaced pT assignment plots
                 if dxy <= 100:
-                  if directionBasedPt >= 10: mapTH1F["Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21"].Fill(pt)
-                  if directionBasedPt >= 15: mapTH1F["Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21"].Fill(pt)
-                  if directionBasedPt >= 20: mapTH1F["Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21"].Fill(pt)
+                  if directionBasedPt_withoutFitLCT >= 10: mapTH1F["Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_withoutFitLCT"].Fill(pt)
+                  if directionBasedPt_withoutFitLCT >= 15: mapTH1F["Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_withoutFitLCT"].Fill(pt)
+                  if directionBasedPt_withoutFitLCT >= 20: mapTH1F["Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_withoutFitLCT"].Fill(pt)
+                  if directionBasedPt_withFitLCT >= 10: mapTH1F["Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_withFitLCT"].Fill(pt)
+                  if directionBasedPt_withFitLCT >= 15: mapTH1F["Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_withFitLCT"].Fill(pt)
+                  if directionBasedPt_withFitLCT >= 20: mapTH1F["Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_withFitLCT"].Fill(pt)
                 if dxy <= 5:
-                  if directionBasedPt >= 10: mapTH1F["Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_dxy0to5"].Fill(pt)
-                  if directionBasedPt >= 15: mapTH1F["Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_dxy0to5"].Fill(pt)
-                  if directionBasedPt >= 20: mapTH1F["Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_dxy0to5"].Fill(pt)
+                  if directionBasedPt_withoutFitLCT >= 10: mapTH1F["Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_dxy0to5_withoutFitLCT"].Fill(pt)
+                  if directionBasedPt_withoutFitLCT >= 15: mapTH1F["Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_dxy0to5_withoutFitLCT"].Fill(pt)
+                  if directionBasedPt_withoutFitLCT >= 20: mapTH1F["Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_dxy0to5_withoutFitLCT"].Fill(pt)
+                  if directionBasedPt_withFitLCT >= 10: mapTH1F["Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_dxy0to5_withFitLCT"].Fill(pt)
+                  if directionBasedPt_withFitLCT >= 15: mapTH1F["Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_dxy0to5_withFitLCT"].Fill(pt)
+                  if directionBasedPt_withFitLCT >= 20: mapTH1F["Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_dxy0to5_withFitLCT"].Fill(pt)
                 if 5 < dxy  and dxy <= 50:
-                  if directionBasedPt >= 10: mapTH1F["Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_dxy5to50"].Fill(pt)
-                  if directionBasedPt >= 15: mapTH1F["Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_dxy5to50"].Fill(pt)
-                  if directionBasedPt >= 20: mapTH1F["Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_dxy5to50"].Fill(pt)
+                  if directionBasedPt_withoutFitLCT >= 10: mapTH1F["Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_dxy5to50_withoutFitLCT"].Fill(pt)
+                  if directionBasedPt_withoutFitLCT >= 15: mapTH1F["Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_dxy5to50_withoutFitLCT"].Fill(pt)
+                  if directionBasedPt_withoutFitLCT >= 20: mapTH1F["Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_dxy5to50_withoutFitLCT"].Fill(pt)
+                  if directionBasedPt_withFitLCT >= 10: mapTH1F["Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_dxy5to50_withFitLCT"].Fill(pt)
+                  if directionBasedPt_withFitLCT >= 15: mapTH1F["Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_dxy5to50_withFitLCT"].Fill(pt)
+                  if directionBasedPt_withFitLCT >= 20: mapTH1F["Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_dxy5to50_withFitLCT"].Fill(pt)
                 if 50 < dxy and dxy <= 100:
-                  if directionBasedPt >= 10: mapTH1F["Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_dxy50to100"].Fill(pt)
-                  if directionBasedPt >= 15: mapTH1F["Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_dxy50to100"].Fill(pt)
-                  if directionBasedPt >= 20: mapTH1F["Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_dxy50to100"].Fill(pt)
+                  if directionBasedPt_withoutFitLCT >= 10: mapTH1F["Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_dxy50to100_withoutFitLCT"].Fill(pt)
+                  if directionBasedPt_withoutFitLCT >= 15: mapTH1F["Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_dxy50to100_withoutFitLCT"].Fill(pt)
+                  if directionBasedPt_withoutFitLCT >= 20: mapTH1F["Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_dxy50to100_withoutFitLCT"].Fill(pt)
+                  if directionBasedPt_withFitLCT >= 10: mapTH1F["Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_dxy50to100_withFitLCT"].Fill(pt)
+                  if directionBasedPt_withFitLCT >= 15: mapTH1F["Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_dxy50to100_withFitLCT"].Fill(pt)
+                  if directionBasedPt_withFitLCT >= 20: mapTH1F["Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_dxy50to100_withFitLCT"].Fill(pt)
 
-                
-                """
-                ## alpha versions
-                alphaGEMst1_alphaGEMst2.Fill(GEM_alpha_st1 - GEM_alpha_st2)
-                if 5<=pt  and pt < 10: alphaGEMst1_alphaGEMst2_pt5to10.Fill(GEM_alpha_st1 - GEM_alpha_st2)
-                if 10<=pt and pt < 20: alphaGEMst1_alphaGEMst2_pt10to20.Fill(GEM_alpha_st1 - GEM_alpha_st2)
-                if 20<=pt:             alphaGEMst1_alphaGEMst2_pt20.Fill(GEM_alpha_st1 - GEM_alpha_st2)
 
-                if dxy <= 5:                alphaGEMst1_vs_alphaGEMst2_dxy0to5.Fill(GEM_alpha_st1, GEM_alpha_st2)
-                if 5 < dxy  and dxy <= 50:  alphaGEMst1_vs_alphaGEMst2_dxy5to50.Fill(GEM_alpha_st1, GEM_alpha_st2)
-                if 50 < dxy and dxy <= 100: alphaGEMst1_vs_alphaGEMst2_dxy50to100.Fill(GEM_alpha_st1, GEM_alpha_st2)
 
-                GenMuPt_vs_alphaGEMst1_alphaGEMst2.Fill(pt, GEM_alphab1_alphab2)
-                GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2.Fill(pt, abs_GEM_alphab1_alphab2)
-
-                GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv.Fill(pt, abs_GEM_alphab1_alphab2_inv)
-
-                if (1.6 < abs(eta_prop) and abs(eta_prop) < 1.8): GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_eta16to18.Fill(pt, abs_GEM_alphab1_alphab2_inv)
-                if (1.8 < abs(eta_prop) and abs(eta_prop) < 2.0): GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_eta18to20.Fill(pt, abs_GEM_alphab1_alphab2_inv)
-                if (2.0 < abs(eta_prop) and abs(eta_prop) < 2.2): GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_eta20to22.Fill(pt, abs_GEM_alphab1_alphab2_inv)
-
-                if (GEM_alpha_st1 != 0.): GenMuPt_vs_alphaGEMst1_inv.Fill(pt, 1./GEM_alpha_st1)
-                if (GEM_alpha_st2 != 0.): GenMuPt_vs_alphaGEMst2_inv.Fill(pt, 1./GEM_alpha_st2)
-
-                if dxy <= 5:                
-                  GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy0to5.Fill(pt, abs_GEM_alphab1_alphab2_inv)
-                  if (GEM_alpha_st1 != 0.): GenMuPt_vs_alphaGEMst1_inv_dxy0to5.Fill(pt, 1./GEM_alpha_st1)
-                  if (GEM_alpha_st2 != 0.): GenMuPt_vs_alphaGEMst2_inv_dxy0to5.Fill(pt, 1./GEM_alpha_st2)
-                if 5 < dxy  and dxy <= 50:  
-                  GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy5to50.Fill(pt, abs_GEM_alphab1_alphab2_inv)
-                  if (GEM_alpha_st1 != 0.): GenMuPt_vs_alphaGEMst1_inv_dxy5to50.Fill(pt, 1./GEM_alpha_st1)
-                  if (GEM_alpha_st2 != 0.): GenMuPt_vs_alphaGEMst2_inv_dxy5to50.Fill(pt, 1./GEM_alpha_st2)
-                if 50 < dxy and dxy <= 100: 
-                  GenMuPt_vs_abs_alphaGEMst1_alphaGEMst2_inv_dxy50to100.Fill(pt, abs_GEM_alphab1_alphab2_inv)
-                  if (GEM_alpha_st1 != 0.): GenMuPt_vs_alphaGEMst1_inv_dxy50to100.Fill(pt, 1./GEM_alpha_st1)
-                  if (GEM_alpha_st2 != 0.): GenMuPt_vs_alphaGEMst2_inv_dxy50to100.Fill(pt, 1./GEM_alpha_st2)
-
-                """
               ## End of direction based pT assignment method  
 
 

@@ -251,7 +251,7 @@ if __name__ == "__main__":
     for pp in ME1ME2ME3ParityCases:
       for qq in etaRanges:
         addPlotToMapTH2F("deltay12_vs_deltay23_eta" + qq + "_" + pp, 30,0.,30.,30,0.,30)
-        addPlotToMapTH2F("GenMuPt_vs_deltaDeltaY_eta" + qq + "_" + pp, 60,0.,60.,60,0.,60)
+        addPlotToMapTH2F("GenMuPt_vs_inv_deltaDeltaY123_eta" + qq + "_" + pp, 60,0.,60.,100,0.,1)
 
     for pp in dxyRanges:
       addPlotToMapTH1F("GenMuPt_ME1_ME2_ME3" + pp, 60,0.,60.)
@@ -1831,7 +1831,7 @@ if __name__ == "__main__":
                 proportionalityFactor = get_proptionality_factor(etaPartition, parity)
                 deltaDeltaY123 = abs(deltay23 - proportionalityFactor * deltay12)
 
-                mapTH2F["GenMuPt_vs_deltaDeltaY_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity]].Fill(pt, 1./deltaDeltaY123)
+                mapTH2F["GenMuPt_vs_inv_deltaDeltaY123_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity]].Fill(pt, 1./deltaDeltaY123)
 
                 
                 ## get the reconstruction pT value
@@ -2355,7 +2355,7 @@ if __name__ == "__main__":
       for qq in etaRanges:
         makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta" + qq + "_" + pp, ";#Delta Y_{12} [cm]; #Delta Y_{13} [cm]")
         make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta" + qq + "_" + pp, ";#Delta Y_{12} [cm]; #Delta Y_{13} [cm]", True, True)
-        makeSimplePlotMap(mapTH2F, "GenMuPt_vs_deltaDeltaY_eta" + qq + "_" + pp, "; p_{T} [GeV]; #Delta #Delta Y_{123} [cm]")
+        makeSimplePlotMap(mapTH2F, "GenMuPt_vs_inv_deltaDeltaY123_eta" + qq + "_" + pp, "; p_{T} [GeV]; 1/#Delta#Delta Y_{123} [cm]")
 
 
     ## plots with DTs

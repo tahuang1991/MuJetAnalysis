@@ -38,15 +38,18 @@ if __name__ == "__main__":
   #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v17/160806_230658/0000/')
   #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v18/160806_234830/0000/')
   #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v23/160812_090122/0000/')
-  ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v26/160816_221742/0000/')
-
+  #ch = addfiles(ch, dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v26/160816_221742/0000/')
+  dirname = '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v28/160818_200220/0000/'
+  
+  ch = addfiles(ch, dirname=dirname)
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160818"
+  label = "DisplacedL1MuTrigger_20160818_v2"
   targetDir = label + "/"
   
   verbose = False
   printExtraInfo = False
+  processRPC = False
   
   ## copy index file
   import shutil
@@ -178,8 +181,8 @@ if __name__ == "__main__":
     for pp in ME1ME2ParityCases:
       for qq in etaRangesGE11:
         for rr in padSizes:
-          addPlotToMapTH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_eta" + qq + "_" + pp + "_" + rr + "_withoutLCTFit", 60,0.,60.,75,0.,150)
-          addPlotToMapTH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_eta" + qq + "_" + pp + "_" + rr + "_withLCTFit", 60,0.,60.,75,0.,150)
+          addPlotToMapTH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_eta" + qq + "_" + pp + "_" + rr + "_withoutLCTFit", 60,0.,60.,100,0.,1)
+          addPlotToMapTH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_eta" + qq + "_" + pp + "_" + rr + "_withLCTFit", 60,0.,60.,100,0.,1)
 
     ## CSC position resolution plots
     for qq in etaRangesGE11:
@@ -854,39 +857,42 @@ if __name__ == "__main__":
             ## Check for matches -- summary
             L1Mu_DTTF_index  = treeHits.L1Mu_DTTF_index[L1Mu_index]
             L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[L1Mu_index]
-            L1Mu_RPCb_index  = treeHits.L1Mu_RPCb_index[L1Mu_index]
-            L1Mu_RPCf_index  = treeHits.L1Mu_RPCf_index[L1Mu_index]
+            if processRPC:
+              L1Mu_RPCb_index  = treeHits.L1Mu_RPCb_index[L1Mu_index]
+              L1Mu_RPCf_index  = treeHits.L1Mu_RPCf_index[L1Mu_index]
 
             m_CSCTF = L1Mu_CSCTF_index != 99 and L1Mu_CSCTF_index != -1
             m_DTTF  = L1Mu_DTTF_index  != 99 and L1Mu_DTTF_index  != -1
-            m_RPCb  = L1Mu_RPCb_index  != 99 and L1Mu_RPCb_index  != -1
-            m_RPCf  = L1Mu_RPCf_index  != 99 and L1Mu_RPCf_index  != -1
+            m_RPCb = False
+            m_RPCf = False
+            if processRPC:
+              m_RPCb  = L1Mu_RPCb_index  != 99 and L1Mu_RPCb_index  != -1
+              m_RPCf  = L1Mu_RPCf_index  != 99 and L1Mu_RPCf_index  != -1
 
             n_CSCTF = not m_CSCTF
             n_DTTF  = not m_DTTF
             n_RPCb  = not m_RPCb
             n_RPCf  = not m_RPCf
 
-            
             if n_CSCTF and n_DTTF and n_RPCb and n_RPCf: nL1MuNotMatched +=1
-
+            
             if m_CSCTF and n_DTTF and n_RPCb and n_RPCf: nL1MuMatched_CSCTF += 1
             if n_CSCTF and m_DTTF and n_RPCb and n_RPCf: nL1MuMatched_DTTF  += 1
             if n_CSCTF and n_DTTF and m_RPCb and n_RPCf: nL1MuMatched_RPCb  += 1
             if n_CSCTF and n_DTTF and n_RPCb and m_RPCf: nL1MuMatched_RPCf  += 1
-
+              
             if m_CSCTF and m_DTTF and n_RPCb and n_RPCf: nL1MuMatched_DTTF_CSCTF += 1
             if n_CSCTF and n_DTTF and m_RPCb and m_RPCf: nL1MuMatched_RPCb_RPCf  += 1
             if n_CSCTF and m_DTTF and m_RPCb and n_RPCf: nL1MuMatched_DTTF_RPCb  += 1
             if n_CSCTF and m_DTTF and n_RPCb and m_RPCf: nL1MuMatched_DTTF_RPCf  += 1
             if m_CSCTF and n_DTTF and m_RPCb and n_RPCf: nL1MuMatched_CSCTF_RPCb += 1
             if m_CSCTF and n_DTTF and n_RPCb and m_RPCf: nL1MuMatched_CSCTF_RPCf += 1
-
+              
             if m_CSCTF and m_DTTF and m_RPCb and n_RPCf: nL1MuMatched_CSCTF_DTTF_RPCb += 1
             if m_CSCTF and m_DTTF and n_RPCb and m_RPCf: nL1MuMatched_CSCTF_DTTF_RPCf += 1
             if n_CSCTF and m_DTTF and m_RPCb and m_RPCf: nL1MuMatched_DTTF_RPCb_RPCf  += 1
             if m_CSCTF and n_DTTF and m_RPCb and m_RPCf: nL1MuMatched_CSCTF_RPCb_RPCf += 1
- 
+            
             if m_CSCTF and m_DTTF and m_RPCb and m_RPCf: nL1MuMatched_DTTF_CSCTF_RPCb_RPCf +=1
 
 
@@ -1604,7 +1610,7 @@ if __name__ == "__main__":
               ok_direction_based_endcap = ok_GE11 and ok_GE21 and ok_CSCTF_st1 and ok_CSCTF_st2
 
               ## all necessary elements for the bending angle algorithm are present!
-              if ok_direction_based_endcap and abs(eta_prop)>=1.6 abs(eta_prop)<=2.2:
+              if ok_direction_based_endcap and abs(eta_prop)>=1.6 and abs(eta_prop)<=2.2:
                 nL1MuMatched_GE11_ME11_GE21_ME21 += 1
 
                 ## denominators for efficiency plots
@@ -1798,8 +1804,8 @@ if __name__ == "__main__":
                 proportionalityFactor_withoutLCTFit = get_proptionality_factor_withoutLCTFit(etaPartition, parity)
                 proportionalityFactor_withLCTFit = get_proptionality_factor_withLCTFit(etaPartition, parity)
 
-                deltaDeltaY123_withoutLCTFit = abs(deltay23_withoutLCTFit - proportionalityFactor * deltay12_withoutLCTFit)
-                deltaDeltaY123_withLCTFit = abs(deltay23_withLCTFit - proportionalityFactor * deltay12_withLCTFit)
+                deltaDeltaY123_withoutLCTFit = abs(deltay23_withoutLCTFit - proportionalityFactor_withoutLCTFit * deltay12_withoutLCTFit)
+                deltaDeltaY123_withLCTFit    = abs(deltay23_withLCTFit    - proportionalityFactor_withLCTFit    * deltay12_withLCTFit)
 
                 mapTH2F["GenMuPt_vs_inv_deltaDeltaY123_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity] + "_withoutLCTFit"].Fill(pt, 1./deltaDeltaY123_withoutLCTFit)
                 mapTH2F["GenMuPt_vs_deltaDeltaY123_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity] + "_withoutLCTFit"].Fill(pt, deltaDeltaY123_withoutLCTFit)
@@ -1880,11 +1886,11 @@ if __name__ == "__main__":
                   print
 
             ## Matched to RPCb
-            if verbose:
+            if verbose and processRPC:
               print "\t\t>>>>INFO: Number of RPCbs", treeHits.nRPCb
               print
 
-            if m_RPCb:
+            if m_RPCb and processRPC:
               if verbose:
                 print "\t\t>>>>INFO: Matching RPCb with index", L1Mu_RPCb_index 
               RPCb_pt = treeHits.RPCb_pt[L1Mu_RPCb_index]
@@ -1924,11 +1930,11 @@ if __name__ == "__main__":
 
 
             ## Matched to RPCf
-            if verbose:
+            if verbose and processRPC:
               print "\t\t>>>>INFO: Number of RPCfs", treeHits.nRPCf
               print
 
-            if m_RPCf:
+            if m_RPCf and processRPC:
               if verbose:
                 print "\t\t>>>>INFO: Matching RPCf with index", L1Mu_RPCf_index 
               RPCf_pt = treeHits.RPCf_pt[L1Mu_RPCf_index]

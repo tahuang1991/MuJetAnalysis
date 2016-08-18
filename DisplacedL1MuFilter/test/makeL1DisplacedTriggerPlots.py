@@ -94,6 +94,15 @@ if __name__ == "__main__":
     def addPlotToMapTH2F(name,nBin1,minBin1,maxBin1,nBin2,minBin2,maxBin2):
       mapTH2F[name] = TH2F(name,"",nBin1,minBin1,maxBin1,nBin2,minBin2,maxBin2)
 
+    ## ranges
+    ME1ME2ParityCases = ['ee','eo','oe','oo']
+    ME1ME2ME3ParityCases = ['oee','ooo','eee','eoo']
+    dxyRanges = ['','_dxy0to5','_dxy5to50','_dxy50to100']
+    L1MuPtCuts = ['10','15','20']
+    padSizes = ['pad1','pad2','pad4','pad8']
+    etaRanges = ['12to14','14to16','16to18','18to20','20to22','22to24']
+    etaRangesGE11 = ['16to18','18to20','20to22']
+
     ## declare plots
     nDT_stubs = TH1F("nDT_stubs","", 16,0.,16)
     nDT_stubs_vs_dxy = TH2F("nDT_stubs_vs_dxy","", 16,0.,16,100,0,100)
@@ -159,45 +168,19 @@ if __name__ == "__main__":
     slope_GE21_even = TH1F("slope_GE21_even","", 200,-25.,75.)
     slope_GE21_odd = TH1F("slope_GE21_odd","", 200,-25.,75.)
 
-    GenMuPt_GE11_ME11_GE21_ME21 = TH1F("GenMuPt_GE11_ME11_GE21_ME21","", 60,0.,60)
-    GenMuPt_GE11_ME11_GE21_ME21_dxy0to5 = TH1F("GenMuPt_GE11_ME11_GE21_ME21_dxy0to5","", 60,0.,60)
-    GenMuPt_GE11_ME11_GE21_ME21_dxy5to50 = TH1F("GenMuPt_GE11_ME11_GE21_ME21_dxy5to50","", 60,0.,60)
-    GenMuPt_GE11_ME11_GE21_ME21_dxy50to100 = TH1F("GenMuPt_GE11_ME11_GE21_ME21_dxy50to100","", 60,0.,60)
-
-    Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21 = TH1F("Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21","", 60,0.,60)
-    Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21 = TH1F("Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21","", 60,0.,60)
-    Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21 = TH1F("Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21","", 60,0.,60)
-
-    Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_dxy0to5 = TH1F("Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_dxy0to5","", 60,0.,60)
-    Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_dxy0to5 = TH1F("Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_dxy0to5","", 60,0.,60)
-    Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_dxy0to5 = TH1F("Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_dxy0to5","", 60,0.,60)
-
-    Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_dxy5to50 = TH1F("Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_dxy5to50","", 60,0.,60)
-    Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_dxy5to50 = TH1F("Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_dxy5to50","", 60,0.,60)
-    Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_dxy5to50 = TH1F("Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_dxy5to50","", 60,0.,60)
-
-    Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_dxy50to100 = TH1F("Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_dxy50to100","", 60,0.,60)
-    Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_dxy50to100 = TH1F("Displaced_L1MuPt15_GenMuPt_GE11_ME11_GE21_ME21_dxy50to100","", 60,0.,60)
-    Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_dxy50to100 = TH1F("Displaced_L1MuPt20_GenMuPt_GE11_ME11_GE21_ME21_dxy50to100","", 60,0.,60)
-
-    dxyRanges = ['','_dxy0to5','_dxy5to50','_dxy50to100']
-    L1MuPtCuts = ['10','15','20']
+    ## direction based pT trigger efficiency plots
     for pp in dxyRanges:
       addPlotToMapTH1F("GenMuPt_GE11_ME11_GE21_ME21" + pp, 60,0.,60.)
       for qq in L1MuPtCuts:
         addPlotToMapTH1F("Displaced_L1MuPt" + qq + "_GenMuPt_GE11_ME11_GE21_ME21" + pp, 60,0.,60.)
 
-    evenOddCases = ['ee','eo','oe','oo']
-    etaRanges = ['16to18','18to20','20to22']
-    padSizes = ['pad1','pad2','pad4','pad8']
-    
-    for pp in evenOddCases:
-      for qq in etaRanges:
+    for pp in ME1ME2ParityCases:
+      for qq in etaRangesGE11:
         for rr in padSizes:
           addPlotToMapTH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta" + qq + "_" + pp + "_" + rr, 60,0.,60.,75,0.,150)
 
     ## CSC position resolution plots
-    for qq in etaRanges:
+    for qq in etaRangesGE11:
       addPlotToMapTH1F("csc_pos_sh_lct_ME1b_" + qq, 100,-0.002,0.002)
       addPlotToMapTH1F("csc_pos_sh_lct_ME21_" + qq, 100,-0.003,0.003)
       addPlotToMapTH1F("csc_pos_sh_fit_ME1b_" + qq, 200,-0.002,0.002)
@@ -263,21 +246,17 @@ if __name__ == "__main__":
     csc_pos_sh_vs_fit_ME21_18to20_odd = TH2F("csc_pos_sh_vs_fit_ME21_18to20_odd","", 300,-3.2,3.2,300,-3.2,3.2)
     csc_pos_sh_vs_fit_ME21_20to22_odd = TH2F("csc_pos_sh_vs_fit_ME21_20to22_odd","", 300,-3.2,3.2,300,-3.2,3.2)
 
-    ## plots for position based pT measurement
-    parityCases = ['eee','eoo','oee','ooo']
-    etaRanges = ['12to14','14to16','16to18','18to20','20to22','22to24']
-    
-    for pp in parityCases:
-      for qq in etaRanges:
-          addPlotToMapTH2F("deltay12_vs_deltay23_eta" + qq + "_" + pp, 60,0.,60.,60,0.,60)
 
-    dxyRanges = ['','_dxy0to5','_dxy5to50','_dxy50to100']
-    L1MuPtCuts = ['10','15','20']
+    ## plots for position based pT measurement
+    for pp in ME1ME2ME3ParityCases:
+      for qq in etaRanges:
+        addPlotToMapTH2F("deltay12_vs_deltay23_eta" + qq + "_" + pp, 30,0.,30.,30,0.,30)
+        addPlotToMapTH2F("GenMuPt_vs_deltaDeltaY_eta" + qq + "_" + pp, 60,0.,60.,60,0.,60)
+
     for pp in dxyRanges:
       addPlotToMapTH1F("GenMuPt_ME1_ME2_ME3" + pp, 60,0.,60.)
       for qq in L1MuPtCuts:
         addPlotToMapTH1F("Displaced_L1MuPt" + qq + "_GenMuPt_ME1_ME2_ME3" + pp, 60,0.,60.)
-
 
 
     ## DT plots
@@ -1568,6 +1547,8 @@ if __name__ == "__main__":
                 print "\t\tCSCTF_phi4", CSCTF_phi4
                 print "\t\tCSCTF_ch1", CSCTF_ch1 
                 print "\t\tCSCTF_ch2", CSCTF_ch2
+                print "\t\tCSCTF_ch3", CSCTF_ch3 
+                print "\t\tCSCTF_ch4", CSCTF_ch4
                 print "\t\tCSCTF_z1", CSCTF_z1 
                 print "\t\tCSCTF_z2", CSCTF_z2
 
@@ -1814,17 +1795,15 @@ if __name__ == "__main__":
               ## End of direction based pT assignment method  
 
 
+              ## get the parity
+              parity = get_parity(CSCTF_isEven1, CSCTF_isEven2, CSCTF_isEven3, CSCTF_isEven4)
+
               ## stub positions
               ok_position_based_endcap =  ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3
-              if ok_position_based_endcap:
+              if ok_position_based_endcap and 0 <= parity and parity <= 3 and abs(eta_prop)>=1.2 and abs(eta_prop)<2.4:
                 nL1MuMatched_ME1_ME2_ME3 += 1
 
-                ## get the parity
-                parityCases = ['eee','eoo','oee','ooo']
-                parity = get_parity(CSCTF_isEven1, CSCTF_isEven2, CSCTF_isEven3, CSCTF_isEven4)
-                
                 etaPartition = get_eta_partition(eta_prop)
-                etaRanges = ['12to14','14to16','16to18','18to20','20to22','22to24']
                 
                 ### IMPORTANT ###
                 ## check whether to use the LCT positions without comparator fit or with comparator fit
@@ -1844,10 +1823,16 @@ if __name__ == "__main__":
                   
                 
                 ## get the deltaYs
-                deltay12, deltay13 = deltay12_deltay23(CSCTF_x1, CSCTF_y1, CSCTF_phi1,
+                deltay12, deltay23 = deltay12_deltay23(CSCTF_x1, CSCTF_y1, CSCTF_phi1,
                                                        CSCTF_x2, CSCTF_y2, CSCTF_phi2,
                                                        CSCTF_x3, CSCTF_y3, CSCTF_phi3)
-                mapTH2F["deltay12_vs_deltay23_eta" + etaRanges[etaPartition] + "_" + parityCases[parity]].Fill(deltay12, deltay13)
+                mapTH2F["deltay12_vs_deltay23_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity]].Fill(deltay12, deltay23)
+                
+                proportionalityFactor = get_proptionality_factor(etaPartition, parity)
+                deltaDeltaY123 = abs(deltay23 - proportionalityFactor * deltay12)
+
+                mapTH2F["GenMuPt_vs_deltaDeltaY_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity]].Fill(pt, 1./deltaDeltaY123)
+
                 
                 ## get the reconstruction pT value
                 positionPt = pt_from_position(CSCTF_x1, CSCTF_y1, CSCTF_z1, CSCTF_phi1, CSCTF_isEven1,
@@ -2169,6 +2154,48 @@ if __name__ == "__main__":
       SetOwnership( hist2, True )
 
 
+    def make2DMedianPlotMap(thisMap, key, title, plotColz = True, doFit = False):
+      c = TCanvas("c","c",800,600)
+      c.Clear()    
+      gStyle.SetOptStat(1111111)
+      gStyle.SetOptFit(1111);
+      gStyle.SetTitleBorderSize(0);
+      gStyle.SetPadLeftMargin(0.126);
+      gStyle.SetPadRightMargin(0.04);
+      gStyle.SetPadTopMargin(0.06);
+      gStyle.SetPadBottomMargin(0.13);
+      gPad.SetTickx(1)
+      gPad.SetTicky(1)
+      hist2 = thisMap[key]
+      hist2.SetTitle(title)
+      hist2.Draw()
+      g = get1DHistogramMedianY(hist2)
+      #g.SetMarkerColor(kRed)
+      g.SetTitle(title)
+      if doFit:
+        #print g.GetXaxis().GetXmin(), g.GetXaxis().GetXmax()
+        p1fit = TF1("p1fit", "[0]*x", 0, 20)
+        #p1fit.SetParameter(0,0)
+        g.Fit(p1fit,"RQ")
+        #npar = g.GetFunction("p1fit").GetNpar()
+        
+        #p0 = g.GetFunction("p1fit").GetParameter("p0")
+        #p1 = g.GetFunction("p1fit").GetParameter("p1")
+        #p0_err = g.GetFunction("p1fit").GetParError(0)
+        #p1_err = g.GetFunction("p1fit").GetParError(1)
+
+        #print "[", p0, ", ", p1, ", ", p2, ", ", p3, "]"
+        #print "[", p0_err, ", ", p1_err, ", ", p2_err, ", ", p3_err, "]"
+       
+      gPad.Update()
+      if plotColz:
+        hist2.Draw("same")
+      g.Draw("p same")
+      gPad.Update()
+      c.SaveAs(targetDir + key + "_fit.png")
+      #SetOwnership( g, True )
+      #SetOwnership( hist2, True )
+
     ### close make2DMedianPlot
 
       
@@ -2324,12 +2351,11 @@ if __name__ == "__main__":
 
 
     ## Plots for position based pT measurement (CSC only!!!)
-    for pp in ['eee','eoo','oee','ooo']:
-      for qq in ['12to14','14to16','16to18','18to20','20to22','22to24']:
+    for pp in ME1ME2ME3ParityCases:
+      for qq in etaRanges:
         makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta" + qq + "_" + pp, ";#Delta Y_{12} [cm]; #Delta Y_{13} [cm]")
-
-
-    
+        make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta" + qq + "_" + pp, ";#Delta Y_{12} [cm]; #Delta Y_{13} [cm]", True, True)
+        makeSimplePlotMap(mapTH2F, "GenMuPt_vs_deltaDeltaY_eta" + qq + "_" + pp, "; p_{T} [GeV]; #Delta #Delta Y_{123} [cm]")
 
 
     ## plots with DTs

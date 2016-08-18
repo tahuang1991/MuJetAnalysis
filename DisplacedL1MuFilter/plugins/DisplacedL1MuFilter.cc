@@ -1211,7 +1211,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       auto gp_csc = match_sh.simHitPositionKeyLayer(d);
       if(verbose) std::cout << detId 
                             << " n CSC hits " << simhits.size() 
-                            << " key phi " << csc_phi 
+                            << " key phi " << gp_csc.phi() 
                             << endl;
       if (detId.station()==1) {
         event_.CSCTF_sim_phi1[k] = gp_csc.phi();

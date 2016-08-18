@@ -39,6 +39,14 @@ def get_eta_partition(eta):
   return etaPartition
  
 
+def get_eta_partition_GE11(eta):
+
+  etaPartition = -1
+  if   (abs(eta)>=1.6 and abs(eta)<1.8): etaPartition = 0
+  elif (abs(eta)>=1.8 and abs(eta)<2.0): etaPartition = 1
+  elif (abs(eta)>=2.0 and abs(eta)<2.2): etaPartition = 2
+  return etaPartition
+
 def deltay12_deltay23(x1, y1, phi1,
                       x2, y2, phi2,
                       x3, y3, phi3):
@@ -70,6 +78,20 @@ def get_parity(isEven1, isEven2, isEven3, isEven4):
   if     isEven1 and not isEven2 and not isEven3: totalParity = 3
   return totalParity
 
+
+def get_parity_ME11_ME21(isEven1, isEven2):
+  ## parity cases
+  ## 0. even even
+  ## 1. even odd
+  ## 2. odd even
+  ## 3. even odd
+  
+  totalParity = -1
+  if     isEven1 and     isEven2: totalParity = 0
+  if     isEven1 and not isEven2: totalParity = 1
+  if not isEven1 and     isEven2: totalParity = 2
+  if not isEven1 and not isEven2: totalParity = 3
+  return totalParity
 
 #______________________________________________________________________________                                               
 
@@ -160,12 +182,20 @@ dict_prop_slope_intercept_DIGIL1 = {
 }
 
 
-#______________________________________________________________________________                                               
+#______________________________________________________________________________                       
 def get_proptionality_factor(etaPartition, parity):
   return dict_prop_slope_intercept_DIGIL1[parity][etaPartition][0]
 
-#______________________________________________________________________________                                               
 
+#______________________________________________________________________________               
+def get_proptionality_factor_withoutLCTFit(etaPartition, parity):
+  return 1
+
+#______________________________________________________________________________               
+def get_proptionality_factor_withLCTFit(etaPartition, parity):
+  return 1
+
+#______________________________________________________________________________               
 def pt_from_position(x1, y1, z1, phi1, isEven1,
                      x2, y2, z2, phi2, isEven2,
                      x3, y3, z3, phi3, isEven3,

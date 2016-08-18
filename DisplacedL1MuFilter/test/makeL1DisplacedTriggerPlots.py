@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160817"
+  label = "DisplacedL1MuTrigger_20160818"
   targetDir = label + "/"
   
   verbose = False
@@ -172,12 +172,14 @@ if __name__ == "__main__":
     for pp in dxyRanges:
       addPlotToMapTH1F("GenMuPt_GE11_ME11_GE21_ME21" + pp, 60,0.,60.)
       for qq in L1MuPtCuts:
-        addPlotToMapTH1F("Displaced_L1MuPt" + qq + "_GenMuPt_GE11_ME11_GE21_ME21" + pp, 60,0.,60.)
+        addPlotToMapTH1F("Displaced_L1MuPt" + qq + "_GenMuPt_GE11_ME11_GE21_ME21" + pp + "_withoutLCTFit", 60,0.,60.)
+        addPlotToMapTH1F("Displaced_L1MuPt" + qq + "_GenMuPt_GE11_ME11_GE21_ME21" + pp + "_withLCTFit", 60,0.,60.)
 
     for pp in ME1ME2ParityCases:
       for qq in etaRangesGE11:
         for rr in padSizes:
-          addPlotToMapTH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta" + qq + "_" + pp + "_" + rr, 60,0.,60.,75,0.,150)
+          addPlotToMapTH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_eta" + qq + "_" + pp + "_" + rr + "_withoutLCTFit", 60,0.,60.,75,0.,150)
+          addPlotToMapTH2F("GenMuPt_vs_abs_phiGEMst1_phiGEMst2_eta" + qq + "_" + pp + "_" + rr + "_withLCTFit", 60,0.,60.,75,0.,150)
 
     ## CSC position resolution plots
     for qq in etaRangesGE11:
@@ -250,13 +252,21 @@ if __name__ == "__main__":
     ## plots for position based pT measurement
     for pp in ME1ME2ME3ParityCases:
       for qq in etaRanges:
-        addPlotToMapTH2F("deltay12_vs_deltay23_eta" + qq + "_" + pp, 30,0.,30.,30,0.,30)
-        addPlotToMapTH2F("GenMuPt_vs_inv_deltaDeltaY123_eta" + qq + "_" + pp, 60,0.,60.,100,0.,1)
+        ## plots without position LCT fit
+        addPlotToMapTH2F("deltay12_vs_deltay23_eta" + qq + "_" + pp + "_withoutLCTFit", 30,-30.,30.,30,-30.,30)
+        addPlotToMapTH2F("GenMuPt_vs_inv_deltaDeltaY123_eta" + qq + "_" + pp + "_withoutLCTFit", 60,0.,60.,100,0.,10)
+        addPlotToMapTH2F("GenMuPt_vs_deltaDeltaY123_eta" + qq + "_" + pp + "_withoutLCTFit", 60,0.,60.,100,0.,1)
+        ## same plots with position LCT fit
+        addPlotToMapTH2F("deltay12_vs_deltay23_eta" + qq + "_" + pp + "_withLCTFit", 30,-30.,30.,30,-30.,30)
+        addPlotToMapTH2F("GenMuPt_vs_inv_deltaDeltaY123_eta" + qq + "_" + pp + "_withLCTFit", 60,0.,60.,100,0.,10)
+        addPlotToMapTH2F("GenMuPt_vs_deltaDeltaY123_eta" + qq + "_" + pp + "_withLCTFit", 60,0.,60.,100,0.,1)
+
 
     for pp in dxyRanges:
       addPlotToMapTH1F("GenMuPt_ME1_ME2_ME3" + pp, 60,0.,60.)
       for qq in L1MuPtCuts:
-        addPlotToMapTH1F("Displaced_L1MuPt" + qq + "_GenMuPt_ME1_ME2_ME3" + pp, 60,0.,60.)
+        addPlotToMapTH1F("Displaced_L1MuPt" + qq + "_GenMuPt_ME1_ME2_ME3_withoutLCTFit" + pp, 60,0.,60.)
+        addPlotToMapTH1F("Displaced_L1MuPt" + qq + "_GenMuPt_ME1_ME2_ME3_withLCTFit" + pp, 60,0.,60.)
 
 
     ## DT plots
@@ -1291,6 +1301,26 @@ if __name__ == "__main__":
                 CSCTF_fit_phi3 = treeHits.CSCTF_fit_phi3[GEN_SIM_index]
                 CSCTF_fit_phi4 = treeHits.CSCTF_fit_phi4[GEN_SIM_index]
 
+                CSCTF_fit_x1 = treeHits.CSCTF_fit_x1[GEN_SIM_index]
+                CSCTF_fit_x2 = treeHits.CSCTF_fit_x2[GEN_SIM_index]
+                CSCTF_fit_x3 = treeHits.CSCTF_fit_x3[GEN_SIM_index]
+                CSCTF_fit_x4 = treeHits.CSCTF_fit_x4[GEN_SIM_index]
+
+                CSCTF_fit_y1 = treeHits.CSCTF_fit_y1[GEN_SIM_index]
+                CSCTF_fit_y2 = treeHits.CSCTF_fit_y2[GEN_SIM_index]
+                CSCTF_fit_y3 = treeHits.CSCTF_fit_y3[GEN_SIM_index]
+                CSCTF_fit_y4 = treeHits.CSCTF_fit_y4[GEN_SIM_index]
+
+                CSCTF_fit_z1 = treeHits.CSCTF_fit_z1[GEN_SIM_index]
+                CSCTF_fit_z2 = treeHits.CSCTF_fit_z2[GEN_SIM_index]
+                CSCTF_fit_z3 = treeHits.CSCTF_fit_z3[GEN_SIM_index]
+                CSCTF_fit_z4 = treeHits.CSCTF_fit_z4[GEN_SIM_index]
+
+                CSCTF_fit_R1 = treeHits.CSCTF_fit_R1[GEN_SIM_index]
+                CSCTF_fit_R2 = treeHits.CSCTF_fit_R2[GEN_SIM_index]
+                CSCTF_fit_R3 = treeHits.CSCTF_fit_R3[GEN_SIM_index]
+                CSCTF_fit_R4 = treeHits.CSCTF_fit_R4[GEN_SIM_index]
+
                 ## check if the recovered stations are there
                 ok_CSCTF_rec_st1 = CSCTF_rec_phi1 != 99
                 ok_CSCTF_rec_st2 = CSCTF_rec_phi2 != 99
@@ -1574,7 +1604,7 @@ if __name__ == "__main__":
               ok_direction_based_endcap = ok_GE11 and ok_GE21 and ok_CSCTF_st1 and ok_CSCTF_st2
 
               ## all necessary elements for the bending angle algorithm are present!
-              if ok_direction_based_endcap:
+              if ok_direction_based_endcap and abs(eta_prop)>=1.6 abs(eta_prop)<=2.2:
                 nL1MuMatched_GE11_ME11_GE21_ME21 += 1
 
                 ## denominators for efficiency plots
@@ -1586,16 +1616,6 @@ if __name__ == "__main__":
                 def getBestValue(value1, value2):
                   if value1 != 99: return value1
                   else:            return value2
-
-                ## check whether to use LCT angle without or with fitting to comparator digis
-                CSCTF_dir_phi1 = CSCTF_phi1
-                CSCTF_dir_phi2 = CSCTF_phi2
-                
-                useAnglesFromFitToComparatorDigis = False
-                if useAnglesFromFitToComparatorDigis:
-                  CSCTF_dir_phi1 = CSCTF_fit_phi1
-                  CSCTF_dir_phi2 = CSCTF_fit_phi2
-
 
                 ## get GEM phi positions...
                 GE11_phi = getBestValue(GE11_phi_L1, GE11_phi_L2)
@@ -1610,8 +1630,11 @@ if __name__ == "__main__":
                 GE21_z = getBestValue(GE21_z_L1, GE21_z_L2)
 
                 ## calculate GEM-CSC bending angles...
-                delta_phi_GE11_ME11 = deltaPhi2(CSCTF_dir_phi1, GE11_phi)
-                delta_phi_GE21_ME21 = deltaPhi2(CSCTF_dir_phi2, GE21_phi)
+                delta_phi_GE11_ME11_withoutFitLCT = deltaPhi2(CSCTF_phi1, GE11_phi)
+                delta_phi_GE21_ME21_withoutFitLCT = deltaPhi2(CSCTF_phi2, GE21_phi)
+
+                delta_phi_GE11_ME11_withFitLCT = deltaPhi2(CSCTF_fit_phi1, GE11_phi)
+                delta_phi_GE21_ME21_withFitLCT = deltaPhi2(CSCTF_fit_phi2, GE21_phi)
 
                 if verbose:
                   print "\t\tdelta_phi_GE11_ME11", delta_phi_GE11_ME11
@@ -1624,118 +1647,72 @@ if __name__ == "__main__":
                   print "\t\tGEM_z1", GE11_z
                   print "\t\tGEM_z2", GE21_z
                 
-                ## these variable do not depend on the thickness of a pad
+                ## these variable do not depend on the thickness of a pad or the LCT position fit
                 delta_z_GE11_ME11 = abs(CSCTF_z1 - GE11_z)
                 delta_z_GE21_ME21 = abs(CSCTF_z2 - GE21_z)
                 delta_z_ME11_ME21 = abs(CSCTF_z1 - CSCTF_z2)
-                X = (CSCTF_R2/CSCTF_R1 - 1)/delta_z_ME11_ME21
 
-                def phi_dir_st1_variable_GE21_pad_size(me11_phi, ge11_phi, me21_phi, ge21_phi):
+                ## calculate X values - depend on the LCT position fit
+                X_withoutFitLCT = (CSCTF_R2/CSCTF_R1 - 1)/delta_z_ME11_ME21
+                X_withFitLCT = (CSCTF_fit_R2/CSCTF_fit_R1 - 1)/delta_z_ME11_ME21
+
+                ## calculate the bending in each station
+                def phi_dir_st1_variable_GE21_pad_size(me11_phi, ge11_phi, Xvalue):
                   numerator = TMath.Sin( deltaPhi2(me11_phi, ge11_phi) )
-                  denominator = 1. - TMath.Cos( deltaPhi2(me21_phi, ge21_phi) ) - delta_z_GE11_ME11 * X
+                  denominator = 1. - TMath.Cos( deltaPhi2(me11_phi, ge11_phi) ) - delta_z_GE11_ME11 * Xvalue
                   return ge11_phi - TMath.ATan( numerator / denominator)
 
-                def phi_dir_st2_variable_GE21_pad_size(me11_phi, ge11_phi, me21_phi, ge21_phi):
-                  numerator = TMath.Sin( deltaPhi2(me11_phi, ge11_phi) )
-                  denominator = 1 - TMath.Cos( deltaPhi2(me21_phi, ge21_phi) ) - (delta_z_GE21_ME21 * X / (delta_z_ME11_ME21 * X+1 ) )
+                def phi_dir_st2_variable_GE21_pad_size(me11_phi, me21_phi, ge21_phi, Xvalue):
+                  numerator = TMath.Sin( deltaPhi2(me21_phi, ge21_phi) )
+                  denominator = 1 - TMath.Cos( deltaPhi2(me21_phi, ge21_phi) ) - (delta_z_GE21_ME21 * Xvalue / (delta_z_ME11_ME21 * Xvalue + 1 ) )
                   return ge21_phi - TMath.ATan( numerator / denominator )
 
-                phi_dir_st1_GE21_pad1 = phi_dir_st1_variable_GE21_pad_size(CSCTF_dir_phi1, GE11_phi, CSCTF_dir_phi2, GE21_pad1_phi)
-                phi_dir_st1_GE21_pad2 = phi_dir_st1_variable_GE21_pad_size(CSCTF_dir_phi1, GE11_phi, CSCTF_dir_phi2, GE21_pad2_phi)
-                phi_dir_st1_GE21_pad4 = phi_dir_st1_variable_GE21_pad_size(CSCTF_dir_phi1, GE11_phi, CSCTF_dir_phi2, GE21_pad4_phi)
-                phi_dir_st1_GE21_pad8 = phi_dir_st1_variable_GE21_pad_size(CSCTF_dir_phi1, GE11_phi, CSCTF_dir_phi2, GE21_pad8_phi)
 
-                phi_dir_st2_GE21_pad1 = phi_dir_st2_variable_GE21_pad_size(CSCTF_dir_phi1, GE11_phi, CSCTF_dir_phi2, GE21_pad1_phi)
-                phi_dir_st2_GE21_pad2 = phi_dir_st2_variable_GE21_pad_size(CSCTF_dir_phi1, GE11_phi, CSCTF_dir_phi2, GE21_pad2_phi)
-                phi_dir_st2_GE21_pad4 = phi_dir_st2_variable_GE21_pad_size(CSCTF_dir_phi1, GE11_phi, CSCTF_dir_phi2, GE21_pad4_phi)
-                phi_dir_st2_GE21_pad8 = phi_dir_st2_variable_GE21_pad_size(CSCTF_dir_phi1, GE11_phi, CSCTF_dir_phi2, GE21_pad8_phi)
-                
-                delta_phi_dir_GE21_pad1 = abs( deltaPhi2( phi_dir_st1_GE21_pad1, phi_dir_st2_GE21_pad1) )
-                delta_phi_dir_GE21_pad2 = abs( deltaPhi2( phi_dir_st1_GE21_pad2, phi_dir_st2_GE21_pad2) )
-                delta_phi_dir_GE21_pad4 = abs( deltaPhi2( phi_dir_st1_GE21_pad4, phi_dir_st2_GE21_pad4) )
-                delta_phi_dir_GE21_pad8 = abs( deltaPhi2( phi_dir_st1_GE21_pad8, phi_dir_st2_GE21_pad8) )
+                ## bending in station 1,2 for different pad sizes and different LCT position resolutions
+                phi_dir_st1_withoutFitLCT = phi_dir_st1_variable_GE21_pad_size(CSCTF_phi1, GE11_phi, X_withoutFitLCT)
+                phi_dir_st1_withFitLCT = phi_dir_st1_variable_GE21_pad_size(CSCTF_fit_phi1, GE11_phi, X_withFitLCT)
 
-                if delta_phi_dir_GE21_pad1 != 0: inv_delta_phi_dir_GE21_pad1 = 1./delta_phi_dir_GE21_pad1
-                else:                            inv_delta_phi_dir_GE21_pad1 = 140
-                if delta_phi_dir_GE21_pad2 != 0: inv_delta_phi_dir_GE21_pad2 = 1./delta_phi_dir_GE21_pad2
-                else:                            inv_delta_phi_dir_GE21_pad2 = 140
-                if delta_phi_dir_GE21_pad4 != 0: inv_delta_phi_dir_GE21_pad4 = 1./delta_phi_dir_GE21_pad4
-                else:                            inv_delta_phi_dir_GE21_pad4 = 140
-                if delta_phi_dir_GE21_pad8 != 0: inv_delta_phi_dir_GE21_pad8 = 1./delta_phi_dir_GE21_pad8
-                else:                            inv_delta_phi_dir_GE21_pad8 = 140
+                phi_dir_st2_GE21_pad1_withoutFitLCT = phi_dir_st2_variable_GE21_pad_size(CSCTF_phi1, CSCTF_phi2, GE21_pad1_phi, X_withoutFitLCT)
+                phi_dir_st2_GE21_pad2_withoutFitLCT = phi_dir_st2_variable_GE21_pad_size(CSCTF_phi1, CSCTF_phi2, GE21_pad2_phi, X_withoutFitLCT)
+                phi_dir_st2_GE21_pad4_withoutFitLCT = phi_dir_st2_variable_GE21_pad_size(CSCTF_phi1, CSCTF_phi2, GE21_pad4_phi, X_withoutFitLCT)
+                phi_dir_st2_GE21_pad8_withoutFitLCT = phi_dir_st2_variable_GE21_pad_size(CSCTF_phi1, CSCTF_phi2, GE21_pad8_phi, X_withoutFitLCT)
 
-                if CSCTF_isEven1 and CSCTF_isEven2:
-                  if (1.6 < abs(eta_prop) and abs(eta_prop) < 1.8): 
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta16to18_ee_pad1"].Fill(pt, inv_delta_phi_dir_GE21_pad1)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta16to18_ee_pad2"].Fill(pt, inv_delta_phi_dir_GE21_pad2)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta16to18_ee_pad4"].Fill(pt, inv_delta_phi_dir_GE21_pad4)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta16to18_ee_pad8"].Fill(pt, inv_delta_phi_dir_GE21_pad8)
-                  if (1.8 < abs(eta_prop) and abs(eta_prop) < 2.0): 
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta18to20_ee_pad1"].Fill(pt, inv_delta_phi_dir_GE21_pad1)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta18to20_ee_pad2"].Fill(pt, inv_delta_phi_dir_GE21_pad2)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta18to20_ee_pad4"].Fill(pt, inv_delta_phi_dir_GE21_pad4)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta18to20_ee_pad8"].Fill(pt, inv_delta_phi_dir_GE21_pad8)
-                  if (2.0 < abs(eta_prop) and abs(eta_prop) < 2.2): 
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta20to22_ee_pad1"].Fill(pt, inv_delta_phi_dir_GE21_pad1)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta20to22_ee_pad2"].Fill(pt, inv_delta_phi_dir_GE21_pad2)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta20to22_ee_pad4"].Fill(pt, inv_delta_phi_dir_GE21_pad4)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta20to22_ee_pad8"].Fill(pt, inv_delta_phi_dir_GE21_pad8)
+                phi_dir_st2_GE21_pad1_withFitLCT = phi_dir_st2_variable_GE21_pad_size(CSCTF_fit_phi1, CSCTF_fit_phi2, GE21_pad1_phi, X_withFitLCT)
+                phi_dir_st2_GE21_pad2_withFitLCT = phi_dir_st2_variable_GE21_pad_size(CSCTF_fit_phi1, CSCTF_fit_phi2, GE21_pad2_phi, X_withFitLCT)
+                phi_dir_st2_GE21_pad4_withFitLCT = phi_dir_st2_variable_GE21_pad_size(CSCTF_fit_phi1, CSCTF_fit_phi2, GE21_pad4_phi, X_withFitLCT)
+                phi_dir_st2_GE21_pad8_withFitLCT = phi_dir_st2_variable_GE21_pad_size(CSCTF_fit_phi1, CSCTF_fit_phi2, GE21_pad8_phi, X_withFitLCT)
 
-                if CSCTF_isEven1 and CSCTF_isOdd2:
-                  if (1.6 < abs(eta_prop) and abs(eta_prop) < 1.8): 
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta16to18_eo_pad1"].Fill(pt, inv_delta_phi_dir_GE21_pad1)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta16to18_eo_pad2"].Fill(pt, inv_delta_phi_dir_GE21_pad2)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta16to18_eo_pad4"].Fill(pt, inv_delta_phi_dir_GE21_pad4)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta16to18_eo_pad8"].Fill(pt, inv_delta_phi_dir_GE21_pad8)
-                  if (1.8 < abs(eta_prop) and abs(eta_prop) < 2.0): 
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta18to20_eo_pad1"].Fill(pt, inv_delta_phi_dir_GE21_pad1)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta18to20_eo_pad2"].Fill(pt, inv_delta_phi_dir_GE21_pad2)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta18to20_eo_pad4"].Fill(pt, inv_delta_phi_dir_GE21_pad4)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta18to20_eo_pad8"].Fill(pt, inv_delta_phi_dir_GE21_pad8)
-                  if (2.0 < abs(eta_prop) and abs(eta_prop) < 2.2): 
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta20to22_eo_pad1"].Fill(pt, inv_delta_phi_dir_GE21_pad1)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta20to22_eo_pad2"].Fill(pt, inv_delta_phi_dir_GE21_pad2)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta20to22_eo_pad4"].Fill(pt, inv_delta_phi_dir_GE21_pad4)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta20to22_eo_pad8"].Fill(pt, inv_delta_phi_dir_GE21_pad8)
 
-                if CSCTF_isOdd1 and CSCTF_isEven2:
-                  if (1.6 < abs(eta_prop) and abs(eta_prop) < 1.8): 
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta16to18_oe_pad1"].Fill(pt, inv_delta_phi_dir_GE21_pad1)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta16to18_oe_pad2"].Fill(pt, inv_delta_phi_dir_GE21_pad2)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta16to18_oe_pad4"].Fill(pt, inv_delta_phi_dir_GE21_pad4)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta16to18_oe_pad8"].Fill(pt, inv_delta_phi_dir_GE21_pad8)
-                  if (1.8 < abs(eta_prop) and abs(eta_prop) < 2.0): 
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta18to20_oe_pad1"].Fill(pt, inv_delta_phi_dir_GE21_pad1)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta18to20_oe_pad2"].Fill(pt, inv_delta_phi_dir_GE21_pad2)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta18to20_oe_pad4"].Fill(pt, inv_delta_phi_dir_GE21_pad4)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta18to20_oe_pad8"].Fill(pt, inv_delta_phi_dir_GE21_pad8)
-                  if (2.0 < abs(eta_prop) and abs(eta_prop) < 2.2): 
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta20to22_oe_pad1"].Fill(pt, inv_delta_phi_dir_GE21_pad1)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta20to22_oe_pad2"].Fill(pt, inv_delta_phi_dir_GE21_pad2)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta20to22_oe_pad4"].Fill(pt, inv_delta_phi_dir_GE21_pad4)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta20to22_oe_pad8"].Fill(pt, inv_delta_phi_dir_GE21_pad8)
+                ## difference in bending for different pad sizes and different LCT position resolutions
+                delta_phi_dir_GE21_pad1_withoutFitLCT = abs( deltaPhi2( phi_dir_st1_withoutFitLCT, phi_dir_st2_GE21_pad1_withoutFitLCT) )
+                delta_phi_dir_GE21_pad2_withoutFitLCT = abs( deltaPhi2( phi_dir_st1_withoutFitLCT, phi_dir_st2_GE21_pad2_withoutFitLCT) )
+                delta_phi_dir_GE21_pad4_withoutFitLCT = abs( deltaPhi2( phi_dir_st1_withoutFitLCT, phi_dir_st2_GE21_pad4_withoutFitLCT) )
+                delta_phi_dir_GE21_pad8_withoutFitLCT = abs( deltaPhi2( phi_dir_st1_withoutFitLCT, phi_dir_st2_GE21_pad8_withoutFitLCT) )
 
-                if CSCTF_isOdd1 and CSCTF_isOdd2:
-                  if (1.6 < abs(eta_prop) and abs(eta_prop) < 1.8): 
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta16to18_oo_pad1"].Fill(pt, inv_delta_phi_dir_GE21_pad1)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta16to18_oo_pad2"].Fill(pt, inv_delta_phi_dir_GE21_pad2)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta16to18_oo_pad4"].Fill(pt, inv_delta_phi_dir_GE21_pad4)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta16to18_oo_pad8"].Fill(pt, inv_delta_phi_dir_GE21_pad8)
-                  if (1.8 < abs(eta_prop) and abs(eta_prop) < 2.0): 
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta18to20_oo_pad1"].Fill(pt, inv_delta_phi_dir_GE21_pad1)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta18to20_oo_pad2"].Fill(pt, inv_delta_phi_dir_GE21_pad2)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta18to20_oo_pad4"].Fill(pt, inv_delta_phi_dir_GE21_pad4)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta18to20_oo_pad8"].Fill(pt, inv_delta_phi_dir_GE21_pad8)
-                  if (2.0 < abs(eta_prop) and abs(eta_prop) < 2.2): 
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta20to22_oo_pad1"].Fill(pt, inv_delta_phi_dir_GE21_pad1)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta20to22_oo_pad2"].Fill(pt, inv_delta_phi_dir_GE21_pad2)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta20to22_oo_pad4"].Fill(pt, inv_delta_phi_dir_GE21_pad4)
-                    mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta20to22_oo_pad8"].Fill(pt, inv_delta_phi_dir_GE21_pad8)
+                delta_phi_dir_GE21_pad1_withFitLCT = abs( deltaPhi2( phi_dir_st1_withoutFitLCT, phi_dir_st2_GE21_pad1_withFitLCT) )
+                delta_phi_dir_GE21_pad2_withFitLCT = abs( deltaPhi2( phi_dir_st1_withoutFitLCT, phi_dir_st2_GE21_pad2_withFitLCT) )
+                delta_phi_dir_GE21_pad4_withFitLCT = abs( deltaPhi2( phi_dir_st1_withoutFitLCT, phi_dir_st2_GE21_pad4_withFitLCT) )
+                delta_phi_dir_GE21_pad8_withFitLCT = abs( deltaPhi2( phi_dir_st1_withoutFitLCT, phi_dir_st2_GE21_pad8_withFitLCT) )
+
+                ## only fill the plots that apply!!
+                parity = get_parity_ME11_ME21(CSCTF_isEven1, CSCTF_isEven2)
+                etaPart = get_eta_partition_GE11(eta_prop)
+
+                mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_" + etaRangesGE11[etaPart] + "_" +  ME1ME2ParityCases[parity] + "_pad1_withoutFitLCT"].Fill(pt, delta_phi_dir_GE21_pad1_withoutFitLCT)
+                mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_" + etaRangesGE11[etaPart] + "_" +  ME1ME2ParityCases[parity] + "_pad2_withoutFitLCT"].Fill(pt, delta_phi_dir_GE21_pad2_withoutFitLCT)
+                mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_" + etaRangesGE11[etaPart] + "_" +  ME1ME2ParityCases[parity] + "_pad4_withoutFitLCT"].Fill(pt, delta_phi_dir_GE21_pad4_withoutFitLCT)
+                mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_" + etaRangesGE11[etaPart] + "_" +  ME1ME2ParityCases[parity] + "_pad8_withoutFitLCT"].Fill(pt, delta_phi_dir_GE21_pad8_withoutFitLCT)
+
+                mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_" + etaRangesGE11[etaPart] + "_" +  ME1ME2ParityCases[parity] + "_pad1_withFitLCT"].Fill(pt, delta_phi_dir_GE21_pad1_withFitLCT)
+                mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_" + etaRangesGE11[etaPart] + "_" +  ME1ME2ParityCases[parity] + "_pad2_withFitLCT"].Fill(pt, delta_phi_dir_GE21_pad2_withFitLCT)
+                mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_" + etaRangesGE11[etaPart] + "_" +  ME1ME2ParityCases[parity] + "_pad4_withFitLCT"].Fill(pt, delta_phi_dir_GE21_pad4_withFitLCT)
+                mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_" + etaRangesGE11[etaPart] + "_" +  ME1ME2ParityCases[parity] + "_pad8_withFitLCT"].Fill(pt, delta_phi_dir_GE21_pad8_withFitLCT)
 
                 
-
+                
                 ## need a function that gets the pT from the inverse directions
                 directionBasedPt = 0
+
                 ## displaced pT assignment plots
                 if dxy <= 100:
                   if directionBasedPt >= 10: mapTH1F["Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21"].Fill(pt)
@@ -1805,78 +1782,81 @@ if __name__ == "__main__":
 
                 etaPartition = get_eta_partition(eta_prop)
                 
-                ### IMPORTANT ###
-                ## check whether to use the LCT positions without comparator fit or with comparator fit
-                CSC_pos_x1 = CSCTF_x1; CSC_pos_y1 = CSCTF_y1; CSC_pos_z1 = CSCTF_z1; CSC_pos_phi1 = CSCTF_phi1
-                CSC_pos_x2 = CSCTF_x2; CSC_pos_y2 = CSCTF_y2; CSC_pos_z2 = CSCTF_z2; CSC_pos_phi2 = CSCTF_phi2
-                CSC_pos_x3 = CSCTF_x3; CSC_pos_y3 = CSCTF_y3; CSC_pos_z3 = CSCTF_z3; CSC_pos_phi3 = CSCTF_phi3
-                CSC_pos_x4 = CSCTF_x4; CSC_pos_y4 = CSCTF_y4; CSC_pos_z4 = CSCTF_z4; CSC_pos_phi4 = CSCTF_phi4
-
-                usePositionsFromComparatorFit = True
-                if usePositionsFromComparatorFit:
-                  ## this section needs to be completed
-                  ## I don't have a fit yet in global X-global Y of the comparator positions
-                  CSC_pos_x1 = CSCTF_x1; CSC_pos_y1 = CSCTF_y1; CSC_pos_z1 = CSCTF_z1; CSC_pos_phi1 = CSCTF_phi1
-                  CSC_pos_x2 = CSCTF_x2; CSC_pos_y2 = CSCTF_y2; CSC_pos_z2 = CSCTF_z2; CSC_pos_phi2 = CSCTF_phi2
-                  CSC_pos_x3 = CSCTF_x3; CSC_pos_y3 = CSCTF_y3; CSC_pos_z3 = CSCTF_z3; CSC_pos_phi3 = CSCTF_phi3
-                  CSC_pos_x4 = CSCTF_x4; CSC_pos_y4 = CSCTF_y4; CSC_pos_z4 = CSCTF_z4; CSC_pos_phi4 = CSCTF_phi4
-                  
-                
                 ## get the deltaYs
-                deltay12, deltay23 = deltay12_deltay23(CSCTF_x1, CSCTF_y1, CSCTF_phi1,
-                                                       CSCTF_x2, CSCTF_y2, CSCTF_phi2,
-                                                       CSCTF_x3, CSCTF_y3, CSCTF_phi3)
-                mapTH2F["deltay12_vs_deltay23_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity]].Fill(deltay12, deltay23)
+                deltay12_withoutLCTFit, deltay23_withoutLCTFit = deltay12_deltay23(CSCTF_x1, CSCTF_y1, CSCTF_phi1,
+                                                                                   CSCTF_x2, CSCTF_y2, CSCTF_phi2,
+                                                                                   CSCTF_x3, CSCTF_y3, CSCTF_phi3)
+
+                deltay12_withLCTFit, deltay23_withLCTFit = deltay12_deltay23(CSCTF_fit_x1, CSCTF_fit_y1, CSCTF_fit_phi1,
+                                                                             CSCTF_fit_x2, CSCTF_fit_y2, CSCTF_fit_phi2,
+                                                                             CSCTF_fit_x3, CSCTF_fit_y3, CSCTF_fit_phi3)
+                ## only use pT>10GeV muons for this study
+                if pt > 10:
+                  mapTH2F["deltay12_vs_deltay23_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity] + "_withoutLCTFit"].Fill(deltay12_withoutLCTFit, deltay23_withoutLCTFit)
+                  mapTH2F["deltay12_vs_deltay23_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity] + "_withLCTFit"].Fill(deltay12_withLCTFit, deltay23_withLCTFit)
                 
-                proportionalityFactor = get_proptionality_factor(etaPartition, parity)
-                deltaDeltaY123 = abs(deltay23 - proportionalityFactor * deltay12)
+                proportionalityFactor_withoutLCTFit = get_proptionality_factor_withoutLCTFit(etaPartition, parity)
+                proportionalityFactor_withLCTFit = get_proptionality_factor_withLCTFit(etaPartition, parity)
 
-                mapTH2F["GenMuPt_vs_inv_deltaDeltaY123_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity]].Fill(pt, 1./deltaDeltaY123)
+                deltaDeltaY123_withoutLCTFit = abs(deltay23_withoutLCTFit - proportionalityFactor * deltay12_withoutLCTFit)
+                deltaDeltaY123_withLCTFit = abs(deltay23_withLCTFit - proportionalityFactor * deltay12_withLCTFit)
 
+                mapTH2F["GenMuPt_vs_inv_deltaDeltaY123_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity] + "_withoutLCTFit"].Fill(pt, 1./deltaDeltaY123_withoutLCTFit)
+                mapTH2F["GenMuPt_vs_deltaDeltaY123_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity] + "_withoutLCTFit"].Fill(pt, deltaDeltaY123_withoutLCTFit)
+
+                mapTH2F["GenMuPt_vs_inv_deltaDeltaY123_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity] + "_withLCTFit"].Fill(pt, 1./deltaDeltaY123_withLCTFit)
+                mapTH2F["GenMuPt_vs_deltaDeltaY123_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity] + "_withLCTFit"].Fill(pt, deltaDeltaY123_withLCTFit)
                 
                 ## get the reconstruction pT value
-                positionPt = pt_from_position(CSCTF_x1, CSCTF_y1, CSCTF_z1, CSCTF_phi1, CSCTF_isEven1,
-                                              CSCTF_x2, CSCTF_y2, CSCTF_z2, CSCTF_phi2, CSCTF_isEven2,
-                                              CSCTF_x3, CSCTF_y3, CSCTF_z3, CSCTF_phi3, CSCTF_isEven3,
-                                              CSCTF_x4, CSCTF_y4, CSCTF_z4, CSCTF_phi4, CSCTF_isEven4,
-                                              eta_prop)
-                
-                if dxy <= 100:              
+                positionPt_withoutLCTFit = pt_from_position(CSCTF_x1, CSCTF_y1, CSCTF_z1, CSCTF_phi1, CSCTF_isEven1,
+                                                            CSCTF_x2, CSCTF_y2, CSCTF_z2, CSCTF_phi2, CSCTF_isEven2,
+                                                            CSCTF_x3, CSCTF_y3, CSCTF_z3, CSCTF_phi3, CSCTF_isEven3,
+                                                            CSCTF_x4, CSCTF_y4, CSCTF_z4, CSCTF_phi4, CSCTF_isEven4,
+                                                            eta_prop)
+
+                positionPt_withLCTFit = pt_from_position(CSCTF_fit_x1, CSCTF_fit_y1, CSCTF_fit_z1, CSCTF_fit_phi1, CSCTF_isEven1,
+                                                         CSCTF_fit_x2, CSCTF_fit_y2, CSCTF_fit_z2, CSCTF_fit_phi2, CSCTF_isEven2,
+                                                         CSCTF_fit_x3, CSCTF_fit_y3, CSCTF_fit_z3, CSCTF_fit_phi3, CSCTF_isEven3,
+                                                         CSCTF_fit_x4, CSCTF_fit_y4, CSCTF_fit_z4, CSCTF_fit_phi4, CSCTF_isEven4,
+                                                         eta_prop)
+
+                if dxy <= 100:
                   mapTH1F["GenMuPt_ME1_ME2_ME3"].Fill(pt)
-                  if positionPt>=10: 
-                    mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3"].Fill(pt)
-                  if positionPt>=15: 
-                    mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3"].Fill(pt)
-                  if positionPt>=20: 
-                    mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3"].Fill(pt)
+                  
+                  if positionPt_withoutLCTFit>=10: 
+                    mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_withoutLCTFit"].Fill(pt)
+                  if positionPt_withoutLCTFit>=15: 
+                    mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_withoutLCTFit"].Fill(pt)
+                  if positionPt_withoutLCTFit>=20: 
+                    mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_withoutLCTFit"].Fill(pt)
 
                 if dxy <= 5:                
                   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy0to5"].Fill(pt)               
-                  if positionPt>=10: 
-                    mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy0to5"].Fill(pt)
-                  if positionPt>=15: 
-                    mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy0to5"].Fill(pt)
-                  if positionPt>=20: 
-                    mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy0to5"].Fill(pt)
+                  if positionPt_withoutLCTFit>=10: 
+                    mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy0to5_withoutLCTFit"].Fill(pt)
+                  if positionPt_withoutLCTFit>=15: 
+                    mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy0to5_withoutLCTFit"].Fill(pt)
+                  if positionPt_withoutLCTFit>=20: 
+                    mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy0to5_withoutLCTFit"].Fill(pt)
 
 
                 if 5 < dxy  and dxy <= 50:  
                   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy5to50"].Fill(pt)  
-                  if positionPt>=10: 
-                    mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy5to50"].Fill(pt)
-                  if positionPt>=15: 
-                    mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy5to50"].Fill(pt)
-                  if positionPt>=20: 
-                    mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy5to50"].Fill(pt)
+                  if positionPt_withoutLCTFit>=10: 
+                    mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy5to50_withoutLCTFit"].Fill(pt)
+                  if positionPt_withoutLCTFit>=15: 
+                    mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy5to50_withoutLCTFit"].Fill(pt)
+                  if positionPt_withoutLCTFit>=20: 
+                    mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy5to50_withoutLCTFit"].Fill(pt)
 
                 if 50 < dxy and dxy <= 100: 
                   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy50to100"].Fill(pt)
-                  if positionPt>=10: 
-                    mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy50to100"].Fill(pt)
-                  if positionPt>=15: 
-                    mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy50to100"].Fill(pt)
-                  if positionPt>=20: 
-                    mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy50to100"].Fill(pt)
+                  if positionPt_withoutLCTFit>=10: 
+                    mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy50to100_withoutLCTFit"].Fill(pt)
+                  if positionPt_withoutLCTFit>=15: 
+                    mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy50to100_withoutLCTFit"].Fill(pt)
+                  if positionPt_withoutLCTFit>=20: 
+                    mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy50to100_withoutLCTFit"].Fill(pt)
 
                 
                 
@@ -2174,7 +2154,7 @@ if __name__ == "__main__":
       g.SetTitle(title)
       if doFit:
         #print g.GetXaxis().GetXmin(), g.GetXaxis().GetXmax()
-        p1fit = TF1("p1fit", "[0]*x", 0, 20)
+        p1fit = TF1("p1fit", "[0]*x", g.GetXaxis().GetXmin(), g.GetXaxis().GetXmax())
         #p1fit.SetParameter(0,0)
         g.Fit(p1fit,"RQ")
         #npar = g.GetFunction("p1fit").GetNpar()
@@ -2353,9 +2333,10 @@ if __name__ == "__main__":
     ## Plots for position based pT measurement (CSC only!!!)
     for pp in ME1ME2ME3ParityCases:
       for qq in etaRanges:
-        makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta" + qq + "_" + pp, ";#Delta Y_{12} [cm]; #Delta Y_{13} [cm]")
-        make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta" + qq + "_" + pp, ";#Delta Y_{12} [cm]; #Delta Y_{13} [cm]", True, True)
-        makeSimplePlotMap(mapTH2F, "GenMuPt_vs_inv_deltaDeltaY123_eta" + qq + "_" + pp, "; p_{T} [GeV]; 1/#Delta#Delta Y_{123} [cm]")
+        makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta" + qq + "_" + pp, ";#Delta Y_{12} [cm]; #Delta Y_{23} [cm]")
+        make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta" + qq + "_" + pp, ";#Delta Y_{12} [cm]; #Delta Y_{23} [cm]", True, True)
+        makeSimplePlotMap(mapTH2F, "GenMuPt_vs_inv_deltaDeltaY123_eta" + qq + "_" + pp, "; p_{T} [GeV]; 1/#Delta#Delta Y_{123} [GeV]")
+        makeSimplePlotMap(mapTH2F, "GenMuPt_vs_inv_deltaDeltaY123_eta" + qq + "_" + pp, "; p_{T} [GeV]; #Delta#Delta Y_{123} [1/GeV]")
 
 
     ## plots with DTs
@@ -2467,8 +2448,8 @@ if __name__ == "__main__":
     for pp in evenOddCases:
       for qq in etaRanges:
         for rr in padSizes:
-          plotTitle = "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_inv_eta" + qq + "_" + pp + "_" + rr
-          make2DMedianPlot(mapTH2F[plotTitle], targetDir + plotTitle + ".png", ";GEN Mu p_{T} [GeV];1/|#Delta#Phi_{dir}(GE11,GE21)|")
+          plotTitle = "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_eta" + qq + "_" + pp + "_" + rr + "_withoutLCTFit"
+          make2DMedianPlot(mapTH2F[plotTitle], targetDir + plotTitle + ".png", ";GEN Mu p_{T} [GeV]; |#Delta#Phi_{dir}(GE11,GE21)|")
 
           
     """
@@ -2664,36 +2645,36 @@ if __name__ == "__main__":
 
     
     ## position based pT efficiency plots (ME1 ME2 ME3)
-    makeEffPlot(TEfficiency(mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy0to5"],    mapTH1F["GenMuPt_ME1_ME2_ME3_dxy0to5"]),
-                TEfficiency(mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy5to50"],   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy5to50"]),
-                TEfficiency(mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy50to100"], mapTH1F["GenMuPt_ME1_ME2_ME3_dxy50to100"]),
-                targetDir + "Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy0to100.png", True)
+    makeEffPlot(TEfficiency(mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy0to5_withoutLCTFit"],    mapTH1F["GenMuPt_ME1_ME2_ME3_dxy0to5"]),
+                TEfficiency(mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy5to50_withoutLCTFit"],   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy5to50"]),
+                TEfficiency(mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy50to100_withoutLCTFit"], mapTH1F["GenMuPt_ME1_ME2_ME3_dxy50to100"]),
+                targetDir + "Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy0to100_withoutLCTFit.png", True)
 
-    makeEffPlot(TEfficiency(mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy0to5"],    mapTH1F["GenMuPt_ME1_ME2_ME3_dxy0to5"]),
-                TEfficiency(mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy5to50"],   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy5to50"]),
-                TEfficiency(mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy50to100"], mapTH1F["GenMuPt_ME1_ME2_ME3_dxy50to100"]),
-                targetDir + "Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy0to100.png", True)
+    makeEffPlot(TEfficiency(mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy0to5_withoutLCTFit"],    mapTH1F["GenMuPt_ME1_ME2_ME3_dxy0to5"]),
+                TEfficiency(mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy5to50_withoutLCTFit"],   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy5to50"]),
+                TEfficiency(mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy50to100_withoutLCTFit"], mapTH1F["GenMuPt_ME1_ME2_ME3_dxy50to100"]),
+                targetDir + "Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy0to100_withoutLCTFit.png", True)
 
-    makeEffPlot(TEfficiency(mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy0to5"],    mapTH1F["GenMuPt_ME1_ME2_ME3_dxy0to5"]),
-                TEfficiency(mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy5to50"],   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy5to50"]),
-                TEfficiency(mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy50to100"], mapTH1F["GenMuPt_ME1_ME2_ME3_dxy50to100"]),
-                targetDir + "Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy0to100.png", True)
+    makeEffPlot(TEfficiency(mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy0to5_withoutLCTFit"],    mapTH1F["GenMuPt_ME1_ME2_ME3_dxy0to5"]),
+                TEfficiency(mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy5to50_withoutLCTFit"],   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy5to50"]),
+                TEfficiency(mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy50to100_withoutLCTFit"], mapTH1F["GenMuPt_ME1_ME2_ME3_dxy50to100"]),
+                targetDir + "Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy0to100_withoutLCTFit.png", True)
 
     
-    makeEffPlot(TEfficiency(mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy0to5"],    mapTH1F["GenMuPt_ME1_ME2_ME3_dxy0to5"]),
-                TEfficiency(mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy5to50"],   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy5to50"]),
+    makeEffPlot(TEfficiency(mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy0to5_withoutLCTFit"],    mapTH1F["GenMuPt_ME1_ME2_ME3_dxy0to5"]),
+                TEfficiency(mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy5to50_withoutLCTFit"],   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy5to50"]),
                 None,
-                targetDir + "Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy0to50.png", True)
+                targetDir + "Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy0to50_withoutLCTFit.png", True)
 
-    makeEffPlot(TEfficiency(mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy0to5"],    mapTH1F["GenMuPt_ME1_ME2_ME3_dxy0to5"]),
-                TEfficiency(mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy5to50"],   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy5to50"]),
+    makeEffPlot(TEfficiency(mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy0to5_withoutLCTFit"],    mapTH1F["GenMuPt_ME1_ME2_ME3_dxy0to5"]),
+                TEfficiency(mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy5to50_withoutLCTFit"],   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy5to50"]),
                 None,
-                targetDir + "Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy0to50.png", True)
+                targetDir + "Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy0to50_withoutLCTFit.png", True)
 
-    makeEffPlot(TEfficiency(mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy0to5"],    mapTH1F["GenMuPt_ME1_ME2_ME3_dxy0to5"]),
-                TEfficiency(mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy5to50"],   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy5to50"]),
+    makeEffPlot(TEfficiency(mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy0to5_withoutLCTFit"],    mapTH1F["GenMuPt_ME1_ME2_ME3_dxy0to5"]),
+                TEfficiency(mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy5to50_withoutLCTFit"],   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy5to50"]),
                 None,
-                targetDir + "Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy0to50.png", True)
+                targetDir + "Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy0to50_withoutLCTFit.png", True)
 
 
 

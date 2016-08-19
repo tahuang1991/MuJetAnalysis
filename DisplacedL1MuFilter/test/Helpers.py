@@ -270,9 +270,6 @@ def pt_from_deltaDeltaY123(deltaDeltaY123, eta, parity, doFit):
     deltaDeltaY123_dict['eta22to24_eoo_withLCTFit_y'] =  [19.8, 8.8, 9.97, 8.320000000000002, 9.700000000000003, 10.320000000000002, 9.82, 8.44, 9.8, 7.740000000000001, 6.16, 6.3500000000000005, 5.1000000000000005, 3.95, 6.800000000000001, 3.9200000000000004, 4.0, 1.9900000000000002, 6.760000000000001, 1.1600000000000001, 0.7600000000000001, 0.9600000000000001, 1.3600000000000003]
 
 
-
-
-
     ## find the LUT corresponding to this particular case
     if doFit:
         fitString = '_withLCTFit'
@@ -452,17 +449,117 @@ dict_prop_slope_intercept_DIGIL1 = {
 
 
 #______________________________________________________________________________                       
-def get_proptionality_factor(etaPartition, parity):
-  return dict_prop_slope_intercept_DIGIL1[parity][etaPartition][0]
+#def get_proptionality_factor(etaPartition, parity):
+#  return dict_prop_slope_intercept_DIGIL1[parity][etaPartition][0]
 
 
 #______________________________________________________________________________               
-def get_proptionality_factor_withoutLCTFit(etaPartition, parity):
-  return 1
+def get_proptionality_factor(eta, parity, doFit):
 
-#______________________________________________________________________________               
-def get_proptionality_factor_withLCTFit(etaPartition, parity):
-  return 1
+    deltay12_deltay23_dict = {}
+    deltay12_deltay23_dict['eta12to14_oee_withoutLCTFit'] =  1.24093338795
+
+    deltay12_deltay23_dict['eta12to14_oee_withLCTFit'] =  1.24345925746
+
+    deltay12_deltay23_dict['eta14to16_oee_withoutLCTFit'] =  0.985343125081
+
+    deltay12_deltay23_dict['eta14to16_oee_withLCTFit'] =  0.996786931391
+
+    deltay12_deltay23_dict['eta16to18_oee_withoutLCTFit'] =  0.649008222638
+
+    deltay12_deltay23_dict['eta16to18_oee_withLCTFit'] =  0.612735069982
+
+    deltay12_deltay23_dict['eta18to20_oee_withoutLCTFit'] =  0.693893747346
+
+    deltay12_deltay23_dict['eta18to20_oee_withLCTFit'] =  0.646849268748
+
+    deltay12_deltay23_dict['eta20to22_oee_withoutLCTFit'] =  0.653451986689
+
+    deltay12_deltay23_dict['eta20to22_oee_withLCTFit'] =  0.648791133269
+
+    deltay12_deltay23_dict['eta22to24_oee_withoutLCTFit'] =  0.39981815831
+
+    deltay12_deltay23_dict['eta22to24_oee_withLCTFit'] =  0.65227592956
+
+    deltay12_deltay23_dict['eta12to14_ooo_withoutLCTFit'] =  0.566279610466
+
+    deltay12_deltay23_dict['eta12to14_ooo_withLCTFit'] =  0.595337665398
+
+    deltay12_deltay23_dict['eta14to16_ooo_withoutLCTFit'] =  0.648109631647
+
+    deltay12_deltay23_dict['eta14to16_ooo_withLCTFit'] =  0.641572722721
+
+    deltay12_deltay23_dict['eta16to18_ooo_withoutLCTFit'] =  0.27801149125
+
+    deltay12_deltay23_dict['eta16to18_ooo_withLCTFit'] =  0.367291740957
+
+    deltay12_deltay23_dict['eta18to20_ooo_withoutLCTFit'] =  0.395440951724
+
+    deltay12_deltay23_dict['eta18to20_ooo_withLCTFit'] =  0.339494032878
+
+    deltay12_deltay23_dict['eta20to22_ooo_withoutLCTFit'] =  0.354853768589
+
+    deltay12_deltay23_dict['eta20to22_ooo_withLCTFit'] =  0.435025594247
+
+    deltay12_deltay23_dict['eta22to24_ooo_withoutLCTFit'] =  0.258801845574
+
+    deltay12_deltay23_dict['eta22to24_ooo_withLCTFit'] =  0.371844515888
+
+    deltay12_deltay23_dict['eta12to14_eee_withoutLCTFit'] =  0.874401225533
+
+    deltay12_deltay23_dict['eta12to14_eee_withLCTFit'] =  0.873201636932
+
+    deltay12_deltay23_dict['eta14to16_eee_withoutLCTFit'] =  0.954990074112
+
+    deltay12_deltay23_dict['eta14to16_eee_withLCTFit'] =  0.974947072903
+
+    deltay12_deltay23_dict['eta16to18_eee_withoutLCTFit'] =  0.577270453699
+
+    deltay12_deltay23_dict['eta16to18_eee_withLCTFit'] =  0.475733733424
+
+    deltay12_deltay23_dict['eta18to20_eee_withoutLCTFit'] =  0.501028888355
+
+    deltay12_deltay23_dict['eta18to20_eee_withLCTFit'] =  0.517802457469
+
+    deltay12_deltay23_dict['eta20to22_eee_withoutLCTFit'] =  0.625483882833
+
+    deltay12_deltay23_dict['eta20to22_eee_withLCTFit'] =  0.605904784532
+
+    deltay12_deltay23_dict['eta22to24_eee_withoutLCTFit'] =  0.486760894818
+
+    deltay12_deltay23_dict['eta22to24_eee_withLCTFit'] =  0.580738182562
+
+    deltay12_deltay23_dict['eta12to14_eoo_withoutLCTFit'] =  0.510408080937
+
+    deltay12_deltay23_dict['eta12to14_eoo_withLCTFit'] =  0.550568509674
+
+    deltay12_deltay23_dict['eta14to16_eoo_withoutLCTFit'] =  0.602579544015
+
+    deltay12_deltay23_dict['eta14to16_eoo_withLCTFit'] =  0.556562043487
+
+    deltay12_deltay23_dict['eta16to18_eoo_withoutLCTFit'] =  0.333701210218
+
+    deltay12_deltay23_dict['eta16to18_eoo_withLCTFit'] =  0.289018479045
+
+    deltay12_deltay23_dict['eta18to20_eoo_withoutLCTFit'] =  0.399145167582
+
+    deltay12_deltay23_dict['eta18to20_eoo_withLCTFit'] =  0.282063177734
+
+    deltay12_deltay23_dict['eta20to22_eoo_withoutLCTFit'] =  0.375677512107
+
+    deltay12_deltay23_dict['eta20to22_eoo_withLCTFit'] =  0.285870689454
+
+    deltay12_deltay23_dict['eta22to24_eoo_withoutLCTFit'] =  0.333978399307
+
+    deltay12_deltay23_dict['eta22to24_eoo_withLCTFit'] =  0.334565983007
+
+    ## find the LUT corresponding to this particular case
+    if doFit:
+        fitString = '_withLCTFit'
+    else:
+        fitString = '_withoutLCTFit'
+       
+    return deltay12_deltay23_dict["eta" + eta + '_' + parity + fitString]
 
 #______________________________________________________________________________               
 def pt_from_position(x1, y1, z1, phi1, isEven1,
@@ -777,7 +874,7 @@ def get1DHistogramFractionY(hist2d, fraction):
     r1 = TH1F("r1","",xBins,xmin,xmax)
     for x in range(1,xBins+1):
       #print "bin:", x
-      probSum = array.array('d', [.32, .5, .68, .90])
+      probSum = array.array('d', [.90])
       q = array.array('d', [0.0]*len(probSum))
       entries = hist2d.Integral(x,x,0,yBins+1)
       ## do not compute quantiles for empty histograms!!!
@@ -788,7 +885,7 @@ def get1DHistogramFractionY(hist2d, fraction):
       #print "q", q
 
       xval = hist2d.GetBinCenter(x)
-      yval = q[3]
+      yval = q[0]
 
       xs.append(xval) 
       ys.append(yval)

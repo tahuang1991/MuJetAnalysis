@@ -1739,7 +1739,7 @@ if __name__ == "__main__":
 
               ## stub positions
               ok_position_based_endcap =  ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3
-              if ok_position_based_endcap and 0 <= parity and parity <= 3 and abs(eta_prop)>=1.2 and abs(eta_prop)<2.4:
+              if ok_position_based_endcap and 0 <= parity and parity <= 3 and abs(eta_prop)>=1.2 and abs(eta_prop)<=1.6:
                 nL1MuMatched_ME1_ME2_ME3 += 1
 
                 etaPartition = get_eta_partition(eta_prop)
@@ -1757,8 +1757,8 @@ if __name__ == "__main__":
                   mapTH2F["deltay12_vs_deltay23_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity] + "_withoutLCTFit"].Fill(deltay12_withoutLCTFit, deltay23_withoutLCTFit)
                   mapTH2F["deltay12_vs_deltay23_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity] + "_withLCTFit"].Fill(deltay12_withLCTFit, deltay23_withLCTFit)
                 
-                proportionalityFactor_withoutLCTFit = get_proptionality_factor_withoutLCTFit(etaPartition, parity)
-                proportionalityFactor_withLCTFit = get_proptionality_factor_withLCTFit(etaPartition, parity)
+                proportionalityFactor_withoutLCTFit = get_proptionality_factor(etaRanges[etaPartition], ME1ME2ME3ParityCases[parity], False)
+                proportionalityFactor_withLCTFit =    get_proptionality_factor(etaRanges[etaPartition], ME1ME2ME3ParityCases[parity], True)
 
                 deltaDeltaY123_withoutLCTFit = abs(deltay23_withoutLCTFit - proportionalityFactor_withoutLCTFit * deltay12_withoutLCTFit)
                 deltaDeltaY123_withLCTFit    = abs(deltay23_withLCTFit    - proportionalityFactor_withLCTFit    * deltay12_withLCTFit)
@@ -2142,7 +2142,8 @@ if __name__ == "__main__":
         #p0_err = g.GetFunction("p1fit").GetParError(0)
         #p1_err = g.GetFunction("p1fit").GetParError(1)
 
-        #print "[", p0, ", ", p1, ", ", p2, ", ", p3, "]"
+        #print "deltay12_deltay23_dict['" + key[21:] + "'] = ", p0
+        #"[", p0, ", ", p1, ", ", p2, ", ", p3, "]"
         #print "[", p0_err, ", ", p1_err, ", ", p2_err, ", ", p3_err, "]"
        
       gPad.Update()
@@ -2321,7 +2322,7 @@ if __name__ == "__main__":
         makeSimplePlotMap(mapTH2F, "GenMuPt_vs_inv_deltaDeltaY123_eta" + qq + "_" + pp + "_withLCTFit", pp + " " + rr +  "; p_{T} [GeV]; 1/#Delta#Delta Y_{123} [GeV]",'colz')
         makeSimplePlotMap(mapTH2F, "GenMuPt_vs_deltaDeltaY123_eta" + qq + "_" + pp + "_withLCTFit", pp + " " + rr +  "; p_{T} [GeV]; #Delta#Delta Y_{123} [1/GeV]",'colz')
 
-        generateLUT = True
+        generateLUT = False
         if generateLUT:
           ## get the arrays with 90% cutoff numbers
           #print "Numbers for GenMuPt_vs_deltaDeltaY123_eta" + qq + "_" + pp + "_withoutLCTFit"

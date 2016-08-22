@@ -27,7 +27,14 @@ myetabin = np.asarray(etabin)
 M_PI = 4*math.atan(1)
 
 
-#______________________________________________________________________________                                           
+#______________________________________________________________________________                        
+def getBestValue(value1, value2):
+    if abs(value1) != 99.: return value1
+    else:                  return value2
+
+
+                   
+#______________________________________________________________________________                        
 def pt_from_deltaDeltaY123(deltaDeltaY123, eta, parity, doFit):
     
     deltaDeltaY123_dict = {}
@@ -299,358 +306,103 @@ def pt_from_deltaDeltaY123_v2(deltaDeltaY123, eta, parity, doFit):
 
     deltaDeltaY123_dict = {}
 
+    deltaDeltaY123_dict['eta12to14_oee_withoutLCTFit'] = [ 29.1746598641 ,  3.21007841215 ]
 
+    deltaDeltaY123_dict['eta12to14_oee_withLCTFit'] = [ 28.0328525528 ,  3.21527832806 ]
 
-    deltaDeltaY123_dict['eta12to14_oee_withoutLCTFit'] = [ 27.5952829202 ,  3.21455892986 ]
+    deltaDeltaY123_dict['eta14to16_oee_withoutLCTFit'] = [ 75.0466362387 ,  -0.416368187161 ]
 
+    deltaDeltaY123_dict['eta14to16_oee_withLCTFit'] = [ 53.5394764498 ,  1.29698265948 ]
 
-    deltaDeltaY123_dict['eta12to14_oee_withLCTFit'] = [ 23.7119372835 ,  3.00188285096 ]
+    deltaDeltaY123_dict['eta16to18_oee_withoutLCTFit'] = [ 105.949473091 ,  -9.74590656355 ]
 
+    deltaDeltaY123_dict['eta16to18_oee_withLCTFit'] = [ 99.8805188544 ,  -9.27733347846 ]
 
-    deltaDeltaY123_dict['eta14to16_oee_withoutLCTFit'] = [ 28.8019388077 ,  3.00182966552 ]
+    deltaDeltaY123_dict['eta18to20_oee_withoutLCTFit'] = [ 74.7149782512 ,  -8.14146416899 ]
 
+    deltaDeltaY123_dict['eta18to20_oee_withLCTFit'] = [ 2950732.91231 ,  -1043127.6119 ]
 
-    deltaDeltaY123_dict['eta14to16_oee_withLCTFit'] = [ 41.8996801226 ,  -5.91825045233 ]
+    deltaDeltaY123_dict['eta20to22_oee_withoutLCTFit'] = [ 247234.212508 ,  -108820.58973 ]
 
+    deltaDeltaY123_dict['eta20to22_oee_withLCTFit'] = [ 2636717.40523 ,  -1548563.67761 ]
 
-    deltaDeltaY123_dict['eta16to18_oee_withoutLCTFit'] = [ 36.7727627272 ,  1.01611382644 ]
+    deltaDeltaY123_dict['eta22to24_oee_withoutLCTFit'] = [ 52.5959792946 ,  -4.2988821128 ]
 
+    deltaDeltaY123_dict['eta22to24_oee_withLCTFit'] = [ 15.490596104 ,  -3.40545579427 ]
 
-    deltaDeltaY123_dict['eta16to18_oee_withLCTFit'] = [ 32.944329533 ,  1.00022591211 ]
+    deltaDeltaY123_dict['eta12to14_ooo_withoutLCTFit'] = [ 75.9422412646 ,  -10.5235298851 ]
 
+    deltaDeltaY123_dict['eta12to14_ooo_withLCTFit'] = [ 29.2723196576 ,  0.898359876871 ]
 
-    deltaDeltaY123_dict['eta18to20_oee_withoutLCTFit'] = [ 40.2517470066 ,  1.00112568989 ]
+    deltaDeltaY123_dict['eta14to16_ooo_withoutLCTFit'] = [ 23.7600385511 ,  1.56383935145 ]
 
+    deltaDeltaY123_dict['eta14to16_ooo_withLCTFit'] = [ 23.2003732246 ,  1.18938962488 ]
 
-    deltaDeltaY123_dict['eta18to20_oee_withLCTFit'] = [ 22.8701139351 ,  1.77191825131 ]
+    deltaDeltaY123_dict['eta16to18_ooo_withoutLCTFit'] = [ 128.752946445 ,  -15.246418575 ]
 
+    deltaDeltaY123_dict['eta16to18_ooo_withLCTFit'] = [ 97.333172775 ,  -17.4054927738 ]
 
-    deltaDeltaY123_dict['eta20to22_oee_withoutLCTFit'] = [ 28.2001370069 ,  1.00351721674 ]
+    deltaDeltaY123_dict['eta18to20_ooo_withoutLCTFit'] = [ 1277.84195015 ,  -546.405219489 ]
 
+    deltaDeltaY123_dict['eta18to20_ooo_withLCTFit'] = [ 701639.968256 ,  -366480.666542 ]
 
-    deltaDeltaY123_dict['eta20to22_oee_withLCTFit'] = [ 13.0205113545 ,  1.00133181796 ]
+    deltaDeltaY123_dict['eta20to22_ooo_withoutLCTFit'] = [ 34.1421332913 ,  -2.32975068897 ]
 
+    deltaDeltaY123_dict['eta20to22_ooo_withLCTFit'] = [ 47.4854301454 ,  -10.1599138292 ]
 
-    deltaDeltaY123_dict['eta22to24_oee_withoutLCTFit'] = [ 52.9237035056 ,  -14.3244345763 ]
+    deltaDeltaY123_dict['eta22to24_ooo_withoutLCTFit'] = [ 76.2948237563 ,  -17.1579686498 ]
 
+    deltaDeltaY123_dict['eta22to24_ooo_withLCTFit'] = [ 3905209.57611 ,  -2074738.36889 ]
 
-    deltaDeltaY123_dict['eta22to24_oee_withLCTFit'] = [ 6.47862510762 ,  2.67218989554 ]
+    deltaDeltaY123_dict['eta12to14_eee_withoutLCTFit'] = [ 62.7953308085 ,  0.559766040937 ]
 
+    deltaDeltaY123_dict['eta12to14_eee_withLCTFit'] = [ 46.138580523 ,  1.99654383362 ]
 
-    deltaDeltaY123_dict['eta12to14_ooo_withoutLCTFit'] = [ 44.5578556792 ,  -4.79043231261 ]
+    deltaDeltaY123_dict['eta14to16_eee_withoutLCTFit'] = [ 44.0679291943 ,  1.28571001039 ]
 
+    deltaDeltaY123_dict['eta14to16_eee_withLCTFit'] = [ 38.270397715 ,  1.84796184706 ]
 
-    deltaDeltaY123_dict['eta12to14_ooo_withLCTFit'] = [ 25.1883718474 ,  1.00338049121 ]
+    deltaDeltaY123_dict['eta16to18_eee_withoutLCTFit'] = [ 72.3813362783 ,  -2.59037999073 ]
 
+    deltaDeltaY123_dict['eta16to18_eee_withLCTFit'] = [ 72.3813362783 ,  -2.59037999073 ]
 
-    deltaDeltaY123_dict['eta14to16_ooo_withoutLCTFit'] = [ 22.6119788504 ,  1.00080673886 ]
+    deltaDeltaY123_dict['eta18to20_eee_withoutLCTFit'] = [ 72.9764118117 ,  -6.86581551453 ]
 
+    deltaDeltaY123_dict['eta18to20_eee_withLCTFit'] = [ 29.9767050806 ,  0.411973656122 ]
 
-    deltaDeltaY123_dict['eta14to16_ooo_withLCTFit'] = [ 19.8343998733 ,  1.40360256655 ]
+    deltaDeltaY123_dict['eta20to22_eee_withoutLCTFit'] = [ 47.6961626762 ,  -5.08281090081 ]
 
+    deltaDeltaY123_dict['eta20to22_eee_withLCTFit'] = [ 47.6961626762 ,  -5.08281090081 ]
 
+    deltaDeltaY123_dict['eta22to24_eee_withoutLCTFit'] = [ 37.9678263807 ,  -5.37722364349 ]
 
-    deltaDeltaY123_dict['eta16to18_ooo_withoutLCTFit'] = [ 47.649923435 ,  1.00305590878 ]
+    deltaDeltaY123_dict['eta22to24_eee_withLCTFit'] = [ 21.6978266563 ,  -6.15349543736 ]
 
+    deltaDeltaY123_dict['eta12to14_eoo_withoutLCTFit'] = [ 30.2344766953 ,  1.59834301214 ]
 
+    deltaDeltaY123_dict['eta12to14_eoo_withLCTFit'] = [ 21.4840032122 ,  3.00165383029 ]
 
+    deltaDeltaY123_dict['eta14to16_eoo_withoutLCTFit'] = [ 29.4464445437 ,  2.95536171277 ]
 
-    deltaDeltaY123_dict['eta16to18_ooo_withLCTFit'] = [ 34.812735125 ,  1.00152345644 ]
+    deltaDeltaY123_dict['eta14to16_eoo_withLCTFit'] = [ 22.3551393097 ,  3.15080551614 ]
 
+    deltaDeltaY123_dict['eta16to18_eoo_withoutLCTFit'] = [ 152.291767071 ,  -19.746002458 ]
 
-    deltaDeltaY123_dict['eta18to20_ooo_withoutLCTFit'] = [ 36.7231737585 ,  1.00184166192 ]
+    deltaDeltaY123_dict['eta16to18_eoo_withLCTFit'] = [ 54.728584646 ,  -5.22289694105 ]
 
+    deltaDeltaY123_dict['eta18to20_eoo_withoutLCTFit'] = [ 45.781458614 ,  -3.83083581869 ]
 
-    deltaDeltaY123_dict['eta18to20_ooo_withLCTFit'] = [ 13.0025878167 ,  1.74131067176 ]
+    deltaDeltaY123_dict['eta18to20_eoo_withLCTFit'] = [ 31.10733865 ,  -5.40800001772 ]
 
+    deltaDeltaY123_dict['eta20to22_eoo_withoutLCTFit'] = [ 32.0328949638 ,  -4.05062264509 ]
 
-    deltaDeltaY123_dict['eta20to22_ooo_withoutLCTFit'] = [ 52.8955153095 ,  -3.93548613706 ]
+    deltaDeltaY123_dict['eta20to22_eoo_withLCTFit'] = [ 21.6854747814 ,  -4.00706938384 ]
 
+    deltaDeltaY123_dict['eta22to24_eoo_withoutLCTFit'] = [ 50.1562656797 ,  -11.7586485973 ]
 
-    deltaDeltaY123_dict['eta20to22_ooo_withLCTFit'] = [ 62.1645655965 ,  -19.5749605566 ]
+    deltaDeltaY123_dict['eta22to24_eoo_withLCTFit'] = [ 10.2787707399 ,  -2.73209394927 ]
 
 
-
-    deltaDeltaY123_dict['eta22to24_ooo_withoutLCTFit'] = [ 33.4621343705 ,  1.00275929883 ]
-
-
-
-
-    deltaDeltaY123_dict['eta22to24_ooo_withLCTFit'] = [ 0.016086985347 ,  2.99290542913 ]
-
-
-    deltaDeltaY123_dict['eta12to14_eee_withoutLCTFit'] = [ 81.908602202 ,  -6.14243529949 ]
-
-
-    deltaDeltaY123_dict['eta12to14_eee_withLCTFit'] = [ 72.0996306768 ,  -5.25974448328 ]
-
-
-    deltaDeltaY123_dict['eta14to16_eee_withoutLCTFit'] = [ 64.3515443734 ,  -4.74449794355 ]
-
-
-    deltaDeltaY123_dict['eta14to16_eee_withLCTFit'] = [ 37.4198061252 ,  1.01686233993 ]
-
-
-    deltaDeltaY123_dict['eta16to18_eee_withoutLCTFit'] = [ 44.1120439498 ,  1.00389126573 ]
-
-
-
-
-
-    deltaDeltaY123_dict['eta16to18_eee_withLCTFit'] = [ 40.1539448466 ,  1.00131726143 ]
-
-
-    deltaDeltaY123_dict['eta18to20_eee_withoutLCTFit'] = [ 58.8785398652 ,  -6.76108951651 ]
-
-
-
-
-    deltaDeltaY123_dict['eta18to20_eee_withLCTFit'] = [ 35.0137126816 ,  1.00190863269 ]
-
-
-
-
-    deltaDeltaY123_dict['eta20to22_eee_withoutLCTFit'] = [ 27.3130373085 ,  1.00190159055 ]
-
-
-
-    deltaDeltaY123_dict['eta20to22_eee_withLCTFit'] = [ 21.0592580853 ,  1.00218644718 ]
-
-
-    deltaDeltaY123_dict['eta22to24_eee_withoutLCTFit'] = [ 23.4324434115 ,  1.00184273857 ]
-
-
-
-    deltaDeltaY123_dict['eta22to24_eee_withLCTFit'] = [ 44.5993431981 ,  -12.172128392 ]
-
-
-    deltaDeltaY123_dict['eta12to14_eoo_withoutLCTFit'] = [ 34.1675209897 ,  -5.47516255606 ]
-
-
-    deltaDeltaY123_dict['eta12to14_eoo_withLCTFit'] = [ 22.4336872662 ,  -3.86935554352 ]
-
-
-    deltaDeltaY123_dict['eta14to16_eoo_withoutLCTFit'] = [ 22.7049553606 ,  1.00250901678 ]
-
-
-    deltaDeltaY123_dict['eta14to16_eoo_withLCTFit'] = [ 15.4743786952 ,  1.00122476247 ]
-
-
-    deltaDeltaY123_dict['eta16to18_eoo_withoutLCTFit'] = [ 24.1308144899 ,  1.003977798 ]
-
-
-    deltaDeltaY123_dict['eta16to18_eoo_withLCTFit'] = [ 20.1235999402 ,  -1.9427353349 ]
-
-
-    deltaDeltaY123_dict['eta18to20_eoo_withoutLCTFit'] = [ 30.4743171514 ,  1.00203321528 ]
-
-
-
-
-
-
-    deltaDeltaY123_dict['eta18to20_eoo_withLCTFit'] = [ 86.7983917209 ,  -34.0105469923 ]
-
-
-    deltaDeltaY123_dict['eta20to22_eoo_withoutLCTFit'] = [ 15.1398409269 ,  1.02309729268 ]
-
-
-
-    deltaDeltaY123_dict['eta20to22_eoo_withLCTFit'] = [ 12.2895312933 ,  1.00021612692 ]
-
-
-    deltaDeltaY123_dict['eta22to24_eoo_withoutLCTFit'] = [ 12.4514919375 ,  1.00108898146 ]
-
-
-    deltaDeltaY123_dict['eta22to24_eoo_withLCTFit'] = [ 6.21354811836 ,  1.00055550175 ]
-
-
-
-
-    """
-    deltaDeltaY123_dict['eta12to14_oee_withoutLCTFit'] = [ 52.0919091911 ,  -3.61894693504 ]
-
-    deltaDeltaY123_dict['eta12to14_oee_withLCTFit'] = [ 35.9551801353 ,  1.00190474086 ]
-
-
-    deltaDeltaY123_dict['eta14to16_oee_withoutLCTFit'] = [ 101.643683988 ,  -6.54103719067 ]
-
-
-    deltaDeltaY123_dict['eta14to16_oee_withLCTFit'] = [ 48.609107826 ,  1.00066523861 ]
-
- 
-
-    deltaDeltaY123_dict['eta16to18_oee_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta16to18_oee_withLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta18to20_oee_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta18to20_oee_withLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta20to22_oee_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta20to22_oee_withLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta22to24_oee_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta22to24_oee_withLCTFit'] = [ 0.0 ,  -20000.0 ]
-
-
-    deltaDeltaY123_dict['eta12to14_ooo_withoutLCTFit'] = [ 38.5359650751 ,  1.00428372403 ]
-
-
-    deltaDeltaY123_dict['eta12to14_ooo_withLCTFit'] = [ 30.0616600339 ,  1.00159511612 ]
-
-
-    deltaDeltaY123_dict['eta14to16_ooo_withoutLCTFit'] = [ 31.2983808352 ,  -1.22586727915 ]
-
-
-    deltaDeltaY123_dict['eta14to16_ooo_withLCTFit'] = [ 34.7936372684 ,  -4.49194713831 ]
-
- 
-
-    deltaDeltaY123_dict['eta16to18_ooo_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta16to18_ooo_withLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta18to20_ooo_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta18to20_ooo_withLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta20to22_ooo_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta20to22_ooo_withLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta22to24_ooo_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta22to24_ooo_withLCTFit'] = [ 0.0 ,  -20000.0 ]
-
-
-    deltaDeltaY123_dict['eta12to14_eee_withoutLCTFit'] = [ 95.3144395003 ,  -7.2255927846 ]
-
-
-    deltaDeltaY123_dict['eta12to14_eee_withLCTFit'] = [ 47.6294702605 ,  1.00046400059 ]
-
-
-
-
-    deltaDeltaY123_dict['eta14to16_eee_withoutLCTFit'] = [ 121568.238691 ,  -166352.054096 ]
-
-
-
-
-    deltaDeltaY123_dict['eta14to16_eee_withLCTFit'] = [ 2522.95263797 ,  -914.0754341 ]
-
- 
-
-    deltaDeltaY123_dict['eta16to18_eee_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta16to18_eee_withLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta18to20_eee_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta18to20_eee_withLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta20to22_eee_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta20to22_eee_withLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta22to24_eee_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta22to24_eee_withLCTFit'] = [ 0.0 ,  -20000.0 ]
-
-
-    deltaDeltaY123_dict['eta12to14_eoo_withoutLCTFit'] = [ 29.8450719263 ,  1.0014819689 ]
-
-
-    deltaDeltaY123_dict['eta12to14_eoo_withLCTFit'] = [ 37.4654723257 ,  -3.414019814 ]
-
-
-    deltaDeltaY123_dict['eta14to16_eoo_withoutLCTFit'] = [ 51.707129706 ,  -3.30799157778 ]
-
-
-    deltaDeltaY123_dict['eta14to16_eoo_withLCTFit'] = [ 31.9733151073 ,  1.00163291614 ]
-
- 
-
-    deltaDeltaY123_dict['eta16to18_eoo_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta16to18_eoo_withLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta18to20_eoo_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta18to20_eoo_withLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta20to22_eoo_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta20to22_eoo_withLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta22to24_eoo_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
-
- 
-
-    deltaDeltaY123_dict['eta22to24_eoo_withLCTFit'] = [ 0.0 ,  -20000.0 ]
-
-
-
-    deltaDeltaY123_dict['eta14to16_eee_withoutLCTFit'] = [ 64.3515443734 ,  -4.74449794355 ]
-    deltaDeltaY123_dict['eta14to16_eee_withLCTFit'] = [ 37.4198061252 ,  1.01686233993 ]
-    """ 
     if doFit:
         fitString = '_withLCTFit'
     else:
@@ -1085,13 +837,15 @@ def L1Mu_status(st1, st2, st3, st4):
 def addfiles(ch, dirname=".", ext=".root"):
   theInputFiles = []
   if not os.path.isdir(dirname):
-    print "ERROR: This is not a valid directory: ", dirname
-    exit()
+      print "ERROR: This is not a valid directory: ", dirname
+      exit()
   ls = os.listdir(dirname)
   theInputFiles.extend([dirname[:] + x for x in ls if x.endswith(ext)])
   for pfile in theInputFiles:
-    print pfile
-    ch.Add(pfile)
+      ## drop the /eos/uscms
+      pfile_mod = 'root://cmseos.fnal.gov/' + pfile[10:]
+      print pfile
+      ch.Add(pfile_mod)
 
   return ch
 
@@ -1239,6 +993,11 @@ def get1DHistogramFractionY(hist2d, fraction=.9):
  
     xs = []
     ys = []
+    xs_e_up = []
+    xs_e_dw = []
+    ys_e_up = []
+    ys_e_dw = []
+
 
     r1 = TH1F("r1","",xBins,xmin,xmax)
     for x in range(1,xBins+1):
@@ -1254,11 +1013,22 @@ def get1DHistogramFractionY(hist2d, fraction=.9):
       #print "q", q
 
       xval = hist2d.GetBinCenter(x)
+      xval_e_up = hist2d.GetBinWidth(x)/2.
+      xval_e_dw = hist2d.GetBinWidth(x)/2.
+
       yval = q[0]
+      yval_e_up = yval/sqrt(entries*fraction)
+      yval_e_dw = yval/sqrt(entries*(1-fraction))
+
       r1.SetBinContent(x, yval)
+      r1.SetBinError(x, max(yval_e_up, yval_e_dw))
 
       xs.append(xval) 
+      xs_e_up.append(xval_e_up)
+      xs_e_dw.append(xval_e_dw)
       ys.append(yval)
+      ys_e_up.append(yval_e_up)
+      ys_e_dw.append(yval_e_dw)
 
     SetOwnership( r1, False )
     return xs, ys, r1

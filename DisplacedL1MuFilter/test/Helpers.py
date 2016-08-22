@@ -280,17 +280,85 @@ def pt_from_deltaDeltaY123(deltaDeltaY123, eta, parity, doFit):
 
     ## get the pT value using the deltaDeltaY123 at 90%
     foundPtValue = 0
-#    print "eta" + eta + '_' + parity + fitString + '_x'
-#    print xvalues
-#    print yvalues
+    #print "deltay123", deltaDeltaY123
+    #print "eta" + eta + '_' + parity + fitString + '_x'
+    #print xvalues
+    #print yvalues
     for pp,qq in zip(xvalues, yvalues):
-#        print pp,qq
-        if deltaDeltaY123 <= qq:
+        #print pp,qq
+        if pp <5: continue
+        if deltaDeltaY123 >= qq:
             foundPtValue = pp
-#            print "\tOK"
-#    print "fount pt!!!", foundPtValue
+            #print "\tOK"
+            break
+    #print "fount pt!!!", foundPtValue
     return foundPtValue
 
+
+def pt_from_deltaDeltaY123_v2(deltaDeltaY123, eta, parity, doFit):
+
+    deltaDeltaY123_dict = {}
+    deltaDeltaY123_dict['eta12to14_oee_withoutLCTFit'] = [ 27.5952829202 ,  3.21455892986 ]
+
+
+
+
+
+
+
+    deltaDeltaY123_dict['eta12to14_oee_withLCTFit'] = [ 23.7119372835 ,  3.00188285096 ]
+
+
+    deltaDeltaY123_dict['eta14to16_oee_withoutLCTFit'] = [ 28.8019388077 ,  3.00182966552 ]
+
+
+
+    deltaDeltaY123_dict['eta14to16_oee_withLCTFit'] = [ 41.8996801226 ,  -5.91825045233 ]
+
+
+    deltaDeltaY123_dict['eta12to14_ooo_withoutLCTFit'] = [ 44.5578556792 ,  -4.79043231261 ]
+
+
+    deltaDeltaY123_dict['eta12to14_ooo_withLCTFit'] = [ 25.1883718474 ,  1.00338049121 ]
+
+
+    deltaDeltaY123_dict['eta14to16_ooo_withoutLCTFit'] = [ 22.6119788504 ,  1.00080673886 ]
+
+
+    deltaDeltaY123_dict['eta14to16_ooo_withLCTFit'] = [ 19.8343998733 ,  1.40360256655 ]
+
+    deltaDeltaY123_dict['eta12to14_eee_withoutLCTFit'] = [ 81.908602202 ,  -6.14243529949 ]
+
+
+    deltaDeltaY123_dict['eta12to14_eee_withLCTFit'] = [ 72.0996306768 ,  -5.25974448328 ]
+
+
+    deltaDeltaY123_dict['eta14to16_eee_withoutLCTFit'] = [ 64.3515443734 ,  -4.74449794355 ]
+
+
+    deltaDeltaY123_dict['eta14to16_eee_withLCTFit'] = [ 37.4198061252 ,  1.01686233993 ]
+
+
+    deltaDeltaY123_dict['eta12to14_eoo_withoutLCTFit'] = [ 34.1675209897 ,  -5.47516255606 ]
+
+
+    deltaDeltaY123_dict['eta12to14_eoo_withLCTFit'] = [ 22.4336872662 ,  -3.86935554352 ]
+
+
+    deltaDeltaY123_dict['eta14to16_eoo_withoutLCTFit'] = [ 22.7049553606 ,  1.00250901678 ]
+
+
+    deltaDeltaY123_dict['eta14to16_eoo_withLCTFit'] = [ 15.4743786952 ,  1.00122476247 ]
+
+    if doFit:
+        fitString = '_withLCTFit'
+    else:
+        fitString = '_withoutLCTFit'
+    values = deltaDeltaY123_dict["eta" + eta + '_' + parity + fitString]
+
+
+    foundPtValue = (values[0] / deltaDeltaY123) + values[1]
+    return foundPtValue
 
 #______________________________________________________________________________                                           
 def get_eta_partition(eta):
@@ -857,7 +925,7 @@ def get1DHistogramMedianY(hist2d):
     """
 
 #______________________________________________________________________________                                                                                                  
-def get1DHistogramFractionY(hist2d, fraction):
+def get1DHistogramFractionY(hist2d, fraction=.9):
     '''this function returns 2 arrays, the x-values and the array with the  
     with the 90% fraction on the yaxis'''
 
@@ -886,12 +954,13 @@ def get1DHistogramFractionY(hist2d, fraction):
 
       xval = hist2d.GetBinCenter(x)
       yval = q[0]
+      r1.SetBinContent(x, yval)
 
       xs.append(xval) 
       ys.append(yval)
 
     SetOwnership( r1, False )
-    return xs, ys
+    return xs, ys, r1
 
 
 #______________________________________________________________________________                                           

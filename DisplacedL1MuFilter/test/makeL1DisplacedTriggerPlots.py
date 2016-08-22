@@ -46,7 +46,7 @@ if __name__ == "__main__":
   ch = addfiles(ch, dirname=dirname)
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160819_v2"
+  label = "DisplacedL1MuTrigger_20160821"
   targetDir = label + "/"
   
   verbose = False
@@ -251,6 +251,9 @@ if __name__ == "__main__":
         addPlotToMapTH2F("GenMuPt_vs_inv_deltaDeltaY123_eta" + qq + "_" + pp + "_withLCTFit", 30,0.,60.,100,0.,10)
         addPlotToMapTH2F("GenMuPt_vs_deltaDeltaY123_eta" + qq + "_" + pp + "_withLCTFit", 30,0.,60.,100,0.,20)
 
+    
+    binLow = [0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,12.0,14.0,16.0,18.0,20.0,24.0,28.0,32.0,36.0,42.0,50.0,60.0]
+    ptbins = np.asarray(binLow)
 
     for pp in dxyRanges:
       addPlotToMapTH1F("GenMuPt_ME1_ME2_ME3" + pp, 60,0.,60.)
@@ -1771,41 +1774,27 @@ if __name__ == "__main__":
                 
                 ## get the reconstruction pT value
                 #print "True pt", pt, "deltaDeltaY123_withoutLCTFit", deltaDeltaY123_withoutLCTFit, "deltaDeltaY123_withLCTFit", deltaDeltaY123_withLCTFit
-                positionPt_withoutLCTFit = pt_from_deltaDeltaY123(deltaDeltaY123_withoutLCTFit, etaRanges[etaPartition], ME1ME2ME3ParityCases[parity], False)
-                positionPt_withLCTFit = pt_from_deltaDeltaY123(deltaDeltaY123_withLCTFit,       etaRanges[etaPartition], ME1ME2ME3ParityCases[parity], True)
+                positionPt_withoutLCTFit = pt_from_deltaDeltaY123_v2(deltaDeltaY123_withoutLCTFit, etaRanges[etaPartition], ME1ME2ME3ParityCases[parity], False)
+                positionPt_withLCTFit =    pt_from_deltaDeltaY123_v2(deltaDeltaY123_withLCTFit,    etaRanges[etaPartition], ME1ME2ME3ParityCases[parity], True)
 
-                
                 ## fill plots!!!
                 if dxy <= 100:
                   mapTH1F["GenMuPt_ME1_ME2_ME3"].Fill(pt)                 
-                  if positionPt_withoutLCTFit>=10: 
-                    mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_withoutLCTFit"].Fill(pt)
-                  if positionPt_withoutLCTFit>=15: 
-                    mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_withoutLCTFit"].Fill(pt)
-                  if positionPt_withoutLCTFit>=20: 
-                    mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_withoutLCTFit"].Fill(pt)
-                  if positionPt_withLCTFit>=10: 
-                    mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_withLCTFit"].Fill(pt)
-                  if positionPt_withLCTFit>=15: 
-                    mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_withLCTFit"].Fill(pt)
-                  if positionPt_withLCTFit>=20: 
-                    mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_withLCTFit"].Fill(pt)
+                  if positionPt_withoutLCTFit>=10: mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_withoutLCTFit"].Fill(pt)
+                  if positionPt_withoutLCTFit>=15: mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_withoutLCTFit"].Fill(pt)
+                  if positionPt_withoutLCTFit>=20: mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_withoutLCTFit"].Fill(pt)
+                  if positionPt_withLCTFit>=10:    mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_withLCTFit"].Fill(pt)
+                  if positionPt_withLCTFit>=15:    mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_withLCTFit"].Fill(pt)
+                  if positionPt_withLCTFit>=20:    mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_withLCTFit"].Fill(pt)
 
                 if dxy <= 5:                
                   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy0to5"].Fill(pt)               
-                  if positionPt_withoutLCTFit>=10: 
-                    mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy0to5_withoutLCTFit"].Fill(pt)
-                  if positionPt_withoutLCTFit>=15: 
-                    mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy0to5_withoutLCTFit"].Fill(pt)
-                  if positionPt_withoutLCTFit>=20: 
-                    mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy0to5_withoutLCTFit"].Fill(pt)
-                  if positionPt_withLCTFit>=10: 
-                    mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy0to5_withLCTFit"].Fill(pt)
-                  if positionPt_withLCTFit>=15: 
-                    mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy0to5_withLCTFit"].Fill(pt)
-                  if positionPt_withLCTFit>=20: 
-                    mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy0to5_withLCTFit"].Fill(pt)
-
+                  if positionPt_withoutLCTFit>=10: mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy0to5_withoutLCTFit"].Fill(pt)
+                  if positionPt_withoutLCTFit>=15: mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy0to5_withoutLCTFit"].Fill(pt)
+                  if positionPt_withoutLCTFit>=20: mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy0to5_withoutLCTFit"].Fill(pt)
+                  if positionPt_withLCTFit>=10:    mapTH1F["Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_dxy0to5_withLCTFit"].Fill(pt)
+                  if positionPt_withLCTFit>=15:    mapTH1F["Displaced_L1MuPt15_GenMuPt_ME1_ME2_ME3_dxy0to5_withLCTFit"].Fill(pt)
+                  if positionPt_withLCTFit>=20:    mapTH1F["Displaced_L1MuPt20_GenMuPt_ME1_ME2_ME3_dxy0to5_withLCTFit"].Fill(pt)
 
                 if 5 < dxy and dxy <= 50:  
                   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy5to50"].Fill(pt)  
@@ -1999,6 +1988,26 @@ if __name__ == "__main__":
       hist = thisMap[key]
       hist.Draw(option)
       hist.SetTitle(title)
+      c.SaveAs(targetDir + key + ".png")
+
+    def makeSimplePlotMapFractionY(thisMap, key, title, option = ''):
+      c = TCanvas("c","c",800,600)
+      c.Clear()
+      gStyle.SetTitleBorderSize(0);
+      gStyle.SetPadLeftMargin(0.126);
+      gStyle.SetPadRightMargin(0.04);
+      gStyle.SetPadTopMargin(0.06);
+      gStyle.SetPadBottomMargin(0.13);
+      gPad.SetTickx(1)
+      gPad.SetTicky(1)
+      hist = thisMap[key]
+      hist.Draw(option)
+      hist.SetTitle(title)
+      hist2 = get1DHistogramFractionY(hist, fraction=.9)[2]
+      hist2.Draw("same")
+      g1 = TF1("g1","[0]/(x-[1])",0, 60)
+      hist2.Fit(g1,"LRQ")
+      print key,  "= [", hist2.GetFunction("g1").GetParameter("p0"), ", ", hist2.GetFunction("g1").GetParameter("p1"), "]"
       c.SaveAs(targetDir + key + ".png")
 
 
@@ -2315,25 +2324,27 @@ if __name__ == "__main__":
         makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta" + qq + "_" + pp + "_withoutLCTFit", pp + " " + rr +  ";#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",'colz')
         make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta" + qq + "_" + pp + "_withoutLCTFit", pp + " " + rr +  ";#Delta Y_{12} [cm]; #Delta Y_{23} [cm]", True, True)
         makeSimplePlotMap(mapTH2F, "GenMuPt_vs_inv_deltaDeltaY123_eta" + qq + "_" + pp + "_withoutLCTFit", pp + " " + rr +  "; p_{T} [GeV]; 1/#Delta#Delta Y_{123} [GeV]",'colz')
-        makeSimplePlotMap(mapTH2F, "GenMuPt_vs_deltaDeltaY123_eta" + qq + "_" + pp + "_withoutLCTFit", pp + " " + rr +  "; p_{T} [GeV]; #Delta#Delta Y_{123} [1/GeV]",'colz')
+        makeSimplePlotMapFractionY(mapTH2F, "GenMuPt_vs_deltaDeltaY123_eta" + qq + "_" + pp + "_withoutLCTFit", pp + " " + rr +  "; p_{T} [GeV]; #Delta#Delta Y_{123} [1/GeV]",'colz')
 
         makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta" + qq + "_" + pp + "_withLCTFit", pp + " " + rr +  ";#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",'colz')
         make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta" + qq + "_" + pp + "_withLCTFit", pp + " " + rr +  ";#Delta Y_{12} [cm]; #Delta Y_{23} [cm]", True, True)
         makeSimplePlotMap(mapTH2F, "GenMuPt_vs_inv_deltaDeltaY123_eta" + qq + "_" + pp + "_withLCTFit", pp + " " + rr +  "; p_{T} [GeV]; 1/#Delta#Delta Y_{123} [GeV]",'colz')
-        makeSimplePlotMap(mapTH2F, "GenMuPt_vs_deltaDeltaY123_eta" + qq + "_" + pp + "_withLCTFit", pp + " " + rr +  "; p_{T} [GeV]; #Delta#Delta Y_{123} [1/GeV]",'colz')
+        makeSimplePlotMapFractionY(mapTH2F, "GenMuPt_vs_deltaDeltaY123_eta" + qq + "_" + pp + "_withLCTFit", pp + " " + rr +  "; p_{T} [GeV]; #Delta#Delta Y_{123} [1/GeV]",'colz')
 
         generateLUT = False
         if generateLUT:
           ## get the arrays with 90% cutoff numbers
           #print "Numbers for GenMuPt_vs_deltaDeltaY123_eta" + qq + "_" + pp + "_withoutLCTFit"
           lut1 = get1DHistogramFractionY(mapTH2F["GenMuPt_vs_deltaDeltaY123_eta" + qq + "_" + pp + "_withoutLCTFit"], .90)
-          print "    deltaDeltaY123_dict['eta" + qq + "_" + pp + "_withoutLCTFit_x'] = ", lut1[0]
-          print "    deltaDeltaY123_dict['eta" + qq + "_" + pp + "_withoutLCTFit_y'] = ", lut1[1]
+          #print "    deltaDeltaY123_dict['eta" + qq + "_" + pp + "_withoutLCTFit_x'] = [", lut1[2].GetParameter(0), ", ", lut1[2].GetParameter(1), "]"
+          #print "    deltaDeltaY123_dict['eta" + qq + "_" + pp + "_withoutLCTFit_y'] = ", 
+          print "    deltaDeltaY123_dict['eta" + qq + "_" + pp + "_withoutLCTFit'] = [", lut1[2].GetFunction("g1").GetParameter("p0"), ", ", lut1[2].GetFunction("g1").GetParameter("p1"), "]"
 
           #print "Numbers for GenMuPt_vs_deltaDeltaY123_eta" + qq + "_" + pp + "_withLCTFit"
           lut2 = get1DHistogramFractionY(mapTH2F["GenMuPt_vs_deltaDeltaY123_eta" + qq + "_" + pp + "_withLCTFit"], 0.90)
-          print "    deltaDeltaY123_dict['eta" + qq + "_" + pp + "_withLCTFit_x'] = ", lut1[0]
-          print "    deltaDeltaY123_dict['eta" + qq + "_" + pp + "_withLCTFit_y'] = ", lut1[1]
+          #print "    deltaDeltaY123_dict['eta" + qq + "_" + pp + "_withLCTFit_x'] = ", lut1[0]
+          #print "    deltaDeltaY123_dict['eta" + qq + "_" + pp + "_withLCTFit_y'] = ", lut1[1]
+          print "    deltaDeltaY123_dict['eta" + qq + "_" + pp + "_withLCTFit'] = [", lut2[2].GetFunction("g1").GetParameter("p0"), ", ", lut2[2].GetFunction("g1").GetParameter("p1"), "]"
 
     ## plots with DTs
     makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst2, targetDir + "GenMuPt_vs_phiDTst1_phiDTst2.png", ";p_{T} [GeV]; #Delta#Phi_{12}", "COLZ")

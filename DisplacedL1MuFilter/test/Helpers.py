@@ -298,58 +298,189 @@ def pt_from_deltaDeltaY123(deltaDeltaY123, eta, parity, doFit):
 def pt_from_deltaDeltaY123_v2(deltaDeltaY123, eta, parity, doFit):
 
     deltaDeltaY123_dict = {}
-    deltaDeltaY123_dict['eta12to14_oee_withoutLCTFit'] = [ 27.5952829202 ,  3.21455892986 ]
+
+    deltaDeltaY123_dict['eta12to14_oee_withoutLCTFit'] = [ 52.0919091911 ,  -3.61894693504 ]
+
+    deltaDeltaY123_dict['eta12to14_oee_withLCTFit'] = [ 35.9551801353 ,  1.00190474086 ]
+
+
+    deltaDeltaY123_dict['eta14to16_oee_withoutLCTFit'] = [ 101.643683988 ,  -6.54103719067 ]
+
+
+    deltaDeltaY123_dict['eta14to16_oee_withLCTFit'] = [ 48.609107826 ,  1.00066523861 ]
+
+ 
+
+    deltaDeltaY123_dict['eta16to18_oee_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta16to18_oee_withLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta18to20_oee_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta18to20_oee_withLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta20to22_oee_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta20to22_oee_withLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta22to24_oee_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta22to24_oee_withLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+
+    deltaDeltaY123_dict['eta12to14_ooo_withoutLCTFit'] = [ 38.5359650751 ,  1.00428372403 ]
+
+
+    deltaDeltaY123_dict['eta12to14_ooo_withLCTFit'] = [ 30.0616600339 ,  1.00159511612 ]
+
+
+    deltaDeltaY123_dict['eta14to16_ooo_withoutLCTFit'] = [ 31.2983808352 ,  -1.22586727915 ]
+
+
+    deltaDeltaY123_dict['eta14to16_ooo_withLCTFit'] = [ 34.7936372684 ,  -4.49194713831 ]
+
+ 
+
+    deltaDeltaY123_dict['eta16to18_ooo_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta16to18_ooo_withLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta18to20_ooo_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta18to20_ooo_withLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta20to22_ooo_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta20to22_ooo_withLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta22to24_ooo_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta22to24_ooo_withLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+
+    deltaDeltaY123_dict['eta12to14_eee_withoutLCTFit'] = [ 95.3144395003 ,  -7.2255927846 ]
+
+
+    deltaDeltaY123_dict['eta12to14_eee_withLCTFit'] = [ 47.6294702605 ,  1.00046400059 ]
 
 
 
 
+    deltaDeltaY123_dict['eta14to16_eee_withoutLCTFit'] = [ 121568.238691 ,  -166352.054096 ]
 
 
 
-    deltaDeltaY123_dict['eta12to14_oee_withLCTFit'] = [ 23.7119372835 ,  3.00188285096 ]
+
+    deltaDeltaY123_dict['eta14to16_eee_withLCTFit'] = [ 2522.95263797 ,  -914.0754341 ]
+
+ 
+
+    deltaDeltaY123_dict['eta16to18_eee_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta16to18_eee_withLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta18to20_eee_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta18to20_eee_withLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta20to22_eee_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta20to22_eee_withLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta22to24_eee_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta22to24_eee_withLCTFit'] = [ 0.0 ,  -20000.0 ]
 
 
-    deltaDeltaY123_dict['eta14to16_oee_withoutLCTFit'] = [ 28.8019388077 ,  3.00182966552 ]
+    deltaDeltaY123_dict['eta12to14_eoo_withoutLCTFit'] = [ 29.8450719263 ,  1.0014819689 ]
 
 
-
-    deltaDeltaY123_dict['eta14to16_oee_withLCTFit'] = [ 41.8996801226 ,  -5.91825045233 ]
-
-
-    deltaDeltaY123_dict['eta12to14_ooo_withoutLCTFit'] = [ 44.5578556792 ,  -4.79043231261 ]
+    deltaDeltaY123_dict['eta12to14_eoo_withLCTFit'] = [ 37.4654723257 ,  -3.414019814 ]
 
 
-    deltaDeltaY123_dict['eta12to14_ooo_withLCTFit'] = [ 25.1883718474 ,  1.00338049121 ]
+    deltaDeltaY123_dict['eta14to16_eoo_withoutLCTFit'] = [ 51.707129706 ,  -3.30799157778 ]
 
 
-    deltaDeltaY123_dict['eta14to16_ooo_withoutLCTFit'] = [ 22.6119788504 ,  1.00080673886 ]
+    deltaDeltaY123_dict['eta14to16_eoo_withLCTFit'] = [ 31.9733151073 ,  1.00163291614 ]
 
+ 
 
-    deltaDeltaY123_dict['eta14to16_ooo_withLCTFit'] = [ 19.8343998733 ,  1.40360256655 ]
+    deltaDeltaY123_dict['eta16to18_eoo_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
 
-    deltaDeltaY123_dict['eta12to14_eee_withoutLCTFit'] = [ 81.908602202 ,  -6.14243529949 ]
+ 
 
+    deltaDeltaY123_dict['eta16to18_eoo_withLCTFit'] = [ 0.0 ,  -20000.0 ]
 
-    deltaDeltaY123_dict['eta12to14_eee_withLCTFit'] = [ 72.0996306768 ,  -5.25974448328 ]
+ 
+
+    deltaDeltaY123_dict['eta18to20_eoo_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta18to20_eoo_withLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta20to22_eoo_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta20to22_eoo_withLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta22to24_eoo_withoutLCTFit'] = [ 0.0 ,  -20000.0 ]
+
+ 
+
+    deltaDeltaY123_dict['eta22to24_eoo_withLCTFit'] = [ 0.0 ,  -20000.0 ]
+
 
 
     deltaDeltaY123_dict['eta14to16_eee_withoutLCTFit'] = [ 64.3515443734 ,  -4.74449794355 ]
-
-
     deltaDeltaY123_dict['eta14to16_eee_withLCTFit'] = [ 37.4198061252 ,  1.01686233993 ]
-
-
-    deltaDeltaY123_dict['eta12to14_eoo_withoutLCTFit'] = [ 34.1675209897 ,  -5.47516255606 ]
-
-
-    deltaDeltaY123_dict['eta12to14_eoo_withLCTFit'] = [ 22.4336872662 ,  -3.86935554352 ]
-
-
-    deltaDeltaY123_dict['eta14to16_eoo_withoutLCTFit'] = [ 22.7049553606 ,  1.00250901678 ]
-
-
-    deltaDeltaY123_dict['eta14to16_eoo_withLCTFit'] = [ 15.4743786952 ,  1.00122476247 ]
-
     if doFit:
         fitString = '_withLCTFit'
     else:
@@ -369,7 +500,7 @@ def get_eta_partition(eta):
   elif (abs(eta)>=1.6 and abs(eta)<1.8): etaPartition = 2
   elif (abs(eta)>=1.8 and abs(eta)<2.0): etaPartition = 3
   elif (abs(eta)>=2.0 and abs(eta)<2.2): etaPartition = 4
-  elif (abs(eta)>=2.2 and abs(eta)<2.4): etaPartition = 5
+  elif (abs(eta)>=2.2 and abs(eta)<=2.4): etaPartition = 5
   return etaPartition
  
 

@@ -1,4 +1,4 @@
-# run quiet mode
+# Run quiet mode
 import sys
 sys.argv.append( '-b' )
 import ROOT 
@@ -50,7 +50,7 @@ if __name__ == "__main__":
   targetDir = label + "/"
   
   verbose = False
-  runTest = False
+  runTest = True
   printExtraInfo = False
   processRPC = False
   
@@ -2492,10 +2492,13 @@ if __name__ == "__main__":
         for rr in padSizes:
           plotTitle = "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_eta" + qq + "_" + pp + "_" + rr + "_withoutLCTFit"
           make2DMedianPlot(mapTH2F[plotTitle], targetDir + plotTitle + ".png", rr + " " + pp + " " + qq + ";GEN Mu p_{T} [GeV]; |#Delta#Phi_{dir}(GE11,GE21)|")
+          makeSimplePlotMapFractionY(mapTH2F, plotTitle, rr + " " + pp + " " + qq + ";GEN Mu p_{T} [GeV]; |#Delta#Phi_{dir}(GE11,GE21)|")
+
           plotTitle = "GenMuPt_vs_abs_phiGEMst1_phiGEMst2_eta" + qq + "_" + pp + "_" + rr + "_withLCTFit"
           make2DMedianPlot(mapTH2F[plotTitle], targetDir + plotTitle + ".png", rr + " " + pp + " " + qq + ";GEN Mu p_{T} [GeV]; |#Delta#Phi_{dir}(GE11,GE21)|")
+          makeSimplePlotMapFractionY(mapTH2F, plotTitle, rr + " " + pp + " " + qq + ";GEN Mu p_{T} [GeV]; |#Delta#Phi_{dir}(GE11,GE21)|")
 
-          
+
     """
     makeSimplePlot(phiGEMst1_phiGEMst2, targetDir + "phiGEMst1_phiGEMst2.png", "; #Phi_{dir}(GE11)-#Phi_{dir}(GE21); Entries")
     makeSimplePlot(phiGEMst1_phiGEMst2_pt5to10, targetDir + "phiGEMst1_phiGEMst2_pt5to10.png", "; #Phi_{dir}(GE11)-#Phi_{dir}(GE21); Entries")

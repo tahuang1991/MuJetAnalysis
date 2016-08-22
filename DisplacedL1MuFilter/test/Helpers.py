@@ -304,17 +304,10 @@ def pt_from_deltaDeltaY123_v2(deltaDeltaY123, eta, parity, doFit):
     deltaDeltaY123_dict['eta12to14_oee_withoutLCTFit'] = [ 27.5952829202 ,  3.21455892986 ]
 
 
-
-
-
-
-
     deltaDeltaY123_dict['eta12to14_oee_withLCTFit'] = [ 23.7119372835 ,  3.00188285096 ]
 
 
-
     deltaDeltaY123_dict['eta14to16_oee_withoutLCTFit'] = [ 28.8019388077 ,  3.00182966552 ]
-
 
 
     deltaDeltaY123_dict['eta14to16_oee_withLCTFit'] = [ 41.8996801226 ,  -5.91825045233 ]
@@ -339,8 +332,6 @@ def pt_from_deltaDeltaY123_v2(deltaDeltaY123, eta, parity, doFit):
 
 
     deltaDeltaY123_dict['eta22to24_oee_withoutLCTFit'] = [ 52.9237035056 ,  -14.3244345763 ]
-
-
 
 
     deltaDeltaY123_dict['eta22to24_oee_withLCTFit'] = [ 6.47862510762 ,  2.67218989554 ]

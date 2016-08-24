@@ -512,7 +512,7 @@ void calculateAlphaBeta(const std::vector<float>& v,
                         const std::vector<float>& ev, 
                         const std::vector<float>& ew, 
                         float& alpha, float& beta, 
-                        int lumi, int run, int event, int muon,
+                        int lumi, int run, int event, int muon, int stub,
                         bool debug)
 {
   //std::cout << "size of v: "<<v.size() << std::endl; 
@@ -553,13 +553,14 @@ void calculateAlphaBeta(const std::vector<float>& v,
     TString srun;   srun.Form("%d", run);
     TString sevent; sevent.Form("%d", event);
     TString smuon;  smuon.Form("%d", muon);
-    
-    gr->SetTitle("Linear fit to ComparatorDigis for Lumi " + slumi + " Run " + srun + " Event " + sevent + " Muon " + smuon);
+    TString sstub;  sstub.Form("%d", stub);
+
+    gr->SetTitle("Linear fit to ComparatorDigis for Lumi " + slumi + " Run " + srun + " Event " + sevent + " Muon " + smuon + " Stub " + sstub);
     gr->SetMarkerColor(4);
     gr->SetMarkerStyle(21);
     gr->Draw("ALP");
     
-    c1->SaveAs("ComparatoDigiLinearFits/c_debug_fit_L" + slumi + "_R" + srun + "_E" + sevent + "_M" + smuon + ".png");
+    c1->SaveAs("ComparatoDigiLinearFits/c_debug_fit_L" + slumi + "_R" + srun + "_E" + sevent + "_M" + smuon + "_S" + sstub + ".png");
     delete c1;
   }
   delete fit1;
@@ -1770,10 +1771,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         double csc_y = gp.y();
         double csc_z = gp.z();
         double csc_R = TMath::Sqrt(gp.y()*gp.y() + gp.x()*gp.x());
-        int keyWireGroup = stub.getKeyWG();
-        float localY = cscChamber->layer(3)->geometry()->yOfWireGroup(keyWireGroup);
-        float radius = cscChamber->layer(3)->surface().toGlobal(LocalPoint(0,0,0)).perp() + localY;
-        std::cout << "csc_R " << csc_R << " radius " << radius << std::endl;
+        //int keyWireGroup = stub.getKeyWG();
+        //float localY = cscChamber->layer(3)->geometry()->yOfWireGroup(keyWireGroup);
+        float radius = csc_R; //cscChamber->layer(3)->surface().toGlobal(LocalPoint(0,0,0)).perp() + localY;
+        //std::cout << "csc_R " << csc_R << " radius " << radius << std::endl;
         // fetch the CSC comparator digis in this chamber
         CSCComparatorDigiContainerIds compDigisIds;
         for (int iLayer=1; iLayer<=6; ++iLayer){
@@ -1822,7 +1823,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         float alpha = 0., beta = 0.;
         calculateAlphaBeta(zs, phis, ezs, ephis,
                            alpha, beta, 
-                           event_.lumi, event_.run, event_.event, j, true);
+                           event_.lumi, event_.run, event_.event, j, int(digiIt - range.first), true);
         
         float z_pos_L3 = cscChamber->layer(CSCConstants::KEY_CLCT_LAYER)->centerOfStrip(20).z();
         float bestFitPhi = alpha + beta * z_pos_L3;

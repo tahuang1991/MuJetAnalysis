@@ -500,30 +500,20 @@ getHalfStrip(const CSCComparatorDigi& digi)
 {
   return (digi.getStrip() - 1) * 2 + digi.getComparator();
 }
-/*
-void calculateAlphaBeta(const std::vector<float>& v, const std::vector<float>& w, float& alpha, float& beta)
+
+float 
+getFractionalStrip(const CSCComparatorDigi&d)
 {
-  float vbar = std::accumulate( v.begin(), v.end(), 0.0)/v.size();
-  float wbar = std::accumulate( w.begin(), w.end(), 0.0)/w.size();
-  
-  double sum1=0., sum2=0.; 
-  for (unsigned int i=0; i<v.size(); ++i){
-    sum1 += (v[i] - vbar)*(w[i] - wbar);
-    sum2 += (v[i] - vbar)*(v[i] - vbar);
-  }
-  beta = sum1/sum2;
-  alpha = wbar - beta * vbar;
+  return d.getStrip() + d.getComparator()/2. - 3/4.;
 }
-*/
 
 void calculateAlphaBeta(const std::vector<float>& v, 
                         const std::vector<float>& w, 
                         const std::vector<float>& ev, 
                         const std::vector<float>& ew, 
-                        const std::vector<float>& status,
                         float& alpha, float& beta, 
                         int lumi, int run, int event, int muon,
-                        int keyStrip, int Pattern, bool debug)
+                        bool debug)
 {
   //std::cout << "size of v: "<<v.size() << std::endl; 
   
@@ -1443,7 +1433,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       std::vector<float> zs;
       std::vector<float> ephis;
       std::vector<float> ezs;
-      std::vector<float> status;
       int keyWireGroup = bestMatchingLCT.getKeyWG();
       float localY = cscChamber->layer(3)->geometry()->yOfWireGroup(keyWireGroup);
       float radius = cscChamber->layer(3)->surface().toGlobal(LocalPoint(0,0,0)).perp() + localY;
@@ -1478,17 +1467,16 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           phis.push_back(bestphi);
           ephis.push_back(gemvalidation::cscHalfStripWidth(detId)/sqrt(12));
         }
-        //        status.push_back(0);
-          
+        
         if(verbose) std::cout << std::endl;
       }
       auto compDigis = match_csc.matchingComparatorDigisLCT(detId, bestMatchingLCT);
       if(verbose) std::cout << "Matching compDigis " << compDigis.size() << std::endl;
 
       float alpha = 0., beta = 0.;
-      calculateAlphaBeta(zs, phis, ezs, ephis, status,
+      calculateAlphaBeta(zs, phis, ezs, ephis,
                          alpha, beta, 
-                         event_.lumi, event_.run, event_.event, k, 0, 0, produceFitPlots_);
+                         event_.lumi, event_.run, event_.event, k, produceFitPlots_);
       
       float z_pos_L3 = cscChamber->layer(CSCConstants::KEY_CLCT_LAYER)->centerOfStrip(20).z();
       float bestFitPhi = alpha + beta * z_pos_L3;
@@ -1816,8 +1804,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       event_.CSCTF_nStubs[j] = 0;
       auto stubCollection(l1Tracks[j].second);
       for (auto detUnitIt = stubCollection.begin(); detUnitIt != stubCollection.end(); detUnitIt++) {
-        const CSCDetId& id = (*detUnitIt).first;
-        
+        const CSCDetId& ch_id = (*detUnitIt).first;
+        auto cscChamber = cscGeometry_->chamber(ch_id);
         // GEM chamber detid and the corresponding GEMCoPadDigis
         //const GEMDetId gemId(id.zendcap(), id.ring(), id.station(), 1, id.chamber(), 0);
         //const auto gemCoPadRange = GEMCSCCoPads.get(gemId);
@@ -1827,7 +1815,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           //if (!(*digiIt).isValid()) continue;
           event_.CSCTF_nStubs[j] += 1;
           auto stub = *digiIt;
-          auto gp = getCSCSpecificPoint2(id.rawId(), stub);
+          auto gp = getCSCSpecificPoint2(ch_id.rawId(), stub);
           double csc_x = gp.x();
           double csc_y = gp.y();
           double csc_z = gp.z();
@@ -1836,7 +1824,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           CSCComparatorDigiContainerIds compDigisIds;
           // fetch the CSC comparator digis in this chamber
           for (int iLayer=1; iLayer<=6; ++iLayer){
-            CSCDetId layerId(id.endcap(), id.station(), id.ring(), id.chamber(), iLayer);
+            CSCDetId layerId(ch_id.endcap(), ch_id.station(), ch_id.ring(), ch_id.chamber(), iLayer);
             // get the digis per layer
             auto compRange = hCSCComparators->get(layerId);
             CSCComparatorDigiContainer compDigis;
@@ -1844,22 +1832,59 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
               auto compDigi = *compDigiItr;
               //if (stub.getTimeBin() < 4 or stub.getTimeBin() > 8) continue;
               int stubHalfStrip(getHalfStrip(compDigi));
+              // these comparator digis never fit the pattern anyway!
               if (std::abs(stubHalfStrip-stub.getStrip())>5) continue;
               // check if this comparator digi fits the pattern
-              if (not comparatorInLCTPattern(stub.getStrip(), stub.getPattern(), iLayer, stubHalfStrip)) continue;
-              std::cout << "Comparator digi L1Mu " << layerId << " " << compDigi << " HS " << stubHalfStrip << " stubKeyHS " << stub.getStrip() << std::endl; 
-              compDigis.push_back(compDigi);
+              if(verbose) std::cout << "Comparator digi L1Mu " << layerId << " " << compDigi << " HS " << stubHalfStrip << " stubKeyHS " << stub.getStrip() << std::endl; 
+              if (comparatorInLCTPattern(stub.getStrip(), stub.getPattern(), iLayer, stubHalfStrip)) {
+                if(verbose) std::cout<<"\tACCEPT"<<std::endl;
+                compDigis.push_back(compDigi);
+              }
+              else{
+                if(verbose) std::cout<<"\tDECLINE!"<<std::endl;
+              }
             }
-            if (compDigis.size() > 2) std::cout << ">>> INFO: " << compDigis.size() << " matched comp digis in this layer!" << std::endl;
+            if(verbose) if (compDigis.size() > 2) std::cout << ">>> INFO: " << compDigis.size() << " matched comp digis in this layer!" << std::endl;
             compDigisIds.push_back(std::make_pair(layerId, compDigis));
           }
           
-          switch(id.station()) {
+          // do a fit to the comparator digis
+          std::vector<float> phis;
+          std::vector<float> zs;
+          std::vector<float> ephis;
+          std::vector<float> ezs;
+          for (auto p: compDigisIds){
+            auto detId = p.first;
+            for (auto hit: p.second){
+              float fractional_strip = getFractionalStrip(hit);
+              auto layer_geo = cscChamber->layer(detId.layer())->geometry();
+              LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, 20);
+              GlobalPoint csc_gp = cscGeometry_->idToDet(detId)->surface().toGlobal(csc_intersect);
+              zs.push_back(csc_gp.z());
+              ezs.push_back(0);
+              phis.push_back(csc_gp.phi());
+              ephis.push_back(gemvalidation::cscHalfStripWidth(detId)/sqrt(12));
+            }
+          }
+          float alpha = 0., beta = 0.;
+          calculateAlphaBeta(zs, phis, ezs, ephis,
+                             alpha, beta, 
+                             event_.lumi, event_.run, event_.event, 0, true);
+          
+          float z_pos_L3 = cscChamber->layer(CSCConstants::KEY_CLCT_LAYER)->centerOfStrip(20).z();
+          float bestFitPhi = alpha + beta * z_pos_L3;
+          
+          if(verbose) {
+            std::cout << "Number of comparator digis used in the fit " << ezs.size() << std::endl;
+            std::cout << "best CSC stub fit phi position (L1Only) " << z_pos_L3 << " " << bestFitPhi << std::endl;
+          }    
+
+          switch(ch_id.station()) {
           case 1:
-            event_.CSCTF_st1[j] = id.station();
-            event_.CSCTF_ri1[j] = id.ring(); 
-            event_.CSCTF_ch1[j] = id.chamber();
-            event_.CSCTF_en1[j] = id.zendcap();
+            event_.CSCTF_st1[j] = ch_id.station();
+            event_.CSCTF_ri1[j] = ch_id.ring(); 
+            event_.CSCTF_ch1[j] = ch_id.chamber();
+            event_.CSCTF_en1[j] = ch_id.zendcap();
             event_.CSCTF_trk1[j] = stub.getTrknmb(); 
             event_.CSCTF_quality1[j] = stub.getQuality();
             event_.CSCTF_wg1[j] = stub.getKeyWG();
@@ -1877,10 +1902,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.CSCTF_z1[j] = csc_z;
             break;
           case 2:
-            event_.CSCTF_st2[j] = id.station();
-            event_.CSCTF_ri2[j] = id.ring(); 
-            event_.CSCTF_ch2[j] = id.chamber();
-            event_.CSCTF_en2[j] = id.zendcap();
+            event_.CSCTF_st2[j] = ch_id.station();
+            event_.CSCTF_ri2[j] = ch_id.ring(); 
+            event_.CSCTF_ch2[j] = ch_id.chamber();
+            event_.CSCTF_en2[j] = ch_id.zendcap();
             event_.CSCTF_trk2[j] = stub.getTrknmb(); 
             event_.CSCTF_quality2[j] = stub.getQuality();
             event_.CSCTF_wg2[j] = stub.getKeyWG();
@@ -1898,10 +1923,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.CSCTF_z2[j] = csc_z;
             break;
           case 3:
-            event_.CSCTF_st3[j] = id.station();
-            event_.CSCTF_ri3[j] = id.ring(); 
-            event_.CSCTF_ch3[j] = id.chamber();
-            event_.CSCTF_en3[j] = id.zendcap();
+            event_.CSCTF_st3[j] = ch_id.station();
+            event_.CSCTF_ri3[j] = ch_id.ring(); 
+            event_.CSCTF_ch3[j] = ch_id.chamber();
+            event_.CSCTF_en3[j] = ch_id.zendcap();
             event_.CSCTF_trk3[j] = stub.getTrknmb(); 
             event_.CSCTF_quality3[j] = stub.getQuality();
             event_.CSCTF_wg3[j] = stub.getKeyWG();
@@ -1918,10 +1943,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             event_.CSCTF_z3[j] = csc_z;
             break;
           case 4:
-            event_.CSCTF_st4[j] = id.station();
-            event_.CSCTF_ri4[j] = id.ring(); 
-            event_.CSCTF_ch4[j] = id.chamber();
-            event_.CSCTF_en4[j] = id.zendcap();
+            event_.CSCTF_st4[j] = ch_id.station();
+            event_.CSCTF_ri4[j] = ch_id.ring(); 
+            event_.CSCTF_ch4[j] = ch_id.chamber();
+            event_.CSCTF_en4[j] = ch_id.zendcap();
             event_.CSCTF_trk4[j] = stub.getTrknmb(); 
             event_.CSCTF_quality4[j] = stub.getQuality();
             event_.CSCTF_wg4[j] = stub.getKeyWG();

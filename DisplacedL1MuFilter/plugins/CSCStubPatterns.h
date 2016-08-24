@@ -217,18 +217,18 @@ std::vector< std::vector<std::vector<int> > > patIndexToPatternDelta {
 bool 
 comparatorInLCTPattern(int keyStrip, int pattern, int layer, int halfStrip)
 {
+  bool debug = false;
   // first, get the (sub)pattern
   bool returnValue = false;
   std::vector<int> subpat = patIndexToPatternDelta[pattern].at(layer-1);
-  for (auto p: subpat) std::cout << "\t" << p << std::endl;
+  if (debug) for (auto p: subpat) std::cout << "\t" << p << std::endl;
+  if (debug) std::cout << "\tkeyStrip pattern layer halfstrip " << keyStrip << " " <<pattern << " " <<layer << " " <<halfStrip <<std::endl <<std::endl;
+  // due to comparator digi time extension in the CLCT processor we need to  
+  // search a bigger region around the key HS. +/-1, 0 should be sufficient
   int halfStripDelta = halfStrip - keyStrip;
-  std::cout << "\tkeyStrip pattern layer halfstrip " << keyStrip << " " <<pattern << " " <<layer << " " <<halfStrip <<std::endl <<std::endl;
-  returnValue = std::find(subpat.begin(), subpat.end(), halfStripDelta) != subpat.end();
-  // special case for the comparator digi on the key layer
-  if (layer==3){
-    returnValue = ( std::find(subpat.begin(), subpat.end(), 1) != subpat.end() or
-                    std::find(subpat.begin(), subpat.end(), -1) != subpat.end() );
-  }
+  returnValue = ( std::find(subpat.begin(), subpat.end(), halfStripDelta+1) != subpat.end() or
+                  std::find(subpat.begin(), subpat.end(), halfStripDelta)   != subpat.end() or
+                  std::find(subpat.begin(), subpat.end(), halfStripDelta-1) != subpat.end() );
   return returnValue;
 }
 

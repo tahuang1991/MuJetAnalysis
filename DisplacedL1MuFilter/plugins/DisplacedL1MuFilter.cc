@@ -1224,7 +1224,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     SimTrackMatchManager match(sim_muon, sim_vertex, cfg_, iEvent, iSetup);
 
     const SimHitMatcher& match_sh = match.simhits();
-    const CSCDigiMatcher& match_cd = match.cscDigis();
+    //const CSCDigiMatcher& match_cd = match.cscDigis();
     const CSCStubMatcher& match_csc = match.cscStubs();
     const GEMDigiMatcher& match_gd = match.gemDigis();
 
@@ -1414,6 +1414,11 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
     }
     
+    /*
+
+    SIM based analysis to get the positions - obsolete since I derive the positions using only 
+    DIGI-L1 quantities
+
     // CSC digis in chambers
     if(verbose) std::cout<<std::endl<<"++++ CSC digi  and stub analysis ++++"<<std::endl;
     for (auto d: match_csc.chamberIdsLCT()){
@@ -1511,6 +1516,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         event_.CSCTF_fit_R4[k] = radius;
       }
     }
+    */
 
     // recover the missing stubs in station 1 and 2... (because they were not used in the track building)
     // GEM digis and pads in superchambers
@@ -1747,6 +1753,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     for (auto detUnitIt = stubCollection.begin(); detUnitIt != stubCollection.end(); detUnitIt++) {
       const CSCDetId& ch_id = (*detUnitIt).first;
       auto cscChamber = cscGeometry_->chamber(ch_id);
+
       // GEM chamber detid and the corresponding GEMCoPadDigis
       //const GEMDetId gemId(id.zendcap(), id.ring(), id.station(), 1, id.chamber(), 0);
       //const auto gemCoPadRange = GEMCSCCoPads.get(gemId);
@@ -1756,14 +1763,19 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         //if (!(*digiIt).isValid()) continue;
         event_.CSCTF_nStubs[j] += 1;
         auto stub = *digiIt;
+
+        // stub position
         auto gp = getCSCSpecificPoint2(ch_id.rawId(), stub);
         double csc_x = gp.x();
         double csc_y = gp.y();
         double csc_z = gp.z();
         double csc_R = TMath::Sqrt(gp.y()*gp.y() + gp.x()*gp.x());
-        
-        CSCComparatorDigiContainerIds compDigisIds;
+        int keyWireGroup = stub.getKeyWG();
+        float localY = cscChamber->layer(3)->geometry()->yOfWireGroup(keyWireGroup);
+        float radius = cscChamber->layer(3)->surface().toGlobal(LocalPoint(0,0,0)).perp() + localY;
+        std::cout << "csc_R " << csc_R << " radius " << radius << std::endl;
         // fetch the CSC comparator digis in this chamber
+        CSCComparatorDigiContainerIds compDigisIds;
         for (int iLayer=1; iLayer<=6; ++iLayer){
           CSCDetId layerId(ch_id.endcap(), ch_id.station(), ch_id.ring(), ch_id.chamber(), iLayer);
           // get the digis per layer
@@ -1776,16 +1788,16 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             // these comparator digis never fit the pattern anyway!
             if (std::abs(stubHalfStrip-stub.getStrip())>5) continue;
             // check if this comparator digi fits the pattern
-            if(verbose) std::cout << "Comparator digi L1Mu " << layerId << " " << compDigi << " HS " << stubHalfStrip << " stubKeyHS " << stub.getStrip() << std::endl; 
+            //if(verbose) std::cout << "Comparator digi L1Mu " << layerId << " " << compDigi << " HS " << stubHalfStrip << " stubKeyHS " << stub.getStrip() << std::endl; 
             if (comparatorInLCTPattern(stub.getStrip(), stub.getPattern(), iLayer, stubHalfStrip)) {
-              if(verbose) std::cout<<"\tACCEPT"<<std::endl;
+              //if(verbose) std::cout<<"\tACCEPT"<<std::endl;
               compDigis.push_back(compDigi);
             }
-            else{
-              if(verbose) std::cout<<"\tDECLINE!"<<std::endl;
-            }
+            // else{
+            //   if(verbose) std::cout<<"\tDECLINE!"<<std::endl;
+            // }
           }
-          if(verbose) if (compDigis.size() > 2) std::cout << ">>> INFO: " << compDigis.size() << " matched comp digis in this layer!" << std::endl;
+          // if(verbose) if (compDigis.size() > 2) std::cout << ">>> INFO: " << compDigis.size() << " matched comp digis in this layer!" << std::endl;
           compDigisIds.push_back(std::make_pair(layerId, compDigis));
         }
         
@@ -1841,6 +1853,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           event_.CSCTF_x1[j] = csc_x;
           event_.CSCTF_y1[j] = csc_y;
           event_.CSCTF_z1[j] = csc_z;
+          // fitted positions
+          event_.CSCTF_fit_phi1[j] = bestFitPhi;
+          event_.CSCTF_fit_x1[j] = radius*cos(bestFitPhi);
+          event_.CSCTF_fit_y1[j] = radius*sin(bestFitPhi);
+          event_.CSCTF_fit_z1[j] = z_pos_L3;
+          event_.CSCTF_fit_R1[j] = radius;
           break;
         case 2:
           event_.CSCTF_st2[j] = ch_id.station();
@@ -1862,6 +1880,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           event_.CSCTF_x2[j] = csc_x;
           event_.CSCTF_y2[j] = csc_y;
           event_.CSCTF_z2[j] = csc_z;
+          // fitted positions
+          event_.CSCTF_fit_phi2[j] = bestFitPhi;
+          event_.CSCTF_fit_x2[j] = radius*cos(bestFitPhi);
+          event_.CSCTF_fit_y2[j] = radius*sin(bestFitPhi);
+          event_.CSCTF_fit_z2[j] = z_pos_L3;
+          event_.CSCTF_fit_R2[j] = radius;
           break;
         case 3:
           event_.CSCTF_st3[j] = ch_id.station();
@@ -1882,6 +1906,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           event_.CSCTF_x3[j] = csc_x;
           event_.CSCTF_y3[j] = csc_y;
           event_.CSCTF_z3[j] = csc_z;
+          // fitted positions
+          event_.CSCTF_fit_phi3[j] = bestFitPhi;
+          event_.CSCTF_fit_x3[j] = radius*cos(bestFitPhi);
+          event_.CSCTF_fit_y3[j] = radius*sin(bestFitPhi);
+          event_.CSCTF_fit_z3[j] = z_pos_L3;
+          event_.CSCTF_fit_R3[j] = radius;
           break;
         case 4:
           event_.CSCTF_st4[j] = ch_id.station();
@@ -1902,6 +1932,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           event_.CSCTF_x4[j] = csc_x;
           event_.CSCTF_y4[j] = csc_y;
           event_.CSCTF_z4[j] = csc_z;
+          // fitted positions
+          event_.CSCTF_fit_phi4[j] = bestFitPhi;
+          event_.CSCTF_fit_x4[j] = radius*cos(bestFitPhi);
+          event_.CSCTF_fit_y4[j] = radius*sin(bestFitPhi);
+          event_.CSCTF_fit_z4[j] = z_pos_L3;
+          event_.CSCTF_fit_R4[j] = radius;
           break;
         };
       }
@@ -2252,77 +2288,80 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
     }
 
-    // Matching to RPCb cands
-    double bestDrL1MuL1RPCb = 99;
-    for (unsigned int j=0; j<l1MuRPCbs.size(); ++j) { 
-      if ( ( event_.L1Mu_quality[i] > 0 ) &&
-           ( reco::deltaPhi( event_.L1Mu_phi[i], event_.RPCb_phi[j] ) < 0.001 ) &&             
-           ( event_.L1Mu_bx[i] == event_.RPCb_bx[j] ) ) {
-        double drL1MuL1RPCb = reco::deltaR(l1Mu.etaValue(), 
-                                           normalizedPhi(l1Mu.phiValue()), 
-                                           event_.RPCb_eta[j], 
-                                           event_.RPCb_phi[j]);
-        if (drL1MuL1RPCb < bestDrL1MuL1RPCb and drL1MuL1RPCb < 0.3) {
-          bestDrL1MuL1RPCb = drL1MuL1RPCb;
-          event_.L1Mu_RPCb_index[i] = j;
+    if (processRPCb_) {
+      // Matching to RPCb cands
+      double bestDrL1MuL1RPCb = 99;
+      for (unsigned int j=0; j<l1MuRPCbs.size(); ++j) { 
+        if ( ( event_.L1Mu_quality[i] > 0 ) &&
+             ( reco::deltaPhi( event_.L1Mu_phi[i], event_.RPCb_phi[j] ) < 0.001 ) &&             
+             ( event_.L1Mu_bx[i] == event_.RPCb_bx[j] ) ) {
+          double drL1MuL1RPCb = reco::deltaR(l1Mu.etaValue(), 
+                                             normalizedPhi(l1Mu.phiValue()), 
+                                             event_.RPCb_eta[j], 
+                                             event_.RPCb_phi[j]);
+          if (drL1MuL1RPCb < bestDrL1MuL1RPCb and drL1MuL1RPCb < 0.3) {
+            bestDrL1MuL1RPCb = drL1MuL1RPCb;
+            event_.L1Mu_RPCb_index[i] = j;
+          }
+        }                
+      }
+      
+      if(verbose) {  
+        int tempIndex = event_.L1Mu_RPCb_index[i]; 
+        if (tempIndex != -1) { // and bestDrL1MuL1CSCTrack < 0.2
+          // Print matching RPCb track
+          std::cout << "\tMatching RPCb track" << std::endl;
+          std::cout << "\tpt = "  << event_.RPCb_pt[tempIndex]
+                    << ", eta = " << event_.RPCb_eta[tempIndex]
+                    << ", phi = " << event_.RPCb_phi[tempIndex]
+                    << ", bx = "  << event_.RPCb_bx[tempIndex]
+                    << ", quality = " << event_.RPCb_quality[tempIndex]
+                    << ", nStubs = " << event_.RPCb_nStubs[tempIndex]
+                    << std::endl;
         }
-      }                
+        else {
+          std::cout << "\tNo matching RPCb track" << std::endl;
+        }
+      }
     }
     
-    if(verbose) {  
-      int tempIndex = event_.L1Mu_RPCb_index[i]; 
-      if (tempIndex != -1) { // and bestDrL1MuL1CSCTrack < 0.2
-        // Print matching RPCb track
-        std::cout << "\tMatching RPCb track" << std::endl;
-        std::cout << "\tpt = "  << event_.RPCb_pt[tempIndex]
-                  << ", eta = " << event_.RPCb_eta[tempIndex]
-                  << ", phi = " << event_.RPCb_phi[tempIndex]
-                  << ", bx = "  << event_.RPCb_bx[tempIndex]
-                  << ", quality = " << event_.RPCb_quality[tempIndex]
-                  << ", nStubs = " << event_.RPCb_nStubs[tempIndex]
-                  << std::endl;
+    if (processRPCf_) {
+      // Matching to RPCf cands
+      double bestDrL1MuL1RPCf = 99;
+      for (unsigned int j=0; j<l1MuRPCfs.size(); ++j) { 
+        if ( ( event_.L1Mu_quality[i] > 0 ) &&
+             ( reco::deltaPhi( event_.L1Mu_phi[i], event_.RPCf_phi[j] ) < 0.001 ) &&             
+             ( event_.L1Mu_bx[i] == event_.RPCf_bx[j] ) ) {
+          double drL1MuL1RPCf = reco::deltaR(l1Mu.etaValue(), 
+                                             normalizedPhi(l1Mu.phiValue()), 
+                                             event_.RPCf_eta[j], 
+                                             event_.RPCf_phi[j]);
+          if (drL1MuL1RPCf < bestDrL1MuL1RPCf and drL1MuL1RPCf < 0.3) {
+            bestDrL1MuL1RPCf = drL1MuL1RPCf;
+            event_.L1Mu_RPCf_index[i] = j;
+          }
+        }                
       }
-      else {
-        std::cout << "\tNo matching RPCb track" << std::endl;
-      }
-    }
-
-    // Matching to RPCf cands
-    double bestDrL1MuL1RPCf = 99;
-    for (unsigned int j=0; j<l1MuRPCfs.size(); ++j) { 
-      if ( ( event_.L1Mu_quality[i] > 0 ) &&
-           ( reco::deltaPhi( event_.L1Mu_phi[i], event_.RPCf_phi[j] ) < 0.001 ) &&             
-           ( event_.L1Mu_bx[i] == event_.RPCf_bx[j] ) ) {
-        double drL1MuL1RPCf = reco::deltaR(l1Mu.etaValue(), 
-                                           normalizedPhi(l1Mu.phiValue()), 
-                                           event_.RPCf_eta[j], 
-                                           event_.RPCf_phi[j]);
-        if (drL1MuL1RPCf < bestDrL1MuL1RPCf and drL1MuL1RPCf < 0.3) {
-          bestDrL1MuL1RPCf = drL1MuL1RPCf;
-          event_.L1Mu_RPCf_index[i] = j;
+      
+      if(verbose) {  
+        int tempIndex = event_.L1Mu_RPCf_index[i]; 
+        if (tempIndex != -1) { // and bestDrL1MuL1CSCTrack < 0.2
+          // Print matching RPCf track
+          std::cout << "\tMatching RPCf track" << std::endl;
+          std::cout << "\tpt = "  << event_.RPCf_pt[tempIndex]
+                    << ", eta = " << event_.RPCf_eta[tempIndex]
+                    << ", phi = " << event_.RPCf_phi[tempIndex]
+                    << ", bx = "  << event_.RPCf_bx[tempIndex]
+                    << ", quality = " << event_.RPCf_quality[tempIndex]
+                    << ", nStubs = " << event_.RPCf_nStubs[tempIndex]
+                    << std::endl;
         }
-      }                
+        else {
+          std::cout << "\tNo matching RPCf track" << std::endl;
+        }
+      }
     }
     
-    if(verbose) {  
-      int tempIndex = event_.L1Mu_RPCf_index[i]; 
-      if (tempIndex != -1) { // and bestDrL1MuL1CSCTrack < 0.2
-        // Print matching RPCf track
-        std::cout << "\tMatching RPCf track" << std::endl;
-        std::cout << "\tpt = "  << event_.RPCf_pt[tempIndex]
-                  << ", eta = " << event_.RPCf_eta[tempIndex]
-                  << ", phi = " << event_.RPCf_phi[tempIndex]
-                  << ", bx = "  << event_.RPCf_bx[tempIndex]
-                  << ", quality = " << event_.RPCf_quality[tempIndex]
-                  << ", nStubs = " << event_.RPCf_nStubs[tempIndex]
-                  << std::endl;
-      }
-      else {
-        std::cout << "\tNo matching RPCf track" << std::endl;
-      }
-    }
-
-
     // calculate the number of L1Tk within 0.12
     for (unsigned int j=0; j<TTTracks.size(); ++j) {
       auto l1Tk = TTTracks[j];

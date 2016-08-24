@@ -113,6 +113,14 @@
 #include <L1Trigger/CSCTrackFinder/interface/CSCTFPtLUT.h>
 #include "GEMCode/GEMValidation/interface/SimTrackMatchManager.h"
 
+#include "DataFormats/CSCDigi/interface/CSCComparatorDigiCollection.h"
+#include "DataFormats/CSCDigi/interface/CSCWireDigiCollection.h"
+#include "DataFormats/CSCDigi/interface/CSCALCTDigiCollection.h"
+#include "DataFormats/CSCDigi/interface/CSCCLCTDigiCollection.h"
+#include "DataFormats/CSCDigi/interface/CSCCorrelatedLCTDigiCollection.h"
+
+#include "DataFormats/GEMDigi/interface/GEMCSCPadDigiCollection.h"
+#include "DataFormats/GEMDigi/interface/GEMCSCCoPadDigiCollection.h"
 //
 // class declaration
 //
@@ -795,6 +803,20 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   edm::Handle< std::vector<RPCDigiL1Link> > hL1MuRPCfLinks;
   iEvent.getByLabel("simRpcTriggerDigis", "RPCf", hL1MuRPCfLinks);
   const std::vector<RPCDigiL1Link>& l1MuRPCfLinks(*hL1MuRPCfLinks.product());
+
+  // comparator digis
+  // edm::Handle< CSCComparatorDigiCollection > hCSCComparators;
+  // iEvent.getByLabel("simMuonCSCDigis", "MuonCSCComparatorDigi", hCSCComparators);
+  // const CSCComparatorDigiCollection& CSCComparators(*hCSCComparators.product());
+
+  // GEM pads and copads
+  // edm::Handle< GEMCSCPadDigiCollection > hGEMCSCPads;
+  // iEvent.getByLabel("simMuonGEMDigis", hGEMCSCPads);
+  // const GEMCSCPadDigiCollection& GEMCSCPads(*hGEMCSCPads.product());
+
+  // edm::Handle< GEMCSCCoPadDigiCollection > hGEMCSCCoPads;
+  // iEvent.getByLabel("simCscTriggerPrimitiveDigis", hGEMCSCCoPads);
+  // const GEMCSCCoPadDigiCollection& GEMCSCCoPads(*hGEMCSCCoPads.product());
 
   // L1 TrackingTrigger Analysis
   edm::Handle< std::vector< TTTrack< Ref_PixelDigi_ > > > TTTrackHandle;
@@ -1776,6 +1798,11 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       auto stubCollection(l1Tracks[j].second);
       for (auto detUnitIt = stubCollection.begin(); detUnitIt != stubCollection.end(); detUnitIt++) {
         const CSCDetId& id = (*detUnitIt).first;
+        
+        // GEM chamber detid and the corresponding GEMCoPadDigis
+        //const GEMDetId gemId(id.zendcap(), id.ring(), id.station(), 1, id.chamber(), 0);
+        //const auto gemCoPadRange = GEMCSCCoPads.get(gemId);
+        
         const auto range = (*detUnitIt).second;
         for (auto digiIt = range.first; digiIt != range.second; digiIt++) {
           //if (!(*digiIt).isValid()) continue;

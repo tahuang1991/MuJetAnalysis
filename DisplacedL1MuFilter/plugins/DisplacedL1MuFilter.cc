@@ -620,7 +620,9 @@ private:
   GlobalPoint getCSCSpecificPoint2(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const;
   GlobalPoint getCSCSpecificPointStrips(const SimTrackMatchManager& tp) const;
   bool isCSCCounterClockwise(const std::unique_ptr<const CSCLayer>& layer) const;
-
+  void fitComparatorsLCT(const CSCComparatorDigiCollection&, const CSCCorrelatedLCTDigi& tp, 
+                         CSCDetId chid, int iMuon, float& fit_z, float& fit_phi) const;
+  
   void extrapolate(const SimTrack&tk, const SimVertex&, GlobalPoint&);
   void extrapolate(const reco::GenParticle &tk, int station, GlobalPoint&, GlobalVector&);
   void extrapolate(const TTTrack< Ref_PixelDigi_ > &tk, int station, GlobalPoint&, GlobalVector&);
@@ -1753,7 +1755,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     auto stubCollection(l1Tracks[j].second);
     for (auto detUnitIt = stubCollection.begin(); detUnitIt != stubCollection.end(); detUnitIt++) {
       const CSCDetId& ch_id = (*detUnitIt).first;
-      auto cscChamber = cscGeometry_->chamber(ch_id);
 
       // GEM chamber detid and the corresponding GEMCoPadDigis
       //const GEMDetId gemId(id.zendcap(), id.ring(), id.station(), 1, id.chamber(), 0);
@@ -1775,64 +1776,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         //float localY = cscChamber->layer(3)->geometry()->yOfWireGroup(keyWireGroup);
         float radius = csc_R; //cscChamber->layer(3)->surface().toGlobal(LocalPoint(0,0,0)).perp() + localY;
         //std::cout << "csc_R " << csc_R << " radius " << radius << std::endl;
-        // fetch the CSC comparator digis in this chamber
-        CSCComparatorDigiContainerIds compDigisIds;
-        for (int iLayer=1; iLayer<=6; ++iLayer){
-          CSCDetId layerId(ch_id.endcap(), ch_id.station(), ch_id.ring(), ch_id.chamber(), iLayer);
-          // get the digis per layer
-          auto compRange = hCSCComparators->get(layerId);
-          CSCComparatorDigiContainer compDigis;
-          for (auto compDigiItr = compRange.first; compDigiItr != compRange.second; compDigiItr++) {
-            auto compDigi = *compDigiItr;
-            //if (stub.getTimeBin() < 4 or stub.getTimeBin() > 8) continue;
-            int stubHalfStrip(getHalfStrip(compDigi));
-            // these comparator digis never fit the pattern anyway!
-            if (std::abs(stubHalfStrip-stub.getStrip())>5) continue;
-            // check if this comparator digi fits the pattern
-            //if(verbose) std::cout << "Comparator digi L1Mu " << layerId << " " << compDigi << " HS " << stubHalfStrip << " stubKeyHS " << stub.getStrip() << std::endl; 
-            if (comparatorInLCTPattern(stub.getStrip(), stub.getPattern(), iLayer, stubHalfStrip)) {
-              //if(verbose) std::cout<<"\tACCEPT"<<std::endl;
-              compDigis.push_back(compDigi);
-            }
-            // else{
-            //   if(verbose) std::cout<<"\tDECLINE!"<<std::endl;
-            // }
-          }
-          // if(verbose) if (compDigis.size() > 2) std::cout << ">>> INFO: " << compDigis.size() << " matched comp digis in this layer!" << std::endl;
-          compDigisIds.push_back(std::make_pair(layerId, compDigis));
-        }
-        
-        // do a fit to the comparator digis
-        std::vector<float> phis;
-        std::vector<float> zs;
-        std::vector<float> ephis;
-        std::vector<float> ezs;
-        for (auto p: compDigisIds){
-          auto detId = p.first;
-          for (auto hit: p.second){
-            float fractional_strip = getFractionalStrip(hit);
-            auto layer_geo = cscChamber->layer(detId.layer())->geometry();
-            LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, 20);
-            GlobalPoint csc_gp = cscGeometry_->idToDet(detId)->surface().toGlobal(csc_intersect);
-            zs.push_back(csc_gp.z());
-            ezs.push_back(0);
-            phis.push_back(csc_gp.phi());
-            ephis.push_back(gemvalidation::cscHalfStripWidth(detId)/sqrt(12));
-          }
-        }
-        float alpha = 0., beta = 0.;
-        calculateAlphaBeta(zs, phis, ezs, ephis,
-                           alpha, beta, 
-                           event_.lumi, event_.run, event_.event, j, int(digiIt - range.first), true);
-        
-        float z_pos_L3 = cscChamber->layer(CSCConstants::KEY_CLCT_LAYER)->centerOfStrip(20).z();
-        float bestFitPhi = alpha + beta * z_pos_L3;
-        
-        if(verbose) {
-          std::cout << "Number of comparator digis used in the fit " << ezs.size() << std::endl;
-          std::cout << "best CSC stub fit phi position (L1Only) " << z_pos_L3 << " " << bestFitPhi << std::endl;
-        }    
-        
+        float z_pos_L3, bestFitPhi;
+        fitComparatorsLCT(*hCSCComparators.product(), stub, ch_id, int(digiIt-range.first), z_pos_L3, bestFitPhi);
+
         switch(ch_id.station()) {
         case 1:
           event_.CSCTF_st1[j] = ch_id.station();
@@ -1944,6 +1890,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
     }
   }
+
+  // CSCTF stub recovery
+  // The CSC track-finder may drop certain stubs if 
   
   // Store the RPCb variables
   if(verbose) std::cout << "Number of l1MuRPCbs: " <<l1MuRPCbs.size() << std::endl;
@@ -2962,6 +2911,77 @@ DisplacedL1MuFilter::fillDescriptions(edm::ConfigurationDescriptions& descriptio
   desc.setUnknown();
   descriptions.addDefault(desc);
 }
+
+void 
+DisplacedL1MuFilter::fitComparatorsLCT(const CSCComparatorDigiCollection& hCSCComparators,
+                                       const CSCCorrelatedLCTDigi& stub, CSCDetId ch_id, 
+                                       int iMuon, float& fit_z, float& fit_phi) const
+{
+  bool verbose = false;
+  
+  auto cscChamber = cscGeometry_->chamber(ch_id);
+  
+  // fetch the CSC comparator digis in this chamber
+  CSCComparatorDigiContainerIds compDigisIds;
+  for (int iLayer=1; iLayer<=6; ++iLayer){
+    CSCDetId layerId(ch_id.endcap(), ch_id.station(), ch_id.ring(), ch_id.chamber(), iLayer);
+    // get the digis per layer
+    auto compRange = hCSCComparators.get(layerId);
+    CSCComparatorDigiContainer compDigis;
+    for (auto compDigiItr = compRange.first; compDigiItr != compRange.second; compDigiItr++) {
+      auto compDigi = *compDigiItr;
+      //if (stub.getTimeBin() < 4 or stub.getTimeBin() > 8) continue;
+      int stubHalfStrip(getHalfStrip(compDigi));
+      // these comparator digis never fit the pattern anyway!
+      if (std::abs(stubHalfStrip-stub.getStrip())>5) continue;
+      // check if this comparator digi fits the pattern
+      //if(verbose) std::cout << "Comparator digi L1Mu " << layerId << " " << compDigi << " HS " << stubHalfStrip << " stubKeyHS " << stub.getStrip() << std::endl; 
+      if (comparatorInLCTPattern(stub.getStrip(), stub.getPattern(), iLayer, stubHalfStrip)) {
+        //if(verbose) std::cout<<"\tACCEPT"<<std::endl;
+        compDigis.push_back(compDigi);
+      }
+      // else{
+      //   if(verbose) std::cout<<"\tDECLINE!"<<std::endl;
+      // }
+    }
+    // if(verbose) if (compDigis.size() > 2) std::cout << ">>> INFO: " << compDigis.size() << " matched comp digis in this layer!" << std::endl;
+    compDigisIds.push_back(std::make_pair(layerId, compDigis));
+  }
+  
+  // get the z and phi positions
+  std::vector<float> phis;
+  std::vector<float> zs;
+  std::vector<float> ephis;
+  std::vector<float> ezs;
+  for (auto p: compDigisIds){
+    auto detId = p.first;
+    for (auto hit: p.second){
+      float fractional_strip = getFractionalStrip(hit);
+      auto layer_geo = cscChamber->layer(detId.layer())->geometry();
+      LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, 20);
+      GlobalPoint csc_gp = cscGeometry_->idToDet(detId)->surface().toGlobal(csc_intersect);
+      zs.push_back(csc_gp.z());
+      ezs.push_back(0);
+      phis.push_back(csc_gp.phi());
+      ephis.push_back(gemvalidation::cscHalfStripWidth(detId)/sqrt(12));
+    }
+  }
+  
+  // do a fit to the comparator digis
+  float alpha = 0., beta = 0.;
+  calculateAlphaBeta(zs, phis, ezs, ephis,
+                     alpha, beta, 
+                     event_.lumi, event_.run, event_.event, iMuon, ch_id.station(), false);
+  
+  fit_z = cscChamber->layer(CSCConstants::KEY_CLCT_LAYER)->centerOfStrip(20).z();
+  fit_phi = alpha + beta * fit_z;
+  
+  if(verbose) {
+    std::cout << "Number of comparator digis used in the fit " << ezs.size() << std::endl;
+    std::cout << "best CSC stub fit phi position (L1Only) " << fit_z << " " << fit_phi << std::endl;
+  }  
+}
+
 
 float 
 DisplacedL1MuFilter::getGlobalPhi(unsigned int rawid, int stripN)

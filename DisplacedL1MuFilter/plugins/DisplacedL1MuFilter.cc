@@ -112,6 +112,7 @@
 #include <L1Trigger/CSCCommonTrigger/interface/CSCConstants.h>
 #include <L1Trigger/CSCTrackFinder/interface/CSCTFPtLUT.h>
 #include "GEMCode/GEMValidation/interface/SimTrackMatchManager.h"
+#include "MuJetAnalysis/DisplacedL1MuFilter/plugins/CSCStubPatterns.h"
 
 #include "DataFormats/CSCDigi/interface/CSCComparatorDigiCollection.h"
 #include "DataFormats/CSCDigi/interface/CSCWireDigiCollection.h"
@@ -137,6 +138,8 @@ const int nGlu = 2;
 const int nGd = 2;
 const int nGdMu = 2;
 
+typedef std::vector<CSCComparatorDigi> CSCComparatorDigiContainer;
+typedef std::vector<std::pair<CSCDetId, CSCComparatorDigiContainer> > CSCComparatorDigiContainerIds;
 
 struct MyEvent
 {
@@ -492,6 +495,11 @@ phiL1CSCTrack(const csc::L1Track& track)
   return phi_packed;
 }
 
+int
+getHalfStrip(const CSCComparatorDigi& digi) 
+{
+  return (digi.getStrip() - 1) * 2 + digi.getComparator();
+}
 /*
 void calculateAlphaBeta(const std::vector<float>& v, const std::vector<float>& w, float& alpha, float& beta)
 {
@@ -805,9 +813,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   const std::vector<RPCDigiL1Link>& l1MuRPCfLinks(*hL1MuRPCfLinks.product());
 
   // comparator digis
-  // edm::Handle< CSCComparatorDigiCollection > hCSCComparators;
-  // iEvent.getByLabel("simMuonCSCDigis", "MuonCSCComparatorDigi", hCSCComparators);
-  // const CSCComparatorDigiCollection& CSCComparators(*hCSCComparators.product());
+  edm::Handle< CSCComparatorDigiCollection > hCSCComparators;
+  iEvent.getByLabel("simMuonCSCDigis", "MuonCSCComparatorDigi", hCSCComparators);
+  //const CSCComparatorDigiCollection& CSCComparators(*hCSCComparators.product());
 
   // GEM pads and copads
   // edm::Handle< GEMCSCPadDigiCollection > hGEMCSCPads;
@@ -1193,6 +1201,17 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       std::cout << std::endl;
     }
   }
+
+  // // comparator digi collection in this chamber
+  // for(auto cItr = hCSCComparators->begin(); cItr != hCSCComparators->end(); ++cItr){
+  //   CSCDetId id = (*cItr).first;
+  //   //loop over digis of given roll
+  //   for (auto digiItr = (*cItr ).second.first; digiItr != (*cItr ).second.second; ++digiItr){
+  //     auto stub = *digiItr;
+  //     if (stub.getTimeBin() < 4 or stub.getTimeBin() > 8) continue; 
+  //     // std::cout << "Comparator digi L1Mu " << id << " " << stub << " " << getHalfStrip(stub) << std::endl;
+  //   }
+  // }
  
   //////////////////////
   // SIM-L1  analysis //
@@ -1226,8 +1245,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     for (auto d: match_csc.chamberIdsLCT()){
       auto detId = CSCDetId(d);
       // only analyze ME1b and ME21
-      if (detId.station()!=1 and detId.station()!=2) continue;
-      if (detId.ring()!=1) continue;
+      //if (detId.station()!=1 and detId.station()!=2) continue;
+      //if (detId.ring()!=1) continue;
       
       edm::PSimHitContainer simhits = match_sh.hitsInChamber(d);
       auto gp_csc = match_sh.simHitPositionKeyLayer(d);
@@ -1813,29 +1832,49 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           double csc_y = gp.y();
           double csc_z = gp.z();
           double csc_R = TMath::Sqrt(gp.y()*gp.y() + gp.x()*gp.x());
+
+          CSCComparatorDigiContainerIds compDigisIds;
+          // fetch the CSC comparator digis in this chamber
+          for (int iLayer=1; iLayer<=6; ++iLayer){
+            CSCDetId layerId(id.endcap(), id.station(), id.ring(), id.chamber(), iLayer);
+            // get the digis per layer
+            auto compRange = hCSCComparators->get(layerId);
+            CSCComparatorDigiContainer compDigis;
+            for (auto compDigiItr = compRange.first; compDigiItr != compRange.second; compDigiItr++) {
+              auto compDigi = *compDigiItr;
+              //if (stub.getTimeBin() < 4 or stub.getTimeBin() > 8) continue;
+              int stubHalfStrip(getHalfStrip(compDigi));
+              if (std::abs(stubHalfStrip-stub.getStrip())>5) continue;
+              // check if this comparator digi fits the pattern
+              if (not comparatorInLCTPattern(stub.getStrip(), stub.getPattern(), iLayer, stubHalfStrip)) continue;
+              std::cout << "Comparator digi L1Mu " << layerId << " " << compDigi << " HS " << stubHalfStrip << " stubKeyHS " << stub.getStrip() << std::endl; 
+              compDigis.push_back(compDigi);
+            }
+            if (compDigis.size() > 2) std::cout << ">>> INFO: " << compDigis.size() << " matched comp digis in this layer!" << std::endl;
+            compDigisIds.push_back(std::make_pair(layerId, compDigis));
+          }
+          
           switch(id.station()) {
           case 1:
-            if (id.ring()==1){
-              event_.CSCTF_st1[j] = id.station();
-              event_.CSCTF_ri1[j] = id.ring(); 
-              event_.CSCTF_ch1[j] = id.chamber();
-              event_.CSCTF_en1[j] = id.zendcap();
-              event_.CSCTF_trk1[j] = stub.getTrknmb(); 
-              event_.CSCTF_quality1[j] = stub.getQuality();
-              event_.CSCTF_wg1[j] = stub.getKeyWG();
-              event_.CSCTF_hs1[j] = stub.getStrip();
-              event_.CSCTF_pat1[j] = stub.getPattern();
-              event_.CSCTF_bend1[j] = stub.getBend();
-              event_.CSCTF_bx1[j] = stub.getBX();
-              event_.CSCTF_clctpat1[j] = stub.getCLCTPattern();
-              event_.CSCTF_val1[j] = stub.isValid();
-              event_.CSCTF_phi1[j] = gp.phi();
-              event_.CSCTF_gemdphi1[j] = stub.getGEMDPhi();
-              event_.CSCTF_R1[j] = csc_R;
-              event_.CSCTF_x1[j] = csc_x;
-              event_.CSCTF_y1[j] = csc_y;
-              event_.CSCTF_z1[j] = csc_z;
-            }
+            event_.CSCTF_st1[j] = id.station();
+            event_.CSCTF_ri1[j] = id.ring(); 
+            event_.CSCTF_ch1[j] = id.chamber();
+            event_.CSCTF_en1[j] = id.zendcap();
+            event_.CSCTF_trk1[j] = stub.getTrknmb(); 
+            event_.CSCTF_quality1[j] = stub.getQuality();
+            event_.CSCTF_wg1[j] = stub.getKeyWG();
+            event_.CSCTF_hs1[j] = stub.getStrip();
+            event_.CSCTF_pat1[j] = stub.getPattern();
+            event_.CSCTF_bend1[j] = stub.getBend();
+            event_.CSCTF_bx1[j] = stub.getBX();
+            event_.CSCTF_clctpat1[j] = stub.getCLCTPattern();
+            event_.CSCTF_val1[j] = stub.isValid();
+            event_.CSCTF_phi1[j] = gp.phi();
+            event_.CSCTF_gemdphi1[j] = stub.getGEMDPhi();
+            event_.CSCTF_R1[j] = csc_R;
+            event_.CSCTF_x1[j] = csc_x;
+            event_.CSCTF_y1[j] = csc_y;
+            event_.CSCTF_z1[j] = csc_z;
             break;
           case 2:
             event_.CSCTF_st2[j] = id.station();

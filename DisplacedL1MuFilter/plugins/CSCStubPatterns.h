@@ -232,4 +232,14 @@ comparatorInLCTPattern(int keyStrip, int pattern, int layer, int halfStrip)
   return returnValue;
 }
 
+CSCCorrelatedLCTDigi
+pickBestMatchingStub(const CSCCorrelatedLCTDigi& stub1, 
+                     const CSCCorrelatedLCTDigi& stub2,
+                     const CSCCorrelatedLCTDigi& stub3,
+                     const CSCCorrelatedLCTDigi& stub4,
+                     CSCGeometry* csc_geom)
+{
+  
+}
+
 #endif

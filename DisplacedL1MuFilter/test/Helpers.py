@@ -27,6 +27,28 @@ myetabin = np.asarray(etabin)
 M_PI = 4*math.atan(1)
 
 
+def frange(end,start=0,inc=0,precision=1):
+    """A range function that accepts float increments."""
+    import math
+
+    if not start:
+        start = end + 0.0
+        end = 0.0
+    else: end += 0.0
+
+    if not inc:
+        inc = 1.0
+    count = int(math.ceil((start - end) / inc))
+
+    L = [None] * count
+
+    L[0] = end
+    for i in (xrange(1,count)):
+        L[i] = L[i-1] + inc
+    return L
+
+
+
 #______________________________________________________________________________                        
 def getBestValue(value1, value2):
     if abs(value1) != 99.: return value1
@@ -34,6 +56,78 @@ def getBestValue(value1, value2):
 
 
                    
+#______________________________________________________________________________                        
+def passEllipseCut(deltaDeltaY123, delta_phi_dir,
+                   padSize, eta, doFit):
+    radius = getRadius(padSize, eta, doFit)
+    scaleFactor = 50
+    x2value = deltaDeltaY123 * deltaDeltaY123
+    y2value = scaleFactor * scaleFactor * delta_phi_dir * delta_phi_dir
+    
+    return  x2value + y2value <= radius*radius
+
+    
+
+def getRadius(padSize, eta, doFit):
+    radius_dict = {}
+    radius_dict['pad1_eta12to14_withoutLCTFit'] = 0
+    radius_dict['pad2_eta12to14_withoutLCTFit'] = 0
+    radius_dict['pad4_eta12to14_withoutLCTFit'] = 0
+    radius_dict['pad8_eta12to14_withoutLCTFit'] = 0
+
+    radius_dict['pad1_eta14to16_withoutLCTFit'] = 0
+    radius_dict['pad2_eta14to16_withoutLCTFit'] = 0
+    radius_dict['pad4_eta14to16_withoutLCTFit'] = 0
+    radius_dict['pad8_eta14to16_withoutLCTFit'] = 0
+
+    radius_dict['pad1_eta16to18_withoutLCTFit'] = 2.5
+    radius_dict['pad2_eta16to18_withoutLCTFit'] = 2.6
+    radius_dict['pad4_eta16to18_withoutLCTFit'] = 2.7
+    radius_dict['pad8_eta16to18_withoutLCTFit'] = 3.4
+
+    radius_dict['pad1_eta18to20_withoutLCTFit'] = 2.3
+    radius_dict['pad2_eta18to20_withoutLCTFit'] = 2.4
+    radius_dict['pad4_eta18to20_withoutLCTFit'] = 2.6
+    radius_dict['pad8_eta18to20_withoutLCTFit'] = 3.0
+
+    radius_dict['pad1_eta20to22_withoutLCTFit'] = 2.2
+    radius_dict['pad2_eta20to22_withoutLCTFit'] = 2.3
+    radius_dict['pad4_eta20to22_withoutLCTFit'] = 2.5
+    radius_dict['pad8_eta20to22_withoutLCTFit'] = 3.1
+
+
+    radius_dict['pad1_eta12to14_withLCTFit'] = 0
+    radius_dict['pad2_eta12to14_withLCTFit'] = 0
+    radius_dict['pad4_eta12to14_withLCTFit'] = 0
+    radius_dict['pad8_eta12to14_withLCTFit'] = 0
+
+    radius_dict['pad1_eta14to16_withLCTFit'] = 0
+    radius_dict['pad2_eta14to16_withLCTFit'] = 0
+    radius_dict['pad4_eta14to16_withLCTFit'] = 0
+    radius_dict['pad8_eta14to16_withLCTFit'] = 0
+
+    radius_dict['pad1_eta16to18_withLCTFit'] = 2.1
+    radius_dict['pad2_eta16to18_withLCTFit'] = 2.0
+    radius_dict['pad4_eta16to18_withLCTFit'] = 2.2
+    radius_dict['pad8_eta16to18_withLCTFit'] = 3.0
+
+    radius_dict['pad1_eta18to20_withLCTFit'] = 2.2
+    radius_dict['pad2_eta18to20_withLCTFit'] = 2.2
+    radius_dict['pad4_eta18to20_withLCTFit'] = 2.4
+    radius_dict['pad8_eta18to20_withLCTFit'] = 3.1
+
+    radius_dict['pad1_eta20to22_withLCTFit'] = 2.1
+    radius_dict['pad2_eta20to22_withLCTFit'] = 2.2
+    radius_dict['pad4_eta20to22_withLCTFit'] = 2.3
+    radius_dict['pad8_eta20to22_withLCTFit'] = 3.0
+
+    if doFit:
+        fitString = '_withLCTFit'
+    else:
+        fitString = '_withoutLCTFit'
+
+    return radius_dict[padSize + '_' + eta + fitString]
+
 #______________________________________________________________________________                        
 def pt_from_deltaDeltaY123(deltaDeltaY123, eta, parity, doFit):
     
@@ -414,6 +508,9 @@ def pt_from_deltaDeltaY123_v2(deltaDeltaY123, eta, parity, doFit):
     return foundPtValue
 
 #______________________________________________________________________________                                           
+def get_pt_slice(pt):
+    return 0
+    
 def get_eta_partition(eta):
 
   etaPartition = -1

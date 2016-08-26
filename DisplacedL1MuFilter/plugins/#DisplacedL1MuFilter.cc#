@@ -2340,6 +2340,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         for(auto cItr = hCSCCorrelatedLCTs->begin(); cItr != hCSCCorrelatedLCTs->end(); ++cItr) {
           CSCDetId ch_id = (*cItr).first;
           std::cout << "Investigate chamber " << ch_id << std::endl;
+
           // ignore station where a L1Mu stub is present!
           if (not stubMissingSt1 and ch_id.station()==1) continue;
           if (not stubMissingSt2 and ch_id.station()==2) continue;

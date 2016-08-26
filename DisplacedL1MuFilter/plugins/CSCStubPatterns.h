@@ -1,113 +1,8 @@
 #ifndef MuJetAnalysis_DisplacedL1MuFilter_CSCStubPatterns_h
 #define MuJetAnalysis_DisplacedL1MuFilter_CSCStubPatterns_h
 
+#include "DataFormats/CSCDigi/interface/CSCCorrelatedLCTDigiCollection.h"
 #include <vector>
-
-
-std::vector<std::vector<int> > pat0 {  
-  { 999, 999, 999, 999, 999, 999, 999, 999, 999, 999, 999}, 
-    { 999, 999, 999, 999, 999}, 
-      {999},            // pid=0: no pattern found 
-        {999, 999, 999, 999, 999}, 
-          {999, 999, 999, 999, 999, 999, 999, 999, 999}, 
-            {999, 999, 999, 999, 999, 999, 999, 999, 999, 999, 999} 
-}; 
-
-std::vector<std::vector<int> > pat1 {  
-  {   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0}, 
-    {1,   1,   1,   1,   1}, 
-      {2},             // pid=1: layer-OR trigger 
-        {3,   3,   3,   3,   3}, 
-          {4,   4,   4,   4,   4,   4,   4,   4,   4}, 
-            {5,   5,   5,   5,   5,   5,   5,   5,   5,   5,   5} 
-}; 
-
-std::vector<std::vector<int> > pat2 {  
-  { 999, 999, 999, 999, 999, 999, 999, 999,   0,   0,   0}, 
-    {999, 999, 999,   1,   1}, 
-      {2},             // pid=2: right-bending (large) 
-        {3,   3,   3, 999, 999}, 
-          {4,   4,   4, 999, 999, 999, 999, 999, 999}, 
-            {5,   5,   5, 999, 999, 999, 999, 999, 999, 999, 999} 
-}; 
-
-std::vector<std::vector<int> > pat3 { 
-  {   0,   0,   0, 999, 999, 999, 999, 999, 999, 999, 999}, 
-    {1,   1, 999, 999, 999}, 
-      {2},             // pid=3: left-bending (large) 
-        {999, 999,   3,   3,   3}, 
-          {999, 999, 999, 999, 999, 999,   4,   4,   4}, 
-            {999, 999, 999, 999, 999, 999, 999, 999,   5,   5,   5} 
-};  
-
-std::vector<std::vector<int> > pat4 { 
-  { 999, 999, 999, 999, 999, 999, 999,   0,   0,   0, 999}, 
-     {999, 999, 999,   1,   1}, 
-       {2},             // pid=4: right-bending (medium) 
-         {3,   3, 999, 999, 999}, 
-           {4,   4,   4, 999, 999, 999, 999, 999, 999}, 
-             {999,   5,   5,   5, 999, 999, 999, 999, 999, 999, 999} 
-            
- }; 
-
- std::vector<std::vector<int> > pat5 { 
-   { 999,   0,   0,   0, 999, 999, 999, 999, 999, 999, 999}, 
-     {1,   1, 999, 999, 999}, 
-       {2},             // pid=5: left-bending (medium) 
-         {999, 999, 999,   3,   3}, 
-           {999, 999, 999, 999, 999, 999,   4,   4,   4}, 
-             {999, 999, 999, 999, 999, 999, 999,   5,   5,   5, 999} 
-            
- }; 
-
- std::vector<std::vector<int> > pat6 { 
-   { 999, 999, 999, 999, 999, 999,   0,   0,   0, 999, 999}, 
-     {999, 999,   1,   1, 999}, 
-       {2},             // pid=6: right-bending (medium) 
-         {999,   3,   3, 999, 999}, 
-           {999, 999,   4,   4, 999, 999, 999, 999, 999}, 
-             {999, 999,   5,   5,   5, 999, 999, 999, 999, 999, 999} 
- }; 
-
- std::vector<std::vector<int> > pat7 { 
-   { 999, 999,   0,   0,   0, 999, 999, 999, 999, 999, 999}, 
-     {999,   1,   1, 999, 999}, 
-       {2},             // pid=7: left-bending (medium) 
-         {999, 999,   3,   3, 999}, 
-           {999, 999, 999, 999, 999,   4,   4, 999, 999}, 
-             {999, 999, 999, 999, 999, 999,   5,   5,   5, 999, 999} 
- }; 
-
- std::vector<std::vector<int> > pat8 { 
-   { 999, 999, 999, 999, 999,   0,   0,   0, 999, 999, 999}, 
-     {999, 999,   1,   1, 999}, 
-       {2},             // pid=8: right-bending (small) 
-         {999,   3,   3, 999, 999}, 
-           {999, 999,   4,   4,   4, 999, 999, 999, 999}, 
-             {999, 999, 999,   5,   5,   5, 999, 999, 999, 999, 999} 
- }; 
-
- std::vector<std::vector<int> > pat9 { 
-   { 999, 999, 999,   0,   0,   0, 999, 999, 999, 999, 999}, 
-     {999,   1,   1, 999, 999}, 
-       {2},             // pid=9: left-bending (small) 
-         {999, 999,   3,   3, 999}, 
-           {999, 999, 999, 999,   4,   4,   4, 999, 999}, 
-             {999, 999, 999, 999, 999,   5,   5,   5, 999, 999, 999} 
- }; 
-
- std::vector<std::vector<int> > patA { 
-   { 999, 999, 999, 999,   0,   0,   0, 999, 999, 999, 999}, 
-     {999, 999,   1, 999, 999}, 
-       {2},             // pid=A: straight-through 
-         {999, 999,   3, 999, 999}, 
-           {999, 999, 999,   4,   4,   4, 999, 999, 999}, 
-             {999, 999, 999, 999,   5,   5,   5, 999, 999, 999, 999} 
- }; 
-
- std::vector< std::vector<std::vector<int> > > patIndexToPattern { 
-   pat0, pat1, pat2, pat3, pat4, pat5, pat6, pat7, pat8, pat9, patA 
- }; 
 
  std::vector<std::vector<int> > pat0delta {  
    { 999, 999, 999, 999, 999, 999, 999, 999, 999, 999, 999}, 
@@ -119,7 +14,7 @@ std::vector<std::vector<int> > pat4 {
  }; 
 
  std::vector<std::vector<int> > pat1delta {  
-   { -5,   -4,   -3,   -2,   -1,   1,   1,   2,   3,   4,   5}, 
+   { -5,   -4,   -3,   -2,   -1,   0,   1,   2,   3,   4,   5}, 
      {-2,   -1,   0,   1,   2}, 
        {0},             // pid=1: layer-OR trigger 
          {-2,   -1,   0,   1,   2}, 
@@ -230,16 +125,6 @@ comparatorInLCTPattern(int keyStrip, int pattern, int layer, int halfStrip)
                   std::find(subpat.begin(), subpat.end(), halfStripDelta)   != subpat.end() or
                   std::find(subpat.begin(), subpat.end(), halfStripDelta-1) != subpat.end() );
   return returnValue;
-}
-
-CSCCorrelatedLCTDigi
-pickBestMatchingStub(const CSCCorrelatedLCTDigi& stub1, 
-                     const CSCCorrelatedLCTDigi& stub2,
-                     const CSCCorrelatedLCTDigi& stub3,
-                     const CSCCorrelatedLCTDigi& stub4,
-                     CSCGeometry* csc_geom)
-{
-  
 }
 
 #endif

@@ -57,17 +57,6 @@ def getBestValue(value1, value2):
 
                    
 #______________________________________________________________________________                        
-def passEllipseCut(deltaDeltaY123, delta_phi_dir,
-                   padSize, eta, doFit):
-    radius = getRadius(padSize, eta, doFit)
-    scaleFactor = 50
-    x2value = deltaDeltaY123 * deltaDeltaY123
-    y2value = scaleFactor * scaleFactor * delta_phi_dir * delta_phi_dir
-    
-    return  x2value + y2value <= radius*radius
-
-    
-
 def getRadius(padSize, eta, doFit):
     radius_dict = {}
     radius_dict['pad1_eta12to14_withoutLCTFit'] = 0
@@ -126,7 +115,17 @@ def getRadius(padSize, eta, doFit):
     else:
         fitString = '_withoutLCTFit'
 
-    return radius_dict[padSize + '_' + eta + fitString]
+    return radius_dict[padSize + '_eta' + eta + fitString]
+
+#______________________________________________________________________________                        
+def passEllipseCut(deltaDeltaY123, delta_phi_dir,
+                   padSize, eta, doFit):
+    radius = getRadius(padSize, eta, doFit)
+    scaleFactor = 50
+    x2value = deltaDeltaY123 * deltaDeltaY123
+    y2value = scaleFactor * scaleFactor * delta_phi_dir * delta_phi_dir
+    
+    return  x2value + y2value <= radius*radius
 
 #______________________________________________________________________________                        
 def pt_from_deltaDeltaY123(deltaDeltaY123, eta, parity, doFit):

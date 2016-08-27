@@ -870,7 +870,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   // LCTs
   edm::Handle< CSCCorrelatedLCTDigiCollection > hCSCCorrelatedLCTs;
   iEvent.getByLabel("simCscTriggerPrimitiveDigis", "MPCSORTED", hCSCCorrelatedLCTs);
-  //const CSCCorrelatedLCTDigiCollection& CSCCorrelatedLCTs(*hCSCCorrelatedLCTs.product());
+  const CSCCorrelatedLCTDigiCollection& CSCCorrelatedLCTs(*hCSCCorrelatedLCTs.product());
 
   // GEM pads and copads
   // edm::Handle< GEMCSCPadDigiCollection > hGEMCSCPads;
@@ -2336,18 +2336,79 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         int triggerSector = (l1Tracks[ event_.L1Mu_CSCTF_index[i] ].first).sector();
         std::cout << "trigger sector " << triggerSector << std::endl;
         
-        // temp storage of candidate stubs
-        CSCCorrelatedLCTDigi bestMatchingStub;
-        
-        std::cout << "\tPrint all possible stubs in this event" << std::endl;
+        for (int endcap=1; endcap<=2; endcap++){
+          //do not consider stubs in the wrong endcap
+          int zendcap(endcap!=1 ? -1 : +1 );
+          if (zendcap * event_.L1Mu_eta[i] < 0) continue;
+          for (int station=1; station<=4; station++){
+            
+            // ignore station where a L1Mu stub is present!
+            if (not stubMissingSt1 and station==1) continue;
+            if (not stubMissingSt2 and station==2) continue;
+            if (not stubMissingSt3 and station==3) continue;
+            if (not stubMissingSt4 and station==4) continue;
+            
+            for (int ring=1; ring<=3; ring++){
+              if (station!=1 and ring==3) continue;
+              // temp storage of candidate stubs per station and ring
+              CSCCorrelatedLCTDigi bestMatchingStub;
+              
+              for (int chamber=1; chamber<=36; chamber++){
+                // do not consider invalid detids
+                if ( (station==2 or station==3 or station==4) and 
+                     (ring==1) and chamber>18) continue;
+
+                // create the detid
+                CSCDetId ch_id(endcap, station, ring, chamber);
+                
+                
+
+                // get the stubs in this detid
+                auto range = CSCCorrelatedLCTs.get(ch_id);
+                for (auto digiItr = range.first; digiItr != range.second; ++digiItr){
+                  // trigger sector must be the same
+                  if (triggerSector != ch_id.triggerSector()) continue;
+                  auto stub(*digiItr);      
+                  int deltaBX = std::abs(stub.getBX() - (6 + event_.L1Mu_bx[i]));
+                  
+                  // BXs have to match
+                  if (deltaBX > 1) continue; 
+                  std::cout << ch_id << std::endl;
+                  std::cout<<"Candidate " << stub << std::endl;
+                  bestMatchingStub = pickBestMatchingStub(bestMatchingStub, allxs[ch_id.station()-1], allys[ch_id.station()-1], 
+                                                          ch_id, stub, 6 + event_.L1Mu_bx[i]);
+                  
+                }
+                // consider the case ME1a
+                if (station==1 and ring==1){
+                  CSCDetId me1a_id(endcap, station, 4, chamber);
+                  auto range = CSCCorrelatedLCTs.get(me1a_id);
+                  for (auto digiItr = range.first; digiItr != range.second; ++digiItr){
+                    // trigger sector must be the same
+                    if (triggerSector != me1a_id.triggerSector()) continue;
+                    auto stub(*digiItr);
+                    int deltaBX = std::abs(stub.getBX() - (6 + event_.L1Mu_bx[i]));
+                    
+                    // BXs have to match
+                    if (deltaBX > 1) continue; 
+                    std::cout << me1a_id << std::endl;
+                    std::cout<<"Candidate " << stub << std::endl;
+                    bestMatchingStub = pickBestMatchingStub(bestMatchingStub, allxs[me1a_id.station()-1], allys[me1a_id.station()-1], 
+                                                            me1a_id, stub, 6 + event_.L1Mu_bx[i]);
+                    
+                  }
+                }
+              }
+              if (bestMatchingStub != CSCCorrelatedLCTDigi())
+                std::cout << "Best matching stub " << bestMatchingStub <<std::endl;
+            }
+          }
+        }
+        /*
+          std::cout << "\tPrint all possible stubs in this event" << std::endl;
         for(auto cItr = hCSCCorrelatedLCTs->begin(); cItr != hCSCCorrelatedLCTs->end(); ++cItr) {
           CSCDetId ch_id = (*cItr).first;
           std::cout << "Investigate chamber " << ch_id << std::endl;
-          // ignore station where a L1Mu stub is present!
-          if (not stubMissingSt1 and ch_id.station()==1) continue;
-          if (not stubMissingSt2 and ch_id.station()==2) continue;
-          if (not stubMissingSt3 and ch_id.station()==3) continue;
-          if (not stubMissingSt4 and ch_id.station()==4) continue;
           
           // ignore CSCDetIds in the wrong endcap!
           if (ch_id.zendcap() != int(event_.L1Mu_eta[i]/std::abs(event_.L1Mu_eta[i]))) continue;
@@ -2355,24 +2416,15 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
           //int iStub=0;
           for (auto digiItr = (*cItr ).second.first; digiItr != (*cItr ).second.second; ++digiItr){
-            auto stub(*digiItr);
+            
             //            iStub = digiItr - (*cItr ).second.first;
-            // trigger sector must be the same
-            if (triggerSector != ch_id.triggerSector()) continue;
-            
-            int deltaBX = std::abs(stub.getBX() - (6 + event_.L1Mu_bx[i]));
-            
-            // BXs have to match
-            if (deltaBX > 1) continue; 
-            std::cout<<"Candidate " << stub << std::endl;
-            bestMatchingStub = pickBestMatchingStub(allxs[ch_id.station()-1], allys[ch_id.station()-1], 
-                                                    ch_id, bestMatchingStub, stub, 6 + event_.L1Mu_bx[i]);
           }
           if (bestMatchingStub != CSCCorrelatedLCTDigi())
             std::cout << "Best matching stub " << bestMatchingStub <<std::endl;
         }
+        */
       }
-
+      
       // Get matching GEM copads
       for(auto cItr = hGEMCSCCoPads->begin(); cItr != hGEMCSCCoPads->end(); ++cItr) {
         GEMDetId gem_id = (*cItr).first;
@@ -3376,23 +3428,48 @@ DisplacedL1MuFilter::pickBestMatchingStub(float x, float y, CSCDetId id,
                                           const CSCCorrelatedLCTDigi& stub2, 
                                           int refBx) const
 {
+  bool debug=true;
   // check for invalid/valid
-  if (stub1 == CSCCorrelatedLCTDigi()) return stub2;
-  if (stub2 == CSCCorrelatedLCTDigi()) return stub1;
+  if (stub1 == CSCCorrelatedLCTDigi()) {
+    if (debug) cout<<"Stub1 invalid"<<endl;
+    //return stub2;
+  }
+  if (stub2 == CSCCorrelatedLCTDigi()) {
+    if (debug) cout<<"Stub2 invalid"<<endl;
+    //return stub1;
+  }
 
   int deltaBX1 = std::abs(stub1.getBX() - refBx);
   int deltaBX2 = std::abs(stub2.getBX() - refBx);
 
-  if (deltaBX1==0 and deltaBX2!=0) return stub1;
-  if (deltaBX2==0 and deltaBX1!=0) return stub2;
+  if (deltaBX1==0 and deltaBX2!=0) {
+    if (debug) cout<<"Stub1 in time, stub2 out of time"<<endl;
+    //return stub1;
+  }
+  if (deltaBX2==0 and deltaBX1!=0) {
+    if (debug) cout<<"Stub2 in time, stub1 out of time"<<endl;
+    //return stub2;
+  }
   if (deltaBX1!=0 and deltaBX2!=0){
+    if (debug) cout<<"Both stubs out of time"<<endl;
     // pick the one with the better matching wiregroup and halfstrip
     auto gp1 = getCSCSpecificPoint2(id.rawId(), stub1);
     auto gp2 = getCSCSpecificPoint2(id.rawId(), stub2);
     float deltaXY1 = TMath::Sqrt( (x-gp1.x())*(x-gp1.x()) + (y-gp1.y())*(y-gp1.y()) );
     float deltaXY2 = TMath::Sqrt( (x-gp2.x())*(x-gp2.x()) + (y-gp2.y())*(y-gp2.y()) );
-    if (deltaXY1 < deltaXY2) return stub1;
-    else                     return stub2;
+    if (debug) {
+      cout<<"x "<< x << " y " << y << endl;
+      cout <<"gp1 " << gp1 << " gp2 " << gp2 << endl; 
+      cout << "deltaXY1 " << deltaXY1 << " deltaXY2 " << deltaXY2 <<endl;
+    }  
+    if (deltaXY1 < deltaXY2) {
+      if (debug) cout<<"Stub 1 better matching XY"<<endl;
+      //return stub1;
+    }
+    else {
+      if (debug) cout<<"Stub 2 better matching XY"<<endl;
+      //return stub2;
+    }
   }
   return stub1;
 }

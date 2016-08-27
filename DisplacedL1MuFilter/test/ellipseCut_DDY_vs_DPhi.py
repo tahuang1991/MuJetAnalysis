@@ -28,133 +28,167 @@ def frange(end,start=0,inc=0,precision=1):
         L[i] = L[i-1] + inc
     return L
 
-file1 = TFile("DisplacedL1MuTrigger_20160826_v4/DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to100_withLCTFit_hist.root")
-file2 = TFile("DisplacedL1MuTrigger_20160826_v4/DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_withLCTFit_hist.root")
+signalFile = TFile("DisplacedL1MuTrigger_20160826_v5/DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to100_withLCTFit_hist.root")
+backgroundFile = TFile("DisplacedL1MuTrigger_20160826_v5/DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_withLCTFit_hist.root")
 
-hist1 = file.Get("DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to100_withLCTFit")
-hist2 = file.Get("DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_withLCTFit")
+signalHist = signalFile.Get("DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to100_withLCTFit")
+backgroundHist = backgroundFile.Get("DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_withLCTFit")
 
-print hist1
-print hist2
+print signalHist
+print backgroundHist
 
 ## draw an ellipse that includes 95% of the entries
-totalEntries1 = hist1.GetEntries()*1.0
-totalEntries2 = hist2.GetEntries()*1.0
 
-foundRadius68 = 0 
-foundRadius90 = 0 
-foundRadius65 = 0 
+signalAcceptance = 0.90
 
 def getEllipse(x,y,a,b):
   return x*x/(a*a) + y*y/(b*b)
 
-def passEllipse():
+def passEllipse(x,y,a,b):
     return getEllipse(x,y,a,b) <= 1
 
-def failEllipse():
+def failEllipse(x,y,a,b):
     return getEllipse(x,y,a,b) > 1
 
+def getBackgroundRejectionEllipse(a_axis, b_axis, signalHist, backgroundHist):
+    signalEntriesTotal = signalHist.Integral()*1.0
+    backgroundEntriesTotal = backgroundHist.Integral()*1.0
+
+    entriesInEllipseSignal  = 0
+    entriesOutEllipseBackground  = 0
+
+    signalAcceptanceFactor = 0
+    backgroundRejectionFactor = 0
+    
+    ## loop on entries in histogram
+    for j in range(1,signalHist.GetNbinsX()+1):
+        for k in range(1,signalHist.GetNbinsY()+1):
+            
+            ## get the bin centers
+            signal_x = signalHist.GetXaxis().GetBinCenter(j)
+            signal_y = signalHist.GetYaxis().GetBinCenter(k)
+
+            background_x = backgroundHist.GetXaxis().GetBinCenter(j)
+            background_y = backgroundHist.GetYaxis().GetBinCenter(k)
+
+            ## signal passes
+            if passEllipse(signal_x, signal_y, a_axis, b_axis):
+                entriesInEllipseSignal += signalHist.GetBinContent(j,k)
+
+            ## background fails
+            if failEllipse(background_x, background_y, a_axis, b_axis):
+                entriesOutEllipseBackground += backgroundHist.GetBinContent(j,k)
+
+            ## current signal acceptance
+            signalAcceptanceFactor = entriesInEllipseSignal / signalEntriesTotal
+
+            ## current background rejection
+            backgroundRejectionFactor = entriesOutEllipseBackground / backgroundEntriesTotal
+            #if backgroundRejectionFactor<0.50:
+            #    break
+            #print j,k,signalAcceptanceFactor,backgroundRejectionFactor
+
+    return signalAcceptanceFactor, backgroundRejectionFactor
+            
+
+## loop on a and b
+a_range = frange(1, 2, 0.01)
+b_range = frange(0.05, 0.1, 0.001)
+
+preselected_axes_signalAcc_backRej = []
+
+print signalHist.Integral() / signalHist.GetEntries(), backgroundHist.Integral() / backgroundHist.GetEntries()
+    
+if False: 
+    for a_axis in a_range:
+        for b_axis in b_range:
+            signalAcceptanceFactor, backgroundRejectionFactor = getBackgroundRejectionEllipse(a_axis, b_axis, signalHist, backgroundHist)
+            print "a", a_axis, "b", b_axis, signalAcceptanceFactor, backgroundRejectionFactor
+            if signalAcceptanceFactor > .9:
+                preselected_axes_signalAcc_backRej.append([a_axis, b_axis, signalAcceptanceFactor, backgroundRejectionFactor])
+            
+## preselection
+#print preselected_axes_signalAcc_backRej
+bestBackgroundRejectionFactor = 0
+pbest = [0,0,0,0]  
+for pp in preselected_axes_signalAcc_backRej:
+    print pp
+    if preselected_axes_signalAcc_backRej[2] > 0.9 and preselected_axes_signalAcc_backRej[3] > bestBackgroundRejectionFactor:
+        bestBackgroundRejectionFactor = preselected_axes_signalAcc_backRej[3]
+        pbest = pp
+
+print "best", pbest
+## get the a and b for which the signal acceptance > 0.90 with highest background rejection
+#print np.argmax(np.max(preselected_axes_signalAcc_backRej, axis=2))
+#preselected_axes_signalAcc_backRej = np.array(preselected_axes_signalAcc_backRej)
+#print preselected_axes_signalAcc_backRej.argmax(axis=3)    
+
+"""
+bestBackgroundRejectionFactor = 0
+pbest = [0,0,0,0]
+for p in preselected_axes_signalAcc_backRej:
+    print p
+    if preselected_axes_signalAcc_backRej[3] > bestBackgroundRejectionFactor:
+        bestBackgroundRejectionFactor = preselected_axes_signalAcc_backRej[3]
+        p
+"""
+
+#print preselected_axes_signalAcc_backRej.max(axis=1)
 
 
-def getEllipse(fractionToKeep, a):
-  foundRadius = 0
-  if totalEntries>0:
-    ## step in ellipse sizes
-    print "Checking ellipse"
-    for radius in frange(0, 10, 0.1):
-      #radius = rr/100.
-      entriesInEllipseSignal  = 0
-      entriesOutEllipseBackground  = 0
-      ## loop on entries in histogram
-      for j in range(1,hist1.GetNbinsX()):
-        for k in range(1,hist1.GetNbinsY()):
-          ## drop bins that are too far out
-          #if hist.GetXaxis().GetBinCenter(j) > radius:
-          #  continue
-          #if hist.GetYaxis().GetBinCenter(k) > radius:
-          #  continue
-          #print "radius", radius, "binx", j, "biny", k, hist.GetXaxis().GetBinCenter(j), hist.GetYaxis().GetBinCenter(k), getEllipse(hist.GetXaxis().GetBinCenter(j), hist.GetYaxis().GetBinCenter(k)), radius*radius
-          ## only select points in the circle
-          if getEllipse(hist1.GetXaxis().GetBinCenter(j), hist1.GetYaxis().GetBinCenter(k)) <= radius*radius: 
-            entriesInEllipse += hist1.GetBinContent(j,k)
-          if getEllipse(hist2.GetXaxis().GetBinCenter(j), hist2.GetYaxis().GetBinCenter(k)) > radius*radius: 
-            entriesInEllipse += hist2.GetBinContent(j,k)
-            #print "\tAccept"
-      ## break if enough points
-      #print "CheckBreak", entriesInEllipse, totalEntries, entriesInEllipse/totalEntries, fractionToKeep
-      if entriesInEllipse/totalEntries > fractionToKeep:
-        foundRadius = radius
-        break
-  ## in case no radius could be found
-  if foundRadius == 0:
-      return 100
-  print "Found radius", foundRadius
-  return foundRadius 
+#best [1.4600000000000004, 0.09900000000000005, 0.9009687836383208, 0.7896341463414634]
 
-foundRadius68 = getRadius(.68)
-foundRadius90 = getRadius(.90)
-foundRadius95 = getRadius(.95)
-print "foundRadius68", foundRadius68
-print "foundRadius90", foundRadius90
-print "foundRadius95", foundRadius95
 
 print "drawing ellipse"
 
-c = TCanvas("c","c",800,600)
-c.Clear()
-gStyle.SetTitleBorderSize(0);
-gStyle.SetPadLeftMargin(0.126);
-gStyle.SetPadRightMargin(0.04);
-gStyle.SetPadTopMargin(0.06);
-gStyle.SetPadBottomMargin(0.13);
-gPad.SetTickx(1)
-gPad.SetTicky(1)
-hist.Draw("colz")
-hist.SetTitle("Pad1, 10 < p_{T} < 20 GeV,  1.6 < eta < 1.8 ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|")
 
-#f2 = TF2("f2","TMath::Sqrt(x**2 + 2500*y**2)*%f"%(foundRadius),0,5,0,0.2);
-#f2.SetContour(48);
-#f2.SetLineColor(kRed);
-#f2.Draw("same")
+def drawEllipse(hist, a, b, plotTitle, caption, doAcceptance=True):
+    c = TCanvas("c","c",800,600)
+    c.Clear()
+    gStyle.SetTitleBorderSize(0);
+    gStyle.SetPadLeftMargin(0.126);
+    gStyle.SetPadRightMargin(0.04);
+    gStyle.SetPadTopMargin(0.06);
+    gStyle.SetPadBottomMargin(0.13);
+    gPad.SetTickx(1)
+    gPad.SetTicky(1)
+    hist.Draw("colz")
+    hist.SetTitle(caption)
 
-el1 = TEllipse(0,0,foundRadius68,foundRadius68/50.);
-el1.SetLineColor(kRed);
-el1.SetLineWidth(3);
-el1.SetFillStyle(4000)
-el1.SetPhimin(0)
-el1.SetPhimax(90)
-el1.Draw("same")
+    el2 = TEllipse(0,0,1.4600000000000004,0.09900000000000005);
+    el2.SetLineColor(kGreen+1);
+    el2.SetLineWidth(3);
+    el2.SetFillStyle(4000)
+    el2.SetPhimin(0)
+    el2.SetPhimax(90)
+    el2.Draw("same")
 
-el2 = TEllipse(0,0,foundRadius90,foundRadius90/50.);
-el2.SetLineColor(kBlue);
-el2.SetLineWidth(3);
-el2.SetFillStyle(4000)
-el2.SetPhimin(0)
-el2.SetPhimax(90)
-el2.Draw("same")
+    if doAcceptance:
+        tex2 = TLatex(0.15, 0.85, "Ellipse: acceptance=0.90")
+        tex2.SetTextSize(0.05)
+        tex2.SetNDC()
+        tex2.Draw("same")
+    else:
+        tex2 = TLatex(0.15, 0.85, "Ellipse: rejection=0.79")
+        tex2.SetTextSize(0.05)
+        tex2.SetNDC()
+        tex2.Draw("same")
+        
+    tex3 = TLatex(0.15, 0.8, "a=%.3f, b=%.3f"%(1.4600000000000004,0.09900000000000005))
+    tex3.SetTextSize(0.05)
+    tex3.SetNDC()
+    tex3.Draw("same")
+    
+    c.SaveAs(plotTitle + "_ellipse.png")
 
-el3 = TEllipse(0,0,foundRadius95,foundRadius95/50.);
-el3.SetLineColor(kGreen+1);
-el3.SetLineWidth(3);
-el3.SetFillStyle(4000)
-el3.SetPhimin(0)
-el3.SetPhimax(90)
-el3.Draw("same")
 
-## set the radius in the plot
-tex = TLatex(0.15, 0.85, "Radius (0.68): %f"%(foundRadius68))
-tex.SetTextSize(0.05)
-tex.SetNDC()
-tex.Draw("same")
+a = 1.4600000000000004,
+b = 0.09900000000000005
 
-tex2 = TLatex(0.15, 0.8, "Radius (0.90): %f"%(foundRadius90))
-tex2.SetTextSize(0.05)
-tex2.SetNDC()
-tex2.Draw("same")
+drawEllipse(signalHist, a, b, "DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to100_withLCTFit", 
+            "Ellipse cut for Pad2, p_{T} > 20 GeV,  1.6 < eta < 1.8, |dxy|<100 ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",
+            doAcceptance=True)
 
-tex3 = TLatex(0.15, 0.75, "Radius (0.95): %f"%(foundRadius95))
-tex3.SetTextSize(0.05)
-tex3.SetNDC()
-tex3.Draw("same")
-
-c.SaveAs("deltaDeltaY123_vs_deltaPhiGEM_pad4_pt10to20_eta16to18_withLCTFit_ellipse.png")
+drawEllipse(backgroundHist, a, b, "DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_withLCTFit", 
+            "Ellipse cut for Pad2, 2 < p_{T} < 7 GeV,  1.6 < eta < 1.8, |dxy|<5 ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|", 
+            doAcceptance=False)

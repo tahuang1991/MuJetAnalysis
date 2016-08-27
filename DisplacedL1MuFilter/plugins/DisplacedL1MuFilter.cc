@@ -2336,6 +2336,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         int triggerSector = (l1Tracks[ event_.L1Mu_CSCTF_index[i] ].first).sector();
         std::cout << "trigger sector " << triggerSector << std::endl;
         
+        // temp storage of candidate stubs
+        CSCCorrelatedLCTDigi bestMatchingStub;
+        
         std::cout << "\tPrint all possible stubs in this event" << std::endl;
         for(auto cItr = hCSCCorrelatedLCTs->begin(); cItr != hCSCCorrelatedLCTs->end(); ++cItr) {
           CSCDetId ch_id = (*cItr).first;
@@ -2349,13 +2352,11 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           // ignore CSCDetIds in the wrong endcap!
           if (ch_id.zendcap() != int(event_.L1Mu_eta[i]/std::abs(event_.L1Mu_eta[i]))) continue;
           //loop over stubs in a chamber
-          int iStub=0;
 
-          // temp storage of candidate stubs
-          CSCCorrelatedLCTDigi bestMatchingStub;
+          //int iStub=0;
           for (auto digiItr = (*cItr ).second.first; digiItr != (*cItr ).second.second; ++digiItr){
             auto stub(*digiItr);
-            iStub = digiItr - (*cItr ).second.first;
+            //            iStub = digiItr - (*cItr ).second.first;
             // trigger sector must be the same
             if (triggerSector != ch_id.triggerSector()) continue;
             
@@ -2364,12 +2365,11 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             // BXs have to match
             if (deltaBX > 1) continue; 
             std::cout<<"Candidate " << stub << std::endl;
-            if (iStub){
-              bestMatchingStub = pickBestMatchingStub(allxs[ch_id.station()-1], allys[ch_id.station()-1], 
-                                                      ch_id, bestMatchingStub, stub, 6 + event_.L1Mu_bx[i]);
-            }
+            bestMatchingStub = pickBestMatchingStub(allxs[ch_id.station()-1], allys[ch_id.station()-1], 
+                                                    ch_id, bestMatchingStub, stub, 6 + event_.L1Mu_bx[i]);
           }
-          std::cout << "Best matching stub" << bestMatchingStub << std::endl;
+          if (bestMatchingStub != CSCCorrelatedLCTDigi())
+            std::cout << "Best matching stub " << bestMatchingStub <<std::endl;
         }
       }
 
@@ -3376,9 +3376,13 @@ DisplacedL1MuFilter::pickBestMatchingStub(float x, float y, CSCDetId id,
                                           const CSCCorrelatedLCTDigi& stub2, 
                                           int refBx) const
 {
+  // check for invalid/valid
+  if (stub1 == CSCCorrelatedLCTDigi()) return stub2;
+  if (stub2 == CSCCorrelatedLCTDigi()) return stub1;
+
   int deltaBX1 = std::abs(stub1.getBX() - refBx);
   int deltaBX2 = std::abs(stub2.getBX() - refBx);
-  
+
   if (deltaBX1==0 and deltaBX2!=0) return stub1;
   if (deltaBX2==0 and deltaBX1!=0) return stub2;
   if (deltaBX1!=0 and deltaBX2!=0){

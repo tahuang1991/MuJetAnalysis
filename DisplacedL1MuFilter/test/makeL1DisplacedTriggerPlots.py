@@ -46,7 +46,7 @@ if __name__ == "__main__":
   ch = addfiles(ch, dirname=dirname)
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160826_v4"
+  label = "DisplacedL1MuTrigger_20160827"
   targetDir = label + "/"
   
   verbose = False
@@ -336,10 +336,10 @@ if __name__ == "__main__":
         addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad4_pt%s_eta%s_withLCTFit"%(qq, rr), 100,0.,10.,50,0.,0.2)
         addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad8_pt%s_eta%s_withLCTFit"%(qq, rr), 100,0.,10.,50,0.,0.2)
 
-    addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_withoutLCTFit", 100,0.,10.,50,0.,0.2)
-    addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_withLCTFit", 100,0.,10.,50,0.,0.2)
-    addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to100_withoutLCTFit", 100,0.,10.,50,0.,0.2)
-    addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to100_withLCTFit", 100,0.,10.,50,0.,0.2)
+    addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_withoutLCTFit", 200,0.,20.,100,0.,0.5)
+    addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_withLCTFit", 200,0.,20.,100,0.,0.5)
+    addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to100_withoutLCTFit", 200,0.,20.,100,0.,0.5)
+    addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to100_withLCTFit", 200,0.,20.,100,0.,0.5)
         
 
     addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad1_pt10_withoutLCTFit", 50,0.,5.,100,0.,0.2)
@@ -1992,23 +1992,31 @@ if __name__ == "__main__":
                 dPhiGEM_P8_F = delta_phi_dir_GE21_pad8_withLCTFit
 
 
+                def passEllipseCut(x,y,a=1.4600000000000004, b=0.09900000000000005):
+                  ## best [1.4600000000000004, 0.09900000000000005, 0.9009687836383208, 0.7896341463414634]
+                  x2value = x*x
+                  a2value = a*a
+                  y2value = y*y
+                  b2value = b*b
+                  return x2value/a2value + y2value/b2value <= 1
+
                 if dxy <= 100:
                   mapTH1F["GenMuPt_GE11_ME11_GE21_ME21_ME3"].Fill(pt)
                   if 1.6<=abs(eta_prop) and abs(eta_prop)<2.2:  mapTH1F["GenMuPt_GE11_ME11_GE21_ME21_ME3_eta16to22"].Fill(pt)
                   mapTH1F["GenMuPt_GE11_ME11_GE21_ME21_ME3_eta"+ etaRangesGE11[etaPartitionGE11]].Fill(pt)
 
                   for L1MuPtCut in [10,15,20]:
-                    if positionPt_withoutLCTFit >= L1MuPtCut and passEllipseCut(ddY123_WF, dPhiGEM_P4_WF, 'pad4', etaRangesGE11[etaPartitionGE11], False):
+                    if positionPt_withoutLCTFit >= L1MuPtCut and passEllipseCut(ddY123_WF, dPhiGEM_P4_WF):
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_eta%s_withoutLCTFit"%(L1MuPtCut, etaRangesGE11[etaPartitionGE11])].Fill(pt)
-                    if positionPt_withLCTFit >= L1MuPtCut and passEllipseCut(ddY123_F, dPhiGEM_P4_F, 'pad4', etaRangesGE11[etaPartitionGE11], True): 
+                    if positionPt_withLCTFit >= L1MuPtCut and passEllipseCut(ddY123_F, dPhiGEM_P4_F): 
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_withLCTFit"%(L1MuPtCut)].Fill(pt)
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_eta%s_withLCTFit"%(L1MuPtCut, etaRangesGE11[etaPartitionGE11])].Fill(pt)
                       
                     if 1.6<=abs(eta_prop) and abs(eta_prop)<2.2:
-                      if positionPt_withoutLCTFit >= L1MuPtCut and passEllipseCut(ddY123_WF, dPhiGEM_P4_WF, 'pad4', etaRangesGE11[etaPartitionGE11], False): 
+                      if positionPt_withoutLCTFit >= L1MuPtCut and passEllipseCut(ddY123_WF, dPhiGEM_P4_WF): 
                         mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_eta16to22_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
-                      if positionPt_withLCTFit >= L1MuPtCut and passEllipseCut(ddY123_F, dPhiGEM_P4_F, 'pad4', etaRangesGE11[etaPartitionGE11], True): 
+                      if positionPt_withLCTFit >= L1MuPtCut and passEllipseCut(ddY123_F, dPhiGEM_P4_F): 
                         mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_eta16to22_withLCTFit"%(L1MuPtCut)].Fill(pt)
 
                       
@@ -2018,17 +2026,17 @@ if __name__ == "__main__":
                   mapTH1F["GenMuPt_GE11_ME11_GE21_ME21_ME3_eta"+ etaRangesGE11[etaPartitionGE11] + "_dxy0to5"].Fill(pt)
 
                   for L1MuPtCut in [10,15,20]:
-                    if positionPt_withoutLCTFit >= L1MuPtCut and passEllipseCut(ddY123_WF, dPhiGEM_P4_WF, 'pad4', etaRangesGE11[etaPartitionGE11], False): 
+                    if positionPt_withoutLCTFit >= L1MuPtCut and passEllipseCut(ddY123_WF, dPhiGEM_P4_WF): 
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_dxy0to5_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_eta%s_dxy0to5_withoutLCTFit"%(L1MuPtCut, etaRangesGE11[etaPartitionGE11])].Fill(pt)
-                    if positionPt_withLCTFit >= L1MuPtCut and passEllipseCut(ddY123_F, dPhiGEM_P4_F, 'pad4', etaRangesGE11[etaPartitionGE11], True): 
+                    if positionPt_withLCTFit >= L1MuPtCut and passEllipseCut(ddY123_F, dPhiGEM_P4_F): 
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_dxy0to5_withLCTFit"%(L1MuPtCut)].Fill(pt)
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_eta%s_dxy0to5_withLCTFit"%(L1MuPtCut, etaRangesGE11[etaPartitionGE11])].Fill(pt)
 
                     if 1.6<=abs(eta_prop) and abs(eta_prop)<2.2:
-                      if positionPt_withoutLCTFit >= L1MuPtCut and passEllipseCut(ddY123_WF, dPhiGEM_P4_WF, 'pad4', etaRangesGE11[etaPartitionGE11], False): 
+                      if positionPt_withoutLCTFit >= L1MuPtCut and passEllipseCut(ddY123_WF, dPhiGEM_P4_WF): 
                         mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_eta16to22_dxy0to5_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
-                      if positionPt_withLCTFit >= L1MuPtCut and passEllipseCut(ddY123_F, dPhiGEM_P4_F, 'pad4', etaRangesGE11[etaPartitionGE11], True): 
+                      if positionPt_withLCTFit >= L1MuPtCut and passEllipseCut(ddY123_F, dPhiGEM_P4_F): 
                         mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_eta16to22_dxy0to5_withLCTFit"%(L1MuPtCut)].Fill(pt)
 
 
@@ -2038,17 +2046,17 @@ if __name__ == "__main__":
                   mapTH1F["GenMuPt_GE11_ME11_GE21_ME21_ME3_eta"+ etaRangesGE11[etaPartitionGE11] + "_dxy5to50"].Fill(pt)
 
                   for L1MuPtCut in [10,15,20]:
-                    if positionPt_withoutLCTFit >= L1MuPtCut and passEllipseCut(ddY123_WF, dPhiGEM_P4_WF, 'pad4', etaRangesGE11[etaPartitionGE11], False): 
+                    if positionPt_withoutLCTFit >= L1MuPtCut and passEllipseCut(ddY123_WF, dPhiGEM_P4_WF): 
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_dxy5to50_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_eta%s_dxy5to50_withoutLCTFit"%(L1MuPtCut, etaRangesGE11[etaPartitionGE11])].Fill(pt)
-                    if positionPt_withLCTFit >= L1MuPtCut and passEllipseCut(ddY123_F, dPhiGEM_P4_F, 'pad4', etaRangesGE11[etaPartitionGE11], True): 
+                    if positionPt_withLCTFit >= L1MuPtCut and passEllipseCut(ddY123_F, dPhiGEM_P4_F): 
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_dxy5to50_withLCTFit"%(L1MuPtCut)].Fill(pt)
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_eta%s_dxy5to50_withLCTFit"%(L1MuPtCut, etaRangesGE11[etaPartitionGE11])].Fill(pt)
 
                     if 1.6<=abs(eta_prop) and abs(eta_prop)<2.2:
-                      if positionPt_withoutLCTFit >= L1MuPtCut and passEllipseCut(ddY123_WF, dPhiGEM_P4_WF, 'pad4', etaRangesGE11[etaPartitionGE11], False): 
+                      if positionPt_withoutLCTFit >= L1MuPtCut and passEllipseCut(ddY123_WF, dPhiGEM_P4_WF): 
                         mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_eta16to22_dxy5to50_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
-                      if positionPt_withLCTFit >= L1MuPtCut and passEllipseCut(ddY123_F, dPhiGEM_P4_F, 'pad4', etaRangesGE11[etaPartitionGE11], True): 
+                      if positionPt_withLCTFit >= L1MuPtCut and passEllipseCut(ddY123_F, dPhiGEM_P4_F): 
                         mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_eta16to22_dxy5to50_withLCTFit"%(L1MuPtCut)].Fill(pt)
 
 
@@ -2058,17 +2066,17 @@ if __name__ == "__main__":
                   mapTH1F["GenMuPt_GE11_ME11_GE21_ME21_ME3_eta"+ etaRangesGE11[etaPartitionGE11] + "_dxy50to100"].Fill(pt)
 
                   for L1MuPtCut in [10,15,20]:
-                    if positionPt_withoutLCTFit >= L1MuPtCut and passEllipseCut(ddY123_WF, dPhiGEM_P4_WF, 'pad4', etaRangesGE11[etaPartitionGE11], False): 
+                    if positionPt_withoutLCTFit >= L1MuPtCut and passEllipseCut(ddY123_WF, dPhiGEM_P4_WF): 
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_dxy50to100_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_eta%s_dxy50to100_withoutLCTFit"%(L1MuPtCut, etaRangesGE11[etaPartitionGE11])].Fill(pt)
-                    if positionPt_withLCTFit >= L1MuPtCut and passEllipseCut(ddY123_F, dPhiGEM_P4_F, 'pad4', etaRangesGE11[etaPartitionGE11], True): 
+                    if positionPt_withLCTFit >= L1MuPtCut and passEllipseCut(ddY123_F, dPhiGEM_P4_F): 
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_dxy50to100_withLCTFit"%(L1MuPtCut)].Fill(pt)
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_eta%s_dxy50to100_withLCTFit"%(L1MuPtCut, etaRangesGE11[etaPartitionGE11])].Fill(pt)
 
                     if 1.6<=abs(eta_prop) and abs(eta_prop)<2.2:
-                      if positionPt_withoutLCTFit >= L1MuPtCut and passEllipseCut(ddY123_WF, dPhiGEM_P4_WF, 'pad4', etaRangesGE11[etaPartitionGE11], False): 
+                      if positionPt_withoutLCTFit >= L1MuPtCut and passEllipseCut(ddY123_WF, dPhiGEM_P4_WF): 
                         mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_eta16to22_dxy50to100_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
-                      if positionPt_withLCTFit >= L1MuPtCut and passEllipseCut(ddY123_F, dPhiGEM_P4_F, 'pad4', etaRangesGE11[etaPartitionGE11], True): 
+                      if positionPt_withLCTFit >= L1MuPtCut and passEllipseCut(ddY123_F, dPhiGEM_P4_F): 
                         mapTH1F["Displaced_L1MuPt%d_GenMuPt_GE11_ME11_GE21_ME21_ME3_eta16to22_dxy50to100_withLCTFit"%(L1MuPtCut)].Fill(pt)
 
 
@@ -2078,8 +2086,8 @@ if __name__ == "__main__":
               ## get the parity
               parity = get_parity(CSCTF_isEven1, CSCTF_isEven2, CSCTF_isEven3, CSCTF_isEven4)
 
-              ## hybrid high-eta endcap based algo
-              ok_position_based_endcap =  ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3 and ok_GE11 and ok_GE21 
+              ## position based endcap
+              ok_position_based_endcap =  ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3 
               if ok_position_based_endcap and 0 <= parity and parity <= 3 and abs(eta_prop)>=1.2 and abs(eta_prop)<=2.4:
                 nL1MuMatched_ME1_ME2_ME3 += 1
 

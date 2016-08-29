@@ -46,7 +46,7 @@ if __name__ == "__main__":
   ch = addfiles(ch, dirname=dirname)
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160827"
+  label = "DisplacedL1MuTrigger_20160827_v3"
   targetDir = label + "/"
   
   verbose = False
@@ -106,13 +106,15 @@ if __name__ == "__main__":
       mapTH2F[name] = TH2F(name,"",len(binsX)-1, binsX, len(binsY)-1, binsY)
 
     ## ranges
-    DTCombinations = ['DT1_DT2']
-    ME1ME2ParityCases = ['ee','eo','oe','oo']
-    ME1ME2ParityCasesString = ['even-even','even-odd','odd-even','odd-odd']
+    DTCombinations = ['DT1_DT2','DT1_DT3','DT1_DT4',
+                      'DT2_DT3','DT2_DT4','DT3_DT4']
+    ME1ME2ParityCases = ['oe','oo','ee','eo']
+    ME1ME2ParityCasesString = ['odd-even','odd-odd','even-even','even-odd']
     ME1ME2ME3ParityCases = ['oee','ooo','eee','eoo']
     dxyRanges = ['','_dxy0to5','_dxy5to50','_dxy50to100']
     dxyRangesString = ['','|dxy| #leq 5 cm','5 < |dxy| #leq 50 cm','50 < |dxy| #leq 100 cm']
     L1MuPtCuts = ['10','15','20']
+    fitTypes = ['withLCTFit', 'withoutLCTFit']
     L1MuPtSlices = ['2to5','5to10','10to20','20to30','30to100']
     padSizes = ['pad1','pad2','pad4','pad8']
     etaRanges = ['12to14','14to16','16to18','18to20','20to22','22to24']
@@ -336,11 +338,15 @@ if __name__ == "__main__":
         addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad4_pt%s_eta%s_withLCTFit"%(qq, rr), 100,0.,10.,50,0.,0.2)
         addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad8_pt%s_eta%s_withLCTFit"%(qq, rr), 100,0.,10.,50,0.,0.2)
 
-    addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_withoutLCTFit", 200,0.,20.,100,0.,0.5)
-    addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_withLCTFit", 200,0.,20.,100,0.,0.5)
-    addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to100_withoutLCTFit", 200,0.,20.,100,0.,0.5)
-    addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to100_withLCTFit", 200,0.,20.,100,0.,0.5)
-        
+    for pp in ME1ME2ME3ParityCases:
+      for ff in fitTypes:
+        addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_" + pp + "_" + ff, 200,0.,20.,100,0.,0.5)
+        addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to50_" + pp + "_" + ff, 200,0.,20.,100,0.,0.5)
+      for rr in etaRangesGE11:
+        for ff in fitTypes:
+          addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta" + rr + "_dxy0to5_" + pp + "_" + ff, 200,0.,20.,100,0.,0.5)
+          addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta" + rr + "_dxy0to50_" + pp + "_" + ff, 200,0.,20.,100,0.,0.5)
+
 
     addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad1_pt10_withoutLCTFit", 50,0.,5.,100,0.,0.2)
     addPlotToMapTH2F("DDY123_vs_deltaPhiGEM_pad2_pt10_withoutLCTFit", 50,0.,5.,100,0.,0.2)
@@ -1846,11 +1852,15 @@ if __name__ == "__main__":
 
                 ## Fill 2D plots that show performance of position based vs direction based algorithm
                 if pt<7 and abs(dxy)<5:
-                  mapTH2F["DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_withoutLCTFit"].Fill(DDY123_withoutLCTFit, delta_phi_dir_GE21_pad2_withoutLCTFit)
-                  mapTH2F["DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_withLCTFit"].Fill(DDY123_withLCTFit, delta_phi_dir_GE21_pad2_withLCTFit)
-                if pt>20 and abs(dxy)<100:  
-                  mapTH2F["DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to100_withoutLCTFit"].Fill(DDY123_withoutLCTFit, delta_phi_dir_GE21_pad2_withoutLCTFit)
-                  mapTH2F["DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to100_withLCTFit"].Fill(DDY123_withLCTFit, delta_phi_dir_GE21_pad2_withLCTFit)
+                  mapTH2F["DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta" + etaRangesGE11[etaPartitionGE11] + "_dxy0to5_" + ME1ME2ME3ParityCases[parity3] + "_withoutLCTFit"].Fill(DDY123_withoutLCTFit, delta_phi_dir_GE21_pad2_withoutLCTFit)
+                  mapTH2F["DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta" + etaRangesGE11[etaPartitionGE11] + "_dxy0to5_" + ME1ME2ME3ParityCases[parity3] + "_withLCTFit"].Fill(DDY123_withLCTFit, delta_phi_dir_GE21_pad2_withLCTFit)
+                  mapTH2F["DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_" + ME1ME2ME3ParityCases[parity3] + "_withoutLCTFit"].Fill(DDY123_withoutLCTFit, delta_phi_dir_GE21_pad2_withoutLCTFit)
+                  mapTH2F["DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_" + ME1ME2ME3ParityCases[parity3] + "_withLCTFit"].Fill(DDY123_withLCTFit, delta_phi_dir_GE21_pad2_withLCTFit)
+                if pt>20 and abs(dxy)<50: 
+                  mapTH2F["DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta" + etaRangesGE11[etaPartitionGE11] + "_dxy0to50_" + ME1ME2ME3ParityCases[parity3] + "_withoutLCTFit"].Fill(DDY123_withoutLCTFit, delta_phi_dir_GE21_pad2_withoutLCTFit)
+                  mapTH2F["DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta" + etaRangesGE11[etaPartitionGE11] + "_dxy0to50_" + ME1ME2ME3ParityCases[parity3] + "_withLCTFit"].Fill(DDY123_withLCTFit, delta_phi_dir_GE21_pad2_withLCTFit)
+                  mapTH2F["DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to50_" + ME1ME2ME3ParityCases[parity3] + "_withoutLCTFit"].Fill(DDY123_withoutLCTFit, delta_phi_dir_GE21_pad2_withoutLCTFit)
+                  mapTH2F["DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to50_" + ME1ME2ME3ParityCases[parity3] + "_withLCTFit"].Fill(DDY123_withLCTFit, delta_phi_dir_GE21_pad2_withLCTFit)
 
 
                 if pt<5:
@@ -2851,6 +2861,7 @@ if __name__ == "__main__":
                    "#Phi resolution in GE21 chamber, 2.0<|#eta|<2.2;#Phi(Pad8)-#Phi(SimHit); Entries","") 
 
     ## DDY123 vs deltaPhiGEM
+    """
     makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad1_pt10_withoutLCTFit", "Pad1, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
     makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt10_withoutLCTFit", "Pad2, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
     makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad4_pt10_withoutLCTFit", "Pad4, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
@@ -2882,44 +2893,36 @@ if __name__ == "__main__":
     makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt20_withLCTFit", "Pad2, p_{T}#geq 20 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
     makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad4_pt20_withLCTFit", "Pad4, p_{T}#geq 20 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
     makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad8_pt20_withLCTFit", "Pad8, p_{T}#geq 20 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+    """
+            
+    for pp in ME1ME2ME3ParityCases:
+      for rr,rrss in zip(etaRangesGE11,etaRangesGE11String):
+        for ff in fitTypes:
+          makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta" + rr + "_dxy0to5_" + pp + "_" + ff, "Pad2, p_{T} 2-7 GeV " + pp + " " + rrss + " |dxy|<5 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
+          makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta" + rr + "_dxy0to5_" + pp + "_" + ff, "Pad2, p_{T} 2-7 GeV " + pp + " " + rrss + " |dxy|<5 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
+          makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta" + rr + "_dxy0to50_" + pp + "_" + ff, "Pad2, p_{T} 20-100 GeV " + pp + " " + rrss + " |dxy|<50 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
+          makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta" + rr + "_dxy0to50_" + pp + "_" + ff, "Pad2, p_{T} 20-100 GeV " + pp + " " + rrss + " |dxy|<50 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
 
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_withoutLCTFit", "Pad2, p_{T}#leq 7 GeV, |dxy|#leq 5 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz',saveHistAsROOT = True)
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_withLCTFit", "Pad2, p_{T}#leq 7 GeV, |dxy|#leq 5 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz',saveHistAsROOT = True)
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to100_withoutLCTFit", "Pad2, p_{T}#geq 20 GeV, |dxy|#leq 100 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz',saveHistAsROOT = True)
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to100_withLCTFit", "Pad2, p_{T}#geq 20 GeV, |dxy|#leq 100 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz',saveHistAsROOT = True)
-
-
-    for qq in L1MuPtSlices:
-      for rr, ss in zip(etaRanges, etaRangesString):
-        makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad1_pt%s_eta%s_withoutLCTFit"%(qq, rr), "Pad1, p_{T} " + qq + " GeV " + ss + " ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-        makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt%s_eta%s_withoutLCTFit"%(qq, rr), "Pad2, p_{T} " + qq + " GeV " + ss + " ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-        makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad4_pt%s_eta%s_withoutLCTFit"%(qq, rr), "Pad4, p_{T} " + qq + " GeV " + ss + " ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-        makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad8_pt%s_eta%s_withoutLCTFit"%(qq, rr), "Pad8, p_{T} " + qq + " GeV " + ss + " ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-        
-        makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad1_pt%s_eta%s_withLCTFit"%(qq, rr), "Pad1, p_{T} " + qq + " GeV " + ss + " ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-        makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt%s_eta%s_withLCTFit"%(qq, rr), "Pad2, p_{T} " + qq + " GeV " + ss + " ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-        makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad4_pt%s_eta%s_withLCTFit"%(qq, rr), "Pad4, p_{T} " + qq + " GeV " + ss + " ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-        makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad8_pt%s_eta%s_withLCTFit"%(qq, rr), "Pad8, p_{T} " + qq + " GeV " + ss + " ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-
-        #makeSimplePlotMapEllipse(mapTH2F, "DDY123_vs_deltaPhiGEM_pad1_pt%s_eta%s_withoutLCTFit"%(qq, rr), "Pad1, p_{T}" + qq + " GeV " + ss + " ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-        #makeSimplePlotMapEllipse(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt%s_eta%s_withoutLCTFit"%(qq, rr), "Pad2, p_{T} " + qq + " GeV " + ss + " ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-        #makeSimplePlotMapEllipse(mapTH2F, "DDY123_vs_deltaPhiGEM_pad4_pt%s_eta%s_withoutLCTFit"%(qq, rr), "Pad4, p_{T} " + qq + " GeV " + ss + " ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-        #makeSimplePlotMapEllipse(mapTH2F, "DDY123_vs_deltaPhiGEM_pad8_pt%s_eta%s_withoutLCTFit"%(qq, rr), "Pad8, p_{T} " + qq + " GeV " + ss + " ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-        
-        #makeSimplePlotMapEllipse(mapTH2F, "DDY123_vs_deltaPhiGEM_pad1_pt%s_eta%s_withLCTFit"%(qq, rr), "Pad1, p_{T} " + qq + " GeV " + ss + " ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-        #makeSimplePlotMapEllipse(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt%s_eta%s_withLCTFit"%(qq, rr), "Pad2, p_{T} " + qq + " GeV " + ss + " ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-        #makeSimplePlotMapEllipse(mapTH2F, "DDY123_vs_deltaPhiGEM_pad4_pt%s_eta%s_withLCTFit"%(qq, rr), "Pad4, p_{T} " + qq + " GeV " + ss + " ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-        #makeSimplePlotMapEllipse(mapTH2F, "DDY123_vs_deltaPhiGEM_pad8_pt%s_eta%s_withLCTFit"%(qq, rr), "Pad8, p_{T} " + qq + " GeV " + ss + " ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+    for pp in ME1ME2ME3ParityCases:
+      for ff in fitTypes:
+        makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_" + pp + "_" + ff, 
+                          "Pad2, p_{T} 2-7 GeV " + pp + " 1.6 #leq |eta| #leq 2.2, |dxy|<5 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
+        makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_" + pp + "_" + ff, 
+                          "Pad2, p_{T} 2-7 GeV " + pp + " 1.6 #leq |eta| #leq 2.2, |dxy|<5 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
+        makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to50_" + pp + "_" + ff, 
+                          "Pad2, p_{T} 20-100 GeV " + pp + " 1.6 #leq |eta| #leq 2.2, |dxy|<50 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
+        makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to50_" + pp + "_" + ff, 
+                          "Pad2, p_{T} 20-100 GeV " + pp + " 1.6 #leq |eta| #leq 2.2, |dxy|<50 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
 
     ## Plots for position based pT measurement (CSC only!!!)
     for pp in ME1ME2ME3ParityCases:      
-      makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta12to16_" + pp + "_withoutLCTFit", pp + " 1.2 #leq |eta| #leq 1.8 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",'colz')
-      makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta12to16_" + pp + "_withLCTFit", pp + " 1.2 #leq |eta| #leq 1.8 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",'colz')
+      makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta12to16_" + pp + "_withoutLCTFit", pp + " 1.2 #leq |eta| #leq 1.6 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",'colz')
+      makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta12to16_" + pp + "_withLCTFit", pp + " 1.2 #leq |eta| #leq 1.6 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",'colz')
       makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta16to24_" + pp + "_withoutLCTFit", pp + " 1.6 #leq |eta| #leq 2.4 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",'colz')
       makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta16to24_" + pp + "_withLCTFit", pp + " 1.6 #leq |eta| #leq 2.4 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",'colz')
 
-      make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta12to16_" + pp + "_withoutLCTFit", pp + " 1.2 #leq |eta| #leq 1.8 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",True, True)
-      make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta12to16_" + pp + "_withLCTFit", pp + " 1.2 #leq |eta| #leq 1.8 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",True, True)
+      make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta12to16_" + pp + "_withoutLCTFit", pp + " 1.2 #leq |eta| #leq 1.6;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",True, True)
+      make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta12to16_" + pp + "_withLCTFit", pp + " 1.2 #leq |eta| #leq 1.6 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",True, True)
       make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta16to24_" + pp + "_withoutLCTFit", pp + " 1.6 #leq |eta| #leq 2.4 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",True, True)
       make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta16to24_" + pp + "_withLCTFit", pp + " 1.6 #leq |eta| #leq 2.4 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",True, True)
 

@@ -139,7 +139,11 @@ const int nGd = 2;
 const int nGdMu = 2;
 
 typedef std::vector<CSCComparatorDigi> CSCComparatorDigiContainer;
+typedef std::vector<CSCCorrelatedLCTDigi> CSCCorrelatedLCTDigiContainer;
 typedef std::vector<std::pair<CSCDetId, CSCComparatorDigiContainer> > CSCComparatorDigiContainerIds;
+typedef std::pair<CSCDetId, CSCCorrelatedLCTDigi> CSCCorrelatedLCTDigiId;
+typedef std::pair<CSCDetId, CSCCorrelatedLCTDigiContainer> CSCCorrelatedLCTDigiContainerId;
+typedef std::vector<std::pair<CSCDetId, CSCCorrelatedLCTDigiContainer> > CSCCorrelatedLCTDigiContainerIds;
 
 struct MyEvent
 {
@@ -666,6 +670,7 @@ private:
 
   float getGlobalPhi(unsigned int rawid, int stripN);
   double calcCSCSpecificPhi(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const;
+  GlobalPoint getGlobalPointPad(unsigned int rawId, const GEMCSCPadDigi& tp) const;;  
   GlobalPoint getCSCSpecificPoint(unsigned int rawid, const CSCCorrelatedLCTDigi& tp) const;
   GlobalPoint getCSCSpecificPoint2(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const;
   GlobalPoint getCSCSpecificPointStrips(const SimTrackMatchManager& tp) const;
@@ -674,12 +679,12 @@ private:
                          CSCDetId chid, int iMuon, float& fit_z, float& fit_phi, float& dphi) const;
   void getStubPositions(int index, std::vector<float>& x, 
                         std::vector<float>& y, std::vector<float>& z) const;
-  CSCCorrelatedLCTDigi pickBestMatchingStub(float x1, float y1,
-                                            CSCDetId id,
-                                            const CSCCorrelatedLCTDigi& stub1, 
-                                            const CSCCorrelatedLCTDigi& stub2, 
-                                            int refBx) const;
-
+  CSCCorrelatedLCTDigiId 
+  pickBestMatchingStub(float x1, float y1,
+                       const CSCCorrelatedLCTDigiId& bestStub,
+                       const CSCCorrelatedLCTDigiId& newStub, 
+                       int refBx) const;
+  
   void extrapolate(const SimTrack&tk, const SimVertex&, GlobalPoint&);
   void extrapolate(const reco::GenParticle &tk, int station, GlobalPoint&, GlobalVector&);
   void extrapolate(const TTTrack< Ref_PixelDigi_ > &tk, int station, GlobalPoint&, GlobalVector&);
@@ -898,9 +903,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     skim_sim_trks.push_back(sim_muon);
   }        
 
-  edm::Handle<edm::SimVertexContainer> sim_vertices;
-  iEvent.getByLabel("g4SimHits", sim_vertices);
-  const edm::SimVertexContainer & sim_vtxs = *sim_vertices.product();
+  // edm::Handle<edm::SimVertexContainer> sim_vertices;
+  // iEvent.getByLabel("g4SimHits", sim_vertices);
+  // const edm::SimVertexContainer & sim_vtxs = *sim_vertices.product();
   
   event_.lumi = iEvent.id().luminosityBlock();
   event_.run = iEvent.id().run();
@@ -1272,6 +1277,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   // SIM-L1  analysis //
   //////////////////////
 
+  /*
   if(verbose) {
     cout << "++++ SIM Mu analysis ++++" << endl;
     cout << "Number of good simtracks " << skim_sim_trks.size() << endl;
@@ -1387,7 +1393,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
       } 
     }
-
+    */
 
     // ME0
     /*
@@ -1402,6 +1408,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     event_.GE0_phib[k] = gv.phi();
     */
     
+    /*
     // GEM digis and pads in superchambers
     if(verbose){
       std::cout << std::endl<<"++++ GEM pad analysis ++++" <<std::endl;
@@ -1478,6 +1485,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
       }
     }
+  */
     
     /*
 
@@ -1581,7 +1589,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         event_.CSCTF_fit_R4[k] = radius;
       }
     }
-    */
 
     // recover the missing stubs in station 1 and 2... (because they were not used in the track building)
     // GEM digis and pads in superchambers
@@ -1650,6 +1657,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }        
     }      
   }
+  */
+  
   
   /////////////////
   // L1 analysis //
@@ -2348,11 +2357,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             if (not stubMissingSt3 and station==3) continue;
             if (not stubMissingSt4 and station==4) continue;
             
+            // temp storage of candidate stubs per station and ring
+            CSCCorrelatedLCTDigi bestMatchingStub;
+            CSCDetId bestId;
+
             for (int ring=1; ring<=3; ring++){
               if (station!=1 and ring==3) continue;
-              // temp storage of candidate stubs per station and ring
-              CSCCorrelatedLCTDigi bestMatchingStub;
-              
+              int iStub = 0;
               for (int chamber=1; chamber<=36; chamber++){
                 // do not consider invalid detids
                 if ( (station==2 or station==3 or station==4) and 
@@ -2361,8 +2372,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                 // create the detid
                 CSCDetId ch_id(endcap, station, ring, chamber);
                 
-                
-
                 // get the stubs in this detid
                 auto range = CSCCorrelatedLCTs.get(ch_id);
                 for (auto digiItr = range.first; digiItr != range.second; ++digiItr){
@@ -2372,12 +2381,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                   int deltaBX = std::abs(stub.getBX() - (6 + event_.L1Mu_bx[i]));
                   
                   // BXs have to match
-                  if (deltaBX > 1) continue; 
+                  if (deltaBX > 1) continue;
+                  iStub++; 
                   std::cout << ch_id << std::endl;
                   std::cout<<"Candidate " << stub << std::endl;
-                  bestMatchingStub = pickBestMatchingStub(bestMatchingStub, allxs[ch_id.station()-1], allys[ch_id.station()-1], 
-                                                          ch_id, stub, 6 + event_.L1Mu_bx[i]);
-                  
+                  //  bestMatchingStub = pickBestMatchingStub(allxs[ch_id.station()-1], allys[ch_id.station()-1], 
+                  //                                      ch_id, bestMatchingStub, stub, 6 + event_.L1Mu_bx[i]);
                 }
                 // consider the case ME1a
                 if (station==1 and ring==1){
@@ -2391,17 +2400,154 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                     
                     // BXs have to match
                     if (deltaBX > 1) continue; 
+                    iStub++;
                     std::cout << me1a_id << std::endl;
                     std::cout<<"Candidate " << stub << std::endl;
-                    bestMatchingStub = pickBestMatchingStub(bestMatchingStub, allxs[me1a_id.station()-1], allys[me1a_id.station()-1], 
-                                                            me1a_id, stub, 6 + event_.L1Mu_bx[i]);
+                    //bestMatchingStub = pickBestMatchingStub(allxs[me1a_id.station()-1], allys[me1a_id.station()-1], 
+                    //                                      me1a_id, bestMatchingStub, stub, 6 + event_.L1Mu_bx[i]);
                     
                   }
                 }
+                //std::cout << "Current best: " << bestMatchingStub << std::endl;
               }
               if (bestMatchingStub != CSCCorrelatedLCTDigi())
                 std::cout << "Best matching stub " << bestMatchingStub <<std::endl;
             }
+            /*
+            // stub position
+            auto gp = getCSCSpecificPoint2(ch_id.rawId(), bestMatchingStub);
+              double csc_x = gp.x();
+              double csc_y = gp.y();
+              double csc_z = gp.z();
+              double csc_R = TMath::Sqrt(gp.y()*gp.y() + gp.x()*gp.x());
+              //int keyWireGroup = stub.getKeyWG();
+              //float localY = cscChamber->layer(3)->geometry()->yOfWireGroup(keyWireGroup);
+              float radius = csc_R; //cscChamber->layer(3)->surface().toGlobal(LocalPoint(0,0,0)).perp() + localY;
+              //std::cout << "csc_R " << csc_R << " radius " << radius << std::endl;
+              float z_pos_L3, bestFitPhi;
+              fitComparatorsLCT(*hCSCComparators.product(), bestMatchingStub, ch_id, int(digiIt-range.first), z_pos_L3, bestFitPhi);
+              
+              switch(ch_id.station()) {
+              case 1:
+                if (stubMissingSt1) { 
+                  event_.CSCTF_id1[j] = ch_id.rawId();
+                  event_.CSCTF_st1[j] = ch_id.station();
+                  event_.CSCTF_ri1[j] = ch_id.ring(); 
+                  event_.CSCTF_ch1[j] = ch_id.chamber();
+                  event_.CSCTF_en1[j] = ch_id.zendcap();
+                  event_.CSCTF_trk1[j] = bestMatchingStub.getTrknmb(); 
+                  event_.CSCTF_quality1[j] = bestMatchingStub.getQuality();
+                  event_.CSCTF_wg1[j] = bestMatchingStub.getKeyWG();
+                  event_.CSCTF_hs1[j] = bestMatchingStub.getStrip();
+                  event_.CSCTF_pat1[j] = bestMatchingStub.getPattern();
+                  event_.CSCTF_bend1[j] = bestMatchingStub.getBend();
+                  event_.CSCTF_bx1[j] = bestMatchingStub.getBX();
+                  event_.CSCTF_clctpat1[j] = bestMatchingStub.getCLCTPattern();
+                  event_.CSCTF_val1[j] = bestMatchingStub.isValid();
+                  event_.CSCTF_phi1[j] = gp.phi();
+                  event_.CSCTF_gemdphi1[j] = bestMatchingStub.getGEMDPhi();
+                  event_.CSCTF_R1[j] = csc_R;
+                  event_.CSCTF_x1[j] = csc_x;
+                  event_.CSCTF_y1[j] = csc_y;
+                  event_.CSCTF_z1[j] = csc_z;
+                  // fitted positions
+                  event_.CSCTF_fit_phi1[j] = bestFitPhi;
+                  event_.CSCTF_fit_x1[j] = radius*cos(bestFitPhi);
+                  event_.CSCTF_fit_y1[j] = radius*sin(bestFitPhi);
+                  event_.CSCTF_fit_z1[j] = z_pos_L3;
+                  event_.CSCTF_fit_R1[j] = radius;
+                }
+                break;
+              case 2:
+                if (stubMissingSt2) { 
+                  event_.CSCTF_id2[j] = ch_id.rawId();
+                  event_.CSCTF_st2[j] = ch_id.station();
+                  event_.CSCTF_ri2[j] = ch_id.ring(); 
+                  event_.CSCTF_ch2[j] = ch_id.chamber();
+                  event_.CSCTF_en2[j] = ch_id.zendcap();
+                  event_.CSCTF_trk2[j] = bestMatchingStub.getTrknmb(); 
+                  event_.CSCTF_quality2[j] = bestMatchingStub.getQuality();
+                  event_.CSCTF_wg2[j] = bestMatchingStub.getKeyWG();
+                  event_.CSCTF_hs2[j] = bestMatchingStub.getStrip();
+                  event_.CSCTF_pat2[j] = bestMatchingStub.getPattern();
+                  event_.CSCTF_bend2[j] = bestMatchingStub.getBend();
+                  event_.CSCTF_bx2[j] = bestMatchingStub.getBX();
+                  event_.CSCTF_clctpat2[j] = bestMatchingStub.getCLCTPattern();
+                  event_.CSCTF_val2[j] = bestMatchingStub.isValid();
+                  event_.CSCTF_phi2[j] = gp.phi();
+                  event_.CSCTF_gemdphi2[j] = bestMatchingStub.getGEMDPhi();
+                  event_.CSCTF_R2[j] = csc_R;
+                  event_.CSCTF_x2[j] = csc_x;
+                  event_.CSCTF_y2[j] = csc_y;
+                  event_.CSCTF_z2[j] = csc_z;
+                  // fitted positions
+                  event_.CSCTF_fit_phi2[j] = bestFitPhi;
+                  event_.CSCTF_fit_x2[j] = radius*cos(bestFitPhi);
+                  event_.CSCTF_fit_y2[j] = radius*sin(bestFitPhi);
+                  event_.CSCTF_fit_z2[j] = z_pos_L3;
+                  event_.CSCTF_fit_R2[j] = radius;
+                }
+                break;
+              case 3:
+                if (stubMissingSt3) { 
+                  event_.CSCTF_id3[j] = ch_id.rawId();
+                  event_.CSCTF_st3[j] = ch_id.station();
+                  event_.CSCTF_ri3[j] = ch_id.ring(); 
+                  event_.CSCTF_ch3[j] = ch_id.chamber();
+                  event_.CSCTF_en3[j] = ch_id.zendcap();
+                  event_.CSCTF_trk3[j] = bestMatchingStub.getTrknmb(); 
+                  event_.CSCTF_quality3[j] = bestMatchingStub.getQuality();
+                  event_.CSCTF_wg3[j] = bestMatchingStub.getKeyWG();
+                  event_.CSCTF_hs3[j] = bestMatchingStub.getStrip();
+                  event_.CSCTF_pat3[j] = bestMatchingStub.getPattern();
+                  event_.CSCTF_bend3[j] = bestMatchingStub.getBend();
+                  event_.CSCTF_bx3[j] = bestMatchingStub.getBX();
+                  event_.CSCTF_clctpat3[j] = bestMatchingStub.getCLCTPattern();
+                  event_.CSCTF_val3[j] = bestMatchingStub.isValid();
+                  event_.CSCTF_phi3[j] = gp.phi();
+                  event_.CSCTF_R3[j] = csc_R;
+                  event_.CSCTF_x3[j] = csc_x;
+                  event_.CSCTF_y3[j] = csc_y;
+                  event_.CSCTF_z3[j] = csc_z;
+                  // fitted positions
+                  event_.CSCTF_fit_phi3[j] = bestFitPhi;
+                  event_.CSCTF_fit_x3[j] = radius*cos(bestFitPhi);
+                  event_.CSCTF_fit_y3[j] = radius*sin(bestFitPhi);
+                  event_.CSCTF_fit_z3[j] = z_pos_L3;
+                  event_.CSCTF_fit_R3[j] = radius;
+                }
+                break;
+              case 4:
+                if (stubMissingSt4) { 
+                  event_.CSCTF_id4[j] = ch_id.rawId();
+                  event_.CSCTF_st4[j] = ch_id.station();
+                  event_.CSCTF_ri4[j] = ch_id.ring(); 
+                  event_.CSCTF_ch4[j] = ch_id.chamber();
+                  event_.CSCTF_en4[j] = ch_id.zendcap();
+                  event_.CSCTF_trk4[j] = bestMatchingStub.getTrknmb(); 
+                  event_.CSCTF_quality4[j] = bestMatchingStub.getQuality();
+                  event_.CSCTF_wg4[j] = bestMatchingStub.getKeyWG();
+                  event_.CSCTF_hs4[j] = bestMatchingStub.getStrip();
+                  event_.CSCTF_pat4[j] = bestMatchingStub.getPattern();
+                  event_.CSCTF_bend4[j] = bestMatchingStub.getBend();
+                  event_.CSCTF_bx4[j] = bestMatchingStub.getBX();
+                  event_.CSCTF_clctpat4[j] = bestMatchingStub.getCLCTPattern();
+                  event_.CSCTF_val4[j] = isValid();
+                  event_.CSCTF_phi4[j] = gp.phi();
+                  event_.CSCTF_R4[j] = csc_R;
+                  event_.CSCTF_x4[j] = csc_x;
+                  event_.CSCTF_y4[j] = csc_y;
+                  event_.CSCTF_z4[j] = csc_z;
+                  // fitted positions
+                  event_.CSCTF_fit_phi4[j] = bestFitPhi;
+                  event_.CSCTF_fit_x4[j] = radius*cos(bestFitPhi);
+                  event_.CSCTF_fit_y4[j] = radius*sin(bestFitPhi);
+                  event_.CSCTF_fit_z4[j] = z_pos_L3;
+                  event_.CSCTF_fit_R4[j] = radius;
+                }
+                break;
+              };
+            */
           }
         }
         /*
@@ -2428,7 +2574,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       // Get matching GEM copads
       for(auto cItr = hGEMCSCCoPads->begin(); cItr != hGEMCSCCoPads->end(); ++cItr) {
         GEMDetId gem_id = (*cItr).first;
-
+        GEMCSCCoPadDigi bestCoPad;
+        float bestGEMCSCDPhi = 99;
         if (not stubMissingSt1) {
           // get the CSCDetId of station 1
           CSCDetId csc_st1(event_.CSCTF_id1[ event_.L1Mu_CSCTF_index[i] ]);
@@ -2442,8 +2589,36 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           for (auto digiItr = copad_range.first; digiItr != copad_range.second; ++digiItr){
             auto copad(*digiItr);
             std::cout << "\t" << copad << std::endl;
+            // get the one closest to the CSC Stub
+            auto gem_gp1 = getGlobalPointPad(gem_id,copad.first());
+            auto gem_gp2 = getGlobalPointPad(gem_id,copad.second());
+            float dPhi1(reco::deltaPhi(gem_gp1.phi(), event_.CSCTF_phi1[ event_.L1Mu_CSCTF_index[i] ] ));
+            float dPhi2(reco::deltaPhi(gem_gp2.phi(), event_.CSCTF_phi1[ event_.L1Mu_CSCTF_index[i] ] ));
+            
+            if (dPhi1 < bestGEMCSCDPhi or dPhi2 < bestGEMCSCDPhi) {
+              bestGEMCSCDPhi = std::min(dPhi1, dPhi2);
+              bestCoPad = copad;
+            }
           }
-        }
+          
+          if(verbose){
+            std::cout << "\tPad " << bestCoPad  << std::endl;
+          }
+          if (gem_id.station()==1) {
+            auto gem_gp1 = getGlobalPointPad(gem_id,bestCoPad.first());
+            auto gem_gp2 = getGlobalPointPad(gem_id,bestCoPad.second());            
+            event_.GE11_phi_L1[i] = gem_gp1.phi();
+            event_.GE11_bx_L1[i] = bestCoPad.first().bx();
+            event_.GE11_ch_L1[i] = gem_id.chamber();
+            event_.GE11_z_L1[i] = gem_gp1.z();
+            
+            event_.GE11_phi_L2[i] = gem_gp2.phi();
+            event_.GE11_bx_L2[i] = bestCoPad.first().bx();
+            event_.GE11_ch_L2[i] = gem_id.chamber();
+            event_.GE11_z_L2[i] = gem_gp2.z();
+          }
+        }          
+        
         if (not stubMissingSt2) {
           // get the CSCDetId of station 1
           CSCDetId csc_st2(event_.CSCTF_id2[ event_.L1Mu_CSCTF_index[i] ]);
@@ -2457,6 +2632,33 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           for (auto digiItr = copad_range.first; digiItr != copad_range.second; ++digiItr){
             auto copad(*digiItr);
             std::cout << "\t" << copad << std::endl;
+            // get the one closest to the CSC Stub
+            auto gem_gp1 = getGlobalPointPad(gem_id,copad.first());
+            auto gem_gp2 = getGlobalPointPad(gem_id,copad.second());
+            float dPhi1(reco::deltaPhi(gem_gp1.phi(), event_.CSCTF_phi2[ event_.L1Mu_CSCTF_index[i] ] ));
+            float dPhi2(reco::deltaPhi(gem_gp2.phi(), event_.CSCTF_phi2[ event_.L1Mu_CSCTF_index[i] ] ));
+            
+            if (dPhi1 < bestGEMCSCDPhi or dPhi2 < bestGEMCSCDPhi) {
+              bestGEMCSCDPhi = std::min(dPhi1, dPhi2);
+              bestCoPad = copad;
+            }
+          }
+
+          if(verbose){
+            std::cout << "\tPad " << bestCoPad  << std::endl;
+          }
+          if (gem_id.station()==3) {
+            auto gem_gp1 = getGlobalPointPad(gem_id,bestCoPad.first());
+            auto gem_gp2 = getGlobalPointPad(gem_id,bestCoPad.second());            
+            event_.GE21_phi_L1[i] = gem_gp1.phi();
+            event_.GE21_bx_L1[i] = bestCoPad.first().bx();
+            event_.GE21_ch_L1[i] = gem_id.chamber();
+            event_.GE21_z_L1[i] = gem_gp1.z();
+            
+            event_.GE21_phi_L2[i] = gem_gp2.phi();
+            event_.GE21_bx_L2[i] = bestCoPad.first().bx();
+            event_.GE21_ch_L2[i] = gem_id.chamber();
+            event_.GE21_z_L2[i] = gem_gp2.z();
           }
         }
       }
@@ -2718,7 +2920,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           double csc_y = gp.y();
             double csc_z = gp.z();
             double csc_R = TMath::Sqrt(gp.y()*gp.y() + gp.x()*gp.x());
-            //int keyWireGroup = stub.getKeyWG();
+            //int keyWireGroup = bestMatchingStub.getKeyWG();
             //float localY = cscChamber->layer(3)->geometry()->yOfWireGroup(keyWireGroup);
             float radius = csc_R; //cscChamber->layer(3)->surface().toGlobal(LocalPoint(0,0,0)).perp() + localY;
             //std::cout << "csc_R " << csc_R << " radius " << radius << std::endl;
@@ -3401,6 +3603,16 @@ DisplacedL1MuFilter::calcCSCSpecificPhi(unsigned int rawId, const CSCCorrelatedL
   return getCSCSpecificPoint2(rawId, lct).phi();
 }
 
+GlobalPoint 
+DisplacedL1MuFilter::getGlobalPointPad(unsigned int rawId, const GEMCSCPadDigi& tp) const
+{
+  GEMDetId gem_id(rawId);
+  LocalPoint gem_lp = gemGeometry_->etaPartition(gem_id)->centreOfPad(tp.pad());
+  GlobalPoint gem_gp = gemGeometry_->idToDet(gem_id)->surface().toGlobal(gem_lp);
+  return gem_gp;
+}
+
+
 GlobalPoint
 DisplacedL1MuFilter::getCSCSpecificPoint2(unsigned int rawId, const CSCCorrelatedLCTDigi& lct) const 
 {
@@ -3422,56 +3634,56 @@ DisplacedL1MuFilter::getCSCSpecificPoint2(unsigned int rawId, const CSCCorrelate
   return csc_gp;
 }
 
-CSCCorrelatedLCTDigi 
-DisplacedL1MuFilter::pickBestMatchingStub(float x, float y, CSCDetId id,
-                                          const CSCCorrelatedLCTDigi& stub1, 
-                                          const CSCCorrelatedLCTDigi& stub2, 
+CSCCorrelatedLCTDigiId 
+DisplacedL1MuFilter::pickBestMatchingStub(float xref, float yref,
+                                          const CSCCorrelatedLCTDigiId& oldStub,
+                                          const CSCCorrelatedLCTDigiId& newStub, 
                                           int refBx) const
 {
   bool debug=true;
+
   // check for invalid/valid
-  if (stub1 == CSCCorrelatedLCTDigi()) {
-    if (debug) cout<<"Stub1 invalid"<<endl;
-    //return stub2;
+  if (oldStub.second == CSCCorrelatedLCTDigi()) {
+    if (debug) cout<<"Old stub invalid"<<endl;
+    return newStub;
   }
-  if (stub2 == CSCCorrelatedLCTDigi()) {
-    if (debug) cout<<"Stub2 invalid"<<endl;
-    //return stub1;
+  if (newStub.second == CSCCorrelatedLCTDigi()) {
+    if (debug) cout<< "New stub invalid"<<endl;
+    return oldStub;
   }
-
-  int deltaBX1 = std::abs(stub1.getBX() - refBx);
-  int deltaBX2 = std::abs(stub2.getBX() - refBx);
-
-  if (deltaBX1==0 and deltaBX2!=0) {
-    if (debug) cout<<"Stub1 in time, stub2 out of time"<<endl;
-    //return stub1;
+  
+  int deltaBXOld = std::abs(oldStub.second.getBX() - refBx);
+  int deltaBXNew = std::abs(newStub.second.getBX() - refBx);
+  
+  if (deltaBXOld==0 and deltaBXNew!=0) {
+    if (debug) cout<<"Old stub in time, new stub out of time"<<endl;
+    return oldStub;
   }
-  if (deltaBX2==0 and deltaBX1!=0) {
-    if (debug) cout<<"Stub2 in time, stub1 out of time"<<endl;
-    //return stub2;
+  if (deltaBXNew==0 and deltaBXOld!=0) {
+    if (debug) cout<<"New stub in time, old stub out of time"<<endl;
+    return newStub;
   }
-  if (deltaBX1!=0 and deltaBX2!=0){
+  if (deltaBXOld!=0 and deltaBXNew!=0){
     if (debug) cout<<"Both stubs out of time"<<endl;
     // pick the one with the better matching wiregroup and halfstrip
-    auto gp1 = getCSCSpecificPoint2(id.rawId(), stub1);
-    auto gp2 = getCSCSpecificPoint2(id.rawId(), stub2);
-    float deltaXY1 = TMath::Sqrt( (x-gp1.x())*(x-gp1.x()) + (y-gp1.y())*(y-gp1.y()) );
-    float deltaXY2 = TMath::Sqrt( (x-gp2.x())*(x-gp2.x()) + (y-gp2.y())*(y-gp2.y()) );
+    auto gpOld = getCSCSpecificPoint2(oldStub.first.rawId(), oldStub.second);
+    auto gpNew = getCSCSpecificPoint2(newStub.first.rawId(), newStub.second);
+    float deltaXYOld = TMath::Sqrt( (xref-gpOld.x())*(xref-gpOld.x()) + (yref-gpOld.y())*(yref-gpOld.y()) );
+    float deltaXYNew = TMath::Sqrt( (xref-gpNew.x())*(xref-gpNew.x()) + (yref-gpNew.y())*(yref-gpNew.y()) );
     if (debug) {
-      cout<<"x "<< x << " y " << y << endl;
-      cout <<"gp1 " << gp1 << " gp2 " << gp2 << endl; 
-      cout << "deltaXY1 " << deltaXY1 << " deltaXY2 " << deltaXY2 <<endl;
+      cout<<"xref "<< xref << " yref " << yref << endl;
+      cout <<"gpOld " << gpOld << " gpNew " << gpNew << endl; 
+      cout << "deltaXYOld " << deltaXYOld << " deltaXYNew " << deltaXYNew <<endl;
     }  
-    if (deltaXY1 < deltaXY2) {
-      if (debug) cout<<"Stub 1 better matching XY"<<endl;
-      //return stub1;
+    if (deltaXYOld < deltaXYNew) {
+      if (debug) cout<<"Old  stub better matching XY"<<endl;
+      return oldStub;
     }
     else {
-      if (debug) cout<<"Stub 2 better matching XY"<<endl;
-      //return stub2;
+      if (debug) cout<<"New stub better matching XY"<<endl;
+      return newStub;
     }
   }
-  return stub1;
 }
 
 

@@ -567,16 +567,16 @@ def get_parity(isEven1, isEven2, isEven3, isEven4):
 
 def get_parity_ME11_ME21(isEven1, isEven2):
   ## parity cases
-  ## 0. even even
-  ## 1. even odd
-  ## 2. odd even
+  ## 0. odd even
+  ## 1. odd odd
+  ## 2. even even
   ## 3. even odd
   
   totalParity = -1
-  if     isEven1 and     isEven2: totalParity = 0
-  if     isEven1 and not isEven2: totalParity = 1
-  if not isEven1 and     isEven2: totalParity = 2
-  if not isEven1 and not isEven2: totalParity = 3
+  if not isEven1 and     isEven2: totalParity = 0
+  if not isEven1 and not isEven2: totalParity = 1
+  if     isEven1 and     isEven2: totalParity = 2
+  if     isEven1 and not isEven2: totalParity = 3
   return totalParity
 
 #______________________________________________________________________________                                               

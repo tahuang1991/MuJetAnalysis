@@ -679,6 +679,7 @@ private:
   GlobalPoint getGlobalPointPad(unsigned int rawId, const GEMCSCPadDigi& tp) const;;  
   GlobalPoint getCSCSpecificPoint(unsigned int rawid, const CSCCorrelatedLCTDigi& tp) const;
   GlobalPoint getCSCSpecificPoint2(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const;
+  
   GlobalPoint getCSCSpecificPointStrips(const SimTrackMatchManager& tp) const;
   bool isCSCCounterClockwise(const std::unique_ptr<const CSCLayer>& layer) const;
   void fitComparatorsLCT(const CSCComparatorDigiCollection&, const CSCCorrelatedLCTDigi& tp, 
@@ -2573,6 +2574,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         if (not stubMissingSt1) {
           // get the CSCDetId of station 1
           CSCDetId csc_st1(event_.CSCTF_id1[ event_.L1Mu_CSCTF_index[i] ]);
+          //int index = event_.L1Mu_CSCTF_index[i];
+            
           // chambers need to be compatible
           if (gem_id.station() != 1 or 
               csc_st1.chamber() != gem_id.chamber() or
@@ -2606,6 +2609,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         if (not stubMissingSt2) {
           // get the CSCDetId of station 1
           CSCDetId csc_st2(event_.CSCTF_id2[ event_.L1Mu_CSCTF_index[i] ]);
+          //int index = event_.L1Mu_CSCTF_index[i];
           // chambers need to be compatible
           if (gem_id.station() != 3 or 
               csc_st2.chamber() != gem_id.chamber() or
@@ -3550,6 +3554,7 @@ DisplacedL1MuFilter::pickBestMatchingCoPad(float xref, float yref,
                                            const GEMCSCCoPadDigiId& newCoPad, 
                                            int bxref) const
 {
+  bool debug = true;
   // check for invalid/valid
   if (oldCoPad.second == GEMCSCCoPadDigi()) {
     if (debug) cout<<"Old stub invalid"<<endl;
@@ -3574,8 +3579,8 @@ DisplacedL1MuFilter::pickBestMatchingCoPad(float xref, float yref,
 
   // both copads in time, check the closest matching one!
   if (oldCoPadInTime and newCoPadInTime){
-    auto gpOld = getGEMSpecificPoint(oldCoPad.first.rawId(), oldCoPad.second.second());
-    auto gpNew = getGEMSpecificPoint(newCoPad.first.rawId(), newCoPad.second.second());
+    auto gpOld = getGlobalPointPad(oldCoPad.first.rawId(), oldCoPad.second.second());
+    auto gpNew = getGlobalPointPad(newCoPad.first.rawId(), newCoPad.second.second());
     float deltaXYOld = TMath::Sqrt( (xref-gpOld.x())*(xref-gpOld.x()) + (yref-gpOld.y())*(yref-gpOld.y()) );
     float deltaXYNew = TMath::Sqrt( (xref-gpNew.x())*(xref-gpNew.x()) + (yref-gpNew.y())*(yref-gpNew.y()) );
     if (debug) {

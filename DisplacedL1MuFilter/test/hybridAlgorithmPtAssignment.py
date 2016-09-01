@@ -56,6 +56,12 @@ def pt_endcap_position_based_algorithm(treeHits, L1Mu_index, L1Mu_CSCTF_index, d
     CSCTF_phi3 = treeHits.CSCTF_phi3[L1Mu_CSCTF_index]
     CSCTF_phi4 = treeHits.CSCTF_phi4[L1Mu_CSCTF_index]
 
+    ## check if ME1, ME2 and ME3 are available
+    ok_CSCTF_st1 = CSCTF_phi1 != 99
+    ok_CSCTF_st2 = CSCTF_phi2 != 99
+    ok_CSCTF_st3 = CSCTF_phi3 != 99
+    ok_CSCTF_st4 = CSCTF_phi4 != 99
+
     CSCTF_ch1 = treeHits.CSCTF_ch1[L1Mu_CSCTF_index]
     CSCTF_ch2 = treeHits.CSCTF_ch2[L1Mu_CSCTF_index]
     CSCTF_ch3 = treeHits.CSCTF_ch3[L1Mu_CSCTF_index]
@@ -94,7 +100,7 @@ def pt_endcap_position_based_algorithm(treeHits, L1Mu_index, L1Mu_CSCTF_index, d
     CSCTF_R3 = treeHits.CSCTF_R3[L1Mu_CSCTF_index]
     CSCTF_R4 = treeHits.CSCTF_R4[L1Mu_CSCTF_index]
     
-    ## fitted variables
+    ## fitted variables after fitting to the comparator digis
     CSCTF_fit_phi1 = treeHits.CSCTF_fit_phi1[L1Mu_CSCTF_index]
     CSCTF_fit_phi2 = treeHits.CSCTF_fit_phi2[L1Mu_CSCTF_index]
     CSCTF_fit_phi3 = treeHits.CSCTF_fit_phi3[L1Mu_CSCTF_index]
@@ -119,12 +125,43 @@ def pt_endcap_position_based_algorithm(treeHits, L1Mu_index, L1Mu_CSCTF_index, d
     CSCTF_fit_R2 = treeHits.CSCTF_fit_R2[L1Mu_CSCTF_index]
     CSCTF_fit_R3 = treeHits.CSCTF_fit_R3[L1Mu_CSCTF_index]
     CSCTF_fit_R4 = treeHits.CSCTF_fit_R4[L1Mu_CSCTF_index]
+
+    ## do a fit to eta
+    Rs_out, st_out, chi2ndf_R = getFittedPositions(
+        [CSCTF_fit_R1, CSCTF_fit_R2, CSCTF_fit_R3, CSCTF_fit_R4], 
+        [CSCTF_fit_z1, CSCTF_fit_z2, CSCTF_fit_z3, CSCTF_fit_z4])
     
-    ## check if ME1, ME2 and ME3 are available
-    ok_CSCTF_st1 = CSCTF_phi1 != 99
-    ok_CSCTF_st2 = CSCTF_phi2 != 99
-    ok_CSCTF_st3 = CSCTF_phi3 != 99
-    ok_CSCTF_st4 = CSCTF_phi4 != 99
+    if 1 in st_out: index_st1 = st_out.index(1)
+    if 2 in st_out: index_st2 = st_out.index(2)
+    if 3 in st_out: index_st3 = st_out.index(3)
+    if 4 in st_out: index_st4 = st_out.index(4)
+    
+    CSCTF_etafit_R1 = 99
+    CSCTF_etafit_R2 = 99
+    CSCTF_etafit_R3 = 99
+    CSCTF_etafit_R4 = 99
+
+    CSCTF_etafit_eta1 = 99
+    CSCTF_etafit_eta2 = 99
+    CSCTF_etafit_eta3 = 99
+    CSCTF_etafit_eta4 = 99
+
+    if ok_CSCTF_st1: 
+        CSCTF_etafit_R1 = Rs_out[index_st1]
+        CSCTF_etafit_eta1 = get_eta_from_Z_R(CSCTF_etafit_R1, CSCTF_fit_z1)
+    
+    if ok_CSCTF_st2: 
+        CSCTF_etafit_R2 = Rs_out[index_st2]
+        CSCTF_etafit_eta2 = get_eta_from_Z_R(CSCTF_etafit_R2, CSCTF_fit_z2)
+
+    if ok_CSCTF_st3: 
+        CSCTF_etafit_R3 = Rs_out[index_st3]
+        CSCTF_etafit_eta3 = get_eta_from_Z_R(CSCTF_etafit_R3, CSCTF_fit_z3)
+
+    if ok_CSCTF_st4: 
+        CSCTF_etafit_R4 = Rs_out[index_st4]
+        CSCTF_etafit_eta4 = get_eta_from_Z_R(CSCTF_etafit_R4, CSCTF_fit_z4)
+
 
     ## check if you want to use the LCT positions or the fitted positions...
     ## the tag "algo" are the actual variables used in the calculation
@@ -179,15 +216,22 @@ def pt_endcap_position_based_algorithm(treeHits, L1Mu_index, L1Mu_CSCTF_index, d
         CSCTF_algo_R2 = CSCTF_fit_R2
         CSCTF_algo_R3 = CSCTF_fit_R3
         CSCTF_algo_R4 = CSCTF_fit_R4
+
+    doLinearFitToStubs = True
+    if doLinearFitToStubs:
+        CSCTF_algo_R1 = CSCTF_etafit_R1
+        CSCTF_algo_R2 = CSCTF_etafit_R2
+        CSCTF_algo_R3 = CSCTF_etafit_R3
+        CSCTF_algo_R4 = CSCTF_etafit_R4
         
     ## actual calctulation of the pT
     if ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3:
         parity3 = get_parity(CSCTF_isEven1, CSCTF_isEven2, CSCTF_isEven3, CSCTF_isEven4)
         etaPartition = get_eta_partition(L1Mu_eta)
     
-        deltay12, deltay23 = deltay12_deltay23(CSCTF_algo_x1, CSCTF_algo_y1, CSCTF_algo_phi1,
-                                               CSCTF_algo_x2, CSCTF_algo_y2, CSCTF_algo_phi2,
-                                               CSCTF_algo_x3, CSCTF_algo_y3, CSCTF_algo_phi3)
+        deltay12, deltay23 = deltay12_deltay23_R(CSCTF_algo_R1, CSCTF_algo_phi1,
+                                                 CSCTF_algo_R2, CSCTF_algo_phi2,
+                                                 CSCTF_algo_R3, CSCTF_algo_phi3)
     
         proportionalityFactor = get_proptionality_factor(etaRanges[etaPartition], ME1ME2ME3ParityCases[parity], doComparatorFit)
         

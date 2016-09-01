@@ -46,7 +46,7 @@ if __name__ == "__main__":
   ch = addfiles(ch, dirname=dirname)
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160827_v3"
+  label = "DisplacedL1MuTrigger_20160901"
   targetDir = label + "/"
   
   verbose = False
@@ -182,6 +182,63 @@ if __name__ == "__main__":
     gem_pos_sh_pad2_GE21_20to22 = TH1F("gem_pos_sh_pad2_GE21_20to22","", 50,-0.0025,0.0025)
     gem_pos_sh_pad4_GE21_20to22 = TH1F("gem_pos_sh_pad4_GE21_20to22","", 50,-0.0025,0.0025)
     gem_pos_sh_pad8_GE21_20to22 = TH1F("gem_pos_sh_pad8_GE21_20to22","", 50,-0.0025,0.0025)
+
+
+    csc_posx_vs_fitx_ME1_dxy0to5 = TH1F("csc_posx_vs_fitx_ME1_dxy0to5","", 100,-20,20)
+    csc_posx_vs_fitx_ME2_dxy0to5 = TH1F("csc_posx_vs_fitx_ME2_dxy0to5","", 100,-20,20)
+    csc_posx_vs_fitx_ME3_dxy0to5 = TH1F("csc_posx_vs_fitx_ME3_dxy0to5","", 100,-20,20)
+    csc_posx_vs_fitx_ME4_dxy0to5 = TH1F("csc_posx_vs_fitx_ME4_dxy0to5","", 100,-20,20)
+
+    csc_posx_vs_fitx_ME1_dxy5to50 = TH1F("csc_posx_vs_fitx_ME1_dxy5to50","", 100,-20,20)
+    csc_posx_vs_fitx_ME2_dxy5to50 = TH1F("csc_posx_vs_fitx_ME2_dxy5to50","", 100,-20,20)
+    csc_posx_vs_fitx_ME3_dxy5to50 = TH1F("csc_posx_vs_fitx_ME3_dxy5to50","", 100,-20,20)
+    csc_posx_vs_fitx_ME4_dxy5to50 = TH1F("csc_posx_vs_fitx_ME4_dxy5to50","", 100,-20,20)
+
+    csc_posx_vs_fitx_ME1_dxy50to100 = TH1F("csc_posx_vs_fitx_ME1_dxy50to100","", 100,-20,20)
+    csc_posx_vs_fitx_ME2_dxy50to100 = TH1F("csc_posx_vs_fitx_ME2_dxy50to100","", 100,-20,20)
+    csc_posx_vs_fitx_ME3_dxy50to100 = TH1F("csc_posx_vs_fitx_ME3_dxy50to100","", 100,-20,20)
+    csc_posx_vs_fitx_ME4_dxy50to100 = TH1F("csc_posx_vs_fitx_ME4_dxy50to100","", 100,-20,20)
+
+
+    csc_posy_vs_fity_ME1_dxy0to5 = TH1F("csc_posy_vs_fity_ME1_dxy0to5","", 100,-20,20)
+    csc_posy_vs_fity_ME2_dxy0to5 = TH1F("csc_posy_vs_fity_ME2_dxy0to5","", 100,-20,20)
+    csc_posy_vs_fity_ME3_dxy0to5 = TH1F("csc_posy_vs_fity_ME3_dxy0to5","", 100,-20,20)
+    csc_posy_vs_fity_ME4_dxy0to5 = TH1F("csc_posy_vs_fity_ME4_dxy0to5","", 100,-20,20)
+
+    csc_posy_vs_fity_ME1_dxy5to50 = TH1F("csc_posy_vs_fity_ME1_dxy5to50","", 100,-20,20)
+    csc_posy_vs_fity_ME2_dxy5to50 = TH1F("csc_posy_vs_fity_ME2_dxy5to50","", 100,-20,20)
+    csc_posy_vs_fity_ME3_dxy5to50 = TH1F("csc_posy_vs_fity_ME3_dxy5to50","", 100,-20,20)
+    csc_posy_vs_fity_ME4_dxy5to50 = TH1F("csc_posy_vs_fity_ME4_dxy5to50","", 100,-20,20)
+
+    csc_posy_vs_fity_ME1_dxy50to100 = TH1F("csc_posy_vs_fity_ME1_dxy50to100","", 100,-20,20)
+    csc_posy_vs_fity_ME2_dxy50to100 = TH1F("csc_posy_vs_fity_ME2_dxy50to100","", 100,-20,20)
+    csc_posy_vs_fity_ME3_dxy50to100 = TH1F("csc_posy_vs_fity_ME3_dxy50to100","", 100,-20,20)
+    csc_posy_vs_fity_ME4_dxy50to100 = TH1F("csc_posy_vs_fity_ME4_dxy50to100","", 100,-20,20)
+
+
+    csc_poseta_vs_fiteta_ME1_dxy0to5 = TH1F("csc_poseta_vs_fiteta_ME1_dxy0to5","", 100,-20,20)
+    csc_poseta_vs_fiteta_ME2_dxy0to5 = TH1F("csc_poseta_vs_fiteta_ME2_dxy0to5","", 100,-20,20)
+    csc_poseta_vs_fiteta_ME3_dxy0to5 = TH1F("csc_poseta_vs_fiteta_ME3_dxy0to5","", 100,-20,20)
+    csc_poseta_vs_fiteta_ME4_dxy0to5 = TH1F("csc_poseta_vs_fiteta_ME4_dxy0to5","", 100,-20,20)
+
+    csc_poseta_vs_fiteta_ME1_dxy5to50 = TH1F("csc_poseta_vs_fiteta_ME1_dxy5to50","", 100,-20,20)
+    csc_poseta_vs_fiteta_ME2_dxy5to50 = TH1F("csc_poseta_vs_fiteta_ME2_dxy5to50","", 100,-20,20)
+    csc_poseta_vs_fiteta_ME3_dxy5to50 = TH1F("csc_poseta_vs_fiteta_ME3_dxy5to50","", 100,-20,20)
+    csc_poseta_vs_fiteta_ME4_dxy5to50 = TH1F("csc_poseta_vs_fiteta_ME4_dxy5to50","", 100,-20,20)
+
+    csc_poseta_vs_fiteta_ME1_dxy50to100 = TH1F("csc_poseta_vs_fiteta_ME1_dxy50to100","", 100,-20,20)
+    csc_poseta_vs_fiteta_ME2_dxy50to100 = TH1F("csc_poseta_vs_fiteta_ME2_dxy50to100","", 100,-20,20)
+    csc_poseta_vs_fiteta_ME3_dxy50to100 = TH1F("csc_poseta_vs_fiteta_ME3_dxy50to100","", 100,-20,20)
+    csc_poseta_vs_fiteta_ME4_dxy50to100 = TH1F("csc_poseta_vs_fiteta_ME4_dxy50to100","", 100,-20,20)
+
+
+    chi2ndf_posx_dxy0to5 = TH1F("chi2ndf_posx_dxy0to5","", 100,0,20)
+    chi2ndf_posx_dxy5to50 = TH1F("chi2ndf_posx_dxy5to50","", 100,0,20)
+    chi2ndf_posx_dxy50to100 = TH1F("chi2ndf_posx_dxy50to100","", 100,0,20)
+
+    chi2ndf_posy_dxy0to5 = TH1F("chi2ndf_posy_dxy0to5","", 100,0,20)
+    chi2ndf_posy_dxy5to50 = TH1F("chi2ndf_posy_dxy5to50","", 100,0,20)
+    chi2ndf_posy_dxy50to100 = TH1F("chi2ndf_posy_dxy50to100","", 100,0,20)
 
     ## direction based pT trigger efficiency plots
     for pp in dxyRanges:
@@ -1410,6 +1467,25 @@ if __name__ == "__main__":
                 CSCTF_sim_phi3 = treeHits.CSCTF_sim_phi3[GEN_SIM_index]
                 CSCTF_sim_phi4 = treeHits.CSCTF_sim_phi4[GEN_SIM_index]
 
+                CSCTF_sim_z1 = treeHits.CSCTF_sim_z1[GEN_SIM_index]
+                CSCTF_sim_z2 = treeHits.CSCTF_sim_z2[GEN_SIM_index]
+                CSCTF_sim_z3 = treeHits.CSCTF_sim_z3[GEN_SIM_index]
+                CSCTF_sim_z4 = treeHits.CSCTF_sim_z4[GEN_SIM_index]
+
+                CSCTF_sim_x1 = treeHits.CSCTF_sim_x1[GEN_SIM_index]
+                CSCTF_sim_x2 = treeHits.CSCTF_sim_x2[GEN_SIM_index]
+                CSCTF_sim_x3 = treeHits.CSCTF_sim_x3[GEN_SIM_index]
+                CSCTF_sim_x4 = treeHits.CSCTF_sim_x4[GEN_SIM_index]
+
+                CSCTF_sim_y1 = treeHits.CSCTF_sim_y1[GEN_SIM_index]
+                CSCTF_sim_y2 = treeHits.CSCTF_sim_y2[GEN_SIM_index]
+                CSCTF_sim_y3 = treeHits.CSCTF_sim_y3[GEN_SIM_index]
+                CSCTF_sim_y4 = treeHits.CSCTF_sim_y4[GEN_SIM_index]
+                
+
+
+
+                ## simulated and fitted positions in a chamber
                 CSCTF_fit_phi1 = treeHits.CSCTF_fit_phi1[GEN_SIM_index]
                 CSCTF_fit_phi2 = treeHits.CSCTF_fit_phi2[GEN_SIM_index]
                 CSCTF_fit_phi3 = treeHits.CSCTF_fit_phi3[GEN_SIM_index]
@@ -1490,7 +1566,65 @@ if __name__ == "__main__":
                   CSCTF_ch4 = CSCTF_rec_ch4
                   CSCTF_isOdd4 = CSCTF_ch4%2==1
                   CSCTF_isEven4 = not CSCTF_isOdd4
+                
+                #print "Fitted stub positions"
+                xs_out, st_out, chi2ndf_x = getFittedPositions(
+                  [CSCTF_x1, CSCTF_x2, CSCTF_x3, CSCTF_x4], 
+                  [CSCTF_z1, CSCTF_z2, CSCTF_z3, CSCTF_z4])
+
+                ys_out, st_out, chi2ndf_y = getFittedPositions(
+                  [CSCTF_y1, CSCTF_y2, CSCTF_y3, CSCTF_y4], 
+                  [CSCTF_z1, CSCTF_z2, CSCTF_z3, CSCTF_z4])
+
+                chi2ndf_posx_dxy0to5.Fill(chi2ndf_x)
+                chi2ndf_posx_dxy5to50.Fill(chi2ndf_x)
+                chi2ndf_posx_dxy50to100.Fill(chi2ndf_x)
+                
+                chi2ndf_posy_dxy0to5.Fill(chi2ndf_y)
+                chi2ndf_posy_dxy5to50.Fill(chi2ndf_y)
+                chi2ndf_posy_dxy50to100.Fill(chi2ndf_y)
+
+                #print st_out
+                if 1 in st_out: index_st1 = st_out.index(1)
+                if 2 in st_out: index_st2 = st_out.index(2)
+                if 3 in st_out: index_st3 = st_out.index(3)
+                if 4 in st_out: index_st4 = st_out.index(4)
+
+                if dxy <= 5:
+                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posx_vs_fitx_ME1_dxy0to5.Fill(CSCTF_x1 - xs_out[index_st1])
+                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posx_vs_fitx_ME2_dxy0to5.Fill(CSCTF_x2 - xs_out[index_st2])
+                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posx_vs_fitx_ME3_dxy0to5.Fill(CSCTF_x3 - xs_out[index_st3])
+                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posx_vs_fitx_ME4_dxy0to5.Fill(CSCTF_x4 - xs_out[index_st4])
+
+                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posy_vs_fity_ME1_dxy0to5.Fill(CSCTF_y1 - ys_out[index_st1])
+                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posy_vs_fity_ME2_dxy0to5.Fill(CSCTF_y2 - ys_out[index_st2])
+                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posy_vs_fity_ME3_dxy0to5.Fill(CSCTF_y3 - ys_out[index_st3])
+                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posy_vs_fity_ME4_dxy0to5.Fill(CSCTF_y4 - ys_out[index_st4])
+
+                if 5 < dxy  and dxy <= 50: 
+                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posx_vs_fitx_ME1_dxy5to50.Fill(CSCTF_x1 - xs_out[index_st1])
+                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posx_vs_fitx_ME2_dxy5to50.Fill(CSCTF_x2 - xs_out[index_st2])
+                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posx_vs_fitx_ME3_dxy5to50.Fill(CSCTF_x3 - xs_out[index_st3])
+                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posx_vs_fitx_ME4_dxy5to50.Fill(CSCTF_x4 - xs_out[index_st4])
                   
+                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posy_vs_fity_ME1_dxy5to50.Fill(CSCTF_y1 - ys_out[index_st1])
+                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posy_vs_fity_ME2_dxy5to50.Fill(CSCTF_y2 - ys_out[index_st2])
+                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posy_vs_fity_ME3_dxy5to50.Fill(CSCTF_y3 - ys_out[index_st3])
+                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posy_vs_fity_ME4_dxy5to50.Fill(CSCTF_y4 - ys_out[index_st4])
+
+                if 50 < dxy and dxy <= 100: 
+                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posx_vs_fitx_ME1_dxy50to100.Fill(CSCTF_x1 - xs_out[index_st1])
+                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posx_vs_fitx_ME2_dxy50to100.Fill(CSCTF_x2 - xs_out[index_st2])
+                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posx_vs_fitx_ME3_dxy50to100.Fill(CSCTF_x3 - xs_out[index_st3])
+                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posx_vs_fitx_ME4_dxy50to100.Fill(CSCTF_x4 - xs_out[index_st4])
+
+                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posy_vs_fity_ME1_dxy50to100.Fill(CSCTF_y1 - ys_out[index_st1])
+                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posy_vs_fity_ME2_dxy50to100.Fill(CSCTF_y2 - ys_out[index_st2])
+                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posy_vs_fity_ME3_dxy50to100.Fill(CSCTF_y3 - ys_out[index_st3])
+                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posy_vs_fity_ME4_dxy50to100.Fill(CSCTF_y4 - ys_out[index_st4])
+
+
+
                 ## plot with position resolution of the CSC stubs
                 if (1.6 < abs(eta_prop) and abs(eta_prop) <= 1.8):
                   if (CSCTF_phi1!=99 and CSCTF_sim_phi1 != 99):     mapTH1F["csc_pos_sh_lct_ME1b_16to18"].Fill(CSCTF_phi1 - CSCTF_sim_phi1)
@@ -1739,6 +1873,7 @@ if __name__ == "__main__":
                 print "\t\tok_GE21_L2", ok_GE21_L2, "GE21_phi_L2", GE21_phi_L2, "GE21_bx_L2", GE21_bx_L2, "GE21_z_L2", GE21_z_L2
                 print "\t\tok_GE0", ok_GE0, "GE0_phi", GE0_phi, "GE0_phib", GE0_phib
                 print               
+
 
               ## stub directions
               ok_direction_based_endcap = ok_GE11 and ok_GE21 and ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3
@@ -2691,6 +2826,47 @@ if __name__ == "__main__":
     makeSimplePlot(GenMuEta2_MS2, targetDir + "GenMuEta2_MS2.png", ";Muon #eta at 2nd muon station; Entries", "")
     makeSimplePlot(GenMuEta3_MS2, targetDir + "GenMuEta3_MS2.png", ";Muon #eta at 2nd muon station; Entries", "")
     makeSimplePlot(GenMuEta_MS2, targetDir + "GenMuEta_MS2.png", ";Muon #eta at 2nd muon station; Entries", "")
+
+
+    makeSimplePlot(csc_posx_vs_fitx_ME1_dxy0to5, targetDir + "csc_posx_vs_fitx_ME1_dxy0to5.png", "|dxy|#leq5 cm;ME1 x(LCT) - x(Fit);Entries","")
+    makeSimplePlot(csc_posx_vs_fitx_ME2_dxy0to5, targetDir + "csc_posx_vs_fitx_ME2_dxy0to5.png", "|dxy|#leq5 cm;ME2 x(LCT) - x(Fit);Entries","")
+    makeSimplePlot(csc_posx_vs_fitx_ME3_dxy0to5, targetDir + "csc_posx_vs_fitx_ME3_dxy0to5.png", "|dxy|#leq5 cm;ME3 x(LCT) - x(Fit);Entries","")
+    makeSimplePlot(csc_posx_vs_fitx_ME4_dxy0to5, targetDir + "csc_posx_vs_fitx_ME4_dxy0to5.png", "|dxy|#leq5 cm;ME4 x(LCT) - x(Fit);Entries","")
+
+    makeSimplePlot(csc_posx_vs_fitx_ME1_dxy5to50, targetDir + "csc_posx_vs_fitx_ME1_dxy5to50.png", "5<|dxy|#leq50 cm;ME1 x(LCT) - x(Fit);Entries","")
+    makeSimplePlot(csc_posx_vs_fitx_ME2_dxy5to50, targetDir + "csc_posx_vs_fitx_ME2_dxy5to50.png", "5<|dxy|#leq50 cm;ME2 x(LCT) - x(Fit);Entries","")
+    makeSimplePlot(csc_posx_vs_fitx_ME3_dxy5to50, targetDir + "csc_posx_vs_fitx_ME3_dxy5to50.png", "5<|dxy|#leq50 cm;ME3 x(LCT) - x(Fit);Entries","")
+    makeSimplePlot(csc_posx_vs_fitx_ME4_dxy5to50, targetDir + "csc_posx_vs_fitx_ME4_dxy5to50.png", "5<|dxy|#leq50 cm;ME4 x(LCT) - x(Fit);Entries","")
+
+    makeSimplePlot(csc_posx_vs_fitx_ME1_dxy50to100, targetDir + "csc_posx_vs_fitx_ME1_dxy50to100.png", "50<|dxy|#leq100 cm;ME1 x(LCT) - x(Fit);Entries","")
+    makeSimplePlot(csc_posx_vs_fitx_ME2_dxy50to100, targetDir + "csc_posx_vs_fitx_ME2_dxy50to100.png", "50<|dxy|#leq100 cm;ME2 x(LCT) - x(Fit);Entries","")
+    makeSimplePlot(csc_posx_vs_fitx_ME3_dxy50to100, targetDir + "csc_posx_vs_fitx_ME3_dxy50to100.png", "50<|dxy|#leq100 cm;ME3 x(LCT) - x(Fit);Entries","")
+    makeSimplePlot(csc_posx_vs_fitx_ME4_dxy50to100, targetDir + "csc_posx_vs_fitx_ME4_dxy50to100.png", "50<|dxy|#leq100 cm;ME4 x(LCT) - x(Fit);Entries","")
+
+
+    makeSimplePlot(csc_posy_vs_fity_ME1_dxy0to5, targetDir + "csc_posy_vs_fity_ME1_dxy0to5.png", "|dxy|#leq5 cm;ME1 y(LCT) - y(Fit);Entries","")
+    makeSimplePlot(csc_posy_vs_fity_ME2_dxy0to5, targetDir + "csc_posy_vs_fity_ME2_dxy0to5.png", "|dxy|#leq5 cm;ME2 y(LCT) - y(Fit);Entries","")
+    makeSimplePlot(csc_posy_vs_fity_ME3_dxy0to5, targetDir + "csc_posy_vs_fity_ME3_dxy0to5.png", "|dxy|#leq5 cm;ME3 y(LCT) - y(Fit);Entries","")
+    makeSimplePlot(csc_posy_vs_fity_ME4_dxy0to5, targetDir + "csc_posy_vs_fity_ME4_dxy0to5.png", "|dxy|#leq5 cm;ME4 y(LCT) - y(Fit);Entries","")
+
+    makeSimplePlot(csc_posy_vs_fity_ME1_dxy5to50, targetDir + "csc_posy_vs_fity_ME1_dxy5to50.png", "5<|dxy|#leq50 cm;ME1 y(LCT) - y(Fit);Entries","")
+    makeSimplePlot(csc_posy_vs_fity_ME2_dxy5to50, targetDir + "csc_posy_vs_fity_ME2_dxy5to50.png", "5<|dxy|#leq50 cm;ME2 y(LCT) - y(Fit);Entries","")
+    makeSimplePlot(csc_posy_vs_fity_ME3_dxy5to50, targetDir + "csc_posy_vs_fity_ME3_dxy5to50.png", "5<|dxy|#leq50 cm;ME3 y(LCT) - y(Fit);Entries","")
+    makeSimplePlot(csc_posy_vs_fity_ME4_dxy5to50, targetDir + "csc_posy_vs_fity_ME4_dxy5to50.png", "5<|dxy|#leq50 cm;ME4 y(LCT) - y(Fit);Entries","")
+
+    makeSimplePlot(csc_posy_vs_fity_ME1_dxy50to100, targetDir + "csc_posy_vs_fity_ME1_dxy50to100.png", "50<|dxy|#leq100 cm;ME1 y(LCT) - y(Fit);Entries","")
+    makeSimplePlot(csc_posy_vs_fity_ME2_dxy50to100, targetDir + "csc_posy_vs_fity_ME2_dxy50to100.png", "50<|dxy|#leq100 cm;ME2 y(LCT) - y(Fit);Entries","")
+    makeSimplePlot(csc_posy_vs_fity_ME3_dxy50to100, targetDir + "csc_posy_vs_fity_ME3_dxy50to100.png", "50<|dxy|#leq100 cm;ME3 y(LCT) - y(Fit);Entries","")
+    makeSimplePlot(csc_posy_vs_fity_ME4_dxy50to100, targetDir + "csc_posy_vs_fity_ME4_dxy50to100.png", "50<|dxy|#leq100 cm;ME4 y(LCT) - y(Fit);Entries","")
+
+
+    makeSimplePlot(chi2ndf_posx_dxy0to5, targetDir + "chi2ndf_posx_dxy0to5.png", "0<|dxy|#leq5 cm;#chi^{2}/NDF;Entries","")
+    makeSimplePlot(chi2ndf_posx_dxy5to50, targetDir + "chi2ndf_posx_dxy5to50.png", "5<|dxy|#leq50 cm;#chi^{2}/NDF;Entries","")
+    makeSimplePlot(chi2ndf_posx_dxy50to100, targetDir + "chi2ndf_posx_dxy50to100.png", "50<|dxy|#leq100 cm;#chi^{2}/NDF;Entries","")
+
+    makeSimplePlot(chi2ndf_posy_dxy0to5, targetDir + "chi2ndf_posy_dxy0to5.png", "0<|dxy|#leq5 cm;#chi^{2}/NDF;Entries","")
+    makeSimplePlot(chi2ndf_posy_dxy5to50, targetDir + "chi2ndf_posy_dxy5to50.png", "5<|dxy|#leq50 cm;#chi^{2}/NDF;Entries","")
+    makeSimplePlot(chi2ndf_posy_dxy50to100, targetDir + "chi2ndf_posy_dxy50to100.png", "50<|dxy|#leq100 cm;#chi^{2}/NDF;Entries","")
 
     ## CSC position resolutions
     makeSimplePlotGaussianFitMap("csc_pos_sh_lct_ME1b_16to18", 

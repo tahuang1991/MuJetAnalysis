@@ -27,6 +27,91 @@ myetabin = np.asarray(etabin)
 M_PI = 4*math.atan(1)
 
 
+def fitStraightLine(v, w, debug=False):
+    alpha = 0
+    beta = 0
+
+    if len(v)<2: return alpha, beta,-1,0
+
+    if v[0] < v[-1]:
+        zmin = v[0]
+        zmax = v[-1]
+    else:
+        zmin = v[-1]
+        zmax = v[0]
+    
+    fit1 = TF1("fit1","pol1",zmin,zmax) 
+    gr = TGraph(len(v),array.array("f",v), array.array("f",w));
+    gr.Fit(fit1,"RQ")
+    
+    alpha = fit1.GetParameter(0)#; //value of 0th parameter
+    beta  = fit1.GetParameter(1)#; //value of 1st parameter
+    chi2 = fit1.GetChisquare()
+    ndf = fit1.GetNDF()
+
+    #print "\tfit params",alpha, beta, chi2, ndf
+    return alpha, beta, chi2, ndf
+
+def getFittedPositions(xs, zs):
+    
+    st_input = []
+    xs_input = []
+    zs_input = []
+    ## get the real stub positions
+    #print xs
+    #print ys
+    #print zs
+    #print 
+    if xs[0]!=99 and ys[0]!=99 and zs[0]!=99:
+        st_input.append(1)
+        xs_input.append(xs[0])
+        zs_input.append(zs[0])
+
+    if xs[1]!=99 and ys[1]!=99 and zs[1]!=99:
+        st_input.append(2)
+        xs_input.append(xs[1])
+        zs_input.append(zs[1])
+
+    if xs[2]!=99 and ys[2]!=99 and zs[2]!=99:
+        st_input.append(3)
+        xs_input.append(xs[2])
+        zs_input.append(zs[2])
+
+    if xs[3]!=99 and ys[3]!=99 and zs[3]!=99:
+        st_input.append(4)
+        xs_input.append(xs[3])
+        zs_input.append(zs[3])
+
+    #print st_input
+    #print xs_input
+    #print ys_input
+    #print zs_input
+        
+    x_results = fitStraightLine(zs_input, xs_input)
+
+    #print x_results
+    #print y_results
+
+    alpha_x, beta_x, chi2_x, ndf_x = x_results[0], x_results[1], x_results[1], x_results[3]
+
+    #print alpha_x, beta_x, chi2_x, ndf_x
+    #print alpha_y, beta_y, chi2_y, ndf_y
+
+    if ndf_x!=0:
+        chi2ndf_x = chi2_x/ndf_x
+    else:
+        chi2ndf_x = chi2_x
+
+    xs_output = []
+
+    #print len(zs_input)
+    for i in range(0,len(zs_input)):
+        #print i, zs_input[i]
+        xs_output.append(alpha_x + beta_x * zs_input[i])
+        
+    return xs_output, st_input, chi2ndf_x
+
+
 def frange(end,start=0,inc=0,precision=1):
     """A range function that accepts float increments."""
     import math

@@ -336,7 +336,7 @@ struct MyEvent
   Float_t CSCTF_y1[kMaxCSCTF], CSCTF_y2[kMaxCSCTF], CSCTF_y3[kMaxCSCTF], CSCTF_y4[kMaxCSCTF];
   Float_t CSCTF_z1[kMaxCSCTF], CSCTF_z2[kMaxCSCTF], CSCTF_z3[kMaxCSCTF], CSCTF_z4[kMaxCSCTF];
   
-  // recovered stubs (stubs not used in track building...)
+  // recovered stubs using the SIM information (stubs not used in track building...)
   Int_t CSCTF_rec_ch1[kMaxCSCTF], CSCTF_rec_ch2[kMaxCSCTF], CSCTF_rec_ch3[kMaxCSCTF], CSCTF_rec_ch4[kMaxCSCTF];
   Float_t CSCTF_rec_phi1[kMaxCSCTF], CSCTF_rec_phi2[kMaxCSCTF], CSCTF_rec_phi3[kMaxCSCTF], CSCTF_rec_phi4[kMaxCSCTF];
   Float_t CSCTF_rec_phib1[kMaxCSCTF], CSCTF_rec_phib2[kMaxCSCTF], CSCTF_rec_phib3[kMaxCSCTF], CSCTF_rec_phib4[kMaxCSCTF];
@@ -355,13 +355,18 @@ struct MyEvent
   //fitted directions
   Float_t CSCTF_fit_dphi1[kMaxCSCTF], CSCTF_fit_dphi2[kMaxCSCTF], CSCTF_fit_dphi3[kMaxCSCTF], CSCTF_fit_dphi4[kMaxCSCTF];
 
-  // fitted positions - at key layer
+  // sim positions - at key layer
   Float_t CSCTF_sim_phi1[kMaxCSCTF], CSCTF_sim_phi2[kMaxCSCTF], CSCTF_sim_phi3[kMaxCSCTF], CSCTF_sim_phi4[kMaxCSCTF];
   Float_t CSCTF_sim_eta1[kMaxCSCTF], CSCTF_sim_eta2[kMaxCSCTF], CSCTF_sim_eta3[kMaxCSCTF], CSCTF_sim_eta4[kMaxCSCTF];
   Float_t CSCTF_sim_R1[kMaxCSCTF], CSCTF_sim_R2[kMaxCSCTF], CSCTF_sim_R3[kMaxCSCTF], CSCTF_sim_R4[kMaxCSCTF];
   Float_t CSCTF_sim_x1[kMaxCSCTF], CSCTF_sim_x2[kMaxCSCTF], CSCTF_sim_x3[kMaxCSCTF], CSCTF_sim_x4[kMaxCSCTF];
   Float_t CSCTF_sim_y1[kMaxCSCTF], CSCTF_sim_y2[kMaxCSCTF], CSCTF_sim_y3[kMaxCSCTF], CSCTF_sim_y4[kMaxCSCTF];
   Float_t CSCTF_sim_z1[kMaxCSCTF], CSCTF_sim_z2[kMaxCSCTF], CSCTF_sim_z3[kMaxCSCTF], CSCTF_sim_z4[kMaxCSCTF];
+
+  Float_t CSCTF_fitline_x1[kMaxCSCTF], CSCTF_fitline_x2[kMaxCSCTF], CSCTF_fitline_x3[kMaxCSCTF], CSCTF_fitline_x4[kMaxCSCTF];
+  Float_t CSCTF_fitline_y1[kMaxCSCTF], CSCTF_fitline_y2[kMaxCSCTF], CSCTF_fitline_y3[kMaxCSCTF], CSCTF_fitline_y4[kMaxCSCTF];
+  Float_t CSCTF_fitline_z1[kMaxCSCTF], CSCTF_fitline_z2[kMaxCSCTF], CSCTF_fitline_z3[kMaxCSCTF], CSCTF_fitline_z4[kMaxCSCTF];
+  
 
   // Matching the L1Mu to RPCb  
   Int_t nRPCb;
@@ -1322,9 +1327,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     SimTrackMatchManager match(sim_muon, sim_vertex, cfg_, iEvent, iSetup);
 
     const SimHitMatcher& match_sh = match.simhits();
-    const CSCDigiMatcher& match_cd = match.cscDigis();
+    //const CSCDigiMatcher& match_cd = match.cscDigis();
     const CSCStubMatcher& match_csc = match.cscStubs();
-    //const GEMDigiMatcher& match_gd = match.gemDigis();
+    const GEMDigiMatcher& match_gd = match.gemDigis();
 
     // True position of the CSC hits in a chamber with an LCT
     if (verbose) { 
@@ -1342,6 +1347,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                             << " n CSC hits " << simhits.size() 
                             << " key phi " << gp_csc.phi() 
                             << " key eta " << gp_csc.eta()
+                            << " GP " << gp_csc
                             << endl;
       if (detId.station()==1) {
         event_.CSCTF_sim_phi1[k] = gp_csc.phi();
@@ -1426,19 +1432,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       } 
     }
 
-    // ME0
-    /*
-    const SimHitMatcher& match_sh = match.simhits();
-    auto hits = match_sh.simHitsME0();
-    std::cout << "Number of ME0 hits " << hits.size() << std::endl;
-    auto gp = match_sh.simHitsMeanPosition(hits);
-    std::cout << "\t\tgp " << gp << std::endl;
-    auto gv = match_sh.simHitsMeanMomentum(hits);
-    std::cout << "\t\tgv " << gv << std::endl;
-    event_.GE0_phi[k] = gp.phi();
-    event_.GE0_phib[k] = gv.phi();
-    */
-    
     /*
     // GEM digis and pads in superchambers
     if(verbose){
@@ -1486,6 +1479,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
       } 
     }
+    */
     // pad positions for GE21...
     if(verbose) std::cout << "++++ GEM pad analysis: pad positions in GE21 ++++" << std::endl;
     for (auto d: match_gd.detIdsDigi(GEMType::GEM_ME21)){
@@ -1516,12 +1510,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
       }
     }
-  */
     
 
     //SIM based analysis to get the positions - obsolete since I derive the positions using only 
     //DIGI-L1 quantities
 
+    /*
     // CSC digis in chambers
     if(verbose) std::cout<<std::endl<<"++++ CSC digi  and stub analysis ++++"<<std::endl;
     for (auto d: match_csc.chamberIdsLCT()){
@@ -1619,6 +1613,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         event_.CSCTF_fit_R4[k] = radius;
       }
     }
+    */
 
     // recover the missing stubs in station 1 and 2... (because they were not used in the track building)
     // GEM digis and pads in superchambers
@@ -1875,6 +1870,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         fillCSCStubProperties(ch_id, stub, j, gp, z_pos_L3, bestFitPhi, bestFitDPhi);
       }
     }
+
+     /* 
+       CSCTF stub recovery
+       The CSC track-finder may drop certain stubs if they don't match the pattern
+       First get the station numbers where stubs are not filled
+    */
+
   }
 
   // Store the RPCb variables
@@ -2211,8 +2213,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           const auto range = (*detUnitIt).second;
           for (auto digiIt = range.first; digiIt != range.second; digiIt++) {
             //if (!(*digiIt).isValid()) continue;
-            double csc_phi = calcCSCSpecificPhi(id.rawId(), *digiIt);
-            std::cout << "\t\tPosition " << csc_phi << std::endl;
+            GlobalPoint csc_gp = getCSCSpecificPoint2(id.rawId(), *digiIt);
+            std::cout << "\t\tPosition " << csc_gp.eta() << " " << csc_gp.phi() << std::endl;
             std::cout << "\t\t" << *digiIt << std::endl;
           }
         }
@@ -2240,7 +2242,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       std::cout << "Get stub positions" << std::endl;
       getStubPositions(event_.L1Mu_CSCTF_index[i], xs, ys, zs);
       
-      std::cout << "fit stub positions" << std::endl;
+      std::cout << "fit stub positions with straight line" << std::endl;
       float alpha_x, beta_x, alpha_y, beta_y;
       fitStraightLine(zs, xs, alpha_x, beta_x); 
       fitStraightLine(zs, ys, alpha_y, beta_y); 
@@ -2251,6 +2253,16 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       int sign_z = int(event_.L1Mu_eta[i]/std::abs(event_.L1Mu_eta[i]));
       getPositionsStations(alpha_x, beta_x, alpha_y, beta_y,
                            allxs, allys, sign_z);
+
+      event_.CSCTF_fitline_x1[ event_.L1Mu_CSCTF_index[i] ] = allxs[0];
+      event_.CSCTF_fitline_x2[ event_.L1Mu_CSCTF_index[i] ] = allxs[1];
+      event_.CSCTF_fitline_x3[ event_.L1Mu_CSCTF_index[i] ] = allxs[2];
+      event_.CSCTF_fitline_x4[ event_.L1Mu_CSCTF_index[i] ] = allxs[3];
+
+      event_.CSCTF_fitline_y1[ event_.L1Mu_CSCTF_index[i] ] = allys[0];
+      event_.CSCTF_fitline_y2[ event_.L1Mu_CSCTF_index[i] ] = allys[1];
+      event_.CSCTF_fitline_y3[ event_.L1Mu_CSCTF_index[i] ] = allys[2];
+      event_.CSCTF_fitline_y4[ event_.L1Mu_CSCTF_index[i] ] = allys[3];
 
       if (doStubRecovery and event_.L1Mu_CSCTF_index[i] != -1) {
         int triggerSector = (l1Tracks[ event_.L1Mu_CSCTF_index[i] ].first).sector();
@@ -3302,8 +3314,8 @@ DisplacedL1MuFilter::fitComparatorsLCT(const CSCComparatorDigiCollection& hCSCCo
   // do a fit to the comparator digis
   float alpha = 0., beta = 0.;
   fitStraightLineErrors(zs, phis, ezs, ephis,
-                  alpha, beta, 
-                  event_.lumi, event_.run, event_.event, iMuon, ch_id.station(), false);
+                        alpha, beta, 
+                        event_.lumi, event_.run, event_.event, iMuon, ch_id.station(), false);
   
   fit_z = cscChamber->layer(CSCConstants::KEY_CLCT_LAYER)->centerOfStrip(20).z();
   fit_phi = alpha + beta * fit_z;
@@ -4328,6 +4340,16 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_fit_z3", event_.CSCTF_fit_z3,"CSCTF_fit_z3[4]/F");
   event_tree_->Branch("CSCTF_fit_z4", event_.CSCTF_fit_z4,"CSCTF_fit_z4[4]/F");
 
+  event_tree_->Branch("CSCTF_fitline_x1", event_.CSCTF_fitline_x1,"CSCTF_fitline_x1[4]/F");
+  event_tree_->Branch("CSCTF_fitline_x2", event_.CSCTF_fitline_x2,"CSCTF_fitline_x2[4]/F");
+  event_tree_->Branch("CSCTF_fitline_x3", event_.CSCTF_fitline_x3,"CSCTF_fitline_x3[4]/F");
+  event_tree_->Branch("CSCTF_fitline_x4", event_.CSCTF_fitline_x4,"CSCTF_fitline_x4[4]/F");
+
+  event_tree_->Branch("CSCTF_fitline_y1", event_.CSCTF_fitline_y1,"CSCTF_fitline_y1[4]/F");
+  event_tree_->Branch("CSCTF_fitline_y2", event_.CSCTF_fitline_y2,"CSCTF_fitline_y2[4]/F");
+  event_tree_->Branch("CSCTF_fitline_y3", event_.CSCTF_fitline_y3,"CSCTF_fitline_y3[4]/F");
+  event_tree_->Branch("CSCTF_fitline_y4", event_.CSCTF_fitline_y4,"CSCTF_fitline_y4[4]/F");
+
   event_tree_->Branch("CSCTF_sim_phi1", event_.CSCTF_sim_phi1,"CSCTF_sim_phi1[4]/F");
   event_tree_->Branch("CSCTF_sim_phi2", event_.CSCTF_sim_phi2,"CSCTF_sim_phi2[4]/F");
   event_tree_->Branch("CSCTF_sim_phi3", event_.CSCTF_sim_phi3,"CSCTF_sim_phi3[4]/F");
@@ -5119,10 +5141,35 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_fit_dphi3[i] = 99;
     event_.CSCTF_fit_dphi4[i] = 99;
 
+    event_.CSCTF_fitline_x1[i] = 99;
+    event_.CSCTF_fitline_x2[i] = 99;
+    event_.CSCTF_fitline_x3[i] = 99;
+    event_.CSCTF_fitline_x4[i] = 99;
+    
+    event_.CSCTF_fitline_y1[i] = 99;
+    event_.CSCTF_fitline_y2[i] = 99;
+    event_.CSCTF_fitline_y3[i] = 99;
+    event_.CSCTF_fitline_y4[i] = 99;
+    
     event_.CSCTF_sim_phi1[i] = 99;
     event_.CSCTF_sim_phi2[i] = 99;
     event_.CSCTF_sim_phi3[i] = 99;
     event_.CSCTF_sim_phi4[i] = 99;
+
+    event_.CSCTF_sim_x1[i] = 99;
+    event_.CSCTF_sim_x2[i] = 99;
+    event_.CSCTF_sim_x3[i] = 99;
+    event_.CSCTF_sim_x4[i] = 99;
+
+    event_.CSCTF_sim_y1[i] = 99;
+    event_.CSCTF_sim_y2[i] = 99;
+    event_.CSCTF_sim_y3[i] = 99;
+    event_.CSCTF_sim_y4[i] = 99;
+
+    event_.CSCTF_sim_z1[i] = 99;
+    event_.CSCTF_sim_z2[i] = 99;
+    event_.CSCTF_sim_z3[i] = 99;
+    event_.CSCTF_sim_z4[i] = 99;
 
     event_.CSCTF_sim_eta1[i] = 99;
     event_.CSCTF_sim_eta2[i] = 99;

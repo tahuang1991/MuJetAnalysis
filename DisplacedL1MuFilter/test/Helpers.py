@@ -637,7 +637,7 @@ def deltay12_deltay23(x1, y1, phi1,
 #______________________________________________________________________________                                           
 def get_eta_from_Z_R(r, z):
     
-    theta = TMath.Atan(z/r)
+    theta = TMath.ATan(z/r)
     returnValue = - TMath.Log(TMath.Abs(TMath.Tan(theta/2.)))
     return returnValue
 

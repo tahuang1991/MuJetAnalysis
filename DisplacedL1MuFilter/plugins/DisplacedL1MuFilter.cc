@@ -339,6 +339,7 @@ struct MyEvent
   // recovered stubs using the SIM information (stubs not used in track building...)
   Int_t CSCTF_rec_ch1[kMaxCSCTF], CSCTF_rec_ch2[kMaxCSCTF], CSCTF_rec_ch3[kMaxCSCTF], CSCTF_rec_ch4[kMaxCSCTF];
   Float_t CSCTF_rec_phi1[kMaxCSCTF], CSCTF_rec_phi2[kMaxCSCTF], CSCTF_rec_phi3[kMaxCSCTF], CSCTF_rec_phi4[kMaxCSCTF];
+  Float_t CSCTF_rec_eta1[kMaxCSCTF], CSCTF_rec_eta2[kMaxCSCTF], CSCTF_rec_eta3[kMaxCSCTF], CSCTF_rec_eta4[kMaxCSCTF];
   Float_t CSCTF_rec_phib1[kMaxCSCTF], CSCTF_rec_phib2[kMaxCSCTF], CSCTF_rec_phib3[kMaxCSCTF], CSCTF_rec_phib4[kMaxCSCTF];
   Float_t CSCTF_rec_R1[kMaxCSCTF], CSCTF_rec_R2[kMaxCSCTF], CSCTF_rec_R3[kMaxCSCTF], CSCTF_rec_R4[kMaxCSCTF];
   Float_t CSCTF_rec_x1[kMaxCSCTF], CSCTF_rec_x2[kMaxCSCTF], CSCTF_rec_x3[kMaxCSCTF], CSCTF_rec_x4[kMaxCSCTF];
@@ -1635,6 +1636,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       auto stub = match_csc.bestCscLctInChamber(d);
       auto csc_gp = match_csc.getGlobalPosition(d, stub);
       double csc_phi = csc_gp.phi();
+      double csc_eta = csc_gp.eta();
       double csc_x = csc_gp.x();
       double csc_y = csc_gp.y();
       double csc_z = csc_gp.z();
@@ -1647,6 +1649,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       if (detId.station()==1) {
         event_.CSCTF_rec_ch1[k] = detId.chamber();
         event_.CSCTF_rec_phi1[k] = csc_phi;
+        event_.CSCTF_rec_eta1[k] = csc_eta;
         event_.CSCTF_rec_phib1[k] = csc_sh_gv.phi();
         event_.CSCTF_rec_x1[k] = csc_x;
         event_.CSCTF_rec_y1[k] = csc_y;
@@ -1656,6 +1659,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       if (detId.station()==2) {
         event_.CSCTF_rec_ch2[k] = detId.chamber();
         event_.CSCTF_rec_phi2[k] = csc_phi;
+        event_.CSCTF_rec_eta2[k] = csc_eta;
         event_.CSCTF_rec_phib2[k] = csc_sh_gv.phi();
         event_.CSCTF_rec_x2[k] = csc_x;
         event_.CSCTF_rec_y2[k] = csc_y;
@@ -1665,6 +1669,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       if (detId.station()==3) {
         event_.CSCTF_rec_ch3[k] = detId.chamber();
         event_.CSCTF_rec_phi3[k] = csc_phi;
+        event_.CSCTF_rec_eta3[k] = csc_eta;
         event_.CSCTF_rec_phib3[k] = csc_sh_gv.phi();
         event_.CSCTF_rec_x3[k] = csc_x;
         event_.CSCTF_rec_y3[k] = csc_y;
@@ -1674,6 +1679,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       if (detId.station()==4) {
         event_.CSCTF_rec_ch4[k] = detId.chamber();
         event_.CSCTF_rec_phi4[k] = csc_phi;
+        event_.CSCTF_rec_eta4[k] = csc_eta;
         event_.CSCTF_rec_phib4[k] = csc_sh_gv.phi();
         event_.CSCTF_rec_x4[k] = csc_x;
         event_.CSCTF_rec_y4[k] = csc_y;
@@ -4310,6 +4316,12 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_rec_y4", event_.CSCTF_rec_y4,"CSCTF_rec_y4[4]/F");
   event_tree_->Branch("CSCTF_rec_z4", event_.CSCTF_rec_z4,"CSCTF_rec_z4[4]/F");
 
+  event_tree_->Branch("CSCTF_rec_eta1", event_.CSCTF_rec_eta1,"CSCTF_rec_eta1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_rec_eta2", event_.CSCTF_rec_eta2,"CSCTF_rec_eta2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_rec_eta3", event_.CSCTF_rec_eta3,"CSCTF_rec_eta3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_rec_eta4", event_.CSCTF_rec_eta4,"CSCTF_rec_eta4[nCSCTF]/F");
+
+
   event_tree_->Branch("CSCTF_fit_phi1", event_.CSCTF_fit_phi1,"CSCTF_fit_phi1[4]/F");
   event_tree_->Branch("CSCTF_fit_phi2", event_.CSCTF_fit_phi2,"CSCTF_fit_phi2[4]/F");
   event_tree_->Branch("CSCTF_fit_phi3", event_.CSCTF_fit_phi3,"CSCTF_fit_phi3[4]/F");
@@ -5130,6 +5142,12 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_rec_phib4[i] = 99;
     event_.CSCTF_rec_R4[i] = 99;
     event_.CSCTF_rec_z4[i] = 99;
+
+    event_.CSCTF_rec_eta1[i] = 99;
+    event_.CSCTF_rec_eta2[i] = 99;
+    event_.CSCTF_rec_eta3[i] = 99;
+    event_.CSCTF_rec_eta4[i] = 99;
+
 
     event_.CSCTF_fit_phi1[i] = 99;
     event_.CSCTF_fit_phi2[i] = 99;

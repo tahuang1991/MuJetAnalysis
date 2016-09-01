@@ -62,22 +62,22 @@ def getFittedPositions(xs, zs):
     #print ys
     #print zs
     #print 
-    if xs[0]!=99 and ys[0]!=99 and zs[0]!=99:
+    if xs[0]!=99 and zs[0]!=99:
         st_input.append(1)
         xs_input.append(xs[0])
         zs_input.append(zs[0])
 
-    if xs[1]!=99 and ys[1]!=99 and zs[1]!=99:
+    if xs[1]!=99 and zs[1]!=99:
         st_input.append(2)
         xs_input.append(xs[1])
         zs_input.append(zs[1])
 
-    if xs[2]!=99 and ys[2]!=99 and zs[2]!=99:
+    if xs[2]!=99 and zs[2]!=99:
         st_input.append(3)
         xs_input.append(xs[2])
         zs_input.append(zs[2])
 
-    if xs[3]!=99 and ys[3]!=99 and zs[3]!=99:
+    if xs[3]!=99 and zs[3]!=99:
         st_input.append(4)
         xs_input.append(xs[3])
         zs_input.append(zs[3])
@@ -633,6 +633,13 @@ def deltay12_deltay23(x1, y1, phi1,
   deltay23 = y3_prime - y2_prime
   return deltay12, deltay23
 
+
+#______________________________________________________________________________                                           
+def get_eta_from_Z_R(r, z):
+    
+    theta = TMath.Atan(z/r)
+    returnValue = - TMath.Log(TMath.Abs(TMath.Tan(theta/2.)))
+    return returnValue
 
 #______________________________________________________________________________                                           
 def get_parity(isEven1, isEven2, isEven3, isEven4):

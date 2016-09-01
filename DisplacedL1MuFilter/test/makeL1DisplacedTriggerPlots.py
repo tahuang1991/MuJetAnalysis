@@ -41,12 +41,14 @@ if __name__ == "__main__":
   #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v18/160806_234830/0000/')
   #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v23/160812_090122/0000/')
   #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v26/160816_221742/0000/')
-  dirname = '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v28/160818_200220/0000/'
+  #dirname = '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v28/160818_200220/0000/'
+  #dirname = '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v30/160901_133202/0000/'
+  dirname = '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v31/160901_181306/0000/'
   
   ch = addfiles(ch, dirname=dirname)
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160901"
+  label = "DisplacedL1MuTrigger_20160901_v4"
   targetDir = label + "/"
   
   verbose = False
@@ -216,20 +218,52 @@ if __name__ == "__main__":
     csc_posy_vs_fity_ME4_dxy50to100 = TH1F("csc_posy_vs_fity_ME4_dxy50to100","", 100,-20,20)
 
 
-    csc_poseta_vs_fiteta_ME1_dxy0to5 = TH1F("csc_poseta_vs_fiteta_ME1_dxy0to5","", 100,-20,20)
-    csc_poseta_vs_fiteta_ME2_dxy0to5 = TH1F("csc_poseta_vs_fiteta_ME2_dxy0to5","", 100,-20,20)
-    csc_poseta_vs_fiteta_ME3_dxy0to5 = TH1F("csc_poseta_vs_fiteta_ME3_dxy0to5","", 100,-20,20)
-    csc_poseta_vs_fiteta_ME4_dxy0to5 = TH1F("csc_poseta_vs_fiteta_ME4_dxy0to5","", 100,-20,20)
+    csc_posphi_vs_fitphi_ME1_dxy0to5 = TH1F("csc_posphi_vs_fitphi_ME1_dxy0to5","", 100,-0.1,0.1)
+    csc_posphi_vs_fitphi_ME2_dxy0to5 = TH1F("csc_posphi_vs_fitphi_ME2_dxy0to5","", 100,-0.1,0.1)
+    csc_posphi_vs_fitphi_ME3_dxy0to5 = TH1F("csc_posphi_vs_fitphi_ME3_dxy0to5","", 100,-0.1,0.1)
+    csc_posphi_vs_fitphi_ME4_dxy0to5 = TH1F("csc_posphi_vs_fitphi_ME4_dxy0to5","", 100,-0.1,0.1)
 
-    csc_poseta_vs_fiteta_ME1_dxy5to50 = TH1F("csc_poseta_vs_fiteta_ME1_dxy5to50","", 100,-20,20)
-    csc_poseta_vs_fiteta_ME2_dxy5to50 = TH1F("csc_poseta_vs_fiteta_ME2_dxy5to50","", 100,-20,20)
-    csc_poseta_vs_fiteta_ME3_dxy5to50 = TH1F("csc_poseta_vs_fiteta_ME3_dxy5to50","", 100,-20,20)
-    csc_poseta_vs_fiteta_ME4_dxy5to50 = TH1F("csc_poseta_vs_fiteta_ME4_dxy5to50","", 100,-20,20)
+    csc_posphi_vs_fitphi_ME1_dxy5to50 = TH1F("csc_posphi_vs_fitphi_ME1_dxy5to50","", 100,-0.1,0.1)
+    csc_posphi_vs_fitphi_ME2_dxy5to50 = TH1F("csc_posphi_vs_fitphi_ME2_dxy5to50","", 100,-0.1,0.1)
+    csc_posphi_vs_fitphi_ME3_dxy5to50 = TH1F("csc_posphi_vs_fitphi_ME3_dxy5to50","", 100,-0.1,0.1)
+    csc_posphi_vs_fitphi_ME4_dxy5to50 = TH1F("csc_posphi_vs_fitphi_ME4_dxy5to50","", 100,-0.1,0.1)
 
-    csc_poseta_vs_fiteta_ME1_dxy50to100 = TH1F("csc_poseta_vs_fiteta_ME1_dxy50to100","", 100,-20,20)
-    csc_poseta_vs_fiteta_ME2_dxy50to100 = TH1F("csc_poseta_vs_fiteta_ME2_dxy50to100","", 100,-20,20)
-    csc_poseta_vs_fiteta_ME3_dxy50to100 = TH1F("csc_poseta_vs_fiteta_ME3_dxy50to100","", 100,-20,20)
-    csc_poseta_vs_fiteta_ME4_dxy50to100 = TH1F("csc_poseta_vs_fiteta_ME4_dxy50to100","", 100,-20,20)
+    csc_posphi_vs_fitphi_ME1_dxy50to100 = TH1F("csc_posphi_vs_fitphi_ME1_dxy50to100","", 100,-0.1,0.1)
+    csc_posphi_vs_fitphi_ME2_dxy50to100 = TH1F("csc_posphi_vs_fitphi_ME2_dxy50to100","", 100,-0.1,0.1)
+    csc_posphi_vs_fitphi_ME3_dxy50to100 = TH1F("csc_posphi_vs_fitphi_ME3_dxy50to100","", 100,-0.1,0.1)
+    csc_posphi_vs_fitphi_ME4_dxy50to100 = TH1F("csc_posphi_vs_fitphi_ME4_dxy50to100","", 100,-0.1,0.1)
+
+
+    csc_posR_vs_fitR_ME1_dxy0to5 = TH1F("csc_posR_vs_fitR_ME1_dxy0to5","", 100,-20,20)
+    csc_posR_vs_fitR_ME2_dxy0to5 = TH1F("csc_posR_vs_fitR_ME2_dxy0to5","", 100,-20,20)
+    csc_posR_vs_fitR_ME3_dxy0to5 = TH1F("csc_posR_vs_fitR_ME3_dxy0to5","", 100,-20,20)
+    csc_posR_vs_fitR_ME4_dxy0to5 = TH1F("csc_posR_vs_fitR_ME4_dxy0to5","", 100,-20,20)
+
+    csc_posR_vs_fitR_ME1_dxy5to50 = TH1F("csc_posR_vs_fitR_ME1_dxy5to50","", 100,-20,20)
+    csc_posR_vs_fitR_ME2_dxy5to50 = TH1F("csc_posR_vs_fitR_ME2_dxy5to50","", 100,-20,20)
+    csc_posR_vs_fitR_ME3_dxy5to50 = TH1F("csc_posR_vs_fitR_ME3_dxy5to50","", 100,-20,20)
+    csc_posR_vs_fitR_ME4_dxy5to50 = TH1F("csc_posR_vs_fitR_ME4_dxy5to50","", 100,-20,20)
+
+    csc_posR_vs_fitR_ME1_dxy50to100 = TH1F("csc_posR_vs_fitR_ME1_dxy50to100","", 100,-20,20)
+    csc_posR_vs_fitR_ME2_dxy50to100 = TH1F("csc_posR_vs_fitR_ME2_dxy50to100","", 100,-20,20)
+    csc_posR_vs_fitR_ME3_dxy50to100 = TH1F("csc_posR_vs_fitR_ME3_dxy50to100","", 100,-20,20)
+    csc_posR_vs_fitR_ME4_dxy50to100 = TH1F("csc_posR_vs_fitR_ME4_dxy50to100","", 100,-20,20)
+
+
+    csc_poseta_vs_fiteta_ME1_dxy0to5 = TH1F("csc_poseta_vs_fiteta_ME1_dxy0to5","", 100,-0.1,0.1)
+    csc_poseta_vs_fiteta_ME2_dxy0to5 = TH1F("csc_poseta_vs_fiteta_ME2_dxy0to5","", 100,-0.1,0.1)
+    csc_poseta_vs_fiteta_ME3_dxy0to5 = TH1F("csc_poseta_vs_fiteta_ME3_dxy0to5","", 100,-0.1,0.1)
+    csc_poseta_vs_fiteta_ME4_dxy0to5 = TH1F("csc_poseta_vs_fiteta_ME4_dxy0to5","", 100,-0.1,0.1)
+
+    csc_poseta_vs_fiteta_ME1_dxy5to50 = TH1F("csc_poseta_vs_fiteta_ME1_dxy5to50","", 100,-0.1,0.1)
+    csc_poseta_vs_fiteta_ME2_dxy5to50 = TH1F("csc_poseta_vs_fiteta_ME2_dxy5to50","", 100,-0.1,0.1)
+    csc_poseta_vs_fiteta_ME3_dxy5to50 = TH1F("csc_poseta_vs_fiteta_ME3_dxy5to50","", 100,-0.1,0.1)
+    csc_poseta_vs_fiteta_ME4_dxy5to50 = TH1F("csc_poseta_vs_fiteta_ME4_dxy5to50","", 100,-0.1,0.1)
+
+    csc_poseta_vs_fiteta_ME1_dxy50to100 = TH1F("csc_poseta_vs_fiteta_ME1_dxy50to100","", 100,-0.1,0.1)
+    csc_poseta_vs_fiteta_ME2_dxy50to100 = TH1F("csc_poseta_vs_fiteta_ME2_dxy50to100","", 100,-0.1,0.1)
+    csc_poseta_vs_fiteta_ME3_dxy50to100 = TH1F("csc_poseta_vs_fiteta_ME3_dxy50to100","", 100,-0.1,0.1)
+    csc_poseta_vs_fiteta_ME4_dxy50to100 = TH1F("csc_poseta_vs_fiteta_ME4_dxy50to100","", 100,-0.1,0.1)
 
 
     chi2ndf_posx_dxy0to5 = TH1F("chi2ndf_posx_dxy0to5","", 100,0,20)
@@ -1369,6 +1403,11 @@ if __name__ == "__main__":
               CSCTF_phi3 = treeHits.CSCTF_phi3[L1Mu_CSCTF_index]
               CSCTF_phi4 = treeHits.CSCTF_phi4[L1Mu_CSCTF_index]
 
+              CSCTF_eta1 = treeHits.CSCTF_eta1[L1Mu_CSCTF_index]
+              CSCTF_eta2 = treeHits.CSCTF_eta2[L1Mu_CSCTF_index]
+              CSCTF_eta3 = treeHits.CSCTF_eta3[L1Mu_CSCTF_index]
+              CSCTF_eta4 = treeHits.CSCTF_eta4[L1Mu_CSCTF_index]
+
               ok_CSCTF_st1 = CSCTF_phi1 != 99
               ok_CSCTF_st2 = CSCTF_phi2 != 99
               ok_CSCTF_st3 = CSCTF_phi3 != 99
@@ -1422,10 +1461,39 @@ if __name__ == "__main__":
               CSCTF_R3 = treeHits.CSCTF_R3[L1Mu_CSCTF_index]
               CSCTF_R4 = treeHits.CSCTF_R4[L1Mu_CSCTF_index]
 
+              ## fitted positions in a chamber
+              CSCTF_fit_phi1 = treeHits.CSCTF_fit_phi1[L1Mu_CSCTF_index]
+              CSCTF_fit_phi2 = treeHits.CSCTF_fit_phi2[L1Mu_CSCTF_index]
+              CSCTF_fit_phi3 = treeHits.CSCTF_fit_phi3[L1Mu_CSCTF_index]
+              CSCTF_fit_phi4 = treeHits.CSCTF_fit_phi4[L1Mu_CSCTF_index]
+                
+              CSCTF_fit_x1 = treeHits.CSCTF_fit_x1[L1Mu_CSCTF_index]
+              CSCTF_fit_x2 = treeHits.CSCTF_fit_x2[L1Mu_CSCTF_index]
+              CSCTF_fit_x3 = treeHits.CSCTF_fit_x3[L1Mu_CSCTF_index]
+              CSCTF_fit_x4 = treeHits.CSCTF_fit_x4[L1Mu_CSCTF_index]
+
+              CSCTF_fit_y1 = treeHits.CSCTF_fit_y1[L1Mu_CSCTF_index]
+              CSCTF_fit_y2 = treeHits.CSCTF_fit_y2[L1Mu_CSCTF_index]
+              CSCTF_fit_y3 = treeHits.CSCTF_fit_y3[L1Mu_CSCTF_index]
+              CSCTF_fit_y4 = treeHits.CSCTF_fit_y4[L1Mu_CSCTF_index]
+
+              CSCTF_fit_z1 = treeHits.CSCTF_fit_z1[L1Mu_CSCTF_index]
+              CSCTF_fit_z2 = treeHits.CSCTF_fit_z2[L1Mu_CSCTF_index]
+              CSCTF_fit_z3 = treeHits.CSCTF_fit_z3[L1Mu_CSCTF_index]
+              CSCTF_fit_z4 = treeHits.CSCTF_fit_z4[L1Mu_CSCTF_index]
+
+              CSCTF_fit_R1 = treeHits.CSCTF_fit_R1[L1Mu_CSCTF_index]
+              CSCTF_fit_R2 = treeHits.CSCTF_fit_R2[L1Mu_CSCTF_index]
+              CSCTF_fit_R3 = treeHits.CSCTF_fit_R3[L1Mu_CSCTF_index]
+              CSCTF_fit_R4 = treeHits.CSCTF_fit_R4[L1Mu_CSCTF_index]
+
+
               ## get SIM index
               GEN_SIM_index = int(treeHits.genGdMu_SIM_index[ij])
 
               if GEN_SIM_index != -99:
+                ## recovered stubs
+                print "n recovered stubs", len(treeHits.CSCTF_rec_ch1)
                 CSCTF_rec_ch1 = treeHits.CSCTF_rec_ch1[GEN_SIM_index]
                 CSCTF_rec_ch2 = treeHits.CSCTF_rec_ch1[GEN_SIM_index]
                 CSCTF_rec_ch3 = treeHits.CSCTF_rec_ch3[GEN_SIM_index]
@@ -1435,6 +1503,11 @@ if __name__ == "__main__":
                 CSCTF_rec_phi2 = treeHits.CSCTF_rec_phi2[GEN_SIM_index]
                 CSCTF_rec_phi3 = treeHits.CSCTF_rec_phi3[GEN_SIM_index]
                 CSCTF_rec_phi4 = treeHits.CSCTF_rec_phi4[GEN_SIM_index]
+
+                #CSCTF_rec_eta1 = treeHits.CSCTF_rec_eta1[GEN_SIM_index]
+                #CSCTF_rec_eta2 = treeHits.CSCTF_rec_eta2[GEN_SIM_index]
+                #CSCTF_rec_eta3 = treeHits.CSCTF_rec_eta3[GEN_SIM_index]
+                #CSCTF_rec_eta4 = treeHits.CSCTF_rec_eta4[GEN_SIM_index]
 
                 CSCTF_rec_phib1 = treeHits.CSCTF_rec_phib1[GEN_SIM_index]
                 CSCTF_rec_phib2 = treeHits.CSCTF_rec_phib2[GEN_SIM_index]
@@ -1482,35 +1555,6 @@ if __name__ == "__main__":
                 CSCTF_sim_y3 = treeHits.CSCTF_sim_y3[GEN_SIM_index]
                 CSCTF_sim_y4 = treeHits.CSCTF_sim_y4[GEN_SIM_index]
                 
-
-
-
-                ## simulated and fitted positions in a chamber
-                CSCTF_fit_phi1 = treeHits.CSCTF_fit_phi1[GEN_SIM_index]
-                CSCTF_fit_phi2 = treeHits.CSCTF_fit_phi2[GEN_SIM_index]
-                CSCTF_fit_phi3 = treeHits.CSCTF_fit_phi3[GEN_SIM_index]
-                CSCTF_fit_phi4 = treeHits.CSCTF_fit_phi4[GEN_SIM_index]
-
-                CSCTF_fit_x1 = treeHits.CSCTF_fit_x1[GEN_SIM_index]
-                CSCTF_fit_x2 = treeHits.CSCTF_fit_x2[GEN_SIM_index]
-                CSCTF_fit_x3 = treeHits.CSCTF_fit_x3[GEN_SIM_index]
-                CSCTF_fit_x4 = treeHits.CSCTF_fit_x4[GEN_SIM_index]
-
-                CSCTF_fit_y1 = treeHits.CSCTF_fit_y1[GEN_SIM_index]
-                CSCTF_fit_y2 = treeHits.CSCTF_fit_y2[GEN_SIM_index]
-                CSCTF_fit_y3 = treeHits.CSCTF_fit_y3[GEN_SIM_index]
-                CSCTF_fit_y4 = treeHits.CSCTF_fit_y4[GEN_SIM_index]
-
-                CSCTF_fit_z1 = treeHits.CSCTF_fit_z1[GEN_SIM_index]
-                CSCTF_fit_z2 = treeHits.CSCTF_fit_z2[GEN_SIM_index]
-                CSCTF_fit_z3 = treeHits.CSCTF_fit_z3[GEN_SIM_index]
-                CSCTF_fit_z4 = treeHits.CSCTF_fit_z4[GEN_SIM_index]
-
-                CSCTF_fit_R1 = treeHits.CSCTF_fit_R1[GEN_SIM_index]
-                CSCTF_fit_R2 = treeHits.CSCTF_fit_R2[GEN_SIM_index]
-                CSCTF_fit_R3 = treeHits.CSCTF_fit_R3[GEN_SIM_index]
-                CSCTF_fit_R4 = treeHits.CSCTF_fit_R4[GEN_SIM_index]
-
                 ## check if the recovered stations are there
                 ok_CSCTF_rec_st1 = CSCTF_rec_phi1 != 99
                 ok_CSCTF_rec_st2 = CSCTF_rec_phi2 != 99
@@ -1576,6 +1620,14 @@ if __name__ == "__main__":
                   [CSCTF_y1, CSCTF_y2, CSCTF_y3, CSCTF_y4], 
                   [CSCTF_z1, CSCTF_z2, CSCTF_z3, CSCTF_z4])
 
+                phis_out, st_out, chi2ndf_phi = getFittedPositions(
+                  [CSCTF_fit_phi1, CSCTF_fit_phi2, CSCTF_fit_phi3, CSCTF_fit_phi4], 
+                  [CSCTF_fit_z1, CSCTF_fit_z2, CSCTF_fit_z3, CSCTF_fit_z4])
+
+                Rs_out, st_out, chi2ndf_R = getFittedPositions(
+                  [CSCTF_fit_R1, CSCTF_fit_R2, CSCTF_fit_R3, CSCTF_fit_R4], 
+                  [CSCTF_fit_z1, CSCTF_fit_z2, CSCTF_fit_z3, CSCTF_fit_z4])
+
                 chi2ndf_posx_dxy0to5.Fill(chi2ndf_x)
                 chi2ndf_posx_dxy5to50.Fill(chi2ndf_x)
                 chi2ndf_posx_dxy50to100.Fill(chi2ndf_x)
@@ -1601,6 +1653,21 @@ if __name__ == "__main__":
                   if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posy_vs_fity_ME3_dxy0to5.Fill(CSCTF_y3 - ys_out[index_st3])
                   if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posy_vs_fity_ME4_dxy0to5.Fill(CSCTF_y4 - ys_out[index_st4])
 
+                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posphi_vs_fitphi_ME1_dxy0to5.Fill(CSCTF_fit_phi1 - phis_out[index_st1])
+                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posphi_vs_fitphi_ME2_dxy0to5.Fill(CSCTF_fit_phi2 - phis_out[index_st2])
+                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posphi_vs_fitphi_ME3_dxy0to5.Fill(CSCTF_fit_phi3 - phis_out[index_st3])
+                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posphi_vs_fitphi_ME4_dxy0to5.Fill(CSCTF_fit_phi4 - phis_out[index_st4])
+
+                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posR_vs_fitR_ME1_dxy0to5.Fill(CSCTF_fit_R1 - Rs_out[index_st1])
+                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posR_vs_fitR_ME2_dxy0to5.Fill(CSCTF_fit_R2 - Rs_out[index_st2])
+                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posR_vs_fitR_ME3_dxy0to5.Fill(CSCTF_fit_R3 - Rs_out[index_st3])
+                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posR_vs_fitR_ME4_dxy0to5.Fill(CSCTF_fit_R4 - Rs_out[index_st4])
+
+                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_poseta_vs_fiteta_ME1_dxy0to5.Fill(CSCTF_eta1 - get_eta_from_Z_R(Rs_out[index_st1], CSCTF_fit_z1))
+                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_poseta_vs_fiteta_ME2_dxy0to5.Fill(CSCTF_eta2 - get_eta_from_Z_R(Rs_out[index_st2], CSCTF_fit_z2))
+                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_poseta_vs_fiteta_ME3_dxy0to5.Fill(CSCTF_eta3 - get_eta_from_Z_R(Rs_out[index_st3], CSCTF_fit_z3))
+                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_poseta_vs_fiteta_ME4_dxy0to5.Fill(CSCTF_eta4 - get_eta_from_Z_R(Rs_out[index_st4], CSCTF_fit_z4))
+
                 if 5 < dxy  and dxy <= 50: 
                   if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posx_vs_fitx_ME1_dxy5to50.Fill(CSCTF_x1 - xs_out[index_st1])
                   if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posx_vs_fitx_ME2_dxy5to50.Fill(CSCTF_x2 - xs_out[index_st2])
@@ -1611,6 +1678,21 @@ if __name__ == "__main__":
                   if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posy_vs_fity_ME2_dxy5to50.Fill(CSCTF_y2 - ys_out[index_st2])
                   if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posy_vs_fity_ME3_dxy5to50.Fill(CSCTF_y3 - ys_out[index_st3])
                   if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posy_vs_fity_ME4_dxy5to50.Fill(CSCTF_y4 - ys_out[index_st4])
+
+                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posphi_vs_fitphi_ME1_5to50.Fill(CSCTF_fit_phi1 - phis_out[index_st1])
+                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posphi_vs_fitphi_ME2_5to50.Fill(CSCTF_fit_phi2 - phis_out[index_st2])
+                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posphi_vs_fitphi_ME3_5to50.Fill(CSCTF_fit_phi3 - phis_out[index_st3])
+                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posphi_vs_fitphi_ME4_5to50.Fill(CSCTF_fit_phi4 - phis_out[index_st4])
+
+                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posR_vs_fitR_ME1_5to50.Fill(CSCTF_fit_R1 - Rs_out[index_st1])
+                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posR_vs_fitR_ME2_5to50.Fill(CSCTF_fit_R2 - Rs_out[index_st2])
+                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posR_vs_fitR_ME3_5to50.Fill(CSCTF_fit_R3 - Rs_out[index_st3])
+                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posR_vs_fitR_ME4_5to50.Fill(CSCTF_fit_R4 - Rs_out[index_st4])
+
+                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_poseta_vs_fiteta_ME1_5to50.Fill(CSCTF_eta1 - get_eta_from_Z_R(Rs_out[index_st1], CSCTF_fit_z1))
+                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_poseta_vs_fiteta_ME2_5to50.Fill(CSCTF_eta2 - get_eta_from_Z_R(Rs_out[index_st2], CSCTF_fit_z2))
+                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_poseta_vs_fiteta_ME3_5to50.Fill(CSCTF_eta3 - get_eta_from_Z_R(Rs_out[index_st3], CSCTF_fit_z3))
+                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_poseta_vs_fiteta_ME4_5to50.Fill(CSCTF_eta4 - get_eta_from_Z_R(Rs_out[index_st4], CSCTF_fit_z4))
 
                 if 50 < dxy and dxy <= 100: 
                   if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posx_vs_fitx_ME1_dxy50to100.Fill(CSCTF_x1 - xs_out[index_st1])
@@ -1623,6 +1705,20 @@ if __name__ == "__main__":
                   if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posy_vs_fity_ME3_dxy50to100.Fill(CSCTF_y3 - ys_out[index_st3])
                   if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posy_vs_fity_ME4_dxy50to100.Fill(CSCTF_y4 - ys_out[index_st4])
 
+                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posphi_vs_fitphi_ME1_dxy50to100.Fill(CSCTF_fit_phi1 - phis_out[index_st1])
+                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posphi_vs_fitphi_ME2_dxy50to100.Fill(CSCTF_fit_phi2 - phis_out[index_st2])
+                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posphi_vs_fitphi_ME3_dxy50to100.Fill(CSCTF_fit_phi3 - phis_out[index_st3])
+                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posphi_vs_fitphi_ME4_dxy50to100.Fill(CSCTF_fit_phi4 - phis_out[index_st4])
+
+                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posR_vs_fitR_ME1_dxy50to100.Fill(CSCTF_fit_R1 - Rs_out[index_st1])
+                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posR_vs_fitR_ME2_dxy50to100.Fill(CSCTF_fit_R2 - Rs_out[index_st2])
+                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posR_vs_fitR_ME3_dxy50to100.Fill(CSCTF_fit_R3 - Rs_out[index_st3])
+                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posR_vs_fitR_ME4_dxy50to100.Fill(CSCTF_fit_R4 - Rs_out[index_st4])
+
+                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_poseta_vs_fiteta_ME1_dxy50to100.Fill(CSCTF_eta1 - get_eta_from_Z_R(Rs_out[index_st1], CSCTF_fit_z1))
+                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_poseta_vs_fiteta_ME2_dxy50to100.Fill(CSCTF_eta2 - get_eta_from_Z_R(Rs_out[index_st2], CSCTF_fit_z2))
+                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_poseta_vs_fiteta_ME3_dxy50to100.Fill(CSCTF_eta3 - get_eta_from_Z_R(Rs_out[index_st3], CSCTF_fit_z3))
+                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_poseta_vs_fiteta_ME4_dxy50to100.Fill(CSCTF_eta4 - get_eta_from_Z_R(Rs_out[index_st4], CSCTF_fit_z4))
 
 
                 ## plot with position resolution of the CSC stubs
@@ -2858,6 +2954,54 @@ if __name__ == "__main__":
     makeSimplePlot(csc_posy_vs_fity_ME2_dxy50to100, targetDir + "csc_posy_vs_fity_ME2_dxy50to100.png", "50<|dxy|#leq100 cm;ME2 y(LCT) - y(Fit);Entries","")
     makeSimplePlot(csc_posy_vs_fity_ME3_dxy50to100, targetDir + "csc_posy_vs_fity_ME3_dxy50to100.png", "50<|dxy|#leq100 cm;ME3 y(LCT) - y(Fit);Entries","")
     makeSimplePlot(csc_posy_vs_fity_ME4_dxy50to100, targetDir + "csc_posy_vs_fity_ME4_dxy50to100.png", "50<|dxy|#leq100 cm;ME4 y(LCT) - y(Fit);Entries","")
+
+
+    makeSimplePlot(csc_posphi_vs_fitphi_ME1_dxy0to5, targetDir + "csc_posphi_vs_fitphi_ME1_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME1 #phi(LCT) - #phi(Fit);Entries","")
+    makeSimplePlot(csc_posphi_vs_fitphi_ME2_dxy0to5, targetDir + "csc_posphi_vs_fitphi_ME2_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME2 #phi(LCT) - #phi(Fit);Entries","")
+    makeSimplePlot(csc_posphi_vs_fitphi_ME3_dxy0to5, targetDir + "csc_posphi_vs_fitphi_ME3_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME3 #phi(LCT) - #phi(Fit);Entries","")
+    makeSimplePlot(csc_posphi_vs_fitphi_ME4_dxy0to5, targetDir + "csc_posphi_vs_fitphi_ME4_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME4 #phi(LCT) - #phi(Fit);Entries","")
+
+    makeSimplePlot(csc_posphi_vs_fitphi_ME1_dxy5to50, targetDir + "csc_posphi_vs_fitphi_ME1_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME1 #phi(LCT) - #phi(Fit);Entries","")
+    makeSimplePlot(csc_posphi_vs_fitphi_ME2_dxy5to50, targetDir + "csc_posphi_vs_fitphi_ME2_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME2 #phi(LCT) - #phi(Fit);Entries","")
+    makeSimplePlot(csc_posphi_vs_fitphi_ME3_dxy5to50, targetDir + "csc_posphi_vs_fitphi_ME3_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME3 #phi(LCT) - #phi(Fit);Entries","")
+    makeSimplePlot(csc_posphi_vs_fitphi_ME4_dxy5to50, targetDir + "csc_posphi_vs_fitphi_ME4_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME4 #phi(LCT) - #phi(Fit);Entries","")
+
+    makeSimplePlot(csc_posphi_vs_fitphi_ME1_dxy50to100, targetDir + "csc_posphi_vs_fitphi_ME1_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME1 #phi(LCT) - #phi(Fit);Entries","")
+    makeSimplePlot(csc_posphi_vs_fitphi_ME2_dxy50to100, targetDir + "csc_posphi_vs_fitphi_ME2_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME2 #phi(LCT) - #phi(Fit);Entries","")
+    makeSimplePlot(csc_posphi_vs_fitphi_ME3_dxy50to100, targetDir + "csc_posphi_vs_fitphi_ME3_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME3 #phi(LCT) - #phi(Fit);Entries","")
+    makeSimplePlot(csc_posphi_vs_fitphi_ME4_dxy50to100, targetDir + "csc_posphi_vs_fitphi_ME4_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME4 #phi(LCT) - #phi(Fit);Entries","")
+
+
+    makeSimplePlot(csc_posR_vs_fitR_ME1_dxy0to5, targetDir + "csc_posR_vs_fitR_ME1_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME1 #R(LCT) - #R(Fit);Entries","")
+    makeSimplePlot(csc_posR_vs_fitR_ME2_dxy0to5, targetDir + "csc_posR_vs_fitR_ME2_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME2 #R(LCT) - #R(Fit);Entries","")
+    makeSimplePlot(csc_posR_vs_fitR_ME3_dxy0to5, targetDir + "csc_posR_vs_fitR_ME3_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME3 #R(LCT) - #R(Fit);Entries","")
+    makeSimplePlot(csc_posR_vs_fitR_ME4_dxy0to5, targetDir + "csc_posR_vs_fitR_ME4_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME4 #R(LCT) - #R(Fit);Entries","")
+
+    makeSimplePlot(csc_posR_vs_fitR_ME1_dxy5to50, targetDir + "csc_posR_vs_fitR_ME1_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME1 #R(LCT) - #R(Fit);Entries","")
+    makeSimplePlot(csc_posR_vs_fitR_ME2_dxy5to50, targetDir + "csc_posR_vs_fitR_ME2_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME2 #R(LCT) - #R(Fit);Entries","")
+    makeSimplePlot(csc_posR_vs_fitR_ME3_dxy5to50, targetDir + "csc_posR_vs_fitR_ME3_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME3 #R(LCT) - #R(Fit);Entries","")
+    makeSimplePlot(csc_posR_vs_fitR_ME4_dxy5to50, targetDir + "csc_posR_vs_fitR_ME4_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME4 #R(LCT) - #R(Fit);Entries","")
+
+    makeSimplePlot(csc_posR_vs_fitR_ME1_dxy50to100, targetDir + "csc_posR_vs_fitR_ME1_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME1 #R(LCT) - #R(Fit);Entries","")
+    makeSimplePlot(csc_posR_vs_fitR_ME2_dxy50to100, targetDir + "csc_posR_vs_fitR_ME2_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME2 #R(LCT) - #R(Fit);Entries","")
+    makeSimplePlot(csc_posR_vs_fitR_ME3_dxy50to100, targetDir + "csc_posR_vs_fitR_ME3_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME3 #R(LCT) - #R(Fit);Entries","")
+    makeSimplePlot(csc_posR_vs_fitR_ME4_dxy50to100, targetDir + "csc_posR_vs_fitR_ME4_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME4 #R(LCT) - #R(Fit);Entries","")
+
+
+    makeSimplePlot(csc_poseta_vs_fiteta_ME1_dxy0to5, targetDir + "csc_poseta_vs_fiteta_ME1_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME1 #eta(LCT) - #eta(Fit);Entries","")
+    makeSimplePlot(csc_poseta_vs_fiteta_ME2_dxy0to5, targetDir + "csc_poseta_vs_fiteta_ME2_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME2 #eta(LCT) - #eta(Fit);Entries","")
+    makeSimplePlot(csc_poseta_vs_fiteta_ME3_dxy0to5, targetDir + "csc_poseta_vs_fiteta_ME3_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME3 #eta(LCT) - #eta(Fit);Entries","")
+    makeSimplePlot(csc_poseta_vs_fiteta_ME4_dxy0to5, targetDir + "csc_poseta_vs_fiteta_ME4_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME4 #eta(LCT) - #eta(Fit);Entries","")
+
+    makeSimplePlot(csc_poseta_vs_fiteta_ME1_dxy5to50, targetDir + "csc_poseta_vs_fiteta_ME1_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME1 #eta(LCT) - #eta(Fit);Entries","")
+    makeSimplePlot(csc_poseta_vs_fiteta_ME2_dxy5to50, targetDir + "csc_poseta_vs_fiteta_ME2_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME2 #eta(LCT) - #eta(Fit);Entries","")
+    makeSimplePlot(csc_poseta_vs_fiteta_ME3_dxy5to50, targetDir + "csc_poseta_vs_fiteta_ME3_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME3 #eta(LCT) - #eta(Fit);Entries","")
+    makeSimplePlot(csc_poseta_vs_fiteta_ME4_dxy5to50, targetDir + "csc_poseta_vs_fiteta_ME4_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME4 #eta(LCT) - #eta(Fit);Entries","")
+
+    makeSimplePlot(csc_poseta_vs_fiteta_ME1_dxy50to100, targetDir + "csc_poseta_vs_fiteta_ME1_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME1 #eta(LCT) - #eta(Fit);Entries","")
+    makeSimplePlot(csc_poseta_vs_fiteta_ME2_dxy50to100, targetDir + "csc_poseta_vs_fiteta_ME2_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME2 #eta(LCT) - #eta(Fit);Entries","")
+    makeSimplePlot(csc_poseta_vs_fiteta_ME3_dxy50to100, targetDir + "csc_poseta_vs_fiteta_ME3_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME3 #eta(LCT) - #eta(Fit);Entries","")
+    makeSimplePlot(csc_poseta_vs_fiteta_ME4_dxy50to100, targetDir + "csc_poseta_vs_fiteta_ME4_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME4 #eta(LCT) - #eta(Fit);Entries","")
 
 
     makeSimplePlot(chi2ndf_posx_dxy0to5, targetDir + "chi2ndf_posx_dxy0to5.png", "0<|dxy|#leq5 cm;#chi^{2}/NDF;Entries","")

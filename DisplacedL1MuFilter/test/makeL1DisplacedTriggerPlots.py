@@ -45,11 +45,12 @@ if __name__ == "__main__":
   #dirname = '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v30/160901_133202/0000/'
   #dirname = '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v31/160901_181306/0000/'
   dirname ='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v34/160901_204525/0000/'
-  
+  dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v35/160902_024746/0000/'
+
   ch = addfiles(ch, dirname=dirname)
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160901_v5"
+  label = "DisplacedL1MuTrigger_20160901_v6"
   targetDir = label + "/"
   
   verbose = True
@@ -1677,6 +1678,7 @@ if __name__ == "__main__":
                 chi2ndf_posy_dxy50to100.Fill(chi2ndf_y)
 
                 #print st_out
+                index_st1, index_st2, index_st3, index_st4 = -1, -1, -1, -1
                 if 1 in st_out: index_st1 = st_out.index(1)
                 if 2 in st_out: index_st2 = st_out.index(2)
                 if 3 in st_out: index_st3 = st_out.index(3)

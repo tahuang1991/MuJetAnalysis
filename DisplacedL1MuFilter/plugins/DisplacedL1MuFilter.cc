@@ -699,12 +699,17 @@ private:
                          CSCDetId chid, int iMuon, float& fit_z, float& fit_phi, float& dphi) const;
   void getStubPositions(int index, std::vector<float>& x, 
                         std::vector<float>& y, std::vector<float>& z) const;
+
+  void printCSCStubProperties(int index) const;
+
   CSCCorrelatedLCTDigiId 
   pickBestMatchingStub(float x1, float y1,
                        const CSCCorrelatedLCTDigiId& oldCoPad,
                        const CSCCorrelatedLCTDigiId& newCoPad, 
                        int refBx) const;
   
+  bool stubInCSCTFTracks(const CSCCorrelatedLCTDigi& stub, const L1CSCTrackCollection& l1Tracks) const;
+
   GEMCSCCoPadDigiId
   pickBestMatchingCoPad(float x1, float y1,
                         const GEMCSCCoPadDigiId& oldCoPad,
@@ -1760,7 +1765,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   
 
   // store the DTTF variables
-  if(verbose) std::cout << "Number of L1DTTrackPhis " <<L1DTTrackPhis.size() << std::endl;
+  if(verbose) std::cout << std::endl<< "Number of L1DTTrackPhis " <<L1DTTrackPhis.size() << std::endl;
   event_.nDTTF = L1DTTrackPhis.size();
   for (unsigned int j=0; j<L1DTTrackPhis.size(); ++j) { 
     auto track = L1DTTrackPhis[j].first;
@@ -1773,7 +1778,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     event_.DTTF_quality[j] = track.quality();
     
     if(verbose) {  
-      std::cout << "pt  = " << event_.DTTF_pt[j]
+      std::cout << std::endl
+                << "pt  = " << event_.DTTF_pt[j]
                 << ", eta  = " << event_.DTTF_eta[j] 
                 << ", phi  = " << event_.DTTF_phi[j]
                 << ", bx = " << event_.DTTF_bx[j] 
@@ -1830,7 +1836,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   // store the CSCTF variables
   event_.nCSCTF = l1Tracks.size();
-  if(verbose) std::cout << "Number of L1CSCTracks " <<event_.nCSCTF << std::endl;
+  if(verbose) std::cout << std::endl<< "Number of L1CSCTracks " <<event_.nCSCTF << std::endl;
   for (int j=0; j<event_.nCSCTF; ++j) {
     auto track = l1Tracks[j].first;
     const int sign(track.endcap()==1 ? 1 : -1);
@@ -1845,30 +1851,30 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     event_.CSCTF_quality[j] = quality;
     
     if(verbose) {  
-      std::cout << "pt  = " << event_.CSCTF_pt[j]
+      std::cout << std::endl
+                << "L1CSC pt  = " << event_.CSCTF_pt[j]
                 << ", eta  = " << event_.CSCTF_eta[j] 
                 << ", phi  = " << event_.CSCTF_phi[j]
                 << ", bx = " << event_.CSCTF_bx[j]
                 << ", quality = " << event_.CSCTF_quality[j] 
-                << std::endl;
+                << std::endl<< std::endl;
+      std::cout << "Print CSCTF stubs:" << std::endl;
     }
     event_.CSCTF_nStubs[j] = 0;
     auto stubCollection(l1Tracks[j].second);
     for (auto detUnitIt = stubCollection.begin(); detUnitIt != stubCollection.end(); detUnitIt++) {
       const CSCDetId& ch_id = (*detUnitIt).first;
-
-      // GEM chamber detid and the corresponding GEMCoPadDigis
-      //const GEMDetId gemId(id.zendcap(), id.ring(), id.station(), 1, id.chamber(), 0);
-      //const auto gemCoPadRange = GEMCSCCoPads.get(gemId);
-      
       const auto range = (*detUnitIt).second;
       for (auto digiIt = range.first; digiIt != range.second; digiIt++) {
         //if (!(*digiIt).isValid()) continue;
         event_.CSCTF_nStubs[j] += 1;
         auto stub = *digiIt;
-
-        // stub position
         auto gp = getCSCSpecificPoint2(ch_id.rawId(), stub);
+        if(verbose)std::cout << "\t" << ch_id << " " << stub 
+                             << " key eta " << gp.eta() << " key phi " << gp.phi() << std::endl;
+        
+        // stub position
+        
         float z_pos_L3, bestFitPhi, bestFitDPhi;
 
         fitComparatorsLCT(*hCSCComparators.product(), stub, ch_id, int(digiIt-range.first), z_pos_L3, bestFitPhi, bestFitDPhi);
@@ -1877,12 +1883,142 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
     }
 
-     /* 
-       CSCTF stub recovery
-       The CSC track-finder may drop certain stubs if they don't match the pattern
-       First get the station numbers where stubs are not filled
+    /* 
+    CSCTF stub recovery per CSCTF track
+    The CSC track-finder may drop certain stubs if they don't match the pattern
+    First get the station numbers where stubs are not filled
     */
+    bool stubMissingSt1 = event_.CSCTF_st1[j] == 99;
+    bool stubMissingSt2 = event_.CSCTF_st2[j] == 99;
+    bool stubMissingSt3 = event_.CSCTF_st3[j] == 99;
+    bool stubMissingSt4 = event_.CSCTF_st4[j] == 99;
+    bool atLeast1StubMissing = stubMissingSt1 or stubMissingSt2 or stubMissingSt3 or stubMissingSt4;
+    
+    bool doStubRecovery = true;
+    if (doStubRecovery and atLeast1StubMissing){
+      
+      std::vector<float> xs;
+      std::vector<float> ys;
+      std::vector<float> zs;
+      //std::cout << "Get stub positions" << std::endl;
+      getStubPositions(j, xs, ys, zs);
+      
+      //std::cout << "fit stub positions with straight line" << std::endl;
+      float alpha_x, beta_x, alpha_y, beta_y;
+      fitStraightLine(zs, xs, alpha_x, beta_x); 
+      fitStraightLine(zs, ys, alpha_y, beta_y); 
+      
+      //std::cout << "Get positions stations" << std::endl;
+      std::vector<float> allxs;
+      std::vector<float> allys;
+      int sign_z = int(event_.CSCTF_eta[j]/std::abs(event_.CSCTF_eta[j]));
+      getPositionsStations(alpha_x, beta_x, alpha_y, beta_y,
+                           allxs, allys, sign_z);
 
+      
+      int triggerSector = track.sector();
+      //std::cout << "trigger sector " << triggerSector << std::endl;
+      
+      for (int endcap=1; endcap<=2; endcap++){
+        //do not consider stubs in the wrong endcap
+        int zendcap(endcap!=1 ? -1 : +1 );
+        if (zendcap * event_.CSCTF_eta[j] < 0) continue;
+        for (int station=1; station<=4; station++){
+          
+          // ignore station where a L1Mu stub is present!
+          if (not stubMissingSt1 and station==1) continue;
+          if (not stubMissingSt2 and station==2) continue;
+          if (not stubMissingSt3 and station==3) continue;
+          if (not stubMissingSt4 and station==4) continue;
+          if(verbose) std::cout << "Recovered stubs in station: " << station << std::endl;
+          // temp storage of candidate stubs per station and ring
+          CSCCorrelatedLCTDigiId bestMatchingStub;
+          int iStub = 0;
+          for (int ring=1; ring<=3; ring++){
+            if (station!=1 and ring==3) continue;
+            //std::cout << "Analyzing ring " << ring << std::endl;
+            
+            for (int chamber=1; chamber<=36; chamber++){
+              // do not consider invalid detids
+              if ( (station==2 or station==3 or station==4) and 
+                   (ring==1) and chamber>18) continue;
+              //std::cout << "Analyzing chamber " << chamber << std::endl; 
+              // create the detid
+              CSCDetId ch_id(endcap, station, ring, chamber);
+              //std::cout << "ch_id " <<  ch_id << std::endl;
+              // get the stubs in this detid
+              auto range = CSCCorrelatedLCTs.get(ch_id);
+              for (auto digiItr = range.first; digiItr != range.second; ++digiItr){
+                iStub++; 
+
+                // check that this stub is not already part of a CSC TF track
+                if (stubInCSCTFTracks(stub, l1Tracks)) continue;
+
+                // trigger sector must be the same
+                if (triggerSector != ch_id.triggerSector()) continue;
+                auto stub(*digiItr);
+                int deltaBX = std::abs(stub.getBX() - (6 + event_.CSCTF_bx[j]));
+                
+                // BXs have to match
+                if (deltaBX > 1) continue;
+
+                //std::cout << ch_id << std::endl;
+                //std::cout<<"Candidate " << stub << std::endl;
+                bestMatchingStub = pickBestMatchingStub(allxs[ch_id.station()-1], allys[ch_id.station()-1], 
+                                                        bestMatchingStub, std::make_pair(ch_id, stub), 6 + event_.CSCTF_bx[j]);
+              }
+              // consider the case ME1a
+              if (station==1 and ring==1){
+                CSCDetId me1a_id(endcap, station, 4, chamber);
+                auto range = CSCCorrelatedLCTs.get(me1a_id);
+                for (auto digiItr = range.first; digiItr != range.second; ++digiItr){
+                  iStub++;
+                  // trigger sector must be the same
+                  if (triggerSector != me1a_id.triggerSector()) continue;
+                  auto stub(*digiItr);
+                  int deltaBX = std::abs(stub.getBX() - (6 + event_.CSCTF_bx[j]));
+                  
+                  // BXs have to match
+                  if (deltaBX > 1) continue; 
+                  //std::cout << me1a_id << std::endl;
+                  //std::cout<<"Candidate " << stub << std::endl;
+                  bestMatchingStub = pickBestMatchingStub(allxs[me1a_id.station()-1], allys[me1a_id.station()-1], 
+                                                          bestMatchingStub, std::make_pair(me1a_id, stub), 6 + event_.CSCTF_bx[j]);
+                  
+                }
+              }
+            }
+          }
+          if (bestMatchingStub.second != CSCCorrelatedLCTDigi()) {
+            // stub position
+            auto gp = getCSCSpecificPoint2(bestMatchingStub.first.rawId(), bestMatchingStub.second);
+            if (reco::deltaR(gp.eta(), normalizedPhi(gp.phi()), 
+                             event_.CSCTF_eta[j] , normalizedPhi(event_.CSCTF_phi[j])) < 0.2){ 
+
+              if(verbose) {
+                std::cout << "\t" 
+                          << bestMatchingStub.first << " " 
+                          << bestMatchingStub.second << " " 
+                          << "key eta " << gp.eta() << " "
+                          << "key phi " << gp.phi() << std::endl;
+              }
+              
+              float z_pos_L3, bestFitPhi, bestFitDPhi;
+              fitComparatorsLCT(*hCSCComparators.product(), bestMatchingStub.second, bestMatchingStub.first, j, z_pos_L3, bestFitPhi, bestFitDPhi);
+              
+              fillCSCStubProperties(bestMatchingStub.first, bestMatchingStub.second, j, 
+                                    gp, z_pos_L3, bestFitPhi, bestFitDPhi);
+            }
+            else{
+              if(verbose) if (iStub!=0) std::cout << "\tNone " << std::endl;
+            }
+          }
+          else{
+            if(verbose) if (iStub!=0) std::cout << "\tNone " << std::endl;
+          }
+        }
+      } 
+    }
   }
 
   // Store the RPCb variables
@@ -2209,33 +2345,35 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                   << ", bx = "  << event_.CSCTF_bx[tempIndex]
                   << ", quality = " << event_.CSCTF_quality[tempIndex]
                   << std::endl;
-        
-        // Print stubs
-        std::cout << "\tNumber of stubs: " << event_.CSCTF_nStubs[tempIndex] << std::endl;
-        auto stubCollection(l1Tracks[tempIndex].second);
-        for (auto detUnitIt = stubCollection.begin(); detUnitIt != stubCollection.end(); detUnitIt++) {
-          const CSCDetId& id = (*detUnitIt).first;
-          std::cout << "\t\tDetId " << id << std::endl;
-          const auto range = (*detUnitIt).second;
-          for (auto digiIt = range.first; digiIt != range.second; digiIt++) {
-            //if (!(*digiIt).isValid()) continue;
-            GlobalPoint csc_gp = getCSCSpecificPoint2(id.rawId(), *digiIt);
-            std::cout << "\t\tPosition " << csc_gp.eta() << " " << csc_gp.phi() << std::endl;
-            std::cout << "\t\t" << *digiIt << std::endl;
-          }
-        }
+        //printCSCStubProperties(tempIndex);
+
+        // // Print stubs
+        // std::cout << "\tNumber of stubs: " << event_.CSCTF_nStubs[tempIndex] << std::endl;
+        // auto stubCollection(l1Tracks[tempIndex].second);
+        // for (auto detUnitIt = stubCollection.begin(); detUnitIt != stubCollection.end(); detUnitIt++) {
+        //   const CSCDetId& id = (*detUnitIt).first;
+        //   std::cout << "\t\tDetId " << id << std::endl;
+        //   const auto range = (*detUnitIt).second;
+        //   for (auto digiIt = range.first; digiIt != range.second; digiIt++) {
+        //     //if (!(*digiIt).isValid()) continue;
+        //     GlobalPoint csc_gp = getCSCSpecificPoint2(id.rawId(), *digiIt);
+        //     std::cout << "\t\tPosition " << csc_gp.eta() << " " << csc_gp.phi() << std::endl;
+        //     std::cout << "\t\t" << *digiIt << std::endl;
+        //   }
+        // }
       }
       else {
         std::cout << "\tNo matching CSCTF track" << std::endl;
       }
     }
+
     /* 
        CSCTF stub recovery
        The CSC track-finder may drop certain stubs if they don't match the pattern
        First get the station numbers where stubs are not filled
     */
-    std::cout << "CSC stub recovery" << std::endl;
-    if (event_.L1Mu_CSCTF_index[i] != -1) {
+    // std::cout << "CSC stub recovery" << std::endl;
+    if (event_.L1Mu_CSCTF_index[i] != -1 and false) {
       bool stubMissingSt1 = event_.CSCTF_st1[ event_.L1Mu_CSCTF_index[i] ] == 99;
       bool stubMissingSt2 = event_.CSCTF_st2[ event_.L1Mu_CSCTF_index[i] ] == 99;
       bool stubMissingSt3 = event_.CSCTF_st3[ event_.L1Mu_CSCTF_index[i] ] == 99;
@@ -2285,13 +2423,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             if (not stubMissingSt2 and station==2) continue;
             if (not stubMissingSt3 and station==3) continue;
             if (not stubMissingSt4 and station==4) continue;
-            //std::cout << "Analyzing station " << station << std::endl;
+            std::cout << "Attempt recovery  in station " << station << std::endl;
             // temp storage of candidate stubs per station and ring
             CSCCorrelatedLCTDigiId bestMatchingStub;
             int iStub = 0;
             for (int ring=1; ring<=3; ring++){
               if (station!=1 and ring==3) continue;
-              //std::cout << "Analyzing ring " << ring << std::endl;
+              std::cout << "Analyzing ring " << ring << std::endl;
               
               for (int chamber=1; chamber<=36; chamber++){
                 // do not consider invalid detids
@@ -2304,6 +2442,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                 // get the stubs in this detid
                 auto range = CSCCorrelatedLCTs.get(ch_id);
                 for (auto digiItr = range.first; digiItr != range.second; ++digiItr){
+                  iStub++; 
                   // trigger sector must be the same
                   if (triggerSector != ch_id.triggerSector()) continue;
                   auto stub(*digiItr);
@@ -2311,7 +2450,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                   
                   // BXs have to match
                   if (deltaBX > 1) continue;
-                  iStub++; 
                   std::cout << ch_id << std::endl;
                   std::cout<<"Candidate " << stub << std::endl;
                   bestMatchingStub = pickBestMatchingStub(allxs[ch_id.station()-1], allys[ch_id.station()-1], 
@@ -2322,6 +2460,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                   CSCDetId me1a_id(endcap, station, 4, chamber);
                   auto range = CSCCorrelatedLCTs.get(me1a_id);
                   for (auto digiItr = range.first; digiItr != range.second; ++digiItr){
+                    iStub++;
                     // trigger sector must be the same
                     if (triggerSector != me1a_id.triggerSector()) continue;
                     auto stub(*digiItr);
@@ -2329,7 +2468,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                     
                     // BXs have to match
                     if (deltaBX > 1) continue; 
-                    iStub++;
                     std::cout << me1a_id << std::endl;
                     std::cout<<"Candidate " << stub << std::endl;
                     bestMatchingStub = pickBestMatchingStub(allxs[me1a_id.station()-1], allys[me1a_id.station()-1], 
@@ -3394,11 +3532,13 @@ DisplacedL1MuFilter::pickBestMatchingStub(float xref, float yref,
                                           const CSCCorrelatedLCTDigiId& newStub, 
                                           int refBx) const
 {
+  bool debug=false;
+
+  if (debug){
   std::cout << "In function pickBestMatchingStub" << std::endl;
   std::cout << "candidate 1 " << oldStub.first << " "  << oldStub.second << std::endl;
   std::cout << "candidate 2 " << newStub.first << " "  << newStub.second << std::endl;
-
-  bool debug=true;
+  }
 
   // check for invalid/valid
   if (oldStub.second == CSCCorrelatedLCTDigi()) {
@@ -3446,6 +3586,27 @@ DisplacedL1MuFilter::pickBestMatchingStub(float xref, float yref,
   std::cout << "All else fails" << std::endl;
   // in case all else fails...
   return CSCCorrelatedLCTDigiId();
+}
+
+bool 
+DisplacedL1MuFilter::stubInCSCTFTracks(const CSCCorrelatedLCTDigi& candidateStub, const L1CSCTrackCollection& l1Tracks) const
+{
+  bool isMatched = false;
+  for (auto tftrack: l1Tracks){
+    auto stubCollection = tftrack.second;
+    for (auto detUnitIt = stubCollection.begin(); detUnitIt != stubCollection.end(); detUnitIt++) {
+      const auto range = (*detUnitIt).second;
+      for (auto digiIt = range.first; digiIt != range.second; digiIt++) {
+        //if (!(*digiIt).isValid()) continue;
+        auto stub = *digiIt;
+        if (candidateStub == stub) { 
+          isMatched = true;
+          break;
+        }
+      }
+    }
+  }
+  return isMatched;
 }
 
 
@@ -3570,9 +3731,9 @@ DisplacedL1MuFilter::fillCSCStubProperties(const CSCDetId& ch_id,
   double csc_R = TMath::Sqrt(gp.y()*gp.y() + gp.x()*gp.x());
   float radius = csc_R;
 
-  std::cout << "Printing stub properties" << std::endl 
-            << "Id " << ch_id << " stub " << stub 
-            << "GP " << gp << " eta " << gp.eta() << " phi " << gp.phi() << std::endl << std::endl;  
+  // std::cout << "Printing stub properties" << std::endl 
+  //           << "Id " << ch_id << " stub " << stub 
+  //           << "GP " << gp << " eta " << gp.eta() << " phi " << gp.phi() << std::endl << std::endl;  
 
   switch(ch_id.station()) {
   case 1:
@@ -3694,6 +3855,123 @@ DisplacedL1MuFilter::fillCSCStubProperties(const CSCDetId& ch_id,
     event_.CSCTF_fit_R4[index] = radius;
     break;
   };
+}
+
+
+void 
+DisplacedL1MuFilter::printCSCStubProperties(int index) const
+{
+  
+  cout << "id1 "<< event_.CSCTF_id1[index] << endl;
+  cout << "st1 "<< event_.CSCTF_st1[index] << endl;
+  cout << "ri1 "<< event_.CSCTF_ri1[index] << endl; 
+  cout << "ch1 "<< event_.CSCTF_ch1[index] << endl;
+  cout << "en1 "<< event_.CSCTF_en1[index] << endl;
+  cout << "trk1 "<< event_.CSCTF_trk1[index]<< endl; 
+  cout << "quality1 "<< event_.CSCTF_quality1[index] << endl;
+  cout << "wg1 "<< event_.CSCTF_wg1[index] << endl;
+  cout << "hs1 "<< event_.CSCTF_hs1[index] << endl;
+  cout << "pat1 "<< event_.CSCTF_pat1[index] << endl;
+  cout << "bend1 "<< event_.CSCTF_bend1[index]<< endl;
+  cout << "bx1 "<< event_.CSCTF_bx1[index]<< endl;
+  cout << "clctpat1 "<< event_.CSCTF_clctpat1[index]<< endl;
+  cout << "val1 "<< event_.CSCTF_val1[index]<< endl;
+  cout << "phi1 "<< event_.CSCTF_phi1[index]<< endl;
+  cout << "eta1 "<< event_.CSCTF_eta1[index]<< endl;
+  cout << "gemdphi1 "<< event_.CSCTF_gemdphi1[index]<< endl;
+  cout << "R1 "<< event_.CSCTF_R1[index]<< endl;
+  cout << "x1 "<< event_.CSCTF_x1[index]<< endl;
+  cout << "y1 "<< event_.CSCTF_y1[index]<< endl;
+  cout << "z1 "<< event_.CSCTF_z1[index]<< endl;
+  cout << "fit phi1 "<< event_.CSCTF_fit_phi1[index]<< endl;
+  cout << "fit dphi1 "<< event_.CSCTF_fit_dphi1[index]<< endl;
+  cout << "fit x1 "<< event_.CSCTF_fit_x1[index]<< endl;
+  cout << "fit y1 "<< event_.CSCTF_fit_y1[index]<< endl;
+  cout << "fit z1 "<< event_.CSCTF_fit_z1[index]<< endl;
+  cout << "fit R1 "<< event_.CSCTF_fit_R1[index]<< endl;
+
+  cout << "id2 "<< event_.CSCTF_id2[index] << endl;
+  cout << "st2 "<< event_.CSCTF_st2[index] << endl;
+  cout << "ri2 "<< event_.CSCTF_ri2[index] << endl; 
+  cout << "ch2 "<< event_.CSCTF_ch2[index] << endl;
+  cout << "en2 "<< event_.CSCTF_en2[index] << endl;
+  cout << "trk2 "<< event_.CSCTF_trk2[index]<< endl; 
+  cout << "quality2 "<< event_.CSCTF_quality2[index] << endl;
+  cout << "wg2 "<< event_.CSCTF_wg2[index] << endl;
+  cout << "hs2 "<< event_.CSCTF_hs2[index] << endl;
+  cout << "pat2 "<< event_.CSCTF_pat2[index] << endl;
+  cout << "bend2 "<< event_.CSCTF_bend2[index]<< endl;
+  cout << "bx2 "<< event_.CSCTF_bx2[index]<< endl;
+  cout << "clctpat2 "<< event_.CSCTF_clctpat2[index]<< endl;
+  cout << "val2 "<< event_.CSCTF_val2[index]<< endl;
+  cout << "phi2 "<< event_.CSCTF_phi2[index]<< endl;
+  cout << "eta2 "<< event_.CSCTF_eta2[index]<< endl;
+  cout << "gemdphi2 "<< event_.CSCTF_gemdphi2[index]<< endl;
+  cout << "R2 "<< event_.CSCTF_R2[index]<< endl;
+  cout << "x2 "<< event_.CSCTF_x2[index]<< endl;
+  cout << "y2 "<< event_.CSCTF_y2[index]<< endl;
+  cout << "z2 "<< event_.CSCTF_z2[index]<< endl;
+  cout << "fit phi2 "<< event_.CSCTF_fit_phi2[index]<< endl;
+  cout << "fit dphi2 "<< event_.CSCTF_fit_dphi2[index]<< endl;
+  cout << "fit x2 "<< event_.CSCTF_fit_x2[index]<< endl;
+  cout << "fit y2 "<< event_.CSCTF_fit_y2[index]<< endl;
+  cout << "fit z2 "<< event_.CSCTF_fit_z2[index]<< endl;
+  cout << "fit R2 "<< event_.CSCTF_fit_R2[index]<< endl;
+
+  cout << "id3 "<< event_.CSCTF_id3[index] << endl;
+  cout << "st3 "<< event_.CSCTF_st3[index] << endl;
+  cout << "ri3 "<< event_.CSCTF_ri3[index] << endl; 
+  cout << "ch3 "<< event_.CSCTF_ch3[index] << endl;
+  cout << "en3 "<< event_.CSCTF_en3[index] << endl;
+  cout << "trk3 "<< event_.CSCTF_trk3[index]<< endl; 
+  cout << "quality3 "<< event_.CSCTF_quality3[index] << endl;
+  cout << "wg3 "<< event_.CSCTF_wg3[index] << endl;
+  cout << "hs3 "<< event_.CSCTF_hs3[index] << endl;
+  cout << "pat3 "<< event_.CSCTF_pat3[index] << endl;
+  cout << "bend3 "<< event_.CSCTF_bend3[index]<< endl;
+  cout << "bx3 "<< event_.CSCTF_bx3[index]<< endl;
+  cout << "clctpat3 "<< event_.CSCTF_clctpat3[index]<< endl;
+  cout << "val3 "<< event_.CSCTF_val3[index]<< endl;
+  cout << "phi3 "<< event_.CSCTF_phi3[index]<< endl;
+  cout << "eta3 "<< event_.CSCTF_eta3[index]<< endl;
+  cout << "R3 "<< event_.CSCTF_R3[index]<< endl;
+  cout << "x3 "<< event_.CSCTF_x3[index]<< endl;
+  cout << "y3 "<< event_.CSCTF_y3[index]<< endl;
+  cout << "z3 "<< event_.CSCTF_z3[index]<< endl;
+  cout << "fit phi3 "<< event_.CSCTF_fit_phi3[index]<< endl;
+  cout << "fit dphi3 "<< event_.CSCTF_fit_dphi3[index]<< endl;
+  cout << "fit x3 "<< event_.CSCTF_fit_x3[index]<< endl;
+  cout << "fit y3 "<< event_.CSCTF_fit_y3[index]<< endl;
+  cout << "fit z3 "<< event_.CSCTF_fit_z3[index]<< endl;
+  cout << "fit R3 "<< event_.CSCTF_fit_R3[index]<< endl;
+
+  cout << "id4 "<< event_.CSCTF_id4[index] << endl;
+  cout << "st4 "<< event_.CSCTF_st4[index] << endl;
+  cout << "ri4 "<< event_.CSCTF_ri4[index] << endl; 
+  cout << "ch4 "<< event_.CSCTF_ch4[index] << endl;
+  cout << "en4 "<< event_.CSCTF_en4[index] << endl;
+  cout << "trk4 "<< event_.CSCTF_trk4[index]<< endl; 
+  cout << "quality4 "<< event_.CSCTF_quality4[index] << endl;
+  cout << "wg4 "<< event_.CSCTF_wg4[index] << endl;
+  cout << "hs4 "<< event_.CSCTF_hs4[index] << endl;
+  cout << "pat4 "<< event_.CSCTF_pat4[index] << endl;
+  cout << "bend4 "<< event_.CSCTF_bend4[index]<< endl;
+  cout << "bx4 "<< event_.CSCTF_bx4[index]<< endl;
+  cout << "clctpat4 "<< event_.CSCTF_clctpat4[index]<< endl;
+  cout << "val4 "<< event_.CSCTF_val4[index]<< endl;
+  cout << "phi4 "<< event_.CSCTF_phi4[index]<< endl;
+  cout << "eta4 "<< event_.CSCTF_eta4[index]<< endl;
+  cout << "R4 "<< event_.CSCTF_R4[index]<< endl;
+  cout << "x4 "<< event_.CSCTF_x4[index]<< endl;
+  cout << "y4 "<< event_.CSCTF_y4[index]<< endl;
+  cout << "z4 "<< event_.CSCTF_z4[index]<< endl;
+  cout << "fit phi4 "<< event_.CSCTF_fit_phi4[index]<< endl;
+  cout << "fit dphi4 "<< event_.CSCTF_fit_dphi4[index]<< endl;
+  cout << "fit x4 "<< event_.CSCTF_fit_x4[index]<< endl;
+  cout << "fit y4 "<< event_.CSCTF_fit_y4[index]<< endl;
+  cout << "fit z4 "<< event_.CSCTF_fit_z4[index]<< endl;
+  cout << "fit R4 "<< event_.CSCTF_fit_R4[index]<< endl;
+
 }
 
 
@@ -4916,6 +5194,35 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_x4[i] = 99;
     event_.CSCTF_y4[i] = 99;
     event_.CSCTF_z4[i] = 99;
+
+    event_.CSCTF_fit_R1[i] = 99;
+    event_.CSCTF_fit_x1[i] = 99;
+    event_.CSCTF_fit_y1[i] = 99;
+    event_.CSCTF_fit_z1[i] = 99;
+    event_.CSCTF_fit_R2[i] = 99;
+    event_.CSCTF_fit_x2[i] = 99;
+    event_.CSCTF_fit_y2[i] = 99;
+    event_.CSCTF_fit_z2[i] = 99;
+    event_.CSCTF_fit_R3[i] = 99;
+    event_.CSCTF_fit_x3[i] = 99;
+    event_.CSCTF_fit_y3[i] = 99;
+    event_.CSCTF_fit_z3[i] = 99;
+    event_.CSCTF_fit_R4[i] = 99;
+    event_.CSCTF_fit_x4[i] = 99;
+    event_.CSCTF_fit_y4[i] = 99;
+    event_.CSCTF_fit_z4[i] = 99;
+
+
+    event_.CSCTF_fit_phi1[i] = 99;
+    event_.CSCTF_fit_phi2[i] = 99;
+    event_.CSCTF_fit_phi3[i] = 99;
+    event_.CSCTF_fit_phi4[i] = 99;
+
+    event_.CSCTF_fit_dphi1[i] = 99;
+    event_.CSCTF_fit_dphi2[i] = 99;
+    event_.CSCTF_fit_dphi3[i] = 99;
+    event_.CSCTF_fit_dphi4[i] = 99;
+
   }
 
   event_.nRPCb = 0;
@@ -5147,17 +5454,6 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_rec_eta2[i] = 99;
     event_.CSCTF_rec_eta3[i] = 99;
     event_.CSCTF_rec_eta4[i] = 99;
-
-
-    event_.CSCTF_fit_phi1[i] = 99;
-    event_.CSCTF_fit_phi2[i] = 99;
-    event_.CSCTF_fit_phi3[i] = 99;
-    event_.CSCTF_fit_phi4[i] = 99;
-
-    event_.CSCTF_fit_dphi1[i] = 99;
-    event_.CSCTF_fit_dphi2[i] = 99;
-    event_.CSCTF_fit_dphi3[i] = 99;
-    event_.CSCTF_fit_dphi4[i] = 99;
 
     event_.CSCTF_fitline_x1[i] = 99;
     event_.CSCTF_fitline_x2[i] = 99;

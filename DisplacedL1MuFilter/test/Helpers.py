@@ -57,11 +57,7 @@ def getFittedPositions(xs, zs):
     st_input = []
     xs_input = []
     zs_input = []
-    ## get the real stub positions
-    #print xs
-    #print ys
-    #print zs
-    #print 
+
     if xs[0]!=99 and zs[0]!=99:
         st_input.append(1)
         xs_input.append(xs[0])
@@ -82,20 +78,7 @@ def getFittedPositions(xs, zs):
         xs_input.append(xs[3])
         zs_input.append(zs[3])
 
-    #print st_input
-    #print xs_input
-    #print ys_input
-    #print zs_input
-        
-    x_results = fitStraightLine(zs_input, xs_input)
-
-    #print x_results
-    #print y_results
-
-    alpha_x, beta_x, chi2_x, ndf_x = x_results[0], x_results[1], x_results[1], x_results[3]
-
-    #print alpha_x, beta_x, chi2_x, ndf_x
-    #print alpha_y, beta_y, chi2_y, ndf_y
+    alpha_x, beta_x, chi2_x, ndf_x = fitStraightLine(zs_input, xs_input)
 
     if ndf_x!=0:
         chi2ndf_x = chi2_x/ndf_x
@@ -104,9 +87,7 @@ def getFittedPositions(xs, zs):
 
     xs_output = []
 
-    #print len(zs_input)
     for i in range(0,len(zs_input)):
-        #print i, zs_input[i]
         xs_output.append(alpha_x + beta_x * zs_input[i])
         
     return xs_output, st_input, chi2ndf_x
@@ -622,6 +603,31 @@ def deltay12_deltay23(x1, y1, phi1,
                       x3, y3, phi3):
   ## reference angle
   referenceAngle = phi2
+
+  ## calculate the difference between the y' after the transformation
+  ## this function needs more information August 16th 2016
+  y1_prime = - x1 * sin(referenceAngle) + y1 * cos(referenceAngle) 
+  y2_prime = - x2 * sin(referenceAngle) + y2 * cos(referenceAngle) 
+  y3_prime = - x3 * sin(referenceAngle) + y3 * cos(referenceAngle) 
+  
+  deltay12 = y2_prime - y1_prime
+  deltay23 = y3_prime - y2_prime
+  return deltay12, deltay23
+
+
+def deltay12_deltay23_R(R1, phi1,
+                        R2, phi2,
+                        R3, phi3):
+  ## reference angle
+  referenceAngle = phi2
+
+  x1 = R1 * cos(phi1)
+  x2 = R2 * cos(phi2)
+  x3 = R3 * cos(phi3)
+
+  y1 = R1 * sin(phi1)
+  y2 = R2 * sin(phi2)
+  y3 = R3 * sin(phi3)
 
   ## calculate the difference between the y' after the transformation
   ## this function needs more information August 16th 2016

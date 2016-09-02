@@ -4,6 +4,9 @@ sys.argv.append( '-b' )
 import ROOT 
 ROOT.gROOT.SetBatch(1)
 from Helpers import *
+from hybridAlgorithmPtAssignment import *
+from TTTrackIsolation import *
+
 ROOT.gErrorIgnoreLevel=1001
 from ROOT import * 
 import random
@@ -26,21 +29,6 @@ if __name__ == "__main__":
     treeHits = file.Get("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
   
   ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
-  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA/160627_185322/0000/', ext=".root")
-  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v2/160712_224712/0000/', ext=".root")
-  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v3/160713_025853/0000/', ext=".root")
-
-  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v5/160714_040828/0000/')
-  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v6/160719_220646/0000/')
-  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v7/160720_011325/0000/')
-  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v8/160725_235053/0000/')
-  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v13/160805_221951/0000/')
-  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v16/160806_183444/0000/')
-  
-  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v17/160806_230658/0000/')
-  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v18/160806_234830/0000/')
-  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v23/160812_090122/0000/')
-  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v26/160816_221742/0000/')
   dirname = '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v28/160818_200220/0000/'
   
   ch = addfiles(ch, dirname=dirname)
@@ -75,129 +63,46 @@ if __name__ == "__main__":
     maxEntries = ch.GetEntries()
     if doTest:
       maxEntries = 100000
+
     for k in range(0,maxEntries):
       if k%1000==0: print "Processing event", k
 
       ch.GetEntry(k)      
       treeHits = ch
-
+      
       ## get the max value of the momentum
       pts = list(treeHits.L1Mu_pt)
-
-      ## loop over the muons and start counting
+ 
+      ## ignore events without L1Mu
       if len(pts)==0: continue
-      if len(pts)>=1:
-              
-        def getMaxPt(doBXCut, 
-                     etaCutMin, 
-                     etaCutMax, 
-                     stubCut, 
-                     qualityCut, 
-                     hasME11Cut=False, 
-                     hasME21Cut=False, 
-                     hasGE11Cut=False, 
-                     hasGE21Cut=False):
 
-          max_prompt_L1Mu_pt = -1
-          max_displacedL1Mu_pt = -1
-
-          for i in range(0,len(pts)):
-            L1Mu_pt = treeHits.L1Mu_pt[i]
-            L1Mu_eta = treeHits.L1Mu_eta[i]
-            L1Mu_phi = treeHits.L1Mu_phi[i]
-            L1Mu_bx = treeHits.L1Mu_bx[i]
-            L1Mu_quality = treeHits.L1Mu_quality[i]
-            L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[i]
-            
-            if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue
-            if L1Mu_quality < qualityCut: continue
-            if abs(L1Mu_bx)>0 and doBXCut: continue
-
-            ## calculate the displaced L1Mu pT
-            doComparatorFit = True
-            Displaced_L1Mu_pt = pt_endcap_position_based_algorithm(treeHits, i, L1Mu_CSCTF_index, doComparatorFit)
-
-            ## CSC quantities
-            has_CSC_ME1 = False
-            has_CSC_ME2 = False
-            has_CSC_ME3 = False
-            has_CSC_ME4 = False
-            has_CSC_ME11 = False
-            has_CSC_ME21 = False
-            has_GE11 = False
-            has_GE21 = False
-            GE11_dPhi = 99
-            CSC_ME1_ch = -1
-            CSC_ME2_ch = -2
-            
-            #print L1Mu_CSCTF_index
-            if L1Mu_CSCTF_index != -1:
-              has_CSC_ME1 = treeHits.CSCTF_bx1[L1Mu_CSCTF_index] != 99
-              has_CSC_ME2 = treeHits.CSCTF_bx2[L1Mu_CSCTF_index] != 99
-              has_CSC_ME3 = treeHits.CSCTF_bx3[L1Mu_CSCTF_index] != 99
-              has_CSC_ME4 = treeHits.CSCTF_bx4[L1Mu_CSCTF_index] != 99
-              has_CSC_ME11 = treeHits.CSCTF_ri1[L1Mu_CSCTF_index] == 1 or treeHits.CSCTF_ri1[L1Mu_CSCTF_index] == 4 
-              has_CSC_ME21 = treeHits.CSCTF_ri2[L1Mu_CSCTF_index] == 1 
-              GE11_dPhi = treeHits.CSCTF_gemdphi1[L1Mu_CSCTF_index]
-              GE21_dPhi = treeHits.CSCTF_gemdphi2[L1Mu_CSCTF_index]  
-              CSC_ME1_ch  = treeHits.CSCTF_ch1[L1Mu_CSCTF_index]
-              CSC_ME2_ch  = treeHits.CSCTF_ch2[L1Mu_CSCTF_index]
-
-            nCSCStubs = has_CSC_ME1 + has_CSC_ME2 + has_CSC_ME3 + has_CSC_ME4
-
-            if nCSCStubs < stubCut: continue
-            if hasME11Cut and not has_CSC_ME11: continue
-            if hasME21Cut and not has_CSC_ME21: continue
-            if hasGE11Cut and not passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt): continue
-            if hasGE21Cut and not passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt): continue
-
-            if True:
-              print "\t\tMatched: L1Mu", "pt", L1Mu_pt, "eta", L1Mu_eta, 
-              print "phi", L1Mu_phi, "Quality", L1Mu_quality, "L1mu_bx", L1Mu_bx,
-              print "L1Mu_CSCTF_index", L1Mu_CSCTF_index, "nCSCStubs", nCSCStubs,
-              print "Displaced_L1Mu_pt", Displaced_L1Mu_pt
-              print 
-
-            #if L1Mu_bx==0:
-            #  print k,i, "pt", L1Mu_pt, "eta", L1Mu_eta, "phi", L1Mu_phi, "bx", L1Mu_bx, "quality", L1Mu_quality
-              
-            if L1Mu_pt > max_prompt_L1Mu_pt:   max_prompt_L1Mu_pt = L1Mu_pt
-            if Displaced_L1Mu_pt > max_displaced_L1Mu_pt: max_displaced_L1Mu_pt = Displaced_L1Mu_pt
-
-          return max_prompt_L1Mu_pt, max_displacedL1Mu_pt
-        
-
-        prompt_L1Mu_pt = getMaxPt(True, 1.6, 2.2, 0, 6)[0]
-        if (prompt_L1Mu_pt>0): h_single_L1Mu_rate.Fill(prompt_L1Mu_pt)
-
-        prompt_L1Mu_pt = getMaxPt(True, 1.6, 2.2, 2, 6)[0]
-        if (prompt_L1Mu_pt>0): h_single_L1Mu_rate_2_stubs.Fill(prompt_L1Mu_pt)
-
-        prompt_L1Mu_pt = getMaxPt(True, 1.6, 2.2, 3, 6)[0]
-        if (prompt_L1Mu_pt>0): h_single_L1Mu_rate_3_stubs.Fill(prompt_L1Mu_pt)
-
-        prompt_L1Mu_pt = getMaxPt(True, 1.6, 2.2, 2, 6, hasME11Cut=True)[0]
-        if (prompt_L1Mu_pt>0): h_single_L1Mu_rate_2_stubs_ME11.Fill(prompt_L1Mu_pt)
-
-        prompt_L1Mu_pt = getMaxPt(True, 1.6, 2.2, 3, 6, hasME11Cut=True)[0]
-        if (prompt_L1Mu_pt>0): h_single_L1Mu_rate_3_stubs_ME11.Fill(prompt_L1Mu_pt)
-
-        prompt_L1Mu_pt = getMaxPt(True, 1.6, 2.2, 2, 6, hasME11Cut=True, hasGE11Cut=True)[0]
-        if (prompt_L1Mu_pt>0): h_single_L1Mu_rate_2_stubs_ME11_GE11.Fill(prompt_L1Mu_pt)
-
-        prompt_L1Mu_pt = getMaxPt(True, 1.6, 2.2, 3, 6, hasME11Cut=True, hasGE11Cut=True)[0]
-        if (prompt_L1Mu_pt>0): h_single_L1Mu_rate_3_stubs_ME11_GE11.Fill(prompt_L1Mu_pt)
-
-        prompt_L1Mu_pt = getMaxPt(True, 1.6, 2.2, 2, 6, hasME11Cut=True, hasGE11Cut=True, hasGE21Cut=True)[0]
-        if (prompt_L1Mu_pt>0): h_single_L1Mu_rate_2_stubs_ME11_GE11_GE21.Fill(prompt_L1Mu_pt)
-
-        prompt_L1Mu_pt = getMaxPt(True, 1.6, 2.2, 3, 6, hasME11Cut=True, hasGE11Cut=True, hasGE21Cut=True)[0]
-        if (prompt_L1Mu_pt>0): h_single_L1Mu_rate_3_stubs_ME11_GE11_GE21.Fill(prompt_L1Mu_pt)
-
-        ## displaced L1Mu plots
-        max_displaced_L1Mu_pt = getMaxPt(True, 1.6, 2.2, 3, 6, hasME11Cut=False, hasGE11Cut=False, hasGE21Cut=False)[0]
-        if (prompt_L1Mu_pt>0): h_single_L1Mu_rate_3_stubs_ME11_GE11_GE21.Fill(prompt_L1Mu_pt)
-        
+      prompt_L1Mu_pt = getMaxPromptPtEvent(treeHits,True, 1.6, 2.2, 0, 6)
+      if (prompt_L1Mu_pt>0): h_single_L1Mu_rate.Fill(prompt_L1Mu_pt)
+      
+      prompt_L1Mu_pt = getMaxPromptPtEvent(treeHits,True, 1.6, 2.2, 2, 6)
+      if (prompt_L1Mu_pt>0): h_single_L1Mu_rate_2_stubs.Fill(prompt_L1Mu_pt)
+      
+      prompt_L1Mu_pt = getMaxPromptPtEvent(treeHits,True, 1.6, 2.2, 3, 6)
+      if (prompt_L1Mu_pt>0): h_single_L1Mu_rate_3_stubs.Fill(prompt_L1Mu_pt)
+      
+      prompt_L1Mu_pt = getMaxPromptPtEvent(treeHits,True, 1.6, 2.2, 2, 6, hasME11Cut=True)
+      if (prompt_L1Mu_pt>0): h_single_L1Mu_rate_2_stubs_ME11.Fill(prompt_L1Mu_pt)
+      
+      prompt_L1Mu_pt = getMaxPromptPtEvent(treeHits,True, 1.6, 2.2, 3, 6, hasME11Cut=True)
+      if (prompt_L1Mu_pt>0): h_single_L1Mu_rate_3_stubs_ME11.Fill(prompt_L1Mu_pt)
+      
+      prompt_L1Mu_pt = getMaxPromptPtEvent(treeHits,True, 1.6, 2.2, 2, 6, hasME11Cut=True, hasGE11Cut=True)
+      if (prompt_L1Mu_pt>0): h_single_L1Mu_rate_2_stubs_ME11_GE11.Fill(prompt_L1Mu_pt)
+      
+      prompt_L1Mu_pt = getMaxPromptPtEvent(treeHits,True, 1.6, 2.2, 3, 6, hasME11Cut=True, hasGE11Cut=True)
+      if (prompt_L1Mu_pt>0): h_single_L1Mu_rate_3_stubs_ME11_GE11.Fill(prompt_L1Mu_pt)
+      
+      prompt_L1Mu_pt = getMaxPromptPtEvent(treeHits,True, 1.6, 2.2, 2, 6, hasME11Cut=True, hasGE11Cut=True, hasGE21Cut=True)
+      if (prompt_L1Mu_pt>0): h_single_L1Mu_rate_2_stubs_ME11_GE11_GE21.Fill(prompt_L1Mu_pt)
+      
+      prompt_L1Mu_pt = getMaxPromptPtEvent(treeHits,True, 1.6, 2.2, 3, 6, hasME11Cut=True, hasGE11Cut=True, hasGE21Cut=True)
+      if (prompt_L1Mu_pt>0): h_single_L1Mu_rate_3_stubs_ME11_GE11_GE21.Fill(prompt_L1Mu_pt)
+      
 
     def makePlots(h1, h1Legend,
                   h2, h2Legend,

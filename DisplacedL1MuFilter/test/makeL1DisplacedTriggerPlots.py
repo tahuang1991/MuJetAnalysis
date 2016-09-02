@@ -43,15 +43,16 @@ if __name__ == "__main__":
   #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v26/160816_221742/0000/')
   #dirname = '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v28/160818_200220/0000/'
   #dirname = '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v30/160901_133202/0000/'
-  dirname = '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v31/160901_181306/0000/'
+  #dirname = '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v31/160901_181306/0000/'
+  dirname ='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v34/160901_204525/0000/'
   
   ch = addfiles(ch, dirname=dirname)
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160901_v4"
+  label = "DisplacedL1MuTrigger_20160901_v5"
   targetDir = label + "/"
   
-  verbose = False
+  verbose = True
   runTest = False
   printExtraInfo = False
   processRPC = False
@@ -809,7 +810,7 @@ if __name__ == "__main__":
 
     for k in range(0,treeHits.GetEntries()):
       treeHits.GetEntry(k)
-      if k%1000==0: print "Event", k+1, "nL1Mu", treeHits.nL1Mu
+      if k%1==0: print "Event", k+1, "nL1Mu", treeHits.nL1Mu
       if k>10000 and runTest: break
 
       ## plots for Alexei July 27 2016
@@ -1398,10 +1399,23 @@ if __name__ == "__main__":
               CSCTF_bx = treeHits.CSCTF_bx[L1Mu_CSCTF_index]
               CSCTF_nStubs = treeHits.CSCTF_nStubs[L1Mu_CSCTF_index]
 
+              print "\t\tCSCTF", L1Mu_CSCTF_index
+              print "\t\tCSCTF_pt", CSCTF_pt
+              print "\t\tCSCTF_eta", CSCTF_eta
+              print "\t\tCSCTF_phi", CSCTF_phi
+              print "\t\tCSCTF_bx", CSCTF_bx
+              print "\t\tCSCTF_nStubs", CSCTF_nStubs
+
+
               CSCTF_phi1 = treeHits.CSCTF_phi1[L1Mu_CSCTF_index]
               CSCTF_phi2 = treeHits.CSCTF_phi2[L1Mu_CSCTF_index]
               CSCTF_phi3 = treeHits.CSCTF_phi3[L1Mu_CSCTF_index]
               CSCTF_phi4 = treeHits.CSCTF_phi4[L1Mu_CSCTF_index]
+
+              print "\t\tCSCTF_phi1", CSCTF_phi1 
+              print "\t\tCSCTF_phi2", CSCTF_phi2
+              print "\t\tCSCTF_phi3", CSCTF_phi3
+              print "\t\tCSCTF_phi4", CSCTF_phi4
 
               CSCTF_eta1 = treeHits.CSCTF_eta1[L1Mu_CSCTF_index]
               CSCTF_eta2 = treeHits.CSCTF_eta2[L1Mu_CSCTF_index]
@@ -1423,10 +1437,20 @@ if __name__ == "__main__":
               if ok_CSCTF_st3: CSCTF_phi3 = normalizedPhi2(treeHits.CSCTF_phi3[L1Mu_CSCTF_index])
               if ok_CSCTF_st4: CSCTF_phi4 = normalizedPhi2(treeHits.CSCTF_phi4[L1Mu_CSCTF_index])
               
+              print "\t\tok_CSCTF_st1", ok_CSCTF_st1 
+              print "\t\tok_CSCTF_st2", ok_CSCTF_st2
+              print "\t\tok_CSCTF_st3", ok_CSCTF_st3
+              print "\t\tok_CSCTF_st4", ok_CSCTF_st4
+              
               CSCTF_ch1 = treeHits.CSCTF_ch1[L1Mu_CSCTF_index]
               CSCTF_ch2 = treeHits.CSCTF_ch2[L1Mu_CSCTF_index]
               CSCTF_ch3 = treeHits.CSCTF_ch3[L1Mu_CSCTF_index]
               CSCTF_ch4 = treeHits.CSCTF_ch4[L1Mu_CSCTF_index]
+
+              print "\t\tCSCTF_ch1", CSCTF_ch1 
+              print "\t\tCSCTF_ch2", CSCTF_ch2
+              print "\t\tCSCTF_ch3", CSCTF_ch3 
+              print "\t\tCSCTF_ch4", CSCTF_ch4
 
               CSCTF_isOdd1 = CSCTF_ch1%2==1
               CSCTF_isOdd2 = CSCTF_ch2%2==1
@@ -1462,7 +1486,6 @@ if __name__ == "__main__":
               CSCTF_R4 = treeHits.CSCTF_R4[L1Mu_CSCTF_index]
 
               ## fitted positions in a chamber
-              print "n fitted pos", len(treeHits.CSCTF_fit_phi1) 
               CSCTF_fit_phi1 = treeHits.CSCTF_fit_phi1[L1Mu_CSCTF_index]
               CSCTF_fit_phi2 = treeHits.CSCTF_fit_phi2[L1Mu_CSCTF_index]
               CSCTF_fit_phi3 = treeHits.CSCTF_fit_phi3[L1Mu_CSCTF_index]
@@ -1494,7 +1517,6 @@ if __name__ == "__main__":
 
               if GEN_SIM_index != -99:
                 ## recovered stubs
-                print "n recovered stubs", len(treeHits.CSCTF_rec_ch1)
                 CSCTF_rec_ch1 = treeHits.CSCTF_rec_ch1[GEN_SIM_index]
                 CSCTF_rec_ch2 = treeHits.CSCTF_rec_ch1[GEN_SIM_index]
                 CSCTF_rec_ch3 = treeHits.CSCTF_rec_ch3[GEN_SIM_index]
@@ -1540,6 +1562,11 @@ if __name__ == "__main__":
                 CSCTF_sim_phi2 = treeHits.CSCTF_sim_phi2[GEN_SIM_index]
                 CSCTF_sim_phi3 = treeHits.CSCTF_sim_phi3[GEN_SIM_index]
                 CSCTF_sim_phi4 = treeHits.CSCTF_sim_phi4[GEN_SIM_index]
+                
+                print "\t\tCSCTF_sim_phi1", CSCTF_sim_phi1 
+                print "\t\tCSCTF_sim_phi2", CSCTF_sim_phi2
+                print "\t\tCSCTF_sim_phi3", CSCTF_sim_phi3
+                print "\t\tCSCTF_sim_phi4", CSCTF_sim_phi4
 
                 CSCTF_sim_z1 = treeHits.CSCTF_sim_z1[GEN_SIM_index]
                 CSCTF_sim_z2 = treeHits.CSCTF_sim_z2[GEN_SIM_index]
@@ -1575,7 +1602,7 @@ if __name__ == "__main__":
 
                 ## in case the CSC stub was not found in the CSCTF track, check if it can be recovered
                 ## this is done by matching the SIM muon to the CSC stubs
-                if not ok_CSCTF_st1 and ok_CSCTF_rec_st1: 
+                if not ok_CSCTF_st1 and ok_CSCTF_rec_st1 and False: 
                   CSCTF_phi1 = CSCTF_rec_phi1
                   CSCTF_z1 = CSCTF_rec_z1 
                   CSCTF_x1 = CSCTF_rec_x1 
@@ -1584,7 +1611,7 @@ if __name__ == "__main__":
                   CSCTF_ch1 = CSCTF_rec_ch1
                   CSCTF_isOdd1 = CSCTF_ch1%2==1
                   CSCTF_isEven1 = not CSCTF_isOdd1
-                if not ok_CSCTF_st2 and ok_CSCTF_rec_st2: 
+                if not ok_CSCTF_st2 and ok_CSCTF_rec_st2 and False: 
                   CSCTF_phi2 = CSCTF_rec_phi2
                   CSCTF_z2 = CSCTF_rec_z2 
                   CSCTF_x2 = CSCTF_rec_x2 
@@ -1593,7 +1620,7 @@ if __name__ == "__main__":
                   CSCTF_ch2 = CSCTF_rec_ch2
                   CSCTF_isOdd2 = CSCTF_ch2%2==1
                   CSCTF_isEven2 = not CSCTF_isOdd2
-                if not ok_CSCTF_st3 and ok_CSCTF_rec_st3: 
+                if not ok_CSCTF_st3 and ok_CSCTF_rec_st3 and False: 
                   CSCTF_phi3 = CSCTF_rec_phi3
                   CSCTF_z3 = CSCTF_rec_z3 
                   CSCTF_x3 = CSCTF_rec_x3 
@@ -1602,7 +1629,7 @@ if __name__ == "__main__":
                   CSCTF_ch3 = CSCTF_rec_ch3
                   CSCTF_isOdd3 = CSCTF_ch3%2==1
                   CSCTF_isEven3 = not CSCTF_isOdd3
-                if not ok_CSCTF_st4 and ok_CSCTF_rec_st4: 
+                if not ok_CSCTF_st4 and ok_CSCTF_rec_st4 and False: 
                   CSCTF_phi4 = CSCTF_rec_phi4
                   CSCTF_z4 = CSCTF_rec_z4 
                   CSCTF_x4 = CSCTF_rec_x4 
@@ -1612,23 +1639,35 @@ if __name__ == "__main__":
                   CSCTF_isOdd4 = CSCTF_ch4%2==1
                   CSCTF_isEven4 = not CSCTF_isOdd4
                 
+                print "fit phi", CSCTF_fit_phi1, CSCTF_fit_phi2, CSCTF_fit_phi3, CSCTF_fit_phi4
+                print "stub phi", CSCTF_phi1, CSCTF_phi2, CSCTF_phi3, CSCTF_phi4
+                print CSCTF_fit_x1, CSCTF_fit_x2, CSCTF_fit_x3, CSCTF_fit_x4
+                print CSCTF_fit_y1, CSCTF_fit_y2, CSCTF_fit_y3, CSCTF_fit_y4
+                print CSCTF_fit_z1, CSCTF_fit_z2, CSCTF_fit_z3, CSCTF_fit_z4
+                print 
+
                 #print "Fitted stub positions"
                 xs_out, st_out, chi2ndf_x = getFittedPositions(
-                  [CSCTF_x1, CSCTF_x2, CSCTF_x3, CSCTF_x4], 
-                  [CSCTF_z1, CSCTF_z2, CSCTF_z3, CSCTF_z4])
+                  [CSCTF_fit_x1, CSCTF_fit_x2, CSCTF_fit_x3, CSCTF_fit_x4], 
+                  [CSCTF_fit_z1, CSCTF_fit_z2, CSCTF_fit_z3, CSCTF_fit_z4])
+
+                print st_out
 
                 ys_out, st_out, chi2ndf_y = getFittedPositions(
-                  [CSCTF_y1, CSCTF_y2, CSCTF_y3, CSCTF_y4], 
-                  [CSCTF_z1, CSCTF_z2, CSCTF_z3, CSCTF_z4])
+                  [CSCTF_fit_y1, CSCTF_fit_y2, CSCTF_fit_y3, CSCTF_fit_y4], 
+                  [CSCTF_fit_z1, CSCTF_fit_z2, CSCTF_fit_z3, CSCTF_fit_z4])
 
+                print st_out
                 phis_out, st_out, chi2ndf_phi = getFittedPositions(
                   [CSCTF_fit_phi1, CSCTF_fit_phi2, CSCTF_fit_phi3, CSCTF_fit_phi4], 
                   [CSCTF_fit_z1, CSCTF_fit_z2, CSCTF_fit_z3, CSCTF_fit_z4])
 
+                print st_out
                 Rs_out, st_out, chi2ndf_R = getFittedPositions(
                   [CSCTF_fit_R1, CSCTF_fit_R2, CSCTF_fit_R3, CSCTF_fit_R4], 
                   [CSCTF_fit_z1, CSCTF_fit_z2, CSCTF_fit_z3, CSCTF_fit_z4])
 
+                print st_out
                 chi2ndf_posx_dxy0to5.Fill(chi2ndf_x)
                 chi2ndf_posx_dxy5to50.Fill(chi2ndf_x)
                 chi2ndf_posx_dxy50to100.Fill(chi2ndf_x)
@@ -1643,83 +1682,89 @@ if __name__ == "__main__":
                 if 3 in st_out: index_st3 = st_out.index(3)
                 if 4 in st_out: index_st4 = st_out.index(4)
 
+                print index_st1, index_st2, index_st3, index_st4
+                print xs_out
+                print ys_out
+                print phis_out
+                print Rs_out
+
                 if dxy <= 5:
-                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posx_vs_fitx_ME1_dxy0to5.Fill(CSCTF_x1 - xs_out[index_st1])
-                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posx_vs_fitx_ME2_dxy0to5.Fill(CSCTF_x2 - xs_out[index_st2])
-                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posx_vs_fitx_ME3_dxy0to5.Fill(CSCTF_x3 - xs_out[index_st3])
-                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posx_vs_fitx_ME4_dxy0to5.Fill(CSCTF_x4 - xs_out[index_st4])
+                  if ok_CSCTF_st1: csc_posx_vs_fitx_ME1_dxy0to5.Fill(CSCTF_x1 - xs_out[index_st1])
+                  if ok_CSCTF_st2: csc_posx_vs_fitx_ME2_dxy0to5.Fill(CSCTF_x2 - xs_out[index_st2])
+                  if ok_CSCTF_st3: csc_posx_vs_fitx_ME3_dxy0to5.Fill(CSCTF_x3 - xs_out[index_st3])
+                  if ok_CSCTF_st4: csc_posx_vs_fitx_ME4_dxy0to5.Fill(CSCTF_x4 - xs_out[index_st4])
 
-                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posy_vs_fity_ME1_dxy0to5.Fill(CSCTF_y1 - ys_out[index_st1])
-                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posy_vs_fity_ME2_dxy0to5.Fill(CSCTF_y2 - ys_out[index_st2])
-                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posy_vs_fity_ME3_dxy0to5.Fill(CSCTF_y3 - ys_out[index_st3])
-                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posy_vs_fity_ME4_dxy0to5.Fill(CSCTF_y4 - ys_out[index_st4])
+                  if ok_CSCTF_st1: csc_posy_vs_fity_ME1_dxy0to5.Fill(CSCTF_y1 - ys_out[index_st1])
+                  if ok_CSCTF_st2: csc_posy_vs_fity_ME2_dxy0to5.Fill(CSCTF_y2 - ys_out[index_st2])
+                  if ok_CSCTF_st3: csc_posy_vs_fity_ME3_dxy0to5.Fill(CSCTF_y3 - ys_out[index_st3])
+                  if ok_CSCTF_st4: csc_posy_vs_fity_ME4_dxy0to5.Fill(CSCTF_y4 - ys_out[index_st4])
 
-                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posphi_vs_fitphi_ME1_dxy0to5.Fill(CSCTF_fit_phi1 - phis_out[index_st1])
-                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posphi_vs_fitphi_ME2_dxy0to5.Fill(CSCTF_fit_phi2 - phis_out[index_st2])
-                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posphi_vs_fitphi_ME3_dxy0to5.Fill(CSCTF_fit_phi3 - phis_out[index_st3])
-                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posphi_vs_fitphi_ME4_dxy0to5.Fill(CSCTF_fit_phi4 - phis_out[index_st4])
+                  if ok_CSCTF_st1: csc_posphi_vs_fitphi_ME1_dxy0to5.Fill(CSCTF_fit_phi1 - phis_out[index_st1])
+                  if ok_CSCTF_st2: csc_posphi_vs_fitphi_ME2_dxy0to5.Fill(CSCTF_fit_phi2 - phis_out[index_st2])
+                  if ok_CSCTF_st3: csc_posphi_vs_fitphi_ME3_dxy0to5.Fill(CSCTF_fit_phi3 - phis_out[index_st3])
+                  if ok_CSCTF_st4: csc_posphi_vs_fitphi_ME4_dxy0to5.Fill(CSCTF_fit_phi4 - phis_out[index_st4])
 
-                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posR_vs_fitR_ME1_dxy0to5.Fill(CSCTF_fit_R1 - Rs_out[index_st1])
-                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posR_vs_fitR_ME2_dxy0to5.Fill(CSCTF_fit_R2 - Rs_out[index_st2])
-                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posR_vs_fitR_ME3_dxy0to5.Fill(CSCTF_fit_R3 - Rs_out[index_st3])
-                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posR_vs_fitR_ME4_dxy0to5.Fill(CSCTF_fit_R4 - Rs_out[index_st4])
+                  if ok_CSCTF_st1: csc_posR_vs_fitR_ME1_dxy0to5.Fill(CSCTF_fit_R1 - Rs_out[index_st1])
+                  if ok_CSCTF_st2: csc_posR_vs_fitR_ME2_dxy0to5.Fill(CSCTF_fit_R2 - Rs_out[index_st2])
+                  if ok_CSCTF_st3: csc_posR_vs_fitR_ME3_dxy0to5.Fill(CSCTF_fit_R3 - Rs_out[index_st3])
+                  if ok_CSCTF_st4: csc_posR_vs_fitR_ME4_dxy0to5.Fill(CSCTF_fit_R4 - Rs_out[index_st4])
 
-                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_poseta_vs_fiteta_ME1_dxy0to5.Fill(CSCTF_eta1 - get_eta_from_Z_R(Rs_out[index_st1], CSCTF_fit_z1))
-                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_poseta_vs_fiteta_ME2_dxy0to5.Fill(CSCTF_eta2 - get_eta_from_Z_R(Rs_out[index_st2], CSCTF_fit_z2))
-                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_poseta_vs_fiteta_ME3_dxy0to5.Fill(CSCTF_eta3 - get_eta_from_Z_R(Rs_out[index_st3], CSCTF_fit_z3))
-                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_poseta_vs_fiteta_ME4_dxy0to5.Fill(CSCTF_eta4 - get_eta_from_Z_R(Rs_out[index_st4], CSCTF_fit_z4))
+                  if ok_CSCTF_st1: csc_poseta_vs_fiteta_ME1_dxy0to5.Fill(CSCTF_eta1 - get_eta_from_Z_R(Rs_out[index_st1], CSCTF_fit_z1))
+                  if ok_CSCTF_st2: csc_poseta_vs_fiteta_ME2_dxy0to5.Fill(CSCTF_eta2 - get_eta_from_Z_R(Rs_out[index_st2], CSCTF_fit_z2))
+                  if ok_CSCTF_st3: csc_poseta_vs_fiteta_ME3_dxy0to5.Fill(CSCTF_eta3 - get_eta_from_Z_R(Rs_out[index_st3], CSCTF_fit_z3))
+                  if ok_CSCTF_st4: csc_poseta_vs_fiteta_ME4_dxy0to5.Fill(CSCTF_eta4 - get_eta_from_Z_R(Rs_out[index_st4], CSCTF_fit_z4))
 
                 if 5 < dxy  and dxy <= 50: 
-                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posx_vs_fitx_ME1_dxy5to50.Fill(CSCTF_x1 - xs_out[index_st1])
-                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posx_vs_fitx_ME2_dxy5to50.Fill(CSCTF_x2 - xs_out[index_st2])
-                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posx_vs_fitx_ME3_dxy5to50.Fill(CSCTF_x3 - xs_out[index_st3])
-                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posx_vs_fitx_ME4_dxy5to50.Fill(CSCTF_x4 - xs_out[index_st4])
+                  if ok_CSCTF_st1: csc_posx_vs_fitx_ME1_dxy5to50.Fill(CSCTF_x1 - xs_out[index_st1])
+                  if ok_CSCTF_st2: csc_posx_vs_fitx_ME2_dxy5to50.Fill(CSCTF_x2 - xs_out[index_st2])
+                  if ok_CSCTF_st3: csc_posx_vs_fitx_ME3_dxy5to50.Fill(CSCTF_x3 - xs_out[index_st3])
+                  if ok_CSCTF_st4: csc_posx_vs_fitx_ME4_dxy5to50.Fill(CSCTF_x4 - xs_out[index_st4])
                   
-                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posy_vs_fity_ME1_dxy5to50.Fill(CSCTF_y1 - ys_out[index_st1])
-                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posy_vs_fity_ME2_dxy5to50.Fill(CSCTF_y2 - ys_out[index_st2])
-                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posy_vs_fity_ME3_dxy5to50.Fill(CSCTF_y3 - ys_out[index_st3])
-                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posy_vs_fity_ME4_dxy5to50.Fill(CSCTF_y4 - ys_out[index_st4])
+                  if ok_CSCTF_st1: csc_posy_vs_fity_ME1_dxy5to50.Fill(CSCTF_y1 - ys_out[index_st1])
+                  if ok_CSCTF_st2: csc_posy_vs_fity_ME2_dxy5to50.Fill(CSCTF_y2 - ys_out[index_st2])
+                  if ok_CSCTF_st3: csc_posy_vs_fity_ME3_dxy5to50.Fill(CSCTF_y3 - ys_out[index_st3])
+                  if ok_CSCTF_st4: csc_posy_vs_fity_ME4_dxy5to50.Fill(CSCTF_y4 - ys_out[index_st4])
 
-                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posphi_vs_fitphi_ME1_dxy5to50.Fill(CSCTF_fit_phi1 - phis_out[index_st1])
-                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posphi_vs_fitphi_ME2_dxy5to50.Fill(CSCTF_fit_phi2 - phis_out[index_st2])
-                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posphi_vs_fitphi_ME3_dxy5to50.Fill(CSCTF_fit_phi3 - phis_out[index_st3])
-                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posphi_vs_fitphi_ME4_dxy5to50.Fill(CSCTF_fit_phi4 - phis_out[index_st4])
+                  if ok_CSCTF_st1: csc_posphi_vs_fitphi_ME1_dxy5to50.Fill(CSCTF_fit_phi1 - phis_out[index_st1])
+                  if ok_CSCTF_st2: csc_posphi_vs_fitphi_ME2_dxy5to50.Fill(CSCTF_fit_phi2 - phis_out[index_st2])
+                  if ok_CSCTF_st3: csc_posphi_vs_fitphi_ME3_dxy5to50.Fill(CSCTF_fit_phi3 - phis_out[index_st3])
+                  if ok_CSCTF_st4: csc_posphi_vs_fitphi_ME4_dxy5to50.Fill(CSCTF_fit_phi4 - phis_out[index_st4])
 
-                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posR_vs_fitR_ME1_dxy5to50.Fill(CSCTF_fit_R1 - Rs_out[index_st1])
-                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posR_vs_fitR_ME2_dxy5to50.Fill(CSCTF_fit_R2 - Rs_out[index_st2])
-                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posR_vs_fitR_ME3_dxy5to50.Fill(CSCTF_fit_R3 - Rs_out[index_st3])
-                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posR_vs_fitR_ME4_dxy5to50.Fill(CSCTF_fit_R4 - Rs_out[index_st4])
+                  if ok_CSCTF_st1: csc_posR_vs_fitR_ME1_dxy5to50.Fill(CSCTF_fit_R1 - Rs_out[index_st1])
+                  if ok_CSCTF_st2: csc_posR_vs_fitR_ME2_dxy5to50.Fill(CSCTF_fit_R2 - Rs_out[index_st2])
+                  if ok_CSCTF_st3: csc_posR_vs_fitR_ME3_dxy5to50.Fill(CSCTF_fit_R3 - Rs_out[index_st3])
+                  if ok_CSCTF_st4: csc_posR_vs_fitR_ME4_dxy5to50.Fill(CSCTF_fit_R4 - Rs_out[index_st4])
 
-                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_poseta_vs_fiteta_ME1_dxy5to50.Fill(CSCTF_eta1 - get_eta_from_Z_R(Rs_out[index_st1], CSCTF_fit_z1))
-                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_poseta_vs_fiteta_ME2_dxy5to50.Fill(CSCTF_eta2 - get_eta_from_Z_R(Rs_out[index_st2], CSCTF_fit_z2))
-                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_poseta_vs_fiteta_ME3_dxy5to50.Fill(CSCTF_eta3 - get_eta_from_Z_R(Rs_out[index_st3], CSCTF_fit_z3))
-                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_poseta_vs_fiteta_ME4_dxy5to50.Fill(CSCTF_eta4 - get_eta_from_Z_R(Rs_out[index_st4], CSCTF_fit_z4))
+                  if ok_CSCTF_st1: csc_poseta_vs_fiteta_ME1_dxy5to50.Fill(CSCTF_eta1 - get_eta_from_Z_R(Rs_out[index_st1], CSCTF_fit_z1))
+                  if ok_CSCTF_st2: csc_poseta_vs_fiteta_ME2_dxy5to50.Fill(CSCTF_eta2 - get_eta_from_Z_R(Rs_out[index_st2], CSCTF_fit_z2))
+                  if ok_CSCTF_st3: csc_poseta_vs_fiteta_ME3_dxy5to50.Fill(CSCTF_eta3 - get_eta_from_Z_R(Rs_out[index_st3], CSCTF_fit_z3))
+                  if ok_CSCTF_st4: csc_poseta_vs_fiteta_ME4_dxy5to50.Fill(CSCTF_eta4 - get_eta_from_Z_R(Rs_out[index_st4], CSCTF_fit_z4))
 
                 if 50 < dxy and dxy <= 100: 
-                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posx_vs_fitx_ME1_dxy50to100.Fill(CSCTF_x1 - xs_out[index_st1])
-                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posx_vs_fitx_ME2_dxy50to100.Fill(CSCTF_x2 - xs_out[index_st2])
-                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posx_vs_fitx_ME3_dxy50to100.Fill(CSCTF_x3 - xs_out[index_st3])
-                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posx_vs_fitx_ME4_dxy50to100.Fill(CSCTF_x4 - xs_out[index_st4])
+                  if ok_CSCTF_st1: csc_posx_vs_fitx_ME1_dxy50to100.Fill(CSCTF_x1 - xs_out[index_st1])
+                  if ok_CSCTF_st2: csc_posx_vs_fitx_ME2_dxy50to100.Fill(CSCTF_x2 - xs_out[index_st2])
+                  if ok_CSCTF_st3: csc_posx_vs_fitx_ME3_dxy50to100.Fill(CSCTF_x3 - xs_out[index_st3])
+                  if ok_CSCTF_st4: csc_posx_vs_fitx_ME4_dxy50to100.Fill(CSCTF_x4 - xs_out[index_st4])
 
-                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posy_vs_fity_ME1_dxy50to100.Fill(CSCTF_y1 - ys_out[index_st1])
-                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posy_vs_fity_ME2_dxy50to100.Fill(CSCTF_y2 - ys_out[index_st2])
-                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posy_vs_fity_ME3_dxy50to100.Fill(CSCTF_y3 - ys_out[index_st3])
-                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posy_vs_fity_ME4_dxy50to100.Fill(CSCTF_y4 - ys_out[index_st4])
+                  if ok_CSCTF_st1: csc_posy_vs_fity_ME1_dxy50to100.Fill(CSCTF_y1 - ys_out[index_st1])
+                  if ok_CSCTF_st2: csc_posy_vs_fity_ME2_dxy50to100.Fill(CSCTF_y2 - ys_out[index_st2])
+                  if ok_CSCTF_st3: csc_posy_vs_fity_ME3_dxy50to100.Fill(CSCTF_y3 - ys_out[index_st3])
+                  if ok_CSCTF_st4: csc_posy_vs_fity_ME4_dxy50to100.Fill(CSCTF_y4 - ys_out[index_st4])
 
-                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posphi_vs_fitphi_ME1_dxy50to100.Fill(CSCTF_fit_phi1 - phis_out[index_st1])
-                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posphi_vs_fitphi_ME2_dxy50to100.Fill(CSCTF_fit_phi2 - phis_out[index_st2])
-                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posphi_vs_fitphi_ME3_dxy50to100.Fill(CSCTF_fit_phi3 - phis_out[index_st3])
-                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posphi_vs_fitphi_ME4_dxy50to100.Fill(CSCTF_fit_phi4 - phis_out[index_st4])
+                  if ok_CSCTF_st1: csc_posphi_vs_fitphi_ME1_dxy50to100.Fill(CSCTF_fit_phi1 - phis_out[index_st1])
+                  if ok_CSCTF_st2: csc_posphi_vs_fitphi_ME2_dxy50to100.Fill(CSCTF_fit_phi2 - phis_out[index_st2])
+                  if ok_CSCTF_st3: csc_posphi_vs_fitphi_ME3_dxy50to100.Fill(CSCTF_fit_phi3 - phis_out[index_st3])
+                  if ok_CSCTF_st4: csc_posphi_vs_fitphi_ME4_dxy50to100.Fill(CSCTF_fit_phi4 - phis_out[index_st4])
 
-                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_posR_vs_fitR_ME1_dxy50to100.Fill(CSCTF_fit_R1 - Rs_out[index_st1])
-                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_posR_vs_fitR_ME2_dxy50to100.Fill(CSCTF_fit_R2 - Rs_out[index_st2])
-                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_posR_vs_fitR_ME3_dxy50to100.Fill(CSCTF_fit_R3 - Rs_out[index_st3])
-                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_posR_vs_fitR_ME4_dxy50to100.Fill(CSCTF_fit_R4 - Rs_out[index_st4])
+                  if ok_CSCTF_st1: csc_posR_vs_fitR_ME1_dxy50to100.Fill(CSCTF_fit_R1 - Rs_out[index_st1])
+                  if ok_CSCTF_st2: csc_posR_vs_fitR_ME2_dxy50to100.Fill(CSCTF_fit_R2 - Rs_out[index_st2])
+                  if ok_CSCTF_st3: csc_posR_vs_fitR_ME3_dxy50to100.Fill(CSCTF_fit_R3 - Rs_out[index_st3])
+                  if ok_CSCTF_st4: csc_posR_vs_fitR_ME4_dxy50to100.Fill(CSCTF_fit_R4 - Rs_out[index_st4])
 
-                  if ok_CSCTF_st1 or ok_CSCTF_rec_st1: csc_poseta_vs_fiteta_ME1_dxy50to100.Fill(CSCTF_eta1 - get_eta_from_Z_R(Rs_out[index_st1], CSCTF_fit_z1))
-                  if ok_CSCTF_st2 or ok_CSCTF_rec_st2: csc_poseta_vs_fiteta_ME2_dxy50to100.Fill(CSCTF_eta2 - get_eta_from_Z_R(Rs_out[index_st2], CSCTF_fit_z2))
-                  if ok_CSCTF_st3 or ok_CSCTF_rec_st3: csc_poseta_vs_fiteta_ME3_dxy50to100.Fill(CSCTF_eta3 - get_eta_from_Z_R(Rs_out[index_st3], CSCTF_fit_z3))
-                  if ok_CSCTF_st4 or ok_CSCTF_rec_st4: csc_poseta_vs_fiteta_ME4_dxy50to100.Fill(CSCTF_eta4 - get_eta_from_Z_R(Rs_out[index_st4], CSCTF_fit_z4))
+                  if ok_CSCTF_st1: csc_poseta_vs_fiteta_ME1_dxy50to100.Fill(CSCTF_eta1 - get_eta_from_Z_R(Rs_out[index_st1], CSCTF_fit_z1))
+                  if ok_CSCTF_st2: csc_poseta_vs_fiteta_ME2_dxy50to100.Fill(CSCTF_eta2 - get_eta_from_Z_R(Rs_out[index_st2], CSCTF_fit_z2))
+                  if ok_CSCTF_st3: csc_poseta_vs_fiteta_ME3_dxy50to100.Fill(CSCTF_eta3 - get_eta_from_Z_R(Rs_out[index_st3], CSCTF_fit_z3))
+                  if ok_CSCTF_st4: csc_poseta_vs_fiteta_ME4_dxy50to100.Fill(CSCTF_eta4 - get_eta_from_Z_R(Rs_out[index_st4], CSCTF_fit_z4))
 
 
                 ## plot with position resolution of the CSC stubs

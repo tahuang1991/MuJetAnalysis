@@ -87,7 +87,7 @@ def fitStraightLine(v, w, debug=False):
     alpha = 0
     beta = 0
 
-    if len(v)<2: return alpha, beta,-1,0
+    if len(v)<=2: return alpha, beta,-1,0
 
     if v[0] < v[-1]:
         zmin = v[0]
@@ -134,21 +134,22 @@ def getFittedPositions(xs, zs):
         xs_input.append(xs[3])
         zs_input.append(zs[3])
 
-    print "test 1", xs_input
-    print "test 2", zs_input
-
     alpha_x, beta_x, chi2_x, ndf_x = fitStraightLine(zs_input, xs_input)
 
-    if ndf_x!=0:
+    ## check if fit was good
+    xs_output = []
+    chi2ndf_x = 0
+    if alpha_x != 0 and beta_x != 0:
+      if ndf_x!=0:
         chi2ndf_x = chi2_x/ndf_x
-    else:
+      else:
         chi2ndf_x = chi2_x
 
-    xs_output = []
-
-    for i in range(0,len(zs_input)):
+      for i in range(0,len(zs_input)):
         xs_output.append(alpha_x + beta_x * zs_input[i])
-        
+    else:
+      xs_output = xs_input
+
     return xs_output, st_input, chi2ndf_x
 
 
@@ -702,8 +703,13 @@ def deltay12_deltay23_R(R1, phi1,
 #______________________________________________________________________________                                           
 def get_eta_from_Z_R(r, z):
     
-    theta = TMath.ATan(z/r)
-    returnValue = - TMath.Log(TMath.Abs(TMath.Tan(theta/2.)))
+    theta = TMath.ATan(r/z)
+    
+    returnValue = -TMath.Log(TMath.Abs(TMath.Tan(theta/2.)))
+    if z<0:
+      returnValue = returnValue * (-1)
+    #else:
+    #  returnValue = -TMath.Log(TMath.Tan(theta/2.))
     return returnValue
 
 #______________________________________________________________________________                                           

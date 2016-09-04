@@ -132,7 +132,7 @@ const Int_t kMaxCSCTF = 50;
 const Int_t kMaxRPCb = 50;
 const Int_t kMaxRPCf = 50;
 const Int_t kMaxGEM = 50;
-const Int_t kMaxSIM = 4;
+const Int_t kMaxSIM = 50;
 const Int_t kMaxL1Tk = 500;
 const int nGlu = 2;
 const int nGd = 2;
@@ -276,7 +276,7 @@ struct MyEvent
   Int_t genGdMu_SIM_index[2][2];
   Float_t genGdMu_SIM_dR[2][2];
   Int_t has_sim;
-  Float_t pt_sim, eta_sim, phi_sim, charge_sim;
+  Float_t pt_sim[kMaxSIM], eta_sim[kMaxSIM], phi_sim[kMaxSIM], charge_sim[kMaxSIM];
   Float_t eta_sim_prop, phi_sim_prop;
   Float_t eta_sim_corr, phi_sim_corr;
   Float_t dEta_sim_corr, dPhi_sim_corr, dR_sim_corr;
@@ -662,7 +662,7 @@ isSimTrackGood(const SimTrack &t)
   // only muons 
   if (std::abs(t.type()) != 13) return false;
   // pt selection
-  if (t.momentum().pt() < 3) return false;
+  if (t.momentum().pt() < 0) return false;
   // eta selection
   const float eta(std::abs(t.momentum().eta()));
   if (eta > 3.0) return false; 
@@ -1253,24 +1253,28 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         //////////////////////
         double GEN_SIM_min_dR = 99;
         for (unsigned int k=0; k<skim_sim_trks.size(); ++k) {
-          // std::cout << "Analyze SIM muon " << k << std::endl;
+          //std::cout << "Analyze SIM muon " << k << std::endl;
           auto sim_muon = skim_sim_trks[k];
-          // event_.pt_sim = sim_muon.momentum().pt();
-          event_.eta_sim = sim_muon.momentum().eta();
-          event_.phi_sim = sim_muon.momentum().phi();
-          // event_.charge_sim = sim_muon.charge();
-          // cout << "\tSIM_pt " << event_.pt_sim << endl;
-          // cout << "\tSIM_eta " << event_.eta_sim << endl;
-          // cout << "\tSIM_phi " << event_.phi_sim << endl;
-          // cout << "\tSIM_charge " << event_.charge_sim << endl;
-          double deltar(reco::deltaR(event_.eta_sim, event_.phi_sim, event_.genGdMu_eta[i][j], event_.genGdMu_phi[i][j]));
-          if (deltar < GEN_SIM_min_dR){
+          event_.pt_sim[k] = sim_muon.momentum().pt();
+          event_.eta_sim[k] = sim_muon.momentum().eta();
+          event_.phi_sim[k] = sim_muon.momentum().phi();
+          event_.charge_sim[k] = sim_muon.charge();
+          cout << "\t"<<k<<endl;
+          cout << "\tSIM_pt " << event_.pt_sim[k] << endl;
+          cout << "\tSIM_eta " << event_.eta_sim[k] << endl;
+          cout << "\tSIM_phi " << event_.phi_sim[k] << endl;
+          //cout << "\tSIM_charge " << event_.charge_sim << endl;
+          double deltar(reco::deltaR(event_.eta_sim[k], 
+                                     event_.phi_sim[k], 
+                                     event_.genGdMu_eta[i][j], 
+                                     event_.genGdMu_phi[i][j]));
+          if (deltar < GEN_SIM_min_dR and deltar < 0.1){
             GEN_SIM_min_dR = deltar;
             event_.genGdMu_SIM_index[i][j] = k;
             event_.genGdMu_SIM_dR[i][j] = deltar;
           }
         }
-        // std::cout << "Matched SIM " << event_.genGdMu_SIM_index[i][j] << " " << event_.genGdMu_SIM_dR[i][j] << std::endl;
+        std::cout << "Matched SIM " << event_.genGdMu_SIM_index[i][j] << " " << event_.genGdMu_SIM_dR[i][j] << std::endl;
       }
     }
     if(verbose) { 
@@ -1282,6 +1286,11 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                 << std::setw(10) << std::left << "etaProp"
                 << std::setw(10) << std::left << "phiProp"
                 << std::setw(10) << std::left << "dxy"
+                << std::setw(10) << std::left << "SIM index"
+                << std::setw(10) << std::left << "SIM dR"
+                << std::setw(10) << std::left << "SIM pt"
+                << std::setw(10) << std::left << "SIM eta"
+                << std::setw(10) << std::left << "SIM phi"
                 << std::endl;
 
       for (int i=0; i<2; ++i){ 
@@ -1294,6 +1303,11 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                     << std::setw(10) << std::left << event_.genGdMu_eta_prop[i][j]
                     << std::setw(10) << std::left << event_.genGdMu_phi_prop[i][j]
                     << std::setw(10) << std::left << event_.genGdMu_dxy[i][j]
+                    << std::setw(10) << std::left << event_.genGdMu_SIM_index[i][j]
+                    << std::setw(10) << std::left << event_.genGdMu_SIM_dR[i][j]
+                    << std::setw(10) << std::left << event_.pt_sim[event_.genGdMu_SIM_index[i][j]]
+                    << std::setw(10) << std::left << event_.eta_sim[event_.genGdMu_SIM_index[i][j]]
+                    << std::setw(10) << std::left << event_.phi_sim[event_.genGdMu_SIM_index[i][j]]
                     << std::endl;
         }
       }
@@ -1882,7 +1896,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         fillCSCStubProperties(ch_id, stub, j, gp, z_pos_L3, bestFitPhi, bestFitDPhi);
       }
     }
-
+    
     /* 
     CSCTF stub recovery per CSCTF track
     The CSC track-finder may drop certain stubs if they don't match the pattern
@@ -1951,19 +1965,20 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
               for (auto digiItr = range.first; digiItr != range.second; ++digiItr){
                 iStub++; 
 
+                auto stub(*digiItr);
+
                 // check that this stub is not already part of a CSC TF track
                 if (stubInCSCTFTracks(stub, l1Tracks)) continue;
 
                 // trigger sector must be the same
                 if (triggerSector != ch_id.triggerSector()) continue;
-                auto stub(*digiItr);
-                int deltaBX = std::abs(stub.getBX() - (6 + event_.CSCTF_bx[j]));
                 
                 // BXs have to match
+                int deltaBX = std::abs(stub.getBX() - (6 + event_.CSCTF_bx[j]));
                 if (deltaBX > 1) continue;
 
-                //std::cout << ch_id << std::endl;
-                //std::cout<<"Candidate " << stub << std::endl;
+                std::cout << ch_id << std::endl;
+                std::cout<<"Candidate " << stub << std::endl;
                 bestMatchingStub = pickBestMatchingStub(allxs[ch_id.station()-1], allys[ch_id.station()-1], 
                                                         bestMatchingStub, std::make_pair(ch_id, stub), 6 + event_.CSCTF_bx[j]);
               }
@@ -1973,15 +1988,20 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                 auto range = CSCCorrelatedLCTs.get(me1a_id);
                 for (auto digiItr = range.first; digiItr != range.second; ++digiItr){
                   iStub++;
+                  auto stub(*digiItr);
+
+                  // check that this stub is not already part of a CSC TF track
+                  if (stubInCSCTFTracks(stub, l1Tracks)) continue;
+                  
                   // trigger sector must be the same
                   if (triggerSector != me1a_id.triggerSector()) continue;
-                  auto stub(*digiItr);
-                  int deltaBX = std::abs(stub.getBX() - (6 + event_.CSCTF_bx[j]));
                   
                   // BXs have to match
+                  int deltaBX = std::abs(stub.getBX() - (6 + event_.CSCTF_bx[j]));
                   if (deltaBX > 1) continue; 
-                  //std::cout << me1a_id << std::endl;
-                  //std::cout<<"Candidate " << stub << std::endl;
+
+                  std::cout << me1a_id << std::endl;
+                  std::cout<<"Candidate " << stub << std::endl;
                   bestMatchingStub = pickBestMatchingStub(allxs[me1a_id.station()-1], allys[me1a_id.station()-1], 
                                                           bestMatchingStub, std::make_pair(me1a_id, stub), 6 + event_.CSCTF_bx[j]);
                   
@@ -1996,7 +2016,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                              event_.CSCTF_eta[j] , normalizedPhi(event_.CSCTF_phi[j])) < 0.2){ 
 
               if(verbose) {
-                std::cout << "\t" 
+                std::cout << "\tChoice:" 
                           << bestMatchingStub.first << " " 
                           << bestMatchingStub.second << " " 
                           << "key eta " << gp.eta() << " "
@@ -2018,6 +2038,181 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           }
         }
       } 
+    }
+    
+    // Get matching GEM copads
+    for(auto cItr = hGEMCSCCoPads->begin(); cItr != hGEMCSCCoPads->end(); ++cItr) {
+      GEMDetId gem_id = (*cItr).first;
+      GEMCSCCoPadDigiId bestCoPad;
+      //float bestGEMCSCDPhi = 99;
+      if (not stubMissingSt1) {
+        // get the CSCDetId of station 1
+        CSCDetId csc_st1(event_.CSCTF_id1[ j ]);
+        //int index = event_.L1Mu_CSCTF_index[i];
+        
+        // chambers need to be compatible
+        if (gem_id.station() != 1 or 
+            csc_st1.chamber() != gem_id.chamber() or
+            csc_st1.ring() != 4 or csc_st1.ring() != 1) continue;
+        std::cout << "Investigate GEM chamber " << gem_id << std::endl;
+        // get the copads
+        auto copad_range = (*cItr).second;
+        for (auto digiItr = copad_range.first; digiItr != copad_range.second; ++digiItr){
+          auto copad(*digiItr);
+          std::cout << "\tPad " << copad  << std::endl;
+          bestCoPad = pickBestMatchingCoPad(event_.CSCTF_fit_x1[ j ],
+                                            event_.CSCTF_fit_y1[ j ], 
+                                            std::make_pair(gem_id, copad), bestCoPad, 6 + event_.CSCTF_bx[j]);
+        }
+        // found copad is not empty
+        if (bestCoPad.second != GEMCSCCoPadDigi()){
+          std::cout << "\tBest copad" << bestCoPad.second << std::endl;
+          if (gem_id.station()==1) {
+            auto gem_gp1 = getGlobalPointPad(bestCoPad.first, bestCoPad.second.first());
+            auto gem_gp2 = getGlobalPointPad(bestCoPad.first, bestCoPad.second.second());            
+            event_.GE11_phi_L1[j] = gem_gp1.phi();
+            event_.GE11_bx_L1[j] = bestCoPad.second.first().bx();
+            event_.GE11_ch_L1[j] = bestCoPad.first.chamber();
+            event_.GE11_z_L1[j] = gem_gp1.z();
+            
+            event_.GE11_phi_L2[j] = gem_gp2.phi();
+            event_.GE11_bx_L2[j] = bestCoPad.second.second().bx();
+            event_.GE11_ch_L2[j] = bestCoPad.first.chamber();
+            event_.GE11_z_L2[j] = gem_gp2.z();
+          }
+        } else {
+          std::cout << "No best copad" << std::endl;
+        }
+      }        
+      
+      if (not stubMissingSt2) {
+        // get the CSCDetId of station 1
+        CSCDetId csc_st2(event_.CSCTF_id2[ j ]);
+        //int index = i;
+        // chambers need to be compatible
+        if (gem_id.station() != 3 or 
+            csc_st2.chamber() != gem_id.chamber() or
+            csc_st2.ring() != 1) continue;
+        std::cout << "Investigate GEM chamber " << gem_id << std::endl;
+        // get the copads
+        auto copad_range = (*cItr).second;
+        for (auto digiItr = copad_range.first; digiItr != copad_range.second; ++digiItr){
+          auto copad(*digiItr);
+          std::cout << "\tPad " << copad  << std::endl;
+          bestCoPad = pickBestMatchingCoPad(event_.CSCTF_fit_x2[ j ],
+                                            event_.CSCTF_fit_y2[ j ], 
+                                            std::make_pair(gem_id, copad), bestCoPad, 6 + event_.CSCTF_bx[j]);
+        }
+        if (bestCoPad.second != GEMCSCCoPadDigi()){
+          std::cout << "\tBest copad" << bestCoPad.second << std::endl;
+          if (gem_id.station()==3) {
+            auto gem_gp1 = getGlobalPointPad(bestCoPad.first, bestCoPad.second.first());
+            auto gem_gp2 = getGlobalPointPad(bestCoPad.first, bestCoPad.second.second());            
+            event_.GE21_phi_L1[j] = gem_gp1.phi();
+            event_.GE21_bx_L1[j] = bestCoPad.second.first().bx();
+            event_.GE21_ch_L1[j] = bestCoPad.first.chamber();
+            event_.GE21_z_L1[j] = gem_gp1.z();
+            
+            event_.GE21_phi_L2[j] = gem_gp2.phi();
+            event_.GE21_bx_L2[j] = bestCoPad.second.second().bx();
+            event_.GE21_ch_L2[j] = bestCoPad.first.chamber();
+            event_.GE21_z_L2[j] = gem_gp2.z();
+          }
+        } else {
+          std::cout << "No best copad" << std::endl;
+        } 
+      }
+    }
+    // check copads were matched
+    const bool GE11_copad_matched( event_.GE11_phi_L1[j]!=99 and event_.GE11_phi_L2[j]!=99 );
+    const bool GE21_copad_matched( event_.GE21_phi_L1[j]!=99 and event_.GE21_phi_L2[j]!=99 );
+    
+    // Get matching GEM pads
+    if ( ( (not GE11_copad_matched) or 
+           (not GE21_copad_matched) ) and false){
+      
+      for(auto cItr = hGEMCSCPads->begin(); cItr != hGEMCSCPads->end(); ++cItr) {
+        GEMDetId gem_id = (*cItr).first;
+        GEMCSCPadDigiId bestPad;
+        //float bestGEMCSCDPhi = 99;
+        if (not stubMissingSt1) {
+          // get the CSCDetId of station 1
+          CSCDetId csc_st1(event_.CSCTF_id1[ j ]);
+          //int index = i;
+          
+          // chambers need to be compatible
+          if (gem_id.station() != 1 or 
+              csc_st1.chamber() != gem_id.chamber() or
+              csc_st1.ring() != 4 or csc_st1.ring() != 1) continue;
+          std::cout << "Investigate GEM chamber " << gem_id << std::endl;
+          // get the pads
+          auto pad_range = (*cItr).second;
+          for (auto digiItr = pad_range.first; digiItr != pad_range.second; ++digiItr){
+            auto pad(*digiItr);
+            std::cout << "\tPad " << pad  << std::endl;
+            bestPad = pickBestMatchingPad(event_.CSCTF_fit_x1[ j ],
+                                          event_.CSCTF_fit_y1[ j ], 
+                                          std::make_pair(gem_id, pad), bestPad, 6 + event_.CSCTF_bx[j]);
+          }
+          // found pad is not empty
+          if (bestPad.second != GEMCSCPadDigi()){
+            std::cout << "\tBest pad" << bestPad.second << std::endl;
+            if (gem_id.station()==1) {
+              auto gem_gp1 = getGlobalPointPad(bestPad.first, bestPad.second);
+              auto gem_gp2 = getGlobalPointPad(bestPad.first, bestPad.second);            
+              event_.GE11_phi_L1[j] = gem_gp1.phi();
+              event_.GE11_bx_L1[j] = bestPad.second.bx();
+              event_.GE11_ch_L1[j] = bestPad.first.chamber();
+              event_.GE11_z_L1[j] = gem_gp1.z();
+              
+              event_.GE11_phi_L2[j] = gem_gp2.phi();
+              event_.GE11_bx_L2[j] = bestPad.second.bx();
+              event_.GE11_ch_L2[j] = bestPad.first.chamber();
+              event_.GE11_z_L2[j] = gem_gp2.z();
+            }
+          } else {
+            std::cout << "No best pad" << std::endl;
+          }
+        }        
+        
+        if (not stubMissingSt2) {
+          // get the CSCDetId of station 1
+          CSCDetId csc_st2(event_.CSCTF_id2[ j ]);
+          //int index = i;
+          // chambers need to be compatible
+          if (gem_id.station() != 3 or 
+              csc_st2.chamber() != gem_id.chamber() or
+              csc_st2.ring() != 1) continue;
+          std::cout << "Investigate GEM chamber " << gem_id << std::endl;
+          // get the pads
+          auto pad_range = (*cItr).second;
+          for (auto digiItr = pad_range.first; digiItr != pad_range.second; ++digiItr){
+            auto pad(*digiItr);
+            std::cout << "\tPad " << pad  << std::endl;
+            bestPad = pickBestMatchingPad(event_.CSCTF_fit_x2[ j ],
+                                              event_.CSCTF_fit_y2[ j ], 
+                                          std::make_pair(gem_id, pad), bestPad, 6 + event_.CSCTF_bx[j]);
+          }
+          if (bestPad.second != GEMCSCPadDigi()){
+            std::cout << "\tBest pad" << bestPad.second << std::endl;
+            if (gem_id.station()==3) {
+              auto gem_gp1 = getGlobalPointPad(bestPad.first, bestPad.second);
+              auto gem_gp2 = getGlobalPointPad(bestPad.first, bestPad.second);            
+              event_.GE21_phi_L1[j] = gem_gp1.phi();
+              event_.GE21_bx_L1[j] = bestPad.second.bx();
+              event_.GE21_ch_L1[j] = bestPad.first.chamber();
+              event_.GE21_z_L1[j] = gem_gp1.z();
+              
+              event_.GE21_phi_L2[j] = gem_gp2.phi();
+              event_.GE21_bx_L2[j] = bestPad.second.bx();
+              event_.GE21_ch_L2[j] = bestPad.first.chamber();
+              event_.GE21_z_L2[j] = gem_gp2.z();
+            }
+          } else {
+            std::cout << "No best pad" << std::endl;
+          } 
+        }
+      }
     }
   }
 
@@ -4383,10 +4578,10 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("genGdMu_L1Mu_dR_prop",    event_.genGdMu_L1Mu_dR_prop,    "genGdMu_L1Mu_dR_prop[2][2]/F");
   event_tree_->Branch("genGdMu_L1Mu_index_prop", event_.genGdMu_L1Mu_index_prop, "genGdMu_L1Mu_index_prop[2][2]/I");
 
-  event_tree_->Branch("pt_sim", &event_.pt_sim);
-  event_tree_->Branch("eta_sim", &event_.eta_sim);
-  event_tree_->Branch("phi_sim", &event_.phi_sim);
-  event_tree_->Branch("charge_sim", &event_.charge_sim);
+  event_tree_->Branch("pt_sim", event_.pt_sim, "pt_sim[4]/F");
+  event_tree_->Branch("eta_sim", event_.eta_sim, "eta_sim[4]/F");
+  event_tree_->Branch("phi_sim", event_.phi_sim, "phi_sim[4]/F");
+  event_tree_->Branch("charge_sim", event_.charge_sim, "charge_sim[4]/F");
   event_tree_->Branch("has_sim", &event_.has_sim);
   event_tree_->Branch("eta_sim_prop", &event_.eta_sim_prop);
   event_tree_->Branch("phi_sim_prop", &event_.phi_sim_prop);
@@ -5028,10 +5223,13 @@ DisplacedL1MuFilter::clearBranches()
     event_.L1Tk_dR_corr[i] = -99;    
   }
 
+  for (int i=0; i<50; ++i){
+    event_.pt_sim[i] = -99;
+    event_.eta_sim[i] = -99;
+    event_.phi_sim[i] = -99;
+    event_.charge_sim[i] = -99;
+  }
   event_.has_sim = -99;
-  event_.pt_sim = -99;
-  event_.eta_sim = -99;
-  event_.phi_sim = -99;
   event_.eta_sim_prop = -99;
   event_.phi_sim_prop = -99;
   event_.eta_sim_corr = -99;
@@ -5489,6 +5687,11 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_sim_eta2[i] = 99;
     event_.CSCTF_sim_eta3[i] = 99;
     event_.CSCTF_sim_eta4[i] = 99;
+
+    event_.CSCTF_sim_R1[i] = 99;
+    event_.CSCTF_sim_R2[i] = 99;
+    event_.CSCTF_sim_R3[i] = 99;
+    event_.CSCTF_sim_R4[i] = 99;
   }
 }
 

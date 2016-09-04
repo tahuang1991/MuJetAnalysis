@@ -50,7 +50,7 @@ if __name__ == "__main__":
   ch = addfiles(ch, dirname=dirname)
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160901_v6"
+  label = "DisplacedL1MuTrigger_20160902_v4"
   targetDir = label + "/"
   
   verbose = True
@@ -149,6 +149,8 @@ if __name__ == "__main__":
     GenMuEta_leading_MS2_random_pt10 = TH1F("GenMuEta_leading_MS2_random_pt10","", 100,-5,5)
     GenMuEta_leading_random_pt10 = TH1F("GenMuEta_leading_random_pt10","", 100,-5,5)
 
+    GenMu_SIM_dR = TH1F("GenMu_SIM_dR","", 500,0,5)
+
     ## GEM plots
     phiGEMst1_even = TH1F("phiGEMst1_even","", 100,-1,1)
     phiGEMst2_even = TH1F("phiGEMst2_even","", 100,-1,1)
@@ -187,94 +189,16 @@ if __name__ == "__main__":
     gem_pos_sh_pad4_GE21_20to22 = TH1F("gem_pos_sh_pad4_GE21_20to22","", 50,-0.0025,0.0025)
     gem_pos_sh_pad8_GE21_20to22 = TH1F("gem_pos_sh_pad8_GE21_20to22","", 50,-0.0025,0.0025)
 
+    for stat in ['ME1', 'ME2', 'ME3', 'ME4']:
+      for pp in dxyRanges:
+        addPlotToMapTH1F("csc_R_sh_lct_" + stat + pp, 100,-20,20)
+        addPlotToMapTH1F("csc_R_sh_fit_" + stat + pp, 100,-20,20)
+        addPlotToMapTH1F("csc_R_sh_shfit_" + stat + pp, 100,-20,20)
+        addPlotToMapTH1F("csc_R_lct_fit_" + stat + pp, 100,-20,20)
+        addPlotToMapTH1F("csc_eta_sh_lct_" + stat + pp, 100,-0.002,0.002)
+        addPlotToMapTH1F("csc_eta_sh_fit_" + stat + pp, 100,-0.002,0.002)
+        addPlotToMapTH1F("csc_eta_lct_fit_" + stat + pp, 100,-0.002,0.002)
 
-    csc_posx_vs_fitx_ME1_dxy0to5 = TH1F("csc_posx_vs_fitx_ME1_dxy0to5","", 100,-20,20)
-    csc_posx_vs_fitx_ME2_dxy0to5 = TH1F("csc_posx_vs_fitx_ME2_dxy0to5","", 100,-20,20)
-    csc_posx_vs_fitx_ME3_dxy0to5 = TH1F("csc_posx_vs_fitx_ME3_dxy0to5","", 100,-20,20)
-    csc_posx_vs_fitx_ME4_dxy0to5 = TH1F("csc_posx_vs_fitx_ME4_dxy0to5","", 100,-20,20)
-
-    csc_posx_vs_fitx_ME1_dxy5to50 = TH1F("csc_posx_vs_fitx_ME1_dxy5to50","", 100,-20,20)
-    csc_posx_vs_fitx_ME2_dxy5to50 = TH1F("csc_posx_vs_fitx_ME2_dxy5to50","", 100,-20,20)
-    csc_posx_vs_fitx_ME3_dxy5to50 = TH1F("csc_posx_vs_fitx_ME3_dxy5to50","", 100,-20,20)
-    csc_posx_vs_fitx_ME4_dxy5to50 = TH1F("csc_posx_vs_fitx_ME4_dxy5to50","", 100,-20,20)
-
-    csc_posx_vs_fitx_ME1_dxy50to100 = TH1F("csc_posx_vs_fitx_ME1_dxy50to100","", 100,-20,20)
-    csc_posx_vs_fitx_ME2_dxy50to100 = TH1F("csc_posx_vs_fitx_ME2_dxy50to100","", 100,-20,20)
-    csc_posx_vs_fitx_ME3_dxy50to100 = TH1F("csc_posx_vs_fitx_ME3_dxy50to100","", 100,-20,20)
-    csc_posx_vs_fitx_ME4_dxy50to100 = TH1F("csc_posx_vs_fitx_ME4_dxy50to100","", 100,-20,20)
-
-
-    csc_posy_vs_fity_ME1_dxy0to5 = TH1F("csc_posy_vs_fity_ME1_dxy0to5","", 100,-20,20)
-    csc_posy_vs_fity_ME2_dxy0to5 = TH1F("csc_posy_vs_fity_ME2_dxy0to5","", 100,-20,20)
-    csc_posy_vs_fity_ME3_dxy0to5 = TH1F("csc_posy_vs_fity_ME3_dxy0to5","", 100,-20,20)
-    csc_posy_vs_fity_ME4_dxy0to5 = TH1F("csc_posy_vs_fity_ME4_dxy0to5","", 100,-20,20)
-
-    csc_posy_vs_fity_ME1_dxy5to50 = TH1F("csc_posy_vs_fity_ME1_dxy5to50","", 100,-20,20)
-    csc_posy_vs_fity_ME2_dxy5to50 = TH1F("csc_posy_vs_fity_ME2_dxy5to50","", 100,-20,20)
-    csc_posy_vs_fity_ME3_dxy5to50 = TH1F("csc_posy_vs_fity_ME3_dxy5to50","", 100,-20,20)
-    csc_posy_vs_fity_ME4_dxy5to50 = TH1F("csc_posy_vs_fity_ME4_dxy5to50","", 100,-20,20)
-
-    csc_posy_vs_fity_ME1_dxy50to100 = TH1F("csc_posy_vs_fity_ME1_dxy50to100","", 100,-20,20)
-    csc_posy_vs_fity_ME2_dxy50to100 = TH1F("csc_posy_vs_fity_ME2_dxy50to100","", 100,-20,20)
-    csc_posy_vs_fity_ME3_dxy50to100 = TH1F("csc_posy_vs_fity_ME3_dxy50to100","", 100,-20,20)
-    csc_posy_vs_fity_ME4_dxy50to100 = TH1F("csc_posy_vs_fity_ME4_dxy50to100","", 100,-20,20)
-
-
-    csc_posphi_vs_fitphi_ME1_dxy0to5 = TH1F("csc_posphi_vs_fitphi_ME1_dxy0to5","", 100,-0.1,0.1)
-    csc_posphi_vs_fitphi_ME2_dxy0to5 = TH1F("csc_posphi_vs_fitphi_ME2_dxy0to5","", 100,-0.1,0.1)
-    csc_posphi_vs_fitphi_ME3_dxy0to5 = TH1F("csc_posphi_vs_fitphi_ME3_dxy0to5","", 100,-0.1,0.1)
-    csc_posphi_vs_fitphi_ME4_dxy0to5 = TH1F("csc_posphi_vs_fitphi_ME4_dxy0to5","", 100,-0.1,0.1)
-
-    csc_posphi_vs_fitphi_ME1_dxy5to50 = TH1F("csc_posphi_vs_fitphi_ME1_dxy5to50","", 100,-0.1,0.1)
-    csc_posphi_vs_fitphi_ME2_dxy5to50 = TH1F("csc_posphi_vs_fitphi_ME2_dxy5to50","", 100,-0.1,0.1)
-    csc_posphi_vs_fitphi_ME3_dxy5to50 = TH1F("csc_posphi_vs_fitphi_ME3_dxy5to50","", 100,-0.1,0.1)
-    csc_posphi_vs_fitphi_ME4_dxy5to50 = TH1F("csc_posphi_vs_fitphi_ME4_dxy5to50","", 100,-0.1,0.1)
-
-    csc_posphi_vs_fitphi_ME1_dxy50to100 = TH1F("csc_posphi_vs_fitphi_ME1_dxy50to100","", 100,-0.1,0.1)
-    csc_posphi_vs_fitphi_ME2_dxy50to100 = TH1F("csc_posphi_vs_fitphi_ME2_dxy50to100","", 100,-0.1,0.1)
-    csc_posphi_vs_fitphi_ME3_dxy50to100 = TH1F("csc_posphi_vs_fitphi_ME3_dxy50to100","", 100,-0.1,0.1)
-    csc_posphi_vs_fitphi_ME4_dxy50to100 = TH1F("csc_posphi_vs_fitphi_ME4_dxy50to100","", 100,-0.1,0.1)
-
-
-    csc_posR_vs_fitR_ME1_dxy0to5 = TH1F("csc_posR_vs_fitR_ME1_dxy0to5","", 100,-20,20)
-    csc_posR_vs_fitR_ME2_dxy0to5 = TH1F("csc_posR_vs_fitR_ME2_dxy0to5","", 100,-20,20)
-    csc_posR_vs_fitR_ME3_dxy0to5 = TH1F("csc_posR_vs_fitR_ME3_dxy0to5","", 100,-20,20)
-    csc_posR_vs_fitR_ME4_dxy0to5 = TH1F("csc_posR_vs_fitR_ME4_dxy0to5","", 100,-20,20)
-
-    csc_posR_vs_fitR_ME1_dxy5to50 = TH1F("csc_posR_vs_fitR_ME1_dxy5to50","", 100,-20,20)
-    csc_posR_vs_fitR_ME2_dxy5to50 = TH1F("csc_posR_vs_fitR_ME2_dxy5to50","", 100,-20,20)
-    csc_posR_vs_fitR_ME3_dxy5to50 = TH1F("csc_posR_vs_fitR_ME3_dxy5to50","", 100,-20,20)
-    csc_posR_vs_fitR_ME4_dxy5to50 = TH1F("csc_posR_vs_fitR_ME4_dxy5to50","", 100,-20,20)
-
-    csc_posR_vs_fitR_ME1_dxy50to100 = TH1F("csc_posR_vs_fitR_ME1_dxy50to100","", 100,-20,20)
-    csc_posR_vs_fitR_ME2_dxy50to100 = TH1F("csc_posR_vs_fitR_ME2_dxy50to100","", 100,-20,20)
-    csc_posR_vs_fitR_ME3_dxy50to100 = TH1F("csc_posR_vs_fitR_ME3_dxy50to100","", 100,-20,20)
-    csc_posR_vs_fitR_ME4_dxy50to100 = TH1F("csc_posR_vs_fitR_ME4_dxy50to100","", 100,-20,20)
-
-
-    csc_poseta_vs_fiteta_ME1_dxy0to5 = TH1F("csc_poseta_vs_fiteta_ME1_dxy0to5","", 100,-0.1,0.1)
-    csc_poseta_vs_fiteta_ME2_dxy0to5 = TH1F("csc_poseta_vs_fiteta_ME2_dxy0to5","", 100,-0.1,0.1)
-    csc_poseta_vs_fiteta_ME3_dxy0to5 = TH1F("csc_poseta_vs_fiteta_ME3_dxy0to5","", 100,-0.1,0.1)
-    csc_poseta_vs_fiteta_ME4_dxy0to5 = TH1F("csc_poseta_vs_fiteta_ME4_dxy0to5","", 100,-0.1,0.1)
-
-    csc_poseta_vs_fiteta_ME1_dxy5to50 = TH1F("csc_poseta_vs_fiteta_ME1_dxy5to50","", 100,-0.1,0.1)
-    csc_poseta_vs_fiteta_ME2_dxy5to50 = TH1F("csc_poseta_vs_fiteta_ME2_dxy5to50","", 100,-0.1,0.1)
-    csc_poseta_vs_fiteta_ME3_dxy5to50 = TH1F("csc_poseta_vs_fiteta_ME3_dxy5to50","", 100,-0.1,0.1)
-    csc_poseta_vs_fiteta_ME4_dxy5to50 = TH1F("csc_poseta_vs_fiteta_ME4_dxy5to50","", 100,-0.1,0.1)
-
-    csc_poseta_vs_fiteta_ME1_dxy50to100 = TH1F("csc_poseta_vs_fiteta_ME1_dxy50to100","", 100,-0.1,0.1)
-    csc_poseta_vs_fiteta_ME2_dxy50to100 = TH1F("csc_poseta_vs_fiteta_ME2_dxy50to100","", 100,-0.1,0.1)
-    csc_poseta_vs_fiteta_ME3_dxy50to100 = TH1F("csc_poseta_vs_fiteta_ME3_dxy50to100","", 100,-0.1,0.1)
-    csc_poseta_vs_fiteta_ME4_dxy50to100 = TH1F("csc_poseta_vs_fiteta_ME4_dxy50to100","", 100,-0.1,0.1)
-
-
-    chi2ndf_posx_dxy0to5 = TH1F("chi2ndf_posx_dxy0to5","", 100,0,20)
-    chi2ndf_posx_dxy5to50 = TH1F("chi2ndf_posx_dxy5to50","", 100,0,20)
-    chi2ndf_posx_dxy50to100 = TH1F("chi2ndf_posx_dxy50to100","", 100,0,20)
-
-    chi2ndf_posy_dxy0to5 = TH1F("chi2ndf_posy_dxy0to5","", 100,0,20)
-    chi2ndf_posy_dxy5to50 = TH1F("chi2ndf_posy_dxy5to50","", 100,0,20)
-    chi2ndf_posy_dxy50to100 = TH1F("chi2ndf_posy_dxy50to100","", 100,0,20)
 
     ## direction based pT trigger efficiency plots
     for pp in dxyRanges:
@@ -811,7 +735,7 @@ if __name__ == "__main__":
 
     for k in range(0,treeHits.GetEntries()):
       treeHits.GetEntry(k)
-      if k%1==0: print "Event", k+1, "nL1Mu", treeHits.nL1Mu
+      if k%1000==0: print "Event", k+1, "nL1Mu", treeHits.nL1Mu
       if k>10000 and runTest: break
 
       ## plots for Alexei July 27 2016
@@ -842,6 +766,14 @@ if __name__ == "__main__":
         else:
           GenMuEta_leading_MS2_random_pt10.Fill(eta_prop_muon2_choose_dark_boson)
         
+      ## event params
+      event_number = treeHits.event
+      lumi_number = treeHits.lumi
+      run_number = treeHits.run
+
+      #print "event_number", event_number
+      #print "lumi_number", lumi_number
+      #print "run_number", run_number
 
       for i in range(0,2):
 
@@ -895,6 +827,10 @@ if __name__ == "__main__":
           muon_endcap = abs(eta_prop)>1.2 and abs(eta_prop)<=2.4
 
           GenMuPt.Fill(pt)
+          GenMu_SIM_dR.Fill(SIM_dR)
+
+          continue
+
           if dxy <= 5:                GenMuPt_dxy0to5.Fill(pt)
           if 5 < dxy  and dxy <= 50:  GenMuPt_dxy5to50.Fill(pt)
           if 50 < dxy and dxy <= 100: GenMuPt_dxy50to100.Fill(pt)
@@ -1400,12 +1336,13 @@ if __name__ == "__main__":
               CSCTF_bx = treeHits.CSCTF_bx[L1Mu_CSCTF_index]
               CSCTF_nStubs = treeHits.CSCTF_nStubs[L1Mu_CSCTF_index]
 
-              print "\t\tCSCTF", L1Mu_CSCTF_index
-              print "\t\tCSCTF_pt", CSCTF_pt
-              print "\t\tCSCTF_eta", CSCTF_eta
-              print "\t\tCSCTF_phi", CSCTF_phi
-              print "\t\tCSCTF_bx", CSCTF_bx
-              print "\t\tCSCTF_nStubs", CSCTF_nStubs
+              if verbose:
+                print "\t\tCSCTF", L1Mu_CSCTF_index
+                print "\t\tCSCTF_pt", CSCTF_pt
+                print "\t\tCSCTF_eta", CSCTF_eta
+                print "\t\tCSCTF_phi", CSCTF_phi
+                print "\t\tCSCTF_bx", CSCTF_bx
+                print "\t\tCSCTF_nStubs", CSCTF_nStubs
 
 
               CSCTF_phi1 = treeHits.CSCTF_phi1[L1Mu_CSCTF_index]
@@ -1413,45 +1350,52 @@ if __name__ == "__main__":
               CSCTF_phi3 = treeHits.CSCTF_phi3[L1Mu_CSCTF_index]
               CSCTF_phi4 = treeHits.CSCTF_phi4[L1Mu_CSCTF_index]
 
-              print "\t\tCSCTF_phi1", CSCTF_phi1 
-              print "\t\tCSCTF_phi2", CSCTF_phi2
-              print "\t\tCSCTF_phi3", CSCTF_phi3
-              print "\t\tCSCTF_phi4", CSCTF_phi4
+              if verbose:
+                print "\t\tCSCTF_phi1", CSCTF_phi1 
+                print "\t\tCSCTF_phi2", CSCTF_phi2
+                print "\t\tCSCTF_phi3", CSCTF_phi3
+                print "\t\tCSCTF_phi4", CSCTF_phi4
 
               CSCTF_eta1 = treeHits.CSCTF_eta1[L1Mu_CSCTF_index]
               CSCTF_eta2 = treeHits.CSCTF_eta2[L1Mu_CSCTF_index]
               CSCTF_eta3 = treeHits.CSCTF_eta3[L1Mu_CSCTF_index]
               CSCTF_eta4 = treeHits.CSCTF_eta4[L1Mu_CSCTF_index]
 
+              if verbose:
+                print "\t\tCSCTF_eta1", CSCTF_eta1 
+                print "\t\tCSCTF_eta2", CSCTF_eta2
+                print "\t\tCSCTF_eta3", CSCTF_eta3
+                print "\t\tCSCTF_eta4", CSCTF_eta4
+
               ok_CSCTF_st1 = CSCTF_phi1 != 99
               ok_CSCTF_st2 = CSCTF_phi2 != 99
               ok_CSCTF_st3 = CSCTF_phi3 != 99
-              ok_CSCTF_st4 = CSCTF_phi4 != 99
+              ok_CSCTF_st4 = CSCTF_phi4 != 99              
+              
+              if verbose:
+                print "\t\tok_CSCTF_st1", ok_CSCTF_st1 
+                print "\t\tok_CSCTF_st2", ok_CSCTF_st2
+                print "\t\tok_CSCTF_st3", ok_CSCTF_st3
+                print "\t\tok_CSCTF_st4", ok_CSCTF_st4
 
-              ok_CSCTF_rec_st1 = False
-              ok_CSCTF_rec_st2 = False
-              ok_CSCTF_rec_st3 = False
-              ok_CSCTF_rec_st4 = False
+              ## ignore muons with only 1 stub
+              #if ok_CSCTF_st1 + ok_CSCTF_st2 + ok_CSCTF_st3 + ok_CSCTF_st4 < 2: continue
 
               if ok_CSCTF_st1: CSCTF_phi1 = normalizedPhi2(treeHits.CSCTF_phi1[L1Mu_CSCTF_index])
               if ok_CSCTF_st2: CSCTF_phi2 = normalizedPhi2(treeHits.CSCTF_phi2[L1Mu_CSCTF_index])
               if ok_CSCTF_st3: CSCTF_phi3 = normalizedPhi2(treeHits.CSCTF_phi3[L1Mu_CSCTF_index])
               if ok_CSCTF_st4: CSCTF_phi4 = normalizedPhi2(treeHits.CSCTF_phi4[L1Mu_CSCTF_index])
               
-              print "\t\tok_CSCTF_st1", ok_CSCTF_st1 
-              print "\t\tok_CSCTF_st2", ok_CSCTF_st2
-              print "\t\tok_CSCTF_st3", ok_CSCTF_st3
-              print "\t\tok_CSCTF_st4", ok_CSCTF_st4
-              
               CSCTF_ch1 = treeHits.CSCTF_ch1[L1Mu_CSCTF_index]
               CSCTF_ch2 = treeHits.CSCTF_ch2[L1Mu_CSCTF_index]
               CSCTF_ch3 = treeHits.CSCTF_ch3[L1Mu_CSCTF_index]
               CSCTF_ch4 = treeHits.CSCTF_ch4[L1Mu_CSCTF_index]
 
-              print "\t\tCSCTF_ch1", CSCTF_ch1 
-              print "\t\tCSCTF_ch2", CSCTF_ch2
-              print "\t\tCSCTF_ch3", CSCTF_ch3 
-              print "\t\tCSCTF_ch4", CSCTF_ch4
+              if verbose:
+                print "\t\tCSCTF_ch1", CSCTF_ch1 
+                print "\t\tCSCTF_ch2", CSCTF_ch2
+                print "\t\tCSCTF_ch3", CSCTF_ch3 
+                print "\t\tCSCTF_ch4", CSCTF_ch4
 
               CSCTF_isOdd1 = CSCTF_ch1%2==1
               CSCTF_isOdd2 = CSCTF_ch2%2==1
@@ -1471,20 +1415,44 @@ if __name__ == "__main__":
               CSCTF_z3 = treeHits.CSCTF_z3[L1Mu_CSCTF_index]
               CSCTF_z4 = treeHits.CSCTF_z4[L1Mu_CSCTF_index]
 
+              if verbose:
+                print "\t\tCSCTF_z1", CSCTF_z1 
+                print "\t\tCSCTF_z2", CSCTF_z2 
+                print "\t\tCSCTF_z3", CSCTF_z3 
+                print "\t\tCSCTF_z4", CSCTF_z4 
+
               CSCTF_x1 = treeHits.CSCTF_x1[L1Mu_CSCTF_index]
               CSCTF_x2 = treeHits.CSCTF_x2[L1Mu_CSCTF_index]
               CSCTF_x3 = treeHits.CSCTF_x3[L1Mu_CSCTF_index]
               CSCTF_x4 = treeHits.CSCTF_x4[L1Mu_CSCTF_index]
+
+              if verbose:
+                print "\t\tCSCTF_x1", CSCTF_x1 
+                print "\t\tCSCTF_x2", CSCTF_x2 
+                print "\t\tCSCTF_x3", CSCTF_x3 
+                print "\t\tCSCTF_x4", CSCTF_x4 
 
               CSCTF_y1 = treeHits.CSCTF_y1[L1Mu_CSCTF_index]
               CSCTF_y2 = treeHits.CSCTF_y2[L1Mu_CSCTF_index]
               CSCTF_y3 = treeHits.CSCTF_y3[L1Mu_CSCTF_index]
               CSCTF_y4 = treeHits.CSCTF_y4[L1Mu_CSCTF_index]
 
+              if verbose:
+                print "\t\tCSCTF_y1", CSCTF_y1 
+                print "\t\tCSCTF_y2", CSCTF_y2 
+                print "\t\tCSCTF_y3", CSCTF_y3 
+                print "\t\tCSCTF_y4", CSCTF_y4 
+
               CSCTF_R1 = treeHits.CSCTF_R1[L1Mu_CSCTF_index]
               CSCTF_R2 = treeHits.CSCTF_R2[L1Mu_CSCTF_index]
               CSCTF_R3 = treeHits.CSCTF_R3[L1Mu_CSCTF_index]
               CSCTF_R4 = treeHits.CSCTF_R4[L1Mu_CSCTF_index]
+
+              if verbose:
+                print "\t\tCSCTF_R1", CSCTF_R1 
+                print "\t\tCSCTF_R2", CSCTF_R2 
+                print "\t\tCSCTF_R3", CSCTF_R3 
+                print "\t\tCSCTF_R4", CSCTF_R4 
 
               ## fitted positions in a chamber
               CSCTF_fit_phi1 = treeHits.CSCTF_fit_phi1[L1Mu_CSCTF_index]
@@ -1515,6 +1483,17 @@ if __name__ == "__main__":
 
               ## get SIM index
               GEN_SIM_index = int(treeHits.genGdMu_SIM_index[ij])
+              print "GEN_SIM_index", GEN_SIM_index
+
+              ok_CSCTF_sim_st1 = False
+              ok_CSCTF_sim_st2 = False
+              ok_CSCTF_sim_st3 = False
+              ok_CSCTF_sim_st4 = False          
+              
+              ok_CSCTF_rec_st1 = False
+              ok_CSCTF_rec_st2 = False
+              ok_CSCTF_rec_st3 = False
+              ok_CSCTF_rec_st4 = False
 
               if GEN_SIM_index != -99:
                 ## recovered stubs
@@ -1564,26 +1543,78 @@ if __name__ == "__main__":
                 CSCTF_sim_phi3 = treeHits.CSCTF_sim_phi3[GEN_SIM_index]
                 CSCTF_sim_phi4 = treeHits.CSCTF_sim_phi4[GEN_SIM_index]
                 
-                print "\t\tCSCTF_sim_phi1", CSCTF_sim_phi1 
-                print "\t\tCSCTF_sim_phi2", CSCTF_sim_phi2
-                print "\t\tCSCTF_sim_phi3", CSCTF_sim_phi3
-                print "\t\tCSCTF_sim_phi4", CSCTF_sim_phi4
+                if verbose:
+                  print "\t\tCSCTF_sim_phi1", CSCTF_sim_phi1 
+                  print "\t\tCSCTF_sim_phi2", CSCTF_sim_phi2
+                  print "\t\tCSCTF_sim_phi3", CSCTF_sim_phi3
+                  print "\t\tCSCTF_sim_phi4", CSCTF_sim_phi4
+                
+                ok_CSCTF_sim_st1 = CSCTF_sim_phi1 != 99
+                ok_CSCTF_sim_st2 = CSCTF_sim_phi2 != 99
+                ok_CSCTF_sim_st3 = CSCTF_sim_phi3 != 99
+                ok_CSCTF_sim_st4 = CSCTF_sim_phi4 != 99          
 
+                if verbose:
+                  print "\t\tok_CSCTF_sim_st1", ok_CSCTF_sim_st1 
+                  print "\t\tok_CSCTF_sim_st2", ok_CSCTF_sim_st2
+                  print "\t\tok_CSCTF_sim_st3", ok_CSCTF_sim_st3
+                  print "\t\tok_CSCTF_sim_st4", ok_CSCTF_sim_st4
+              
                 CSCTF_sim_z1 = treeHits.CSCTF_sim_z1[GEN_SIM_index]
                 CSCTF_sim_z2 = treeHits.CSCTF_sim_z2[GEN_SIM_index]
                 CSCTF_sim_z3 = treeHits.CSCTF_sim_z3[GEN_SIM_index]
                 CSCTF_sim_z4 = treeHits.CSCTF_sim_z4[GEN_SIM_index]
 
+                if verbose:
+                  print "\t\tCSCTF_sim_z1", CSCTF_sim_z1 
+                  print "\t\tCSCTF_sim_z2", CSCTF_sim_z2
+                  print "\t\tCSCTF_sim_z3", CSCTF_sim_z3
+                  print "\t\tCSCTF_sim_z4", CSCTF_sim_z4
+              
                 CSCTF_sim_x1 = treeHits.CSCTF_sim_x1[GEN_SIM_index]
                 CSCTF_sim_x2 = treeHits.CSCTF_sim_x2[GEN_SIM_index]
                 CSCTF_sim_x3 = treeHits.CSCTF_sim_x3[GEN_SIM_index]
                 CSCTF_sim_x4 = treeHits.CSCTF_sim_x4[GEN_SIM_index]
-
+                
+                if verbose:
+                  print "\t\tCSCTF_sim_x1", CSCTF_sim_x1 
+                  print "\t\tCSCTF_sim_x2", CSCTF_sim_x2
+                  print "\t\tCSCTF_sim_x3", CSCTF_sim_x3
+                  print "\t\tCSCTF_sim_x4", CSCTF_sim_x4
+              
                 CSCTF_sim_y1 = treeHits.CSCTF_sim_y1[GEN_SIM_index]
                 CSCTF_sim_y2 = treeHits.CSCTF_sim_y2[GEN_SIM_index]
                 CSCTF_sim_y3 = treeHits.CSCTF_sim_y3[GEN_SIM_index]
                 CSCTF_sim_y4 = treeHits.CSCTF_sim_y4[GEN_SIM_index]
                 
+                if verbose:
+                  print "\t\tCSCTF_sim_y1", CSCTF_sim_y1 
+                  print "\t\tCSCTF_sim_y2", CSCTF_sim_y2
+                  print "\t\tCSCTF_sim_y3", CSCTF_sim_y3
+                  print "\t\tCSCTF_sim_y4", CSCTF_sim_y4
+              
+                CSCTF_sim_R1 = treeHits.CSCTF_sim_R1[GEN_SIM_index]
+                CSCTF_sim_R2 = treeHits.CSCTF_sim_R2[GEN_SIM_index]
+                CSCTF_sim_R3 = treeHits.CSCTF_sim_R3[GEN_SIM_index]
+                CSCTF_sim_R4 = treeHits.CSCTF_sim_R4[GEN_SIM_index]
+
+                if verbose:
+                  print "\t\tCSCTF_sim_R1", CSCTF_sim_R1 
+                  print "\t\tCSCTF_sim_R2", CSCTF_sim_R2
+                  print "\t\tCSCTF_sim_R3", CSCTF_sim_R3
+                  print "\t\tCSCTF_sim_R4", CSCTF_sim_R4
+              
+                CSCTF_sim_eta1 = treeHits.CSCTF_sim_eta1[GEN_SIM_index]
+                CSCTF_sim_eta2 = treeHits.CSCTF_sim_eta2[GEN_SIM_index]
+                CSCTF_sim_eta3 = treeHits.CSCTF_sim_eta3[GEN_SIM_index]
+                CSCTF_sim_eta4 = treeHits.CSCTF_sim_eta4[GEN_SIM_index]
+
+                if verbose:
+                  print "\t\tCSCTF_sim_eta1", CSCTF_sim_eta1 
+                  print "\t\tCSCTF_sim_eta2", CSCTF_sim_eta2
+                  print "\t\tCSCTF_sim_eta3", CSCTF_sim_eta3
+                  print "\t\tCSCTF_sim_eta4", CSCTF_sim_eta4
+              
                 ## check if the recovered stations are there
                 ok_CSCTF_rec_st1 = CSCTF_rec_phi1 != 99
                 ok_CSCTF_rec_st2 = CSCTF_rec_phi2 != 99
@@ -1640,42 +1671,69 @@ if __name__ == "__main__":
                   CSCTF_isOdd4 = CSCTF_ch4%2==1
                   CSCTF_isEven4 = not CSCTF_isOdd4
                 
-                print "fit phi", CSCTF_fit_phi1, CSCTF_fit_phi2, CSCTF_fit_phi3, CSCTF_fit_phi4
-                print "stub phi", CSCTF_phi1, CSCTF_phi2, CSCTF_phi3, CSCTF_phi4
-                print CSCTF_fit_x1, CSCTF_fit_x2, CSCTF_fit_x3, CSCTF_fit_x4
-                print CSCTF_fit_y1, CSCTF_fit_y2, CSCTF_fit_y3, CSCTF_fit_y4
+                if verbose:
+                  print "fit phi", CSCTF_fit_phi1, CSCTF_fit_phi2, CSCTF_fit_phi3, CSCTF_fit_phi4
+                  print "stub phi", CSCTF_phi1, CSCTF_phi2, CSCTF_phi3, CSCTF_phi4
+                  print CSCTF_fit_x1, CSCTF_fit_x2, CSCTF_fit_x3, CSCTF_fit_x4
+                  print CSCTF_fit_y1, CSCTF_fit_y2, CSCTF_fit_y3, CSCTF_fit_y4
+                  print CSCTF_fit_z1, CSCTF_fit_z2, CSCTF_fit_z3, CSCTF_fit_z4
+                  print 
+
+                #print "Fitted stub positions"
+                Rs_out, st_out, chi2ndf_R = getFittedPositions(
+                  [CSCTF_R1, CSCTF_R2, CSCTF_R3, CSCTF_R4], 
+                  [CSCTF_fit_z1, CSCTF_fit_z2, CSCTF_fit_z3, CSCTF_fit_z4])
+
+                ShRs_out, st_out, chi2ndf_R = getFittedPositions(
+                  [CSCTF_sim_R1, CSCTF_sim_R2, CSCTF_sim_R3, CSCTF_sim_R4], 
+                  [CSCTF_sim_z1, CSCTF_sim_z2, CSCTF_sim_z3, CSCTF_sim_z4])
+
+                print 
+                print CSCTF_sim_R1, CSCTF_sim_R2, CSCTF_sim_R3, CSCTF_sim_R4
+                print CSCTF_sim_z1, CSCTF_sim_z2, CSCTF_sim_z3, CSCTF_sim_z4
+                print CSCTF_sim_eta1, CSCTF_sim_eta2, CSCTF_sim_eta3, CSCTF_sim_eta4
+                #print CSCTF_sim_z1, CSCTF_sim_z2, CSCTF_sim_z3, CSCTF_sim_z4
+                print ShRs_out
+                print 
+                print CSCTF_R1, CSCTF_R2, CSCTF_R3, CSCTF_R4
+                print CSCTF_eta1, CSCTF_eta2, CSCTF_eta3, CSCTF_eta4
                 print CSCTF_fit_z1, CSCTF_fit_z2, CSCTF_fit_z3, CSCTF_fit_z4
                 print 
 
-                #print "Fitted stub positions"
-                xs_out, st_out, chi2ndf_x = getFittedPositions(
-                  [CSCTF_fit_x1, CSCTF_fit_x2, CSCTF_fit_x3, CSCTF_fit_x4], 
-                  [CSCTF_fit_z1, CSCTF_fit_z2, CSCTF_fit_z3, CSCTF_fit_z4])
+                def makeRvsZDebugPlot():
+                  c1 = TCanvas("c1","A Simple Graph with error bars",200,10,700,500);
+                  c1.cd();
+                  c1.SetFillColor(42);
+                  c1.SetGrid();
+                  
+                  sevent = "%d"%(treeHits.event)
+                  slumi = "%d"%(treeHits.lumi)
+                  srun = "%d"%(treeHits.run)
+                  smuon = "%d"%(ij)
 
-                print st_out
+                  v1 = []
+                  w1 = []
+                  v2 = []
+                  w2 = []
+                  if ok_CSCTF_st1:
+                    v1.append(CSCTF_fit_z1)
+                  
+                  #fit1 = TF1("fit1","pol1",zmin,zmax); 
+                  gr = TGraph(len(v), v, w );
 
-                ys_out, st_out, chi2ndf_y = getFittedPositions(
-                  [CSCTF_fit_y1, CSCTF_fit_y2, CSCTF_fit_y3, CSCTF_fit_y4], 
-                  [CSCTF_fit_z1, CSCTF_fit_z2, CSCTF_fit_z3, CSCTF_fit_z4])
+                  #gr->Fit(fit1,"RQ"); 
 
-                print st_out
-                phis_out, st_out, chi2ndf_phi = getFittedPositions(
-                  [CSCTF_fit_phi1, CSCTF_fit_phi2, CSCTF_fit_phi3, CSCTF_fit_phi4], 
-                  [CSCTF_fit_z1, CSCTF_fit_z2, CSCTF_fit_z3, CSCTF_fit_z4])
-
-                print st_out
-                Rs_out, st_out, chi2ndf_R = getFittedPositions(
-                  [CSCTF_fit_R1, CSCTF_fit_R2, CSCTF_fit_R3, CSCTF_fit_R4], 
-                  [CSCTF_fit_z1, CSCTF_fit_z2, CSCTF_fit_z3, CSCTF_fit_z4])
-
-                print st_out
-                chi2ndf_posx_dxy0to5.Fill(chi2ndf_x)
-                chi2ndf_posx_dxy5to50.Fill(chi2ndf_x)
-                chi2ndf_posx_dxy50to100.Fill(chi2ndf_x)
-                
-                chi2ndf_posy_dxy0to5.Fill(chi2ndf_y)
-                chi2ndf_posy_dxy5to50.Fill(chi2ndf_y)
-                chi2ndf_posy_dxy50to100.Fill(chi2ndf_y)
+                  gr.SetTitle("Linear fit to ComparatorDigis for Lumi " + slumi + " Run " + srun + " Event " + sevent + " Muon " + smuon);
+                  gr.SetMarkerColor(4);
+                  gr.SetMarkerStyle(21);
+                  gr.Draw("ALP");
+                  
+                  c1.SaveAs("StubLinearFit/c_debug_fit_L" + slumi + "_R" + srun + "_E" + sevent + "_M" + smuon + ".png");
+                  
+                if (not ok_CSCTF_st1 and ok_CSCTF_sim_st1) or (ok_CSCTF_st1 and not ok_CSCTF_sim_st1): print "ERROR station 1"
+                if (not ok_CSCTF_st2 and ok_CSCTF_sim_st2) or (ok_CSCTF_st2 and not ok_CSCTF_sim_st2): print "ERROR station 2"
+                if (not ok_CSCTF_st3 and ok_CSCTF_sim_st3) or (ok_CSCTF_st3 and not ok_CSCTF_sim_st3): print "ERROR station 3"
+                if (not ok_CSCTF_st4 and ok_CSCTF_sim_st4) or (ok_CSCTF_st4 and not ok_CSCTF_sim_st4): print "ERROR station 4"
 
                 #print st_out
                 index_st1, index_st2, index_st3, index_st4 = -1, -1, -1, -1
@@ -1684,89 +1742,69 @@ if __name__ == "__main__":
                 if 3 in st_out: index_st3 = st_out.index(3)
                 if 4 in st_out: index_st4 = st_out.index(4)
 
-                print index_st1, index_st2, index_st3, index_st4
-                print xs_out
-                print ys_out
-                print phis_out
-                print Rs_out
-
                 if dxy <= 5:
-                  if ok_CSCTF_st1: csc_posx_vs_fitx_ME1_dxy0to5.Fill(CSCTF_x1 - xs_out[index_st1])
-                  if ok_CSCTF_st2: csc_posx_vs_fitx_ME2_dxy0to5.Fill(CSCTF_x2 - xs_out[index_st2])
-                  if ok_CSCTF_st3: csc_posx_vs_fitx_ME3_dxy0to5.Fill(CSCTF_x3 - xs_out[index_st3])
-                  if ok_CSCTF_st4: csc_posx_vs_fitx_ME4_dxy0to5.Fill(CSCTF_x4 - xs_out[index_st4])
+                  if ok_CSCTF_st1: mapTH1F["csc_R_sh_lct_ME1_dxy0to5"].Fill(CSCTF_sim_R1 - CSCTF_R1)
+                  if ok_CSCTF_st2: mapTH1F["csc_R_sh_lct_ME2_dxy0to5"].Fill(CSCTF_sim_R2 - CSCTF_R2)
+                  if ok_CSCTF_st3: mapTH1F["csc_R_sh_lct_ME3_dxy0to5"].Fill(CSCTF_sim_R3 - CSCTF_R3)
+                  if ok_CSCTF_st4: mapTH1F["csc_R_sh_lct_ME4_dxy0to5"].Fill(CSCTF_sim_R4 - CSCTF_R4)
 
-                  if ok_CSCTF_st1: csc_posy_vs_fity_ME1_dxy0to5.Fill(CSCTF_y1 - ys_out[index_st1])
-                  if ok_CSCTF_st2: csc_posy_vs_fity_ME2_dxy0to5.Fill(CSCTF_y2 - ys_out[index_st2])
-                  if ok_CSCTF_st3: csc_posy_vs_fity_ME3_dxy0to5.Fill(CSCTF_y3 - ys_out[index_st3])
-                  if ok_CSCTF_st4: csc_posy_vs_fity_ME4_dxy0to5.Fill(CSCTF_y4 - ys_out[index_st4])
+                  if ok_CSCTF_st1: mapTH1F["csc_R_sh_fit_ME1_dxy0to5"].Fill(CSCTF_sim_R1 - Rs_out[index_st1])
+                  if ok_CSCTF_st2: mapTH1F["csc_R_sh_fit_ME2_dxy0to5"].Fill(CSCTF_sim_R2 - Rs_out[index_st2])
+                  if ok_CSCTF_st3: mapTH1F["csc_R_sh_fit_ME3_dxy0to5"].Fill(CSCTF_sim_R3 - Rs_out[index_st3])
+                  if ok_CSCTF_st4: mapTH1F["csc_R_sh_fit_ME4_dxy0to5"].Fill(CSCTF_sim_R4 - Rs_out[index_st4])
 
-                  if ok_CSCTF_st1: csc_posphi_vs_fitphi_ME1_dxy0to5.Fill(CSCTF_fit_phi1 - phis_out[index_st1])
-                  if ok_CSCTF_st2: csc_posphi_vs_fitphi_ME2_dxy0to5.Fill(CSCTF_fit_phi2 - phis_out[index_st2])
-                  if ok_CSCTF_st3: csc_posphi_vs_fitphi_ME3_dxy0to5.Fill(CSCTF_fit_phi3 - phis_out[index_st3])
-                  if ok_CSCTF_st4: csc_posphi_vs_fitphi_ME4_dxy0to5.Fill(CSCTF_fit_phi4 - phis_out[index_st4])
+                  if ok_CSCTF_st1: mapTH1F["csc_R_sh_shfit_ME1_dxy0to5"].Fill(CSCTF_sim_R1 - ShRs_out[index_st1])
+                  if ok_CSCTF_st2: mapTH1F["csc_R_sh_shfit_ME2_dxy0to5"].Fill(CSCTF_sim_R2 - ShRs_out[index_st2])
+                  if ok_CSCTF_st3: mapTH1F["csc_R_sh_shfit_ME3_dxy0to5"].Fill(CSCTF_sim_R3 - ShRs_out[index_st3])
+                  if ok_CSCTF_st4: mapTH1F["csc_R_sh_shfit_ME4_dxy0to5"].Fill(CSCTF_sim_R4 - ShRs_out[index_st4])
 
-                  if ok_CSCTF_st1: csc_posR_vs_fitR_ME1_dxy0to5.Fill(CSCTF_fit_R1 - Rs_out[index_st1])
-                  if ok_CSCTF_st2: csc_posR_vs_fitR_ME2_dxy0to5.Fill(CSCTF_fit_R2 - Rs_out[index_st2])
-                  if ok_CSCTF_st3: csc_posR_vs_fitR_ME3_dxy0to5.Fill(CSCTF_fit_R3 - Rs_out[index_st3])
-                  if ok_CSCTF_st4: csc_posR_vs_fitR_ME4_dxy0to5.Fill(CSCTF_fit_R4 - Rs_out[index_st4])
+                  if ok_CSCTF_st1: mapTH1F["csc_R_lct_fit_ME1_dxy0to5"].Fill(CSCTF_R1 - Rs_out[index_st1])
+                  if ok_CSCTF_st2: mapTH1F["csc_R_lct_fit_ME2_dxy0to5"].Fill(CSCTF_R2 - Rs_out[index_st2])
+                  if ok_CSCTF_st3: mapTH1F["csc_R_lct_fit_ME3_dxy0to5"].Fill(CSCTF_R3 - Rs_out[index_st3])
+                  if ok_CSCTF_st4: mapTH1F["csc_R_lct_fit_ME4_dxy0to5"].Fill(CSCTF_R4 - Rs_out[index_st4])
 
-                  if ok_CSCTF_st1: csc_poseta_vs_fiteta_ME1_dxy0to5.Fill(CSCTF_eta1 - get_eta_from_Z_R(Rs_out[index_st1], CSCTF_fit_z1))
-                  if ok_CSCTF_st2: csc_poseta_vs_fiteta_ME2_dxy0to5.Fill(CSCTF_eta2 - get_eta_from_Z_R(Rs_out[index_st2], CSCTF_fit_z2))
-                  if ok_CSCTF_st3: csc_poseta_vs_fiteta_ME3_dxy0to5.Fill(CSCTF_eta3 - get_eta_from_Z_R(Rs_out[index_st3], CSCTF_fit_z3))
-                  if ok_CSCTF_st4: csc_poseta_vs_fiteta_ME4_dxy0to5.Fill(CSCTF_eta4 - get_eta_from_Z_R(Rs_out[index_st4], CSCTF_fit_z4))
+                if 5 < dxy  and dxy <= 50:
+                  if ok_CSCTF_st1: mapTH1F["csc_R_sh_lct_ME1_dxy5to50"].Fill(CSCTF_sim_R1 - CSCTF_R1)
+                  if ok_CSCTF_st2: mapTH1F["csc_R_sh_lct_ME2_dxy5to50"].Fill(CSCTF_sim_R2 - CSCTF_R2)
+                  if ok_CSCTF_st3: mapTH1F["csc_R_sh_lct_ME3_dxy5to50"].Fill(CSCTF_sim_R3 - CSCTF_R3)
+                  if ok_CSCTF_st4: mapTH1F["csc_R_sh_lct_ME4_dxy5to50"].Fill(CSCTF_sim_R4 - CSCTF_R4)
 
-                if 5 < dxy  and dxy <= 50: 
-                  if ok_CSCTF_st1: csc_posx_vs_fitx_ME1_dxy5to50.Fill(CSCTF_x1 - xs_out[index_st1])
-                  if ok_CSCTF_st2: csc_posx_vs_fitx_ME2_dxy5to50.Fill(CSCTF_x2 - xs_out[index_st2])
-                  if ok_CSCTF_st3: csc_posx_vs_fitx_ME3_dxy5to50.Fill(CSCTF_x3 - xs_out[index_st3])
-                  if ok_CSCTF_st4: csc_posx_vs_fitx_ME4_dxy5to50.Fill(CSCTF_x4 - xs_out[index_st4])
-                  
-                  if ok_CSCTF_st1: csc_posy_vs_fity_ME1_dxy5to50.Fill(CSCTF_y1 - ys_out[index_st1])
-                  if ok_CSCTF_st2: csc_posy_vs_fity_ME2_dxy5to50.Fill(CSCTF_y2 - ys_out[index_st2])
-                  if ok_CSCTF_st3: csc_posy_vs_fity_ME3_dxy5to50.Fill(CSCTF_y3 - ys_out[index_st3])
-                  if ok_CSCTF_st4: csc_posy_vs_fity_ME4_dxy5to50.Fill(CSCTF_y4 - ys_out[index_st4])
+                  if ok_CSCTF_st1: mapTH1F["csc_R_sh_fit_ME1_dxy5to50"].Fill(CSCTF_sim_R1 - Rs_out[index_st1])
+                  if ok_CSCTF_st2: mapTH1F["csc_R_sh_fit_ME2_dxy5to50"].Fill(CSCTF_sim_R2 - Rs_out[index_st2])
+                  if ok_CSCTF_st3: mapTH1F["csc_R_sh_fit_ME3_dxy5to50"].Fill(CSCTF_sim_R3 - Rs_out[index_st3])
+                  if ok_CSCTF_st4: mapTH1F["csc_R_sh_fit_ME4_dxy5to50"].Fill(CSCTF_sim_R4 - Rs_out[index_st4])
 
-                  if ok_CSCTF_st1: csc_posphi_vs_fitphi_ME1_dxy5to50.Fill(CSCTF_fit_phi1 - phis_out[index_st1])
-                  if ok_CSCTF_st2: csc_posphi_vs_fitphi_ME2_dxy5to50.Fill(CSCTF_fit_phi2 - phis_out[index_st2])
-                  if ok_CSCTF_st3: csc_posphi_vs_fitphi_ME3_dxy5to50.Fill(CSCTF_fit_phi3 - phis_out[index_st3])
-                  if ok_CSCTF_st4: csc_posphi_vs_fitphi_ME4_dxy5to50.Fill(CSCTF_fit_phi4 - phis_out[index_st4])
+                  if ok_CSCTF_st1: mapTH1F["csc_R_sh_shfit_ME1_dxy5to50"].Fill(CSCTF_sim_R1 - ShRs_out[index_st1])
+                  if ok_CSCTF_st2: mapTH1F["csc_R_sh_shfit_ME2_dxy5to50"].Fill(CSCTF_sim_R2 - ShRs_out[index_st2])
+                  if ok_CSCTF_st3: mapTH1F["csc_R_sh_shfit_ME3_dxy5to50"].Fill(CSCTF_sim_R3 - ShRs_out[index_st3])
+                  if ok_CSCTF_st4: mapTH1F["csc_R_sh_shfit_ME4_dxy5to50"].Fill(CSCTF_sim_R4 - ShRs_out[index_st4])
 
-                  if ok_CSCTF_st1: csc_posR_vs_fitR_ME1_dxy5to50.Fill(CSCTF_fit_R1 - Rs_out[index_st1])
-                  if ok_CSCTF_st2: csc_posR_vs_fitR_ME2_dxy5to50.Fill(CSCTF_fit_R2 - Rs_out[index_st2])
-                  if ok_CSCTF_st3: csc_posR_vs_fitR_ME3_dxy5to50.Fill(CSCTF_fit_R3 - Rs_out[index_st3])
-                  if ok_CSCTF_st4: csc_posR_vs_fitR_ME4_dxy5to50.Fill(CSCTF_fit_R4 - Rs_out[index_st4])
+                  if ok_CSCTF_st1: mapTH1F["csc_R_lct_fit_ME1_dxy5to50"].Fill(CSCTF_R1 - Rs_out[index_st1])
+                  if ok_CSCTF_st2: mapTH1F["csc_R_lct_fit_ME2_dxy5to50"].Fill(CSCTF_R2 - Rs_out[index_st2])
+                  if ok_CSCTF_st3: mapTH1F["csc_R_lct_fit_ME3_dxy5to50"].Fill(CSCTF_R3 - Rs_out[index_st3])
+                  if ok_CSCTF_st4: mapTH1F["csc_R_lct_fit_ME4_dxy5to50"].Fill(CSCTF_R4 - Rs_out[index_st4])
 
-                  if ok_CSCTF_st1: csc_poseta_vs_fiteta_ME1_dxy5to50.Fill(CSCTF_eta1 - get_eta_from_Z_R(Rs_out[index_st1], CSCTF_fit_z1))
-                  if ok_CSCTF_st2: csc_poseta_vs_fiteta_ME2_dxy5to50.Fill(CSCTF_eta2 - get_eta_from_Z_R(Rs_out[index_st2], CSCTF_fit_z2))
-                  if ok_CSCTF_st3: csc_poseta_vs_fiteta_ME3_dxy5to50.Fill(CSCTF_eta3 - get_eta_from_Z_R(Rs_out[index_st3], CSCTF_fit_z3))
-                  if ok_CSCTF_st4: csc_poseta_vs_fiteta_ME4_dxy5to50.Fill(CSCTF_eta4 - get_eta_from_Z_R(Rs_out[index_st4], CSCTF_fit_z4))
+                if 50 < dxy and dxy <= 100:
+                  if ok_CSCTF_st1: mapTH1F["csc_R_sh_lct_ME1_dxy50to100"].Fill(CSCTF_sim_R1 - CSCTF_R1)
+                  if ok_CSCTF_st2: mapTH1F["csc_R_sh_lct_ME2_dxy50to100"].Fill(CSCTF_sim_R2 - CSCTF_R2)
+                  if ok_CSCTF_st3: mapTH1F["csc_R_sh_lct_ME3_dxy50to100"].Fill(CSCTF_sim_R3 - CSCTF_R3)
+                  if ok_CSCTF_st4: mapTH1F["csc_R_sh_lct_ME4_dxy50to100"].Fill(CSCTF_sim_R4 - CSCTF_R4)
 
-                if 50 < dxy and dxy <= 100: 
-                  if ok_CSCTF_st1: csc_posx_vs_fitx_ME1_dxy50to100.Fill(CSCTF_x1 - xs_out[index_st1])
-                  if ok_CSCTF_st2: csc_posx_vs_fitx_ME2_dxy50to100.Fill(CSCTF_x2 - xs_out[index_st2])
-                  if ok_CSCTF_st3: csc_posx_vs_fitx_ME3_dxy50to100.Fill(CSCTF_x3 - xs_out[index_st3])
-                  if ok_CSCTF_st4: csc_posx_vs_fitx_ME4_dxy50to100.Fill(CSCTF_x4 - xs_out[index_st4])
+                  if ok_CSCTF_st1: mapTH1F["csc_R_sh_fit_ME1_dxy50to100"].Fill(CSCTF_sim_R1 - Rs_out[index_st1])
+                  if ok_CSCTF_st2: mapTH1F["csc_R_sh_fit_ME2_dxy50to100"].Fill(CSCTF_sim_R2 - Rs_out[index_st2])
+                  if ok_CSCTF_st3: mapTH1F["csc_R_sh_fit_ME3_dxy50to100"].Fill(CSCTF_sim_R3 - Rs_out[index_st3])
+                  if ok_CSCTF_st4: mapTH1F["csc_R_sh_fit_ME4_dxy50to100"].Fill(CSCTF_sim_R4 - Rs_out[index_st4])
 
-                  if ok_CSCTF_st1: csc_posy_vs_fity_ME1_dxy50to100.Fill(CSCTF_y1 - ys_out[index_st1])
-                  if ok_CSCTF_st2: csc_posy_vs_fity_ME2_dxy50to100.Fill(CSCTF_y2 - ys_out[index_st2])
-                  if ok_CSCTF_st3: csc_posy_vs_fity_ME3_dxy50to100.Fill(CSCTF_y3 - ys_out[index_st3])
-                  if ok_CSCTF_st4: csc_posy_vs_fity_ME4_dxy50to100.Fill(CSCTF_y4 - ys_out[index_st4])
+                  if ok_CSCTF_st1: mapTH1F["csc_R_sh_shfit_ME1_dxy50to100"].Fill(CSCTF_sim_R1 - ShRs_out[index_st1])
+                  if ok_CSCTF_st2: mapTH1F["csc_R_sh_shfit_ME2_dxy50to100"].Fill(CSCTF_sim_R2 - ShRs_out[index_st2])
+                  if ok_CSCTF_st3: mapTH1F["csc_R_sh_shfit_ME3_dxy50to100"].Fill(CSCTF_sim_R3 - ShRs_out[index_st3])
+                  if ok_CSCTF_st4: mapTH1F["csc_R_sh_shfit_ME4_dxy50to100"].Fill(CSCTF_sim_R4 - ShRs_out[index_st4])
 
-                  if ok_CSCTF_st1: csc_posphi_vs_fitphi_ME1_dxy50to100.Fill(CSCTF_fit_phi1 - phis_out[index_st1])
-                  if ok_CSCTF_st2: csc_posphi_vs_fitphi_ME2_dxy50to100.Fill(CSCTF_fit_phi2 - phis_out[index_st2])
-                  if ok_CSCTF_st3: csc_posphi_vs_fitphi_ME3_dxy50to100.Fill(CSCTF_fit_phi3 - phis_out[index_st3])
-                  if ok_CSCTF_st4: csc_posphi_vs_fitphi_ME4_dxy50to100.Fill(CSCTF_fit_phi4 - phis_out[index_st4])
+                  if ok_CSCTF_st1: mapTH1F["csc_R_lct_fit_ME1_dxy50to100"].Fill(CSCTF_R1 - Rs_out[index_st1])
+                  if ok_CSCTF_st2: mapTH1F["csc_R_lct_fit_ME2_dxy50to100"].Fill(CSCTF_R2 - Rs_out[index_st2])
+                  if ok_CSCTF_st3: mapTH1F["csc_R_lct_fit_ME3_dxy50to100"].Fill(CSCTF_R3 - Rs_out[index_st3])
+                  if ok_CSCTF_st4: mapTH1F["csc_R_lct_fit_ME4_dxy50to100"].Fill(CSCTF_R4 - Rs_out[index_st4])
 
-                  if ok_CSCTF_st1: csc_posR_vs_fitR_ME1_dxy50to100.Fill(CSCTF_fit_R1 - Rs_out[index_st1])
-                  if ok_CSCTF_st2: csc_posR_vs_fitR_ME2_dxy50to100.Fill(CSCTF_fit_R2 - Rs_out[index_st2])
-                  if ok_CSCTF_st3: csc_posR_vs_fitR_ME3_dxy50to100.Fill(CSCTF_fit_R3 - Rs_out[index_st3])
-                  if ok_CSCTF_st4: csc_posR_vs_fitR_ME4_dxy50to100.Fill(CSCTF_fit_R4 - Rs_out[index_st4])
-
-                  if ok_CSCTF_st1: csc_poseta_vs_fiteta_ME1_dxy50to100.Fill(CSCTF_eta1 - get_eta_from_Z_R(Rs_out[index_st1], CSCTF_fit_z1))
-                  if ok_CSCTF_st2: csc_poseta_vs_fiteta_ME2_dxy50to100.Fill(CSCTF_eta2 - get_eta_from_Z_R(Rs_out[index_st2], CSCTF_fit_z2))
-                  if ok_CSCTF_st3: csc_poseta_vs_fiteta_ME3_dxy50to100.Fill(CSCTF_eta3 - get_eta_from_Z_R(Rs_out[index_st3], CSCTF_fit_z3))
-                  if ok_CSCTF_st4: csc_poseta_vs_fiteta_ME4_dxy50to100.Fill(CSCTF_eta4 - get_eta_from_Z_R(Rs_out[index_st4], CSCTF_fit_z4))
 
 
                 ## plot with position resolution of the CSC stubs
@@ -2685,7 +2723,7 @@ if __name__ == "__main__":
       hist = thisMap[key]
       hist.Draw(option)
       hist.SetTitle(title)
-      if saveHistAsROOT:
+      if saveHistAsROOT and False:
         hist.SaveAs(targetDir + key + "_hist.root")
       c.SaveAs(targetDir + key + ".png")
 
@@ -2971,94 +3009,18 @@ if __name__ == "__main__":
     makeSimplePlot(GenMuEta3_MS2, targetDir + "GenMuEta3_MS2.png", ";Muon #eta at 2nd muon station; Entries", "")
     makeSimplePlot(GenMuEta_MS2, targetDir + "GenMuEta_MS2.png", ";Muon #eta at 2nd muon station; Entries", "")
 
-
-    makeSimplePlot(csc_posx_vs_fitx_ME1_dxy0to5, targetDir + "csc_posx_vs_fitx_ME1_dxy0to5.png", "|dxy|#leq5 cm;ME1 x(LCT) - x(Fit);Entries","")
-    makeSimplePlot(csc_posx_vs_fitx_ME2_dxy0to5, targetDir + "csc_posx_vs_fitx_ME2_dxy0to5.png", "|dxy|#leq5 cm;ME2 x(LCT) - x(Fit);Entries","")
-    makeSimplePlot(csc_posx_vs_fitx_ME3_dxy0to5, targetDir + "csc_posx_vs_fitx_ME3_dxy0to5.png", "|dxy|#leq5 cm;ME3 x(LCT) - x(Fit);Entries","")
-    makeSimplePlot(csc_posx_vs_fitx_ME4_dxy0to5, targetDir + "csc_posx_vs_fitx_ME4_dxy0to5.png", "|dxy|#leq5 cm;ME4 x(LCT) - x(Fit);Entries","")
-
-    makeSimplePlot(csc_posx_vs_fitx_ME1_dxy5to50, targetDir + "csc_posx_vs_fitx_ME1_dxy5to50.png", "5<|dxy|#leq50 cm;ME1 x(LCT) - x(Fit);Entries","")
-    makeSimplePlot(csc_posx_vs_fitx_ME2_dxy5to50, targetDir + "csc_posx_vs_fitx_ME2_dxy5to50.png", "5<|dxy|#leq50 cm;ME2 x(LCT) - x(Fit);Entries","")
-    makeSimplePlot(csc_posx_vs_fitx_ME3_dxy5to50, targetDir + "csc_posx_vs_fitx_ME3_dxy5to50.png", "5<|dxy|#leq50 cm;ME3 x(LCT) - x(Fit);Entries","")
-    makeSimplePlot(csc_posx_vs_fitx_ME4_dxy5to50, targetDir + "csc_posx_vs_fitx_ME4_dxy5to50.png", "5<|dxy|#leq50 cm;ME4 x(LCT) - x(Fit);Entries","")
-
-    makeSimplePlot(csc_posx_vs_fitx_ME1_dxy50to100, targetDir + "csc_posx_vs_fitx_ME1_dxy50to100.png", "50<|dxy|#leq100 cm;ME1 x(LCT) - x(Fit);Entries","")
-    makeSimplePlot(csc_posx_vs_fitx_ME2_dxy50to100, targetDir + "csc_posx_vs_fitx_ME2_dxy50to100.png", "50<|dxy|#leq100 cm;ME2 x(LCT) - x(Fit);Entries","")
-    makeSimplePlot(csc_posx_vs_fitx_ME3_dxy50to100, targetDir + "csc_posx_vs_fitx_ME3_dxy50to100.png", "50<|dxy|#leq100 cm;ME3 x(LCT) - x(Fit);Entries","")
-    makeSimplePlot(csc_posx_vs_fitx_ME4_dxy50to100, targetDir + "csc_posx_vs_fitx_ME4_dxy50to100.png", "50<|dxy|#leq100 cm;ME4 x(LCT) - x(Fit);Entries","")
+    makeSimplePlot(GenMu_SIM_dR, targetDir + "GenMu_SIM_dR.png", ";Muon dR; Entries", "")
 
 
-    makeSimplePlot(csc_posy_vs_fity_ME1_dxy0to5, targetDir + "csc_posy_vs_fity_ME1_dxy0to5.png", "|dxy|#leq5 cm;ME1 y(LCT) - y(Fit);Entries","")
-    makeSimplePlot(csc_posy_vs_fity_ME2_dxy0to5, targetDir + "csc_posy_vs_fity_ME2_dxy0to5.png", "|dxy|#leq5 cm;ME2 y(LCT) - y(Fit);Entries","")
-    makeSimplePlot(csc_posy_vs_fity_ME3_dxy0to5, targetDir + "csc_posy_vs_fity_ME3_dxy0to5.png", "|dxy|#leq5 cm;ME3 y(LCT) - y(Fit);Entries","")
-    makeSimplePlot(csc_posy_vs_fity_ME4_dxy0to5, targetDir + "csc_posy_vs_fity_ME4_dxy0to5.png", "|dxy|#leq5 cm;ME4 y(LCT) - y(Fit);Entries","")
-
-    makeSimplePlot(csc_posy_vs_fity_ME1_dxy5to50, targetDir + "csc_posy_vs_fity_ME1_dxy5to50.png", "5<|dxy|#leq50 cm;ME1 y(LCT) - y(Fit);Entries","")
-    makeSimplePlot(csc_posy_vs_fity_ME2_dxy5to50, targetDir + "csc_posy_vs_fity_ME2_dxy5to50.png", "5<|dxy|#leq50 cm;ME2 y(LCT) - y(Fit);Entries","")
-    makeSimplePlot(csc_posy_vs_fity_ME3_dxy5to50, targetDir + "csc_posy_vs_fity_ME3_dxy5to50.png", "5<|dxy|#leq50 cm;ME3 y(LCT) - y(Fit);Entries","")
-    makeSimplePlot(csc_posy_vs_fity_ME4_dxy5to50, targetDir + "csc_posy_vs_fity_ME4_dxy5to50.png", "5<|dxy|#leq50 cm;ME4 y(LCT) - y(Fit);Entries","")
-
-    makeSimplePlot(csc_posy_vs_fity_ME1_dxy50to100, targetDir + "csc_posy_vs_fity_ME1_dxy50to100.png", "50<|dxy|#leq100 cm;ME1 y(LCT) - y(Fit);Entries","")
-    makeSimplePlot(csc_posy_vs_fity_ME2_dxy50to100, targetDir + "csc_posy_vs_fity_ME2_dxy50to100.png", "50<|dxy|#leq100 cm;ME2 y(LCT) - y(Fit);Entries","")
-    makeSimplePlot(csc_posy_vs_fity_ME3_dxy50to100, targetDir + "csc_posy_vs_fity_ME3_dxy50to100.png", "50<|dxy|#leq100 cm;ME3 y(LCT) - y(Fit);Entries","")
-    makeSimplePlot(csc_posy_vs_fity_ME4_dxy50to100, targetDir + "csc_posy_vs_fity_ME4_dxy50to100.png", "50<|dxy|#leq100 cm;ME4 y(LCT) - y(Fit);Entries","")
-
-
-    makeSimplePlot(csc_posphi_vs_fitphi_ME1_dxy0to5, targetDir + "csc_posphi_vs_fitphi_ME1_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME1 #phi(LCT) - #phi(Fit);Entries","")
-    makeSimplePlot(csc_posphi_vs_fitphi_ME2_dxy0to5, targetDir + "csc_posphi_vs_fitphi_ME2_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME2 #phi(LCT) - #phi(Fit);Entries","")
-    makeSimplePlot(csc_posphi_vs_fitphi_ME3_dxy0to5, targetDir + "csc_posphi_vs_fitphi_ME3_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME3 #phi(LCT) - #phi(Fit);Entries","")
-    makeSimplePlot(csc_posphi_vs_fitphi_ME4_dxy0to5, targetDir + "csc_posphi_vs_fitphi_ME4_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME4 #phi(LCT) - #phi(Fit);Entries","")
-
-    makeSimplePlot(csc_posphi_vs_fitphi_ME1_dxy5to50, targetDir + "csc_posphi_vs_fitphi_ME1_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME1 #phi(LCT) - #phi(Fit);Entries","")
-    makeSimplePlot(csc_posphi_vs_fitphi_ME2_dxy5to50, targetDir + "csc_posphi_vs_fitphi_ME2_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME2 #phi(LCT) - #phi(Fit);Entries","")
-    makeSimplePlot(csc_posphi_vs_fitphi_ME3_dxy5to50, targetDir + "csc_posphi_vs_fitphi_ME3_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME3 #phi(LCT) - #phi(Fit);Entries","")
-    makeSimplePlot(csc_posphi_vs_fitphi_ME4_dxy5to50, targetDir + "csc_posphi_vs_fitphi_ME4_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME4 #phi(LCT) - #phi(Fit);Entries","")
-
-    makeSimplePlot(csc_posphi_vs_fitphi_ME1_dxy50to100, targetDir + "csc_posphi_vs_fitphi_ME1_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME1 #phi(LCT) - #phi(Fit);Entries","")
-    makeSimplePlot(csc_posphi_vs_fitphi_ME2_dxy50to100, targetDir + "csc_posphi_vs_fitphi_ME2_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME2 #phi(LCT) - #phi(Fit);Entries","")
-    makeSimplePlot(csc_posphi_vs_fitphi_ME3_dxy50to100, targetDir + "csc_posphi_vs_fitphi_ME3_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME3 #phi(LCT) - #phi(Fit);Entries","")
-    makeSimplePlot(csc_posphi_vs_fitphi_ME4_dxy50to100, targetDir + "csc_posphi_vs_fitphi_ME4_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME4 #phi(LCT) - #phi(Fit);Entries","")
-
-
-    makeSimplePlot(csc_posR_vs_fitR_ME1_dxy0to5, targetDir + "csc_posR_vs_fitR_ME1_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME1 #R(LCT) - #R(Fit);Entries","")
-    makeSimplePlot(csc_posR_vs_fitR_ME2_dxy0to5, targetDir + "csc_posR_vs_fitR_ME2_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME2 #R(LCT) - #R(Fit);Entries","")
-    makeSimplePlot(csc_posR_vs_fitR_ME3_dxy0to5, targetDir + "csc_posR_vs_fitR_ME3_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME3 #R(LCT) - #R(Fit);Entries","")
-    makeSimplePlot(csc_posR_vs_fitR_ME4_dxy0to5, targetDir + "csc_posR_vs_fitR_ME4_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME4 #R(LCT) - #R(Fit);Entries","")
-
-    makeSimplePlot(csc_posR_vs_fitR_ME1_dxy5to50, targetDir + "csc_posR_vs_fitR_ME1_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME1 #R(LCT) - #R(Fit);Entries","")
-    makeSimplePlot(csc_posR_vs_fitR_ME2_dxy5to50, targetDir + "csc_posR_vs_fitR_ME2_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME2 #R(LCT) - #R(Fit);Entries","")
-    makeSimplePlot(csc_posR_vs_fitR_ME3_dxy5to50, targetDir + "csc_posR_vs_fitR_ME3_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME3 #R(LCT) - #R(Fit);Entries","")
-    makeSimplePlot(csc_posR_vs_fitR_ME4_dxy5to50, targetDir + "csc_posR_vs_fitR_ME4_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME4 #R(LCT) - #R(Fit);Entries","")
-
-    makeSimplePlot(csc_posR_vs_fitR_ME1_dxy50to100, targetDir + "csc_posR_vs_fitR_ME1_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME1 #R(LCT) - #R(Fit);Entries","")
-    makeSimplePlot(csc_posR_vs_fitR_ME2_dxy50to100, targetDir + "csc_posR_vs_fitR_ME2_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME2 #R(LCT) - #R(Fit);Entries","")
-    makeSimplePlot(csc_posR_vs_fitR_ME3_dxy50to100, targetDir + "csc_posR_vs_fitR_ME3_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME3 #R(LCT) - #R(Fit);Entries","")
-    makeSimplePlot(csc_posR_vs_fitR_ME4_dxy50to100, targetDir + "csc_posR_vs_fitR_ME4_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME4 #R(LCT) - #R(Fit);Entries","")
-
-
-    makeSimplePlot(csc_poseta_vs_fiteta_ME1_dxy0to5, targetDir + "csc_poseta_vs_fiteta_ME1_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME1 #eta(LCT) - #eta(Fit);Entries","")
-    makeSimplePlot(csc_poseta_vs_fiteta_ME2_dxy0to5, targetDir + "csc_poseta_vs_fiteta_ME2_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME2 #eta(LCT) - #eta(Fit);Entries","")
-    makeSimplePlot(csc_poseta_vs_fiteta_ME3_dxy0to5, targetDir + "csc_poseta_vs_fiteta_ME3_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME3 #eta(LCT) - #eta(Fit);Entries","")
-    makeSimplePlot(csc_poseta_vs_fiteta_ME4_dxy0to5, targetDir + "csc_poseta_vs_fiteta_ME4_dxy0to5.png", "Straight line fit to stubs, |dxy|#leq5 cm;ME4 #eta(LCT) - #eta(Fit);Entries","")
-
-    makeSimplePlot(csc_poseta_vs_fiteta_ME1_dxy5to50, targetDir + "csc_poseta_vs_fiteta_ME1_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME1 #eta(LCT) - #eta(Fit);Entries","")
-    makeSimplePlot(csc_poseta_vs_fiteta_ME2_dxy5to50, targetDir + "csc_poseta_vs_fiteta_ME2_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME2 #eta(LCT) - #eta(Fit);Entries","")
-    makeSimplePlot(csc_poseta_vs_fiteta_ME3_dxy5to50, targetDir + "csc_poseta_vs_fiteta_ME3_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME3 #eta(LCT) - #eta(Fit);Entries","")
-    makeSimplePlot(csc_poseta_vs_fiteta_ME4_dxy5to50, targetDir + "csc_poseta_vs_fiteta_ME4_dxy5to50.png", "Straight line fit to stubs, 5<|dxy|#leq50 cm;ME4 #eta(LCT) - #eta(Fit);Entries","")
-
-    makeSimplePlot(csc_poseta_vs_fiteta_ME1_dxy50to100, targetDir + "csc_poseta_vs_fiteta_ME1_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME1 #eta(LCT) - #eta(Fit);Entries","")
-    makeSimplePlot(csc_poseta_vs_fiteta_ME2_dxy50to100, targetDir + "csc_poseta_vs_fiteta_ME2_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME2 #eta(LCT) - #eta(Fit);Entries","")
-    makeSimplePlot(csc_poseta_vs_fiteta_ME3_dxy50to100, targetDir + "csc_poseta_vs_fiteta_ME3_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME3 #eta(LCT) - #eta(Fit);Entries","")
-    makeSimplePlot(csc_poseta_vs_fiteta_ME4_dxy50to100, targetDir + "csc_poseta_vs_fiteta_ME4_dxy50to100.png", "Straight line fit to stubs, 50<|dxy|#leq100 cm;ME4 #eta(LCT) - #eta(Fit);Entries","")
-
-
-    makeSimplePlot(chi2ndf_posx_dxy0to5, targetDir + "chi2ndf_posx_dxy0to5.png", "0<|dxy|#leq5 cm;#chi^{2}/NDF;Entries","")
-    makeSimplePlot(chi2ndf_posx_dxy5to50, targetDir + "chi2ndf_posx_dxy5to50.png", "5<|dxy|#leq50 cm;#chi^{2}/NDF;Entries","")
-    makeSimplePlot(chi2ndf_posx_dxy50to100, targetDir + "chi2ndf_posx_dxy50to100.png", "50<|dxy|#leq100 cm;#chi^{2}/NDF;Entries","")
-
-    makeSimplePlot(chi2ndf_posy_dxy0to5, targetDir + "chi2ndf_posy_dxy0to5.png", "0<|dxy|#leq5 cm;#chi^{2}/NDF;Entries","")
-    makeSimplePlot(chi2ndf_posy_dxy5to50, targetDir + "chi2ndf_posy_dxy5to50.png", "5<|dxy|#leq50 cm;#chi^{2}/NDF;Entries","")
-    makeSimplePlot(chi2ndf_posy_dxy50to100, targetDir + "chi2ndf_posy_dxy50to100.png", "50<|dxy|#leq100 cm;#chi^{2}/NDF;Entries","")
+    for stat in ['ME1', 'ME2', 'ME3', 'ME4']:
+      for pp,qq in zip(dxyRanges, dxyRangesString):
+        makeSimplePlotMap(mapTH1F, "csc_R_sh_lct_" + stat + pp, "Straight line fit to stubs, " + qq + ";" + stat + " R(SIM) - R(LCT) [cm];Entries","")
+        makeSimplePlotMap(mapTH1F, "csc_R_sh_fit_" + stat + pp, "Straight line fit to stubs, " + qq + ";" + stat + " R(SIM) - R(Fit) [cm];Entries","")
+        makeSimplePlotMap(mapTH1F, "csc_R_lct_fit_" + stat + pp, "Straight line fit to stubs, " + qq + ";" + stat + " R(LCT) - R(Fit) [cm];Entries","")
+        makeSimplePlotMap(mapTH1F, "csc_R_sh_shfit_" + stat + pp, "Straight line fit to simhits, " + qq + ";" + stat + " R(SIM) - R(SIM Fit) [cm];Entries","")
+        makeSimplePlotMap(mapTH1F, "csc_eta_sh_lct_" + stat + pp, "Straight line fit to stubs, " + qq + ";" + stat + " #eta(SIM) - #eta(LCT);Entries","")
+        makeSimplePlotMap(mapTH1F, "csc_eta_sh_fit_" + stat + pp, "Straight line fit to stubs, " + qq + ";" + stat + " #eta(SIM) - #eta(Fit);Entries","")
+        makeSimplePlotMap(mapTH1F, "csc_eta_lct_fit_" + stat + pp, "Straight line fit to stubs, " + qq + ";" + stat + " #eta(LCT) - #eta(Fit);Entries","")
 
     ## CSC position resolutions
     makeSimplePlotGaussianFitMap("csc_pos_sh_lct_ME1b_16to18", 
@@ -3088,199 +3050,204 @@ if __name__ == "__main__":
                               "#Phi resolution in ME21 chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
 
 
-
-    makeSimplePlotGaussianFit(csc_pos_sh_lct_ME1b_16to18_even, targetDir + "csc_pos_sh_lct_ME1b_16to18_even.png", 
-                   "#Phi resolution in ME1b even chamber, 1.6<|#eta|<1.8;#Phi(LCT)-#Phi(SimHit); Entries","")
-    makeSimplePlotGaussianFit(csc_pos_sh_lct_ME1b_18to20_even, targetDir + "csc_pos_sh_lct_ME1b_18to20_even.png", 
-                   "#Phi resolution in ME1b even chamber, 1.8<|#eta|<2.0;#Phi(LCT)-#Phi(SimHit); Entries","")
-    makeSimplePlotGaussianFit(csc_pos_sh_lct_ME1b_20to22_even, targetDir + "csc_pos_sh_lct_ME1b_20to22_even.png", 
-                   "#Phi resolution in ME1b even chamber, 2.0<|#eta|<2.2;#Phi(LCT)-#Phi(SimHit); Entries","")
-    makeSimplePlotGaussianFit(csc_pos_sh_lct_ME1b_16to18_odd, targetDir + "csc_pos_sh_lct_ME1b_16to18_odd.png", 
-                   "#Phi resolution in ME1b odd chamber, 1.6<|#eta|<1.8;#Phi(LCT)-#Phi(SimHit); Entries","")
-    makeSimplePlotGaussianFit(csc_pos_sh_lct_ME1b_18to20_odd, targetDir + "csc_pos_sh_lct_ME1b_18to20_odd.png", 
-                   "#Phi resolution in ME1b odd chamber, 1.8<|#eta|<2.0;#Phi(LCT)-#Phi(SimHit); Entries","")
-    makeSimplePlotGaussianFit(csc_pos_sh_lct_ME1b_20to22_odd, targetDir + "csc_pos_sh_lct_ME1b_20to22_odd.png", 
-                   "#Phi resolution in ME1b odd chamber, 2.0<|#eta|<2.2;#Phi(LCT)-#Phi(SimHit); Entries","")
-
-    makeSimplePlotGaussianFit(csc_pos_sh_fit_ME1b_16to18_even, targetDir + "csc_pos_sh_fit_ME1b_16to18_even.png", 
-                   "#Phi resolution in ME1b even chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
-    makeSimplePlotGaussianFit(csc_pos_sh_fit_ME1b_18to20_even, targetDir + "csc_pos_sh_fit_ME1b_18to20_even.png", 
-                   "#Phi resolution in ME1b even chamber, 1.8<|#eta|<2.0;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
-    makeSimplePlotGaussianFit(csc_pos_sh_fit_ME1b_20to22_even, targetDir + "csc_pos_sh_fit_ME1b_20to22_even.png", 
-                   "#Phi resolution in ME1b even chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
-    makeSimplePlotGaussianFit(csc_pos_sh_fit_ME1b_16to18_odd, targetDir + "csc_pos_sh_fit_ME1b_16to18_odd.png", 
-                   "#Phi resolution in ME1b odd chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
-    makeSimplePlotGaussianFit(csc_pos_sh_fit_ME1b_18to20_odd, targetDir + "csc_pos_sh_fit_ME1b_18to20_odd.png", 
-                   "#Phi resolution in ME1b odd chamber, 1.8<|#eta|<2.0;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
-    makeSimplePlotGaussianFit(csc_pos_sh_fit_ME1b_20to22_odd, targetDir + "csc_pos_sh_fit_ME1b_20to22_odd.png", 
-                   "#Phi resolution in ME1b odd chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
-
-
-
-    makeSimplePlot(csc_pos_sh_vs_lct_ME1b_16to18_even, targetDir + "csc_pos_sh_vs_lct_ME1b_16to18_even.png", 
-                   "#Phi resolution in ME1b even chamber, 1.6<|#eta|<1.8;#Phi(LCT);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_lct_ME1b_18to20_even, targetDir + "csc_pos_sh_vs_lct_ME1b_18to20_even.png", 
-                   "#Phi resolution in ME1b even chamber, 1.8<|#eta|<2.0;#Phi(LCT);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_lct_ME1b_20to22_even, targetDir + "csc_pos_sh_vs_lct_ME1b_20to22_even.png", 
-                   "#Phi resolution in ME1b even chamber, 2.0<|#eta|<2.2;#Phi(LCT);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_lct_ME1b_16to18_odd, targetDir + "csc_pos_sh_vs_lct_ME1b_16to18_odd.png", 
-                   "#Phi resolution in ME1b odd chamber, 1.6<|#eta|<1.8;#Phi(LCT);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_lct_ME1b_18to20_odd, targetDir + "csc_pos_sh_vs_lct_ME1b_18to20_odd.png", 
-                   "#Phi resolution in ME1b odd chamber, 1.8<|#eta|<2.0;#Phi(LCT);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_lct_ME1b_20to22_odd, targetDir + "csc_pos_sh_vs_lct_ME1b_20to22_odd.png", 
-                   "#Phi resolution in ME1b odd chamber, 2.0<|#eta|<2.2;#Phi(LCT);#Phi(SimHit)","")
-
-    makeSimplePlot(csc_pos_sh_vs_fit_ME1b_16to18_even, targetDir + "csc_pos_sh_vs_fit_ME1b_16to18_even.png", 
-                   "#Phi resolution in ME1b even chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_fit_ME1b_18to20_even, targetDir + "csc_pos_sh_vs_fit_ME1b_18to20_even.png", 
-                   "#Phi resolution in ME1b even chamber, 1.8<|#eta|<2.0;#Phi(Fit to digis);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_fit_ME1b_20to22_even, targetDir + "csc_pos_sh_vs_fit_ME1b_20to22_even.png", 
-                   "#Phi resolution in ME1b even chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_fit_ME1b_16to18_odd, targetDir + "csc_pos_sh_vs_fit_ME1b_16to18_odd.png", 
-                   "#Phi resolution in ME1b odd chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_fit_ME1b_18to20_odd, targetDir + "csc_pos_sh_vs_fit_ME1b_18to20_odd.png", 
-                   "#Phi resolution in ME1b odd chamber, 1.8<|#eta|<2.0;#Phi(Fit to digis);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_fit_ME1b_20to22_odd, targetDir + "csc_pos_sh_vs_fit_ME1b_20to22_odd.png", 
-                   "#Phi resolution in ME1b odd chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis);#Phi(SimHit)","")
+    produceLCTPhiResolutionPlots = False
+    if produceLCTPhiResolutionPlots:
+      makeSimplePlotGaussianFit(csc_pos_sh_lct_ME1b_16to18_even, targetDir + "csc_pos_sh_lct_ME1b_16to18_even.png", 
+                                "#Phi resolution in ME1b even chamber, 1.6<|#eta|<1.8;#Phi(LCT)-#Phi(SimHit); Entries","")
+      makeSimplePlotGaussianFit(csc_pos_sh_lct_ME1b_18to20_even, targetDir + "csc_pos_sh_lct_ME1b_18to20_even.png", 
+                                "#Phi resolution in ME1b even chamber, 1.8<|#eta|<2.0;#Phi(LCT)-#Phi(SimHit); Entries","")
+      makeSimplePlotGaussianFit(csc_pos_sh_lct_ME1b_20to22_even, targetDir + "csc_pos_sh_lct_ME1b_20to22_even.png", 
+                                "#Phi resolution in ME1b even chamber, 2.0<|#eta|<2.2;#Phi(LCT)-#Phi(SimHit); Entries","")
+      makeSimplePlotGaussianFit(csc_pos_sh_lct_ME1b_16to18_odd, targetDir + "csc_pos_sh_lct_ME1b_16to18_odd.png", 
+                                "#Phi resolution in ME1b odd chamber, 1.6<|#eta|<1.8;#Phi(LCT)-#Phi(SimHit); Entries","")
+      makeSimplePlotGaussianFit(csc_pos_sh_lct_ME1b_18to20_odd, targetDir + "csc_pos_sh_lct_ME1b_18to20_odd.png", 
+                                "#Phi resolution in ME1b odd chamber, 1.8<|#eta|<2.0;#Phi(LCT)-#Phi(SimHit); Entries","")
+      makeSimplePlotGaussianFit(csc_pos_sh_lct_ME1b_20to22_odd, targetDir + "csc_pos_sh_lct_ME1b_20to22_odd.png", 
+                                "#Phi resolution in ME1b odd chamber, 2.0<|#eta|<2.2;#Phi(LCT)-#Phi(SimHit); Entries","")
+      
+      makeSimplePlotGaussianFit(csc_pos_sh_fit_ME1b_16to18_even, targetDir + "csc_pos_sh_fit_ME1b_16to18_even.png", 
+                                "#Phi resolution in ME1b even chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
+      makeSimplePlotGaussianFit(csc_pos_sh_fit_ME1b_18to20_even, targetDir + "csc_pos_sh_fit_ME1b_18to20_even.png", 
+                                "#Phi resolution in ME1b even chamber, 1.8<|#eta|<2.0;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
+      makeSimplePlotGaussianFit(csc_pos_sh_fit_ME1b_20to22_even, targetDir + "csc_pos_sh_fit_ME1b_20to22_even.png", 
+                                "#Phi resolution in ME1b even chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
+      makeSimplePlotGaussianFit(csc_pos_sh_fit_ME1b_16to18_odd, targetDir + "csc_pos_sh_fit_ME1b_16to18_odd.png", 
+                                "#Phi resolution in ME1b odd chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
+      makeSimplePlotGaussianFit(csc_pos_sh_fit_ME1b_18to20_odd, targetDir + "csc_pos_sh_fit_ME1b_18to20_odd.png", 
+                                "#Phi resolution in ME1b odd chamber, 1.8<|#eta|<2.0;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
+      makeSimplePlotGaussianFit(csc_pos_sh_fit_ME1b_20to22_odd, targetDir + "csc_pos_sh_fit_ME1b_20to22_odd.png", 
+                                "#Phi resolution in ME1b odd chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
+      
 
 
-
-    makeSimplePlotGaussianFit(csc_pos_sh_lct_ME21_16to18_even, targetDir + "csc_pos_sh_lct_ME21_16to18_even.png", 
-                   "#Phi resolution in ME21 even chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis);#Phi(SimHit)","")
-    makeSimplePlotGaussianFit(csc_pos_sh_lct_ME21_18to20_even, targetDir + "csc_pos_sh_lct_ME21_18to20_even.png", 
-                   "#Phi resolution in ME21 even chamber, 1.8<|#eta|<2.0;#Phi(LCT)-#Phi(SimHit); Entries","")
-    makeSimplePlotGaussianFit(csc_pos_sh_lct_ME21_20to22_even, targetDir + "csc_pos_sh_lct_ME21_20to22_even.png", 
-                   "#Phi resolution in ME21 even chamber, 2.0<|#eta|<2.2;#Phi(LCT)-#Phi(SimHit); Entries","")
-    makeSimplePlotGaussianFit(csc_pos_sh_lct_ME21_16to18_odd, targetDir + "csc_pos_sh_lct_ME21_16to18_odd.png", 
-                   "#Phi resolution in ME21 odd chamber, 1.6<|#eta|<1.8;#Phi(LCT)-#Phi(SimHit); Entries","")
-    makeSimplePlotGaussianFit(csc_pos_sh_lct_ME21_18to20_odd, targetDir + "csc_pos_sh_lct_ME21_18to20_odd.png", 
-                   "#Phi resolution in ME21 odd chamber, 1.8<|#eta|<2.0;#Phi(LCT)-#Phi(SimHit); Entries","")
-    makeSimplePlotGaussianFit(csc_pos_sh_lct_ME21_20to22_odd, targetDir + "csc_pos_sh_lct_ME21_20to22_odd.png", 
-                   "#Phi resolution in ME21 odd chamber, 2.0<|#eta|<2.2;#Phi(LCT)-#Phi(SimHit); Entries","")
-
-    makeSimplePlotGaussianFit(csc_pos_sh_fit_ME21_16to18_even, targetDir + "csc_pos_sh_fit_ME21_16to18_even.png", 
-                   "#Phi resolution in ME21 even chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
-    makeSimplePlotGaussianFit(csc_pos_sh_fit_ME21_18to20_even, targetDir + "csc_pos_sh_fit_ME21_18to20_even.png", 
-                   "#Phi resolution in ME21 even chamber, 1.8<|#eta|<2.0;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
-    makeSimplePlotGaussianFit(csc_pos_sh_fit_ME21_20to22_even, targetDir + "csc_pos_sh_fit_ME21_20to22_even.png", 
-                   "#Phi resolution in ME21 even chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
-    makeSimplePlotGaussianFit(csc_pos_sh_fit_ME21_16to18_odd, targetDir + "csc_pos_sh_fit_ME21_16to18_odd.png", 
-                   "#Phi resolution in ME21 odd chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
-    makeSimplePlotGaussianFit(csc_pos_sh_fit_ME21_18to20_odd, targetDir + "csc_pos_sh_fit_ME21_18to20_odd.png", 
-                   "#Phi resolution in ME21 odd chamber, 1.8<|#eta|<2.0;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
-    makeSimplePlotGaussianFit(csc_pos_sh_fit_ME21_20to22_odd, targetDir + "csc_pos_sh_fit_ME21_20to22_odd.png", 
-                   "#Phi resolution in ME21 odd chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
+      makeSimplePlot(csc_pos_sh_vs_lct_ME1b_16to18_even, targetDir + "csc_pos_sh_vs_lct_ME1b_16to18_even.png", 
+                     "#Phi resolution in ME1b even chamber, 1.6<|#eta|<1.8;#Phi(LCT);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_lct_ME1b_18to20_even, targetDir + "csc_pos_sh_vs_lct_ME1b_18to20_even.png", 
+                     "#Phi resolution in ME1b even chamber, 1.8<|#eta|<2.0;#Phi(LCT);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_lct_ME1b_20to22_even, targetDir + "csc_pos_sh_vs_lct_ME1b_20to22_even.png", 
+                     "#Phi resolution in ME1b even chamber, 2.0<|#eta|<2.2;#Phi(LCT);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_lct_ME1b_16to18_odd, targetDir + "csc_pos_sh_vs_lct_ME1b_16to18_odd.png", 
+                     "#Phi resolution in ME1b odd chamber, 1.6<|#eta|<1.8;#Phi(LCT);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_lct_ME1b_18to20_odd, targetDir + "csc_pos_sh_vs_lct_ME1b_18to20_odd.png", 
+                     "#Phi resolution in ME1b odd chamber, 1.8<|#eta|<2.0;#Phi(LCT);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_lct_ME1b_20to22_odd, targetDir + "csc_pos_sh_vs_lct_ME1b_20to22_odd.png", 
+                     "#Phi resolution in ME1b odd chamber, 2.0<|#eta|<2.2;#Phi(LCT);#Phi(SimHit)","")
+      
+      makeSimplePlot(csc_pos_sh_vs_fit_ME1b_16to18_even, targetDir + "csc_pos_sh_vs_fit_ME1b_16to18_even.png", 
+                     "#Phi resolution in ME1b even chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_fit_ME1b_18to20_even, targetDir + "csc_pos_sh_vs_fit_ME1b_18to20_even.png", 
+                     "#Phi resolution in ME1b even chamber, 1.8<|#eta|<2.0;#Phi(Fit to digis);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_fit_ME1b_20to22_even, targetDir + "csc_pos_sh_vs_fit_ME1b_20to22_even.png", 
+                     "#Phi resolution in ME1b even chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_fit_ME1b_16to18_odd, targetDir + "csc_pos_sh_vs_fit_ME1b_16to18_odd.png", 
+                     "#Phi resolution in ME1b odd chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_fit_ME1b_18to20_odd, targetDir + "csc_pos_sh_vs_fit_ME1b_18to20_odd.png", 
+                     "#Phi resolution in ME1b odd chamber, 1.8<|#eta|<2.0;#Phi(Fit to digis);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_fit_ME1b_20to22_odd, targetDir + "csc_pos_sh_vs_fit_ME1b_20to22_odd.png", 
+                     "#Phi resolution in ME1b odd chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis);#Phi(SimHit)","")
 
 
 
-    makeSimplePlot(csc_pos_sh_vs_lct_ME21_16to18_even, targetDir + "csc_pos_sh_vs_lct_ME21_16to18_even.png", 
-                   "#Phi resolution in ME21 even chamber, 1.6<|#eta|<1.8;#Phi(LCT);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_lct_ME21_18to20_even, targetDir + "csc_pos_sh_vs_lct_ME21_18to20_even.png", 
-                   "#Phi resolution in ME21 even chamber, 1.8<|#eta|<2.0;#Phi(LCT);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_lct_ME21_20to22_even, targetDir + "csc_pos_sh_vs_lct_ME21_20to22_even.png", 
-                   "#Phi resolution in ME21 even chamber, 2.0<|#eta|<2.2;#Phi(LCT);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_lct_ME21_16to18_odd, targetDir + "csc_pos_sh_vs_lct_ME21_16to18_odd.png", 
-                   "#Phi resolution in ME21 odd chamber, 1.6<|#eta|<1.8;#Phi(LCT);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_lct_ME21_18to20_odd, targetDir + "csc_pos_sh_vs_lct_ME21_18to20_odd.png", 
-                   "#Phi resolution in ME21 odd chamber, 1.8<|#eta|<2.0;#Phi(LCT);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_lct_ME21_20to22_odd, targetDir + "csc_pos_sh_vs_lct_ME21_20to22_odd.png", 
-                   "#Phi resolution in ME21 odd chamber, 2.0<|#eta|<2.2;#Phi(LCT);#Phi(SimHit)","")
+      makeSimplePlotGaussianFit(csc_pos_sh_lct_ME21_16to18_even, targetDir + "csc_pos_sh_lct_ME21_16to18_even.png", 
+                                "#Phi resolution in ME21 even chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis);#Phi(SimHit)","")
+      makeSimplePlotGaussianFit(csc_pos_sh_lct_ME21_18to20_even, targetDir + "csc_pos_sh_lct_ME21_18to20_even.png", 
+                                "#Phi resolution in ME21 even chamber, 1.8<|#eta|<2.0;#Phi(LCT)-#Phi(SimHit); Entries","")
+      makeSimplePlotGaussianFit(csc_pos_sh_lct_ME21_20to22_even, targetDir + "csc_pos_sh_lct_ME21_20to22_even.png", 
+                                "#Phi resolution in ME21 even chamber, 2.0<|#eta|<2.2;#Phi(LCT)-#Phi(SimHit); Entries","")
+      makeSimplePlotGaussianFit(csc_pos_sh_lct_ME21_16to18_odd, targetDir + "csc_pos_sh_lct_ME21_16to18_odd.png", 
+                                "#Phi resolution in ME21 odd chamber, 1.6<|#eta|<1.8;#Phi(LCT)-#Phi(SimHit); Entries","")
+      makeSimplePlotGaussianFit(csc_pos_sh_lct_ME21_18to20_odd, targetDir + "csc_pos_sh_lct_ME21_18to20_odd.png", 
+                                "#Phi resolution in ME21 odd chamber, 1.8<|#eta|<2.0;#Phi(LCT)-#Phi(SimHit); Entries","")
+      makeSimplePlotGaussianFit(csc_pos_sh_lct_ME21_20to22_odd, targetDir + "csc_pos_sh_lct_ME21_20to22_odd.png", 
+                                "#Phi resolution in ME21 odd chamber, 2.0<|#eta|<2.2;#Phi(LCT)-#Phi(SimHit); Entries","")
+      
+      makeSimplePlotGaussianFit(csc_pos_sh_fit_ME21_16to18_even, targetDir + "csc_pos_sh_fit_ME21_16to18_even.png", 
+                                "#Phi resolution in ME21 even chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
+      makeSimplePlotGaussianFit(csc_pos_sh_fit_ME21_18to20_even, targetDir + "csc_pos_sh_fit_ME21_18to20_even.png", 
+                                "#Phi resolution in ME21 even chamber, 1.8<|#eta|<2.0;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
+      makeSimplePlotGaussianFit(csc_pos_sh_fit_ME21_20to22_even, targetDir + "csc_pos_sh_fit_ME21_20to22_even.png", 
+                                "#Phi resolution in ME21 even chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
+      makeSimplePlotGaussianFit(csc_pos_sh_fit_ME21_16to18_odd, targetDir + "csc_pos_sh_fit_ME21_16to18_odd.png", 
+                                "#Phi resolution in ME21 odd chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
+      makeSimplePlotGaussianFit(csc_pos_sh_fit_ME21_18to20_odd, targetDir + "csc_pos_sh_fit_ME21_18to20_odd.png", 
+                                "#Phi resolution in ME21 odd chamber, 1.8<|#eta|<2.0;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
+      makeSimplePlotGaussianFit(csc_pos_sh_fit_ME21_20to22_odd, targetDir + "csc_pos_sh_fit_ME21_20to22_odd.png", 
+                                "#Phi resolution in ME21 odd chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
+      
+      
 
-    makeSimplePlot(csc_pos_sh_vs_fit_ME21_16to18_even, targetDir + "csc_pos_sh_vs_fit_ME21_16to18_even.png", 
-                   "#Phi resolution in ME21 even chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_fit_ME21_18to20_even, targetDir + "csc_pos_sh_vs_fit_ME21_18to20_even.png", 
-                   "#Phi resolution in ME21 even chamber, 1.8<|#eta|<2.0;#Phi(Fit to digis);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_fit_ME21_20to22_even, targetDir + "csc_pos_sh_vs_fit_ME21_20to22_even.png", 
-                   "#Phi resolution in ME21 even chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_fit_ME21_16to18_odd, targetDir + "csc_pos_sh_vs_fit_ME21_16to18_odd.png", 
-                   "#Phi resolution in ME21 odd chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_fit_ME21_18to20_odd, targetDir + "csc_pos_sh_vs_fit_ME21_18to20_odd.png", 
-                   "#Phi resolution in ME21 odd chamber, 1.8<|#eta|<2.0;#Phi(Fit to digis);#Phi(SimHit)","")
-    makeSimplePlot(csc_pos_sh_vs_fit_ME21_20to22_odd, targetDir + "csc_pos_sh_vs_fit_ME21_20to22_odd.png", 
-                   "#Phi resolution in ME21 odd chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_lct_ME21_16to18_even, targetDir + "csc_pos_sh_vs_lct_ME21_16to18_even.png", 
+                     "#Phi resolution in ME21 even chamber, 1.6<|#eta|<1.8;#Phi(LCT);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_lct_ME21_18to20_even, targetDir + "csc_pos_sh_vs_lct_ME21_18to20_even.png", 
+                     "#Phi resolution in ME21 even chamber, 1.8<|#eta|<2.0;#Phi(LCT);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_lct_ME21_20to22_even, targetDir + "csc_pos_sh_vs_lct_ME21_20to22_even.png", 
+                     "#Phi resolution in ME21 even chamber, 2.0<|#eta|<2.2;#Phi(LCT);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_lct_ME21_16to18_odd, targetDir + "csc_pos_sh_vs_lct_ME21_16to18_odd.png", 
+                     "#Phi resolution in ME21 odd chamber, 1.6<|#eta|<1.8;#Phi(LCT);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_lct_ME21_18to20_odd, targetDir + "csc_pos_sh_vs_lct_ME21_18to20_odd.png", 
+                     "#Phi resolution in ME21 odd chamber, 1.8<|#eta|<2.0;#Phi(LCT);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_lct_ME21_20to22_odd, targetDir + "csc_pos_sh_vs_lct_ME21_20to22_odd.png", 
+                     "#Phi resolution in ME21 odd chamber, 2.0<|#eta|<2.2;#Phi(LCT);#Phi(SimHit)","")
+      
+      makeSimplePlot(csc_pos_sh_vs_fit_ME21_16to18_even, targetDir + "csc_pos_sh_vs_fit_ME21_16to18_even.png", 
+                     "#Phi resolution in ME21 even chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_fit_ME21_18to20_even, targetDir + "csc_pos_sh_vs_fit_ME21_18to20_even.png", 
+                     "#Phi resolution in ME21 even chamber, 1.8<|#eta|<2.0;#Phi(Fit to digis);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_fit_ME21_20to22_even, targetDir + "csc_pos_sh_vs_fit_ME21_20to22_even.png", 
+                     "#Phi resolution in ME21 even chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_fit_ME21_16to18_odd, targetDir + "csc_pos_sh_vs_fit_ME21_16to18_odd.png", 
+                     "#Phi resolution in ME21 odd chamber, 1.6<|#eta|<1.8;#Phi(Fit to digis);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_fit_ME21_18to20_odd, targetDir + "csc_pos_sh_vs_fit_ME21_18to20_odd.png", 
+                     "#Phi resolution in ME21 odd chamber, 1.8<|#eta|<2.0;#Phi(Fit to digis);#Phi(SimHit)","")
+      makeSimplePlot(csc_pos_sh_vs_fit_ME21_20to22_odd, targetDir + "csc_pos_sh_vs_fit_ME21_20to22_odd.png", 
+                     "#Phi resolution in ME21 odd chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis);#Phi(SimHit)","")
 
 
     ## GEM position resolutions
-    makeSimplePlot(gem_pos_sh_pad1_GE21_16to18, targetDir + "gem_pos_sh_pad1_GE21_16to18.png",
-                   "#Phi resolution in GE21 chamber, 1.6<|#eta|<1.8;#Phi(Pad1)-#Phi(SimHit); Entries","") 
-    makeSimplePlot(gem_pos_sh_pad2_GE21_16to18, targetDir + "gem_pos_sh_pad2_GE21_16to18.png",
-                   "#Phi resolution in GE21 chamber, 1.6<|#eta|<1.8;#Phi(Pad2)-#Phi(SimHit); Entries","") 
-    makeSimplePlot(gem_pos_sh_pad4_GE21_16to18, targetDir + "gem_pos_sh_pad4_GE21_16to18.png",
-                   "#Phi resolution in GE21 chamber, 1.6<|#eta|<1.8;#Phi(Pad4)-#Phi(SimHit); Entries","") 
-    makeSimplePlot(gem_pos_sh_pad8_GE21_16to18, targetDir + "gem_pos_sh_pad8_GE21_16to18.png",
-                   "#Phi resolution in GE21 chamber, 1.6<|#eta|<1.8;#Phi(Pad8)-#Phi(SimHit); Entries","") 
-
-    makeSimplePlot(gem_pos_sh_pad1_GE21_18to20, targetDir + "gem_pos_sh_pad1_GE21_18to20.png",
-                   "#Phi resolution in GE21 chamber, 1.8<|#eta|<2.0;#Phi(Pad1)-#Phi(SimHit); Entries","") 
-    makeSimplePlot(gem_pos_sh_pad2_GE21_18to20, targetDir + "gem_pos_sh_pad2_GE21_18to20.png",
-                   "#Phi resolution in GE21 chamber, 1.8<|#eta|<2.0;#Phi(Pad2)-#Phi(SimHit); Entries","") 
-    makeSimplePlot(gem_pos_sh_pad4_GE21_18to20, targetDir + "gem_pos_sh_pad4_GE21_18to20.png",
-                   "#Phi resolution in GE21 chamber, 1.8<|#eta|<2.0;#Phi(Pad4)-#Phi(SimHit); Entries","") 
-    makeSimplePlot(gem_pos_sh_pad8_GE21_18to20, targetDir + "gem_pos_sh_pad8_GE21_18to20.png",
-                   "#Phi resolution in GE21 chamber, 1.8<|#eta|<2.0;#Phi(Pad8)-#Phi(SimHit); Entries","") 
-
-    makeSimplePlot(gem_pos_sh_pad1_GE21_20to22, targetDir + "gem_pos_sh_pad1_GE21_20to22.png",
-                   "#Phi resolution in GE21 chamber, 2.0<|#eta|<2.2;#Phi(Pad1)-#Phi(SimHit); Entries","") 
-    makeSimplePlot(gem_pos_sh_pad2_GE21_20to22, targetDir + "gem_pos_sh_pad2_GE21_20to22.png",
-                   "#Phi resolution in GE21 chamber, 2.0<|#eta|<2.2;#Phi(Pad2)-#Phi(SimHit); Entries","") 
-    makeSimplePlot(gem_pos_sh_pad4_GE21_20to22, targetDir + "gem_pos_sh_pad4_GE21_20to22.png",
-                   "#Phi resolution in GE21 chamber, 2.0<|#eta|<2.2;#Phi(Pad4)-#Phi(SimHit); Entries","") 
-    makeSimplePlot(gem_pos_sh_pad8_GE21_20to22, targetDir + "gem_pos_sh_pad8_GE21_20to22.png",
-                   "#Phi resolution in GE21 chamber, 2.0<|#eta|<2.2;#Phi(Pad8)-#Phi(SimHit); Entries","") 
-
+    produceGEMResolutionPlots = False
+    if produceGEMResolutionPlots:
+      makeSimplePlot(gem_pos_sh_pad1_GE21_16to18, targetDir + "gem_pos_sh_pad1_GE21_16to18.png",
+                     "#Phi resolution in GE21 chamber, 1.6<|#eta|<1.8;#Phi(Pad1)-#Phi(SimHit); Entries","") 
+      makeSimplePlot(gem_pos_sh_pad2_GE21_16to18, targetDir + "gem_pos_sh_pad2_GE21_16to18.png",
+                     "#Phi resolution in GE21 chamber, 1.6<|#eta|<1.8;#Phi(Pad2)-#Phi(SimHit); Entries","") 
+      makeSimplePlot(gem_pos_sh_pad4_GE21_16to18, targetDir + "gem_pos_sh_pad4_GE21_16to18.png",
+                     "#Phi resolution in GE21 chamber, 1.6<|#eta|<1.8;#Phi(Pad4)-#Phi(SimHit); Entries","") 
+      makeSimplePlot(gem_pos_sh_pad8_GE21_16to18, targetDir + "gem_pos_sh_pad8_GE21_16to18.png",
+                     "#Phi resolution in GE21 chamber, 1.6<|#eta|<1.8;#Phi(Pad8)-#Phi(SimHit); Entries","") 
+      
+      makeSimplePlot(gem_pos_sh_pad1_GE21_18to20, targetDir + "gem_pos_sh_pad1_GE21_18to20.png",
+                     "#Phi resolution in GE21 chamber, 1.8<|#eta|<2.0;#Phi(Pad1)-#Phi(SimHit); Entries","") 
+      makeSimplePlot(gem_pos_sh_pad2_GE21_18to20, targetDir + "gem_pos_sh_pad2_GE21_18to20.png",
+                     "#Phi resolution in GE21 chamber, 1.8<|#eta|<2.0;#Phi(Pad2)-#Phi(SimHit); Entries","") 
+      makeSimplePlot(gem_pos_sh_pad4_GE21_18to20, targetDir + "gem_pos_sh_pad4_GE21_18to20.png",
+                     "#Phi resolution in GE21 chamber, 1.8<|#eta|<2.0;#Phi(Pad4)-#Phi(SimHit); Entries","") 
+      makeSimplePlot(gem_pos_sh_pad8_GE21_18to20, targetDir + "gem_pos_sh_pad8_GE21_18to20.png",
+                     "#Phi resolution in GE21 chamber, 1.8<|#eta|<2.0;#Phi(Pad8)-#Phi(SimHit); Entries","") 
+      
+      makeSimplePlot(gem_pos_sh_pad1_GE21_20to22, targetDir + "gem_pos_sh_pad1_GE21_20to22.png",
+                     "#Phi resolution in GE21 chamber, 2.0<|#eta|<2.2;#Phi(Pad1)-#Phi(SimHit); Entries","") 
+      makeSimplePlot(gem_pos_sh_pad2_GE21_20to22, targetDir + "gem_pos_sh_pad2_GE21_20to22.png",
+                     "#Phi resolution in GE21 chamber, 2.0<|#eta|<2.2;#Phi(Pad2)-#Phi(SimHit); Entries","") 
+      makeSimplePlot(gem_pos_sh_pad4_GE21_20to22, targetDir + "gem_pos_sh_pad4_GE21_20to22.png",
+                     "#Phi resolution in GE21 chamber, 2.0<|#eta|<2.2;#Phi(Pad4)-#Phi(SimHit); Entries","") 
+      makeSimplePlot(gem_pos_sh_pad8_GE21_20to22, targetDir + "gem_pos_sh_pad8_GE21_20to22.png",
+                     "#Phi resolution in GE21 chamber, 2.0<|#eta|<2.2;#Phi(Pad8)-#Phi(SimHit); Entries","") 
+      
     ## DDY123 vs deltaPhiGEM
-    """
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad1_pt10_withoutLCTFit", "Pad1, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt10_withoutLCTFit", "Pad2, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad4_pt10_withoutLCTFit", "Pad4, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad8_pt10_withoutLCTFit", "Pad8, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad1_pt10_withLCTFit", "Pad1, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt10_withLCTFit", "Pad2, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad4_pt10_withLCTFit", "Pad4, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad8_pt10_withLCTFit", "Pad8, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+    produceDDY23vsDeltaPhiGEMPlots = False
+    if produceDDY23vsDeltaPhiGEMPlots:
+      """
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad1_pt10_withoutLCTFit", "Pad1, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt10_withoutLCTFit", "Pad2, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad4_pt10_withoutLCTFit", "Pad4, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad8_pt10_withoutLCTFit", "Pad8, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad1_pt10_withLCTFit", "Pad1, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt10_withLCTFit", "Pad2, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad4_pt10_withLCTFit", "Pad4, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad8_pt10_withLCTFit", "Pad8, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      
 
-
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad1_pt15_withoutLCTFit", "Pad1, p_{T}#geq 15 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt15_withoutLCTFit", "Pad2, p_{T}#geq 15 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad4_pt15_withoutLCTFit", "Pad4, p_{T}#geq 15 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad8_pt15_withoutLCTFit", "Pad8, p_{T}#geq 15 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad1_pt15_withLCTFit", "Pad1, p_{T}#geq 15 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt15_withLCTFit", "Pad2, p_{T}#geq 15 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad4_pt15_withLCTFit", "Pad4, p_{T}#geq 15 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad8_pt15_withLCTFit", "Pad8, p_{T}#geq 15 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-
-
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad1_pt20_withoutLCTFit", "Pad1, p_{T}#geq 20 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt20_withoutLCTFit", "Pad2, p_{T}#geq 20 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad4_pt20_withoutLCTFit", "Pad4, p_{T}#geq 20 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad8_pt20_withoutLCTFit", "Pad8, p_{T}#geq 20 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad1_pt20_withLCTFit", "Pad1, p_{T}#geq 20 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt20_withLCTFit", "Pad2, p_{T}#geq 20 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad4_pt20_withLCTFit", "Pad4, p_{T}#geq 20 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad8_pt20_withLCTFit", "Pad8, p_{T}#geq 20 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
-    """
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad1_pt15_withoutLCTFit", "Pad1, p_{T}#geq 15 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt15_withoutLCTFit", "Pad2, p_{T}#geq 15 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad4_pt15_withoutLCTFit", "Pad4, p_{T}#geq 15 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad8_pt15_withoutLCTFit", "Pad8, p_{T}#geq 15 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad1_pt15_withLCTFit", "Pad1, p_{T}#geq 15 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt15_withLCTFit", "Pad2, p_{T}#geq 15 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad4_pt15_withLCTFit", "Pad4, p_{T}#geq 15 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad8_pt15_withLCTFit", "Pad8, p_{T}#geq 15 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      
+      
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad1_pt20_withoutLCTFit", "Pad1, p_{T}#geq 20 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt20_withoutLCTFit", "Pad2, p_{T}#geq 20 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad4_pt20_withoutLCTFit", "Pad4, p_{T}#geq 20 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad8_pt20_withoutLCTFit", "Pad8, p_{T}#geq 20 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad1_pt20_withLCTFit", "Pad1, p_{T}#geq 20 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt20_withLCTFit", "Pad2, p_{T}#geq 20 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad4_pt20_withLCTFit", "Pad4, p_{T}#geq 20 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad8_pt20_withLCTFit", "Pad8, p_{T}#geq 20 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
+      """
             
-    for pp in ME1ME2ME3ParityCases:
-      for rr,rrss in zip(etaRangesGE11,etaRangesGE11String):
+      for pp in ME1ME2ME3ParityCases:
+        for rr,rrss in zip(etaRangesGE11,etaRangesGE11String):
+          for ff in fitTypes:
+            makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta" + rr + "_dxy0to5_" + pp + "_" + ff, "Pad2, p_{T} 2-7 GeV " + pp + " " + rrss + " |dxy|<5 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
+            makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta" + rr + "_dxy0to5_" + pp + "_" + ff, "Pad2, p_{T} 2-7 GeV " + pp + " " + rrss + " |dxy|<5 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
+            makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta" + rr + "_dxy0to50_" + pp + "_" + ff, "Pad2, p_{T} 20-100 GeV " + pp + " " + rrss + " |dxy|<50 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
+            makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta" + rr + "_dxy0to50_" + pp + "_" + ff, "Pad2, p_{T} 20-100 GeV " + pp + " " + rrss + " |dxy|<50 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
+            
+      for pp in ME1ME2ME3ParityCases:
         for ff in fitTypes:
-          makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta" + rr + "_dxy0to5_" + pp + "_" + ff, "Pad2, p_{T} 2-7 GeV " + pp + " " + rrss + " |dxy|<5 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
-          makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta" + rr + "_dxy0to5_" + pp + "_" + ff, "Pad2, p_{T} 2-7 GeV " + pp + " " + rrss + " |dxy|<5 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
-          makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta" + rr + "_dxy0to50_" + pp + "_" + ff, "Pad2, p_{T} 20-100 GeV " + pp + " " + rrss + " |dxy|<50 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
-          makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta" + rr + "_dxy0to50_" + pp + "_" + ff, "Pad2, p_{T} 20-100 GeV " + pp + " " + rrss + " |dxy|<50 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
-
-    for pp in ME1ME2ME3ParityCases:
-      for ff in fitTypes:
-        makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_" + pp + "_" + ff, 
-                          "Pad2, p_{T} 2-7 GeV " + pp + " 1.6 #leq |eta| #leq 2.2, |dxy|<5 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
-        makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_" + pp + "_" + ff, 
-                          "Pad2, p_{T} 2-7 GeV " + pp + " 1.6 #leq |eta| #leq 2.2, |dxy|<5 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
-        makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to50_" + pp + "_" + ff, 
-                          "Pad2, p_{T} 20-100 GeV " + pp + " 1.6 #leq |eta| #leq 2.2, |dxy|<50 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
-        makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to50_" + pp + "_" + ff, 
-                          "Pad2, p_{T} 20-100 GeV " + pp + " 1.6 #leq |eta| #leq 2.2, |dxy|<50 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
+          makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_" + pp + "_" + ff, 
+                            "Pad2, p_{T} 2-7 GeV " + pp + " 1.6 #leq |eta| #leq 2.2, |dxy|<5 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
+          makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt2to7_eta16to22_dxy0to5_" + pp + "_" + ff, 
+                            "Pad2, p_{T} 2-7 GeV " + pp + " 1.6 #leq |eta| #leq 2.2, |dxy|<5 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
+          makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to50_" + pp + "_" + ff, 
+                            "Pad2, p_{T} 20-100 GeV " + pp + " 1.6 #leq |eta| #leq 2.2, |dxy|<50 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
+          makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad2_pt20to100_eta16to22_dxy0to50_" + pp + "_" + ff, 
+                            "Pad2, p_{T} 20-100 GeV " + pp + " 1.6 #leq |eta| #leq 2.2, |dxy|<50 cm;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz', True)
 
     ## Plots for position based pT measurement (CSC only!!!)
     for pp in ME1ME2ME3ParityCases:      
@@ -3323,101 +3290,103 @@ if __name__ == "__main__":
           print "    DDY123_dict['eta" + qq + "_" + pp + "_withLCTFit'] = [", lut2[2].GetFunction("g1").GetParameter("p0"), ", ", lut2[2].GetFunction("g1").GetParameter("p1"), "]"
 
     ## plots with DTs
-    makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst2, targetDir + "GenMuPt_vs_phiDTst1_phiDTst2.png", ";p_{T} [GeV]; #Delta#Phi_{12}", "COLZ")
-    makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst3, targetDir + "GenMuPt_vs_phiDTst1_phiDTst3.png", ";p_{T} [GeV]; #Delta#Phi_{13}", "COLZ")
-    makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst4, targetDir + "GenMuPt_vs_phiDTst1_phiDTst4.png", ";p_{T} [GeV]; #Delta#Phi_{14}", "COLZ")
-    makeSimplePlot(GenMuPt_vs_phiDTst2_phiDTst3, targetDir + "GenMuPt_vs_phiDTst2_phiDTst3.png", ";p_{T} [GeV]; #Delta#Phi_{23}", "COLZ")
-    makeSimplePlot(GenMuPt_vs_phiDTst2_phiDTst4, targetDir + "GenMuPt_vs_phiDTst2_phiDTst4.png", ";p_{T} [GeV]; #Delta#Phi_{24}", "COLZ")
-    makeSimplePlot(GenMuPt_vs_phiDTst3_phiDTst4, targetDir + "GenMuPt_vs_phiDTst3_phiDTst4.png", ";p_{T} [GeV]; #Delta#Phi_{34}", "COLZ")
+    produceDTPlots = False
+    if produceDTPlots:
+      makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst2, targetDir + "GenMuPt_vs_phiDTst1_phiDTst2.png", ";p_{T} [GeV]; #Delta#Phi_{12}", "COLZ")
+      makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst3, targetDir + "GenMuPt_vs_phiDTst1_phiDTst3.png", ";p_{T} [GeV]; #Delta#Phi_{13}", "COLZ")
+      makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst4, targetDir + "GenMuPt_vs_phiDTst1_phiDTst4.png", ";p_{T} [GeV]; #Delta#Phi_{14}", "COLZ")
+      makeSimplePlot(GenMuPt_vs_phiDTst2_phiDTst3, targetDir + "GenMuPt_vs_phiDTst2_phiDTst3.png", ";p_{T} [GeV]; #Delta#Phi_{23}", "COLZ")
+      makeSimplePlot(GenMuPt_vs_phiDTst2_phiDTst4, targetDir + "GenMuPt_vs_phiDTst2_phiDTst4.png", ";p_{T} [GeV]; #Delta#Phi_{24}", "COLZ")
+      makeSimplePlot(GenMuPt_vs_phiDTst3_phiDTst4, targetDir + "GenMuPt_vs_phiDTst3_phiDTst4.png", ";p_{T} [GeV]; #Delta#Phi_{34}", "COLZ")
+      
+      makeSimplePlot(nDT_stubs, targetDir + "nDT_stubs.png", "; status; Number of entries")
+      makeSimplePlot(nDT_stubs_vs_dxy, targetDir + "nDT_stubs_vs_dxy.png", "; status; d_{xy} [cm]", "COLZ")
+      
+      makeSimplePlot(phiDTst1_vs_phiDTst4_dxy0to5, targetDir + "phiDTst1_vs_phiDTst4_dxy0to5.png", "; #Delta#Phi_1; #Delta#Phi_4", "COLZ")
+      makeSimplePlot(phiDTst1_vs_phiDTst4_dxy5to50, targetDir + "phiDTst1_vs_phiDTst4_dxy5to50.png", "; #Delta#Phi_1; #Delta#Phi_4", "COLZ")
+      makeSimplePlot(phiDTst1_vs_phiDTst4_dxy50to100, targetDir + "phiDTst1_vs_phiDTst4_dxy50to100.png", "; #Delta#Phi_1; #Delta#Phi_4", "COLZ")
+      
+      makeSimplePlot(phiDTst1_phiDTst2, targetDir + "phiDTst1_phiDTst2.png", ";#Delta#Phi_{12}; Entries")
+      makeSimplePlot(phiDTst1_phiDTst3, targetDir + "phiDTst1_phiDTst3.png", ";#Delta#Phi_{13}; Entries")
+      makeSimplePlot(phiDTst1_phiDTst4, targetDir + "phiDTst1_phiDTst4.png", ";#Delta#Phi_{14}; Entries")
+      makeSimplePlot(phiDTst2_phiDTst3, targetDir + "phiDTst2_phiDTst3.png", ";#Delta#Phi_{23}; Entries")
+      makeSimplePlot(phiDTst2_phiDTst4, targetDir + "phiDTst2_phiDTst4.png", ";#Delta#Phi_{24}; Entries")
+      makeSimplePlot(phiDTst3_phiDTst4, targetDir + "phiDTst3_phiDTst4.png", ";#Delta#Phi_{34}; Entries")
+      
+      makeSimplePlot(abs_phiDTst1_phiDTst2, targetDir + "abs_phiDTst1_phiDTst2.png", ";|#Delta#Phi_{12}|; Entries")
+      makeSimplePlot(abs_phiDTst1_phiDTst3, targetDir + "abs_phiDTst1_phiDTst3.png", ";|#Delta#Phi_{13}|; Entries")
+      makeSimplePlot(abs_phiDTst1_phiDTst4, targetDir + "abs_phiDTst1_phiDTst4.png", ";|#Delta#Phi_{14}|; Entries")
+      makeSimplePlot(abs_phiDTst2_phiDTst3, targetDir + "abs_phiDTst2_phiDTst3.png", ";|#Delta#Phi_{23}|; Entries")
+      makeSimplePlot(abs_phiDTst2_phiDTst4, targetDir + "abs_phiDTst2_phiDTst4.png", ";|#Delta#Phi_{24}|; Entries")
+      makeSimplePlot(abs_phiDTst3_phiDTst4, targetDir + "abs_phiDTst3_phiDTst4.png", ";|#Delta#Phi_{34}|; Entries")
 
-    makeSimplePlot(nDT_stubs, targetDir + "nDT_stubs.png", "; status; Number of entries")
-    makeSimplePlot(nDT_stubs_vs_dxy, targetDir + "nDT_stubs_vs_dxy.png", "; status; d_{xy} [cm]", "COLZ")
-
-    makeSimplePlot(phiDTst1_vs_phiDTst4_dxy0to5, targetDir + "phiDTst1_vs_phiDTst4_dxy0to5.png", "; #Delta#Phi_1; #Delta#Phi_4", "COLZ")
-    makeSimplePlot(phiDTst1_vs_phiDTst4_dxy5to50, targetDir + "phiDTst1_vs_phiDTst4_dxy5to50.png", "; #Delta#Phi_1; #Delta#Phi_4", "COLZ")
-    makeSimplePlot(phiDTst1_vs_phiDTst4_dxy50to100, targetDir + "phiDTst1_vs_phiDTst4_dxy50to100.png", "; #Delta#Phi_1; #Delta#Phi_4", "COLZ")
-
-    makeSimplePlot(phiDTst1_phiDTst2, targetDir + "phiDTst1_phiDTst2.png", ";#Delta#Phi_{12}; Entries")
-    makeSimplePlot(phiDTst1_phiDTst3, targetDir + "phiDTst1_phiDTst3.png", ";#Delta#Phi_{13}; Entries")
-    makeSimplePlot(phiDTst1_phiDTst4, targetDir + "phiDTst1_phiDTst4.png", ";#Delta#Phi_{14}; Entries")
-    makeSimplePlot(phiDTst2_phiDTst3, targetDir + "phiDTst2_phiDTst3.png", ";#Delta#Phi_{23}; Entries")
-    makeSimplePlot(phiDTst2_phiDTst4, targetDir + "phiDTst2_phiDTst4.png", ";#Delta#Phi_{24}; Entries")
-    makeSimplePlot(phiDTst3_phiDTst4, targetDir + "phiDTst3_phiDTst4.png", ";#Delta#Phi_{34}; Entries")
-
-    makeSimplePlot(abs_phiDTst1_phiDTst2, targetDir + "abs_phiDTst1_phiDTst2.png", ";|#Delta#Phi_{12}|; Entries")
-    makeSimplePlot(abs_phiDTst1_phiDTst3, targetDir + "abs_phiDTst1_phiDTst3.png", ";|#Delta#Phi_{13}|; Entries")
-    makeSimplePlot(abs_phiDTst1_phiDTst4, targetDir + "abs_phiDTst1_phiDTst4.png", ";|#Delta#Phi_{14}|; Entries")
-    makeSimplePlot(abs_phiDTst2_phiDTst3, targetDir + "abs_phiDTst2_phiDTst3.png", ";|#Delta#Phi_{23}|; Entries")
-    makeSimplePlot(abs_phiDTst2_phiDTst4, targetDir + "abs_phiDTst2_phiDTst4.png", ";|#Delta#Phi_{24}|; Entries")
-    makeSimplePlot(abs_phiDTst3_phiDTst4, targetDir + "abs_phiDTst3_phiDTst4.png", ";|#Delta#Phi_{34}|; Entries")
-
-    make2DMedianPlot(GenMuPt_vs_phiDTst1_phiDTst2, targetDir + "GenMuPt_vs_phiDTst1_phiDTst2_pol1.png", 
-                        "GenMuPt_vs_phiDTst1_phiDTst2_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(1,2)", False, True)
-    make2DMedianPlot(GenMuPt_vs_phiDTst1_phiDTst3, targetDir + "GenMuPt_vs_phiDTst1_phiDTst3_pol1.png", 
-                        "GenMuPt_vs_phiDTst1_phiDTst3_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(1,3)", False, True)
-    make2DMedianPlot(GenMuPt_vs_phiDTst1_phiDTst4, targetDir + "GenMuPt_vs_phiDTst1_phiDTst4_pol1.png", 
-                        "GenMuPt_vs_phiDTst1_phiDTst4_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(1,4)", False, True)
-    make2DMedianPlot(GenMuPt_vs_phiDTst2_phiDTst3, targetDir + "GenMuPt_vs_phiDTst2_phiDTst3_pol1.png", 
-                        "GenMuPt_vs_phiDTst2_phiDTst3_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(2,3)", False, True)
-    make2DMedianPlot(GenMuPt_vs_phiDTst2_phiDTst4, targetDir + "GenMuPt_vs_phiDTst2_phiDTst4_pol1.png", 
-                        "GenMuPt_vs_phiDTst2_phiDTst4_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(2,4)", False, True)
-    make2DMedianPlot(GenMuPt_vs_phiDTst3_phiDTst4, targetDir + "GenMuPt_vs_phiDTst3_phiDTst4_pol1.png", 
-                        "GenMuPt_vs_phiDTst3_phiDTst4_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(3,4)", False, True)
-
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_pol1.png", 
-                        "GenMuPt_vs_phiDTst1_phiDTst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{dir}(1,2)|")
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst3, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst3_pol1.png", 
-                        "GenMuPt_vs_phiDTst1_phiDTst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{dir}(1,3)|")
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_pol1.png", 
-                        "GenMuPt_vs_phiDTst1_phiDTst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{dir}(1,4)|")
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst2_phiDTst3, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst3_pol1.png", 
-                        "GenMuPt_vs_phiDTst1_phiDTst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{dir}(2,3)|")
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst2_phiDTst4, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst4_pol1.png", 
-                        "GenMuPt_vs_phiDTst1_phiDTst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{dir}(2,4)|")
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst3_phiDTst4, targetDir + "GenMuPt_vs_abs_phiDTst3_phiDTst4_pol1.png", 
-                        "GenMuPt_vs_phiDTst1_phiDTst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{dir}(3,4)|")
-
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol1.png", 
-                        "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,2)|", False, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst3_inv_pol1.png", 
-                        "GenMuPt_vs_abs_phiDTst1_phiDTst3_inv_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,3)|", False, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_pol1.png", 
-                        "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,4)|", False, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst2_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst3_inv_pol1.png", 
-                        "GenMuPt_vs_abs_phiDTst2_phiDTst3_inv_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(2,4)|", False, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst2_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst4_inv_pol1.png", 
-                        "GenMuPt_vs_abs_phiDTst2_phiDTst4_inv_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(2,4)|", False, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst3_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst3_phiDTst4_inv_pol1.png", 
-                        "GenMuPt_vs_abs_phiDTst3_phiDTst4_inv_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(3,4)|", False, True, "pol1")
-
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol1_v2.png", 
-                        "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol1_v2; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,2)|", True, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst3_inv_pol1_v2.png", 
-                        "GenMuPt_vs_abs_phiDTst1_phiDTst3_inv_pol1_v2; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,3)|", True, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_pol1_v2.png", 
-                        "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_pol1_v2; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,4)|", True, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst2_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst3_inv_pol1_v2.png", 
-                        "GenMuPt_vs_abs_phiDTst2_phiDTst3_inv_pol1_v2; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(2,3)|", True, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst2_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst4_inv_pol1_v2.png", 
-                        "GenMuPt_vs_abs_phiDTst2_phiDTst4_inv_pol1_v2; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(2,4)|", True, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst3_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst3_phiDTst4_inv_pol1_v2.png", 
-                        "GenMuPt_vs_abs_phiDTst3_phiDTst4_inv_pol1_v2; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(3,4)|", True, True, "pol1")
-
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy0to5, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy0to5_pol1.png", 
-                        "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy0to5_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,4)|", False, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy5to50, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy5to50_pol1.png", 
-                        "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy5to50_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,4)|", False, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100_pol1.png",
-                        "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,4)|",  False, True, "pol1")
-
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy0to5, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy0to5_pol1.png", 
-                        "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy0to5_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,4)|", True, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy5to50, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy5to50_pol1.png", 
-                        "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy5to50_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,4)|", True, True, "pol1")
-    make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100_pol1.png", 
-                        "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,4)|", True, True, "pol1")
-
-
+      make2DMedianPlot(GenMuPt_vs_phiDTst1_phiDTst2, targetDir + "GenMuPt_vs_phiDTst1_phiDTst2_pol1.png", 
+                       "GenMuPt_vs_phiDTst1_phiDTst2_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(1,2)", False, True)
+      make2DMedianPlot(GenMuPt_vs_phiDTst1_phiDTst3, targetDir + "GenMuPt_vs_phiDTst1_phiDTst3_pol1.png", 
+                       "GenMuPt_vs_phiDTst1_phiDTst3_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(1,3)", False, True)
+      make2DMedianPlot(GenMuPt_vs_phiDTst1_phiDTst4, targetDir + "GenMuPt_vs_phiDTst1_phiDTst4_pol1.png", 
+                       "GenMuPt_vs_phiDTst1_phiDTst4_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(1,4)", False, True)
+      make2DMedianPlot(GenMuPt_vs_phiDTst2_phiDTst3, targetDir + "GenMuPt_vs_phiDTst2_phiDTst3_pol1.png", 
+                       "GenMuPt_vs_phiDTst2_phiDTst3_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(2,3)", False, True)
+      make2DMedianPlot(GenMuPt_vs_phiDTst2_phiDTst4, targetDir + "GenMuPt_vs_phiDTst2_phiDTst4_pol1.png", 
+                       "GenMuPt_vs_phiDTst2_phiDTst4_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(2,4)", False, True)
+      make2DMedianPlot(GenMuPt_vs_phiDTst3_phiDTst4, targetDir + "GenMuPt_vs_phiDTst3_phiDTst4_pol1.png", 
+                       "GenMuPt_vs_phiDTst3_phiDTst4_pol1; GEN Mu p_{T} [GeV]; #Delta#Phi_{dir}(3,4)", False, True)
+      
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_pol1.png", 
+                       "GenMuPt_vs_phiDTst1_phiDTst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{dir}(1,2)|")
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst3, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst3_pol1.png", 
+                       "GenMuPt_vs_phiDTst1_phiDTst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{dir}(1,3)|")
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_pol1.png", 
+                       "GenMuPt_vs_phiDTst1_phiDTst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{dir}(1,4)|")
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst2_phiDTst3, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst3_pol1.png", 
+                       "GenMuPt_vs_phiDTst1_phiDTst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{dir}(2,3)|")
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst2_phiDTst4, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst4_pol1.png", 
+                       "GenMuPt_vs_phiDTst1_phiDTst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{dir}(2,4)|")
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst3_phiDTst4, targetDir + "GenMuPt_vs_abs_phiDTst3_phiDTst4_pol1.png", 
+                       "GenMuPt_vs_phiDTst1_phiDTst2_pol1; GEN Mu p_{T} [GeV]; |#Delta#Phi_{dir}(3,4)|")
+      
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol1.png", 
+                       "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,2)|", False, True, "pol1")
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst3_inv_pol1.png", 
+                       "GenMuPt_vs_abs_phiDTst1_phiDTst3_inv_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,3)|", False, True, "pol1")
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_pol1.png", 
+                       "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,4)|", False, True, "pol1")
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst2_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst3_inv_pol1.png", 
+                       "GenMuPt_vs_abs_phiDTst2_phiDTst3_inv_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(2,4)|", False, True, "pol1")
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst2_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst4_inv_pol1.png", 
+                       "GenMuPt_vs_abs_phiDTst2_phiDTst4_inv_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(2,4)|", False, True, "pol1")
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst3_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst3_phiDTst4_inv_pol1.png", 
+                       "GenMuPt_vs_abs_phiDTst3_phiDTst4_inv_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(3,4)|", False, True, "pol1")
+      
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst2_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol1_v2.png", 
+                       "GenMuPt_vs_abs_phiDTst1_phiDTst2_inv_pol1_v2; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,2)|", True, True, "pol1")
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst3_inv_pol1_v2.png", 
+                       "GenMuPt_vs_abs_phiDTst1_phiDTst3_inv_pol1_v2; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,3)|", True, True, "pol1")
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_pol1_v2.png", 
+                       "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_pol1_v2; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,4)|", True, True, "pol1")
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst2_phiDTst3_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst3_inv_pol1_v2.png", 
+                       "GenMuPt_vs_abs_phiDTst2_phiDTst3_inv_pol1_v2; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(2,3)|", True, True, "pol1")
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst2_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst2_phiDTst4_inv_pol1_v2.png", 
+                       "GenMuPt_vs_abs_phiDTst2_phiDTst4_inv_pol1_v2; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(2,4)|", True, True, "pol1")
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst3_phiDTst4_inv, targetDir + "GenMuPt_vs_abs_phiDTst3_phiDTst4_inv_pol1_v2.png", 
+                       "GenMuPt_vs_abs_phiDTst3_phiDTst4_inv_pol1_v2; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(3,4)|", True, True, "pol1")
+      
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy0to5, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy0to5_pol1.png", 
+                       "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy0to5_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,4)|", False, True, "pol1")
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy5to50, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy5to50_pol1.png", 
+                       "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy5to50_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,4)|", False, True, "pol1")
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100_pol1.png",
+                       "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,4)|",  False, True, "pol1")
+      
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy0to5, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy0to5_pol1.png", 
+                       "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy0to5_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,4)|", True, True, "pol1")
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy5to50, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy5to50_pol1.png", 
+                       "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy5to50_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,4)|", True, True, "pol1")
+      make2DMedianPlot(GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100, targetDir + "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100_pol1.png", 
+                       "GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100_pol1; GEN Mu p_{T} [GeV]; 1/|#Delta#Phi_{dir}(1,4)|", True, True, "pol1")
+      
+      
     ## plots with GEMs :-)
     makeSimplePlot(phiGEMst1_vs_phiGEMst2_dxy0to5, targetDir + "phiGEMst1_vs_phiGEMst2_dxy0to5.png", "; #Phi_{direction}(GE11); #Phi_{direction}(GE21)", "COLZ") 
     makeSimplePlot(phiGEMst1_vs_phiGEMst2_dxy5to50, targetDir + "phiGEMst1_vs_phiGEMst2_dxy5to50.png", "; #Phi_{direction}(GE11); #Phi_{direction}(GE21)", "COLZ")
@@ -3586,37 +3555,39 @@ if __name__ == "__main__":
 
     
     ## properly normalized bending angle plots DT
-    makeEffPlot(TEfficiency(Displaced_L1MuPt10_GenMuPt_dxy0to5,    GenMuPt_DT1_DT4_dxy0to5),
-                TEfficiency(Displaced_L1MuPt10_GenMuPt_dxy5to50,   GenMuPt_DT1_DT4_dxy5to50),
-                TEfficiency(Displaced_L1MuPt10_GenMuPt_dxy50to100, GenMuPt_DT1_DT4_dxy50to100),
-                targetDir + "Displaced_L1MuPt10_GenMuPt_DT1_DT4_dxy0to100.png", "Displaced L1Mu trigger algorithm performance |#eta| #leq 0.9, 14TeV, PU140")
-
-    makeEffPlot(TEfficiency(Displaced_L1MuPt15_GenMuPt_dxy0to5,    GenMuPt_DT1_DT4_dxy0to5),
-                TEfficiency(Displaced_L1MuPt15_GenMuPt_dxy5to50,   GenMuPt_DT1_DT4_dxy5to50),
+    produceDTEfficiencyPlots = False
+    if produceDTEfficiencyPlots:
+      makeEffPlot(TEfficiency(Displaced_L1MuPt10_GenMuPt_dxy0to5,    GenMuPt_DT1_DT4_dxy0to5),
+                  TEfficiency(Displaced_L1MuPt10_GenMuPt_dxy5to50,   GenMuPt_DT1_DT4_dxy5to50),
+                  TEfficiency(Displaced_L1MuPt10_GenMuPt_dxy50to100, GenMuPt_DT1_DT4_dxy50to100),
+                  targetDir + "Displaced_L1MuPt10_GenMuPt_DT1_DT4_dxy0to100.png", "Displaced L1Mu trigger algorithm performance |#eta| #leq 0.9, 14TeV, PU140")
+      
+      makeEffPlot(TEfficiency(Displaced_L1MuPt15_GenMuPt_dxy0to5,    GenMuPt_DT1_DT4_dxy0to5),
+                  TEfficiency(Displaced_L1MuPt15_GenMuPt_dxy5to50,   GenMuPt_DT1_DT4_dxy5to50),
                 TEfficiency(Displaced_L1MuPt15_GenMuPt_dxy50to100, GenMuPt_DT1_DT4_dxy50to100),
-                targetDir + "Displaced_L1MuPt15_GenMuPt_DT1_DT4_dxy0to100.png", "Displaced L1Mu trigger algorithm performance |#eta| #leq 0.9, 14TeV, PU140")
-
-    makeEffPlot(TEfficiency(Displaced_L1MuPt20_GenMuPt_dxy0to5,    GenMuPt_DT1_DT4_dxy0to5),
-                TEfficiency(Displaced_L1MuPt20_GenMuPt_dxy5to50,   GenMuPt_DT1_DT4_dxy5to50),
-                TEfficiency(Displaced_L1MuPt20_GenMuPt_dxy50to100, GenMuPt_DT1_DT4_dxy50to100),
-                targetDir + "Displaced_L1MuPt20_GenMuPt_DT1_DT4_dxy0to100.png", "Displaced L1Mu trigger algorithm performance |#eta| #leq 0.9, 14TeV, PU140")
-
-
-    makeEffPlot(TEfficiency(Displaced_L1MuPt10_GenMuPt_dxy0to5,    GenMuPt_DT1_DT4_dxy0to5),
-                TEfficiency(Displaced_L1MuPt10_GenMuPt_dxy5to50,   GenMuPt_DT1_DT4_dxy5to50),
-                None,
-                targetDir + "Displaced_L1MuPt10_GenMuPt_DT1_DT4_dxy0to50.png", "Displaced L1Mu trigger algorithm performance |#eta| #leq 0.9, 14TeV, PU140")
-
-    makeEffPlot(TEfficiency(Displaced_L1MuPt15_GenMuPt_dxy0to5,    GenMuPt_DT1_DT4_dxy0to5),
-                TEfficiency(Displaced_L1MuPt15_GenMuPt_dxy5to50,   GenMuPt_DT1_DT4_dxy5to50),
-                None,
-                targetDir + "Displaced_L1MuPt15_GenMuPt_DT1_DT4_dxy0to50.png", "Displaced L1Mu trigger algorithm performance |#eta| #leq 0.9, 14TeV, PU140")
-
-    makeEffPlot(TEfficiency(Displaced_L1MuPt20_GenMuPt_dxy0to5,    GenMuPt_DT1_DT4_dxy0to5),
-                TEfficiency(Displaced_L1MuPt20_GenMuPt_dxy5to50,   GenMuPt_DT1_DT4_dxy5to50),
-                None,
-                targetDir + "Displaced_L1MuPt20_GenMuPt_DT1_DT4_dxy0to50.png", "Displaced L1Mu trigger algorithm performance |#eta| #leq 0.9, 14TeV, PU140")
-
+                  targetDir + "Displaced_L1MuPt15_GenMuPt_DT1_DT4_dxy0to100.png", "Displaced L1Mu trigger algorithm performance |#eta| #leq 0.9, 14TeV, PU140")
+      
+      makeEffPlot(TEfficiency(Displaced_L1MuPt20_GenMuPt_dxy0to5,    GenMuPt_DT1_DT4_dxy0to5),
+                  TEfficiency(Displaced_L1MuPt20_GenMuPt_dxy5to50,   GenMuPt_DT1_DT4_dxy5to50),
+                  TEfficiency(Displaced_L1MuPt20_GenMuPt_dxy50to100, GenMuPt_DT1_DT4_dxy50to100),
+                  targetDir + "Displaced_L1MuPt20_GenMuPt_DT1_DT4_dxy0to100.png", "Displaced L1Mu trigger algorithm performance |#eta| #leq 0.9, 14TeV, PU140")
+      
+      
+      makeEffPlot(TEfficiency(Displaced_L1MuPt10_GenMuPt_dxy0to5,    GenMuPt_DT1_DT4_dxy0to5),
+                  TEfficiency(Displaced_L1MuPt10_GenMuPt_dxy5to50,   GenMuPt_DT1_DT4_dxy5to50),
+                  None,
+                  targetDir + "Displaced_L1MuPt10_GenMuPt_DT1_DT4_dxy0to50.png", "Displaced L1Mu trigger algorithm performance |#eta| #leq 0.9, 14TeV, PU140")
+      
+      makeEffPlot(TEfficiency(Displaced_L1MuPt15_GenMuPt_dxy0to5,    GenMuPt_DT1_DT4_dxy0to5),
+                  TEfficiency(Displaced_L1MuPt15_GenMuPt_dxy5to50,   GenMuPt_DT1_DT4_dxy5to50),
+                  None,
+                  targetDir + "Displaced_L1MuPt15_GenMuPt_DT1_DT4_dxy0to50.png", "Displaced L1Mu trigger algorithm performance |#eta| #leq 0.9, 14TeV, PU140")
+      
+      makeEffPlot(TEfficiency(Displaced_L1MuPt20_GenMuPt_dxy0to5,    GenMuPt_DT1_DT4_dxy0to5),
+                  TEfficiency(Displaced_L1MuPt20_GenMuPt_dxy5to50,   GenMuPt_DT1_DT4_dxy5to50),
+                  None,
+                  targetDir + "Displaced_L1MuPt20_GenMuPt_DT1_DT4_dxy0to50.png", "Displaced L1Mu trigger algorithm performance |#eta| #leq 0.9, 14TeV, PU140")
+      
     ## Direction based pT efficiency plots (with GEMs)
     makeEffPlot(myTEfficiency("Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_dxy0to5_withoutLCTFit",    "GenMuPt_GE11_ME11_GE21_ME21_dxy0to5"),
                 myTEfficiency("Displaced_L1MuPt10_GenMuPt_GE11_ME11_GE21_ME21_dxy5to50_withoutLCTFit",   "GenMuPt_GE11_ME11_GE21_ME21_dxy5to50"),

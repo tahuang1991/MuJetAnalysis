@@ -762,6 +762,7 @@ private:
   bool processRPCb_;
   bool processRPCf_;
   bool doSimAnalysis_;
+  bool doGenAnalysis_;
   
   const RPCGeometry* rpcGeometry_;
   const CSCGeometry* cscGeometry_;
@@ -815,6 +816,7 @@ DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) :
   processRPCb_ = iConfig.getParameter<bool>("processRPCb");
   processRPCf_ = iConfig.getParameter<bool>("processRPCf");
   doSimAnalysis_ = iConfig.getParameter<bool>("doSimAnalysis");
+  doGenAnalysis_ = iConfig.getParameter<bool>("doGenAnalysis");
   
   L1Mu_input = iConfig.getParameter<edm::InputTag>("L1Mu_input");
   L1TkMu_input = iConfig.getParameter<edm::InputTag>("L1TkMu_input");
@@ -963,6 +965,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   // GEN analysis //
   //////////////////
 
+  // Sort muon groups to match order of genGd vector
+  std::vector< std::vector<const reco::GenParticle*> > genMuonGroups;
+  std::vector<const reco::Candidate*> genMuonGroupsMothers;
+
+  if (doGenAnalysis_) {
+  
   edm::Handle<reco::GenParticleCollection> genParticles;
   iEvent.getByLabel("genParticles", genParticles);
   
@@ -974,7 +982,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   std::vector<const reco::GenParticle*> genGd;
   std::vector<const reco::GenParticle*> genMuons;
   std::vector<const reco::Candidate*>   genMuonMothers;
-  // Loop over all gen particles
+  
+// Loop over all gen particles
   int counterGenParticle = 0;
   for(reco::GenParticleCollection::const_iterator iGenParticle = genParticles->begin();  iGenParticle != genParticles->end();  ++iGenParticle) {
     counterGenParticle++;
@@ -1134,9 +1143,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   }
 
 
-  // Sort muon groups to match order of genGd vector
-  std::vector< std::vector<const reco::GenParticle*> > genMuonGroups;
-  std::vector<const reco::Candidate*> genMuonGroupsMothers;
   for (unsigned int iA = 0; iA < genGd.size(); iA++ ) {
     bool isMuGroupMatchedToA = false;
     int  nMuGroup = -1;
@@ -1322,6 +1328,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
       std::cout << std::endl;
     }
+  }
+
   }
 
   // // comparator digi collection in this chamber
@@ -2238,6 +2246,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         std::cout << "Best pad GE11 L1" << bestPad_GE11_L1.second << std::endl;
         if (bestPad_GE11_L1.first.station()==1 and bestPad_GE11_L1.first.layer()==1) {
           auto gem_gp1 = getGlobalPointPad(bestPad_GE11_L1.first, bestPad_GE11_L1.second);
+          cout << "\t"<<gem_gp1<<endl;
           event_.GE11_phi_L1[j] = gem_gp1.phi();
           event_.GE11_bx_L1[j] = bestPad_GE11_L1.second.bx();
           event_.GE11_ch_L1[j] = bestPad_GE11_L1.first.chamber();
@@ -2251,6 +2260,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         std::cout << "Best pad GE11 L2" << bestPad_GE11_L2.second << std::endl;
         if (bestPad_GE11_L2.first.station()==1 and bestPad_GE11_L2.first.layer()==2) {
           auto gem_gp1 = getGlobalPointPad(bestPad_GE11_L2.first, bestPad_GE11_L2.second);
+          cout << "\t"<<gem_gp1<<endl;
           event_.GE11_phi_L2[j] = gem_gp1.phi();
           event_.GE11_bx_L2[j] = bestPad_GE11_L2.second.bx();
           event_.GE11_ch_L2[j] = bestPad_GE11_L2.first.chamber();
@@ -2264,6 +2274,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         std::cout << "Best pad GE21 L1" << bestPad_GE21_L1.second << std::endl;
         if (bestPad_GE21_L1.first.station()==3 and bestPad_GE21_L1.first.layer()==1) {
           auto gem_gp1 = getGlobalPointPad(bestPad_GE21_L1.first, bestPad_GE21_L1.second);
+          cout << "\t"<<gem_gp1<<endl;
           event_.GE21_phi_L1[j] = gem_gp1.phi();
           event_.GE21_bx_L1[j] = bestPad_GE21_L1.second.bx();
           event_.GE21_ch_L1[j] = bestPad_GE21_L1.first.chamber();
@@ -2277,6 +2288,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         std::cout << "Best pad GE21 L2" << bestPad_GE21_L2.second << std::endl;
         if (bestPad_GE21_L2.first.station()==3 and bestPad_GE21_L2.first.layer()==2) {
           auto gem_gp1 = getGlobalPointPad(bestPad_GE21_L2.first, bestPad_GE21_L2.second);
+          cout << "\t"<<gem_gp1<<endl;
           event_.GE21_phi_L2[j] = gem_gp1.phi();
           event_.GE21_bx_L2[j] = bestPad_GE21_L2.second.bx();
           event_.GE21_ch_L2[j] = bestPad_GE21_L2.first.chamber();
@@ -2899,112 +2911,115 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         event_.L1Mu_L1Tk_pt_corr[i] = l1Tk_pt;
       }
     } // end of loop on TTTracks
+
+    if (doGenAnalysis_) {
     
-    // match the L1Mu to GEN
-    if (genMuonGroups.size() == 2 and genMuonGroups[0].size() == 2 and genMuonGroups[1].size() == 2) {
-      double newDR[2][2];
-      for (int k=0; k<2; ++k){ 
-        for (int j=0; j<2; ++j){
-          newDR[k][j] = deltaR(event_.genGdMu_eta[k][j], event_.genGdMu_phi_corr[k][j], event_.L1Mu_eta[i], event_.L1Mu_phi[i]);        
-          if(verbose) cout << "newDR " << k <<  j << " " << newDR[k][j] << " pt " << event_.genGdMu_pt[k][j]
-                           << " eta_corr " << event_.genGdMu_eta[k][j] << " phi_corr " << event_.genGdMu_phi_corr[k][j] 
-                           << " Q " << event_.genGdMu_q[k][j] << endl;
-        }
-      }
-      
-      const std::vector<double> v{newDR[0][0], newDR[0][1], newDR[1][0], newDR[1][1]};
-      auto result(std::min_element(std::begin(v), std::end(v)));
-      auto dis(std::distance(std::begin(v), result));
-      
-      switch (dis){
-      case 0: 
-        if (newDR[0][0] < event_.genGdMu_L1Mu_dR_corr[0][0]) { 
-          event_.genGdMu_L1Mu_index_corr[0][0] = i;
-          event_.genGdMu_L1Mu_dR_corr[0][0] = newDR[0][0];
-        if(verbose) cout << "Muon[0][0] was matched within " << event_.genGdMu_L1Mu_dR_corr[0][0] <<" to L1Mu "<<i<<std::endl;
-        }
-        break;
-      case 1:
-        if (newDR[0][1] < event_.genGdMu_L1Mu_dR_corr[0][1]) { 
-          event_.genGdMu_L1Mu_index_corr[0][1] = i;
-          event_.genGdMu_L1Mu_dR_corr[0][1] = newDR[0][1];
-          if(verbose) cout << "Muon[0][1] was matched within " << event_.genGdMu_L1Mu_dR_corr[0][1] <<" to L1Mu "<<i<< std::endl;
-        }
-        break;
-      case 2:
-        if (newDR[1][0] < event_.genGdMu_L1Mu_dR_corr[1][0]) { 
-          event_.genGdMu_L1Mu_index_corr[1][0] = i;
-          event_.genGdMu_L1Mu_dR_corr[1][0] = newDR[1][0];
-          if(verbose) cout << "Muon[1][0] was matched within " << event_.genGdMu_L1Mu_dR_corr[1][0] <<" to L1Mu "<<i<< std::endl;
-        }
-        break;
-      case 3:
-        if (newDR[1][1] < event_.genGdMu_L1Mu_dR_corr[1][1]) { 
-          event_.genGdMu_L1Mu_index_corr[1][1] = i;
-          event_.genGdMu_L1Mu_dR_corr[1][1] = newDR[1][1];
-          if(verbose) cout << "Muon[1][1] was matched within " << event_.genGdMu_L1Mu_dR_corr[1][1] <<" to L1Mu "<<i<< std::endl;
-        }
-        break;
-      };
-    }
-    
-    // match the L1Mu to GEN    (propagated)
-    if (genMuonGroups.size() == 2 and genMuonGroups[0].size() == 2 and genMuonGroups[1].size() == 2) {
-      double newDR[2][2];
-      for (int k=0; k<2; ++k){ 
-        for (int j=0; j<2; ++j){
-          newDR[k][j] = deltaR(event_.genGdMu_eta_prop[k][j], event_.genGdMu_phi_prop[k][j], event_.L1Mu_eta[i], event_.L1Mu_phi[i]);        
-          if(verbose) cout << "newDR " << k <<  j << " " << newDR[k][j] << " pt " << event_.genGdMu_pt[k][j]
-                           << " eta_prop " << event_.genGdMu_eta_prop[k][j] << " phi_prop " << event_.genGdMu_phi_prop[k][j] 
-                           << " Q " << event_.genGdMu_q[k][j] << endl;
-        }
-      }
-      
-      const std::vector<double> v{newDR[0][0], newDR[0][1], newDR[1][0], newDR[1][1]};
-      auto result(std::min_element(std::begin(v), std::end(v)));
-      auto dis(std::distance(std::begin(v), result));
-      
-      switch (dis){
-      case 0: 
-        if (newDR[0][0] < event_.genGdMu_L1Mu_dR_prop[0][0]) { 
-          event_.genGdMu_L1Mu_index_prop[0][0] = i;
-          event_.genGdMu_L1Mu_dR_prop[0][0] = newDR[0][0];
-          if(verbose) cout << "Muon[0][0] was matched within " << event_.genGdMu_L1Mu_dR_prop[0][0] <<" to L1Mu "<<i<<std::endl;
-        }
-        break;
-      case 1:
-        if (newDR[0][1] < event_.genGdMu_L1Mu_dR_prop[0][1]) { 
-          event_.genGdMu_L1Mu_index_prop[0][1] = i;
-          event_.genGdMu_L1Mu_dR_prop[0][1] = newDR[0][1];
-          if(verbose) cout << "Muon[0][1] was matched within " << event_.genGdMu_L1Mu_dR_prop[0][1] <<" to L1Mu "<<i<< std::endl;
-        }
-        break;
-      case 2:
-        if (newDR[1][0] < event_.genGdMu_L1Mu_dR_prop[1][0]) { 
-          event_.genGdMu_L1Mu_index_prop[1][0] = i;
-          event_.genGdMu_L1Mu_dR_prop[1][0] = newDR[1][0];
-          if(verbose) cout << "Muon[1][0] was matched within " << event_.genGdMu_L1Mu_dR_prop[1][0] <<" to L1Mu "<<i<< std::endl;
-        }
-        break;
-      case 3:
-        if (newDR[1][1] < event_.genGdMu_L1Mu_dR_prop[1][1]) { 
-          event_.genGdMu_L1Mu_index_prop[1][1] = i;
-          event_.genGdMu_L1Mu_dR_prop[1][1] = newDR[1][1];
-          if(verbose) cout << "Muon[1][1] was matched within " << event_.genGdMu_L1Mu_dR_prop[1][1] <<" to L1Mu "<<i<< std::endl;
-        }
-        break;
-      };
-      
-      for (int k=0; k<2; ++k){ 
-        for (int j=0; j<2; ++j){
-          if (event_.genGdMu_L1Tk_index_prop[k][j] != -99) {
-            double deltaRL1MuTrueL1Tk(reco::deltaR(TTTracks[event_.genGdMu_L1Tk_index_prop[k][j]].getMomentum().eta(), 
-                                                   normalizedPhi(TTTracks[event_.genGdMu_L1Tk_index_prop[k][j]].getMomentum().phi()), 
-                                                   event_.L1Mu_eta[i], event_.L1Mu_phi[i]));
-            if (deltaRL1MuTrueL1Tk < event_.L1Mu_L1Tk_dR_prop_true[i]) {
-              event_.L1Mu_L1Tk_dR_prop_true[i] = deltaRL1MuTrueL1Tk;
-            }
+      // match the L1Mu to GEN
+      if (genMuonGroups.size() == 2 and genMuonGroups[0].size() == 2 and genMuonGroups[1].size() == 2) {
+        double newDR[2][2];
+        for (int k=0; k<2; ++k){ 
+          for (int j=0; j<2; ++j){
+            newDR[k][j] = deltaR(event_.genGdMu_eta[k][j], event_.genGdMu_phi_corr[k][j], event_.L1Mu_eta[i], event_.L1Mu_phi[i]);        
+            if(verbose) cout << "newDR " << k <<  j << " " << newDR[k][j] << " pt " << event_.genGdMu_pt[k][j]
+                             << " eta_corr " << event_.genGdMu_eta[k][j] << " phi_corr " << event_.genGdMu_phi_corr[k][j] 
+                             << " Q " << event_.genGdMu_q[k][j] << endl;
           }
+        }
+        
+        const std::vector<double> v{newDR[0][0], newDR[0][1], newDR[1][0], newDR[1][1]};
+        auto result(std::min_element(std::begin(v), std::end(v)));
+        auto dis(std::distance(std::begin(v), result));
+        
+        switch (dis){
+        case 0: 
+          if (newDR[0][0] < event_.genGdMu_L1Mu_dR_corr[0][0]) { 
+            event_.genGdMu_L1Mu_index_corr[0][0] = i;
+            event_.genGdMu_L1Mu_dR_corr[0][0] = newDR[0][0];
+            if(verbose) cout << "Muon[0][0] was matched within " << event_.genGdMu_L1Mu_dR_corr[0][0] <<" to L1Mu "<<i<<std::endl;
+          }
+          break;
+        case 1:
+          if (newDR[0][1] < event_.genGdMu_L1Mu_dR_corr[0][1]) { 
+            event_.genGdMu_L1Mu_index_corr[0][1] = i;
+            event_.genGdMu_L1Mu_dR_corr[0][1] = newDR[0][1];
+            if(verbose) cout << "Muon[0][1] was matched within " << event_.genGdMu_L1Mu_dR_corr[0][1] <<" to L1Mu "<<i<< std::endl;
+          }
+          break;
+        case 2:
+          if (newDR[1][0] < event_.genGdMu_L1Mu_dR_corr[1][0]) { 
+            event_.genGdMu_L1Mu_index_corr[1][0] = i;
+            event_.genGdMu_L1Mu_dR_corr[1][0] = newDR[1][0];
+            if(verbose) cout << "Muon[1][0] was matched within " << event_.genGdMu_L1Mu_dR_corr[1][0] <<" to L1Mu "<<i<< std::endl;
+          }
+          break;
+        case 3:
+          if (newDR[1][1] < event_.genGdMu_L1Mu_dR_corr[1][1]) { 
+            event_.genGdMu_L1Mu_index_corr[1][1] = i;
+            event_.genGdMu_L1Mu_dR_corr[1][1] = newDR[1][1];
+            if(verbose) cout << "Muon[1][1] was matched within " << event_.genGdMu_L1Mu_dR_corr[1][1] <<" to L1Mu "<<i<< std::endl;
+          }
+          break;
+        };
+      }
+      
+      // match the L1Mu to GEN    (propagated)
+      if (genMuonGroups.size() == 2 and genMuonGroups[0].size() == 2 and genMuonGroups[1].size() == 2) {
+        double newDR[2][2];
+        for (int k=0; k<2; ++k){ 
+          for (int j=0; j<2; ++j){
+            newDR[k][j] = deltaR(event_.genGdMu_eta_prop[k][j], event_.genGdMu_phi_prop[k][j], event_.L1Mu_eta[i], event_.L1Mu_phi[i]);        
+            if(verbose) cout << "newDR " << k <<  j << " " << newDR[k][j] << " pt " << event_.genGdMu_pt[k][j]
+                             << " eta_prop " << event_.genGdMu_eta_prop[k][j] << " phi_prop " << event_.genGdMu_phi_prop[k][j] 
+                             << " Q " << event_.genGdMu_q[k][j] << endl;
+          }
+        }
+        
+        const std::vector<double> v{newDR[0][0], newDR[0][1], newDR[1][0], newDR[1][1]};
+        auto result(std::min_element(std::begin(v), std::end(v)));
+        auto dis(std::distance(std::begin(v), result));
+        
+        switch (dis){
+        case 0: 
+          if (newDR[0][0] < event_.genGdMu_L1Mu_dR_prop[0][0]) { 
+            event_.genGdMu_L1Mu_index_prop[0][0] = i;
+            event_.genGdMu_L1Mu_dR_prop[0][0] = newDR[0][0];
+            if(verbose) cout << "Muon[0][0] was matched within " << event_.genGdMu_L1Mu_dR_prop[0][0] <<" to L1Mu "<<i<<std::endl;
+          }
+          break;
+        case 1:
+          if (newDR[0][1] < event_.genGdMu_L1Mu_dR_prop[0][1]) { 
+            event_.genGdMu_L1Mu_index_prop[0][1] = i;
+            event_.genGdMu_L1Mu_dR_prop[0][1] = newDR[0][1];
+            if(verbose) cout << "Muon[0][1] was matched within " << event_.genGdMu_L1Mu_dR_prop[0][1] <<" to L1Mu "<<i<< std::endl;
+          }
+          break;
+        case 2:
+          if (newDR[1][0] < event_.genGdMu_L1Mu_dR_prop[1][0]) { 
+            event_.genGdMu_L1Mu_index_prop[1][0] = i;
+            event_.genGdMu_L1Mu_dR_prop[1][0] = newDR[1][0];
+            if(verbose) cout << "Muon[1][0] was matched within " << event_.genGdMu_L1Mu_dR_prop[1][0] <<" to L1Mu "<<i<< std::endl;
+          }
+          break;
+        case 3:
+          if (newDR[1][1] < event_.genGdMu_L1Mu_dR_prop[1][1]) { 
+            event_.genGdMu_L1Mu_index_prop[1][1] = i;
+            event_.genGdMu_L1Mu_dR_prop[1][1] = newDR[1][1];
+            if(verbose) cout << "Muon[1][1] was matched within " << event_.genGdMu_L1Mu_dR_prop[1][1] <<" to L1Mu "<<i<< std::endl;
+          }
+          break;
+        };
+        
+        for (int k=0; k<2; ++k){ 
+          for (int j=0; j<2; ++j){
+            if (event_.genGdMu_L1Tk_index_prop[k][j] != -99) {
+              double deltaRL1MuTrueL1Tk(reco::deltaR(TTTracks[event_.genGdMu_L1Tk_index_prop[k][j]].getMomentum().eta(), 
+                                                     normalizedPhi(TTTracks[event_.genGdMu_L1Tk_index_prop[k][j]].getMomentum().phi()), 
+                                                     event_.L1Mu_eta[i], event_.L1Mu_phi[i]));
+              if (deltaRL1MuTrueL1Tk < event_.L1Mu_L1Tk_dR_prop_true[i]) {
+                event_.L1Mu_L1Tk_dR_prop_true[i] = deltaRL1MuTrueL1Tk;
+              }
+            }
+          } 
         }
       }
     }

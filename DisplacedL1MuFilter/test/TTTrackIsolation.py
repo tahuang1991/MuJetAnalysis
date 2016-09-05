@@ -40,12 +40,13 @@ def fillPtHistogram(histogram,
                     hasME11Cut=False, 
                     hasME21Cut=False, 
                     hasGE11Cut=False, 
-                    hasGE21Cut=False,
+                    hasGE21Cut=False
+                    hasGE11GE21Cut=False,,
                     ME11FailRate=0):
     prompt_L1Mu_pt = getMaxPromptPtEvent(treeHits,doBXCut, etaCutMin, 
                                          etaCutMax, stubCut, qualityCut,
                                          hasME11Cut, hasME21Cut, hasGE11Cut, 
-                                         hasGE21Cut, ME11FailRate)
+                                         hasGE21Cut, hasGE11GE21Cut, ME11FailRate)
     if (prompt_L1Mu_pt>0): histogram.Fill(prompt_L1Mu_pt)
 
 
@@ -142,7 +143,9 @@ def getMaxPromptPtEvent(treeHits,
         if hasME21Cut and not has_CSC_ME21: continue
         if hasGE11Cut and not passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt): continue
         if hasGE21Cut and not passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt): continue
-        
+        if (((hasGE11Cut and not passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt)) and 
+             (hasGE21Cut and not passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt))): continue
+            
         if False:
             print "\t\tMatched: L1Mu", "pt", L1Mu_pt, "eta", L1Mu_eta, 
             print "phi", L1Mu_phi, "Quality", L1Mu_quality, "L1mu_bx", L1Mu_bx,

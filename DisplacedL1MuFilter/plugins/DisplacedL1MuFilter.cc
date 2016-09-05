@@ -2165,14 +2165,15 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       
       for(auto cItr = hGEMCSCPads->begin(); cItr != hGEMCSCPads->end(); ++cItr) {
         GEMDetId gem_id = (*cItr).first;
-        cout << "Check GEMDetId " << gem_id << endl;
+        //cout << "Check GEMDetId " << gem_id << endl;
         //float bestGEMCSCDPhi = 99;
         if (not stubMissingSt1) {// and not GE11_copad_matched
           // get the CSCDetId of station 1
           CSCDetId csc_st1(event_.CSCTF_id1[ j ]);
           
           // chambers need to be compatible
-          if (gem_id.station() == 1 and 
+          if (gem_id.region() == csc_st1.zendcap() and 
+              gem_id.station() == 1 and 
               csc_st1.chamber() == gem_id.chamber() and
               (csc_st1.ring() == 4 or csc_st1.ring() == 1)) {
             std::cout << "Investigate GE11 chamber " << gem_id << std::endl;
@@ -2180,16 +2181,22 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             auto pad_range = (*cItr).second;
             for (auto digiItr = pad_range.first; digiItr != pad_range.second; ++digiItr){
               auto GE11_pad(*digiItr);
-              std::cout << "\tCandidate Pad " << GE11_pad  << std::endl;
-              if (gem_id.layer()==1){
-                bestPad_GE11_L1 = pickBestMatchingPad(event_.CSCTF_fit_x1[ j ],
-                                                      event_.CSCTF_fit_y1[ j ], 
-                                                      bestPad_GE11_L1, std::make_pair(gem_id, GE11_pad), event_.CSCTF_bx[j]);
-              }
-              if (gem_id.layer()==2){
-                bestPad_GE11_L2 = pickBestMatchingPad(event_.CSCTF_fit_x1[ j ],
-                                                      event_.CSCTF_fit_y1[ j ], 
-                                                      bestPad_GE11_L2, std::make_pair(gem_id, GE11_pad), event_.CSCTF_bx[j]);
+              int deltaBX = std::abs(GE11_pad.bx() - event_.CSCTF_bx[j]);
+              if (deltaBX <= 1) {
+              
+                std::cout << "\tCandidate Pad " << GE11_pad  << std::endl;
+                if (gem_id.layer()==1){
+                  // BXs have to match
+                  
+                  bestPad_GE11_L1 = pickBestMatchingPad(event_.CSCTF_fit_x1[ j ],
+                                                        event_.CSCTF_fit_y1[ j ], 
+                                                        bestPad_GE11_L1, std::make_pair(gem_id, GE11_pad), event_.CSCTF_bx[j]);
+                }
+                if (gem_id.layer()==2){
+                  bestPad_GE11_L2 = pickBestMatchingPad(event_.CSCTF_fit_x1[ j ],
+                                                        event_.CSCTF_fit_y1[ j ], 
+                                                        bestPad_GE11_L2, std::make_pair(gem_id, GE11_pad), event_.CSCTF_bx[j]);
+                }
               }
             }
           }
@@ -2199,7 +2206,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           CSCDetId csc_st2(event_.CSCTF_id2[ j ]);
           //int index = i;
           // chambers need to be compatible
-          if (gem_id.station() == 3 and 
+          if (gem_id.region() == csc_st2.zendcap() and
+              gem_id.station() == 3 and 
               csc_st2.chamber() == gem_id.chamber() and
               csc_st2.ring() == 1) {
             std::cout << "Investigate GE21 chamber " << gem_id << std::endl;
@@ -2207,16 +2215,19 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             auto pad_range = (*cItr).second;
             for (auto digiItr = pad_range.first; digiItr != pad_range.second; ++digiItr){
               auto pad(*digiItr);
-              std::cout << "\tCandidate Pad " << pad  << std::endl;
-              if (gem_id.layer()==1){
-                bestPad_GE21_L1 = pickBestMatchingPad(event_.CSCTF_fit_x2[ j ],
-                                                      event_.CSCTF_fit_y2[ j ], 
-                                                      bestPad_GE21_L1, std::make_pair(gem_id, pad), event_.CSCTF_bx[j]);
-              }
-              if (gem_id.layer()==2){
-                bestPad_GE21_L2 = pickBestMatchingPad(event_.CSCTF_fit_x2[ j ],
-                                                      event_.CSCTF_fit_y2[ j ], 
-                                                      bestPad_GE21_L2, std::make_pair(gem_id, pad), event_.CSCTF_bx[j]);
+              int deltaBX = std::abs(pad.bx() - event_.CSCTF_bx[j]);
+              if (deltaBX <= 1) {
+                std::cout << "\tCandidate Pad " << pad  << std::endl;
+                if (gem_id.layer()==1){
+                  bestPad_GE21_L1 = pickBestMatchingPad(event_.CSCTF_fit_x2[ j ],
+                                                        event_.CSCTF_fit_y2[ j ], 
+                                                        bestPad_GE21_L1, std::make_pair(gem_id, pad), event_.CSCTF_bx[j]);
+                }
+                if (gem_id.layer()==2){
+                  bestPad_GE21_L2 = pickBestMatchingPad(event_.CSCTF_fit_x2[ j ],
+                                                        event_.CSCTF_fit_y2[ j ], 
+                                                        bestPad_GE21_L2, std::make_pair(gem_id, pad), event_.CSCTF_bx[j]);
+                }                
               }
             }
           }

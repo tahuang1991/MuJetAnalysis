@@ -710,10 +710,10 @@ private:
   
   bool stubInCSCTFTracks(const CSCCorrelatedLCTDigi& stub, const L1CSCTrackCollection& l1Tracks) const;
 
-  GEMCSCCoPadDigiId
+  GEMCSCPadDigiId
   pickBestMatchingCoPad(float x1, float y1,
-                        const GEMCSCCoPadDigiId& oldCoPad,
-                        const GEMCSCCoPadDigiId& newCoPad, int refBx) const;
+                        const GEMCSCPadDigiId& oldCoPad,
+                        const GEMCSCPadDigiId& newCoPad, int refBx) const;
   GEMCSCPadDigiId
   pickBestMatchingPad(float x1, float y1,
                       const GEMCSCPadDigiId& oldPad,
@@ -920,11 +920,11 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   // GEM pads and copads
   edm::Handle< GEMCSCPadDigiCollection > hGEMCSCPads;
-  iEvent.getByLabel("simMuonGEMDigis", hGEMCSCPads);
+  iEvent.getByLabel("simMuonGEMCSCPadDigis", hGEMCSCPads);
   //const GEMCSCPadDigiCollection& GEMCSCPads(*hGEMCSCPads.product());
 
-  edm::Handle< GEMCSCCoPadDigiCollection > hGEMCSCCoPads;
-  iEvent.getByLabel("simCscTriggerPrimitiveDigis", hGEMCSCCoPads);
+  edm::Handle< GEMCSCPadDigiCollection > hGEMCSCCoPads;
+  iEvent.getByLabel("simMuonGEMCSCPadDigis", "Coincidence", hGEMCSCCoPads);
   //const GEMCSCCoPadDigiCollection& GEMCSCCoPads(*hGEMCSCCoPads.product());
 
   // L1 TrackingTrigger Analysis
@@ -1462,6 +1462,23 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         } 
       }
       
+      if(verbose){
+      std::cout << std::endl<<"++++ GEM pad analysis ++++" <<std::endl;
+      }
+      for (auto d: match_gd.detIdsPad()){
+        auto detId = GEMDetId(d);
+        if(verbose) std::cout << "Id " << detId << std::endl;
+        for (auto p: match_gd.gemPadsInDetId(d)){
+          auto gem_gp = match_gd.getGlobalPointPad(d,p);
+          double gem_phi = gem_gp.phi();
+          //int gem_ch = detId.chamber();
+          //int gem_bx = p.bx();
+          //double gem_z = gem_gp.z();
+          if(verbose){
+            std::cout << "\tPad " << p << " Position " << gem_phi << std::endl;
+          }
+        }
+      }
       /*
       // GEM digis and pads in superchambers
       if(verbose){
@@ -1481,35 +1498,35 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
       if (detId.station()==1) {
       if (detId.layer()==1) {
-            event_.GE11_phi_L1[k] = gem_phi;
-            event_.GE11_bx_L1[k] = gem_bx;
-            event_.GE11_ch_L1[k] = gem_ch;
-            event_.GE11_z_L1[k] = gem_z;
-            }
-          if (detId.layer()==2) {
-            event_.GE11_phi_L2[k] = gem_phi;
-            event_.GE11_bx_L2[k] = gem_bx;
-            event_.GE11_ch_L2[k] = gem_ch;
-            event_.GE11_z_L2[k] = gem_z;
-          }
-        }
-        if (detId.station()==3) {
-          if (detId.layer()==1) {
-            event_.GE21_phi_L1[k] = gem_phi;
-            event_.GE21_bx_L1[k] = gem_bx;
-            event_.GE21_ch_L1[k] = gem_ch;
-            event_.GE21_z_L1[k] = gem_z;
-          }
-          if (detId.layer()==2) {
-            event_.GE21_phi_L2[k] = gem_phi;
-            event_.GE21_bx_L2[k] = gem_bx;
-            event_.GE21_ch_L2[k] = gem_ch;
-            event_.GE21_z_L2[k] = gem_z;
-          }
-        }
+      event_.GE11_phi_L1[k] = gem_phi;
+      event_.GE11_bx_L1[k] = gem_bx;
+      event_.GE11_ch_L1[k] = gem_ch;
+      event_.GE11_z_L1[k] = gem_z;
+      }
+      if (detId.layer()==2) {
+      event_.GE11_phi_L2[k] = gem_phi;
+      event_.GE11_bx_L2[k] = gem_bx;
+      event_.GE11_ch_L2[k] = gem_ch;
+      event_.GE11_z_L2[k] = gem_z;
+      }
+      }
+      if (detId.station()==3) {
+      if (detId.layer()==1) {
+      event_.GE21_phi_L1[k] = gem_phi;
+      event_.GE21_bx_L1[k] = gem_bx;
+      event_.GE21_ch_L1[k] = gem_ch;
+      event_.GE21_z_L1[k] = gem_z;
+      }
+      if (detId.layer()==2) {
+      event_.GE21_phi_L2[k] = gem_phi;
+      event_.GE21_bx_L2[k] = gem_bx;
+      event_.GE21_ch_L2[k] = gem_ch;
+      event_.GE21_z_L2[k] = gem_z;
+      }
+      }
       } 
-    }
-    */
+      }
+      */
       // pad positions for GE21...
       if(verbose) std::cout << "++++ GEM pad analysis: pad positions in GE21 ++++" << std::endl;
       for (auto d: match_gd.detIdsDigi(GEMType::GEM_ME21)){
@@ -2050,183 +2067,215 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
       } 
     }
-    
-    std::cout << "Matching pads and copads" << std::endl;
+    stubMissingSt1 = event_.CSCTF_st1[j] == 99;
+    stubMissingSt2 = event_.CSCTF_st2[j] == 99;
+    cout << "Stub missing in station 1: " << bool(stubMissingSt1) << endl; 
+    cout << "Stub missing in station 2: " << bool(stubMissingSt2) << endl; 
+    /*
+
+    std::cout << "Matching copads" << std::endl;
     // Get matching GEM copads
+
+    GEMCSCPadDigiId bestCoPad_GE11;
+    GEMCSCPadDigiId bestCoPad_GE21;
+
     for(auto cItr = hGEMCSCCoPads->begin(); cItr != hGEMCSCCoPads->end(); ++cItr) {
       GEMDetId gem_id = (*cItr).first;
-      GEMCSCCoPadDigiId bestCoPad;
-      //float bestGEMCSCDPhi = 99;
       if (not stubMissingSt1) {
         // get the CSCDetId of station 1
         CSCDetId csc_st1(event_.CSCTF_id1[ j ]);
-        //int index = event_.L1Mu_CSCTF_index[i];
-        
+        std::cout << "CSC " << csc_st1 << endl;
         // chambers need to be compatible
         if (gem_id.station() != 1 or 
             csc_st1.chamber() != gem_id.chamber() or
-            csc_st1.ring() != 4 or csc_st1.ring() != 1) continue;
-        std::cout << "Investigate GEM chamber " << gem_id << std::endl;
+            (csc_st1.ring() != 4 and csc_st1.ring() != 1)) continue;
+        std::cout << "Investigate GE11 chamber " << gem_id << std::endl;
         // get the copads
         auto copad_range = (*cItr).second;
         for (auto digiItr = copad_range.first; digiItr != copad_range.second; ++digiItr){
           auto copad(*digiItr);
-          std::cout << "\tPad " << copad  << std::endl;
-          bestCoPad = pickBestMatchingCoPad(event_.CSCTF_fit_x1[ j ],
-                                            event_.CSCTF_fit_y1[ j ], 
-                                            std::make_pair(gem_id, copad), bestCoPad, 6 + event_.CSCTF_bx[j]);
+          std::cout << "\tCandidate copad " << copad  << std::endl;
+          bestCoPad_GE11 = pickBestMatchingCoPad(event_.CSCTF_fit_x1[ j ],
+                                                 event_.CSCTF_fit_y1[ j ], 
+                                                 bestCoPad_GE11, std::make_pair(gem_id, copad), event_.CSCTF_bx[j]);
         }
-        // found copad is not empty
-        if (bestCoPad.second != GEMCSCCoPadDigi()){
-          std::cout << "\tBest copad" << bestCoPad.second << std::endl;
-          if (gem_id.station()==1) {
-            auto gem_gp1 = getGlobalPointPad(bestCoPad.first, bestCoPad.second.first());
-            auto gem_gp2 = getGlobalPointPad(bestCoPad.first, bestCoPad.second.second());            
-            event_.GE11_phi_L1[j] = gem_gp1.phi();
-            event_.GE11_bx_L1[j] = bestCoPad.second.first().bx();
-            event_.GE11_ch_L1[j] = bestCoPad.first.chamber();
-            event_.GE11_z_L1[j] = gem_gp1.z();
-            
-            event_.GE11_phi_L2[j] = gem_gp2.phi();
-            event_.GE11_bx_L2[j] = bestCoPad.second.second().bx();
-            event_.GE11_ch_L2[j] = bestCoPad.first.chamber();
-            event_.GE11_z_L2[j] = gem_gp2.z();
-          }
-        } else {
-          std::cout << "No best copad" << std::endl;
-        }
-      }        
-      
+      }
       if (not stubMissingSt2) {
         // get the CSCDetId of station 1
         CSCDetId csc_st2(event_.CSCTF_id2[ j ]);
-        //int index = i;
+        std::cout << "CSC " << csc_st2 << endl;
         // chambers need to be compatible
         if (gem_id.station() != 3 or 
             csc_st2.chamber() != gem_id.chamber() or
             csc_st2.ring() != 1) continue;
-        std::cout << "Investigate GEM chamber " << gem_id << std::endl;
+        std::cout << "Investigate GE21 chamber " << gem_id << std::endl;
         // get the copads
         auto copad_range = (*cItr).second;
         for (auto digiItr = copad_range.first; digiItr != copad_range.second; ++digiItr){
           auto copad(*digiItr);
-          std::cout << "\tPad " << copad  << std::endl;
-          bestCoPad = pickBestMatchingCoPad(event_.CSCTF_fit_x2[ j ],
-                                            event_.CSCTF_fit_y2[ j ], 
-                                            std::make_pair(gem_id, copad), bestCoPad, 6 + event_.CSCTF_bx[j]);
+          std::cout << "\tCandidate copad " << copad  << std::endl;
+          bestCoPad_GE21 = pickBestMatchingCoPad(event_.CSCTF_fit_x2[ j ],
+                                                 event_.CSCTF_fit_y2[ j ], 
+                                                 bestCoPad_GE21, std::make_pair(gem_id, copad), event_.CSCTF_bx[j]);
         }
-        if (bestCoPad.second != GEMCSCCoPadDigi()){
-          std::cout << "\tBest copad" << bestCoPad.second << std::endl;
-          if (gem_id.station()==3) {
-            auto gem_gp1 = getGlobalPointPad(bestCoPad.first, bestCoPad.second.first());
-            auto gem_gp2 = getGlobalPointPad(bestCoPad.first, bestCoPad.second.second());            
-            event_.GE21_phi_L1[j] = gem_gp1.phi();
-            event_.GE21_bx_L1[j] = bestCoPad.second.first().bx();
-            event_.GE21_ch_L1[j] = bestCoPad.first.chamber();
-            event_.GE21_z_L1[j] = gem_gp1.z();
-            
-            event_.GE21_phi_L2[j] = gem_gp2.phi();
-            event_.GE21_bx_L2[j] = bestCoPad.second.second().bx();
-            event_.GE21_ch_L2[j] = bestCoPad.first.chamber();
-            event_.GE21_z_L2[j] = gem_gp2.z();
-          }
-        } else {
-          std::cout << "No best copad" << std::endl;
-        } 
       }
     }
-    // check copads were matched
-    const bool GE11_copad_matched( event_.GE11_phi_L1[j]!=99 and event_.GE11_phi_L2[j]!=99 );
-    const bool GE21_copad_matched( event_.GE21_phi_L1[j]!=99 and event_.GE21_phi_L2[j]!=99 );
+    // found copad is not empty
+    if (bestCoPad_GE11.second != GEMCSCPadDigi()){
+      std::cout << "\tBest GE11 copad" << bestCoPad_GE11.second << std::endl;
+      if (bestCoPad_GE11.first.station()==1) {
+        auto gem_gp1 = getGlobalPointPad(bestCoPad_GE11.first, bestCoPad_GE11.second);
+        event_.GE11_phi_L1[j] = gem_gp1.phi();
+        event_.GE11_bx_L1[j] = bestCoPad_GE11.second.bx();
+        event_.GE11_ch_L1[j] = bestCoPad_GE11.first.chamber();
+        event_.GE11_z_L1[j] = gem_gp1.z();
+      }
+    } else {
+      std::cout << "No best GE11 copad" << std::endl;
+    }
     
+    if (bestCoPad_GE21.second != GEMCSCPadDigi()){
+      std::cout << "\tBest GE21 copad" << bestCoPad_GE21.second << std::endl;
+      if (bestCoPad_GE21.first.station()==2) {
+        auto gem_gp1 = getGlobalPointPad(bestCoPad_GE21.first, bestCoPad_GE21.second);
+        event_.GE21_phi_L1[j] = gem_gp1.phi();
+        event_.GE21_bx_L1[j] = bestCoPad_GE21.second.bx();
+        event_.GE21_ch_L1[j] = bestCoPad_GE21.first.chamber();
+        event_.GE21_z_L1[j] = gem_gp1.z();
+      }
+    } else {
+      std::cout << "No best GE21 copad" << std::endl;
+    } 
+    
+    
+
+    // check copads were matched
+    const bool GE11_copad_matched( event_.GE11_phi_L1[j]!=99 );
+    const bool GE21_copad_matched( event_.GE21_phi_L1[j]!=99 );
+    */
+
+    std::cout << "Matching pads" << std::endl;
     // Get matching GEM pads
-    if ( ( (not GE11_copad_matched) or 
-           (not GE21_copad_matched) ) and false){
+    if (true){
+      //( (not GE11_copad_matched) or  (not GE21_copad_matched) )
+      GEMCSCPadDigiId bestPad_GE11_L1;
+      GEMCSCPadDigiId bestPad_GE11_L2;
+      GEMCSCPadDigiId bestPad_GE21_L1;
+      GEMCSCPadDigiId bestPad_GE21_L2;
       
       for(auto cItr = hGEMCSCPads->begin(); cItr != hGEMCSCPads->end(); ++cItr) {
         GEMDetId gem_id = (*cItr).first;
-        GEMCSCPadDigiId bestPad;
+        cout << "Check GEMDetId " << gem_id << endl;
         //float bestGEMCSCDPhi = 99;
-        if (not stubMissingSt1) {
+        if (not stubMissingSt1) {// and not GE11_copad_matched
           // get the CSCDetId of station 1
           CSCDetId csc_st1(event_.CSCTF_id1[ j ]);
-          //int index = i;
           
           // chambers need to be compatible
-          if (gem_id.station() != 1 or 
-              csc_st1.chamber() != gem_id.chamber() or
-              csc_st1.ring() != 4 or csc_st1.ring() != 1) continue;
-          std::cout << "Investigate GEM chamber " << gem_id << std::endl;
-          // get the pads
-          auto pad_range = (*cItr).second;
-          for (auto digiItr = pad_range.first; digiItr != pad_range.second; ++digiItr){
-            auto pad(*digiItr);
-            std::cout << "\tPad " << pad  << std::endl;
-            bestPad = pickBestMatchingPad(event_.CSCTF_fit_x1[ j ],
-                                          event_.CSCTF_fit_y1[ j ], 
-                                          std::make_pair(gem_id, pad), bestPad, 6 + event_.CSCTF_bx[j]);
-          }
-          // found pad is not empty
-          if (bestPad.second != GEMCSCPadDigi()){
-            std::cout << "\tBest pad" << bestPad.second << std::endl;
-            if (gem_id.station()==1) {
-              auto gem_gp1 = getGlobalPointPad(bestPad.first, bestPad.second);
-              auto gem_gp2 = getGlobalPointPad(bestPad.first, bestPad.second);            
-              event_.GE11_phi_L1[j] = gem_gp1.phi();
-              event_.GE11_bx_L1[j] = bestPad.second.bx();
-              event_.GE11_ch_L1[j] = bestPad.first.chamber();
-              event_.GE11_z_L1[j] = gem_gp1.z();
-              
-              event_.GE11_phi_L2[j] = gem_gp2.phi();
-              event_.GE11_bx_L2[j] = bestPad.second.bx();
-              event_.GE11_ch_L2[j] = bestPad.first.chamber();
-              event_.GE11_z_L2[j] = gem_gp2.z();
+          if (gem_id.station() == 1 and 
+              csc_st1.chamber() == gem_id.chamber() and
+              (csc_st1.ring() == 4 or csc_st1.ring() == 1)) {
+            std::cout << "Investigate GE11 chamber " << gem_id << std::endl;
+            // get the pads
+            auto pad_range = (*cItr).second;
+            for (auto digiItr = pad_range.first; digiItr != pad_range.second; ++digiItr){
+              auto GE11_pad(*digiItr);
+              std::cout << "\tCandidate Pad " << GE11_pad  << std::endl;
+              if (gem_id.layer()==1){
+                bestPad_GE11_L1 = pickBestMatchingPad(event_.CSCTF_fit_x1[ j ],
+                                                      event_.CSCTF_fit_y1[ j ], 
+                                                      bestPad_GE11_L1, std::make_pair(gem_id, GE11_pad), event_.CSCTF_bx[j]);
+              }
+              if (gem_id.layer()==2){
+                bestPad_GE11_L2 = pickBestMatchingPad(event_.CSCTF_fit_x1[ j ],
+                                                      event_.CSCTF_fit_y1[ j ], 
+                                                      bestPad_GE11_L2, std::make_pair(gem_id, GE11_pad), event_.CSCTF_bx[j]);
+              }
             }
-          } else {
-            std::cout << "No best pad" << std::endl;
           }
-        }        
-        
-        if (not stubMissingSt2) {
-          // get the CSCDetId of station 1
+        }
+        if (not stubMissingSt2) {// and not GE21_copad_matched
+           // get the CSCDetId of station 1
           CSCDetId csc_st2(event_.CSCTF_id2[ j ]);
           //int index = i;
           // chambers need to be compatible
-          if (gem_id.station() != 3 or 
-              csc_st2.chamber() != gem_id.chamber() or
-              csc_st2.ring() != 1) continue;
-          std::cout << "Investigate GEM chamber " << gem_id << std::endl;
-          // get the pads
-          auto pad_range = (*cItr).second;
-          for (auto digiItr = pad_range.first; digiItr != pad_range.second; ++digiItr){
-            auto pad(*digiItr);
-            std::cout << "\tPad " << pad  << std::endl;
-            bestPad = pickBestMatchingPad(event_.CSCTF_fit_x2[ j ],
-                                              event_.CSCTF_fit_y2[ j ], 
-                                          std::make_pair(gem_id, pad), bestPad, 6 + event_.CSCTF_bx[j]);
-          }
-          if (bestPad.second != GEMCSCPadDigi()){
-            std::cout << "\tBest pad" << bestPad.second << std::endl;
-            if (gem_id.station()==3) {
-              auto gem_gp1 = getGlobalPointPad(bestPad.first, bestPad.second);
-              auto gem_gp2 = getGlobalPointPad(bestPad.first, bestPad.second);            
-              event_.GE21_phi_L1[j] = gem_gp1.phi();
-              event_.GE21_bx_L1[j] = bestPad.second.bx();
-              event_.GE21_ch_L1[j] = bestPad.first.chamber();
-              event_.GE21_z_L1[j] = gem_gp1.z();
-              
-              event_.GE21_phi_L2[j] = gem_gp2.phi();
-              event_.GE21_bx_L2[j] = bestPad.second.bx();
-              event_.GE21_ch_L2[j] = bestPad.first.chamber();
-              event_.GE21_z_L2[j] = gem_gp2.z();
+          if (gem_id.station() == 3 and 
+              csc_st2.chamber() == gem_id.chamber() and
+              csc_st2.ring() == 1) {
+            std::cout << "Investigate GE21 chamber " << gem_id << std::endl;
+            // get the pads
+            auto pad_range = (*cItr).second;
+            for (auto digiItr = pad_range.first; digiItr != pad_range.second; ++digiItr){
+              auto pad(*digiItr);
+              std::cout << "\tCandidate Pad " << pad  << std::endl;
+              if (gem_id.layer()==1){
+                bestPad_GE21_L1 = pickBestMatchingPad(event_.CSCTF_fit_x2[ j ],
+                                                      event_.CSCTF_fit_y2[ j ], 
+                                                      bestPad_GE21_L1, std::make_pair(gem_id, pad), event_.CSCTF_bx[j]);
+              }
+              if (gem_id.layer()==2){
+                bestPad_GE21_L2 = pickBestMatchingPad(event_.CSCTF_fit_x2[ j ],
+                                                      event_.CSCTF_fit_y2[ j ], 
+                                                      bestPad_GE21_L2, std::make_pair(gem_id, pad), event_.CSCTF_bx[j]);
+              }
             }
-          } else {
-            std::cout << "No best pad" << std::endl;
-          } 
+          }
         }
       }
-    }
-  }
+      // found pad is not empty
+      if (bestPad_GE11_L1.second != GEMCSCPadDigi()){
+        std::cout << "Best pad GE11 L1" << bestPad_GE11_L1.second << std::endl;
+        if (bestPad_GE11_L1.first.station()==1 and bestPad_GE11_L1.first.layer()==1) {
+          auto gem_gp1 = getGlobalPointPad(bestPad_GE11_L1.first, bestPad_GE11_L1.second);
+          event_.GE11_phi_L1[j] = gem_gp1.phi();
+          event_.GE11_bx_L1[j] = bestPad_GE11_L1.second.bx();
+          event_.GE11_ch_L1[j] = bestPad_GE11_L1.first.chamber();
+          event_.GE11_z_L1[j] = gem_gp1.z();              
+        }
+      } else {
+        std::cout << "No best pad GE11 L1" << std::endl;
+      }
+      
+      if (bestPad_GE11_L2.second != GEMCSCPadDigi()){
+        std::cout << "Best pad GE11 L2" << bestPad_GE11_L2.second << std::endl;
+        if (bestPad_GE11_L2.first.station()==1 and bestPad_GE11_L2.first.layer()==2) {
+          auto gem_gp1 = getGlobalPointPad(bestPad_GE11_L2.first, bestPad_GE11_L2.second);
+          event_.GE11_phi_L2[j] = gem_gp1.phi();
+          event_.GE11_bx_L2[j] = bestPad_GE11_L2.second.bx();
+          event_.GE11_ch_L2[j] = bestPad_GE11_L2.first.chamber();
+          event_.GE11_z_L2[j] = gem_gp1.z();              
+        }
+      } else {
+        std::cout << "No best pad GE11 L2" << std::endl;
+      }
+      // found pad is not empty
+      if (bestPad_GE21_L1.second != GEMCSCPadDigi()){
+        std::cout << "Best pad GE21 L1" << bestPad_GE21_L1.second << std::endl;
+        if (bestPad_GE21_L1.first.station()==3 and bestPad_GE21_L1.first.layer()==1) {
+          auto gem_gp1 = getGlobalPointPad(bestPad_GE21_L1.first, bestPad_GE21_L1.second);
+          event_.GE21_phi_L1[j] = gem_gp1.phi();
+          event_.GE21_bx_L1[j] = bestPad_GE21_L1.second.bx();
+          event_.GE21_ch_L1[j] = bestPad_GE21_L1.first.chamber();
+          event_.GE21_z_L1[j] = gem_gp1.z();              
+        }
+      } else {
+        std::cout << "No best pad GE21 L1" << std::endl;
+      }
+      
+      if (bestPad_GE21_L2.second != GEMCSCPadDigi()){
+        std::cout << "Best pad GE21 L2" << bestPad_GE21_L2.second << std::endl;
+        if (bestPad_GE21_L2.first.station()==3 and bestPad_GE21_L2.first.layer()==2) {
+          auto gem_gp1 = getGlobalPointPad(bestPad_GE21_L2.first, bestPad_GE21_L2.second);
+          event_.GE21_phi_L2[j] = gem_gp1.phi();
+          event_.GE21_bx_L2[j] = bestPad_GE21_L2.second.bx();
+          event_.GE21_ch_L2[j] = bestPad_GE21_L2.first.chamber();
+          event_.GE21_z_L2[j] = gem_gp1.z();              
+        }
+      } else {
+        std::cout << "No best pad GE21 L2" << std::endl;
+      }
+    } // check if match to pads
+  } // loop on csctf tracks
 
   // Store the RPCb variables
   if(verbose) std::cout << "Number of l1MuRPCbs: " <<l1MuRPCbs.size() << std::endl;
@@ -2703,182 +2752,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
             }
           }
         }
-      }
-      
-      // Get matching GEM copads
-      for(auto cItr = hGEMCSCCoPads->begin(); cItr != hGEMCSCCoPads->end(); ++cItr) {
-        GEMDetId gem_id = (*cItr).first;
-        GEMCSCCoPadDigiId bestCoPad;
-        //float bestGEMCSCDPhi = 99;
-        if (not stubMissingSt1) {
-          // get the CSCDetId of station 1
-          CSCDetId csc_st1(event_.CSCTF_id1[ event_.L1Mu_CSCTF_index[i] ]);
-          //int index = event_.L1Mu_CSCTF_index[i];
-          
-          // chambers need to be compatible
-          if (gem_id.station() != 1 or 
-              csc_st1.chamber() != gem_id.chamber() or
-              csc_st1.ring() != 4 or csc_st1.ring() != 1) continue;
-          std::cout << "Investigate GEM chamber " << gem_id << std::endl;
-          // get the copads
-          auto copad_range = (*cItr).second;
-          for (auto digiItr = copad_range.first; digiItr != copad_range.second; ++digiItr){
-            auto copad(*digiItr);
-            std::cout << "\tPad " << copad  << std::endl;
-            bestCoPad = pickBestMatchingCoPad(event_.CSCTF_fit_x1[ event_.L1Mu_CSCTF_index[i] ],
-                                              event_.CSCTF_fit_y1[ event_.L1Mu_CSCTF_index[i] ], 
-                                              std::make_pair(gem_id, copad), bestCoPad, 6 + event_.L1Mu_bx[i]);
-          }
-          // found copad is not empty
-          if (bestCoPad.second != GEMCSCCoPadDigi()){
-            std::cout << "\tBest copad" << bestCoPad.second << std::endl;
-            if (gem_id.station()==1) {
-              auto gem_gp1 = getGlobalPointPad(bestCoPad.first, bestCoPad.second.first());
-              auto gem_gp2 = getGlobalPointPad(bestCoPad.first, bestCoPad.second.second());            
-              event_.GE11_phi_L1[i] = gem_gp1.phi();
-              event_.GE11_bx_L1[i] = bestCoPad.second.first().bx();
-              event_.GE11_ch_L1[i] = bestCoPad.first.chamber();
-              event_.GE11_z_L1[i] = gem_gp1.z();
-              
-              event_.GE11_phi_L2[i] = gem_gp2.phi();
-              event_.GE11_bx_L2[i] = bestCoPad.second.second().bx();
-              event_.GE11_ch_L2[i] = bestCoPad.first.chamber();
-              event_.GE11_z_L2[i] = gem_gp2.z();
-            }
-          } else {
-            std::cout << "No best copad" << std::endl;
-          }
-        }        
-        
-        if (not stubMissingSt2) {
-          // get the CSCDetId of station 1
-          CSCDetId csc_st2(event_.CSCTF_id2[ event_.L1Mu_CSCTF_index[i] ]);
-          //int index = event_.L1Mu_CSCTF_index[i];
-          // chambers need to be compatible
-          if (gem_id.station() != 3 or 
-              csc_st2.chamber() != gem_id.chamber() or
-              csc_st2.ring() != 1) continue;
-          std::cout << "Investigate GEM chamber " << gem_id << std::endl;
-          // get the copads
-          auto copad_range = (*cItr).second;
-          for (auto digiItr = copad_range.first; digiItr != copad_range.second; ++digiItr){
-            auto copad(*digiItr);
-            std::cout << "\tPad " << copad  << std::endl;
-            bestCoPad = pickBestMatchingCoPad(event_.CSCTF_fit_x2[ event_.L1Mu_CSCTF_index[i] ],
-                                              event_.CSCTF_fit_y2[ event_.L1Mu_CSCTF_index[i] ], 
-                                              std::make_pair(gem_id, copad), bestCoPad, 6 + event_.L1Mu_bx[i]);
-          }
-          if (bestCoPad.second != GEMCSCCoPadDigi()){
-            std::cout << "\tBest copad" << bestCoPad.second << std::endl;
-            if (gem_id.station()==3) {
-              auto gem_gp1 = getGlobalPointPad(bestCoPad.first, bestCoPad.second.first());
-              auto gem_gp2 = getGlobalPointPad(bestCoPad.first, bestCoPad.second.second());            
-              event_.GE21_phi_L1[i] = gem_gp1.phi();
-              event_.GE21_bx_L1[i] = bestCoPad.second.first().bx();
-              event_.GE21_ch_L1[i] = bestCoPad.first.chamber();
-              event_.GE21_z_L1[i] = gem_gp1.z();
-              
-              event_.GE21_phi_L2[i] = gem_gp2.phi();
-              event_.GE21_bx_L2[i] = bestCoPad.second.second().bx();
-              event_.GE21_ch_L2[i] = bestCoPad.first.chamber();
-              event_.GE21_z_L2[i] = gem_gp2.z();
-            }
-          } else {
-            std::cout << "No best copad" << std::endl;
-          } 
-        }
-      }
-      // check copads were matched
-      const bool GE11_copad_matched( event_.GE11_phi_L1[i]!=99 and event_.GE11_phi_L2[i]!=99 );
-      const bool GE21_copad_matched( event_.GE21_phi_L1[i]!=99 and event_.GE21_phi_L2[i]!=99 );
-      
-      // Get matching GEM pads
-      if ( ( (not GE11_copad_matched) or 
-             (not GE21_copad_matched) ) and false){
-
-      for(auto cItr = hGEMCSCPads->begin(); cItr != hGEMCSCPads->end(); ++cItr) {
-        GEMDetId gem_id = (*cItr).first;
-        GEMCSCPadDigiId bestPad;
-        //float bestGEMCSCDPhi = 99;
-        if (not stubMissingSt1) {
-          // get the CSCDetId of station 1
-          CSCDetId csc_st1(event_.CSCTF_id1[ event_.L1Mu_CSCTF_index[i] ]);
-          //int index = event_.L1Mu_CSCTF_index[i];
-          
-          // chambers need to be compatible
-          if (gem_id.station() != 1 or 
-              csc_st1.chamber() != gem_id.chamber() or
-              csc_st1.ring() != 4 or csc_st1.ring() != 1) continue;
-          std::cout << "Investigate GEM chamber " << gem_id << std::endl;
-          // get the pads
-          auto pad_range = (*cItr).second;
-          for (auto digiItr = pad_range.first; digiItr != pad_range.second; ++digiItr){
-            auto pad(*digiItr);
-            std::cout << "\tPad " << pad  << std::endl;
-            bestPad = pickBestMatchingPad(event_.CSCTF_fit_x1[ event_.L1Mu_CSCTF_index[i] ],
-                                          event_.CSCTF_fit_y1[ event_.L1Mu_CSCTF_index[i] ], 
-                                          std::make_pair(gem_id, pad), bestPad, 6 + event_.L1Mu_bx[i]);
-          }
-          // found pad is not empty
-          if (bestPad.second != GEMCSCPadDigi()){
-            std::cout << "\tBest pad" << bestPad.second << std::endl;
-            if (gem_id.station()==1) {
-              auto gem_gp1 = getGlobalPointPad(bestPad.first, bestPad.second);
-              auto gem_gp2 = getGlobalPointPad(bestPad.first, bestPad.second);            
-              event_.GE11_phi_L1[i] = gem_gp1.phi();
-              event_.GE11_bx_L1[i] = bestPad.second.bx();
-              event_.GE11_ch_L1[i] = bestPad.first.chamber();
-              event_.GE11_z_L1[i] = gem_gp1.z();
-              
-              event_.GE11_phi_L2[i] = gem_gp2.phi();
-              event_.GE11_bx_L2[i] = bestPad.second.bx();
-              event_.GE11_ch_L2[i] = bestPad.first.chamber();
-              event_.GE11_z_L2[i] = gem_gp2.z();
-            }
-          } else {
-            std::cout << "No best pad" << std::endl;
-          }
-        }        
-        
-        if (not stubMissingSt2) {
-          // get the CSCDetId of station 1
-          CSCDetId csc_st2(event_.CSCTF_id2[ event_.L1Mu_CSCTF_index[i] ]);
-          //int index = event_.L1Mu_CSCTF_index[i];
-          // chambers need to be compatible
-          if (gem_id.station() != 3 or 
-              csc_st2.chamber() != gem_id.chamber() or
-              csc_st2.ring() != 1) continue;
-          std::cout << "Investigate GEM chamber " << gem_id << std::endl;
-          // get the pads
-          auto pad_range = (*cItr).second;
-          for (auto digiItr = pad_range.first; digiItr != pad_range.second; ++digiItr){
-            auto pad(*digiItr);
-            std::cout << "\tPad " << pad  << std::endl;
-            bestPad = pickBestMatchingPad(event_.CSCTF_fit_x2[ event_.L1Mu_CSCTF_index[i] ],
-                                              event_.CSCTF_fit_y2[ event_.L1Mu_CSCTF_index[i] ], 
-                                              std::make_pair(gem_id, pad), bestPad, 6 + event_.L1Mu_bx[i]);
-          }
-          if (bestPad.second != GEMCSCPadDigi()){
-            std::cout << "\tBest pad" << bestPad.second << std::endl;
-            if (gem_id.station()==3) {
-              auto gem_gp1 = getGlobalPointPad(bestPad.first, bestPad.second);
-              auto gem_gp2 = getGlobalPointPad(bestPad.first, bestPad.second);            
-              event_.GE21_phi_L1[i] = gem_gp1.phi();
-              event_.GE21_bx_L1[i] = bestPad.second.bx();
-              event_.GE21_ch_L1[i] = bestPad.first.chamber();
-              event_.GE21_z_L1[i] = gem_gp1.z();
-              
-              event_.GE21_phi_L2[i] = gem_gp2.phi();
-              event_.GE21_bx_L2[i] = bestPad.second.bx();
-              event_.GE21_ch_L2[i] = bestPad.first.chamber();
-              event_.GE21_z_L2[i] = gem_gp2.z();
-            }
-          } else {
-            std::cout << "No best pad" << std::endl;
-          } 
-        }
-      }
-        
       }
     }
 
@@ -3706,6 +3579,11 @@ GlobalPoint
 DisplacedL1MuFilter::getGlobalPointPad(unsigned int rawId, const GEMCSCPadDigi& tp) const
 {
   GEMDetId gem_id(rawId);
+  // cout << "old " << gem_id << endl;
+  // if (gem_id.station()==2){
+  //   gem_id = GEMDetId(gem_id.region(), gem_id.ring(), 3, gem_id.layer(), gem_id.chamber(), gem_id.roll());
+  // }
+  // cout << "new " << gem_id << endl;
   LocalPoint gem_lp = gemGeometry_->etaPartition(gem_id)->centreOfPad(tp.pad());
   GlobalPoint gem_gp = gemGeometry_->idToDet(gem_id)->surface().toGlobal(gem_lp);
   return gem_gp;
@@ -3817,26 +3695,26 @@ DisplacedL1MuFilter::stubInCSCTFTracks(const CSCCorrelatedLCTDigi& candidateStub
 }
 
 
-GEMCSCCoPadDigiId
+GEMCSCPadDigiId
 DisplacedL1MuFilter::pickBestMatchingCoPad(float xref, float yref,
-                                           const GEMCSCCoPadDigiId& oldCoPad,
-                                           const GEMCSCCoPadDigiId& newCoPad, 
+                                           const GEMCSCPadDigiId& oldCoPad,
+                                           const GEMCSCPadDigiId& newCoPad, 
                                            int bxref) const
 {
   bool debug = true;
   // check for invalid/valid
-  if (oldCoPad.second == GEMCSCCoPadDigi()) {
-    if (debug) cout<<"Old stub invalid"<<endl;
+  if (oldCoPad.second == GEMCSCPadDigi()) {
+    if (debug) cout<<"Old copad invalid"<<endl;
     return newCoPad;
   }
-  if (newCoPad.second == GEMCSCCoPadDigi()) {
-    if (debug) cout<< "New stub invalid"<<endl;
+  if (newCoPad.second == GEMCSCPadDigi()) {
+    if (debug) cout<< "New copad invalid"<<endl;
     return oldCoPad;
   }
   
   // check the timing
-  bool oldCoPadInTime = oldCoPad.second.first().bx()==0 and oldCoPad.second.second().bx()==0;
-  bool newCoPadInTime = newCoPad.second.first().bx()==0 and newCoPad.second.second().bx()==0;
+  bool oldCoPadInTime = oldCoPad.second.bx() - bxref==0;// and oldCoPad.second.second().bx() - bxref==0;
+  bool newCoPadInTime = newCoPad.second.bx() - bxref==0;// and newCoPad.second.second().bx() - bxref==0;
   if (oldCoPadInTime and not newCoPadInTime) {
     if (debug) cout<<"Old copad in time, new copad out of time"<<endl;
     return oldCoPad;
@@ -3847,9 +3725,10 @@ DisplacedL1MuFilter::pickBestMatchingCoPad(float xref, float yref,
   }
 
   // both copads in time, check the closest matching one!
-  if (oldCoPadInTime and newCoPadInTime){
-    auto gpOld = getGlobalPointPad(oldCoPad.first.rawId(), oldCoPad.second.second());
-    auto gpNew = getGlobalPointPad(newCoPad.first.rawId(), newCoPad.second.second());
+  if ((oldCoPadInTime and newCoPadInTime) or (not oldCoPadInTime and not newCoPadInTime)){
+    cout << "check better matching one in space" << endl;
+    auto gpOld = getGlobalPointPad(oldCoPad.first.rawId(), oldCoPad.second);
+    auto gpNew = getGlobalPointPad(newCoPad.first.rawId(), newCoPad.second);
     float deltaXYOld = TMath::Sqrt( (xref-gpOld.x())*(xref-gpOld.x()) + (yref-gpOld.y())*(yref-gpOld.y()) );
     float deltaXYNew = TMath::Sqrt( (xref-gpNew.x())*(xref-gpNew.x()) + (yref-gpNew.y())*(yref-gpNew.y()) );
     if (debug) {
@@ -3867,7 +3746,7 @@ DisplacedL1MuFilter::pickBestMatchingCoPad(float xref, float yref,
     }
   }
   // in case all else fails...
-  return GEMCSCCoPadDigiId();
+  return GEMCSCPadDigiId();
 }
 
 
@@ -3877,20 +3756,20 @@ DisplacedL1MuFilter::pickBestMatchingPad(float xref, float yref,
                                            const GEMCSCPadDigiId& newPad, 
                                            int bxref) const
 {
-  bool debug = true;
+  bool debug = false;
   // check for invalid/valid
   if (oldPad.second == GEMCSCPadDigi()) {
-    if (debug) cout<<"Old stub invalid"<<endl;
+    if (debug) cout<<"Old pad invalid"<<endl;
     return newPad;
   }
   if (newPad.second == GEMCSCPadDigi()) {
-    if (debug) cout<< "New stub invalid"<<endl;
+    if (debug) cout<< "New pad invalid"<<endl;
     return oldPad;
   }
   
   // check the timing
-  bool oldPadInTime = oldPad.second.bx()==0 and oldPad.second.bx()==0;
-  bool newPadInTime = newPad.second.bx()==0 and newPad.second.bx()==0;
+  bool oldPadInTime = oldPad.second.bx() - bxref==0 and oldPad.second.bx() - bxref==0;
+  bool newPadInTime = newPad.second.bx() - bxref==0 and newPad.second.bx() - bxref==0;
   if (oldPadInTime and not newPadInTime) {
     if (debug) cout<<"Old copad in time, new copad out of time"<<endl;
     return oldPad;
@@ -3901,7 +3780,8 @@ DisplacedL1MuFilter::pickBestMatchingPad(float xref, float yref,
   }
 
   // both copads in time, check the closest matching one!
-  if (oldPadInTime and newPadInTime){
+  if ((oldPadInTime and newPadInTime) or (not oldPadInTime and  not newPadInTime)){
+    cout << "check better matching one in space" << endl;
     auto gpOld = getGlobalPointPad(oldPad.first.rawId(), oldPad.second);
     auto gpNew = getGlobalPointPad(newPad.first.rawId(), newPad.second);
     float deltaXYOld = TMath::Sqrt( (xref-gpOld.x())*(xref-gpOld.x()) + (yref-gpOld.y())*(yref-gpOld.y()) );

@@ -1511,6 +1511,10 @@ def get1DHistogramFractionY(hist2d, fraction=.9):
       ys_e_up.append(yval_e_up)
       ys_e_dw.append(yval_e_dw)
 
+      g1 = TF1("g1","[0]/(x-[1])",3, 40)
+      r1.Fit(g1,"LRQM")
+
+
     SetOwnership( r1, False )
     return xs, ys, r1
 

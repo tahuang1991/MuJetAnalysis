@@ -51,7 +51,7 @@ if __name__ == "__main__":
   ch = addfiles(ch, dirname=dirname)
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160908"
+  label = "DisplacedL1MuTrigger_20160909"
   targetDir = label + "/"
   
   verbose = False
@@ -101,14 +101,14 @@ if __name__ == "__main__":
     mapTH2F = ROOT.std.map("string,TH2F")()
 
     def addPlotToMapTH1F(name,nBin,minBin,maxBin):
-      mapTH1F[name] = TH1F(name,"",nBin,minBin,maxBin)
+      mapTH1F[name] = TH1F(name,name,nBin,minBin,maxBin)
     def addPlotToMapTH1F_v2(name,bins):
-      mapTH1F[name] = TH1F(name,"",len(bins)-1, bins)
+      mapTH1F[name] = TH1F(name,name,len(bins)-1, bins)
 
     def addPlotToMapTH2F(name,nBin1,minBin1,maxBin1,nBin2,minBin2,maxBin2):
-      mapTH2F[name] = TH2F(name,"",nBin1,minBin1,maxBin1,nBin2,minBin2,maxBin2)
+      mapTH2F[name] = TH2F(name,name,nBin1,minBin1,maxBin1,nBin2,minBin2,maxBin2)
     def addPlotToMapTH2F_v2(name,binsX,binsY):
-      mapTH2F[name] = TH2F(name,"",len(binsX)-1, binsX, len(binsY)-1, binsY)
+      mapTH2F[name] = TH2F(name,name,len(binsX)-1, binsX, len(binsY)-1, binsY)
 
     ## ranges
     DTCombinations = ['DT1_DT2','DT1_DT3','DT1_DT4',
@@ -2141,10 +2141,10 @@ if __name__ == "__main__":
 
                 ## only fill the plots that apply!!
                 parity2 = get_parity_ME11_ME21(CSCTF_isEven1, CSCTF_isEven2)
-                etaPartitionGE11 = get_eta_partition_GE11(eta_prop)
+                etaPartitionGE11 = get_eta_partition_GE11(L1Mu_eta)
 
                 parity3 = get_parity(CSCTF_isEven1, CSCTF_isEven2, CSCTF_isEven3, CSCTF_isEven4)
-                etaPartition = get_eta_partition(eta_prop)
+                etaPartition = get_eta_partition(L1Mu_eta)
 
                 mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_eta" + etaRangesGE11[etaPartitionGE11] + "_" +  ME1ME2ParityCases[parity2] + "_pad1_withoutLCTFit"].Fill(pt, delta_phi_dir_GE21_pad1_withoutLCTFit)
                 mapTH2F["GenMuPt_vs_abs_phiGEMst1_phiGEMst2_eta" + etaRangesGE11[etaPartitionGE11] + "_" +  ME1ME2ParityCases[parity2] + "_pad2_withoutLCTFit"].Fill(pt, delta_phi_dir_GE21_pad2_withoutLCTFit)
@@ -2859,10 +2859,10 @@ if __name__ == "__main__":
       hist.SetTitle(title)
       hist2 = get1DHistogramFractionY(hist, fraction=.9)[2]
       hist2.Draw("p same")
-      g1 = TF1("g1","[0]/(x-[1]) + [2]",5, 60)
+      g1 = TF1("g1","[0]/(x-[1])",3, 40)
       hist2.Fit(g1,"LRQM")
       #print key,  "= [", hist2.GetFunction("g1").GetParameter("p0"), ", ", hist2.GetFunction("g1").GetParameter("p1"), "]"
-      print key,  "= [", hist2.GetFunction("g1").GetParameter("p0"), ", ", hist2.GetFunction("g1").GetParameter("p1"), ", ", hist2.GetFunction("g1").GetParameter("p2"), "]"
+      #print key,  "= [", hist2.GetFunction("g1").GetParameter("p0"), ", ", hist2.GetFunction("g1").GetParameter("p1"), ", ", hist2.GetFunction("g1").GetParameter("p2"), "]"
       c.SaveAs(targetDir + key + "_fit.png")
 
 
@@ -3075,7 +3075,7 @@ if __name__ == "__main__":
                               "#Phi resolution in ME21 chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
 
 
-    produceLCTPhiResolutionPlots = True
+    produceLCTPhiResolutionPlots = False
     if produceLCTPhiResolutionPlots:
       makeSimplePlotGaussianFit(csc_pos_sh_lct_ME1b_16to18_even, targetDir + "csc_pos_sh_lct_ME1b_16to18_even.png", 
                                 "#Phi resolution in ME1b even chamber, 1.6<|#eta|<1.8;#Phi(LCT)-#Phi(SimHit); Entries","")
@@ -3189,7 +3189,7 @@ if __name__ == "__main__":
 
 
     ## GEM position resolutions
-    produceGEMResolutionPlots = True
+    produceGEMResolutionPlots = False
     if produceGEMResolutionPlots:
       makeSimplePlot(gem_pos_sh_pad1_GE21_16to18, targetDir + "gem_pos_sh_pad1_GE21_16to18.png",
                      "#Phi resolution in GE21 chamber, 1.6<|#eta|<1.8;#Phi(Pad1)-#Phi(SimHit); Entries","") 
@@ -3219,7 +3219,7 @@ if __name__ == "__main__":
                      "#Phi resolution in GE21 chamber, 2.0<|#eta|<2.2;#Phi(Pad8)-#Phi(SimHit); Entries","") 
       
     ## DDY123 vs deltaPhiGEM
-    produceDDY23vsDeltaPhiGEMPlots = True
+    produceDDY23vsDeltaPhiGEMPlots = False
     if produceDDY23vsDeltaPhiGEMPlots:
       """
       makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad1_pt10_withoutLCTFit", "Pad1, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
@@ -3326,14 +3326,14 @@ if __name__ == "__main__":
           ## get the arrays with 90% cutoff numbers
           #print "Numbers for GenMuPt_vs_DDY123_eta" + qq + "_" + pp + "_withoutLCTFit"
           lut1 = get1DHistogramFractionY(mapTH2F["GenMuPt_vs_DDY123_eta" + qq + "_" + pp + "_withoutLCTFit"], .90)
-          #print "    DDY123_dict['eta" + qq + "_" + pp + "_withoutLCTFit_x'] = [", lut1[2].GetParameter(0), ", ", lut1[2].GetParameter(1), "]"
-          #print "    DDY123_dict['eta" + qq + "_" + pp + "_withoutLCTFit_y'] = ", 
+          #print "    DDY123_dict['eta" + qq + "_" + pp + "_withoutLCTFit_x'] = ", lut1[0]
+          #print "    DDY123_dict['eta" + qq + "_" + pp + "_withoutLCTFit_y'] = ", lut1[1]
           print "    DDY123_dict['eta" + qq + "_" + pp + "_withoutLCTFit'] = [", lut1[2].GetFunction("g1").GetParameter("p0"), ", ", lut1[2].GetFunction("g1").GetParameter("p1"), "]"
 
           #print "Numbers for GenMuPt_vs_DDY123_eta" + qq + "_" + pp + "_withLCTFit"
           lut2 = get1DHistogramFractionY(mapTH2F["GenMuPt_vs_DDY123_eta" + qq + "_" + pp + "_withLCTFit"], 0.90)
-          #print "    DDY123_dict['eta" + qq + "_" + pp + "_withLCTFit_x'] = ", lut1[0]
-          #print "    DDY123_dict['eta" + qq + "_" + pp + "_withLCTFit_y'] = ", lut1[1]
+          #print "    DDY123_dict['eta" + qq + "_" + pp + "_withLCTFit_x'] = ", lut2[0]
+          #print "    DDY123_dict['eta" + qq + "_" + pp + "_withLCTFit_y'] = ", lut2[1]
           print "    DDY123_dict['eta" + qq + "_" + pp + "_withLCTFit'] = [", lut2[2].GetFunction("g1").GetParameter("p0"), ", ", lut2[2].GetFunction("g1").GetParameter("p1"), "]"
 
     ## plots with DTs

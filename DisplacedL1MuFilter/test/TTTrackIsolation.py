@@ -61,6 +61,22 @@ def fillPtHistogram(histogram,
     if (prompt_L1Mu_pt>0): histogram.Fill(prompt_L1Mu_pt)
 
 
+def fillDisplacedPtHistogram(histogram,
+                             treeHits, 
+                             doBXCut, 
+                             etaCutMin, 
+                             etaCutMax, 
+                             stubCut, 
+                             qualityCut):
+    displaced_L1Mu_pt = getMaxDisplacedPtEvent(treeHits,
+                                               doBXCut, 
+                                               etaCutMin, 
+                                               etaCutMax, 
+                                               stubCut, 
+                                               qualityCut)
+    if (displaced_L1Mu_pt>0): histogram.Fill(displaced_L1Mu_pt)
+
+
 def getMaxPromptPtEvent(treeHits, 
                         doBXCut, 
                         etaCutMin, 
@@ -194,13 +210,14 @@ def getMaxDisplacedPtEvent(treeHits,
                            doBXCut, 
                            etaCutMin, 
                            etaCutMax, 
-                           method):
+                           stubCut,
+                           qualityCut):
     
-    max_prompt_L1Mu_pt = -1
+    max_displaced_L1Mu_pt = -1
 
     ## check if this event has L1Mus
     if len(list(treeHits.L1Mu_pt))==0:
-        return max_prompt_L1Mu_pt
+        return max_displaced_L1Mu_pt
 
     pts = list(treeHits.L1Mu_pt)
     for i in range(0,len(pts)):
@@ -221,11 +238,11 @@ def getMaxDisplacedPtEvent(treeHits,
         
         #print L1Mu_CSCTF_index
         if L1Mu_CSCTF_index != -1:
-            DisplacedL1Mu_pt = pt_endcap_position_based_algorithm(treeHits, i, L1Mu_CSCTF_index, False)
+            DisplacedL1Mu_pt = pt_endcap_position_based_algorithm(treeHits, i, True)
         else:
             DisplacedL1Mu_pt = -1
         
         ## calculate the max pT for the muons that pass the criteria
-        if DisplacedL1Mu_pt > max_DisplacedL1Mu_pt:   max_DisplacedL1Mu_pt = DisplacedL1Mu_pt
+        if DisplacedL1Mu_pt > max_displaced_L1Mu_pt:   max_displaced_L1Mu_pt = DisplacedL1Mu_pt
 
-    return max_DisplacedL1Mu_pt
+    return max_displaced_L1Mu_pt

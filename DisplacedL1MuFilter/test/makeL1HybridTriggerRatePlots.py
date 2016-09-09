@@ -15,6 +15,7 @@ if __name__ == "__main__":
 
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160901_v2"; pu = 'PU140'; eff = False
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160906"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160909"; pu = 'PU140'; eff = False
 
   ## extension for figures - add more?
   ext = ".png"
@@ -26,7 +27,7 @@ if __name__ == "__main__":
 
   set_style()
 
-  doTest = True
+  doTest = False
 
   ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
   #location = "/uscms_data/d3/dildick/work/GEMTriggerRateStudyAugust2016/CMSSW_6_2_0_SLHC28/src/MuJetAnalysis/DisplacedL1MuFilter/test/"
@@ -104,53 +105,55 @@ if __name__ == "__main__":
       ## ignore events without L1Mu
       if len(pts)==0: continue
 
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate"], treeHits, True, 1.6, 2.2, 0, 6)
+      minQuality = 4
+
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate"], treeHits, True, 1.6, 2.2, 0, minQuality)
 
 
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs"], treeHits,True, 1.6, 2.2, 2, 6)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs"], treeHits,True, 1.6, 2.2, 3, 6)
-
-      
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11"], treeHits,True, 1.6, 2.2, 2, 6, hasME11Cut=True)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11"], treeHits,True, 1.6, 2.2, 3, 6, hasME11Cut=True)
-      
-
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME21"], treeHits,True, 1.6, 2.2, 2, 6, hasME21Cut=True)     
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME21"], treeHits,True, 1.6, 2.2, 3, 6, hasME21Cut=True)
-
-
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11orME21"], treeHits,True, 1.6, 2.2, 2, 6, hasME11ME21Cut=True)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11orME21"], treeHits,True, 1.6, 2.2, 3, 6, hasME11ME21Cut=True)
-
-
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p"], treeHits,True, 1.6, 2.2, 2, 6, hasME11Cut=True, ME11FailRate=0.1)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p"], treeHits,True, 1.6, 2.2, 3, 6, hasME11Cut=True, ME11FailRate=0.1)
-
-
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11"], treeHits,True, 1.6, 2.2, 2, 6, hasME11Cut=True, hasGE11Cut=True)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11"], treeHits,True, 1.6, 2.2, 3, 6, hasME11Cut=True, hasGE11Cut=True)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs"], treeHits,True, 1.6, 2.2, 2, minQuality)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs"], treeHits,True, 1.6, 2.2, 3, minQuality)
 
       
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME21_GE21"], treeHits,True, 1.6, 2.2, 2, 6, hasME21Cut=True, hasGE21Cut=True)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME21_GE21"], treeHits,True, 1.6, 2.2, 3, 6, hasME21Cut=True, hasGE21Cut=True)
-
-
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_GE11"], treeHits,True, 1.6, 2.2, 2, 6, hasME11Cut=True, hasGE11Cut=True, ME11FailRate=0.1)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_GE11"], treeHits,True, 1.6, 2.2, 3, 6, hasME11Cut=True, hasGE11Cut=True, ME11FailRate=0.1)
-
-
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11_GE21"], treeHits,True, 1.6, 2.2, 2, 6, hasME11Cut=True, hasME21Cut=True, hasGE11Cut=True, hasGE21Cut=True)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11_GE21"], treeHits,True, 1.6, 2.2, 3, 6, hasME11Cut=True, hasME21Cut=True, hasGE11Cut=True, hasGE21Cut=True)
-
-
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_GE11_GE21"], treeHits,True, 1.6, 2.2, 2, 6, hasME11ME21Cut=True, hasGE11GE21Cut=False)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_GE11_GE21"], treeHits,True, 1.6, 2.2, 3, 6, hasME11ME21Cut=True, hasGE11GE21Cut=False)
-
-
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_GE11_GE21"], treeHits,True, 1.6, 2.2, 2, 6, hasME11Cut=True, hasGE11Cut=True, hasGE21Cut=True, ME11FailRate=0.1)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_GE11_GE21"], treeHits,True, 1.6, 2.2, 3, 6, hasME11Cut=True, hasGE11Cut=True, hasGE21Cut=True, ME11FailRate=0.1)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True)
       
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate"], treeHits, True, 1.6, 2.2, 0, 6)
+
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME21"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME21Cut=True)     
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME21"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME21Cut=True)
+
+
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11orME21"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11ME21Cut=True)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11orME21"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11ME21Cut=True)
+
+
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True, ME11FailRate=0.1)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True, ME11FailRate=0.1)
+
+
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True, hasGE11Cut=True)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True, hasGE11Cut=True)
+
+      
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME21_GE21"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME21Cut=True, hasGE21Cut=True)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME21_GE21"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME21Cut=True, hasGE21Cut=True)
+
+
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_GE11"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True, hasGE11Cut=True, ME11FailRate=0.1)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_GE11"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True, hasGE11Cut=True, ME11FailRate=0.1)
+
+
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11_GE21"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True, hasME21Cut=True, hasGE11Cut=True, hasGE21Cut=True)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11_GE21"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True, hasME21Cut=True, hasGE11Cut=True, hasGE21Cut=True)
+
+
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_GE11_GE21"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11ME21Cut=True, hasGE11GE21Cut=False)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_GE11_GE21"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11ME21Cut=True, hasGE11GE21Cut=False)
+
+
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_GE11_GE21"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True, hasGE11Cut=True, hasGE21Cut=True, ME11FailRate=0.1)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_GE11_GE21"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True, hasGE11Cut=True, hasGE21Cut=True, ME11FailRate=0.1)
+      
+      fillDisplacedPtHistogram( mapTH1F["h_single_displaced_L1Mu_rate_ME1_ME2_ME3"], treeHits, True, 1.6, 2.2, 3, minQuality)
 
     def makePlots(h1, h1Legend,
                   h2, h2Legend,
@@ -384,6 +387,11 @@ if __name__ == "__main__":
 
 
     ## displaced L1Mu trigger plots
+    ## trigger rate plots vs pt
+    makePlots(mapTH1F["h_single_prompt_L1Mu_rate"], "Prompt L1Mu",
+              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs"], "Prompt L1Mu, 3 CSC stubs",
+              mapTH1F["h_single_displaced_L1Mu_rate_ME1_ME2_ME3"], "Displaced L1Mu, position based",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__DisplacedL1Mu3st")
     
 
   displacedL1MuHybridTriggerRate()

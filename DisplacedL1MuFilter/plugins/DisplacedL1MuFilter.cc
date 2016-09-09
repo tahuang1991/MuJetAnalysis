@@ -439,26 +439,25 @@ struct MyEvent
   // Matching the SIM Mu to GEM pad (really no other way to do this)
   Int_t nGEM;
   Float_t GE11_phi_L1[kMaxGEM], GE11_phi_L2[kMaxGEM], GE21_phi_L1[kMaxGEM], GE21_phi_L2[kMaxGEM];
-  Int_t GE11_bx_L1[kMaxGEM], GE11_bx_L2[kMaxGEM], GE21_bx_L1[kMaxGEM], GE21_bx_L2[kMaxGEM];
-  Int_t GE11_ch_L1[kMaxGEM], GE11_ch_L2[kMaxGEM], GE21_ch_L1[kMaxGEM], GE21_ch_L2[kMaxGEM];
+  Int_t   GE11_bx_L1[kMaxGEM], GE11_bx_L2[kMaxGEM], GE21_bx_L1[kMaxGEM], GE21_bx_L2[kMaxGEM];
+  Int_t   GE11_ch_L1[kMaxGEM], GE11_ch_L2[kMaxGEM], GE21_ch_L1[kMaxGEM], GE21_ch_L2[kMaxGEM];
   Float_t GE11_z_L1[kMaxGEM], GE11_z_L2[kMaxGEM], GE21_z_L1[kMaxGEM], GE21_z_L2[kMaxGEM];
 
   Float_t GE11_sim_phi_L1[kMaxGEM], GE11_sim_phi_L2[kMaxGEM], GE21_sim_phi_L1[kMaxGEM], GE21_sim_phi_L2[kMaxGEM];
   Float_t GE11_sim_bx_L1[kMaxGEM], GE11_sim_bx_L2[kMaxGEM], GE21_sim_bx_L1[kMaxGEM], GE21_sim_bx_L2[kMaxGEM];
-  Int_t GE11_sim_ch_L1[kMaxGEM], GE11_sim_ch_L2[kMaxGEM], GE21_sim_ch_L1[kMaxGEM], GE21_sim_ch_L2[kMaxGEM];
+  Int_t   GE11_sim_ch_L1[kMaxGEM], GE11_sim_ch_L2[kMaxGEM], GE21_sim_ch_L1[kMaxGEM], GE21_sim_ch_L2[kMaxGEM];
   Float_t GE11_sim_z_L1[kMaxGEM], GE11_sim_z_L2[kMaxGEM], GE21_sim_z_L1[kMaxGEM], GE21_sim_z_L2[kMaxGEM];
 
-  Float_t GE0_phi[kMaxGEM];
-  Float_t GE0_phib[kMaxGEM];
-
-  Float_t GE0_sim_phi[kMaxGEM];
-  Float_t GE0_sim_phib[kMaxGEM];
+  Float_t GE11_sim_pad_phi_L1[kMaxGEM], GE11_sim_pad_phi_L2[kMaxGEM], GE21_sim_pad_phi_L1[kMaxGEM], GE21_sim_pad_phi_L2[kMaxGEM];
+  Float_t GE11_sim_pad_bx_L1[kMaxGEM], GE11_sim_pad_bx_L2[kMaxGEM], GE21_sim_pad_bx_L1[kMaxGEM], GE21_sim_pad_bx_L2[kMaxGEM];
+  Int_t   GE11_sim_pad_ch_L1[kMaxGEM], GE11_sim_pad_ch_L2[kMaxGEM], GE21_sim_pad_ch_L1[kMaxGEM], GE21_sim_pad_ch_L2[kMaxGEM];
+  Float_t GE11_sim_pad_z_L1[kMaxGEM], GE11_sim_pad_z_L2[kMaxGEM], GE21_sim_pad_z_L1[kMaxGEM], GE21_sim_pad_z_L2[kMaxGEM];
 
   // positions from artificial pads
-  Float_t GE21_pad1_phi_L1[kMaxGEM], GE21_pad1_phi_L2[kMaxGEM];
-  Float_t GE21_pad2_phi_L1[kMaxGEM], GE21_pad2_phi_L2[kMaxGEM];
-  Float_t GE21_pad4_phi_L1[kMaxGEM], GE21_pad4_phi_L2[kMaxGEM];
-  Float_t GE21_pad8_phi_L1[kMaxGEM], GE21_pad8_phi_L2[kMaxGEM];
+  Float_t GE21_sim_pad1_phi_L1[kMaxGEM], GE21_sim_pad1_phi_L2[kMaxGEM];
+  Float_t GE21_sim_pad2_phi_L1[kMaxGEM], GE21_sim_pad2_phi_L2[kMaxGEM];
+  Float_t GE21_sim_pad4_phi_L1[kMaxGEM], GE21_sim_pad4_phi_L2[kMaxGEM];
+  Float_t GE21_sim_pad8_phi_L1[kMaxGEM], GE21_sim_pad8_phi_L2[kMaxGEM];
 };
 
 bool 
@@ -1487,54 +1486,54 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           }
         }
       }
-      /*
+      
       // GEM digis and pads in superchambers
       if(verbose){
-      std::cout << std::endl<<"++++ GEM pad analysis ++++" <<std::endl;
+        std::cout << std::endl<<"++++ GEM pad analysis ++++" <<std::endl;
       }
       for (auto d: match_gd.detIdsPad()){
-      auto detId = GEMDetId(d);
-      if(verbose) std::cout << "Id " << detId << std::endl;
-      for (auto p: match_gd.gemPadsInDetId(d)){
-      auto gem_gp = match_gd.getGlobalPointPad(d,p);
-      double gem_phi = gem_gp.phi();
-      int gem_ch = detId.chamber();
-      int gem_bx = p.bx();
-      double gem_z = gem_gp.z();
-      if(verbose){
-      std::cout << "\tPad " << p << " Position " << gem_phi << std::endl;
+        auto detId = GEMDetId(d);
+        if(verbose) std::cout << "Id " << detId << std::endl;
+        for (auto p: match_gd.gemPadsInDetId(d)){
+          auto gem_gp = match_gd.getGlobalPointPad(d,p);
+          double gem_phi = gem_gp.phi();
+          int gem_ch = detId.chamber();
+          int gem_bx = p.bx();
+          double gem_z = gem_gp.z();
+          if(verbose){
+            std::cout << "\tPad " << p << " Position " << gem_phi << std::endl;
+          }
+          if (detId.station()==1) {
+            if (detId.layer()==1) {
+              event_.GE11_sim_pad_phi_L1[k] = gem_phi;
+              event_.GE11_sim_pad_bx_L1[k] = gem_bx;
+              event_.GE11_sim_pad_ch_L1[k] = gem_ch;
+              event_.GE11_sim_pad_z_L1[k] = gem_z;
+            }
+            if (detId.layer()==2) {
+              event_.GE11_sim_pad_phi_L2[k] = gem_phi;
+              event_.GE11_sim_pad_bx_L2[k] = gem_bx;
+              event_.GE11_sim_pad_ch_L2[k] = gem_ch;
+              event_.GE11_sim_pad_z_L2[k] = gem_z;
+            }
+          }
+          if (detId.station()==3) {
+            if (detId.layer()==1) {
+              event_.GE21_sim_pad_phi_L1[k] = gem_phi;
+              event_.GE21_sim_pad_bx_L1[k] = gem_bx;
+              event_.GE21_sim_pad_ch_L1[k] = gem_ch;
+              event_.GE21_sim_pad_z_L1[k] = gem_z;
+            }
+            if (detId.layer()==2) {
+              event_.GE21_sim_pad_phi_L2[k] = gem_phi;
+              event_.GE21_sim_pad_bx_L2[k] = gem_bx;
+              event_.GE21_sim_pad_ch_L2[k] = gem_ch;
+              event_.GE21_sim_pad_z_L2[k] = gem_z;
+            }
+          }
+        } 
       }
-      if (detId.station()==1) {
-      if (detId.layer()==1) {
-      event_.GE11_phi_L1[k] = gem_phi;
-      event_.GE11_bx_L1[k] = gem_bx;
-      event_.GE11_ch_L1[k] = gem_ch;
-      event_.GE11_z_L1[k] = gem_z;
-      }
-      if (detId.layer()==2) {
-      event_.GE11_phi_L2[k] = gem_phi;
-      event_.GE11_bx_L2[k] = gem_bx;
-      event_.GE11_ch_L2[k] = gem_ch;
-      event_.GE11_z_L2[k] = gem_z;
-      }
-      }
-      if (detId.station()==3) {
-      if (detId.layer()==1) {
-      event_.GE21_phi_L1[k] = gem_phi;
-      event_.GE21_bx_L1[k] = gem_bx;
-      event_.GE21_ch_L1[k] = gem_ch;
-      event_.GE21_z_L1[k] = gem_z;
-      }
-      if (detId.layer()==2) {
-      event_.GE21_phi_L2[k] = gem_phi;
-      event_.GE21_bx_L2[k] = gem_bx;
-      event_.GE21_ch_L2[k] = gem_ch;
-      event_.GE21_z_L2[k] = gem_z;
-      }
-      }
-      } 
-      }
-      */
+      
       // pad positions for GE21...
       if(verbose) std::cout << "++++ GEM pad analysis: pad positions in GE21 ++++" << std::endl;
       for (auto d: match_gd.detIdsDigi(GEMType::GEM_ME21)){
@@ -1552,16 +1551,16 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
         if (detId.station()==3) {
           if (detId.layer()==1) {
-            event_.GE21_pad1_phi_L1[k] = firstPositionPad1; 
-            event_.GE21_pad2_phi_L1[k] = firstPositionPad2; 
-            event_.GE21_pad4_phi_L1[k] = firstPositionPad4; 
-            event_.GE21_pad8_phi_L1[k] = firstPositionPad8; 
+            event_.GE21_sim_pad1_phi_L1[k] = firstPositionPad1; 
+            event_.GE21_sim_pad2_phi_L1[k] = firstPositionPad2; 
+            event_.GE21_sim_pad4_phi_L1[k] = firstPositionPad4; 
+            event_.GE21_sim_pad8_phi_L1[k] = firstPositionPad8; 
           }
           if (detId.layer()==2) {
-            event_.GE21_pad1_phi_L2[k] = firstPositionPad1;
-            event_.GE21_pad2_phi_L2[k] = firstPositionPad2;
-            event_.GE21_pad4_phi_L2[k] = firstPositionPad4;
-            event_.GE21_pad8_phi_L2[k] = firstPositionPad8;
+            event_.GE21_sim_pad1_phi_L2[k] = firstPositionPad1;
+            event_.GE21_sim_pad2_phi_L2[k] = firstPositionPad2;
+            event_.GE21_sim_pad4_phi_L2[k] = firstPositionPad4;
+            event_.GE21_sim_pad8_phi_L2[k] = firstPositionPad8;
           }
         }
       }
@@ -2013,8 +2012,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                 int deltaBX = std::abs(stub.getBX() - (6 + event_.CSCTF_bx[j]));
                 if (deltaBX > 1) continue;
 
-                std::cout << ch_id << std::endl;
-                std::cout<<"Candidate " << stub << std::endl;
+                if(verbose) std::cout << ch_id << std::endl;
+                if(verbose) std::cout<<"Candidate " << stub << std::endl;
                 bestMatchingStub = pickBestMatchingStub(allxs[ch_id.station()-1], allys[ch_id.station()-1], 
                                                         bestMatchingStub, std::make_pair(ch_id, stub), 6 + event_.CSCTF_bx[j]);
               }
@@ -2036,8 +2035,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                   int deltaBX = std::abs(stub.getBX() - (6 + event_.CSCTF_bx[j]));
                   if (deltaBX > 1) continue; 
 
-                  std::cout << me1a_id << std::endl;
-                  std::cout<<"Candidate " << stub << std::endl;
+                  if(verbose) std::cout << me1a_id << std::endl;
+                  if(verbose) std::cout<<"Candidate " << stub << std::endl;
                   bestMatchingStub = pickBestMatchingStub(allxs[me1a_id.station()-1], allys[me1a_id.station()-1], 
                                                           bestMatchingStub, std::make_pair(me1a_id, stub), 6 + event_.CSCTF_bx[j]);
                   
@@ -2077,8 +2076,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
     stubMissingSt1 = event_.CSCTF_st1[j] == 99;
     stubMissingSt2 = event_.CSCTF_st2[j] == 99;
-    cout << "Stub missing in station 1: " << bool(stubMissingSt1) << endl; 
-    cout << "Stub missing in station 2: " << bool(stubMissingSt2) << endl; 
+    if(verbose) cout << "Stub missing in station 1: " << bool(stubMissingSt1) << endl; 
+    if(verbose) cout << "Stub missing in station 2: " << bool(stubMissingSt2) << endl; 
     /*
 
     std::cout << "Matching copads" << std::endl;
@@ -2162,7 +2161,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     const bool GE21_copad_matched( event_.GE21_phi_L1[j]!=99 );
     */
 
-    std::cout << "Matching pads" << std::endl;
+    if(verbose) std::cout << "Matching pads" << std::endl;
     // Get matching GEM pads
     if (true){
       //( (not GE11_copad_matched) or  (not GE21_copad_matched) )
@@ -2184,7 +2183,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
               gem_id.station() == 1 and 
               csc_st1.chamber() == gem_id.chamber() and
               (csc_st1.ring() == 4 or csc_st1.ring() == 1)) {
-            std::cout << "Investigate GE11 chamber " << gem_id << std::endl;
+            if(verbose) std::cout << "Investigate GE11 chamber " << gem_id << std::endl;
             // get the pads
             auto pad_range = (*cItr).second;
             for (auto digiItr = pad_range.first; digiItr != pad_range.second; ++digiItr){
@@ -2192,7 +2191,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
               int deltaBX = std::abs(GE11_pad.bx() - event_.CSCTF_bx[j]);
               if (deltaBX <= 1) {
               
-                std::cout << "\tCandidate Pad " << GE11_pad  << std::endl;
+                if(verbose) std::cout << "\tCandidate Pad " << GE11_pad  << std::endl;
                 if (gem_id.layer()==1){
                   // BXs have to match
                   
@@ -2218,14 +2217,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
               gem_id.station() == 3 and 
               csc_st2.chamber() == gem_id.chamber() and
               csc_st2.ring() == 1) {
-            std::cout << "Investigate GE21 chamber " << gem_id << std::endl;
+            if(verbose) std::cout << "Investigate GE21 chamber " << gem_id << std::endl;
             // get the pads
             auto pad_range = (*cItr).second;
             for (auto digiItr = pad_range.first; digiItr != pad_range.second; ++digiItr){
               auto pad(*digiItr);
               int deltaBX = std::abs(pad.bx() - event_.CSCTF_bx[j]);
               if (deltaBX <= 1) {
-                std::cout << "\tCandidate Pad " << pad  << std::endl;
+                if(verbose) std::cout << "\tCandidate Pad " << pad  << std::endl;
                 if (gem_id.layer()==1){
                   bestPad_GE21_L1 = pickBestMatchingPad(event_.CSCTF_fit_x2[ j ],
                                                         event_.CSCTF_fit_y2[ j ], 
@@ -2243,59 +2242,59 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
       // found pad is not empty
       if (bestPad_GE11_L1.second != GEMCSCPadDigi()){
-        std::cout << "Best pad GE11 L1" << bestPad_GE11_L1.second << std::endl;
+        if(verbose) std::cout << "Best pad GE11 L1" << bestPad_GE11_L1.second << std::endl;
         if (bestPad_GE11_L1.first.station()==1 and bestPad_GE11_L1.first.layer()==1) {
           auto gem_gp1 = getGlobalPointPad(bestPad_GE11_L1.first, bestPad_GE11_L1.second);
-          cout << "\t"<<gem_gp1<<endl;
+          if(verbose) cout << "\t"<<gem_gp1<<endl;
           event_.GE11_phi_L1[j] = gem_gp1.phi();
           event_.GE11_bx_L1[j] = bestPad_GE11_L1.second.bx();
           event_.GE11_ch_L1[j] = bestPad_GE11_L1.first.chamber();
           event_.GE11_z_L1[j] = gem_gp1.z();              
         }
       } else {
-        std::cout << "No best pad GE11 L1" << std::endl;
+        if(verbose) std::cout << "No best pad GE11 L1" << std::endl;
       }
       
       if (bestPad_GE11_L2.second != GEMCSCPadDigi()){
-        std::cout << "Best pad GE11 L2" << bestPad_GE11_L2.second << std::endl;
+        if(verbose) std::cout << "Best pad GE11 L2" << bestPad_GE11_L2.second << std::endl;
         if (bestPad_GE11_L2.first.station()==1 and bestPad_GE11_L2.first.layer()==2) {
           auto gem_gp1 = getGlobalPointPad(bestPad_GE11_L2.first, bestPad_GE11_L2.second);
-          cout << "\t"<<gem_gp1<<endl;
+          if(verbose) cout << "\t"<<gem_gp1<<endl;
           event_.GE11_phi_L2[j] = gem_gp1.phi();
           event_.GE11_bx_L2[j] = bestPad_GE11_L2.second.bx();
           event_.GE11_ch_L2[j] = bestPad_GE11_L2.first.chamber();
           event_.GE11_z_L2[j] = gem_gp1.z();              
         }
       } else {
-        std::cout << "No best pad GE11 L2" << std::endl;
+        if(verbose) std::cout << "No best pad GE11 L2" << std::endl;
       }
       // found pad is not empty
       if (bestPad_GE21_L1.second != GEMCSCPadDigi()){
-        std::cout << "Best pad GE21 L1" << bestPad_GE21_L1.second << std::endl;
+        if(verbose) std::cout << "Best pad GE21 L1" << bestPad_GE21_L1.second << std::endl;
         if (bestPad_GE21_L1.first.station()==3 and bestPad_GE21_L1.first.layer()==1) {
           auto gem_gp1 = getGlobalPointPad(bestPad_GE21_L1.first, bestPad_GE21_L1.second);
-          cout << "\t"<<gem_gp1<<endl;
+          if(verbose) cout << "\t"<<gem_gp1<<endl;
           event_.GE21_phi_L1[j] = gem_gp1.phi();
           event_.GE21_bx_L1[j] = bestPad_GE21_L1.second.bx();
           event_.GE21_ch_L1[j] = bestPad_GE21_L1.first.chamber();
           event_.GE21_z_L1[j] = gem_gp1.z();              
         }
       } else {
-        std::cout << "No best pad GE21 L1" << std::endl;
+        if(verbose) std::cout << "No best pad GE21 L1" << std::endl;
       }
       
       if (bestPad_GE21_L2.second != GEMCSCPadDigi()){
-        std::cout << "Best pad GE21 L2" << bestPad_GE21_L2.second << std::endl;
+        if(verbose) std::cout << "Best pad GE21 L2" << bestPad_GE21_L2.second << std::endl;
         if (bestPad_GE21_L2.first.station()==3 and bestPad_GE21_L2.first.layer()==2) {
           auto gem_gp1 = getGlobalPointPad(bestPad_GE21_L2.first, bestPad_GE21_L2.second);
-          cout << "\t"<<gem_gp1<<endl;
+          if(verbose) cout << "\t"<<gem_gp1<<endl;
           event_.GE21_phi_L2[j] = gem_gp1.phi();
           event_.GE21_bx_L2[j] = bestPad_GE21_L2.second.bx();
           event_.GE21_ch_L2[j] = bestPad_GE21_L2.first.chamber();
           event_.GE21_z_L2[j] = gem_gp1.z();              
         }
       } else {
-        std::cout << "No best pad GE21 L2" << std::endl;
+        if(verbose) std::cout << "No best pad GE21 L2" << std::endl;
       }
     } // check if match to pads
   } // loop on csctf tracks
@@ -3752,7 +3751,7 @@ DisplacedL1MuFilter::pickBestMatchingCoPad(float xref, float yref,
 
   // both copads in time, check the closest matching one!
   if ((oldCoPadInTime and newCoPadInTime) or (not oldCoPadInTime and not newCoPadInTime)){
-    cout << "check better matching one in space" << endl;
+    if (debug) cout << "check better matching one in space" << endl;
     auto gpOld = getGlobalPointPad(oldCoPad.first.rawId(), oldCoPad.second);
     auto gpNew = getGlobalPointPad(newCoPad.first.rawId(), newCoPad.second);
     float deltaXYOld = TMath::Sqrt( (xref-gpOld.x())*(xref-gpOld.x()) + (yref-gpOld.y())*(yref-gpOld.y()) );
@@ -3807,7 +3806,7 @@ DisplacedL1MuFilter::pickBestMatchingPad(float xref, float yref,
 
   // both copads in time, check the closest matching one!
   if ((oldPadInTime and newPadInTime) or (not oldPadInTime and  not newPadInTime)){
-    cout << "check better matching one in space" << endl;
+    if (debug) cout << "check better matching one in space" << endl;
     auto gpOld = getGlobalPointPad(oldPad.first.rawId(), oldPad.second);
     auto gpNew = getGlobalPointPad(newPad.first.rawId(), newPad.second);
     float deltaXYOld = TMath::Sqrt( (xref-gpOld.x())*(xref-gpOld.x()) + (yref-gpOld.y())*(yref-gpOld.y()) );
@@ -4675,37 +4674,37 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_z4", event_.CSCTF_z4,"CSCTF_z4[nCSCTF]/F");
 
 
-  event_tree_->Branch("CSCTF_rec_ch1", event_.CSCTF_rec_ch1,"CSCTF_rec_ch1[4]/I");
-  event_tree_->Branch("CSCTF_rec_phi1", event_.CSCTF_rec_phi1,"CSCTF_rec_phi1[4]/F");
-  event_tree_->Branch("CSCTF_rec_phib1", event_.CSCTF_rec_phib1,"CSCTF_rec_phib1[4]/F");
-  event_tree_->Branch("CSCTF_rec_R1", event_.CSCTF_rec_R1,"CSCTF_rec_R1[4]/F");
-  event_tree_->Branch("CSCTF_rec_x1", event_.CSCTF_rec_x1,"CSCTF_rec_x1[4]/F");
-  event_tree_->Branch("CSCTF_rec_y1", event_.CSCTF_rec_y1,"CSCTF_rec_y1[4]/F");
-  event_tree_->Branch("CSCTF_rec_z1", event_.CSCTF_rec_z1,"CSCTF_rec_z1[4]/F");
+  event_tree_->Branch("CSCTF_rec_ch1", event_.CSCTF_rec_ch1,"CSCTF_rec_ch1[50]/I");
+  event_tree_->Branch("CSCTF_rec_phi1", event_.CSCTF_rec_phi1,"CSCTF_rec_phi1[50]/F");
+  event_tree_->Branch("CSCTF_rec_phib1", event_.CSCTF_rec_phib1,"CSCTF_rec_phib1[50]/F");
+  event_tree_->Branch("CSCTF_rec_R1", event_.CSCTF_rec_R1,"CSCTF_rec_R1[50]/F");
+  event_tree_->Branch("CSCTF_rec_x1", event_.CSCTF_rec_x1,"CSCTF_rec_x1[50]/F");
+  event_tree_->Branch("CSCTF_rec_y1", event_.CSCTF_rec_y1,"CSCTF_rec_y1[50]/F");
+  event_tree_->Branch("CSCTF_rec_z1", event_.CSCTF_rec_z1,"CSCTF_rec_z1[50]/F");
 
-  event_tree_->Branch("CSCTF_rec_ch2", event_.CSCTF_rec_ch2,"CSCTF_rec_ch2[4]/I");
-  event_tree_->Branch("CSCTF_rec_phi2", event_.CSCTF_rec_phi2,"CSCTF_rec_phi2[4]/F");
-  event_tree_->Branch("CSCTF_rec_phib2", event_.CSCTF_rec_phib2,"CSCTF_rec_phib2[4]/F");
-  event_tree_->Branch("CSCTF_rec_R2", event_.CSCTF_rec_R2,"CSCTF_rec_R2[4]/F");
-  event_tree_->Branch("CSCTF_rec_x2", event_.CSCTF_rec_x2,"CSCTF_rec_x2[4]/F");
-  event_tree_->Branch("CSCTF_rec_y2", event_.CSCTF_rec_y2,"CSCTF_rec_y2[4]/F");
-  event_tree_->Branch("CSCTF_rec_z2", event_.CSCTF_rec_z2,"CSCTF_rec_z2[4]/F");
+  event_tree_->Branch("CSCTF_rec_ch2", event_.CSCTF_rec_ch2,"CSCTF_rec_ch2[50]/I");
+  event_tree_->Branch("CSCTF_rec_phi2", event_.CSCTF_rec_phi2,"CSCTF_rec_phi2[50]/F");
+  event_tree_->Branch("CSCTF_rec_phib2", event_.CSCTF_rec_phib2,"CSCTF_rec_phib2[50]/F");
+  event_tree_->Branch("CSCTF_rec_R2", event_.CSCTF_rec_R2,"CSCTF_rec_R2[50]/F");
+  event_tree_->Branch("CSCTF_rec_x2", event_.CSCTF_rec_x2,"CSCTF_rec_x2[50]/F");
+  event_tree_->Branch("CSCTF_rec_y2", event_.CSCTF_rec_y2,"CSCTF_rec_y2[50]/F");
+  event_tree_->Branch("CSCTF_rec_z2", event_.CSCTF_rec_z2,"CSCTF_rec_z2[50]/F");
 
-  event_tree_->Branch("CSCTF_rec_ch3", event_.CSCTF_rec_ch3,"CSCTF_rec_ch3[4]/I");
-  event_tree_->Branch("CSCTF_rec_phi3", event_.CSCTF_rec_phi3,"CSCTF_rec_phi3[4]/F");
-  event_tree_->Branch("CSCTF_rec_phib3", event_.CSCTF_rec_phib3,"CSCTF_rec_phib3[4]/F");
-  event_tree_->Branch("CSCTF_rec_R3", event_.CSCTF_rec_R3,"CSCTF_rec_R3[4]/F");
-  event_tree_->Branch("CSCTF_rec_x3", event_.CSCTF_rec_x3,"CSCTF_rec_x3[4]/F");
-  event_tree_->Branch("CSCTF_rec_y3", event_.CSCTF_rec_y3,"CSCTF_rec_y3[4]/F");
-  event_tree_->Branch("CSCTF_rec_z3", event_.CSCTF_rec_z3,"CSCTF_rec_z3[4]/F");
+  event_tree_->Branch("CSCTF_rec_ch3", event_.CSCTF_rec_ch3,"CSCTF_rec_ch3[50]/I");
+  event_tree_->Branch("CSCTF_rec_phi3", event_.CSCTF_rec_phi3,"CSCTF_rec_phi3[50]/F");
+  event_tree_->Branch("CSCTF_rec_phib3", event_.CSCTF_rec_phib3,"CSCTF_rec_phib3[50]/F");
+  event_tree_->Branch("CSCTF_rec_R3", event_.CSCTF_rec_R3,"CSCTF_rec_R3[50]/F");
+  event_tree_->Branch("CSCTF_rec_x3", event_.CSCTF_rec_x3,"CSCTF_rec_x3[50]/F");
+  event_tree_->Branch("CSCTF_rec_y3", event_.CSCTF_rec_y3,"CSCTF_rec_y3[50]/F");
+  event_tree_->Branch("CSCTF_rec_z3", event_.CSCTF_rec_z3,"CSCTF_rec_z3[50]/F");
 
-  event_tree_->Branch("CSCTF_rec_ch4", event_.CSCTF_rec_ch4,"CSCTF_rec_ch4[4]/I");
-  event_tree_->Branch("CSCTF_rec_phi4", event_.CSCTF_rec_phi4,"CSCTF_rec_phi4[4]/F");
-  event_tree_->Branch("CSCTF_rec_phib4", event_.CSCTF_rec_phib4,"CSCTF_rec_phib4[4]/F");
-  event_tree_->Branch("CSCTF_rec_R4", event_.CSCTF_rec_R4,"CSCTF_rec_R4[4]/F");
-  event_tree_->Branch("CSCTF_rec_x4", event_.CSCTF_rec_x4,"CSCTF_rec_x4[4]/F");
-  event_tree_->Branch("CSCTF_rec_y4", event_.CSCTF_rec_y4,"CSCTF_rec_y4[4]/F");
-  event_tree_->Branch("CSCTF_rec_z4", event_.CSCTF_rec_z4,"CSCTF_rec_z4[4]/F");
+  event_tree_->Branch("CSCTF_rec_ch4", event_.CSCTF_rec_ch4,"CSCTF_rec_ch4[50]/I");
+  event_tree_->Branch("CSCTF_rec_phi4", event_.CSCTF_rec_phi4,"CSCTF_rec_phi4[50]/F");
+  event_tree_->Branch("CSCTF_rec_phib4", event_.CSCTF_rec_phib4,"CSCTF_rec_phib4[50]/F");
+  event_tree_->Branch("CSCTF_rec_R4", event_.CSCTF_rec_R4,"CSCTF_rec_R4[50]/F");
+  event_tree_->Branch("CSCTF_rec_x4", event_.CSCTF_rec_x4,"CSCTF_rec_x4[50]/F");
+  event_tree_->Branch("CSCTF_rec_y4", event_.CSCTF_rec_y4,"CSCTF_rec_y4[50]/F");
+  event_tree_->Branch("CSCTF_rec_z4", event_.CSCTF_rec_z4,"CSCTF_rec_z4[50]/F");
 
   event_tree_->Branch("CSCTF_rec_eta1", event_.CSCTF_rec_eta1,"CSCTF_rec_eta1[nCSCTF]/F");
   event_tree_->Branch("CSCTF_rec_eta2", event_.CSCTF_rec_eta2,"CSCTF_rec_eta2[nCSCTF]/F");
@@ -4743,45 +4742,45 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_fit_z3", event_.CSCTF_fit_z3,"CSCTF_fit_z3[nCSCTF]/F");
   event_tree_->Branch("CSCTF_fit_z4", event_.CSCTF_fit_z4,"CSCTF_fit_z4[nCSCTF]/F");
 
-  event_tree_->Branch("CSCTF_fitline_x1", event_.CSCTF_fitline_x1,"CSCTF_fitline_x1[4]/F");
-  event_tree_->Branch("CSCTF_fitline_x2", event_.CSCTF_fitline_x2,"CSCTF_fitline_x2[4]/F");
-  event_tree_->Branch("CSCTF_fitline_x3", event_.CSCTF_fitline_x3,"CSCTF_fitline_x3[4]/F");
-  event_tree_->Branch("CSCTF_fitline_x4", event_.CSCTF_fitline_x4,"CSCTF_fitline_x4[4]/F");
+  event_tree_->Branch("CSCTF_fitline_x1", event_.CSCTF_fitline_x1,"CSCTF_fitline_x1[50]/F");
+  event_tree_->Branch("CSCTF_fitline_x2", event_.CSCTF_fitline_x2,"CSCTF_fitline_x2[50]/F");
+  event_tree_->Branch("CSCTF_fitline_x3", event_.CSCTF_fitline_x3,"CSCTF_fitline_x3[50]/F");
+  event_tree_->Branch("CSCTF_fitline_x4", event_.CSCTF_fitline_x4,"CSCTF_fitline_x4[50]/F");
 
-  event_tree_->Branch("CSCTF_fitline_y1", event_.CSCTF_fitline_y1,"CSCTF_fitline_y1[4]/F");
-  event_tree_->Branch("CSCTF_fitline_y2", event_.CSCTF_fitline_y2,"CSCTF_fitline_y2[4]/F");
-  event_tree_->Branch("CSCTF_fitline_y3", event_.CSCTF_fitline_y3,"CSCTF_fitline_y3[4]/F");
-  event_tree_->Branch("CSCTF_fitline_y4", event_.CSCTF_fitline_y4,"CSCTF_fitline_y4[4]/F");
+  event_tree_->Branch("CSCTF_fitline_y1", event_.CSCTF_fitline_y1,"CSCTF_fitline_y1[50]/F");
+  event_tree_->Branch("CSCTF_fitline_y2", event_.CSCTF_fitline_y2,"CSCTF_fitline_y2[50]/F");
+  event_tree_->Branch("CSCTF_fitline_y3", event_.CSCTF_fitline_y3,"CSCTF_fitline_y3[50]/F");
+  event_tree_->Branch("CSCTF_fitline_y4", event_.CSCTF_fitline_y4,"CSCTF_fitline_y4[50]/F");
 
-  event_tree_->Branch("CSCTF_sim_phi1", event_.CSCTF_sim_phi1,"CSCTF_sim_phi1[4]/F");
-  event_tree_->Branch("CSCTF_sim_phi2", event_.CSCTF_sim_phi2,"CSCTF_sim_phi2[4]/F");
-  event_tree_->Branch("CSCTF_sim_phi3", event_.CSCTF_sim_phi3,"CSCTF_sim_phi3[4]/F");
-  event_tree_->Branch("CSCTF_sim_phi4", event_.CSCTF_sim_phi4,"CSCTF_sim_phi4[4]/F");
+  event_tree_->Branch("CSCTF_sim_phi1", event_.CSCTF_sim_phi1,"CSCTF_sim_phi1[50]/F");
+  event_tree_->Branch("CSCTF_sim_phi2", event_.CSCTF_sim_phi2,"CSCTF_sim_phi2[50]/F");
+  event_tree_->Branch("CSCTF_sim_phi3", event_.CSCTF_sim_phi3,"CSCTF_sim_phi3[50]/F");
+  event_tree_->Branch("CSCTF_sim_phi4", event_.CSCTF_sim_phi4,"CSCTF_sim_phi4[50]/F");
 
-  event_tree_->Branch("CSCTF_sim_eta1", event_.CSCTF_sim_eta1,"CSCTF_sim_eta1[4]/F");
-  event_tree_->Branch("CSCTF_sim_eta2", event_.CSCTF_sim_eta2,"CSCTF_sim_eta2[4]/F");
-  event_tree_->Branch("CSCTF_sim_eta3", event_.CSCTF_sim_eta3,"CSCTF_sim_eta3[4]/F");
-  event_tree_->Branch("CSCTF_sim_eta4", event_.CSCTF_sim_eta4,"CSCTF_sim_eta4[4]/F");
+  event_tree_->Branch("CSCTF_sim_eta1", event_.CSCTF_sim_eta1,"CSCTF_sim_eta1[50]/F");
+  event_tree_->Branch("CSCTF_sim_eta2", event_.CSCTF_sim_eta2,"CSCTF_sim_eta2[50]/F");
+  event_tree_->Branch("CSCTF_sim_eta3", event_.CSCTF_sim_eta3,"CSCTF_sim_eta3[50]/F");
+  event_tree_->Branch("CSCTF_sim_eta4", event_.CSCTF_sim_eta4,"CSCTF_sim_eta4[50]/F");
 
-  event_tree_->Branch("CSCTF_sim_R1", event_.CSCTF_sim_R1,"CSCTF_sim_R1[4]/F");
-  event_tree_->Branch("CSCTF_sim_R2", event_.CSCTF_sim_R2,"CSCTF_sim_R2[4]/F");
-  event_tree_->Branch("CSCTF_sim_R3", event_.CSCTF_sim_R3,"CSCTF_sim_R3[4]/F");
-  event_tree_->Branch("CSCTF_sim_R4", event_.CSCTF_sim_R4,"CSCTF_sim_R4[4]/F");
+  event_tree_->Branch("CSCTF_sim_R1", event_.CSCTF_sim_R1,"CSCTF_sim_R1[50]/F");
+  event_tree_->Branch("CSCTF_sim_R2", event_.CSCTF_sim_R2,"CSCTF_sim_R2[50]/F");
+  event_tree_->Branch("CSCTF_sim_R3", event_.CSCTF_sim_R3,"CSCTF_sim_R3[50]/F");
+  event_tree_->Branch("CSCTF_sim_R4", event_.CSCTF_sim_R4,"CSCTF_sim_R4[50]/F");
 
-  event_tree_->Branch("CSCTF_sim_x1", event_.CSCTF_sim_x1,"CSCTF_sim_x1[4]/F");
-  event_tree_->Branch("CSCTF_sim_x2", event_.CSCTF_sim_x2,"CSCTF_sim_x2[4]/F");
-  event_tree_->Branch("CSCTF_sim_x3", event_.CSCTF_sim_x3,"CSCTF_sim_x3[4]/F");
-  event_tree_->Branch("CSCTF_sim_x4", event_.CSCTF_sim_x4,"CSCTF_sim_x4[4]/F");
+  event_tree_->Branch("CSCTF_sim_x1", event_.CSCTF_sim_x1,"CSCTF_sim_x1[50]/F");
+  event_tree_->Branch("CSCTF_sim_x2", event_.CSCTF_sim_x2,"CSCTF_sim_x2[50]/F");
+  event_tree_->Branch("CSCTF_sim_x3", event_.CSCTF_sim_x3,"CSCTF_sim_x3[50]/F");
+  event_tree_->Branch("CSCTF_sim_x4", event_.CSCTF_sim_x4,"CSCTF_sim_x4[50]/F");
 
-  event_tree_->Branch("CSCTF_sim_y1", event_.CSCTF_sim_y1,"CSCTF_sim_y1[4]/F");
-  event_tree_->Branch("CSCTF_sim_y2", event_.CSCTF_sim_y2,"CSCTF_sim_y2[4]/F");
-  event_tree_->Branch("CSCTF_sim_y3", event_.CSCTF_sim_y3,"CSCTF_sim_y3[4]/F");
-  event_tree_->Branch("CSCTF_sim_y4", event_.CSCTF_sim_y4,"CSCTF_sim_y4[4]/F");
+  event_tree_->Branch("CSCTF_sim_y1", event_.CSCTF_sim_y1,"CSCTF_sim_y1[50]/F");
+  event_tree_->Branch("CSCTF_sim_y2", event_.CSCTF_sim_y2,"CSCTF_sim_y2[50]/F");
+  event_tree_->Branch("CSCTF_sim_y3", event_.CSCTF_sim_y3,"CSCTF_sim_y3[50]/F");
+  event_tree_->Branch("CSCTF_sim_y4", event_.CSCTF_sim_y4,"CSCTF_sim_y4[50]/F");
 
-  event_tree_->Branch("CSCTF_sim_z1", event_.CSCTF_sim_z1,"CSCTF_sim_z1[4]/F");
-  event_tree_->Branch("CSCTF_sim_z2", event_.CSCTF_sim_z2,"CSCTF_sim_z2[4]/F");
-  event_tree_->Branch("CSCTF_sim_z3", event_.CSCTF_sim_z3,"CSCTF_sim_z3[4]/F");
-  event_tree_->Branch("CSCTF_sim_z4", event_.CSCTF_sim_z4,"CSCTF_sim_z4[4]/F");
+  event_tree_->Branch("CSCTF_sim_z1", event_.CSCTF_sim_z1,"CSCTF_sim_z1[50]/F");
+  event_tree_->Branch("CSCTF_sim_z2", event_.CSCTF_sim_z2,"CSCTF_sim_z2[50]/F");
+  event_tree_->Branch("CSCTF_sim_z3", event_.CSCTF_sim_z3,"CSCTF_sim_z3[50]/F");
+  event_tree_->Branch("CSCTF_sim_z4", event_.CSCTF_sim_z4,"CSCTF_sim_z4[50]/F");
 
 
   if (processRPCb_) {
@@ -4941,54 +4940,65 @@ void DisplacedL1MuFilter::bookL1MuTree()
   }
 
   event_tree_->Branch("nGEM", &event_.nGEM);
-  event_tree_->Branch("GE11_phi_L1", event_.GE11_phi_L1,"GE11_phi_L1[4]/F");
-  event_tree_->Branch("GE11_phi_L2", event_.GE11_phi_L2,"GE11_phi_L2[4]/F");
-  event_tree_->Branch("GE21_phi_L1", event_.GE21_phi_L1,"GE21_phi_L1[4]/F");
-  event_tree_->Branch("GE21_phi_L2", event_.GE21_phi_L2,"GE21_phi_L2[4]/F");
-  event_tree_->Branch("GE11_bx_L1", event_.GE11_bx_L1,"GE11_bx_L1[4]/I");
-  event_tree_->Branch("GE11_bx_L2", event_.GE11_bx_L2,"GE11_bx_L2[4]/I");
-  event_tree_->Branch("GE21_bx_L1", event_.GE21_bx_L1,"GE21_bx_L1[4]/I");
-  event_tree_->Branch("GE21_bx_L2", event_.GE21_bx_L2,"GE21_bx_L2[4]/I");
-  event_tree_->Branch("GE11_ch_L1", event_.GE11_ch_L1,"GE11_ch_L1[4]/I");
-  event_tree_->Branch("GE11_ch_L2", event_.GE11_ch_L2,"GE11_ch_L2[4]/I");
-  event_tree_->Branch("GE21_ch_L1", event_.GE21_ch_L1,"GE21_ch_L1[4]/I");
-  event_tree_->Branch("GE21_ch_L2", event_.GE21_ch_L2,"GE21_ch_L2[4]/I");
-  event_tree_->Branch("GE11_z_L1", event_.GE11_z_L1,"GE11_z_L1[4]/F");
-  event_tree_->Branch("GE11_z_L2", event_.GE11_z_L2,"GE11_z_L2[4]/F");
-  event_tree_->Branch("GE21_z_L1", event_.GE21_z_L1,"GE21_z_L1[4]/F");
-  event_tree_->Branch("GE21_z_L2", event_.GE21_z_L2,"GE21_z_L2[4]/F");
+  event_tree_->Branch("GE11_phi_L1", event_.GE11_phi_L1,"GE11_phi_L1[50]/F");
+  event_tree_->Branch("GE11_phi_L2", event_.GE11_phi_L2,"GE11_phi_L2[50]/F");
+  event_tree_->Branch("GE21_phi_L1", event_.GE21_phi_L1,"GE21_phi_L1[50]/F");
+  event_tree_->Branch("GE21_phi_L2", event_.GE21_phi_L2,"GE21_phi_L2[50]/F");
+  event_tree_->Branch("GE11_bx_L1", event_.GE11_bx_L1,"GE11_bx_L1[50]/I");
+  event_tree_->Branch("GE11_bx_L2", event_.GE11_bx_L2,"GE11_bx_L2[50]/I");
+  event_tree_->Branch("GE21_bx_L1", event_.GE21_bx_L1,"GE21_bx_L1[50]/I");
+  event_tree_->Branch("GE21_bx_L2", event_.GE21_bx_L2,"GE21_bx_L2[50]/I");
+  event_tree_->Branch("GE11_ch_L1", event_.GE11_ch_L1,"GE11_ch_L1[50]/I");
+  event_tree_->Branch("GE11_ch_L2", event_.GE11_ch_L2,"GE11_ch_L2[50]/I");
+  event_tree_->Branch("GE21_ch_L1", event_.GE21_ch_L1,"GE21_ch_L1[50]/I");
+  event_tree_->Branch("GE21_ch_L2", event_.GE21_ch_L2,"GE21_ch_L2[50]/I");
+  event_tree_->Branch("GE11_z_L1", event_.GE11_z_L1,"GE11_z_L1[50]/F");
+  event_tree_->Branch("GE11_z_L2", event_.GE11_z_L2,"GE11_z_L2[50]/F");
+  event_tree_->Branch("GE21_z_L1", event_.GE21_z_L1,"GE21_z_L1[50]/F");
+  event_tree_->Branch("GE21_z_L2", event_.GE21_z_L2,"GE21_z_L2[50]/F");
 
-  event_tree_->Branch("GE0_phi", event_.GE0_phi,"GE0_phi[4]/F");
-  event_tree_->Branch("GE0_phib", event_.GE0_phib,"GE0_phib[4]/F");
+  event_tree_->Branch("GE11_sim_phi_L1", event_.GE11_sim_phi_L1,"GE11_sim_phi_L1[50]/F");
+  event_tree_->Branch("GE11_sim_phi_L2", event_.GE11_sim_phi_L2,"GE11_sim_phi_L2[50]/F");
+  event_tree_->Branch("GE21_sim_phi_L1", event_.GE21_sim_phi_L1,"GE21_sim_phi_L1[50]/F");
+  event_tree_->Branch("GE21_sim_phi_L2", event_.GE21_sim_phi_L2,"GE21_sim_phi_L2[50]/F");
+  event_tree_->Branch("GE11_sim_bx_L1", event_.GE11_sim_bx_L1,"GE11_sim_bx_L1[50]/F");
+  event_tree_->Branch("GE11_sim_bx_L2", event_.GE11_sim_bx_L2,"GE11_sim_bx_L2[50]/F");
+  event_tree_->Branch("GE21_sim_bx_L1", event_.GE21_sim_bx_L1,"GE21_sim_bx_L1[50]/F");
+  event_tree_->Branch("GE21_sim_bx_L2", event_.GE21_sim_bx_L2,"GE21_sim_bx_L2[50]/F");
+  event_tree_->Branch("GE11_sim_ch_L1", event_.GE11_sim_ch_L1,"GE11_sim_ch_L1[50]/I");
+  event_tree_->Branch("GE11_sim_ch_L2", event_.GE11_sim_ch_L2,"GE11_sim_ch_L2[50]/I");
+  event_tree_->Branch("GE21_sim_ch_L1", event_.GE21_sim_ch_L1,"GE21_sim_ch_L1[50]/I");
+  event_tree_->Branch("GE21_sim_ch_L2", event_.GE21_sim_ch_L2,"GE21_sim_ch_L2[50]/I");
+  event_tree_->Branch("GE11_sim_z_L1", event_.GE11_sim_z_L1,"GE11_sim_z_L1[50]/F");
+  event_tree_->Branch("GE11_sim_z_L2", event_.GE11_sim_z_L2,"GE11_sim_z_L2[50]/F");
+  event_tree_->Branch("GE21_sim_z_L1", event_.GE21_sim_z_L1,"GE21_sim_z_L1[50]/F");
+  event_tree_->Branch("GE21_sim_z_L2", event_.GE21_sim_z_L2,"GE21_sim_z_L2[50]/F");
 
-  event_tree_->Branch("GE11_sim_phi_L1", event_.GE11_sim_phi_L1,"GE11_sim_phi_L1[4]/F");
-  event_tree_->Branch("GE11_sim_phi_L2", event_.GE11_sim_phi_L2,"GE11_sim_phi_L2[4]/F");
-  event_tree_->Branch("GE21_sim_phi_L1", event_.GE21_sim_phi_L1,"GE21_sim_phi_L1[4]/F");
-  event_tree_->Branch("GE21_sim_phi_L2", event_.GE21_sim_phi_L2,"GE21_sim_phi_L2[4]/F");
-  event_tree_->Branch("GE11_sim_bx_L1", event_.GE11_sim_bx_L1,"GE11_sim_bx_L1[4]/F");
-  event_tree_->Branch("GE11_sim_bx_L2", event_.GE11_sim_bx_L2,"GE11_sim_bx_L2[4]/F");
-  event_tree_->Branch("GE21_sim_bx_L1", event_.GE21_sim_bx_L1,"GE21_sim_bx_L1[4]/F");
-  event_tree_->Branch("GE21_sim_bx_L2", event_.GE21_sim_bx_L2,"GE21_sim_bx_L2[4]/F");
-  event_tree_->Branch("GE11_sim_ch_L1", event_.GE11_sim_ch_L1,"GE11_sim_ch_L1[4]/I");
-  event_tree_->Branch("GE11_sim_ch_L2", event_.GE11_sim_ch_L2,"GE11_sim_ch_L2[4]/I");
-  event_tree_->Branch("GE21_sim_ch_L1", event_.GE21_sim_ch_L1,"GE21_sim_ch_L1[4]/I");
-  event_tree_->Branch("GE21_sim_ch_L2", event_.GE21_sim_ch_L2,"GE21_sim_ch_L2[4]/I");
-  event_tree_->Branch("GE11_sim_z_L1", event_.GE11_sim_z_L1,"GE11_sim_z_L1[4]/F");
-  event_tree_->Branch("GE11_sim_z_L2", event_.GE11_sim_z_L2,"GE11_sim_z_L2[4]/F");
-  event_tree_->Branch("GE21_sim_z_L1", event_.GE21_sim_z_L1,"GE21_sim_z_L1[4]/F");
-  event_tree_->Branch("GE21_sim_z_L2", event_.GE21_sim_z_L2,"GE21_sim_z_L2[4]/F");
+  event_tree_->Branch("GE11_sim_pad_phi_L1", event_.GE11_sim_pad_phi_L1,"GE11_sim_pad_phi_L1[50]/F");
+  event_tree_->Branch("GE11_sim_pad_phi_L2", event_.GE11_sim_pad_phi_L2,"GE11_sim_pad_phi_L2[50]/F");
+  event_tree_->Branch("GE21_sim_pad_phi_L1", event_.GE21_sim_pad_phi_L1,"GE21_sim_pad_phi_L1[50]/F");
+  event_tree_->Branch("GE21_sim_pad_phi_L2", event_.GE21_sim_pad_phi_L2,"GE21_sim_pad_phi_L2[50]/F");
+  event_tree_->Branch("GE11_sim_pad_bx_L1", event_.GE11_sim_pad_bx_L1,"GE11_sim_pad_bx_L1[50]/F");
+  event_tree_->Branch("GE11_sim_pad_bx_L2", event_.GE11_sim_pad_bx_L2,"GE11_sim_pad_bx_L2[50]/F");
+  event_tree_->Branch("GE21_sim_pad_bx_L1", event_.GE21_sim_pad_bx_L1,"GE21_sim_pad_bx_L1[50]/F");
+  event_tree_->Branch("GE21_sim_pad_bx_L2", event_.GE21_sim_pad_bx_L2,"GE21_sim_pad_bx_L2[50]/F");
+  event_tree_->Branch("GE11_sim_pad_ch_L1", event_.GE11_sim_pad_ch_L1,"GE11_sim_pad_ch_L1[50]/I");
+  event_tree_->Branch("GE11_sim_pad_ch_L2", event_.GE11_sim_pad_ch_L2,"GE11_sim_pad_ch_L2[50]/I");
+  event_tree_->Branch("GE21_sim_pad_ch_L1", event_.GE21_sim_pad_ch_L1,"GE21_sim_pad_ch_L1[50]/I");
+  event_tree_->Branch("GE21_sim_pad_ch_L2", event_.GE21_sim_pad_ch_L2,"GE21_sim_pad_ch_L2[50]/I");
+  event_tree_->Branch("GE11_sim_pad_z_L1", event_.GE11_sim_pad_z_L1,"GE11_sim_pad_z_L1[50]/F");
+  event_tree_->Branch("GE11_sim_pad_z_L2", event_.GE11_sim_pad_z_L2,"GE11_sim_pad_z_L2[50]/F");
+  event_tree_->Branch("GE21_sim_pad_z_L1", event_.GE21_sim_pad_z_L1,"GE21_sim_pad_z_L1[50]/F");
+  event_tree_->Branch("GE21_sim_pad_z_L2", event_.GE21_sim_pad_z_L2,"GE21_sim_pad_z_L2[50]/F");
 
-  event_tree_->Branch("GE0_sim_phi", event_.GE0_sim_phi,"GE0_sim_phi[4]/F");
-  event_tree_->Branch("GE0_sim_phib", event_.GE0_sim_phib,"GE0_sim_phib[4]/F");
-
-  event_tree_->Branch("GE21_pad1_phi_L1", event_.GE21_pad1_phi_L1,"GE21_pad1_phi_L1[4]/F");
-  event_tree_->Branch("GE21_pad1_phi_L2", event_.GE21_pad1_phi_L2,"GE21_pad1_phi_L2[4]/F");
-  event_tree_->Branch("GE21_pad2_phi_L1", event_.GE21_pad2_phi_L1,"GE21_pad2_phi_L1[4]/F");
-  event_tree_->Branch("GE21_pad2_phi_L2", event_.GE21_pad2_phi_L2,"GE21_pad2_phi_L2[4]/F");
-  event_tree_->Branch("GE21_pad4_phi_L1", event_.GE21_pad4_phi_L1,"GE21_pad4_phi_L1[4]/F");
-  event_tree_->Branch("GE21_pad4_phi_L2", event_.GE21_pad4_phi_L2,"GE21_pad4_phi_L2[4]/F");
-  event_tree_->Branch("GE21_pad8_phi_L1", event_.GE21_pad8_phi_L1,"GE21_pad8_phi_L1[4]/F");
-  event_tree_->Branch("GE21_pad8_phi_L2", event_.GE21_pad8_phi_L2,"GE21_pad8_phi_L2[4]/F");
+  event_tree_->Branch("GE21_sim_pad1_phi_L1", event_.GE21_sim_pad1_phi_L1,"GE21_sim_pad1_phi_L1[50]/F");
+  event_tree_->Branch("GE21_sim_pad1_phi_L2", event_.GE21_sim_pad1_phi_L2,"GE21_sim_pad1_phi_L2[50]/F");
+  event_tree_->Branch("GE21_sim_pad2_phi_L1", event_.GE21_sim_pad2_phi_L1,"GE21_sim_pad2_phi_L1[50]/F");
+  event_tree_->Branch("GE21_sim_pad2_phi_L2", event_.GE21_sim_pad2_phi_L2,"GE21_sim_pad2_phi_L2[50]/F");
+  event_tree_->Branch("GE21_sim_pad4_phi_L1", event_.GE21_sim_pad4_phi_L1,"GE21_sim_pad4_phi_L1[50]/F");
+  event_tree_->Branch("GE21_sim_pad4_phi_L2", event_.GE21_sim_pad4_phi_L2,"GE21_sim_pad4_phi_L2[50]/F");
+  event_tree_->Branch("GE21_sim_pad8_phi_L1", event_.GE21_sim_pad8_phi_L1,"GE21_sim_pad8_phi_L1[50]/F");
+  event_tree_->Branch("GE21_sim_pad8_phi_L2", event_.GE21_sim_pad8_phi_L2,"GE21_sim_pad8_phi_L2[50]/F");
 }
 
 
@@ -5514,17 +5524,15 @@ DisplacedL1MuFilter::clearBranches()
     event_.GE11_z_L2[i] = 99;
     event_.GE21_z_L1[i] = 99;
     event_.GE21_z_L2[i] = 99;
-    event_.GE0_phi[i] = 99;
-    event_.GE0_phib[i] = 99;
 
-    event_.GE21_pad1_phi_L1[i] = 99.; 
-    event_.GE21_pad1_phi_L2[i] = 99.;
-    event_.GE21_pad2_phi_L1[i] = 99.; 
-    event_.GE21_pad2_phi_L2[i] = 99.;
-    event_.GE21_pad4_phi_L1[i] = 99.; 
-    event_.GE21_pad4_phi_L2[i] = 99.;
-    event_.GE21_pad8_phi_L1[i] = 99.; 
-    event_.GE21_pad8_phi_L2[i] = 99.;
+    event_.GE21_sim_pad1_phi_L1[i] = 99.; 
+    event_.GE21_sim_pad1_phi_L2[i] = 99.;
+    event_.GE21_sim_pad2_phi_L1[i] = 99.; 
+    event_.GE21_sim_pad2_phi_L2[i] = 99.;
+    event_.GE21_sim_pad4_phi_L1[i] = 99.; 
+    event_.GE21_sim_pad4_phi_L2[i] = 99.;
+    event_.GE21_sim_pad8_phi_L1[i] = 99.; 
+    event_.GE21_sim_pad8_phi_L2[i] = 99.;
     
     event_.GE11_sim_phi_L1[i] = 99.;
     event_.GE11_sim_phi_L2[i] = 99.;
@@ -5542,9 +5550,24 @@ DisplacedL1MuFilter::clearBranches()
     event_.GE11_sim_z_L2[i] = 99;
     event_.GE21_sim_z_L1[i] = 99;
     event_.GE21_sim_z_L2[i] = 99;
-    event_.GE0_sim_phi[i] = 99;
-    event_.GE0_sim_phib[i] = 99;
     
+    event_.GE11_sim_pad_phi_L1[i] = 99.;
+    event_.GE11_sim_pad_phi_L2[i] = 99.;
+    event_.GE21_sim_pad_phi_L1[i] = 99.;
+    event_.GE21_sim_pad_phi_L2[i] = 99.;
+    event_.GE11_sim_pad_bx_L1[i] = 99;
+    event_.GE11_sim_pad_bx_L2[i] = 99;
+    event_.GE21_sim_pad_bx_L1[i] = 99;
+    event_.GE21_sim_pad_bx_L2[i] = 99;
+    event_.GE11_sim_pad_ch_L1[i] = 99;
+    event_.GE11_sim_pad_ch_L2[i] = 99;
+    event_.GE21_sim_pad_ch_L1[i] = 99;
+    event_.GE21_sim_pad_ch_L2[i] = 99;
+    event_.GE11_sim_pad_z_L1[i] = 99;
+    event_.GE11_sim_pad_z_L2[i] = 99;
+    event_.GE21_sim_pad_z_L1[i] = 99;
+    event_.GE21_sim_pad_z_L2[i] = 99;
+
     event_.CSCTF_rec_ch1[i] = 99;
     event_.CSCTF_rec_phi1[i] = 99;
     event_.CSCTF_rec_phib1[i] = 99;

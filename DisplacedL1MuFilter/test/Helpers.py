@@ -11,7 +11,7 @@ import os
 ptbin = [
     2.0,   2.5,   3.0,   3.5,   4.0,   4.5,   5.0,   6.0,   7.0,   8.0,  
     10.0,  12.0,  14.0,  16.0,  18.0,  20.0,  25.0,  30.0,  35.0,  40.0,  
-    45.0,  50.0,  60.0,  70.0,  80.0,  90.0, 100.0, 120.0, 140.0, 200.0]
+    45.0,  50.0,  60.0,  70.0,  80.0,  90.0, 100.0, 120.0, 140.0]
 myptbin = np.asarray(ptbin)
 nmyptbin = len(myptbin) - 1
 
@@ -838,6 +838,7 @@ dict_prop_slope_intercept_DIGIL1 = {
 def get_proptionality_factor(eta, parity, doFit):
 
     deltay12_deltay23_dict = {}
+    ## proportionality factors
     deltay12_deltay23_dict['eta12to14_oee_withoutLCTFit'] =  1.24093338795
 
     deltay12_deltay23_dict['eta12to14_oee_withLCTFit'] =  1.24345925746
@@ -933,6 +934,113 @@ def get_proptionality_factor(eta, parity, doFit):
     deltay12_deltay23_dict['eta22to24_eoo_withoutLCTFit'] =  0.333978399307
 
     deltay12_deltay23_dict['eta22to24_eoo_withLCTFit'] =  0.334565983007
+
+
+    ## new proportionality factors
+    deltay12_deltay23_dict['eta12to14_oee_withoutLCTFit'] =  1.37
+
+    deltay12_deltay23_dict['eta12to14_oee_withLCTFit'] =  1.4
+
+    deltay12_deltay23_dict['eta14to16_oee_withoutLCTFit'] =  1.37
+
+    deltay12_deltay23_dict['eta14to16_oee_withLCTFit'] =  1.4
+
+    deltay12_deltay23_dict['eta16to18_oee_withoutLCTFit'] =  0.64
+
+    deltay12_deltay23_dict['eta16to18_oee_withLCTFit'] =  0.64
+
+    deltay12_deltay23_dict['eta18to20_oee_withoutLCTFit'] = 0.64
+
+    deltay12_deltay23_dict['eta18to20_oee_withLCTFit'] =  0.64
+
+    deltay12_deltay23_dict['eta20to22_oee_withoutLCTFit'] =  0.64
+
+    deltay12_deltay23_dict['eta20to22_oee_withLCTFit'] =  0.64
+
+    deltay12_deltay23_dict['eta22to24_oee_withoutLCTFit'] =  0.64
+
+    deltay12_deltay23_dict['eta22to24_oee_withLCTFit'] =  0.64
+
+
+
+    deltay12_deltay23_dict['eta12to14_ooo_withoutLCTFit'] = 0.62 
+
+    deltay12_deltay23_dict['eta12to14_ooo_withLCTFit'] =  0.62
+
+    deltay12_deltay23_dict['eta14to16_ooo_withoutLCTFit'] =  0.62
+
+    deltay12_deltay23_dict['eta14to16_ooo_withLCTFit'] =  0.62
+
+    deltay12_deltay23_dict['eta16to18_ooo_withoutLCTFit'] = 0.37
+
+    deltay12_deltay23_dict['eta16to18_ooo_withLCTFit'] =  0.37
+
+    deltay12_deltay23_dict['eta18to20_ooo_withoutLCTFit'] =  0.37
+
+    deltay12_deltay23_dict['eta18to20_ooo_withLCTFit'] =  0.37
+
+    deltay12_deltay23_dict['eta20to22_ooo_withoutLCTFit'] =  0.37
+
+    deltay12_deltay23_dict['eta20to22_ooo_withLCTFit'] =  0.37
+
+    deltay12_deltay23_dict['eta22to24_ooo_withoutLCTFit'] =  0.37
+
+    deltay12_deltay23_dict['eta22to24_ooo_withLCTFit'] =  0.37
+
+
+
+    deltay12_deltay23_dict['eta12to14_eee_withoutLCTFit'] =  0.925
+
+    deltay12_deltay23_dict['eta12to14_eee_withLCTFit'] =  0.925
+
+    deltay12_deltay23_dict['eta14to16_eee_withoutLCTFit'] =  0.925
+
+    deltay12_deltay23_dict['eta14to16_eee_withLCTFit'] =  0.925
+
+    deltay12_deltay23_dict['eta16to18_eee_withoutLCTFit'] = 0.6
+
+    deltay12_deltay23_dict['eta16to18_eee_withLCTFit'] =  0.6
+
+    deltay12_deltay23_dict['eta18to20_eee_withoutLCTFit'] =  0.6
+
+    deltay12_deltay23_dict['eta18to20_eee_withLCTFit'] =  0.6
+
+    deltay12_deltay23_dict['eta20to22_eee_withoutLCTFit'] = 0.6
+
+    deltay12_deltay23_dict['eta20to22_eee_withLCTFit'] = 0.6
+
+    deltay12_deltay23_dict['eta22to24_eee_withoutLCTFit'] = 0.6
+
+    deltay12_deltay23_dict['eta22to24_eee_withLCTFit'] = 0.6
+
+
+
+    deltay12_deltay23_dict['eta12to14_eoo_withoutLCTFit'] = 0.48
+
+    deltay12_deltay23_dict['eta12to14_eoo_withLCTFit'] = 0.48
+
+    deltay12_deltay23_dict['eta14to16_eoo_withoutLCTFit'] = 0.48
+
+    deltay12_deltay23_dict['eta14to16_eoo_withLCTFit'] = 0.48
+
+    deltay12_deltay23_dict['eta16to18_eoo_withoutLCTFit'] = 0.3
+
+    deltay12_deltay23_dict['eta16to18_eoo_withLCTFit'] =  0.3
+
+    deltay12_deltay23_dict['eta18to20_eoo_withoutLCTFit'] =  0.3
+
+    deltay12_deltay23_dict['eta18to20_eoo_withLCTFit'] =  0.3
+
+    deltay12_deltay23_dict['eta20to22_eoo_withoutLCTFit'] =  0.3
+
+    deltay12_deltay23_dict['eta20to22_eoo_withLCTFit'] = 0.3
+
+    deltay12_deltay23_dict['eta22to24_eoo_withoutLCTFit'] = 0.3
+
+    deltay12_deltay23_dict['eta22to24_eoo_withLCTFit'] = 0.3
+    
+    
+    
 
     ## find the LUT corresponding to this particular case
     if doFit:
@@ -1196,15 +1304,20 @@ def get1DHistogramMedianY(hist2d):
       tempHist.GetQuantiles(len(probSum), q, probSum)
       #print "q", q
 
+      n = tempHist.GetEffectiveEntries()
+      f = TMath.Gaus(q[1], tempHist.GetMean(), tempHist.GetStdDev(), True)
+      error = 0
+      if (f>0 and n>1):
+        error = TMath.Sqrt(0.5 * 0.5 / ( n * f * f ) )
+
       xval = hist2d.GetBinCenter(x)
       xval_e_up = hist2d.GetBinWidth(x)/2.
       xval_e_dw = hist2d.GetBinWidth(x)/2.
+      
       yval = q[1]
-      yval_e_up = q[2] - yval
-      yval_e_dw = yval - q[0]
-
+      if n<=1:
+        yval=0
       r1.SetBinContent(x, yval)
-      error = (q[2]- q[0])/(2*sqrt(entries))
       r1.SetBinError(x, error)
 
       """

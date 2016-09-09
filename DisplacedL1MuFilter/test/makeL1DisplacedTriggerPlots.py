@@ -44,16 +44,17 @@ if __name__ == "__main__":
   #dirname = '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v28/160818_200220/0000/'
   #dirname = '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v30/160901_133202/0000/'
   #dirname = '/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v31/160901_181306/0000/'
-  dirname ='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v34/160901_204525/0000/'
-  dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v35/160902_024746/0000/'
+  #dirname ='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v34/160901_204525/0000/'
+  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v35/160902_024746/0000/'
+  dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v36/160907_181932/0000/'
 
   ch = addfiles(ch, dirname=dirname)
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160902_v4"
+  label = "DisplacedL1MuTrigger_20160908"
   targetDir = label + "/"
   
-  verbose = True
+  verbose = False
   runTest = False
   printExtraInfo = False
   processRPC = False
@@ -135,6 +136,8 @@ if __name__ == "__main__":
     binLow = [0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,12.0,14.0,16.0,18.0,20.0,24.0,28.0,32.0,36.0,42.0,50.0,60.0]
     ptbins = np.asarray(binLow)
 
+
+    print "Preparing plots..."
     ## declare plots
     nDT_stubs = TH1F("nDT_stubs","", 16,0.,16)
     nDT_stubs_vs_dxy = TH2F("nDT_stubs_vs_dxy","", 16,0.,16,100,0,100)
@@ -294,6 +297,16 @@ if __name__ == "__main__":
       addPlotToMapTH2F("deltay12_vs_deltay23_eta12to16_" + pp + "_withLCTFit", 60,-30.,30.,60,-30.,30)
       addPlotToMapTH2F("deltay12_vs_deltay23_eta16to24_" + pp + "_withoutLCTFit", 60,-30.,30.,60,-30.,30)
       addPlotToMapTH2F("deltay12_vs_deltay23_eta16to24_" + pp + "_withLCTFit", 60,-30.,30.,60,-30.,30)
+
+      addPlotToMapTH2F("deltay12_vs_deltay23_eta12to16_" + pp + "_Qp_withoutLCTFit", 60,-30.,30.,60,-30.,30)
+      addPlotToMapTH2F("deltay12_vs_deltay23_eta12to16_" + pp + "_Qp_withLCTFit", 60,-30.,30.,60,-30.,30)
+      addPlotToMapTH2F("deltay12_vs_deltay23_eta16to24_" + pp + "_Qp_withoutLCTFit", 60,-30.,30.,60,-30.,30)
+      addPlotToMapTH2F("deltay12_vs_deltay23_eta16to24_" + pp + "_Qp_withLCTFit", 60,-30.,30.,60,-30.,30)
+
+      addPlotToMapTH2F("deltay12_vs_deltay23_eta12to16_" + pp + "_Qn_withoutLCTFit", 60,-30.,30.,60,-30.,30)
+      addPlotToMapTH2F("deltay12_vs_deltay23_eta12to16_" + pp + "_Qn_withLCTFit", 60,-30.,30.,60,-30.,30)
+      addPlotToMapTH2F("deltay12_vs_deltay23_eta16to24_" + pp + "_Qn_withoutLCTFit", 60,-30.,30.,60,-30.,30)
+      addPlotToMapTH2F("deltay12_vs_deltay23_eta16to24_" + pp + "_Qn_withLCTFit", 60,-30.,30.,60,-30.,30)
 
       for qq in etaRanges:
         ## plots without position LCT fit
@@ -733,6 +746,7 @@ if __name__ == "__main__":
     Prompt_L1MuPt15_GenMuPt_dxy50to100_endcap = TH1F("Prompt_L1MuPt15_GenMuPt_dxy50to100_endcap","", len(ptbins)-1,ptbins)
     Prompt_L1MuPt20_GenMuPt_dxy50to100_endcap = TH1F("Prompt_L1MuPt20_GenMuPt_dxy50to100_endcap","", len(ptbins)-1,ptbins)
 
+    print "Start run on events..."
     for k in range(0,treeHits.GetEntries()):
       treeHits.GetEntry(k)
       if k%1000==0: print "Event", k+1, "nL1Mu", treeHits.nL1Mu
@@ -783,7 +797,7 @@ if __name__ == "__main__":
           pt = abs(treeHits.genGdMu_pt[ij])
           eta = treeHits.genGdMu_eta[ij]
           phi = abs(treeHits.genGdMu_phi[ij])
-          #charge = abs(treeHits.genGdMu_q[ij])
+          charge = treeHits.genGdMu_q[ij]
           eta_prop = treeHits.genGdMu_eta_prop[ij]
           phi_prop = treeHits.genGdMu_phi_prop[ij]
           dxy = abs(treeHits.genGdMu_dxy[ij])
@@ -829,8 +843,6 @@ if __name__ == "__main__":
           GenMuPt.Fill(pt)
           GenMu_SIM_dR.Fill(SIM_dR)
 
-          continue
-
           if dxy <= 5:                GenMuPt_dxy0to5.Fill(pt)
           if 5 < dxy  and dxy <= 50:  GenMuPt_dxy5to50.Fill(pt)
           if 50 < dxy and dxy <= 100: GenMuPt_dxy50to100.Fill(pt)
@@ -868,7 +880,7 @@ if __name__ == "__main__":
             print "\tGenMu", i, j,
             print "pt", pt,
 #            print "eta", eta,
-#            print "phi", phi,
+            print "charge", charge,
             print "eta_prop", eta_prop,
             print "phi_prop", phi_prop,
 #            print "dR_corr", treeHits.genGdMu_L1Mu_dR_corr[ij],
@@ -1460,6 +1472,11 @@ if __name__ == "__main__":
               CSCTF_fit_phi3 = treeHits.CSCTF_fit_phi3[L1Mu_CSCTF_index]
               CSCTF_fit_phi4 = treeHits.CSCTF_fit_phi4[L1Mu_CSCTF_index]
                 
+              CSCTF_fit_dphi1 = treeHits.CSCTF_fit_dphi1[L1Mu_CSCTF_index]
+              CSCTF_fit_dphi2 = treeHits.CSCTF_fit_dphi2[L1Mu_CSCTF_index]
+              CSCTF_fit_dphi3 = treeHits.CSCTF_fit_dphi3[L1Mu_CSCTF_index]
+              CSCTF_fit_dphi4 = treeHits.CSCTF_fit_dphi4[L1Mu_CSCTF_index]
+                
               CSCTF_fit_x1 = treeHits.CSCTF_fit_x1[L1Mu_CSCTF_index]
               CSCTF_fit_x2 = treeHits.CSCTF_fit_x2[L1Mu_CSCTF_index]
               CSCTF_fit_x3 = treeHits.CSCTF_fit_x3[L1Mu_CSCTF_index]
@@ -1483,7 +1500,7 @@ if __name__ == "__main__":
 
               ## get SIM index
               GEN_SIM_index = int(treeHits.genGdMu_SIM_index[ij])
-              print "GEN_SIM_index", GEN_SIM_index
+              #print "GEN_SIM_index", GEN_SIM_index
 
               ok_CSCTF_sim_st1 = False
               ok_CSCTF_sim_st2 = False
@@ -1495,7 +1512,7 @@ if __name__ == "__main__":
               ok_CSCTF_rec_st3 = False
               ok_CSCTF_rec_st4 = False
 
-              if GEN_SIM_index != -99:
+              if GEN_SIM_index != -99 and GEN_SIM_index <= 3:
                 ## recovered stubs
                 CSCTF_rec_ch1 = treeHits.CSCTF_rec_ch1[GEN_SIM_index]
                 CSCTF_rec_ch2 = treeHits.CSCTF_rec_ch1[GEN_SIM_index]
@@ -1688,17 +1705,17 @@ if __name__ == "__main__":
                   [CSCTF_sim_R1, CSCTF_sim_R2, CSCTF_sim_R3, CSCTF_sim_R4], 
                   [CSCTF_sim_z1, CSCTF_sim_z2, CSCTF_sim_z3, CSCTF_sim_z4])
 
-                print 
-                print CSCTF_sim_R1, CSCTF_sim_R2, CSCTF_sim_R3, CSCTF_sim_R4
-                print CSCTF_sim_z1, CSCTF_sim_z2, CSCTF_sim_z3, CSCTF_sim_z4
-                print CSCTF_sim_eta1, CSCTF_sim_eta2, CSCTF_sim_eta3, CSCTF_sim_eta4
+                #print 
+                #print CSCTF_sim_R1, CSCTF_sim_R2, CSCTF_sim_R3, CSCTF_sim_R4
                 #print CSCTF_sim_z1, CSCTF_sim_z2, CSCTF_sim_z3, CSCTF_sim_z4
-                print ShRs_out
-                print 
-                print CSCTF_R1, CSCTF_R2, CSCTF_R3, CSCTF_R4
-                print CSCTF_eta1, CSCTF_eta2, CSCTF_eta3, CSCTF_eta4
-                print CSCTF_fit_z1, CSCTF_fit_z2, CSCTF_fit_z3, CSCTF_fit_z4
-                print 
+                #print CSCTF_sim_eta1, CSCTF_sim_eta2, CSCTF_sim_eta3, CSCTF_sim_eta4
+                #print CSCTF_sim_z1, CSCTF_sim_z2, CSCTF_sim_z3, CSCTF_sim_z4
+                #print ShRs_out
+                #print 
+                #print CSCTF_R1, CSCTF_R2, CSCTF_R3, CSCTF_R4
+                #print CSCTF_eta1, CSCTF_eta2, CSCTF_eta3, CSCTF_eta4
+                #print CSCTF_fit_z1, CSCTF_fit_z2, CSCTF_fit_z3, CSCTF_fit_z4
+                #print 
 
                 def makeRvsZDebugPlot():
                   c1 = TCanvas("c1","A Simple Graph with error bars",200,10,700,500);
@@ -1730,10 +1747,10 @@ if __name__ == "__main__":
                   
                   c1.SaveAs("StubLinearFit/c_debug_fit_L" + slumi + "_R" + srun + "_E" + sevent + "_M" + smuon + ".png");
                   
-                if (not ok_CSCTF_st1 and ok_CSCTF_sim_st1) or (ok_CSCTF_st1 and not ok_CSCTF_sim_st1): print "ERROR station 1"
-                if (not ok_CSCTF_st2 and ok_CSCTF_sim_st2) or (ok_CSCTF_st2 and not ok_CSCTF_sim_st2): print "ERROR station 2"
-                if (not ok_CSCTF_st3 and ok_CSCTF_sim_st3) or (ok_CSCTF_st3 and not ok_CSCTF_sim_st3): print "ERROR station 3"
-                if (not ok_CSCTF_st4 and ok_CSCTF_sim_st4) or (ok_CSCTF_st4 and not ok_CSCTF_sim_st4): print "ERROR station 4"
+                #if (not ok_CSCTF_st1 and ok_CSCTF_sim_st1) or (ok_CSCTF_st1 and not ok_CSCTF_sim_st1): print "ERROR station 1"
+                #if (not ok_CSCTF_st2 and ok_CSCTF_sim_st2) or (ok_CSCTF_st2 and not ok_CSCTF_sim_st2): print "ERROR station 2"
+                #if (not ok_CSCTF_st3 and ok_CSCTF_sim_st3) or (ok_CSCTF_st3 and not ok_CSCTF_sim_st3): print "ERROR station 3"
+                #if (not ok_CSCTF_st4 and ok_CSCTF_sim_st4) or (ok_CSCTF_st4 and not ok_CSCTF_sim_st4): print "ERROR station 4"
 
                 #print st_out
                 index_st1, index_st2, index_st3, index_st4 = -1, -1, -1, -1
@@ -1742,7 +1759,7 @@ if __name__ == "__main__":
                 if 3 in st_out: index_st3 = st_out.index(3)
                 if 4 in st_out: index_st4 = st_out.index(4)
 
-                if dxy <= 5:
+                if dxy <= 5 and False:
                   if ok_CSCTF_st1: mapTH1F["csc_R_sh_lct_ME1_dxy0to5"].Fill(CSCTF_sim_R1 - CSCTF_R1)
                   if ok_CSCTF_st2: mapTH1F["csc_R_sh_lct_ME2_dxy0to5"].Fill(CSCTF_sim_R2 - CSCTF_R2)
                   if ok_CSCTF_st3: mapTH1F["csc_R_sh_lct_ME3_dxy0to5"].Fill(CSCTF_sim_R3 - CSCTF_R3)
@@ -1763,7 +1780,7 @@ if __name__ == "__main__":
                   if ok_CSCTF_st3: mapTH1F["csc_R_lct_fit_ME3_dxy0to5"].Fill(CSCTF_R3 - Rs_out[index_st3])
                   if ok_CSCTF_st4: mapTH1F["csc_R_lct_fit_ME4_dxy0to5"].Fill(CSCTF_R4 - Rs_out[index_st4])
 
-                if 5 < dxy  and dxy <= 50:
+                if 5 < dxy  and dxy <= 50 and False:
                   if ok_CSCTF_st1: mapTH1F["csc_R_sh_lct_ME1_dxy5to50"].Fill(CSCTF_sim_R1 - CSCTF_R1)
                   if ok_CSCTF_st2: mapTH1F["csc_R_sh_lct_ME2_dxy5to50"].Fill(CSCTF_sim_R2 - CSCTF_R2)
                   if ok_CSCTF_st3: mapTH1F["csc_R_sh_lct_ME3_dxy5to50"].Fill(CSCTF_sim_R3 - CSCTF_R3)
@@ -1784,7 +1801,7 @@ if __name__ == "__main__":
                   if ok_CSCTF_st3: mapTH1F["csc_R_lct_fit_ME3_dxy5to50"].Fill(CSCTF_R3 - Rs_out[index_st3])
                   if ok_CSCTF_st4: mapTH1F["csc_R_lct_fit_ME4_dxy5to50"].Fill(CSCTF_R4 - Rs_out[index_st4])
 
-                if 50 < dxy and dxy <= 100:
+                if 50 < dxy and dxy <= 100 and False:
                   if ok_CSCTF_st1: mapTH1F["csc_R_sh_lct_ME1_dxy50to100"].Fill(CSCTF_sim_R1 - CSCTF_R1)
                   if ok_CSCTF_st2: mapTH1F["csc_R_sh_lct_ME2_dxy50to100"].Fill(CSCTF_sim_R2 - CSCTF_R2)
                   if ok_CSCTF_st3: mapTH1F["csc_R_sh_lct_ME3_dxy50to100"].Fill(CSCTF_sim_R3 - CSCTF_R3)
@@ -1931,8 +1948,6 @@ if __name__ == "__main__":
                 GE21_ch2 = treeHits.GE21_ch_L1[GEN_SIM_index]
                 GE11_isOdd = GE11_ch1%2==1
                 GE21_isOdd = GE21_ch2%2==1
-                GE0_phi = treeHits.GE0_phi[GEN_SIM_index]
-                GE0_phib = treeHits.GE0_phib[GEN_SIM_index]
 
                 GE11_sim_bx_L1 = treeHits.GE11_sim_bx_L1[GEN_SIM_index]
                 GE11_sim_bx_L2 = treeHits.GE11_sim_bx_L2[GEN_SIM_index]
@@ -1950,35 +1965,32 @@ if __name__ == "__main__":
                 GE21_sim_ch2 = treeHits.GE21_sim_ch_L1[GEN_SIM_index]
                 GE11_sim_isOdd = GE11_sim_ch1%2==1
                 GE21_sim_isOdd = GE21_sim_ch2%2==1
-                GE0_sim_phi = treeHits.GE0_sim_phi[GEN_SIM_index]
-                GE0_sim_phib = treeHits.GE0_sim_phib[GEN_SIM_index]
 
                 ## GEM pad positions
-                GE21_pad1_phi_L1 = treeHits.GE21_pad1_phi_L1[GEN_SIM_index] 
-                GE21_pad1_phi_L2 = treeHits.GE21_pad1_phi_L2[GEN_SIM_index]
-                GE21_pad2_phi_L1 = treeHits.GE21_pad2_phi_L1[GEN_SIM_index] 
-                GE21_pad2_phi_L2 = treeHits.GE21_pad2_phi_L2[GEN_SIM_index]
-                GE21_pad4_phi_L1 = treeHits.GE21_pad4_phi_L1[GEN_SIM_index] 
-                GE21_pad4_phi_L2 = treeHits.GE21_pad4_phi_L2[GEN_SIM_index]
-                GE21_pad8_phi_L1 = treeHits.GE21_pad8_phi_L1[GEN_SIM_index] 
-                GE21_pad8_phi_L2 = treeHits.GE21_pad8_phi_L2[GEN_SIM_index]
+                GE21_sim_pad1_phi_L1 = treeHits.GE21_sim_pad1_phi_L1[GEN_SIM_index] 
+                GE21_sim_pad1_phi_L2 = treeHits.GE21_sim_pad1_phi_L2[GEN_SIM_index]
+                GE21_sim_pad2_phi_L1 = treeHits.GE21_sim_pad2_phi_L1[GEN_SIM_index] 
+                GE21_sim_pad2_phi_L2 = treeHits.GE21_sim_pad2_phi_L2[GEN_SIM_index]
+                GE21_sim_pad4_phi_L1 = treeHits.GE21_sim_pad4_phi_L1[GEN_SIM_index] 
+                GE21_sim_pad4_phi_L2 = treeHits.GE21_sim_pad4_phi_L2[GEN_SIM_index]
+                GE21_sim_pad8_phi_L1 = treeHits.GE21_sim_pad8_phi_L1[GEN_SIM_index] 
+                GE21_sim_pad8_phi_L2 = treeHits.GE21_sim_pad8_phi_L2[GEN_SIM_index]
 
                 ## get GEM phi positions...
                 GE11_phi = getBestValue(GE11_phi_L1, GE11_phi_L2)
                 GE21_phi = getBestValue(GE21_phi_L1, GE21_phi_L2)
                 GE11_sim_phi = getBestValue(GE11_sim_phi_L1, GE11_sim_phi_L2)
                 GE21_sim_phi = getBestValue(GE21_sim_phi_L1, GE21_sim_phi_L2)
-                GE21_pad1_phi = getBestValue(GE21_pad1_phi_L1, GE21_pad1_phi_L2)
-                GE21_pad2_phi = getBestValue(GE21_pad2_phi_L1, GE21_pad2_phi_L2)
-                GE21_pad4_phi = getBestValue(GE21_pad4_phi_L1, GE21_pad4_phi_L2)
-                GE21_pad8_phi = getBestValue(GE21_pad8_phi_L1, GE21_pad8_phi_L2)
+                GE21_pad1_phi = getBestValue(GE21_sim_pad1_phi_L1, GE21_sim_pad1_phi_L2)
+                GE21_pad2_phi = getBestValue(GE21_sim_pad2_phi_L1, GE21_sim_pad2_phi_L2)
+                GE21_pad4_phi = getBestValue(GE21_sim_pad4_phi_L1, GE21_sim_pad4_phi_L2)
+                GE21_pad8_phi = getBestValue(GE21_sim_pad8_phi_L1, GE21_sim_pad8_phi_L2)
                 
                 ## normalize the GEM position angles
                 if GE11_phi_L1 != 99: GE11_phi_L1 = normalizedPhi2(GE11_phi_L1)
                 if GE11_phi_L2 != 99: GE11_phi_L2 = normalizedPhi2(GE11_phi_L2)
                 if GE21_phi_L1 != 99: GE21_phi_L1 = normalizedPhi2(GE21_phi_L1)
                 if GE21_phi_L2 != 99: GE21_phi_L2 = normalizedPhi2(GE21_phi_L2)
-                if GE0_phi != 99: GE0_phi = normalizedPhi(GE21_phi_L2)
 
                 #print "gem pos", GE21_sim_phi, GE21_pad1_phi, GE21_pad2_phi, GE21_pad4_phi, GE21_pad8_phi
 
@@ -2005,20 +2017,17 @@ if __name__ == "__main__":
               ok_GE21_L1 = GE21_bx_L1 != 99 
               ok_GE21_L2 = GE21_bx_L2 != 99
 
-              ok_GE0 = GE0_phi != 99
               ok_GE11 = ok_GE11_L1 or ok_GE11_L2
               ok_GE21 = ok_GE21_L1 or ok_GE21_L2
 
               ## L1MU counters
               if ok_GE11 and ok_GE21:             nL1MuMatched_GE11_GE21 += 1
-              if ok_GE0 and ok_GE21:              nL1MuMatched_GE0_GE21 += 1
-              if (ok_GE0 or ok_GE11) and ok_GE21: nL1MuMatched_GE11_GE0_GE21 += 1
 
               ## check if CSC hits are present
-              ok_CSCTF_st1 = ok_CSCTF_st1 or ok_CSCTF_rec_st1
-              ok_CSCTF_st2 = ok_CSCTF_st2 or ok_CSCTF_rec_st2
-              ok_CSCTF_st3 = ok_CSCTF_st3 or ok_CSCTF_rec_st3
-              ok_CSCTF_st4 = ok_CSCTF_st4 or ok_CSCTF_rec_st4
+              #ok_CSCTF_st1 = ok_CSCTF_st1 or ok_CSCTF_rec_st1
+              #ok_CSCTF_st2 = ok_CSCTF_st2 or ok_CSCTF_rec_st2
+              #ok_CSCTF_st3 = ok_CSCTF_st3 or ok_CSCTF_rec_st3
+              #ok_CSCTF_st4 = ok_CSCTF_st4 or ok_CSCTF_rec_st4
 
               if verbose:
                 print "\t\tCSCTF", L1Mu_CSCTF_index
@@ -2053,7 +2062,6 @@ if __name__ == "__main__":
                 print "\t\tok_GE11_L2", ok_GE11_L2, "GE11_phi_L2", GE11_phi_L2, "GE11_bx_L2", GE11_bx_L2, "GE11_z_L2", GE11_z_L2
                 print "\t\tok_GE21_L1", ok_GE21_L1, "GE21_phi_L1", GE21_phi_L1, "GE21_bx_L1", GE21_bx_L1, "GE21_z_L1", GE21_z_L1
                 print "\t\tok_GE21_L2", ok_GE21_L2, "GE21_phi_L2", GE21_phi_L2, "GE21_bx_L2", GE21_bx_L2, "GE21_z_L2", GE21_z_L2
-                print "\t\tok_GE0", ok_GE0, "GE0_phi", GE0_phi, "GE0_phib", GE0_phib
                 print               
 
 
@@ -2418,7 +2426,9 @@ if __name__ == "__main__":
               if ok_position_based_endcap and 0 <= parity and parity <= 3 and abs(eta_prop)>=1.2 and abs(eta_prop)<=2.4:
                 nL1MuMatched_ME1_ME2_ME3 += 1
 
-                etaPartition = get_eta_partition(eta_prop)
+                ## use the L1Mu eta for the time being!
+                ## in the future: need to use the fitted stub eta
+                etaPartition = get_eta_partition(L1Mu_eta)
                 
                 ## get the deltaYs
                 deltay12_withoutLCTFit, deltay23_withoutLCTFit = deltay12_deltay23(CSCTF_x1, CSCTF_y1, CSCTF_phi1,
@@ -2432,12 +2442,28 @@ if __name__ == "__main__":
                 if pt > 10:
                   mapTH2F["deltay12_vs_deltay23_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity] + "_withoutLCTFit"].Fill(deltay12_withoutLCTFit, deltay23_withoutLCTFit)
                   mapTH2F["deltay12_vs_deltay23_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity] + "_withLCTFit"].Fill(deltay12_withLCTFit, deltay23_withLCTFit)
-                  if 1.2<=abs(eta_prop) and abs(eta_prop)<1.6:
+                  if 1.2<=abs(L1Mu_eta) and abs(L1Mu_eta)<1.6:
                     mapTH2F["deltay12_vs_deltay23_eta12to16_" + ME1ME2ME3ParityCases[parity] + "_withoutLCTFit"].Fill(deltay12_withoutLCTFit, deltay23_withoutLCTFit)
                     mapTH2F["deltay12_vs_deltay23_eta12to16_" + ME1ME2ME3ParityCases[parity] + "_withLCTFit"].Fill(deltay12_withLCTFit, deltay23_withLCTFit)
-                  if 1.6<=abs(eta_prop) and abs(eta_prop)<2.4:
+                  if 1.6<=abs(L1Mu_eta) and abs(L1Mu_eta)<2.4:
                     mapTH2F["deltay12_vs_deltay23_eta16to24_" + ME1ME2ME3ParityCases[parity] + "_withoutLCTFit"].Fill(deltay12_withoutLCTFit, deltay23_withoutLCTFit)
                     mapTH2F["deltay12_vs_deltay23_eta16to24_" + ME1ME2ME3ParityCases[parity] + "_withLCTFit"].Fill(deltay12_withLCTFit, deltay23_withLCTFit)
+                
+                  if (charge<0):
+                    if 1.2<=abs(L1Mu_eta) and abs(L1Mu_eta)<1.6:
+                      mapTH2F["deltay12_vs_deltay23_eta12to16_" + ME1ME2ME3ParityCases[parity] + "_Qn_withoutLCTFit"].Fill(deltay12_withoutLCTFit, deltay23_withoutLCTFit)
+                      mapTH2F["deltay12_vs_deltay23_eta12to16_" + ME1ME2ME3ParityCases[parity] + "_Qn_withLCTFit"].Fill(deltay12_withLCTFit, deltay23_withLCTFit)
+                    if 1.6<=abs(L1Mu_eta) and abs(L1Mu_eta)<2.4:
+                      mapTH2F["deltay12_vs_deltay23_eta16to24_" + ME1ME2ME3ParityCases[parity] + "_Qn_withoutLCTFit"].Fill(deltay12_withoutLCTFit, deltay23_withoutLCTFit)
+                      mapTH2F["deltay12_vs_deltay23_eta16to24_" + ME1ME2ME3ParityCases[parity] + "_Qn_withLCTFit"].Fill(deltay12_withLCTFit, deltay23_withLCTFit)
+                  else:
+                    if 1.2<=abs(L1Mu_eta) and abs(L1Mu_eta)<1.6:
+                      mapTH2F["deltay12_vs_deltay23_eta12to16_" + ME1ME2ME3ParityCases[parity] + "_Qp_withoutLCTFit"].Fill(deltay12_withoutLCTFit, deltay23_withoutLCTFit)
+                      mapTH2F["deltay12_vs_deltay23_eta12to16_" + ME1ME2ME3ParityCases[parity] + "_Qp_withLCTFit"].Fill(deltay12_withLCTFit, deltay23_withLCTFit)
+                    if 1.6<=abs(L1Mu_eta) and abs(L1Mu_eta)<2.4:
+                      mapTH2F["deltay12_vs_deltay23_eta16to24_" + ME1ME2ME3ParityCases[parity] + "_Qp_withoutLCTFit"].Fill(deltay12_withoutLCTFit, deltay23_withoutLCTFit)
+                      mapTH2F["deltay12_vs_deltay23_eta16to24_" + ME1ME2ME3ParityCases[parity] + "_Qp_withLCTFit"].Fill(deltay12_withLCTFit, deltay23_withLCTFit)
+
 
 
                 proportionalityFactor_withoutLCTFit = get_proptionality_factor(etaRanges[etaPartition], ME1ME2ME3ParityCases[parity], False)
@@ -2460,9 +2486,9 @@ if __name__ == "__main__":
                 ## fill plots!!!
                 if dxy <= 100:
                   mapTH1F["GenMuPt_ME1_ME2_ME3"].Fill(pt)
-                  if 1.2<=abs(eta_prop) and abs(eta_prop)<1.6:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta12to16"].Fill(pt)
-                  if 1.6<=abs(eta_prop) and abs(eta_prop)<2.2:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta16to22"].Fill(pt)
-                  if 2.2<=abs(eta_prop) and abs(eta_prop)<=2.4: mapTH1F["GenMuPt_ME1_ME2_ME3_eta22to24"].Fill(pt)
+                  if 1.2<=abs(L1Mu_eta) and abs(L1Mu_eta)<1.6:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta12to16"].Fill(pt)
+                  if 1.6<=abs(L1Mu_eta) and abs(L1Mu_eta)<2.2:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta16to22"].Fill(pt)
+                  if 2.2<=abs(L1Mu_eta) and abs(L1Mu_eta)<=2.4: mapTH1F["GenMuPt_ME1_ME2_ME3_eta22to24"].Fill(pt)
                   mapTH1F["GenMuPt_ME1_ME2_ME3_eta"+ etaRanges[etaPartition]].Fill(pt)
 
                   for L1MuPtCut in [10,15,20]:
@@ -2473,22 +2499,22 @@ if __name__ == "__main__":
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_withLCTFit"%(L1MuPtCut)].Fill(pt)
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta%s_withLCTFit"%(L1MuPtCut, etaRanges[etaPartition])].Fill(pt)
                       
-                    if 1.2<=abs(eta_prop) and abs(eta_prop)<1.6:
+                    if 1.2<=abs(L1Mu_eta) and abs(L1Mu_eta)<1.6:
                       if positionPt_withoutLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta12to16_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
                       if positionPt_withLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta12to16_withLCTFit"%(L1MuPtCut)].Fill(pt)
-                    if 1.6<=abs(eta_prop) and abs(eta_prop)<2.2:
+                    if 1.6<=abs(L1Mu_eta) and abs(L1Mu_eta)<2.2:
                       if positionPt_withoutLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta16to22_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
                       if positionPt_withLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta16to22_withLCTFit"%(L1MuPtCut)].Fill(pt)
-                    if 2.2<=abs(eta_prop) and abs(eta_prop)<=2.4:
+                    if 2.2<=abs(L1Mu_eta) and abs(L1Mu_eta)<=2.4:
                       if positionPt_withoutLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta22to24_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
                       if positionPt_withLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta22to24_withLCTFit"%(L1MuPtCut)].Fill(pt)
 
                       
                 if dxy <= 5:                
                   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy0to5"].Fill(pt)               
-                  if 1.2<=abs(eta_prop) and abs(eta_prop)<1.6:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta12to16_dxy0to5"].Fill(pt)
-                  if 1.6<=abs(eta_prop) and abs(eta_prop)<2.2:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta16to22_dxy0to5"].Fill(pt)
-                  if 2.2<=abs(eta_prop) and abs(eta_prop)<=2.4: mapTH1F["GenMuPt_ME1_ME2_ME3_eta22to24_dxy0to5"].Fill(pt)
+                  if 1.2<=abs(L1Mu_eta) and abs(L1Mu_eta)<1.6:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta12to16_dxy0to5"].Fill(pt)
+                  if 1.6<=abs(L1Mu_eta) and abs(L1Mu_eta)<2.2:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta16to22_dxy0to5"].Fill(pt)
+                  if 2.2<=abs(L1Mu_eta) and abs(L1Mu_eta)<=2.4: mapTH1F["GenMuPt_ME1_ME2_ME3_eta22to24_dxy0to5"].Fill(pt)
                   mapTH1F["GenMuPt_ME1_ME2_ME3_eta"+ etaRanges[etaPartition] + "_dxy0to5"].Fill(pt)
 
                   for L1MuPtCut in [10,15,20]:
@@ -2499,21 +2525,21 @@ if __name__ == "__main__":
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_dxy0to5_withLCTFit"%(L1MuPtCut)].Fill(pt)
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta%s_dxy0to5_withLCTFit"%(L1MuPtCut, etaRanges[etaPartition])].Fill(pt)
 
-                    if 1.2<=abs(eta_prop) and abs(eta_prop)<1.6:
+                    if 1.2<=abs(L1Mu_eta) and abs(L1Mu_eta)<1.6:
                       if positionPt_withoutLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta12to16_dxy0to5_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
                       if positionPt_withLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta12to16_dxy0to5_withLCTFit"%(L1MuPtCut)].Fill(pt)
-                    if 1.6<=abs(eta_prop) and abs(eta_prop)<2.2:
+                    if 1.6<=abs(L1Mu_eta) and abs(L1Mu_eta)<2.2:
                       if positionPt_withoutLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta16to22_dxy0to5_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
                       if positionPt_withLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta16to22_dxy0to5_withLCTFit"%(L1MuPtCut)].Fill(pt)
-                    if 2.2<=abs(eta_prop) and abs(eta_prop)<=2.4:
+                    if 2.2<=abs(L1Mu_eta) and abs(L1Mu_eta)<=2.4:
                       if positionPt_withoutLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta22to24_dxy0to5_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
                       if positionPt_withLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta22to24_dxy0to5_withLCTFit"%(L1MuPtCut)].Fill(pt)
 
                 if 5 < dxy and dxy <= 50:  
                   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy5to50"].Fill(pt)  
-                  if 1.2<=abs(eta_prop) and abs(eta_prop)<1.6:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta12to16_dxy5to50"].Fill(pt)
-                  if 1.6<=abs(eta_prop) and abs(eta_prop)<2.2:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta16to22_dxy5to50"].Fill(pt)
-                  if 2.2<=abs(eta_prop) and abs(eta_prop)<=2.4: mapTH1F["GenMuPt_ME1_ME2_ME3_eta22to24_dxy5to50"].Fill(pt)
+                  if 1.2<=abs(L1Mu_eta) and abs(L1Mu_eta)<1.6:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta12to16_dxy5to50"].Fill(pt)
+                  if 1.6<=abs(L1Mu_eta) and abs(L1Mu_eta)<2.2:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta16to22_dxy5to50"].Fill(pt)
+                  if 2.2<=abs(L1Mu_eta) and abs(L1Mu_eta)<=2.4: mapTH1F["GenMuPt_ME1_ME2_ME3_eta22to24_dxy5to50"].Fill(pt)
                   mapTH1F["GenMuPt_ME1_ME2_ME3_eta"+ etaRanges[etaPartition] + "_dxy5to50"].Fill(pt)
 
                   for L1MuPtCut in [10,15,20]:
@@ -2524,22 +2550,22 @@ if __name__ == "__main__":
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_dxy5to50_withLCTFit"%(L1MuPtCut)].Fill(pt)
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta%s_dxy5to50_withLCTFit"%(L1MuPtCut, etaRanges[etaPartition])].Fill(pt)
 
-                    if 1.2<=abs(eta_prop) and abs(eta_prop)<1.6:
+                    if 1.2<=abs(L1Mu_eta) and abs(L1Mu_eta)<1.6:
                       if positionPt_withoutLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta12to16_dxy5to50_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
                       if positionPt_withLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta12to16_dxy5to50_withLCTFit"%(L1MuPtCut)].Fill(pt)
-                    if 1.6<=abs(eta_prop) and abs(eta_prop)<2.2:
+                    if 1.6<=abs(L1Mu_eta) and abs(L1Mu_eta)<2.2:
                       if positionPt_withoutLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta16to22_dxy5to50_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
                       if positionPt_withLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta16to22_dxy5to50_withLCTFit"%(L1MuPtCut)].Fill(pt)
-                    if 2.2<=abs(eta_prop) and abs(eta_prop)<=2.4:
+                    if 2.2<=abs(L1Mu_eta) and abs(L1Mu_eta)<=2.4:
                       if positionPt_withoutLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta22to24_dxy5to50_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
                       if positionPt_withLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta22to24_dxy5to50_withLCTFit"%(L1MuPtCut)].Fill(pt)
 
 
                 if 50 < dxy and dxy <= 100: 
                   mapTH1F["GenMuPt_ME1_ME2_ME3_dxy50to100"].Fill(pt)
-                  if 1.2<=abs(eta_prop) and abs(eta_prop)<1.6:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta12to16_dxy50to100"].Fill(pt)
-                  if 1.6<=abs(eta_prop) and abs(eta_prop)<2.2:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta16to22_dxy50to100"].Fill(pt)
-                  if 2.2<=abs(eta_prop) and abs(eta_prop)<=2.4: mapTH1F["GenMuPt_ME1_ME2_ME3_eta22to24_dxy50to100"].Fill(pt)
+                  if 1.2<=abs(L1Mu_eta) and abs(L1Mu_eta)<1.6:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta12to16_dxy50to100"].Fill(pt)
+                  if 1.6<=abs(L1Mu_eta) and abs(L1Mu_eta)<2.2:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta16to22_dxy50to100"].Fill(pt)
+                  if 2.2<=abs(L1Mu_eta) and abs(L1Mu_eta)<=2.4: mapTH1F["GenMuPt_ME1_ME2_ME3_eta22to24_dxy50to100"].Fill(pt)
                   mapTH1F["GenMuPt_ME1_ME2_ME3_eta"+ etaRanges[etaPartition] + "_dxy50to100"].Fill(pt)
 
                   for L1MuPtCut in [10,15,20]:
@@ -2550,13 +2576,13 @@ if __name__ == "__main__":
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_dxy50to100_withLCTFit"%(L1MuPtCut)].Fill(pt)
                       mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta%s_dxy50to100_withLCTFit"%(L1MuPtCut, etaRanges[etaPartition])].Fill(pt)
 
-                    if 1.2<=abs(eta_prop) and abs(eta_prop)<1.6:
+                    if 1.2<=abs(L1Mu_eta) and abs(L1Mu_eta)<1.6:
                       if positionPt_withoutLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta12to16_dxy50to100_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
                       if positionPt_withLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta12to16_dxy50to100_withLCTFit"%(L1MuPtCut)].Fill(pt)
-                    if 1.6<=abs(eta_prop) and abs(eta_prop)<2.2:
+                    if 1.6<=abs(L1Mu_eta) and abs(L1Mu_eta)<2.2:
                       if positionPt_withoutLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta16to22_dxy50to100_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
                       if positionPt_withLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta16to22_dxy50to100_withLCTFit"%(L1MuPtCut)].Fill(pt)
-                    if 2.2<=abs(eta_prop) and abs(eta_prop)<=2.4:
+                    if 2.2<=abs(L1Mu_eta) and abs(L1Mu_eta)<=2.4:
                       if positionPt_withoutLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta22to24_dxy50to100_withoutLCTFit"%(L1MuPtCut)].Fill(pt)
                       if positionPt_withLCTFit >= L1MuPtCut: mapTH1F["Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta22to24_dxy50to100_withLCTFit"%(L1MuPtCut)].Fill(pt)
                 
@@ -2675,8 +2701,6 @@ if __name__ == "__main__":
       print "Matched GE11_GE21           ", nL1MuMatched_GE11_GE21
       print "Matched GE11_ME11_GE21_ME21 ", nL1MuMatched_GE11_ME11_GE21_ME21
       print "Matched ME1_ME2_ME3         ", nL1MuMatched_ME1_ME2_ME3
-      print "Matched ME0_GE21            ", nL1MuMatched_GE0_GE21
-      print "Matched GE11_ME0_GE21       ", nL1MuMatched_GE11_GE0_GE21
       print "Matched CSCTF               ", nL1MuMatched_CSCTF
       print "Matched DTTF                ", nL1MuMatched_DTTF
       print "Matched RPCb                ", nL1MuMatched_RPCb
@@ -2967,6 +2991,7 @@ if __name__ == "__main__":
       hist2 = thisMap[key]
       hist2.SetTitle(title)
       hist2.Draw()
+      hist2.SetStats(False)
       g = get1DHistogramMedianY(hist2)
       #g.SetMarkerColor(kRed)
       g.SetTitle(title)
@@ -3050,7 +3075,7 @@ if __name__ == "__main__":
                               "#Phi resolution in ME21 chamber, 2.0<|#eta|<2.2;#Phi(Fit to digis)-#Phi(SimHit); Entries","")
 
 
-    produceLCTPhiResolutionPlots = False
+    produceLCTPhiResolutionPlots = True
     if produceLCTPhiResolutionPlots:
       makeSimplePlotGaussianFit(csc_pos_sh_lct_ME1b_16to18_even, targetDir + "csc_pos_sh_lct_ME1b_16to18_even.png", 
                                 "#Phi resolution in ME1b even chamber, 1.6<|#eta|<1.8;#Phi(LCT)-#Phi(SimHit); Entries","")
@@ -3164,7 +3189,7 @@ if __name__ == "__main__":
 
 
     ## GEM position resolutions
-    produceGEMResolutionPlots = False
+    produceGEMResolutionPlots = True
     if produceGEMResolutionPlots:
       makeSimplePlot(gem_pos_sh_pad1_GE21_16to18, targetDir + "gem_pos_sh_pad1_GE21_16to18.png",
                      "#Phi resolution in GE21 chamber, 1.6<|#eta|<1.8;#Phi(Pad1)-#Phi(SimHit); Entries","") 
@@ -3194,7 +3219,7 @@ if __name__ == "__main__":
                      "#Phi resolution in GE21 chamber, 2.0<|#eta|<2.2;#Phi(Pad8)-#Phi(SimHit); Entries","") 
       
     ## DDY123 vs deltaPhiGEM
-    produceDDY23vsDeltaPhiGEMPlots = False
+    produceDDY23vsDeltaPhiGEMPlots = True
     if produceDDY23vsDeltaPhiGEMPlots:
       """
       makeSimplePlotMap(mapTH2F, "DDY123_vs_deltaPhiGEM_pad1_pt10_withoutLCTFit", "Pad1, p_{T}#geq 10 GeV ;#Delta#Delta Y_{123} [cm]; |#Delta#Phi_{dir}(GE11,GE21)|",'colz')
@@ -3260,6 +3285,28 @@ if __name__ == "__main__":
       make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta12to16_" + pp + "_withLCTFit", pp + " 1.2 #leq |eta| #leq 1.6 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",True, True)
       make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta16to24_" + pp + "_withoutLCTFit", pp + " 1.6 #leq |eta| #leq 2.4 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",True, True)
       make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta16to24_" + pp + "_withLCTFit", pp + " 1.6 #leq |eta| #leq 2.4 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",True, True)
+
+
+      makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta12to16_" + pp + "_Qn_withoutLCTFit", pp + " 1.2 #leq |eta| #leq 1.6 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",'colz')
+      makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta12to16_" + pp + "_Qn_withLCTFit", pp + " 1.2 #leq |eta| #leq 1.6 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",'colz')
+      makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta16to24_" + pp + "_Qn_withoutLCTFit", pp + " 1.6 #leq |eta| #leq 2.4 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",'colz')
+      makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta16to24_" + pp + "_Qn_withLCTFit", pp + " 1.6 #leq |eta| #leq 2.4 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",'colz')
+
+      make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta12to16_" + pp + "_Qn_withoutLCTFit", pp + " 1.2 #leq |eta| #leq 1.6;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",True, True)
+      make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta12to16_" + pp + "_Qn_withLCTFit", pp + " 1.2 #leq |eta| #leq 1.6 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",True, True)
+      make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta16to24_" + pp + "_Qn_withoutLCTFit", pp + " 1.6 #leq |eta| #leq 2.4 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",True, True)
+      make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta16to24_" + pp + "_Qn_withLCTFit", pp + " 1.6 #leq |eta| #leq 2.4 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",True, True)
+
+
+      makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta12to16_" + pp + "_Qp_withoutLCTFit", pp + " 1.2 #leq |eta| #leq 1.6 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",'colz')
+      makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta12to16_" + pp + "_Qp_withLCTFit", pp + " 1.2 #leq |eta| #leq 1.6 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",'colz')
+      makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta16to24_" + pp + "_Qp_withoutLCTFit", pp + " 1.6 #leq |eta| #leq 2.4 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",'colz')
+      makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta16to24_" + pp + "_Qp_withLCTFit", pp + " 1.6 #leq |eta| #leq 2.4 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",'colz')
+
+      make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta12to16_" + pp + "_Qp_withoutLCTFit", pp + " 1.2 #leq |eta| #leq 1.6;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",True, True)
+      make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta12to16_" + pp + "_Qp_withLCTFit", pp + " 1.2 #leq |eta| #leq 1.6 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",True, True)
+      make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta16to24_" + pp + "_Qp_withoutLCTFit", pp + " 1.6 #leq |eta| #leq 2.4 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",True, True)
+      make2DMedianPlotMap(mapTH2F, "deltay12_vs_deltay23_eta16to24_" + pp + "_Qp_withLCTFit", pp + " 1.6 #leq |eta| #leq 2.4 ;#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",True, True)
 
       for qq,rr in zip(etaRanges, etaRangesString):
         makeSimplePlotMap(mapTH2F, "deltay12_vs_deltay23_eta" + qq + "_" + pp + "_withoutLCTFit", pp + " " + rr +  ";#Delta Y_{12} [cm]; #Delta Y_{23} [cm]",'colz')

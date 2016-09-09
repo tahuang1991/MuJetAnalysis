@@ -1,5 +1,6 @@
 ## this file contains functions that check if a L1Mu is isolated 
 from Helpers import *
+from hybridAlgorithmPtAssignment import *
 import random
 
 def is_L1Mu_isolated(treeHits, L1Mu_index, 
@@ -40,13 +41,23 @@ def fillPtHistogram(histogram,
                     hasME11Cut=False, 
                     hasME21Cut=False, 
                     hasGE11Cut=False, 
-                    hasGE21Cut=False
-                    hasGE11GE21Cut=False,,
+                    hasGE21Cut=False,
+                    hasME11ME21Cut=False,
+                    hasGE11GE21Cut=False,
                     ME11FailRate=0):
-    prompt_L1Mu_pt = getMaxPromptPtEvent(treeHits,doBXCut, etaCutMin, 
-                                         etaCutMax, stubCut, qualityCut,
-                                         hasME11Cut, hasME21Cut, hasGE11Cut, 
-                                         hasGE21Cut, hasGE11GE21Cut, ME11FailRate)
+    prompt_L1Mu_pt = getMaxPromptPtEvent(treeHits,
+                                         doBXCut, 
+                                         etaCutMin, 
+                                         etaCutMax, 
+                                         stubCut, 
+                                         qualityCut,
+                                         hasME11Cut, 
+                                         hasME21Cut, 
+                                         hasGE11Cut, 
+                                         hasGE21Cut, 
+                                         hasME11ME21Cut, 
+                                         hasGE11GE21Cut, 
+                                         ME11FailRate)
     if (prompt_L1Mu_pt>0): histogram.Fill(prompt_L1Mu_pt)
 
 
@@ -60,6 +71,8 @@ def getMaxPromptPtEvent(treeHits,
                         hasME21Cut=False, 
                         hasGE11Cut=False, 
                         hasGE21Cut=False,
+                        hasME11ME21Cut=False,
+                        hasGE11GE21Cut=False,
                         ME11FailRate=0,
                         ME21FailRate=0):
     
@@ -143,9 +156,10 @@ def getMaxPromptPtEvent(treeHits,
         if hasME21Cut and not has_CSC_ME21: continue
         if hasGE11Cut and not passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt): continue
         if hasGE21Cut and not passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt): continue
-        if (((hasGE11Cut and not passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt)) and 
-             (hasGE21Cut and not passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt))): continue
-            
+        if (hasME11ME21Cut and not has_CSC_ME11 and not has_CSC_ME21): continue
+        if (hasGE11GE21Cut and (not passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt)) and 
+                               (not passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt))): continue
+
         if False:
             print "\t\tMatched: L1Mu", "pt", L1Mu_pt, "eta", L1Mu_eta, 
             print "phi", L1Mu_phi, "Quality", L1Mu_quality, "L1mu_bx", L1Mu_bx,
@@ -169,3 +183,49 @@ doComparatorFit = True
 Displaced_L1Mu_pt = pt_endcap_position_based_algorithm(treeHits, i, L1Mu_CSCTF_index, doComparatorFit)
 isIsolated = is_L1Mu_isolated(treeHits, i, 0.4, 4, 0.12, 0)
 """
+
+## 1: postion based endcap
+## 2: direction based endcap
+## 3: hybrid endcap
+## 4: direction based barrel
+displaced_pt_methods = [1, 2, 3]
+
+def getMaxDisplacedPtEvent(treeHits, 
+                           doBXCut, 
+                           etaCutMin, 
+                           etaCutMax, 
+                           method):
+    
+    max_prompt_L1Mu_pt = -1
+
+    ## check if this event has L1Mus
+    if len(list(treeHits.L1Mu_pt))==0:
+        return max_prompt_L1Mu_pt
+
+    pts = list(treeHits.L1Mu_pt)
+    for i in range(0,len(pts)):
+
+        L1Mu_eta = treeHits.L1Mu_eta[i]
+        L1Mu_bx = treeHits.L1Mu_bx[i]
+        L1Mu_quality = treeHits.L1Mu_quality[i]
+        L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[i]
+        
+        ## eta cut
+        if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue
+
+        ## quality cut
+        if L1Mu_quality < qualityCut: continue
+
+        ## BX cut
+        if abs(L1Mu_bx)>0 and doBXCut: continue
+        
+        #print L1Mu_CSCTF_index
+        if L1Mu_CSCTF_index != -1:
+            DisplacedL1Mu_pt = pt_endcap_position_based_algorithm(treeHits, i, L1Mu_CSCTF_index, False)
+        else:
+            DisplacedL1Mu_pt = -1
+        
+        ## calculate the max pT for the muons that pass the criteria
+        if DisplacedL1Mu_pt > max_DisplacedL1Mu_pt:   max_DisplacedL1Mu_pt = DisplacedL1Mu_pt
+
+    return max_DisplacedL1Mu_pt

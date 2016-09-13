@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160901_v2"; pu = 'PU140'; eff = False
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160906"; pu = 'PU140'; eff = False
-  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160909"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160912"; pu = 'PU140'; eff = False
 
   ## extension for figures - add more?
   ext = ".png"
@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
   set_style()
 
-  doTest = False
+  doTest = True
 
   ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
   #location = "/uscms_data/d3/dildick/work/GEMTriggerRateStudyAugust2016/CMSSW_6_2_0_SLHC28/src/MuJetAnalysis/DisplacedL1MuFilter/test/"
@@ -54,45 +54,54 @@ if __name__ == "__main__":
     def addPlotToMapTH1F_v2(name,bins):
       mapTH1F[name] = TH1F(name,"",len(bins)-1, bins)
 
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate", myptbin)
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs", myptbin)
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_eta16to22", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_eta16to22", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_eta16to22", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_ME1_ME2_ME3_eta12to24", myptbin)
 
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_ME11", myptbin)
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_ME11", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_eta12to24", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_eta12to24", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_eta12to24", myptbin)
 
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_ME21", myptbin)
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_ME21", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_ME11_eta16to22", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_ME11_eta16to22", myptbin)
 
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_ME11orME21", myptbin)
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_ME11orME21", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_ME21_eta16to22", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_ME21_eta16to22", myptbin)
 
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11", myptbin)
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_ME11orME21_eta16to22", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_ME11orME21_eta16to22", myptbin)
 
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11_GE21", myptbin)
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11_GE21", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11_eta16to22", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11_eta16to22", myptbin)
 
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_GE11_GE21", myptbin)
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_GE11_GE21", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11_GE21_eta16to22", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11_GE21_eta16to22", myptbin)
+
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_GE11_GE21_eta16to22", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_GE11_GE21_eta16to22", myptbin)
 
     ## failing stations
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p", myptbin)
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_eta16to22", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_eta16to22", myptbin)
 
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_GE11", myptbin)
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_GE11", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_GE11_eta16to22", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_GE11_eta16to22", myptbin)
 
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_GE11_GE21", myptbin)
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_GE11_GE21", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_GE11_GE21_eta16to22", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_GE11_GE21_eta16to22", myptbin)
 
     ## displaced muons
-    addPlotToMapTH1F_v2("h_single_displaced_L1Mu_rate_ME1_ME2_ME3",myptbin)
+    addPlotToMapTH1F_v2("h_single_displaced_L1Mu_rate_ME1_ME2_ME3_eta16to22",myptbin)
+    addPlotToMapTH1F_v2("h_single_displaced_L1Mu_rate_ME1_ME2_ME3_eta12to24",myptbin)
 
     maxEntries = ch.GetEntries()
     if doTest:
       maxEntries = 100000
 
+    nEvents3stationPassPrompt = 0
+    nEvents3stationPassDisplaced = 0
+      
     for k in range(0,maxEntries):
       if k%1000==0: print "Processing event", k
 
@@ -107,55 +116,60 @@ if __name__ == "__main__":
 
       minQuality = 4
 
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate"], treeHits, True, 1.6, 2.2, 0, minQuality)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_eta16to22"], treeHits, True, 1.6, 2.2, 0, minQuality)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_eta12to24"], treeHits, True, 1.2, 2.4, 0, minQuality)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_ME1_ME2_ME3_eta12to24"], treeHits, True, 1.2, 2.4, 0, minQuality,
+                       hasME1Cut=True, hasME2Cut=True, hasME3Cut=True)
 
-
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs"], treeHits,True, 1.6, 2.2, 2, minQuality)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs"], treeHits,True, 1.6, 2.2, 3, minQuality)
-
-      
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True)
-      
-
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME21"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME21Cut=True)     
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME21"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME21Cut=True)
-
-
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11orME21"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11ME21Cut=True)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11orME21"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11ME21Cut=True)
-
-
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True, ME11FailRate=0.1)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True, ME11FailRate=0.1)
-
-
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True, hasGE11Cut=True)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True, hasGE11Cut=True)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_eta16to22"], treeHits,True, 1.6, 2.2, 2, minQuality)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_eta16to22"], treeHits,True, 1.6, 2.2, 3, minQuality)
 
       
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME21_GE21"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME21Cut=True, hasGE21Cut=True)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME21_GE21"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME21Cut=True, hasGE21Cut=True)
-
-
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_GE11"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True, hasGE11Cut=True, ME11FailRate=0.1)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_GE11"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True, hasGE11Cut=True, ME11FailRate=0.1)
-
-
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11_GE21"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True, hasME21Cut=True, hasGE11Cut=True, hasGE21Cut=True)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11_GE21"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True, hasME21Cut=True, hasGE11Cut=True, hasGE21Cut=True)
-
-
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_GE11_GE21"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11ME21Cut=True, hasGE11GE21Cut=False)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_GE11_GE21"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11ME21Cut=True, hasGE11GE21Cut=False)
-
-
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_GE11_GE21"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True, hasGE11Cut=True, hasGE21Cut=True, ME11FailRate=0.1)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_GE11_GE21"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True, hasGE11Cut=True, hasGE21Cut=True, ME11FailRate=0.1)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_eta16to22"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_eta16to22"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True)
       
-      fillDisplacedPtHistogram( mapTH1F["h_single_displaced_L1Mu_rate_ME1_ME2_ME3"], treeHits, True, 1.6, 2.2, 3, minQuality)
 
-    def makePlots(h1, h1Legend,
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME21_eta16to22"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME21Cut=True)     
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME21_eta16to22"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME21Cut=True)
+
+
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11orME21_eta16to22"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11ME21Cut=True)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11orME21_eta16to22"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11ME21Cut=True)
+
+
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_eta16to22"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True, ME11FailRate=0.1)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_eta16to22"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True, ME11FailRate=0.1)
+
+
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11_eta16to22"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True, hasGE11Cut=True)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11_eta16to22"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True, hasGE11Cut=True)
+
+      
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME21_GE21_eta16to22"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME21Cut=True, hasGE21Cut=True)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME21_GE21_eta16to22"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME21Cut=True, hasGE21Cut=True)
+
+
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_GE11_eta16to22"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True, hasGE11Cut=True, ME11FailRate=0.1)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_GE11_eta16to22"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True, hasGE11Cut=True, ME11FailRate=0.1)
+
+
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11_GE21_eta16to22"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True, hasME21Cut=True, hasGE11Cut=True, hasGE21Cut=True)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11_GE21_eta16to22"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True, hasME21Cut=True, hasGE11Cut=True, hasGE21Cut=True)
+
+
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_GE11_GE21_eta16to22"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11ME21Cut=True, hasGE11GE21Cut=False)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_GE11_GE21_eta16to22"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11ME21Cut=True, hasGE11GE21Cut=False)
+
+
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_GE11_GE21_eta16to22"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True, hasGE11Cut=True, hasGE21Cut=True, ME11FailRate=0.1)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_GE11_GE21_eta16to22"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True, hasGE11Cut=True, hasGE21Cut=True, ME11FailRate=0.1)
+      
+      ## displaced L1Mu trigger rate curves
+      fillDisplacedPtHistogram( mapTH1F["h_single_displaced_L1Mu_rate_ME1_ME2_ME3_eta16to22"], treeHits, True, 1.6, 2.2, 0, minQuality)
+      fillDisplacedPtHistogram( mapTH1F["h_single_displaced_L1Mu_rate_ME1_ME2_ME3_eta12to24"], treeHits, True, 1.2, 2.4, 0, minQuality)
+
+    def makePlots(legendTitle,
+                  h1, h1Legend,
                   h2, h2Legend,
                   h3, h3Legend,
                   title):
@@ -224,7 +238,7 @@ if __name__ == "__main__":
 
       latex = applyTdrStyle()      
 
-      leg = TLegend(0.15,0.2,0.5,0.35,"1.6<|#eta|<2.2","brNDC")
+      leg = TLegend(0.15,0.2,0.5,0.35,legendTitle,"brNDC")
       leg.SetFillColor(kWhite)
       leg.SetBorderSize(0)
       leg.SetFillStyle(0)
@@ -304,96 +318,110 @@ if __name__ == "__main__":
       c.SaveAs(targetDir + title + "_ratio" + ext)
 
     ## trigger rate plots vs pt
-    makePlots(mapTH1F["h_single_prompt_L1Mu_rate"], "Prompt L1Mu",
-              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs"], "Prompt L1Mu, 2 CSC stubs",
-              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs"], "Prompt L1Mu, 3 CSC stubs",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__L1Mu3st")
+    makePlots("1.6<|#eta|<2.2",
+              mapTH1F["h_single_prompt_L1Mu_rate_eta16to22"], "Prompt L1Mu",
+              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_eta16to22"], "Prompt L1Mu, 2 CSC stubs",
+              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_eta16to22"], "Prompt L1Mu, 3 CSC stubs",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__L1Mu3st_eta16to22")
 
-    makePlots(mapTH1F["h_single_prompt_L1Mu_rate"], "Prompt L1Mu",
-              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs"], "Prompt L1Mu, 2 CSC stubs",
-              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11"], "Prompt L1Mu, 2 CSC stubs, ME11",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__L1Mu2stME11")
-
-
-    makePlots(mapTH1F["h_single_prompt_L1Mu_rate"], "Prompt L1Mu",
-              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs"], "Prompt L1Mu, 3 CSC stubs",
-              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11"], "Prompt L1Mu, 3 CSC stubs, ME11",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__L1Mu3stME11")
+    makePlots("1.6<|#eta|<2.2",
+              mapTH1F["h_single_prompt_L1Mu_rate_eta16to22"], "Prompt L1Mu",
+              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_eta16to22"], "Prompt L1Mu, 2 CSC stubs",
+              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_eta16to22"], "Prompt L1Mu, 2 CSC stubs, ME11",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__L1Mu2stME11_eta16to22")
 
 
+    makePlots("1.6<|#eta|<2.2",
+              mapTH1F["h_single_prompt_L1Mu_rate_eta16to22"], "Prompt L1Mu",
+              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_eta16to22"], "Prompt L1Mu, 3 CSC stubs",
+              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_eta16to22"], "Prompt L1Mu, 3 CSC stubs, ME11",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__L1Mu3stME11_eta16to22")
 
 
-    makePlots(mapTH1F["h_single_prompt_L1Mu_rate"], "Prompt L1Mu",
-              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11"], "Prompt L1Mu, 2 CSC stubs, ME11",
-              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11"], "Prompt L1Mu, 2 CSC stubs, ME11, GE11",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2stME11__L1Mu2stME11GE11")
-
-    makePlots(mapTH1F["h_single_prompt_L1Mu_rate"], "Prompt L1Mu",
-              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11"], "Prompt L1Mu, 3 CSC stubs, ME11",
-              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11"], "Prompt L1Mu, 3 CSC stubs, ME11, GE11",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3stME11__L1Mu3stME11GE11")
 
 
-    makePlots(mapTH1F["h_single_prompt_L1Mu_rate"], "Prompt L1Mu",
-              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME21"], "Prompt L1Mu, 2 CSC stubs, ME21",
-              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME21_GE21"], "Prompt L1Mu, 2 CSC stubs, ME21, GE21",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2stME21__L1Mu2stME21GE21")
+    makePlots("1.6<|#eta|<2.2",
+              mapTH1F["h_single_prompt_L1Mu_rate_eta16to22"], "Prompt L1Mu",
+              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_eta16to22"], "Prompt L1Mu, 2 CSC stubs, ME11",
+              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11_eta16to22"], "Prompt L1Mu, 2 CSC stubs, ME11, GE11",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2stME11__L1Mu2stME11GE11_eta16to22")
 
-    makePlots(mapTH1F["h_single_prompt_L1Mu_rate"], "Prompt L1Mu",
-              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME21"], "Prompt L1Mu, 3 CSC stubs, ME21",
-              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME21_GE21"], "Prompt L1Mu, 3 CSC stubs, ME21, GE21",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3stME21__L1Mu3stME21GE21")
-
-
-    makePlots(mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11"], "Prompt L1Mu, 2 CSC stubs, ME11",
-              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11"], "Prompt L1Mu, 2 CSC stubs, ME11, GE11",
-              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11_GE21"], "Prompt L1Mu, 2 CSC stubs, ME11, GE11, GE21",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu2stME11__L1Mu2stME11GE11__L1Mu2stME11GE11GE21")
-
-    makePlots(mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11"], "Prompt L1Mu, 3 CSC stubs, ME11",
-              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11"], "Prompt L1Mu, 3 CSC stubs, ME11, GE11",
-              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11_GE21"], "Prompt L1Mu, 3 CSC stubs, ME11, GE11, GE21",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu3stME11__L1Mu3stME11GE11__L1Mu3stME11GE11GE21")
+    makePlots("1.6<|#eta|<2.2",
+              mapTH1F["h_single_prompt_L1Mu_rate_eta16to22"], "Prompt L1Mu",
+              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_eta16to22"], "Prompt L1Mu, 3 CSC stubs, ME11",
+              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11_eta16to22"], "Prompt L1Mu, 3 CSC stubs, ME11, GE11",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3stME11__L1Mu3stME11GE11_eta16to22")
 
 
-    makePlots(mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11"], "Prompt L1Mu, 2 CSC stubs, ME11",
-              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11"], "Prompt L1Mu, 2 CSC stubs, ME11, GE11",
-              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_GE11_GE21"], "Prompt L1Mu, 2 CSC stubs, GE11 or GE21",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu2stME11__L1Mu2stME11GE11__L1Mu2stGE11GE21")
+    makePlots("1.6<|#eta|<2.2",
+              mapTH1F["h_single_prompt_L1Mu_rate_eta16to22"], "Prompt L1Mu",
+              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME21_eta16to22"], "Prompt L1Mu, 2 CSC stubs, ME21",
+              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME21_GE21_eta16to22"], "Prompt L1Mu, 2 CSC stubs, ME21, GE21",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2stME21__L1Mu2stME21GE21_eta16to22")
 
-    makePlots(mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11"], "Prompt L1Mu, 3 CSC stubs, ME11",
-              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11"], "Prompt L1Mu, 3 CSC stubs, ME11, GE11",
-              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_GE11_GE21"], "Prompt L1Mu, 3 CSC stubs, GE11 or GE21",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu3stME11__L1Mu3stME11GE11__L1Mu3stGE11GE21")
+    makePlots("1.6<|#eta|<2.2",
+              mapTH1F["h_single_prompt_L1Mu_rate_eta16to22"], "Prompt L1Mu",
+              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME21_eta16to22"], "Prompt L1Mu, 3 CSC stubs, ME21",
+              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME21_GE21_eta16to22"], "Prompt L1Mu, 3 CSC stubs, ME21, GE21",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3stME21__L1Mu3stME21GE21_eta16to22")
+
+
+    makePlots("1.6<|#eta|<2.2",
+              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_eta16to22"], "Prompt L1Mu, 2 CSC stubs, ME11",
+              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11_eta16to22"], "Prompt L1Mu, 2 CSC stubs, ME11, GE11",
+              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11_GE21_eta16to22"], "Prompt L1Mu, 2 CSC stubs, ME11, GE11, GE21",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu2stME11__L1Mu2stME11GE11__L1Mu2stME11GE11GE21_eta16to22")
+
+    makePlots("1.6<|#eta|<2.2",
+              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_eta16to22"], "Prompt L1Mu, 3 CSC stubs, ME11",
+              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11_eta16to22"], "Prompt L1Mu, 3 CSC stubs, ME11, GE11",
+              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11_GE21_eta16to22"], "Prompt L1Mu, 3 CSC stubs, ME11, GE11, GE21",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu3stME11__L1Mu3stME11GE11__L1Mu3stME11GE11GE21_eta16to22")
+
+
+    makePlots("1.6<|#eta|<2.2",
+              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_eta16to22"], "Prompt L1Mu, 2 CSC stubs, ME11",
+              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_GE11_eta16to22"], "Prompt L1Mu, 2 CSC stubs, ME11, GE11",
+              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_GE11_GE21_eta16to22"], "Prompt L1Mu, 2 CSC stubs, GE11 or GE21",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu2stME11__L1Mu2stME11GE11__L1Mu2stGE11GE21_eta16to22")
+
+    makePlots("1.6<|#eta|<2.2",
+              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_eta16to22"], "Prompt L1Mu, 3 CSC stubs, ME11",
+              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_GE11_eta16to22"], "Prompt L1Mu, 3 CSC stubs, ME11, GE11",
+              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_GE11_GE21_eta16to22"], "Prompt L1Mu, 3 CSC stubs, GE11 or GE21",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu3stME11__L1Mu3stME11GE11__L1Mu3stGE11GE21_eta16to22")
 
 
     ## prompt trigger with failing chambers
 
-    makePlots(mapTH1F["h_single_prompt_L1Mu_rate"], "Prompt L1Mu",
-              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11"], "Prompt L1Mu, 2 CSC stubs, ME11",
-              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p"], "Prompt L1Mu, 2 CSC stubs, ME11 Fail",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2stME11__L1Mu2stME11Fail")
+    makePlots("1.6<|#eta|<2.2",
+              mapTH1F["h_single_prompt_L1Mu_rate_eta16to22"], "Prompt L1Mu",
+              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_eta16to22"], "Prompt L1Mu, 2 CSC stubs, ME11",
+              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_eta16to22"], "Prompt L1Mu, 2 CSC stubs, ME11 Fail",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2stME11__L1Mu2stME11Fail_eta16to22")
 
 
-    makePlots(mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11"], "Prompt L1Mu, 2 CSC stubs, ME11",
-              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_GE11"], "Prompt L1Mu, 2 CSC stubs, ME11, GE11",
-              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_GE11_GE21"], "Prompt L1Mu, 2 CSC stubs, ME11, GE11, GE21",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu2stME11__L1Mu2stME11FailGE11__L1Mu2stME11FailGE11GE21")
+    makePlots("1.6<|#eta|<2.2",
+              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_eta16to22"], "Prompt L1Mu, 2 CSC stubs, ME11",
+              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_GE11_eta16to22"], "Prompt L1Mu, 2 CSC stubs, ME11, GE11",
+              mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_GE11_GE21_eta16to22"], "Prompt L1Mu, 2 CSC stubs, ME11, GE11, GE21",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu2stME11__L1Mu2stME11FailGE11__L1Mu2stME11FailGE11GE21_eta16to22")
 
-    makePlots(mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11"], "Prompt L1Mu, 3 CSC stubs, ME11",
-              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_GE11"], "Prompt L1Mu, 3 CSC stubs, ME11, GE11",
-              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_GE11_GE21"], "Prompt L1Mu, 3 CSC stubs, ME11, GE11, GE21",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu3stME11__L1Mu3stME11FailGE11__L1Mu3stME11FailGE11GE21")
+    makePlots("1.6<|#eta|<2.2",
+              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_eta16to22"], "Prompt L1Mu, 3 CSC stubs, ME11",
+              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_GE11_eta16to22"], "Prompt L1Mu, 3 CSC stubs, ME11, GE11",
+              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_GE11_GE21_eta16to22"], "Prompt L1Mu, 3 CSC stubs, ME11, GE11, GE21",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu3stME11__L1Mu3stME11FailGE11__L1Mu3stME11FailGE11GE21_eta16to22")
 
 
     ## displaced L1Mu trigger plots
     ## trigger rate plots vs pt
-    makePlots(mapTH1F["h_single_prompt_L1Mu_rate"], "Prompt L1Mu",
-              mapTH1F["h_single_prompt_L1Mu_rate_3_stubs"], "Prompt L1Mu, 3 CSC stubs",
-              mapTH1F["h_single_displaced_L1Mu_rate_ME1_ME2_ME3"], "Displaced L1Mu, position based",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__DisplacedL1Mu3st")
-    
-
+    makePlots("1.2<|#eta|<2.4",
+              mapTH1F["h_single_prompt_L1Mu_rate_eta12to24"], "Prompt L1Mu",
+              mapTH1F["h_single_prompt_L1Mu_rate_ME1_ME2_ME3_eta12to24"], "Prompt L1Mu, hit in ME1, ME2, ME3",
+              mapTH1F["h_single_displaced_L1Mu_rate_ME1_ME2_ME3_eta12to24"], "Displaced L1Mu, hit in ME1, ME2, ME3, position based",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1Mu3st_eta12to24")
+     
   displacedL1MuHybridTriggerRate()
 
 

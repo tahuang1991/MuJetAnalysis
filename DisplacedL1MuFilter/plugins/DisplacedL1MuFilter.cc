@@ -156,6 +156,8 @@ typedef std::vector<GEMCSCPadDigi> GEMCSCPadDigiContainer;
 typedef std::pair<GEMDetId, GEMCSCPadDigiContainer> GEMCSCPadDigiContainerId;
 typedef std::vector<std::pair<GEMDetId, GEMCSCPadDigiContainer> > GEMCSCPadDigiContainerIds;
 
+typedef std::vector<std::pair<L1MuDTTrack,std::vector<L1MuDTTrackSegPhi> > > L1MuDTTrackCollection;
+
 struct MyEvent
 {
   Int_t lumi, run, event;
@@ -708,6 +710,8 @@ private:
                        int refBx) const;
   
   bool stubInCSCTFTracks(const CSCCorrelatedLCTDigi& stub, const L1CSCTrackCollection& l1Tracks) const;
+  bool stubInDTTFTracks(const L1MuDTTrackSegPhi& candidateStub, 
+                        const L1MuDTTrackCollection& l1Tracks) const;
 
   GEMCSCPadDigiId
   pickBestMatchingCoPad(float x1, float y1,
@@ -874,9 +878,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByLabel("simGmtDigis", aH);
   const GMTs& l1GmtCands(*aH.product());
 
-  edm::Handle<vector<pair<L1MuDTTrack,vector<L1MuDTTrackSegPhi> > > > L1DTTrackPhiH;
+  edm::Handle<L1MuDTTrackCollection > L1DTTrackPhiH;
   iEvent.getByLabel("dttfDigis","DTTF", L1DTTrackPhiH);
-  const vector<pair<L1MuDTTrack,vector<L1MuDTTrackSegPhi> > >& L1DTTrackPhis(*L1DTTrackPhiH.product());
+  const L1MuDTTrackCollection& L1DTTrackPhis(*L1DTTrackPhiH.product());
+
+  edm::Handle<vector<L1MuDTTrackSegPhi> > DTTrackPhiH;
+  iEvent.getByLabel("dttfDigis","DTTF", DTTrackPhiH);
+  const vector<L1MuDTTrackSegPhi>& DTTrackPhis(*DTTrackPhiH.product());
 
   // tracks produced by TF
   edm::Handle< L1CSCTrackCollection > hl1Tracks;
@@ -1879,6 +1887,51 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         event_.DTTF_st4[j] = stub.station();
         break;
       };
+    }
+
+    // check for stub recovery
+    bool stubMissingSt1 = event_.DTTF_st1[j] == 99;
+    bool stubMissingSt2 = event_.DTTF_st2[j] == 99;
+    bool stubMissingSt3 = event_.DTTF_st3[j] == 99;
+    bool stubMissingSt4 = event_.DTTF_st4[j] == 99;
+    bool atLeast1StubMissing = stubMissingSt1 or stubMissingSt2 or stubMissingSt3 or stubMissingSt4;
+    
+    bool doStubRecovery = true;
+    if (doStubRecovery and atLeast1StubMissing){
+      std::cout << "DT stub recovery" << std::endl;
+
+      int triggerSector = track.spid().sector();
+      std::cout << "trigger sector " << triggerSector << std::endl;
+      
+      for (auto stub: DTTrackPhis){
+        int station = stub.station();
+        // check if stub is missing in station
+        if (not stubMissingSt1 and station==1) continue;
+        if (not stubMissingSt2 and station==2) continue;
+        if (not stubMissingSt3 and station==3) continue;
+        if (not stubMissingSt4 and station==4) continue;
+        
+        // stub cannot be used in any other track
+        if (stubInDTTFTracks(stub, L1DTTrackPhis)) continue;
+
+        // trigger sector must be the same
+        if (triggerSector != stub.sector()) continue;
+        
+        // BXs have to match
+        int deltaBX = std::abs(stub.bx() - (event_.DTTF_bx[j]));
+        if (deltaBX > 1) continue;
+
+        // wheel must be valid!
+        int wheel = stub.wheel();
+        if (std::abs(wheel) > 2) continue;
+
+        // station must be valid!
+        if (station < 0 or station > 4) continue;
+        
+        DTChamberId chId(wheel, station, triggerSector);
+        if(verbose) std::cout << chId << std::endl;
+        if(verbose) std::cout<<"Candidate " << stub << std::endl;
+      }
     }
   }
 
@@ -3713,6 +3766,24 @@ DisplacedL1MuFilter::stubInCSCTFTracks(const CSCCorrelatedLCTDigi& candidateStub
           isMatched = true;
           break;
         }
+      }
+    }
+  }
+  return isMatched;
+}
+
+
+bool 
+DisplacedL1MuFilter::stubInDTTFTracks(const L1MuDTTrackSegPhi& candidateStub, 
+                                      const L1MuDTTrackCollection& l1Tracks) const
+{
+  bool isMatched = false;
+  for (auto tftrack: l1Tracks){
+    auto stubCollection = tftrack.second;
+    for (auto stub: stubCollection) {
+      if (candidateStub == stub) { 
+        isMatched = true;
+        break;
       }
     }
   }

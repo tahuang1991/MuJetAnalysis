@@ -32,12 +32,16 @@ def isME21StubDisabled(failRate):
 
 
 def fillPtHistogram(histogram,
-                    treeHits, 
-                    doBXCut, 
-                    etaCutMin, 
-                    etaCutMax, 
-                    stubCut, 
-                    qualityCut, 
+                    treeHits,
+                    doBXCut,
+                    etaCutMin,
+                    etaCutMax,
+                    stubCut=2,
+                    qualityCut=4,
+                    hasME1Cut=False,
+                    hasME2Cut=False,
+                    hasME3Cut=False,
+                    hasME4Cut=False,
                     hasME11Cut=False, 
                     hasME21Cut=False, 
                     hasGE11Cut=False, 
@@ -51,6 +55,10 @@ def fillPtHistogram(histogram,
                                          etaCutMax, 
                                          stubCut, 
                                          qualityCut,
+                                         hasME1Cut,
+                                         hasME2Cut,
+                                         hasME3Cut,
+                                         hasME4Cut,
                                          hasME11Cut, 
                                          hasME21Cut, 
                                          hasGE11Cut, 
@@ -61,28 +69,16 @@ def fillPtHistogram(histogram,
     if (prompt_L1Mu_pt>0): histogram.Fill(prompt_L1Mu_pt)
 
 
-def fillDisplacedPtHistogram(histogram,
-                             treeHits, 
-                             doBXCut, 
-                             etaCutMin, 
-                             etaCutMax, 
-                             stubCut, 
-                             qualityCut):
-    displaced_L1Mu_pt = getMaxDisplacedPtEvent(treeHits,
-                                               doBXCut, 
-                                               etaCutMin, 
-                                               etaCutMax, 
-                                               stubCut, 
-                                               qualityCut)
-    if (displaced_L1Mu_pt>0): histogram.Fill(displaced_L1Mu_pt)
-
-
 def getMaxPromptPtEvent(treeHits, 
                         doBXCut, 
                         etaCutMin, 
                         etaCutMax, 
                         stubCut, 
                         qualityCut, 
+                        hasME1Cut=False,
+                        hasME2Cut=False,
+                        hasME3Cut=False,
+                        hasME4Cut=False,
                         hasME11Cut=False, 
                         hasME21Cut=False, 
                         hasGE11Cut=False, 
@@ -166,12 +162,20 @@ def getMaxPromptPtEvent(treeHits,
 
 
         nCSCStubs = has_actual_CSC_ME1 + has_actual_CSC_ME2 + has_CSC_ME3 + has_CSC_ME4
-
+        
         if nCSCStubs < stubCut: continue
+
+        if hasME1Cut and not has_CSC_ME1: continue
+        if hasME2Cut and not has_CSC_ME2: continue
+        if hasME3Cut and not has_CSC_ME3: continue
+        if hasME4Cut and not has_CSC_ME4: continue
+
         if hasME11Cut and not has_CSC_ME11: continue
         if hasME21Cut and not has_CSC_ME21: continue
+
         if hasGE11Cut and not passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt): continue
         if hasGE21Cut and not passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt): continue
+
         if (hasME11ME21Cut and not has_CSC_ME11 and not has_CSC_ME21): continue
         if (hasGE11GE21Cut and (not passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt)) and 
                                (not passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt))): continue
@@ -200,6 +204,23 @@ Displaced_L1Mu_pt = pt_endcap_position_based_algorithm(treeHits, i, L1Mu_CSCTF_i
 isIsolated = is_L1Mu_isolated(treeHits, i, 0.4, 4, 0.12, 0)
 """
 
+def fillDisplacedPtHistogram(histogram,
+                             treeHits, 
+                             doBXCut, 
+                             etaCutMin, 
+                             etaCutMax, 
+                             stubCut, 
+                             qualityCut):
+    displaced_L1Mu_pt = getMaxDisplacedPtEvent(treeHits,
+                                               doBXCut, 
+                                               etaCutMin, 
+                                               etaCutMax, 
+                                               stubCut, 
+                                               qualityCut)
+    if (displaced_L1Mu_pt>0): histogram.Fill(displaced_L1Mu_pt)
+
+
+
 ## 1: postion based endcap
 ## 2: direction based endcap
 ## 3: hybrid endcap
@@ -227,8 +248,48 @@ def getMaxDisplacedPtEvent(treeHits,
         L1Mu_quality = treeHits.L1Mu_quality[i]
         L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[i]
         
+        ## CSC quantities
+        has_CSC_ME1 = False
+        has_CSC_ME2 = False
+        has_actual_CSC_ME1 = False
+        has_actual_CSC_ME2 = False
+        has_CSC_ME3 = False
+        has_CSC_ME4 = False
+        has_CSC_ME11 = False
+        has_CSC_ME21 = False
+        is_CSC_ME11_disabled = False
+        is_CSC_ME21_disabled = False
+        GE11_dPhi = 99
+        CSC_ME1_ch = -1
+        CSC_ME2_ch = -2
+        nCSCStubs = 0
+        
+        #print L1Mu_CSCTF_index
+        if L1Mu_CSCTF_index != -1:
+            has_CSC_ME1 = treeHits.CSCTF_bx1[L1Mu_CSCTF_index] != 99
+            has_CSC_ME2 = treeHits.CSCTF_bx2[L1Mu_CSCTF_index] != 99
+            has_CSC_ME3 = treeHits.CSCTF_bx3[L1Mu_CSCTF_index] != 99
+            has_CSC_ME4 = treeHits.CSCTF_bx4[L1Mu_CSCTF_index] != 99
+
+            has_CSC_ME11 = treeHits.CSCTF_ri1[L1Mu_CSCTF_index] == 1 or treeHits.CSCTF_ri1[L1Mu_CSCTF_index] == 4 
+            has_CSC_ME21 = treeHits.CSCTF_ri2[L1Mu_CSCTF_index] == 1
+
+            CSC_ME1_ch  = treeHits.CSCTF_ch1[L1Mu_CSCTF_index]
+            CSC_ME2_ch  = treeHits.CSCTF_ch2[L1Mu_CSCTF_index]
+            
+            ## check if stubs in station 1 and 2 can really be counted! -- they may be disabled
+            if not has_CSC_ME11: has_actual_CSC_ME1 = has_CSC_ME1
+            else:                has_actual_CSC_ME1 = (not is_CSC_ME11_disabled) 
+
+            if not has_CSC_ME21: has_actual_CSC_ME2 = has_CSC_ME2
+            else:                has_actual_CSC_ME2 = (not is_CSC_ME21_disabled) 
+            
+
+
         ## eta cut
         if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue
+
+        #if not (has_actual_CSC_ME1 and has_actual_CSC_ME2 and has_CSC_ME3): continue
 
         ## quality cut
         if L1Mu_quality < qualityCut: continue
@@ -236,6 +297,7 @@ def getMaxDisplacedPtEvent(treeHits,
         ## BX cut
         if abs(L1Mu_bx)>0 and doBXCut: continue
         
+
         #print L1Mu_CSCTF_index
         if L1Mu_CSCTF_index != -1:
             DisplacedL1Mu_pt = pt_endcap_position_based_algorithm(treeHits, i, True)

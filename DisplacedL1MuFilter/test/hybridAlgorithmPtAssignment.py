@@ -1,5 +1,6 @@
 ## this file contains the pT assignment functions
 from Helpers import *
+from ROOT import *
 
 ## important ranges
 DTCombinations = ['DT1_DT2','DT1_DT3','DT1_DT4',
@@ -26,14 +27,14 @@ etaRangesGE11String = ['1.6 #leq |#eta| #leq 1.8',
                        '2.0 #leq |#eta| #leq 2.2']
 
 ## calculate the bending in each station
-def get_phi_dir_st1(me11_phi, ge11_phi, Xvalue):
+def get_phi_dir_st1(delta_z_GE11_ME11, me11_phi, ge11_phi, Xvalue):
     numerator = TMath.Sin( deltaPhi2(me11_phi, ge11_phi) )
     denominator1 = 1. - TMath.Cos( deltaPhi2(me11_phi, ge11_phi) ) 
     denominator2 = delta_z_GE11_ME11 * Xvalue
     denominator = denominator1 - denominator2
     return ge11_phi - TMath.ATan( numerator / denominator)
 
-def get_phi_dir_st2_variable_GE21_pad_size(me11_phi, me21_phi, ge21_phi, Xvalue):
+def get_phi_dir_st2_variable_GE21_pad_size(delta_z_GE21_ME21, delta_z_ME11_ME21, me11_phi, me21_phi, ge21_phi, Xvalue):
     numerator = TMath.Sin( deltaPhi2(me21_phi, ge21_phi) )
     denominator1 = 1 - TMath.Cos( deltaPhi2(me21_phi, ge21_phi) )
     denominator2 = (delta_z_GE21_ME21 * Xvalue / (delta_z_ME11_ME21 * Xvalue + 1 ) )
@@ -303,6 +304,7 @@ def pt_endcap_position_based_algorithm(treeHits, L1Mu_index, doComparatorFit):
         CSCTF_algo_R3 = CSCTF_etafit_R3
         CSCTF_algo_R4 = CSCTF_etafit_R4
         
+    """
     ## get the GEM variables
     GE11_bx_L1 = treeHits.GE11_bx_L1[L1Mu_CSCTF_index]
     GE11_bx_L2 = treeHits.GE11_bx_L2[L1Mu_CSCTF_index]
@@ -334,21 +336,29 @@ def pt_endcap_position_based_algorithm(treeHits, L1Mu_index, doComparatorFit):
     X_variable = (CSCTF_algo_R2/CSCTF_algo_R1 - 1)/delta_z_ME11_ME21
 
     ## GEM station directions
-    phi_dir_st1 = get_phi_dir_st1(CSCTF_algo_phi1, GE11_phi, X)
-    phi_dir_st2 = get_phi_dir_st2_variable_GE21_pad_size(CSCTF_algo_phi1, CSCTF_algo_phi2, GE21_pad1_phi, X)
+    phi_dir_st1 = get_phi_dir_st1(delta_z_GE11_ME11, 
+                                  CSCTF_algo_phi1, 
+                                  GE11_phi, 
+                                  X_variable)
+    phi_dir_st2 = get_phi_dir_st2_variable_GE21_pad_size(delta_z_GE21_ME21,
+                                                         delta_z_ME11_ME21,
+                                                         CSCTF_algo_phi1, 
+                                                         CSCTF_algo_phi2, 
+                                                         GE21_phi, 
+                                                         X_variable)
 
     ## difference in bending for different pad sizes and different LCT position resolutions
     delta_phi_dir = abs( deltaPhi2( phi_dir_st1, phi_dir_st2) )
+    """
 
-    
     ## actual calctulation of the pT
     if ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3:
         parity3 = get_parity(CSCTF_isEven1, CSCTF_isEven2, CSCTF_isEven3, CSCTF_isEven4)
         etaPartition = get_eta_partition(L1Mu_eta)
     
-        deltay12, deltay23 = deltay12_deltay23_R(CSCTF_algo_R1, CSCTF_algo_phi1,
-                                                 CSCTF_algo_R2, CSCTF_algo_phi2,
-                                                 CSCTF_algo_R3, CSCTF_algo_phi3)
+        deltay12, deltay23 = deltay12_deltay23(CSCTF_algo_x1, CSCTF_algo_y1, CSCTF_algo_phi1,
+                                               CSCTF_algo_x2, CSCTF_algo_y2, CSCTF_algo_phi2,
+                                               CSCTF_algo_x3, CSCTF_algo_y3, CSCTF_algo_phi3)
     
         proportionalityFactor = get_proptionality_factor(etaRanges[etaPartition], ME1ME2ME3ParityCases[parity3], doComparatorFit)
         

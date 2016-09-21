@@ -51,15 +51,15 @@ if __name__ == "__main__":
   dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU140_L1MuANA_v2/160913_042635/0000/'
 
   ch = addfiles(ch, dirname=dirname)
-  ch = addfiles(ch, dirname=dirname2)
+  #ch = addfiles(ch, dirname=dirname2)
   ch = addfiles(ch, dirname=dirname3)
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160913"
+  label = "DisplacedL1MuTrigger_20160920"
   targetDir = label + "/"
   
   verbose = False
-  runTest = True
+  runTest = False
   printExtraInfo = False
   processRPC = False
   doBarrelStudies = True
@@ -990,9 +990,6 @@ if __name__ == "__main__":
             if m_CSCTF and n_DTTF and m_RPCb and m_RPCf: nL1MuMatched_CSCTF_RPCb_RPCf += 1
             
             if m_CSCTF and m_DTTF and m_RPCb and m_RPCf: nL1MuMatched_DTTF_CSCTF_RPCb_RPCf +=1
-
-            ## test
-            continue
 
             ## Matched to DT
             if verbose:
@@ -2399,10 +2396,12 @@ if __name__ == "__main__":
                 DDY123_withoutLCTFit = abs(deltay23_withoutLCTFit - proportionalityFactor_withoutLCTFit * deltay12_withoutLCTFit)
                 DDY123_withLCTFit    = abs(deltay23_withLCTFit    - proportionalityFactor_withLCTFit    * deltay12_withLCTFit)
                 
-                mapTH2F["GenMuPt_vs_inv_DDY123_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity] + "_withoutLCTFit"].Fill(pt, 1./DDY123_withoutLCTFit)
+                if DDY123_withoutLCTFit!=0:
+                  mapTH2F["GenMuPt_vs_inv_DDY123_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity] + "_withoutLCTFit"].Fill(pt, 1./DDY123_withoutLCTFit)
                 mapTH2F["GenMuPt_vs_DDY123_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity] + "_withoutLCTFit"].Fill(pt, DDY123_withoutLCTFit)
-                  
-                mapTH2F["GenMuPt_vs_inv_DDY123_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity] + "_withLCTFit"].Fill(pt, 1./DDY123_withLCTFit)
+                
+                if DDY123_withLCTFit!=0:  
+                  mapTH2F["GenMuPt_vs_inv_DDY123_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity] + "_withLCTFit"].Fill(pt, 1./DDY123_withLCTFit)
                 mapTH2F["GenMuPt_vs_DDY123_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity] + "_withLCTFit"].Fill(pt, DDY123_withLCTFit)
                 
                 ## get the reconstruction pT value

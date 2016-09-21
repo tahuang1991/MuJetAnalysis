@@ -120,6 +120,7 @@
 #include "DataFormats/CSCDigi/interface/CSCCLCTDigiCollection.h"
 #include "DataFormats/CSCDigi/interface/CSCCorrelatedLCTDigiCollection.h"
 
+#include "DataFormats/GEMDigi/interface/GEMDigiCollection.h"
 #include "DataFormats/GEMDigi/interface/GEMCSCPadDigiCollection.h"
 #include "DataFormats/GEMDigi/interface/GEMCSCCoPadDigiCollection.h"
 //
@@ -700,8 +701,10 @@ private:
                          CSCDetId chid, int iMuon, float& fit_z, float& fit_phi, float& dphi) const;
   void getStubPositions(int index, std::vector<float>& x, 
                         std::vector<float>& y, std::vector<float>& z) const;
-
+  std::vector<GlobalPoint> positionPad2InDetId(const GEMDigiCollection&, unsigned int ch_id, int refBX) const;
+  
   void printCSCStubProperties(int index) const;
+  
 
   CSCCorrelatedLCTDigiId 
   pickBestMatchingStub(float x1, float y1,
@@ -926,6 +929,11 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   edm::Handle< CSCCorrelatedLCTDigiCollection > hCSCCorrelatedLCTs;
   iEvent.getByLabel("simCscTriggerPrimitiveDigis", "MPCSORTED", hCSCCorrelatedLCTs);
   const CSCCorrelatedLCTDigiCollection& CSCCorrelatedLCTs(*hCSCCorrelatedLCTs.product());
+
+  // GEM pads and copads
+  // edm::Handle< GEMDigiCollection > hGEMDigis;
+  // iEvent.getByLabel("simMuonGEMDigis", hGEMDigis);
+  // const GEMDigiCollection& GEMDigis(*hGEMDigis.product());
 
   // GEM pads and copads
   edm::Handle< GEMCSCPadDigiCollection > hGEMCSCPads;
@@ -2287,7 +2295,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
                   bestPad_GE21_L2 = pickBestMatchingPad(event_.CSCTF_fit_x2[ j ],
                                                         event_.CSCTF_fit_y2[ j ], 
                                                         bestPad_GE21_L2, std::make_pair(gem_id, pad), event_.CSCTF_bx[j]);
-                }                
+                }     
               }
             }
           }
@@ -3557,7 +3565,6 @@ DisplacedL1MuFilter::getStubPositions(int index,
   }
 } 
 
-
 void 
 DisplacedL1MuFilter::fitComparatorsLCT(const CSCComparatorDigiCollection& hCSCComparators,
                                        const CSCCorrelatedLCTDigi& stub, CSCDetId ch_id, 
@@ -3848,9 +3855,9 @@ DisplacedL1MuFilter::pickBestMatchingCoPad(float xref, float yref,
 
 GEMCSCPadDigiId
 DisplacedL1MuFilter::pickBestMatchingPad(float xref, float yref,
-                                           const GEMCSCPadDigiId& oldPad,
-                                           const GEMCSCPadDigiId& newPad, 
-                                           int bxref) const
+                                         const GEMCSCPadDigiId& oldPad,
+                                         const GEMCSCPadDigiId& newPad, 
+                                         int bxref) const
 {
   bool debug = false;
   // check for invalid/valid
@@ -3898,6 +3905,57 @@ DisplacedL1MuFilter::pickBestMatchingPad(float xref, float yref,
   }
   // in case all else fails...
   return GEMCSCPadDigiId();
+}
+
+
+std::vector<GlobalPoint> 
+DisplacedL1MuFilter::positionPad2InDetId(const GEMDigiCollection& hGEMDigis, unsigned int ch_id, int refBX) const
+{
+  // get the digis in detid 
+  std::vector<GlobalPoint> result;
+  bool verbose = false;
+  
+  CSCDetId csc_id(ch_id);
+  if (verbose) std::cout << "In function positionPad2InDetId csc_id " << csc_id << std::endl;
+  
+  for(auto cItr = hGEMDigis.begin(); cItr != hGEMDigis.end(); ++cItr) {
+    GEMDetId gem_id = (*cItr).first;
+    cout << "Check GEMDetId " << gem_id << endl;
+    
+    // chambers need to be compatible
+    // no cut on the eta partition!
+    if (gem_id.region() == csc_id.zendcap() and 
+        gem_id.station() == 1 and 
+        csc_id.chamber() == gem_id.chamber() and
+        (csc_id.ring() == 4 or csc_id.ring() == 1)) {
+            
+      if(verbose) std::cout << "Investigate GE11 chamber " << gem_id << std::endl;
+      
+      // get the digis
+      auto digi_range = (*cItr).second;
+      for (auto digiItr = digi_range.first; digiItr != digi_range.second; ++digiItr){
+        auto digi(*digiItr);
+    
+        int deltaBX = std::abs(digi.bx() - refBX);
+        if (deltaBX <= 1) {
+          
+          if(verbose) std::cout << "\tCandidate digi " << digi  << std::endl;
+          float middleStripOfPad = 0;
+          if (digi.strip()%2==0){
+            middleStripOfPad = digi.strip() - 0.5;
+          }
+          else{
+            middleStripOfPad = digi.strip() + 0.5;
+          }
+          if (verbose) std::cout << "middle strip " << middleStripOfPad << std::endl;
+          LocalPoint gem_lp = gemGeometry_->etaPartition(gem_id)->centreOfStrip(middleStripOfPad);
+          GlobalPoint gem_gp = gemGeometry_->idToDet(gem_id)->surface().toGlobal(gem_lp);
+          if (std::find(result.begin(), result.end(), gem_gp) == result.end()) result.push_back(gem_gp);
+        }
+      }
+    }
+  }
+  return result;
 }
 
 

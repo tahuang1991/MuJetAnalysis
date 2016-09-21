@@ -15,9 +15,10 @@ def is_L1Mu_isolated(treeHits, L1Mu_index,
     isUnmatched = False
     
     ## check if matched or unmatched
+    ## L1Tk should have a momentum above a certain threshold to be matched or unmatched
     if L1Mu_L1Tk_dR_min <= dR_largeCone and L1Mu_L1Tk_pt >= ptCut_largeCone: isUnmatched = True
     if L1Mu_L1Tk_dR_min <= dR_smallCone and L1Mu_L1Tk_pt >= ptCut_smallCone: isMatched = True
-
+    
     ## isolated means neither matched nor unmatched!
     return (not isMatched) and (not isUnmatched)
 

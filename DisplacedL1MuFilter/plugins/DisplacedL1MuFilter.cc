@@ -4663,40 +4663,40 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("DTTF_pt", event_.DTTF_pt,"DTTF_pt[nDTTF]/F");
   event_tree_->Branch("DTTF_eta", event_.DTTF_eta,"DTTF_eta[nDTTF]/F");
   event_tree_->Branch("DTTF_phi", event_.DTTF_phi,"DTTF_phi[nDTTF]/F");
-  event_tree_->Branch("DTTF_bx", event_.DTTF_bx,"DTTF_bx[nDTTF]/F");
-  event_tree_->Branch("DTTF_nStubs", event_.DTTF_nStubs,"DTTF_nStubs[nDTTF]/F");
+  event_tree_->Branch("DTTF_bx", event_.DTTF_bx,"DTTF_bx[nDTTF]/I");
+  event_tree_->Branch("DTTF_nStubs", event_.DTTF_nStubs,"DTTF_nStubs[nDTTF]/I");
 
   event_tree_->Branch("DTTF_phi1", event_.DTTF_phi1,"DTTF_phi1[nDTTF]/F");
   event_tree_->Branch("DTTF_phib1", event_.DTTF_phib1,"DTTF_phib1[nDTTF]/F");
-  event_tree_->Branch("DTTF_quality1", event_.DTTF_quality1,"DTTF_quality1[nDTTF]/F");
-  event_tree_->Branch("DTTF_bx1", event_.DTTF_bx1,"DTTF_bx1[nDTTF]/F");
-  event_tree_->Branch("DTTF_wh1", event_.DTTF_wh1,"DTTF_wh1[nDTTF]/F");
-  event_tree_->Branch("DTTF_se1", event_.DTTF_se1,"DTTF_se1[nDTTF]/F");
-  event_tree_->Branch("DTTF_st1", event_.DTTF_st1,"DTTF_st1[nDTTF]/F");
+  event_tree_->Branch("DTTF_quality1", event_.DTTF_quality1,"DTTF_quality1[nDTTF]/I");
+  event_tree_->Branch("DTTF_bx1", event_.DTTF_bx1,"DTTF_bx1[nDTTF]/I");
+  event_tree_->Branch("DTTF_wh1", event_.DTTF_wh1,"DTTF_wh1[nDTTF]/I");
+  event_tree_->Branch("DTTF_se1", event_.DTTF_se1,"DTTF_se1[nDTTF]/I");
+  event_tree_->Branch("DTTF_st1", event_.DTTF_st1,"DTTF_st1[nDTTF]/I");
 
   event_tree_->Branch("DTTF_phi2", event_.DTTF_phi2,"DTTF_phi2[nDTTF]/F");
   event_tree_->Branch("DTTF_phib2", event_.DTTF_phib2,"DTTF_phib2[nDTTF]/F");
-  event_tree_->Branch("DTTF_quality2", event_.DTTF_quality2,"DTTF_quality2[nDTTF]/F");
-  event_tree_->Branch("DTTF_bx2", event_.DTTF_bx2,"DTTF_bx2[nDTTF]/F");
-  event_tree_->Branch("DTTF_wh2", event_.DTTF_wh2,"DTTF_wh2[nDTTF]/F");
-  event_tree_->Branch("DTTF_se2", event_.DTTF_se2,"DTTF_se2[nDTTF]/F");
-  event_tree_->Branch("DTTF_st2", event_.DTTF_st2,"DTTF_st2[nDTTF]/F");
+  event_tree_->Branch("DTTF_quality2", event_.DTTF_quality2,"DTTF_quality2[nDTTF]/I");
+  event_tree_->Branch("DTTF_bx2", event_.DTTF_bx2,"DTTF_bx2[nDTTF]/I");
+  event_tree_->Branch("DTTF_wh2", event_.DTTF_wh2,"DTTF_wh2[nDTTF]/I");
+  event_tree_->Branch("DTTF_se2", event_.DTTF_se2,"DTTF_se2[nDTTF]/I");
+  event_tree_->Branch("DTTF_st2", event_.DTTF_st2,"DTTF_st2[nDTTF]/I");
 
   event_tree_->Branch("DTTF_phi3", event_.DTTF_phi3,"DTTF_phi3[nDTTF]/F");
   event_tree_->Branch("DTTF_phib3", event_.DTTF_phib3,"DTTF_phib3[nDTTF]/F");
-  event_tree_->Branch("DTTF_quality3", event_.DTTF_quality3,"DTTF_quality3[nDTTF]/F");
-  event_tree_->Branch("DTTF_bx3", event_.DTTF_bx3,"DTTF_bx3[nDTTF]/F");
-  event_tree_->Branch("DTTF_wh3", event_.DTTF_wh3,"DTTF_wh3[nDTTF]/F");
-  event_tree_->Branch("DTTF_se3", event_.DTTF_se3,"DTTF_se3[nDTTF]/F");
-  event_tree_->Branch("DTTF_st3", event_.DTTF_st3,"DTTF_st3[nDTTF]/F");
+  event_tree_->Branch("DTTF_quality3", event_.DTTF_quality3,"DTTF_quality3[nDTTF]/I");
+  event_tree_->Branch("DTTF_bx3", event_.DTTF_bx3,"DTTF_bx3[nDTTF]/I");
+  event_tree_->Branch("DTTF_wh3", event_.DTTF_wh3,"DTTF_wh3[nDTTF]/I");
+  event_tree_->Branch("DTTF_se3", event_.DTTF_se3,"DTTF_se3[nDTTF]/I");
+  event_tree_->Branch("DTTF_st3", event_.DTTF_st3,"DTTF_st3[nDTTF]/I");
 
   event_tree_->Branch("DTTF_phi4", event_.DTTF_phi4,"DTTF_phi4[nDTTF]/F");
   event_tree_->Branch("DTTF_phib4", event_.DTTF_phib4,"DTTF_phib4[nDTTF]/F");
-  event_tree_->Branch("DTTF_quality4", event_.DTTF_quality4,"DTTF_quality4[nDTTF]/F");
-  event_tree_->Branch("DTTF_bx4", event_.DTTF_bx4,"DTTF_bx4[nDTTF]/F");
-  event_tree_->Branch("DTTF_wh4", event_.DTTF_wh4,"DTTF_wh4[nDTTF]/F");
-  event_tree_->Branch("DTTF_se4", event_.DTTF_se4,"DTTF_se4[nDTTF]/F");
-  event_tree_->Branch("DTTF_st4", event_.DTTF_st4,"DTTF_st4[nDTTF]/F");
+  event_tree_->Branch("DTTF_quality4", event_.DTTF_quality4,"DTTF_quality4[nDTTF]/I");
+  event_tree_->Branch("DTTF_bx4", event_.DTTF_bx4,"DTTF_bx4[nDTTF]/I");
+  event_tree_->Branch("DTTF_wh4", event_.DTTF_wh4,"DTTF_wh4[nDTTF]/I");
+  event_tree_->Branch("DTTF_se4", event_.DTTF_se4,"DTTF_se4[nDTTF]/I");
+  event_tree_->Branch("DTTF_st4", event_.DTTF_st4,"DTTF_st4[nDTTF]/I");
 
 
   event_tree_->Branch("nCSCTF", &event_.nCSCTF);

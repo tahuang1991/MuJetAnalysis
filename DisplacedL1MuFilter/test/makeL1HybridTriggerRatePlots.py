@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160901_v2"; pu = 'PU140'; eff = False
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160906"; pu = 'PU140'; eff = False
-  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160919"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160921_v2"; pu = 'PU140'; eff = False
 
   ## extension for figures - add more?
   ext = ".png"
@@ -33,7 +33,11 @@ if __name__ == "__main__":
   #location = "/uscms_data/d3/dildick/work/GEMTriggerRateStudyAugust2016/CMSSW_6_2_0_SLHC28/src/MuJetAnalysis/DisplacedL1MuFilter/test/"
   #treeHits = addfiles(ch, dirname=location, ext="out_ana_TTI_300k_TDRStudies_backup.root")
   location = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v1/160905_155945/0000/'
+  location1 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v1/160905_155945/0001/'
+  location2 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v1/160905_155945/0002/'
   treeHits = addfiles(ch, dirname=location, ext=".root")
+  treeHits = addfiles(ch, dirname=location1, ext=".root")
+  treeHits = addfiles(ch, dirname=location2, ext=".root")
 
   targetDir = label + "/"
   
@@ -53,6 +57,9 @@ if __name__ == "__main__":
 
     def addPlotToMapTH1F_v2(name,bins):
       mapTH1F[name] = TH1F(name,"",len(bins)-1, bins)
+
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_eta00to09", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_DT1_DT4_eta00to09", myptbin)
 
     addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_eta16to22", myptbin)
     addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_eta16to22", myptbin)
@@ -107,7 +114,7 @@ if __name__ == "__main__":
 
       ch.GetEntry(k)      
       treeHits = ch
-      
+
       ## get the max value of the momentum
       pts = list(treeHits.L1Mu_pt)
  
@@ -116,6 +123,13 @@ if __name__ == "__main__":
 
       minQuality = 4
 
+      ## overall rates
+
+      ## barrel rates
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_eta00to09"], treeHits, True, 0.0, 0.9, 0, minQuality)
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_DT1_DT4_eta00to09"], treeHits, True, 0.0, 0.9, 0, minQuality, 
+                       hasMB1Cut=True, hasMB4Cut=True)
+      
       fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_eta16to22"], treeHits, True, 1.6, 2.2, 0, minQuality)
       fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_eta12to24"], treeHits, True, 1.2, 2.4, 0, minQuality)
       fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_ME1_ME2_ME3_eta12to24"], treeHits, True, 1.2, 2.4, 0, minQuality,
@@ -165,6 +179,7 @@ if __name__ == "__main__":
       fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_GE11_GE21_eta16to22"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True, hasGE11Cut=True, hasGE21Cut=True, ME11FailRate=0.1)
       
       ## displaced L1Mu trigger rate curves
+      fillDisplacedPtHistogram( mapTH1F["h_single_displaced_L1Mu_rate_MB1_MB4_eta00to09"], treeHits, True, 0.0, 0.9, 0, minQuality)
       fillDisplacedPtHistogram( mapTH1F["h_single_displaced_L1Mu_rate_ME1_ME2_ME3_eta16to22"], treeHits, True, 1.6, 2.2, 0, minQuality)
       fillDisplacedPtHistogram( mapTH1F["h_single_displaced_L1Mu_rate_ME1_ME2_ME3_eta12to24"], treeHits, True, 1.2, 2.4, 0, minQuality)
 
@@ -422,6 +437,12 @@ if __name__ == "__main__":
               mapTH1F["h_single_displaced_L1Mu_rate_ME1_ME2_ME3_eta12to24"], "Displaced L1Mu, hit in ME1, ME2, ME3, position based",
               "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1Mu3st_eta12to24")
      
+    makePlots("0.0<|#eta|<0.9",
+              mapTH1F["h_single_prompt_L1Mu_rate_eta00to09"], "Prompt L1Mu",
+              mapTH1F["h_single_prompt_L1Mu_rate_MB1_MB4_eta00to09"], "Prompt L1Mu, hit in MB1, MB4",
+              mapTH1F["h_single_displaced_L1Mu_rate_MB1_MB4_eta00to09"], "Displaced L1Mu, hit in MB1, MB4, direction based",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__DisplacedL1Mu2st_eta00to09")
+  
   displacedL1MuHybridTriggerRate()
 
 

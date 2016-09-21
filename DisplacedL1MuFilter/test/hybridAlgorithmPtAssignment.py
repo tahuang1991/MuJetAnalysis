@@ -42,7 +42,7 @@ def get_phi_dir_st2_variable_GE21_pad_size(delta_z_GE21_ME21, delta_z_ME11_ME21,
     return ge21_phi - TMath.ATan( numerator / denominator )
 
 
-def pt_barrel_direction_based_algorithm(tree, L1Mu_index, doComparatorFit):
+def pt_barrel_direction_based_algorithm(treeHits, L1Mu_index):
     returnValue = 0 
     
     
@@ -355,22 +355,21 @@ def pt_endcap_position_based_algorithm(treeHits, L1Mu_index, doComparatorFit):
     if ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3:
         parity3 = get_parity(CSCTF_isEven1, CSCTF_isEven2, CSCTF_isEven3, CSCTF_isEven4)
         etaPartition = get_eta_partition(L1Mu_eta)
-    
         deltay12, deltay23 = deltay12_deltay23(CSCTF_algo_x1, CSCTF_algo_y1, CSCTF_algo_phi1,
                                                CSCTF_algo_x2, CSCTF_algo_y2, CSCTF_algo_phi2,
                                                CSCTF_algo_x3, CSCTF_algo_y3, CSCTF_algo_phi3)
-    
-        proportionalityFactor = get_proptionality_factor(etaRanges[etaPartition], ME1ME2ME3ParityCases[parity3], doComparatorFit)
+        
+        proportionalityFactor = get_proptionality_factor_Tao(etaRanges[etaPartition], ME1ME2ME3ParityCases[parity3], doComparatorFit)
         
         DDY123 = abs(deltay23 - proportionalityFactor * deltay12)
     
         ## get the reconstruction pT value
         #print "True pt", pt, "DDY123", DDY123, 
         
-        positionPt = pt_from_DDY123_v2(DDY123, etaRanges[etaPartition], ME1ME2ME3ParityCases[parity3], doComparatorFit)
+        positionPt = pt_from_DDY123_Tao(DDY123, etaRanges[etaPartition], ME1ME2ME3ParityCases[parity3], doComparatorFit)
         #positionPt_withLCTFit =    pt_from_DDY123_v2(DDY123_withLCTFit,    etaRanges[etaPartition], ME1ME2ME3ParityCases[parity], True)
         returnValue = positionPt
-
+    
     return returnValue
 
 def pt_endcap_hybrid_algorithm(tree, L1Mu_index, L1Mu_CSCTF_index, doComparatorFit):

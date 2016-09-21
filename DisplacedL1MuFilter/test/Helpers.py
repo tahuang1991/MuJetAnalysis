@@ -954,9 +954,9 @@ def get_proptionality_factor(eta, parity, doFit):
 def get_proptionality_factor_Tao(eta, parity, doFit):
   if eta in ['12to14','14to16']:
     if parity is 'ooo': return 0.635700 #1
-    if parity is 'eoo': return 0.45     #3
+    if parity is 'eoo': return 0.525    #3
     if parity is 'eee': return 1.001000 #2
-    if parity is 'oee': return 1.4      #0
+    if parity is 'oee': return 1.279      #0
   if eta in ['16to18','18to20','20to22','22to24']:
     if parity is 'ooo': return 0.353000
     if parity is 'eoo': return 0.310000
@@ -969,15 +969,15 @@ def pt_from_DDY123_Tao(DDY123, eta, parity, doFit):
   pt_range = [2.0, 3.0, 4.0, 5.0, 7., 10., 15., 20., 30., 40.]
   if eta in '12to14':
     if parity is 'ooo': DDY123_range = [22.328000, 21.324000, 15.827000, 7.965000, 3.957500, 2.458800, 1.513750, 1.184231, 0.920385, 0.772333]
-    if parity is 'eoo': DDY123_range = [22.328000, 21.324000, 15.827000, 7.965000, 3.957500, 2.458800, 1.513750, 1.184231, 0.920385, 0.772333]  ## set this same as ooo
+    if parity is 'eoo': DDY123_range = [30.000000,21.218000,17.509000,7.974000,3.986000,3.030000,1.442000,1.345000,0.964000,1.050000] 
     if parity is 'eee': DDY123_range = [39.496000, 36.456000, 29.482000, 16.108000, 8.219333, 4.896000, 2.985833, 2.211182, 1.532800, 1.280222]
-    if parity is 'oee': DDY123_range = [39.496000, 36.456000, 29.482000, 16.108000, 8.219333, 4.896000, 2.985833, 2.211182, 1.532800, 1.280222] ## set this same as eee
+    if parity is 'oee': DDY123_range = [35.,28.185000,27.864000,12.517000,6.794000,4.280000,2.725000,2.007000,1.404000,1.227000]
 
   if eta is '14to16':
     if parity is 'ooo': DDY123_range = [18.444000, 16.404000, 9.447000, 5.219000, 3.092500, 1.986684, 1.316571, 1.002167, 0.795053, 0.678313]
-    if parity is 'eoo': DDY123_range = [18.444000, 16.404000, 9.447000, 5.219000, 3.092500, 1.986684, 1.316571, 1.002167, 0.795053, 0.678313]   ## set this same as ooo
+    if parity is 'eoo': DDY123_range = [16.420000,14.537000,8.994000,5.373000,3.238000,2.129500,1.476000,1.058000,0.832000,0.579000]  
     if parity is 'eee': DDY123_range = [35.217000, 31.514000, 17.737000, 10.534000, 6.225500, 3.964500, 2.572125, 1.909250, 1.350200, 1.131909]
-    if parity is 'oee': DDY123_range = [35.217000, 31.514000, 17.737000, 10.534000, 6.225500, 3.964500, 2.572125, 1.909250, 1.350200, 1.131909] ## set this same as eee
+    if parity is 'oee': DDY123_range = [23.340000,20.437000,13.771000,8.995000,5.285000,3.428333,2.180000,1.811000,1.300000,1.078000]
 
   if eta is '16to18':
     if parity is 'ooo': DDY123_range = [24.157000, 17.957000, 7.858333, 4.944000, 3.067000, 1.972000, 1.358000, 1.038333, 0.828000, 0.702500]
@@ -1004,10 +1004,17 @@ def pt_from_DDY123_Tao(DDY123, eta, parity, doFit):
     if parity is 'oee': DDY123_range = [6.031000,3.555000,2.411000,1.682000,1.190500,0.815000,0.621100,0.534000,0.496250,0.495000]
 
   found_pt = 0
-  for ddy123, pt in zip(DDY123_range, pt_range):
-    if DDY123 < ddy123:
-      found_pt = pt
-      break
+  ## in case the DDY123 is larger than the first value, assign it pt = 2 GeV
+  if DDY123 > DDY123_range[0]:
+    found_pt = 2
+  elif DDY123 < DDY123_range[-1]:
+    found_pt = 40
+  else:
+    for ii in range(0,len(DDY123_range)):
+      if DDY123 > DDY123_range[ii]:
+        found_pt = pt_range[ii-1]
+        break
+
   return found_pt
 
 #______________________________________________________________________________               

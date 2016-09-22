@@ -42,11 +42,17 @@ def get_phi_dir_st2_variable_GE21_pad_size(delta_z_GE21_ME21, delta_z_ME11_ME21,
     return ge21_phi - TMath.ATan( numerator / denominator )
 
 
-def pt_barrel_direction_based_algorithm(treeHits, L1Mu_index):
+def pt_barrel_direction_based_algorithm(treeHits, 
+                                        L1Mu_index,                           
+                                        hasMB1Cut=False,
+                                        hasMB2Cut=False,
+                                        hasMB3Cut=False,
+                                        hasMB4Cut=False):
     returnValue = 0 
     
     
     ## L1Mu variables
+    L1Mu_pt = treeHits.L1Mu_pt[L1Mu_index]
     L1Mu_eta = treeHits.L1Mu_eta[L1Mu_index]
     L1Mu_bx = treeHits.L1Mu_bx[L1Mu_index]
     L1Mu_quality = treeHits.L1Mu_quality[L1Mu_index]
@@ -70,6 +76,11 @@ def pt_barrel_direction_based_algorithm(treeHits, L1Mu_index):
     ok_DTTF_st2 = DTTF_phib2 != 99 and DTTF_phi2 != 99 
     ok_DTTF_st3 = DTTF_phib3 != 99 and DTTF_phi3 != 99
     ok_DTTF_st4 = DTTF_phib4 != 99 and DTTF_phi4 != 99
+
+    if hasMB1Cut and not ok_DTTF_st1: return -1
+    if hasMB2Cut and not ok_DTTF_st2: return -1
+    if hasMB3Cut and not ok_DTTF_st3: return -1
+    if hasMB4Cut and not ok_DTTF_st4: return -1
 
     ## calculate the real bending
     DTTF_phib1 = normalizedPhi(DTTF_phib1 + DTTF_phi1)
@@ -106,6 +117,7 @@ def pt_barrel_direction_based_algorithm(treeHits, L1Mu_index):
         if ok_DTTF_st2 and ok_DTTF_st3: DT_type = 'DT2_DT3'
         if ok_DTTF_st3 and ok_DTTF_st4: DT_type = 'DT3_DT4'
 
+    
     ## select the dPhi
     DPhi = -1
     if DT_type is 'DT1_DT2': DPhi = abs_DTTF_phib1_phib2
@@ -116,8 +128,7 @@ def pt_barrel_direction_based_algorithm(treeHits, L1Mu_index):
     if DT_type is 'DT3_DT4': DPhi = abs_DTTF_phib3_phib4
 
     ## get the pT for this muon
-    if DPhi == -1: returnValue = -1
-    else: returnValue = pt_from_DPhi_DT(DPhi, DT_type)
+    returnValue = pt_from_DPhi_DT(DPhi, DT_type)
 
     return returnValue
 

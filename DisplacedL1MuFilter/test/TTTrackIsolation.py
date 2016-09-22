@@ -275,10 +275,10 @@ def fillDisplacedPtHistogram(histogram,
                                                etaCutMax, 
                                                stubCut, 
                                                qualityCut,
-                                               hasMB1Cut=False,
-                                               hasMB2Cut=False,
-                                               hasMB3Cut=False,
-                                               hasMB4Cut=False)
+                                               hasMB1Cut,
+                                               hasMB2Cut,
+                                               hasMB3Cut,
+                                               hasMB4Cut)
     if (displaced_L1Mu_pt>0): histogram.Fill(displaced_L1Mu_pt)
 
 
@@ -319,6 +319,9 @@ def getMaxDisplacedPtEvent(treeHits,
         is_CSC_Muon =   (1.2 <= abs(L1Mu_eta) and abs(L1Mu_eta) <= 2.4) and L1Mu_CSCTF_index != -1 
         is_DT_Muon =    (0.0 <= abs(L1Mu_eta) and abs(L1Mu_eta) <= 0.9) and L1Mu_DTTF_index != -1 
         is_DTCSC_Muon = (0.9 <= abs(L1Mu_eta) and abs(L1Mu_eta) <= 1.2) and (L1Mu_DTTF_index != -1 or L1Mu_CSCTF_index != -1)
+
+        ## eta cut
+        if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue
 
         ## CSC quantities
         has_CSC_ME1 = False
@@ -364,36 +367,32 @@ def getMaxDisplacedPtEvent(treeHits,
             else:                has_actual_CSC_ME2 = (not is_CSC_ME21_disabled) 
             
         #print L1Mu_DTTF_index
-        if L1Mu_DTTF_index != -1:
-            has_DT_MB1 = treeHits.DTTF_phi1[L1Mu_DTTF_index] != 99
-            has_DT_MB2 = treeHits.DTTF_phi2[L1Mu_DTTF_index] != 99
-            has_DT_MB3 = treeHits.DTTF_phi3[L1Mu_DTTF_index] != 99
-            has_DT_MB4 = treeHits.DTTF_phi4[L1Mu_DTTF_index] != 99
+        if is_DT_Muon:
+            has_DT_MB1 = treeHits.DTTF_phi1[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib1[L1Mu_DTTF_index] != 99
+            has_DT_MB2 = treeHits.DTTF_phi2[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib2[L1Mu_DTTF_index] != 99
+            has_DT_MB3 = treeHits.DTTF_phi3[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib3[L1Mu_DTTF_index] != 99
+            has_DT_MB4 = treeHits.DTTF_phi4[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib4[L1Mu_DTTF_index] != 99
 
             if hasMB1Cut and not has_DT_MB1: continue
             if hasMB2Cut and not has_DT_MB2: continue
             if hasMB3Cut and not has_DT_MB3: continue
             if hasMB4Cut and not has_DT_MB4: continue
-
-
         
-        ## eta cut
-        if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue
-
-        #if not (has_actual_CSC_ME1 and has_actual_CSC_ME2 and has_CSC_ME3): continue
-
         ## quality cut
         if L1Mu_quality < qualityCut: continue
 
         ## BX cut
         if abs(L1Mu_bx)>0 and doBXCut: continue
         
-
         #print L1Mu_CSCTF_index
         if is_CSC_Muon:
             DisplacedL1Mu_pt = pt_endcap_position_based_algorithm(treeHits, i, True)
         elif is_DT_Muon:
-            DisplacedL1Mu_pt = pt_barrel_direction_based_algorithm(treeHits, i)
+            DisplacedL1Mu_pt = pt_barrel_direction_based_algorithm(treeHits, i, 
+                                                                   hasMB1Cut, 
+                                                                   hasMB2Cut, 
+                                                                   hasMB3Cut, 
+                                                                   hasMB4Cut)
         else:
             DisplacedL1Mu_pt = -1
         

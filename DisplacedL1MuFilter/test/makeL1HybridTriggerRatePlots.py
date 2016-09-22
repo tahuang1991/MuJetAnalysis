@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160901_v2"; pu = 'PU140'; eff = False
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160906"; pu = 'PU140'; eff = False
-  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160921_v2"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160921_v3"; pu = 'PU140'; eff = False
 
   ## extension for figures - add more?
   ext = ".png"
@@ -59,7 +59,7 @@ if __name__ == "__main__":
       mapTH1F[name] = TH1F(name,"",len(bins)-1, bins)
 
     addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_eta00to09", myptbin)
-    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_DT1_DT4_eta00to09", myptbin)
+    addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_MB1_MB4_eta00to09", myptbin)
 
     addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_eta16to22", myptbin)
     addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_2_stubs_eta16to22", myptbin)
@@ -127,7 +127,7 @@ if __name__ == "__main__":
 
       ## barrel rates
       fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_eta00to09"], treeHits, True, 0.0, 0.9, 0, minQuality)
-      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_DT1_DT4_eta00to09"], treeHits, True, 0.0, 0.9, 0, minQuality, 
+      fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_MB1_MB4_eta00to09"], treeHits, True, 0.0, 0.9, 0, minQuality, 
                        hasMB1Cut=True, hasMB4Cut=True)
       
       fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_eta16to22"], treeHits, True, 1.6, 2.2, 0, minQuality)

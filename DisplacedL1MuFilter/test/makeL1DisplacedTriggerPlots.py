@@ -55,7 +55,7 @@ if __name__ == "__main__":
   ch = addfiles(ch, dirname=dirname3)
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160920"
+  label = "DisplacedL1MuTrigger_20160921"
   targetDir = label + "/"
   
   verbose = False
@@ -113,6 +113,8 @@ if __name__ == "__main__":
       mapTH2F[name] = TH2F(name,name,nBin1,minBin1,maxBin1,nBin2,minBin2,maxBin2)
     def addPlotToMapTH2F_v2(name,binsX,binsY):
       mapTH2F[name] = TH2F(name,name,len(binsX)-1, binsX, len(binsY)-1, binsY)
+    def addPlotToMapTH2F_v3(name,binsX,nBin2,minBin2,maxBin2):
+      mapTH2F[name] = TH2F(name,name,len(binsX)-1, binsX, nBin2,minBin2,maxBin2)
 
     ## ranges
     DTCombinations = ['DT1_DT2','DT1_DT3','DT1_DT4',
@@ -437,30 +439,30 @@ if __name__ == "__main__":
     abs_phiDTst2_phiDTst4 = TH1F("abs_phiDTst2_phiDTst4","", 100,-1.,1.)
     abs_phiDTst3_phiDTst4 = TH1F("abs_phiDTst3_phiDTst4","", 100,-1.,1.)
 
-    GenMuPt_vs_phiDTst1_phiDTst2 = TH2F("GenMuPt_vs_phiDTst1_phiDTst2","", 60,0.,60,100,-1.,1.)
-    GenMuPt_vs_phiDTst1_phiDTst3 = TH2F("GenMuPt_vs_phiDTst1_phiDTst3","", 60,0.,60,100,-1.,1.)
-    GenMuPt_vs_phiDTst1_phiDTst4 = TH2F("GenMuPt_vs_phiDTst1_phiDTst4","", 60,0.,60,100,-1.,1.)
-    GenMuPt_vs_phiDTst2_phiDTst3 = TH2F("GenMuPt_vs_phiDTst2_phiDTst3","", 60,0.,60,100,-1.,1.)
-    GenMuPt_vs_phiDTst2_phiDTst4 = TH2F("GenMuPt_vs_phiDTst2_phiDTst4","", 60,0.,60,100,-1.,1.)
-    GenMuPt_vs_phiDTst3_phiDTst4 = TH2F("GenMuPt_vs_phiDTst3_phiDTst4","", 60,0.,60,100,-1.,1.)
+    GenMuPt_vs_phiDTst1_phiDTst2 = TH2F("GenMuPt_vs_phiDTst1_phiDTst2","", len(ptbins)-1,ptbins,100,-1.,1.)
+    GenMuPt_vs_phiDTst1_phiDTst3 = TH2F("GenMuPt_vs_phiDTst1_phiDTst3","", len(ptbins)-1,ptbins,100,-1.,1.)
+    GenMuPt_vs_phiDTst1_phiDTst4 = TH2F("GenMuPt_vs_phiDTst1_phiDTst4","", len(ptbins)-1,ptbins,100,-1.,1.)
+    GenMuPt_vs_phiDTst2_phiDTst3 = TH2F("GenMuPt_vs_phiDTst2_phiDTst3","", len(ptbins)-1,ptbins,100,-1.,1.)
+    GenMuPt_vs_phiDTst2_phiDTst4 = TH2F("GenMuPt_vs_phiDTst2_phiDTst4","", len(ptbins)-1,ptbins,100,-1.,1.)
+    GenMuPt_vs_phiDTst3_phiDTst4 = TH2F("GenMuPt_vs_phiDTst3_phiDTst4","", len(ptbins)-1,ptbins,100,-1.,1.)
 
-    GenMuPt_vs_abs_phiDTst1_phiDTst2 = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst2","", 60,0.,60,100,0.,1.)
-    GenMuPt_vs_abs_phiDTst1_phiDTst3 = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst3","", 60,0.,60,100,0.,1.)
-    GenMuPt_vs_abs_phiDTst1_phiDTst4 = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst4","", 60,0.,60,100,0.,1.)
-    GenMuPt_vs_abs_phiDTst2_phiDTst3 = TH2F("GenMuPt_vs_abs_phiDTst2_phiDTst3","", 60,0.,60,100,0.,1.)
-    GenMuPt_vs_abs_phiDTst2_phiDTst4 = TH2F("GenMuPt_vs_abs_phiDTst2_phiDTst4","", 60,0.,60,100,0.,1.)
-    GenMuPt_vs_abs_phiDTst3_phiDTst4 = TH2F("GenMuPt_vs_abs_phiDTst3_phiDTst4","", 60,0.,60,100,0.,1.)
+    GenMuPt_vs_abs_phiDTst1_phiDTst2 = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst2","", len(ptbins)-1,ptbins,100,0.,1.)
+    GenMuPt_vs_abs_phiDTst1_phiDTst3 = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst3","", len(ptbins)-1,ptbins,100,0.,1.)
+    GenMuPt_vs_abs_phiDTst1_phiDTst4 = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst4","", len(ptbins)-1,ptbins,100,0.,1.)
+    GenMuPt_vs_abs_phiDTst2_phiDTst3 = TH2F("GenMuPt_vs_abs_phiDTst2_phiDTst3","", len(ptbins)-1,ptbins,100,0.,1.)
+    GenMuPt_vs_abs_phiDTst2_phiDTst4 = TH2F("GenMuPt_vs_abs_phiDTst2_phiDTst4","", len(ptbins)-1,ptbins,100,0.,1.)
+    GenMuPt_vs_abs_phiDTst3_phiDTst4 = TH2F("GenMuPt_vs_abs_phiDTst3_phiDTst4","", len(ptbins)-1,ptbins,100,0.,1.)
 
-    GenMuPt_vs_abs_phiDTst1_phiDTst2_inv = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst2_inv","", 60,0.,60.,75,0.,150)
-    GenMuPt_vs_abs_phiDTst1_phiDTst3_inv = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst3_inv","", 60,0.,60.,75,0.,150)
-    GenMuPt_vs_abs_phiDTst1_phiDTst4_inv = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst4_inv","", 60,0.,60.,75,0.,150)
-    GenMuPt_vs_abs_phiDTst2_phiDTst3_inv = TH2F("GenMuPt_vs_abs_phiDTst2_phiDTst3_inv","", 60,0.,60.,75,0.,150)
-    GenMuPt_vs_abs_phiDTst2_phiDTst4_inv = TH2F("GenMuPt_vs_abs_phiDTst2_phiDTst4_inv","", 60,0.,60.,75,0.,150)
-    GenMuPt_vs_abs_phiDTst3_phiDTst4_inv = TH2F("GenMuPt_vs_abs_phiDTst3_phiDTst4_inv","", 60,0.,60.,75,0.,150)
+    GenMuPt_vs_abs_phiDTst1_phiDTst2_inv = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst2_inv","", len(ptbins)-1,ptbins,75,0.,150)
+    GenMuPt_vs_abs_phiDTst1_phiDTst3_inv = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst3_inv","", len(ptbins)-1,ptbins,75,0.,150)
+    GenMuPt_vs_abs_phiDTst1_phiDTst4_inv = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst4_inv","", len(ptbins)-1,ptbins,75,0.,150)
+    GenMuPt_vs_abs_phiDTst2_phiDTst3_inv = TH2F("GenMuPt_vs_abs_phiDTst2_phiDTst3_inv","", len(ptbins)-1,ptbins,75,0.,150)
+    GenMuPt_vs_abs_phiDTst2_phiDTst4_inv = TH2F("GenMuPt_vs_abs_phiDTst2_phiDTst4_inv","", len(ptbins)-1,ptbins,75,0.,150)
+    GenMuPt_vs_abs_phiDTst3_phiDTst4_inv = TH2F("GenMuPt_vs_abs_phiDTst3_phiDTst4_inv","", len(ptbins)-1,ptbins,75,0.,150)
 
-    GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy0to5 = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy0to5","", 60,0.,60.,75,0.,150)
-    GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy5to50 = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy5to50","", 60,0.,60.,75,0.,150)
-    GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100 = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100","", 60,0.,60.,75,0.,150)
+    GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy0to5 = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy0to5","", len(ptbins)-1,ptbins,75,0.,150)
+    GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy5to50 = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy5to50","", len(ptbins)-1,ptbins,75,0.,150)
+    GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100 = TH2F("GenMuPt_vs_abs_phiDTst1_phiDTst4_inv_dxy50to100","", len(ptbins)-1,ptbins,75,0.,150)
 
     GenMuPt_DT1_DT2 = TH1F("GenMuPt_DT1_DT2","", len(ptbins)-1,ptbins)
     GenMuPt_DT1_DT3 = TH1F("GenMuPt_DT1_DT3","", len(ptbins)-1,ptbins)
@@ -3263,8 +3265,30 @@ if __name__ == "__main__":
           print "    DDY123_dict['eta" + qq + "_" + pp + "_withLCTFit'] = [", lut2[2].GetFunction("g1").GetParameter("p0"), ", ", lut2[2].GetFunction("g1").GetParameter("p1"), "]"
 
     ## plots with DTs
-    produceDTPlots = False
+    produceDTPlots = True
     if produceDTPlots:
+      generateLUT = True
+      if generateLUT:
+          lut1 = get1DHistogramFractionY(GenMuPt_vs_phiDTst1_phiDTst2, .90)
+          print "    DPhi_dict['DT1_DT2'] = ", lut1[0]
+          print "    DPhi_dict['DT1_DT2'] = ", lut1[1]
+          lut1 = get1DHistogramFractionY(GenMuPt_vs_phiDTst1_phiDTst3, .90)
+          print "    DPhi_dict['DT1_DT3'] = ", lut1[0]
+          print "    DPhi_dict['DT1_DT3'] = ", lut1[1]
+          lut1 = get1DHistogramFractionY(GenMuPt_vs_phiDTst1_phiDTst4, .90)
+          print "    DPhi_dict['DT1_DT4'] = ", lut1[0]
+          print "    DPhi_dict['DT1_DT4'] = ", lut1[1]
+          lut1 = get1DHistogramFractionY(GenMuPt_vs_phiDTst2_phiDTst3, .90)
+          print "    DPhi_dict['DT2_DT3'] = ", lut1[0]
+          print "    DPhi_dict['DT2_DT3'] = ", lut1[1]
+          lut1 = get1DHistogramFractionY(GenMuPt_vs_phiDTst2_phiDTst4, .90)
+          print "    DPhi_dict['DT2_DT4'] = ", lut1[0]
+          print "    DPhi_dict['DT2_DT4'] = ", lut1[1]
+          lut1 = get1DHistogramFractionY(GenMuPt_vs_phiDTst3_phiDTst4, .90)
+          print "    DPhi_dict['DT3_DT4'] = ", lut1[0]
+          print "    DPhi_dict['DT3_DT4'] = ", lut1[1]
+
+
       makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst2, targetDir + "GenMuPt_vs_phiDTst1_phiDTst2.png", ";p_{T} [GeV]; #Delta#Phi_{12}", "COLZ")
       makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst3, targetDir + "GenMuPt_vs_phiDTst1_phiDTst3.png", ";p_{T} [GeV]; #Delta#Phi_{13}", "COLZ")
       makeSimplePlot(GenMuPt_vs_phiDTst1_phiDTst4, targetDir + "GenMuPt_vs_phiDTst1_phiDTst4.png", ";p_{T} [GeV]; #Delta#Phi_{14}", "COLZ")

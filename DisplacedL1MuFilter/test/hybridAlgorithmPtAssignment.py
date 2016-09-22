@@ -93,14 +93,32 @@ def pt_barrel_direction_based_algorithm(treeHits, L1Mu_index):
     abs_DTTF_phib3_phib4 = abs(DTTF_phib3_phib4)
 
     L1Mu_DT_status = L1Mu_status(DTTF_phib1, DTTF_phib2, DTTF_phib3, DTTF_phib4)
-
-    if ok_DTTF_st1 and ok_DTTF_st4:
-        returnValue = 0
-        if DTTF_phib1 != DTTF_phib4:
-            returnValue = ( ( 1./abs_DTTF_phib1_phib4) + 3.86872357483  ) /  1.48212936934
-        else:
-            returnValue = 140 ## max pT  
     
+    ## decide the type of barrel muon!
+    DT_type = ''
+    if ok_DTTF_st1 and ok_DTTF_st4: DT_type = 'DT1_DT4'
+    else:
+      if (ok_DTTF_st1 and ok_DTTF_st3) or (ok_DTTF_st2 and ok_DTTF_st4):
+        if ok_DTTF_st1 and ok_DTTF_st3: DT_type = 'DT1_DT3'
+        if ok_DTTF_st2 and ok_DTTF_st4: DT_type = 'DT2_DT4'
+      else:
+        if ok_DTTF_st1 and ok_DTTF_st2: DT_type = 'DT1_DT2'
+        if ok_DTTF_st2 and ok_DTTF_st3: DT_type = 'DT2_DT3'
+        if ok_DTTF_st3 and ok_DTTF_st4: DT_type = 'DT3_DT4'
+
+    ## select the dPhi
+    DPhi = -1
+    if DT_type is 'DT1_DT2': DPhi = abs_DTTF_phib1_phib2
+    if DT_type is 'DT1_DT3': DPhi = abs_DTTF_phib1_phib3
+    if DT_type is 'DT1_DT4': DPhi = abs_DTTF_phib1_phib4
+    if DT_type is 'DT2_DT3': DPhi = abs_DTTF_phib2_phib3
+    if DT_type is 'DT2_DT4': DPhi = abs_DTTF_phib2_phib4
+    if DT_type is 'DT3_DT4': DPhi = abs_DTTF_phib3_phib4
+
+    ## get the pT for this muon
+    if DPhi == -1: returnValue = -1
+    else: returnValue = pt_from_DPhi_DT(DPhi, DT_type)
+
     return returnValue
 
 def pt_endcap_direction_based_algorithm(tree, L1Mu_index, doComparatorFit):

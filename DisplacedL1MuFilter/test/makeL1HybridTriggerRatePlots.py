@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160901_v2"; pu = 'PU140'; eff = False
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160906"; pu = 'PU140'; eff = False
-  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160921_v4"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160924"; pu = 'PU140'; eff = False
 
   ## extension for figures - add more?
   ext = ".png"
@@ -129,12 +129,12 @@ if __name__ == "__main__":
       fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_eta00to09"], treeHits, True, 0.0, 0.9, 0, minQuality)
       fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_MB1_MB4_eta00to09"], treeHits, True, 0.0, 0.9, 0, minQuality, 
                        hasMB1Cut=True, hasMB4Cut=True)
-      
+
       fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_eta16to22"], treeHits, True, 1.6, 2.2, 0, minQuality)
       fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_eta12to24"], treeHits, True, 1.2, 2.4, 0, minQuality)
       fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_ME1_ME2_ME3_eta12to24"], treeHits, True, 1.2, 2.4, 0, minQuality,
                        hasME1Cut=True, hasME2Cut=True, hasME3Cut=True)
-
+      
       fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_2_stubs_eta16to22"], treeHits,True, 1.6, 2.2, 2, minQuality)
       fillPtHistogram( mapTH1F["h_single_prompt_L1Mu_rate_3_stubs_eta16to22"], treeHits,True, 1.6, 2.2, 3, minQuality)
 
@@ -182,7 +182,7 @@ if __name__ == "__main__":
       fillDisplacedPtHistogram( mapTH1F["h_single_displaced_L1Mu_rate_MB1_MB4_eta00to09"], treeHits, True, 0.0, 0.9, 0, minQuality, hasMB1Cut=True, hasMB4Cut=True)
       fillDisplacedPtHistogram( mapTH1F["h_single_displaced_L1Mu_rate_ME1_ME2_ME3_eta16to22"], treeHits, True, 1.6, 2.2, 0, minQuality)
       fillDisplacedPtHistogram( mapTH1F["h_single_displaced_L1Mu_rate_ME1_ME2_ME3_eta12to24"], treeHits, True, 1.2, 2.4, 0, minQuality)
-
+      
     def makePlots(legendTitle,
                   h1, h1Legend,
                   h2, h2Legend,
@@ -241,15 +241,15 @@ if __name__ == "__main__":
 
       h1 = getRatePtHistogram(treeHits, h1)
       h1.SetFillColor(kRed)
-      h1.Draw("e3same")
+      h1.Draw("e3 same")
       
       h2 = getRatePtHistogram(treeHits, h2)
       h2.SetFillColor(kViolet)
-      h2.Draw("e3same")
+      h2.Draw("e3 same")
 
       h3 = getRatePtHistogram(treeHits, h3)
       h3.SetFillColor(kBlue)
-      h3.Draw("e3same")
+      h3.Draw("e3 same")
 
       latex = applyTdrStyle()      
 

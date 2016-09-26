@@ -233,6 +233,10 @@ def getMaxPromptPtEvent(treeHits,
             if hasMB3Cut and not has_DT_MB3: continue
             if hasMB4Cut and not has_DT_MB4: continue
             
+        ## muon must be DT or CSC (no RPC)
+        if not (is_DT_Muon or is_CSC_Muon): 
+            continue
+
         if False:
             print "\t\tMatched: L1Mu", "pt", L1Mu_pt, "eta", L1Mu_eta, 
             print "phi", L1Mu_phi, "Quality", L1Mu_quality, "L1mu_bx", L1Mu_bx,

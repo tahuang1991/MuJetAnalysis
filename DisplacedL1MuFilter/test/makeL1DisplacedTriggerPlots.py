@@ -55,7 +55,7 @@ if __name__ == "__main__":
   ch = addfiles(ch, dirname=dirname3)
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160925"
+  label = "DisplacedL1MuTrigger_20160925_v2"
   targetDir = label + "/"
   
   verbose = False
@@ -324,7 +324,6 @@ if __name__ == "__main__":
         addPlotToMapTH2F("GenMuPt_vs_inv_DDY123_eta" + qq + "_" + pp + "_withLCTFit", 30,0.,60.,100,0.,10)
         addPlotToMapTH2F("GenMuPt_vs_DDY123_eta" + qq + "_" + pp + "_withLCTFit", 30,0.,60.,100,0.,20)
 
-    
     for pp in dxyRanges:
       addPlotToMapTH1F_v2("GenMuPt_ME1_ME2_ME3_eta12to24" + pp, ptbins)
       addPlotToMapTH1F_v2("GenMuPt_ME1_ME2_ME3_eta12to16" + pp, ptbins)
@@ -337,12 +336,10 @@ if __name__ == "__main__":
         addPlotToMapTH1F_v2("Prompt_L1MuPt" + qq + "_GenMuPt_ME1_ME2_ME3_eta12to24" + pp, ptbins)
         addPlotToMapTH1F_v2("Prompt_L1MuPt" + qq + "_GenMuPt_ME1_ME2_ME3_eta16to22" + pp, ptbins)
         addPlotToMapTH1F_v2("Prompt_L1MuPt" + qq + "_GenMuPt_ME1_ME2_ME3_eta12to16" + pp, ptbins)
-        addPlotToMapTH1F_v2("Prompt_L1MuPt" + qq + "_GenMuPt_ME1_ME2_ME3_eta22to24" + pp, ptbins)
  
         addPlotToMapTH1F_v2("Prompt_L1MuPt" + qq + "_GenMuPt_eta12to24" + pp, ptbins)
         addPlotToMapTH1F_v2("Prompt_L1MuPt" + qq + "_GenMuPt_eta16to22" + pp, ptbins)
         addPlotToMapTH1F_v2("Prompt_L1MuPt" + qq + "_GenMuPt_eta12to16" + pp, ptbins)
-        addPlotToMapTH1F_v2("Prompt_L1MuPt" + qq + "_GenMuPt_eta22to24" + pp, ptbins)
 
         addPlotToMapTH1F_v2("Displaced_L1MuPt" + qq + "_GenMuPt_ME1_ME2_ME3_eta12to24" + pp + "_withoutLCTFit", ptbins)
         addPlotToMapTH1F_v2("Displaced_L1MuPt" + qq + "_GenMuPt_ME1_ME2_ME3_eta12to24" + pp + "_withLCTFit", ptbins)
@@ -353,6 +350,8 @@ if __name__ == "__main__":
         for rr in etaRanges:
           addPlotToMapTH1F_v2("Displaced_L1MuPt" + qq + "_GenMuPt_ME1_ME2_ME3_eta" + rr + pp + "_withoutLCTFit", ptbins)
           addPlotToMapTH1F_v2("Displaced_L1MuPt" + qq + "_GenMuPt_ME1_ME2_ME3_eta" + rr + pp + "_withLCTFit", ptbins)
+          addPlotToMapTH1F_v2("Prompt_L1MuPt" + qq + "_GenMuPt_ME1_ME2_ME3_eta" + rr + pp, ptbins)
+
 
     ##hybrid algorithm
     for pp in dxyRanges:
@@ -671,6 +670,7 @@ if __name__ == "__main__":
     Displaced_L1MuPt10_GenMuPt_dxy50to100_endcap = TH1F("Displaced_L1MuPt10_GenMuPt_dxy50to100_endcap","", len(ptbins)-1,ptbins)
     Displaced_L1MuPt15_GenMuPt_dxy50to100_endcap = TH1F("Displaced_L1MuPt15_GenMuPt_dxy50to100_endcap","", len(ptbins)-1,ptbins)
     Displaced_L1MuPt20_GenMuPt_dxy50to100_endcap = TH1F("Displaced_L1MuPt20_GenMuPt_dxy50to100_endcap","", len(ptbins)-1,ptbins)
+    
 
     print "Start run on events..."
     for k in range(0,treeHits.GetEntries()):
@@ -865,6 +865,7 @@ if __name__ == "__main__":
               if dxy <= 5:                mapTH1F["Prompt_L1MuPt20_GenMuPt_eta12to24_dxy0to5"].Fill(pt)
               if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt20_GenMuPt_eta12to24_dxy5to50"].Fill(pt)
               if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt20_GenMuPt_eta12to24_dxy50to100"].Fill(pt)
+
 
             if (1.6 < abs(eta_prop) and abs(eta_prop) < 2.2):
               if L1Mu_pt>=3:
@@ -2419,6 +2420,7 @@ if __name__ == "__main__":
                   if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta12to24_dxy50to100"].Fill(pt)
 
 
+
                 if (1.2 <= abs(eta_prop) and abs(eta_prop) < 1.6):
                   if L1Mu_pt>=3:
                     mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta12to16"].Fill(pt)
@@ -2485,23 +2487,217 @@ if __name__ == "__main__":
                     if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta16to22_dxy50to100"].Fill(pt)
 
 
+                ## plots per small eta slice
+                if (1.2 <= abs(eta_prop) and abs(eta_prop) < 1.4):
+                  if L1Mu_pt>=3:
+                    mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta12to14"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta12to14_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta12to14_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta12to14_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=5:
+                    mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta12to14"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta12to14_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta12to14_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta12to14_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=7:
+                    mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta12to14"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta12to14_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta12to14_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta12to14_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=10:
+                    mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta12to14"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta12to14_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta12to14_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta12to14_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=15:
+                    mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta12to14"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta12to14_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta12to14_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta12to14_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=20:
+                    mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta12to14"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta12to14_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta12to14_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta12to14_dxy50to100"].Fill(pt)
 
 
+                if (1.4 <= abs(eta_prop) and abs(eta_prop) < 1.6):
+                  if L1Mu_pt>=3:
+                    mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta14to16"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta14to16_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta14to16_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta14to16_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=5:
+                    mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta14to16"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta14to16_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta14to16_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta14to16_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=7:
+                    mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta14to16"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta14to16_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta14to16_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta14to16_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=10:
+                    mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta14to16"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta14to16_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta14to16_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta14to16_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=15:
+                    mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta14to16"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta14to16_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta14to16_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta14to16_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=20:
+                    mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta14to16"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta14to16_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta14to16_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta14to16_dxy50to100"].Fill(pt)
 
+
+                if (1.6 <= abs(eta_prop) and abs(eta_prop) < 1.8):
+                  if L1Mu_pt>=3:
+                    mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta16to18"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta16to18_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta16to18_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta16to18_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=5:
+                    mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta16to18"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta16to18_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta16to18_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta16to18_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=7:
+                    mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta16to18"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta16to18_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta16to18_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta16to18_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=10:
+                    mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta16to18"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta16to18_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta16to18_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta16to18_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=15:
+                    mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta16to18"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta16to18_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta16to18_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta16to18_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=20:
+                    mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta16to18"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta16to18_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta16to18_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta16to18_dxy50to100"].Fill(pt)
+
+
+                if (1.8 <= abs(eta_prop) and abs(eta_prop) < 2.0):
+                  if L1Mu_pt>=3:
+                    mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta18to20"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta18to20_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta18to20_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta18to20_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=5:
+                    mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta18to20"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta18to20_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta18to20_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta18to20_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=7:
+                    mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta18to20"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta18to20_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta18to20_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta18to20_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=10:
+                    mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta18to20"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta18to20_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta18to20_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta18to20_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=15:
+                    mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta18to20"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta18to20_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta18to20_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta18to20_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=20:
+                    mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta18to20"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta18to20_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta18to20_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta18to20_dxy50to100"].Fill(pt)
+
+
+                if (2.0 <= abs(eta_prop) and abs(eta_prop) < 2.2):
+                  if L1Mu_pt>=3:
+                    mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta20to22"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta20to22_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta20to22_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta20to22_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=5:
+                    mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta20to22"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta20to22_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta20to22_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta20to22_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=7:
+                    mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta20to22"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta20to22_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta20to22_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta20to22_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=10:
+                    mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta20to22"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta20to22_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta20to22_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta20to22_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=15:
+                    mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta20to22"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta20to22_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta20to22_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta20to22_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=20:
+                    mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta20to22"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta20to22_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta20to22_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta20to22_dxy50to100"].Fill(pt)
+
+
+                if (2.2 <= abs(eta_prop) and abs(eta_prop) < 2.4):
+                  if L1Mu_pt>=3:
+                    mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta22to24"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta22to24_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta22to24_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt3_GenMuPt_ME1_ME2_ME3_eta22to24_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=5:
+                    mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta22to24"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta22to24_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta22to24_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt5_GenMuPt_ME1_ME2_ME3_eta22to24_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=7:
+                    mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta22to24"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta22to24_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta22to24_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt7_GenMuPt_ME1_ME2_ME3_eta22to24_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=10:
+                    mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta22to24"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta22to24_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta22to24_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta22to24_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=15:
+                    mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta22to24"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta22to24_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta22to24_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt15_GenMuPt_ME1_ME2_ME3_eta22to24_dxy50to100"].Fill(pt)
+                  if L1Mu_pt>=20:
+                    mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta22to24"].Fill(pt)
+                    if dxy <= 5:                mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta22to24_dxy0to5"].Fill(pt)
+                    if 5 < dxy  and dxy <= 50:  mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta22to24_dxy5to50"].Fill(pt)
+                    if 50 < dxy and dxy <= 100: mapTH1F["Prompt_L1MuPt20_GenMuPt_ME1_ME2_ME3_eta22to24_dxy50to100"].Fill(pt)
 
 
                 ## use the L1Mu eta for the time being!
                 ## in the future: need to use the fitted stub eta
-                etaPartition = get_eta_partition(L1Mu_eta)
+                etaPartition = get_eta_partition(eta_prop)
                 
                 ## get the deltaYs
-                deltay12_withoutLCTFit, deltay23_withoutLCTFit = deltay12_deltay23(CSCTF_x1, CSCTF_y1, CSCTF_phi1,
-                                                                                   CSCTF_x2, CSCTF_y2, CSCTF_phi2,
-                                                                                   CSCTF_x3, CSCTF_y3, CSCTF_phi3)
+                deltay12_withoutLCTFit, deltay23_withoutLCTFit = deltay12_deltay23_R(CSCTF_R1, CSCTF_phi1,
+                                                                                     CSCTF_R2, CSCTF_phi2,
+                                                                                     CSCTF_R3, CSCTF_phi3)
 
-                deltay12_withLCTFit, deltay23_withLCTFit = deltay12_deltay23(CSCTF_fit_x1, CSCTF_fit_y1, CSCTF_fit_phi1,
-                                                                             CSCTF_fit_x2, CSCTF_fit_y2, CSCTF_fit_phi2,
-                                                                             CSCTF_fit_x3, CSCTF_fit_y3, CSCTF_fit_phi3)
+                deltay12_withLCTFit, deltay23_withLCTFit = deltay12_deltay23_R(CSCTF_fit_R1, CSCTF_fit_phi1,
+                                                                               CSCTF_fit_R2, CSCTF_fit_phi2,
+                                                                               CSCTF_fit_R3, CSCTF_fit_phi3)
                 ## only use pT>10GeV muons for this study
                 if pt > 10:
                   mapTH2F["deltay12_vs_deltay23_eta" + etaRanges[etaPartition] + "_" + ME1ME2ME3ParityCases[parity] + "_withoutLCTFit"].Fill(deltay12_withoutLCTFit, deltay23_withoutLCTFit)
@@ -2558,7 +2754,6 @@ if __name__ == "__main__":
                   mapTH1F["GenMuPt_ME1_ME2_ME3_eta12to24"].Fill(pt)
                   if 1.2<=abs(eta_prop) and abs(eta_prop)<1.6:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta12to16"].Fill(pt)
                   if 1.6<=abs(eta_prop) and abs(eta_prop)<2.2:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta16to22"].Fill(pt)
-                  if 2.2<=abs(eta_prop) and abs(eta_prop)<=2.4: mapTH1F["GenMuPt_ME1_ME2_ME3_eta22to24"].Fill(pt)
                   mapTH1F["GenMuPt_ME1_ME2_ME3_eta"+ etaRanges[etaPartition]].Fill(pt)
 
                   for L1MuPtCut in [2,5,7,10,15,20]:
@@ -2584,7 +2779,6 @@ if __name__ == "__main__":
                   mapTH1F["GenMuPt_ME1_ME2_ME3_eta12to24_dxy0to5"].Fill(pt)               
                   if 1.2<=abs(eta_prop) and abs(eta_prop)<1.6:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta12to16_dxy0to5"].Fill(pt)
                   if 1.6<=abs(eta_prop) and abs(eta_prop)<2.2:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta16to22_dxy0to5"].Fill(pt)
-                  if 2.2<=abs(eta_prop) and abs(eta_prop)<=2.4: mapTH1F["GenMuPt_ME1_ME2_ME3_eta22to24_dxy0to5"].Fill(pt)
                   mapTH1F["GenMuPt_ME1_ME2_ME3_eta"+ etaRanges[etaPartition] + "_dxy0to5"].Fill(pt)
 
                   for L1MuPtCut in [2,5,7,10,15,20]:
@@ -2609,7 +2803,6 @@ if __name__ == "__main__":
                   mapTH1F["GenMuPt_ME1_ME2_ME3_eta12to24_dxy5to50"].Fill(pt)  
                   if 1.2<=abs(eta_prop) and abs(eta_prop)<1.6:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta12to16_dxy5to50"].Fill(pt)
                   if 1.6<=abs(eta_prop) and abs(eta_prop)<2.2:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta16to22_dxy5to50"].Fill(pt)
-                  if 2.2<=abs(eta_prop) and abs(eta_prop)<=2.4: mapTH1F["GenMuPt_ME1_ME2_ME3_eta22to24_dxy5to50"].Fill(pt)
                   mapTH1F["GenMuPt_ME1_ME2_ME3_eta"+ etaRanges[etaPartition] + "_dxy5to50"].Fill(pt)
 
                   for L1MuPtCut in [2,5,7,10,15,20]:
@@ -2635,7 +2828,6 @@ if __name__ == "__main__":
                   mapTH1F["GenMuPt_ME1_ME2_ME3_eta12to24_dxy50to100"].Fill(pt)
                   if 1.2<=abs(eta_prop) and abs(eta_prop)<1.6:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta12to16_dxy50to100"].Fill(pt)
                   if 1.6<=abs(eta_prop) and abs(eta_prop)<2.2:  mapTH1F["GenMuPt_ME1_ME2_ME3_eta16to22_dxy50to100"].Fill(pt)
-                  if 2.2<=abs(eta_prop) and abs(eta_prop)<=2.4: mapTH1F["GenMuPt_ME1_ME2_ME3_eta22to24_dxy50to100"].Fill(pt)
                   mapTH1F["GenMuPt_ME1_ME2_ME3_eta"+ etaRanges[etaPartition] + "_dxy50to100"].Fill(pt)
 
                   for L1MuPtCut in [2,5,7,10,15,20]:
@@ -4029,8 +4221,43 @@ if __name__ == "__main__":
                    myTEfficiency("Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta16to22_dxy0to5_withLCTFit"%(ptCut),     "GenMuPt_ME1_ME2_ME3_eta16to22_dxy0to5"),
                    myTEfficiency("Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta16to22_dxy5to50_withLCTFit"%(ptCut),    "GenMuPt_ME1_ME2_ME3_eta16to22_dxy5to50"),
                    targetDir + "Prompt_Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta16to22_dxy0to50.png"%(ptCut), "L1Mu trigger algorithm comparison 1.6 #leq |#eta| #leq 2.2, 14TeV, PU140")
+
+      makeEffPlot4(myTEfficiency(   "Prompt_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta12to14_dxy0to5"%(ptCut),                "GenMuPt_ME1_ME2_ME3_eta12to14_dxy0to5"),
+                   myTEfficiency(   "Prompt_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta12to14_dxy5to50"%(ptCut),               "GenMuPt_ME1_ME2_ME3_eta12to14_dxy5to50"),
+                   myTEfficiency("Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta12to14_dxy0to5_withLCTFit"%(ptCut),     "GenMuPt_ME1_ME2_ME3_eta12to14_dxy0to5"),
+                   myTEfficiency("Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta12to14_dxy5to50_withLCTFit"%(ptCut),    "GenMuPt_ME1_ME2_ME3_eta12to14_dxy5to50"),
+                   targetDir + "Prompt_Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta12to14_dxy0to50.png"%(ptCut), "L1Mu trigger algorithm comparison 1.2 #leq |#eta| #leq 1.4, 14TeV, PU140")
       
+      makeEffPlot4(myTEfficiency(   "Prompt_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta14to16_dxy0to5"%(ptCut),                "GenMuPt_ME1_ME2_ME3_eta14to16_dxy0to5"),
+                   myTEfficiency(   "Prompt_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta14to16_dxy5to50"%(ptCut),               "GenMuPt_ME1_ME2_ME3_eta14to16_dxy5to50"),
+                   myTEfficiency("Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta14to16_dxy0to5_withLCTFit"%(ptCut),     "GenMuPt_ME1_ME2_ME3_eta14to16_dxy0to5"),
+                   myTEfficiency("Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta14to16_dxy5to50_withLCTFit"%(ptCut),    "GenMuPt_ME1_ME2_ME3_eta14to16_dxy5to50"),
+                   targetDir + "Prompt_Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta14to16_dxy0to50.png"%(ptCut), "L1Mu trigger algorithm comparison 1.4 #leq |#eta| #leq 1.6, 14TeV, PU140")
     
+      makeEffPlot4(myTEfficiency(   "Prompt_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta16to18_dxy0to5"%(ptCut),                "GenMuPt_ME1_ME2_ME3_eta16to18_dxy0to5"),
+                   myTEfficiency(   "Prompt_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta16to18_dxy5to50"%(ptCut),               "GenMuPt_ME1_ME2_ME3_eta16to18_dxy5to50"),
+                   myTEfficiency("Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta16to18_dxy0to5_withLCTFit"%(ptCut),     "GenMuPt_ME1_ME2_ME3_eta16to18_dxy0to5"),
+                   myTEfficiency("Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta16to18_dxy5to50_withLCTFit"%(ptCut),    "GenMuPt_ME1_ME2_ME3_eta16to18_dxy5to50"),
+                   targetDir + "Prompt_Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta16to18_dxy0to50.png"%(ptCut), "L1Mu trigger algorithm comparison 1.6 #leq |#eta| #leq 1.8, 14TeV, PU140")
+
+      makeEffPlot4(myTEfficiency(   "Prompt_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta18to20_dxy0to5"%(ptCut),                "GenMuPt_ME1_ME2_ME3_eta18to20_dxy0to5"),
+                   myTEfficiency(   "Prompt_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta18to20_dxy5to50"%(ptCut),               "GenMuPt_ME1_ME2_ME3_eta18to20_dxy5to50"),
+                   myTEfficiency("Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta18to20_dxy0to5_withLCTFit"%(ptCut),     "GenMuPt_ME1_ME2_ME3_eta18to20_dxy0to5"),
+                   myTEfficiency("Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta18to20_dxy5to50_withLCTFit"%(ptCut),    "GenMuPt_ME1_ME2_ME3_eta18to20_dxy5to50"),
+                   targetDir + "Prompt_Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta18to20_dxy0to50.png"%(ptCut), "L1Mu trigger algorithm comparison 1.8 #leq |#eta| #leq 2.0, 14TeV, PU140")
+
+      makeEffPlot4(myTEfficiency(   "Prompt_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta20to22_dxy0to5"%(ptCut),                "GenMuPt_ME1_ME2_ME3_eta20to22_dxy0to5"),
+                   myTEfficiency(   "Prompt_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta20to22_dxy5to50"%(ptCut),               "GenMuPt_ME1_ME2_ME3_eta20to22_dxy5to50"),
+                   myTEfficiency("Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta20to22_dxy0to5_withLCTFit"%(ptCut),     "GenMuPt_ME1_ME2_ME3_eta20to22_dxy0to5"),
+                   myTEfficiency("Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta20to22_dxy5to50_withLCTFit"%(ptCut),    "GenMuPt_ME1_ME2_ME3_eta20to22_dxy5to50"),
+                   targetDir + "Prompt_Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta20to22_dxy0to50.png"%(ptCut), "L1Mu trigger algorithm comparison 2.0 #leq |#eta| #leq 2.2, 14TeV, PU140")
+
+      makeEffPlot4(myTEfficiency(   "Prompt_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta22to24_dxy0to5"%(ptCut),                "GenMuPt_ME1_ME2_ME3_eta22to24_dxy0to5"),
+                   myTEfficiency(   "Prompt_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta22to24_dxy5to50"%(ptCut),               "GenMuPt_ME1_ME2_ME3_eta22to24_dxy5to50"),
+                   myTEfficiency("Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta22to24_dxy0to5_withLCTFit"%(ptCut),     "GenMuPt_ME1_ME2_ME3_eta22to24_dxy0to5"),
+                   myTEfficiency("Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta22to24_dxy5to50_withLCTFit"%(ptCut),    "GenMuPt_ME1_ME2_ME3_eta22to24_dxy5to50"),
+                   targetDir + "Prompt_Displaced_L1MuPt%d_GenMuPt_ME1_ME2_ME3_eta22to24_dxy0to50.png"%(ptCut), "L1Mu trigger algorithm comparison 2.2 #leq |#eta| #leq 2.4, 14TeV, PU140")
+
     return
     ## plots for the hybrid alogithm
     for etaRange,etaRangeString in zip(etaRanges, etaRangesString):

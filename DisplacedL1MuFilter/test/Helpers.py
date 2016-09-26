@@ -1021,9 +1021,9 @@ def get_proptionality_factor_Tao(eta, parity, doFit):
 def pt_from_DDY123_Tao(DDY123, eta, parity, doFit):
 
   pt_range = [2.0, 3.0, 4.0, 5.0, 7., 10., 15., 20., 30., 40.]
-  if eta in '12to14':
+  if eta is '12to14':
     if parity is 'ooo': DDY123_range = [20.328000, 21.324000, 15.827000, 7.965000, 3.957500, 2.458800, 1.513750, 1.184231, 0.920385, 0.772333]
-    if parity is 'eoo': DDY123_range = [00.000000,21.218000,17.509000,7.974000,3.986000,3.030000,1.442000,1.345000,0.964000,1.050000] 
+    if parity is 'eoo': DDY123_range = [00.000000, 21.218000, 17.509000, 7.974000, 3.986000, 3.030000, 1.442000, 1.345000, 0.964000, 0.964000] ##last entry is the same as next to last!! 1.050000
     if parity is 'eee': DDY123_range = [39.496000, 36.456000, 29.482000, 16.108000, 8.219333, 4.896000, 2.985833, 2.211182, 1.532800, 1.280222]
     if parity is 'oee': DDY123_range = [0.000000,28.185000,27.864000,12.517000,6.794000,4.280000,2.725000,2.007000,1.404000,1.227000]
 
@@ -1046,14 +1046,14 @@ def pt_from_DDY123_Tao(DDY123, eta, parity, doFit):
     if parity is 'oee': DDY123_range = [27.448000, 20.024500, 9.214000, 6.218000, 3.735333, 2.391250, 1.566143, 1.263200, 0.935667, 0.820429]
 
   if eta is '20to22':
-    if parity is 'ooo': DDY123_range = [8.840000,5.327000,2.655500,1.896250,1.222333,0.846875,0.709000,0.598444,0.518000, 0.497333]
+    if parity is 'ooo': DDY123_range = [8.840000,5.327000,2.655500,1.896250,1.222333,0.846875,0.709000,0.598444,0.518000,0.497333]
     if parity is 'eoo': DDY123_range = [8.605000,5.023000,2.811000,1.932500,1.238000,0.898750,0.675000,0.587875,0.507545,0.495000]
-    if parity is 'eee': DDY123_range = [15.197000,8.173000,4.679000,3.338000,2.041833,1.429000,0.970000,0.807167,0.678286,0.632000]
-    if parity is 'oee': DDY123_range = [14.613000,7.994000,4.431000,3.335000,2.067667,1.396600,0.973667,0.849143,0.668111,0.627000]
+    if parity is 'eee': DDY123_range = [15.19700,8.173000,4.679000,3.338000,2.041833,1.429000,0.970000,0.807167,0.678286,0.632000]
+    if parity is 'oee': DDY123_range = [14.61300,7.994000,4.431000,3.335000,2.067667,1.396600,0.973667,0.849143,0.668111,0.627000]
 
   if eta is '22to24':
-    if parity is 'ooo': DDY123_range = [3.603500,2.135000,1.365429,1.045000,0.752500,0.553600,0.457929,0.422818,0.393167,0.409714]
-    if parity is 'eoo': DDY123_range = [3.194000,2.298000,1.386400,1.058000,0.763000,0.555909,0.445556,0.400545,0.372222,0.402167]
+    if parity is 'ooo': DDY123_range = [3.603500,2.135000,1.365429,1.045000,0.752500,0.553600,0.457929,0.422818,0.393167,0.393167] ## last entry is equal to next to last!!
+    if parity is 'eoo': DDY123_range = [3.194000,2.298000,1.386400,1.058000,0.763000,0.555909,0.445556,0.400545,0.372222,0.372222] ## last entry is equal to next to last!!
     if parity is 'eee': DDY123_range = [5.670000,3.932000,2.267000,1.745500,1.137000,0.849000,0.590286,0.512400,0.463333,0.449400]
     if parity is 'oee': DDY123_range = [6.031000,3.555000,2.411000,1.682000,1.190500,0.815000,0.621100,0.534000,0.496250,0.495000]
 
@@ -1062,17 +1062,41 @@ def pt_from_DDY123_Tao(DDY123, eta, parity, doFit):
   #print "DDY123", DDY123
   
   found_pt = 0
-  ## in case the DDY123 is larger than the first value, assign it pt = 2 GeV
-  if DDY123 > DDY123_range[0]:
+  if   DDY123 >= DDY123_range[0]:
     found_pt = 0
+  elif DDY123 < DDY123_range[0] and DDY123 >= DDY123_range[1]:
+    found_pt = 2
+  elif DDY123 < DDY123_range[1] and DDY123 >= DDY123_range[2]:
+    found_pt = 3
+  elif DDY123 < DDY123_range[2] and DDY123 >= DDY123_range[3]:
+    found_pt = 4
+  elif DDY123 < DDY123_range[3] and DDY123 >= DDY123_range[4]:
+    found_pt = 5
+  elif DDY123 < DDY123_range[4] and DDY123 >= DDY123_range[4]:
+    found_pt = 7
+  elif DDY123 < DDY123_range[5] and DDY123 >= DDY123_range[6]:
+    found_pt = 10
+  elif DDY123 < DDY123_range[6] and DDY123 >= DDY123_range[7]:
+    found_pt = 15
+  elif DDY123 < DDY123_range[7] and DDY123 >= DDY123_range[8]:
+    found_pt = 20
+  elif DDY123 < DDY123_range[8] and DDY123 >= DDY123_range[9]:
+    found_pt = 30
+  elif DDY123 < DDY123_range[9]:
+    found_pt = 40
+  else:
+    found_pt = 0
+  """
+  ## in case the DDY123 is larger than the first value, assign it pt = 2 GeV
   elif DDY123 < DDY123_range[-1]:
     found_pt = 40
   else:
-    for ii in range(0,len(DDY123_range)):
+    for ii in range(1,len(DDY123_range)):
       if DDY123 > DDY123_range[ii]:
         found_pt = pt_range[ii-1]
         break
   #print "Found pt", found_pt
+  """
   return found_pt
 
 #______________________________________________________________________________               

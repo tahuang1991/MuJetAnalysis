@@ -48,7 +48,7 @@ if __name__ == "__main__":
     #MatchingL1TkMinPt = 0; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160209_VetoL1TkPt0"; pu = 'PU140'
   else:   
     location = "/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/Neutrino_Pt2to20_TTI2023Upg14D_PU140bx25_ILT_ANA_v4/160207_164050/0000/"
-    MatchingL1TkMinPt = 4; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160927_ECFA"; pu = 'PU140'
+    MatchingL1TkMinPt = 4; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160927_ECFA_v2"; pu = 'PU140'
     #MatchingL1TkMinPt = 3; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160209_VetoL1TkPt3"; pu = 'PU140'
     #MatchingL1TkMinPt = 2.5; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160209_VetoL1TkPt2p5"; pu = 'PU140'
     #MatchingL1TkMinPt = 2; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160209_VetoL1TkPt2"; pu = 'PU140'
@@ -115,8 +115,8 @@ if __name__ == "__main__":
     
     for k in range(0,ch.GetEntries()):
       if k%1000==0: print "Processing event", k
-#      if k>10000: break
-#    for k in range(0,100):
+      #if k>10000: break
+      #    for k in range(0,100):
       ch.GetEntry(k)
       
       treeHits = ch
@@ -280,12 +280,8 @@ if __name__ == "__main__":
 
     def makePlots(h1, h2, h3, h4, h5, isolation_cone, title):
       c = TCanvas("c","c",800,600)
-      c.Clear()    
-      gStyle.SetTitleBorderSize(0);
-      gStyle.SetPadLeftMargin(0.126);
-      gStyle.SetPadRightMargin(0.04);
-      gStyle.SetPadTopMargin(0.06);
-      gStyle.SetPadBottomMargin(0.13);
+      c.Clear()
+
       gPad.SetTickx(1)
       gPad.SetTicky(1)
       gPad.SetLogy(1)
@@ -293,22 +289,20 @@ if __name__ == "__main__":
       c.SetGridx()
       c.SetGridy()
 
-      gStyle.SetTitleStyle(0)
+      gStyle.SetTitleStyle( 0 )
       gStyle.SetTitleAlign(13) ##// coord in top left
       gStyle.SetTitleX(0.)
       gStyle.SetTitleY(1.)
       gStyle.SetTitleW(1)
       gStyle.SetTitleH(0.058)
-      gStyle.SetTitleBorderSize(0)
+      gStyle.SetTitleBorderSize( 0 )
       
       gStyle.SetPadLeftMargin(0.126)
       gStyle.SetPadRightMargin(0.04)
       gStyle.SetPadTopMargin(0.06)
       gStyle.SetPadBottomMargin(0.13)
-      gStyle.SetOptStat(0)
+      gStyle.SetOptStat( 0 )
       gStyle.SetMarkerStyle(1)
-
-      ## set eta label
       
 
       b1 = TH1F("b1","b1",28,myptbin)
@@ -323,9 +317,10 @@ if __name__ == "__main__":
       b1.GetXaxis().SetLabelSize(0.05)
       b1.GetYaxis().SetLabelSize(0.05)
       gStyle.SetTitleFontSize(0.07)
-      #b1.SetTitleSize(0.05)
-      b1.SetTitle("           CMS Simulation                                                           14TeV, " + pu)
-      b1.SetStats(0)
+      #b1.SetTitleSize(0.07)
+      b1.SetTitle("           #scale[1.4]{#font[61]{CMS}} #font[52]{Simulation preliminary}                                                           14 TeV, 140 PU")
+      #b1.SetTitle("")
+      b1.SetStats( 0 )
       b1.Draw()
 
       h1 = getRatePtHistogram(treeHits, h1)
@@ -355,7 +350,7 @@ if __name__ == "__main__":
       #latex = applyTdrStyle()      
 
       if isolation_cone == 0.12 and False:
-        leg = TLegend(0.2,0.75,0.5,0.85,"","brNDC")
+        leg = TLegend(0.2,0.75,0.4,0.85,"","brNDC")
         leg.SetFillColor(kWhite)
         leg.SetBorderSize(0)
         leg.SetFillStyle(0)
@@ -365,16 +360,16 @@ if __name__ == "__main__":
         leg.AddEntry(h5,"Veto Matching L1Tk #DeltaR#leq0.12 with p_{T}#geq%.0f"%(MatchingL1TkMinPt), "f")
         leg.Draw("same")
       else:
-        leg = TLegend(0.2,0.2,0.6,0.4,"","brNDC")
+        leg = TLegend(0.2,0.2,0.5,0.4,"","brNDC")
         leg.SetFillColor(kWhite)
-        leg.SetBorderSize(0)
-        leg.SetFillStyle(kWhite)
+        leg.SetBorderSize(1)
+        #leg.SetFillStyle(kWhite)
         leg.SetTextSize(0.04)
         leg.AddEntry(h1,"Prompt L1Mu", "f")
         leg.AddEntry(None,"Displaced L1Mu:", "")
-        leg.AddEntry(h5,"Tight veto", "f")
+        leg.AddEntry(h5,"Loose veto", "f")
         leg.AddEntry(h4,"Medium veto", "f")
-        leg.AddEntry(h2,"Loose veto", "f")
+        leg.AddEntry(h2,"Tight veto", "f")
         #leg.AddEntry(None,"Veto Matching L1Tk #DeltaR#leq0.12 with p_{T}#geq%.0f"%(MatchingL1TkMinPt), "")
         #leg.AddEntry(None,"Veto Non-matching L1Tk #DeltaR#leq%.1f:"%(isolation_cone), "")
         #leg.AddEntry(h5,"p_{T} #geq 4 GeV", "f")        

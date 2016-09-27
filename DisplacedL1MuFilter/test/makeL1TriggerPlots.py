@@ -36,7 +36,7 @@ if __name__ == "__main__":
   set_style()
 
   ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
-  eff = True
+  eff = False
   if eff: 
     location = "/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_ctau_1000_ANA_v6/160207_223333/0000/"
 #    MatchingL1TkMinPt = 4; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160219"; pu = 'PU140'
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     #MatchingL1TkMinPt = 0; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160209_VetoL1TkPt0"; pu = 'PU140'
   else:   
     location = "/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/Neutrino_Pt2to20_TTI2023Upg14D_PU140bx25_ILT_ANA_v4/160207_164050/0000/"
-    MatchingL1TkMinPt = 4; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160211"; pu = 'PU140'
+    MatchingL1TkMinPt = 4; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160927_ECFA"; pu = 'PU140'
     #MatchingL1TkMinPt = 3; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160209_VetoL1TkPt3"; pu = 'PU140'
     #MatchingL1TkMinPt = 2.5; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160209_VetoL1TkPt2p5"; pu = 'PU140'
     #MatchingL1TkMinPt = 2; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160209_VetoL1TkPt2"; pu = 'PU140'
@@ -84,6 +84,13 @@ if __name__ == "__main__":
 
   def makeRateVsPtHistogram():
 
+    ptbin = [
+      2.0,   2.5,   3.0,   3.5,   4.0,   4.5,   5.0,   6.0,   7.0,   8.0,  
+      10.0,  12.0,  14.0,  16.0,  18.0,  20.0,  25.0,  30.0,  35.0,  40.0,  
+      45.0,  50.0,  60.0,  70.0,  80.0,  90.0, 100.0, 120.0, 140.0]
+    myptbin = np.asarray(ptbin)
+    nmyptbin = len(myptbin) - 1
+
     h_single_L1Mu_rate = TH1F("h_single_L1Mu_rate"," ",len(myptbin)-1, myptbin)
     h_single_displaced_rate = TH1F("h_single_displaced_rate"," ",len(myptbin)-1, myptbin)
     h_single_displaced_rate_dR0p4_L1TkPt2 = TH1F("h_single_displaced_rate_dR0p4_L1TkPt2"," ",len(myptbin)-1, myptbin)
@@ -108,6 +115,7 @@ if __name__ == "__main__":
     
     for k in range(0,ch.GetEntries()):
       if k%1000==0: print "Processing event", k
+#      if k>10000: break
 #    for k in range(0,100):
       ch.GetEntry(k)
       
@@ -150,8 +158,8 @@ if __name__ == "__main__":
             L1Mu_L1Tk_dR_min = treeHits.L1Mu_L1Tk_dR_prop[i]
             L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt_prop[i]
 
-            if L1Mu_bx==0:
-              print k,i, "pt", L1Mu_pt, "eta", L1Mu_eta, "phi", L1Mu_phi, "bx", L1Mu_bx, "quality", L1Mu_quality
+            #            if L1Mu_bx==0:
+            #              print k,i, "pt", L1Mu_pt, "eta", L1Mu_eta, "phi", L1Mu_phi, "bx", L1Mu_bx, "quality", L1Mu_quality
 
 
             unMatched_dR0p4_L1TkPt4 = False
@@ -281,18 +289,42 @@ if __name__ == "__main__":
       gPad.SetTickx(1)
       gPad.SetTicky(1)
       gPad.SetLogy(1)
+      gPad.SetLogx(1)
+      c.SetGridx()
+      c.SetGridy()
 
-      b1 = TH1F("b1","b1",29,myptbin)
-      b1.GetYaxis().SetRangeUser(.1,10000)
+      gStyle.SetTitleStyle(0)
+      gStyle.SetTitleAlign(13) ##// coord in top left
+      gStyle.SetTitleX(0.)
+      gStyle.SetTitleY(1.)
+      gStyle.SetTitleW(1)
+      gStyle.SetTitleH(0.058)
+      gStyle.SetTitleBorderSize(0)
+      
+      gStyle.SetPadLeftMargin(0.126)
+      gStyle.SetPadRightMargin(0.04)
+      gStyle.SetPadTopMargin(0.06)
+      gStyle.SetPadBottomMargin(0.13)
+      gStyle.SetOptStat(0)
+      gStyle.SetMarkerStyle(1)
+
+      ## set eta label
+      
+
+      b1 = TH1F("b1","b1",28,myptbin)
+      b1.GetYaxis().SetRangeUser(1,10000)
+      b1.GetXaxis().SetTitleOffset(1.2)
       b1.GetYaxis().SetTitleOffset(1.2)
       b1.GetYaxis().SetNdivisions(520)
-      b1.GetYaxis().SetTitle("L1Mu Trigger Rate [kHz]")
-      b1.GetXaxis().SetTitle("L1Mu p_{T} cut [GeV]")
-      b1.GetXaxis().SetTitleFont(62)
-      b1.GetXaxis().SetTitleOffset(1.2)
+      b1.GetYaxis().SetTitle("Trigger rate [kHz]")
+      b1.GetXaxis().SetTitle("L1Mu candidate p_{T} cut [GeV]")
       b1.GetXaxis().SetTitleSize(0.05)
       b1.GetYaxis().SetTitleSize(0.05)
-      b1.SetTitle("                                                                  14TeV, " + pu)
+      b1.GetXaxis().SetLabelSize(0.05)
+      b1.GetYaxis().SetLabelSize(0.05)
+      gStyle.SetTitleFontSize(0.07)
+      #b1.SetTitleSize(0.05)
+      b1.SetTitle("           CMS Simulation                                                           14TeV, " + pu)
       b1.SetStats(0)
       b1.Draw()
 
@@ -302,24 +334,27 @@ if __name__ == "__main__":
       
       #if isolation_cone != 0.12:    
       h2 = getRatePtHistogram(treeHits, h2)
-      h2.SetFillColor(kMagenta)
-      h2.Draw("e3same")
+      #h2.SetFillColor(kMagenta)
+      h2.SetFillColor(kBlue)
+      h2.Draw("e3 same")
       
-      h3 = getRatePtHistogram(treeHits, h3)
-      h3.SetFillColor(kBlue)
-      h3.Draw("e3same")
+      #h3 = getRatePtHistogram(treeHits, h3)
+      #h3.SetFillColor(kBlue)
+      #h3.SetFillColor(kGreen+1)
+      #h3.Draw("e3same")
       
       h4 = getRatePtHistogram(treeHits, h4)
-      h4.SetFillColor(kGreen+1)
-      h4.Draw("e3same")
+      #h4.SetFillColor(kGreen+1)
+      h4.SetFillColor(kGreen+2)
+      h4.Draw("e3 same")
       
       h5 = getRatePtHistogram(treeHits, h5)
       h5.SetFillColor(kOrange+1)
-      h5.Draw("e3same")
+      h5.Draw("e3 same")
 
-      latex = applyTdrStyle()      
+      #latex = applyTdrStyle()      
 
-      if isolation_cone == 0.12:
+      if isolation_cone == 0.12 and False:
         leg = TLegend(0.2,0.75,0.5,0.85,"","brNDC")
         leg.SetFillColor(kWhite)
         leg.SetBorderSize(0)
@@ -330,22 +365,27 @@ if __name__ == "__main__":
         leg.AddEntry(h5,"Veto Matching L1Tk #DeltaR#leq0.12 with p_{T}#geq%.0f"%(MatchingL1TkMinPt), "f")
         leg.Draw("same")
       else:
-        leg = TLegend(0.2,0.6,0.9,0.85,"","brNDC")
+        leg = TLegend(0.2,0.2,0.6,0.4,"","brNDC")
         leg.SetFillColor(kWhite)
         leg.SetBorderSize(0)
-        leg.SetFillStyle(0)
-        leg.SetTextSize(0.03)
+        leg.SetFillStyle(kWhite)
+        leg.SetTextSize(0.04)
         leg.AddEntry(h1,"Prompt L1Mu", "f")
-        leg.AddEntry(None,"Displaced L1Mu", "")
-        leg.AddEntry(None,"Veto Matching L1Tk #DeltaR#leq0.12 with p_{T}#geq%.0f"%(MatchingL1TkMinPt), "")
-        leg.AddEntry(None,"Veto Non-matching L1Tk #DeltaR#leq%.1f:"%(isolation_cone), "")
-        leg.AddEntry(h5,"p_{T} #geq 4 GeV", "f")        
-        leg.AddEntry(h4,"p_{T} #geq 3 GeV", "f")
-        leg.AddEntry(h3,"p_{T} #geq 2.5 GeV", "f")
-        leg.AddEntry(h2,"p_{T} #geq 2 GeV", "f")
+        leg.AddEntry(None,"Displaced L1Mu:", "")
+        leg.AddEntry(h5,"Tight veto", "f")
+        leg.AddEntry(h4,"Medium veto", "f")
+        leg.AddEntry(h2,"Loose veto", "f")
+        #leg.AddEntry(None,"Veto Matching L1Tk #DeltaR#leq0.12 with p_{T}#geq%.0f"%(MatchingL1TkMinPt), "")
+        #leg.AddEntry(None,"Veto Non-matching L1Tk #DeltaR#leq%.1f:"%(isolation_cone), "")
+        #leg.AddEntry(h5,"p_{T} #geq 4 GeV", "f")        
+        #leg.AddEntry(h4,"p_{T} #geq 3 GeV", "f")
+        #leg.AddEntry(h3,"p_{T} #geq 2.5 GeV", "f")
+        #leg.AddEntry(h2,"p_{T} #geq 2 GeV", "f")
         leg.Draw("same")
 
       c.SaveAs(targetDir + title + ext)
+      c.SaveAs(targetDir + title + ".C")
+      c.SaveAs(targetDir + title + ".pdf")
 
       ## ratios 
       c = TCanvas("c","c",800,600)
@@ -357,7 +397,7 @@ if __name__ == "__main__":
       gStyle.SetPadBottomMargin(0.13);
 #      gPad.SetLogy(1)
       
-      b1 = TH1F("b1","b1",29,myptbin)
+      b1 = TH1F("b1","b1",28,myptbin)
       b1.GetYaxis().SetRangeUser(0.01,1)
       b1.GetYaxis().SetTitleOffset(1.2)
       b1.GetYaxis().SetNdivisions(520)
@@ -439,6 +479,7 @@ if __name__ == "__main__":
 
 
       c.SaveAs(targetDir + title + "_ratio" + ext)
+      c.SaveAs(targetDir + title + "_ratio.C")
 
     ## trigger rate plots vs pt
     makePlots(h_single_L1Mu_rate, 
@@ -461,6 +502,12 @@ if __name__ == "__main__":
               h_single_displaced_rate_dR0p12_L1TkPt2p5, 
               h_single_displaced_rate_dR0p12_L1TkPt3, 
               h_single_displaced_rate_dR0p12_L1TkPt4, 0.12, "L1Mu_trigger_rate_pt_dR0p12")
+
+    makePlots(h_single_L1Mu_rate, 
+              h_single_displaced_rate_dR0p12_L1TkPt2, 
+              h_single_displaced_rate_dR0p12_L1TkPt2p5, 
+              h_single_displaced_rate_dR0p12_L1TkPt3, 
+              h_single_displaced_rate_dR0p12_L1TkPt4, 0.12, "L1Mu_trigger_rate_pt_ECFA")
 
   if not eff:
     makeRateVsPtHistogram()    

@@ -442,6 +442,7 @@ struct MyEvent
   // Matching the SIM Mu to GEM pad (really no other way to do this)
   Int_t nGEM;
   Float_t GE11_phi_L1[kMaxGEM], GE11_phi_L2[kMaxGEM], GE21_phi_L1[kMaxGEM], GE21_phi_L2[kMaxGEM];
+  Float_t GE21_pad2_phi_L1[kMaxGEM], GE21_pad2_phi_L2[kMaxGEM];
   Int_t   GE11_bx_L1[kMaxGEM], GE11_bx_L2[kMaxGEM], GE21_bx_L1[kMaxGEM], GE21_bx_L2[kMaxGEM];
   Int_t   GE11_ch_L1[kMaxGEM], GE11_ch_L2[kMaxGEM], GE21_ch_L1[kMaxGEM], GE21_ch_L2[kMaxGEM];
   Float_t GE11_z_L1[kMaxGEM], GE11_z_L2[kMaxGEM], GE21_z_L1[kMaxGEM], GE21_z_L2[kMaxGEM];
@@ -702,6 +703,7 @@ private:
   void getStubPositions(int index, std::vector<float>& x, 
                         std::vector<float>& y, std::vector<float>& z) const;
   std::vector<GlobalPoint> positionPad2InDetId(const GEMDigiCollection&, unsigned int ch_id, int refBX) const;
+  std::vector<GlobalPoint> positionPad4InDetId(const GEMDigiCollection&, unsigned int ch_id, int refBX) const;
   
   void printCSCStubProperties(int index) const;
   
@@ -931,9 +933,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   const CSCCorrelatedLCTDigiCollection& CSCCorrelatedLCTs(*hCSCCorrelatedLCTs.product());
 
   // GEM pads and copads
-  // edm::Handle< GEMDigiCollection > hGEMDigis;
-  // iEvent.getByLabel("simMuonGEMDigis", hGEMDigis);
-  // const GEMDigiCollection& GEMDigis(*hGEMDigis.product());
+  edm::Handle< GEMDigiCollection > hGEMDigis;
+  iEvent.getByLabel("simMuonGEMDigis", hGEMDigis);
+  const GEMDigiCollection& GEMDigis(*hGEMDigis.product());
 
   // GEM pads and copads
   edm::Handle< GEMCSCPadDigiCollection > hGEMCSCPads;
@@ -1906,10 +1908,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     
     bool doStubRecovery = true;
     if (doStubRecovery and atLeast1StubMissing){
-      std::cout << "DT stub recovery" << std::endl;
+      //std::cout << "DT stub recovery" << std::endl;
 
       int triggerSector = track.spid().sector();
-      std::cout << "trigger sector " << triggerSector << std::endl;
+      //std::cout << "trigger sector " << triggerSector << std::endl;
       
       for (auto stub: DTTrackPhis){
         int station = stub.station();
@@ -1981,6 +1983,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         auto stub = *digiIt;
         auto gp = getCSCSpecificPoint2(ch_id.rawId(), stub);
         if(verbose)std::cout << "\t" << ch_id << " " << stub 
+                             << " GP " << gp
                              << " key eta " << gp.eta() << " key phi " << gp.phi() << std::endl;
         
         // stub position
@@ -2252,7 +2255,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
               int deltaBX = std::abs(GE11_pad.bx() - event_.CSCTF_bx[j]);
               if (deltaBX <= 1) {
               
-                if(verbose) std::cout << "\tCandidate Pad " << GE11_pad  << std::endl;
+                if(verbose) std::cout << "\tCandidate Pad " << GE11_pad  << " " << getGlobalPointPad(gem_id.rawId(), GE11_pad) << std::endl;
                 if (gem_id.layer()==1){
                   // BXs have to match
                   
@@ -2285,7 +2288,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
               auto pad(*digiItr);
               int deltaBX = std::abs(pad.bx() - event_.CSCTF_bx[j]);
               if (deltaBX <= 1) {
-                if(verbose) std::cout << "\tCandidate Pad " << pad  << std::endl;
+                if(verbose) std::cout << "\tCandidate Pad " << pad  << " " << getGlobalPointPad(gem_id.rawId(), pad)  << std::endl;
                 if (gem_id.layer()==1){
                   bestPad_GE21_L1 = pickBestMatchingPad(event_.CSCTF_fit_x2[ j ],
                                                         event_.CSCTF_fit_y2[ j ], 
@@ -2306,7 +2309,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         if(verbose) std::cout << "Best pad GE11 L1" << bestPad_GE11_L1.second << std::endl;
         if (bestPad_GE11_L1.first.station()==1 and bestPad_GE11_L1.first.layer()==1) {
           auto gem_gp1 = getGlobalPointPad(bestPad_GE11_L1.first, bestPad_GE11_L1.second);
-          if(verbose) cout << "\t"<<gem_gp1<<endl;
+          if(verbose) cout << "\t"<<gem_gp1<< " " << gem_gp1.phi() << endl;
           event_.GE11_phi_L1[j] = gem_gp1.phi();
           event_.GE11_bx_L1[j] = bestPad_GE11_L1.second.bx();
           event_.GE11_ch_L1[j] = bestPad_GE11_L1.first.chamber();
@@ -2320,7 +2323,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         if(verbose) std::cout << "Best pad GE11 L2" << bestPad_GE11_L2.second << std::endl;
         if (bestPad_GE11_L2.first.station()==1 and bestPad_GE11_L2.first.layer()==2) {
           auto gem_gp1 = getGlobalPointPad(bestPad_GE11_L2.first, bestPad_GE11_L2.second);
-          if(verbose) cout << "\t"<<gem_gp1<<endl;
+          if(verbose) cout << "\t"<<gem_gp1<<" " << gem_gp1.phi() << endl;
           event_.GE11_phi_L2[j] = gem_gp1.phi();
           event_.GE11_bx_L2[j] = bestPad_GE11_L2.second.bx();
           event_.GE11_ch_L2[j] = bestPad_GE11_L2.first.chamber();
@@ -2334,7 +2337,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         if(verbose) std::cout << "Best pad GE21 L1" << bestPad_GE21_L1.second << std::endl;
         if (bestPad_GE21_L1.first.station()==3 and bestPad_GE21_L1.first.layer()==1) {
           auto gem_gp1 = getGlobalPointPad(bestPad_GE21_L1.first, bestPad_GE21_L1.second);
-          if(verbose) cout << "\t"<<gem_gp1<<endl;
+          if(verbose) cout << "\t"<<gem_gp1<<" " << gem_gp1.phi() << endl;
           event_.GE21_phi_L1[j] = gem_gp1.phi();
           event_.GE21_bx_L1[j] = bestPad_GE21_L1.second.bx();
           event_.GE21_ch_L1[j] = bestPad_GE21_L1.first.chamber();
@@ -2348,7 +2351,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         if(verbose) std::cout << "Best pad GE21 L2" << bestPad_GE21_L2.second << std::endl;
         if (bestPad_GE21_L2.first.station()==3 and bestPad_GE21_L2.first.layer()==2) {
           auto gem_gp1 = getGlobalPointPad(bestPad_GE21_L2.first, bestPad_GE21_L2.second);
-          if(verbose) cout << "\t"<<gem_gp1<<endl;
+          if(verbose) cout << "\t"<<gem_gp1<<" " << gem_gp1.phi() << endl;
           event_.GE21_phi_L2[j] = gem_gp1.phi();
           event_.GE21_bx_L2[j] = bestPad_GE21_L2.second.bx();
           event_.GE21_ch_L2[j] = bestPad_GE21_L2.first.chamber();
@@ -2356,6 +2359,50 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
       } else {
         if(verbose) std::cout << "No best pad GE21 L2" << std::endl;
+      }
+
+      // pads with smaller sizes in GE21
+      /*
+      if (not stubMissingSt1){
+        std::vector<GlobalPoint> positionPadsGE11 = positionPad2InDetId(GEMDigis, event_.CSCTF_id1[j], event_.CSCTF_bx[j]);
+        std::cout << "Check positions of 2-strip pads for " << CSCDetId(event_.CSCTF_id1[j]) << " in BX " << event_.CSCTF_bx[j] << std::endl;
+        std::cout << "GE11: " << std::endl;
+        for (auto p: positionPadsGE11) std::cout << p << " " << p.phi() << std::endl; 
+
+        std::vector<GlobalPoint> positionPads4GE11 = positionPad4InDetId(GEMDigis, event_.CSCTF_id1[j], event_.CSCTF_bx[j]);
+        std::cout << "Check positions of 4-strip pads for " << CSCDetId(event_.CSCTF_id1[j]) << " in BX " << event_.CSCTF_bx[j] << std::endl;
+        std::cout << "GE11: " << std::endl;
+        for (auto p: positionPads4GE11) std::cout << p << " " << p.phi() << std::endl;
+      }
+      */
+      if (not stubMissingSt2){
+        std::vector<GlobalPoint> positionPadsGE21 = positionPad2InDetId(GEMDigis, event_.CSCTF_id2[j], event_.CSCTF_bx[j]);
+        //std::cout << "Check positions of 2-strip pads for " << CSCDetId(event_.CSCTF_id2[j]) << " in BX " << event_.CSCTF_bx[j] << std::endl;
+        //std::cout << "GE21: " << std::endl;
+        float minDPhi_L1=99, minDPhi_L2=992; 
+        
+        for (auto p: positionPadsGE21){
+          // L1
+          if ( std::abs(p.z() - 794.439) < 0.0001 or std::abs(p.z() + 794.439) < 0.0001 ) {
+            float dPhiGEMCSC(std::abs(reco::deltaPhi(event_.CSCTF_fit_phi2[j], p.phi())));
+            if (dPhiGEMCSC  < minDPhi_L1) {
+              minDPhi_L1 = dPhiGEMCSC;
+              event_.GE21_pad2_phi_L1[j] = p.phi();
+            }
+          } 
+          // L2
+          if ( std::abs(p.z() - 798.179) < 0.0001 or std::abs(p.z() + 798.179) < 0.0001 ) {
+            float dPhiGEMCSC(std::abs(reco::deltaPhi(event_.CSCTF_fit_phi2[j], p.phi())));
+            if (dPhiGEMCSC  < minDPhi_L2) {
+              minDPhi_L2 = dPhiGEMCSC;
+              event_.GE21_pad2_phi_L2[j] = p.phi();            
+            }
+          }
+        }        
+        // std::vector<GlobalPoint> positionPads4GE21 = positionPad4InDetId(GEMDigis, event_.CSCTF_id2[j], event_.CSCTF_bx[j]);
+        // std::cout << "Check positions of 4-strip pads for " << CSCDetId(event_.CSCTF_id2[j]) << " in BX " << event_.CSCTF_bx[j] << std::endl;
+        // std::cout << "GE21: " << std::endl;
+        // for (auto p: positionPads4GE21) std::cout << p << " " << p.phi() << std::endl;
       }
     } // check if match to pads
   } // loop on csctf tracks
@@ -3920,16 +3967,67 @@ DisplacedL1MuFilter::positionPad2InDetId(const GEMDigiCollection& hGEMDigis, uns
   
   for(auto cItr = hGEMDigis.begin(); cItr != hGEMDigis.end(); ++cItr) {
     GEMDetId gem_id = (*cItr).first;
-    cout << "Check GEMDetId " << gem_id << endl;
     
     // chambers need to be compatible
     // no cut on the eta partition!
+    if (gem_id.station() == 2) continue;
     if (gem_id.region() == csc_id.zendcap() and 
-        gem_id.station() == 1 and 
+        (gem_id.station() == csc_id.station() or (gem_id.station( )== 3 and csc_id.station() == 2)) and 
         csc_id.chamber() == gem_id.chamber() and
         (csc_id.ring() == 4 or csc_id.ring() == 1)) {
             
-      if(verbose) std::cout << "Investigate GE11 chamber " << gem_id << std::endl;
+      if(verbose) std::cout << "Investigate GEM chamber " << gem_id << std::endl;
+      
+      // get the digis
+      auto digi_range = (*cItr).second;
+      for (auto digiItr = digi_range.first; digiItr != digi_range.second; ++digiItr){
+        auto digi(*digiItr);
+    
+        int deltaBX = std::abs(digi.bx() - refBX);
+        if (deltaBX <= 1) {
+          
+          if(verbose) std::cout << "\tCandidate digi " << digi << std::endl;
+          float middleStripOfPad = 0.;
+          if (digi.strip()%2==0){
+            middleStripOfPad = digi.strip()-1.;
+          }
+          else{
+            middleStripOfPad = digi.strip();
+          }
+          LocalPoint gem_lp = gemGeometry_->etaPartition(gem_id)->centreOfStrip(middleStripOfPad);
+          GlobalPoint gem_gp = gemGeometry_->idToDet(gem_id)->surface().toGlobal(gem_lp);
+          if (std::find(result.begin(), result.end(), gem_gp) == result.end()) result.push_back(gem_gp);
+          if (verbose) std::cout << "middle strip " << middleStripOfPad << " " <<gem_gp <<std::endl;
+        }
+      }
+    }
+  }
+  return result;
+}
+
+
+std::vector<GlobalPoint> 
+DisplacedL1MuFilter::positionPad4InDetId(const GEMDigiCollection& hGEMDigis, unsigned int ch_id, int refBX) const
+{
+  // get the digis in detid 
+  std::vector<GlobalPoint> result;
+  bool verbose = false;
+  
+  CSCDetId csc_id(ch_id);
+  if (verbose) std::cout << "In function positionPad4InDetId csc_id " << csc_id << std::endl;
+  
+  for(auto cItr = hGEMDigis.begin(); cItr != hGEMDigis.end(); ++cItr) {
+    GEMDetId gem_id = (*cItr).first;
+    
+    // chambers need to be compatible
+    // no cut on the eta partition!
+    if (gem_id.station() == 2) continue;
+    if (gem_id.region() == csc_id.zendcap() and 
+        (gem_id.station() == csc_id.station() or (gem_id.station()==3 and csc_id.station()==2)) and 
+        csc_id.chamber() == gem_id.chamber() and
+        (csc_id.ring() == 4 or csc_id.ring() == 1)) {
+            
+      if(verbose) std::cout << "Investigate GEM chamber " << gem_id << std::endl;
       
       // get the digis
       auto digi_range = (*cItr).second;
@@ -3940,17 +4038,23 @@ DisplacedL1MuFilter::positionPad2InDetId(const GEMDigiCollection& hGEMDigis, uns
         if (deltaBX <= 1) {
           
           if(verbose) std::cout << "\tCandidate digi " << digi  << std::endl;
-          float middleStripOfPad = 0;
-          if (digi.strip()%2==0){
-            middleStripOfPad = digi.strip() - 0.5;
+          float middleStripOfPad = 0.;
+          if (digi.strip()%4==0){
+            middleStripOfPad = digi.strip() - 2.;
+          }
+          else if (digi.strip()%4==3){
+            middleStripOfPad = digi.strip() - 1.;
+          }
+          else if (digi.strip()%4==2){
+            middleStripOfPad = digi.strip() + 0.;
           }
           else{
-            middleStripOfPad = digi.strip() + 0.5;
+            middleStripOfPad = digi.strip() + 1.;
           }
-          if (verbose) std::cout << "middle strip " << middleStripOfPad << std::endl;
           LocalPoint gem_lp = gemGeometry_->etaPartition(gem_id)->centreOfStrip(middleStripOfPad);
           GlobalPoint gem_gp = gemGeometry_->idToDet(gem_id)->surface().toGlobal(gem_lp);
           if (std::find(result.begin(), result.end(), gem_gp) == result.end()) result.push_back(gem_gp);
+          if (verbose) std::cout << "middle strip " << middleStripOfPad  << " " <<gem_gp << std::endl;
         }
       }
     }
@@ -5073,6 +5177,8 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("GE11_phi_L2", event_.GE11_phi_L2,"GE11_phi_L2[50]/F");
   event_tree_->Branch("GE21_phi_L1", event_.GE21_phi_L1,"GE21_phi_L1[50]/F");
   event_tree_->Branch("GE21_phi_L2", event_.GE21_phi_L2,"GE21_phi_L2[50]/F");
+  event_tree_->Branch("GE21_pad2_phi_L1", event_.GE21_pad2_phi_L1,"GE21_pad2_phi_L1[50]/F");
+  event_tree_->Branch("GE21_pad2_phi_L2", event_.GE21_pad2_phi_L2,"GE21_pad2_phi_L2[50]/F");
   event_tree_->Branch("GE11_bx_L1", event_.GE11_bx_L1,"GE11_bx_L1[50]/I");
   event_tree_->Branch("GE11_bx_L2", event_.GE11_bx_L2,"GE11_bx_L2[50]/I");
   event_tree_->Branch("GE21_bx_L1", event_.GE21_bx_L1,"GE21_bx_L1[50]/I");
@@ -5641,6 +5747,8 @@ DisplacedL1MuFilter::clearBranches()
     event_.GE11_phi_L2[i] = 99.;
     event_.GE21_phi_L1[i] = 99.;
     event_.GE21_phi_L2[i] = 99.;
+    event_.GE21_pad2_phi_L1[i] = 99.;
+    event_.GE21_pad2_phi_L2[i] = 99.;
     event_.GE11_bx_L1[i] = 99;
     event_.GE11_bx_L2[i] = 99;
     event_.GE21_bx_L1[i] = 99;

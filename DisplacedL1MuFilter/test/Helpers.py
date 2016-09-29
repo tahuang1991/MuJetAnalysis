@@ -15,6 +15,8 @@ ptbin = [
 myptbin = np.asarray(ptbin)
 nmyptbin = len(myptbin) - 1
 
+binLow = [0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,12.0,14.0,16.0,18.0,20.0,24.0,28.0,32.0,36.0,42.0,50.0]
+ptbins = np.asarray(binLow)
 
 
 etabin = [
@@ -1023,9 +1025,9 @@ def pt_from_DDY123_Tao(DDY123, eta, parity, doFit):
   pt_range = [2.0, 3.0, 4.0, 5.0, 7., 10., 15., 20., 30., 40.]
   if eta is '12to14':
     if parity is 'ooo': DDY123_range = [20.328000, 21.324000, 15.827000, 7.965000, 3.957500, 2.458800, 1.513750, 1.184231, 0.920385, 0.772333]
-    if parity is 'eoo': DDY123_range = [00.000000, 21.218000, 17.509000, 7.974000, 3.986000, 3.030000, 1.442000, 1.345000, 0.964000, 0.964000] ##last entry is the same as next to last!! 1.050000
+    if parity is 'eoo': DDY123_range = [0.000000,  21.218000, 17.509000, 7.974000, 3.986000, 3.030000, 1.442000, 1.345000, 0.964000, 0.964000] ##last entry is the same as next to last!! 1.050000
     if parity is 'eee': DDY123_range = [39.496000, 36.456000, 29.482000, 16.108000, 8.219333, 4.896000, 2.985833, 2.211182, 1.532800, 1.280222]
-    if parity is 'oee': DDY123_range = [0.000000,28.185000,27.864000,12.517000,6.794000,4.280000,2.725000,2.007000,1.404000,1.227000]
+    if parity is 'oee': DDY123_range = [0.000000,  28.185000,27.864000,12.517000,6.794000,4.280000,2.725000,2.007000,1.404000,1.227000]
 
   if eta is '14to16':
     if parity is 'ooo': DDY123_range = [18.444000, 16.404000, 9.447000, 5.219000, 3.092500, 1.986684, 1.316571, 1.002167, 0.795053, 0.678313]
@@ -1061,10 +1063,12 @@ def pt_from_DDY123_Tao(DDY123, eta, parity, doFit):
   #print "DDY123_range", DDY123_range
   #print "DDY123", DDY123
   
+  if DDY123 < 0:
+    print "ALARM", DDY123
   found_pt = 0
-  if   DDY123 >= DDY123_range[0]:
-    found_pt = 0
-  elif DDY123 < DDY123_range[0] and DDY123 >= DDY123_range[1]:
+  #if   DDY123 >= DDY123_range[0] and DDY123_range[0] != 0:
+  #  found_pt = 0
+  if DDY123 < DDY123_range[0] and DDY123 >= DDY123_range[1]:
     found_pt = 2
   elif DDY123 < DDY123_range[1] and DDY123 >= DDY123_range[2]:
     found_pt = 3
@@ -1072,7 +1076,7 @@ def pt_from_DDY123_Tao(DDY123, eta, parity, doFit):
     found_pt = 4
   elif DDY123 < DDY123_range[3] and DDY123 >= DDY123_range[4]:
     found_pt = 5
-  elif DDY123 < DDY123_range[4] and DDY123 >= DDY123_range[4]:
+  elif DDY123 < DDY123_range[4] and DDY123 >= DDY123_range[5]:
     found_pt = 7
   elif DDY123 < DDY123_range[5] and DDY123 >= DDY123_range[6]:
     found_pt = 10
@@ -1330,8 +1334,8 @@ def get1DHistogramMedianY(hist2d):
     yBins = hist2d.GetYaxis().GetNbins()
     xmin = hist2d.GetXaxis().GetXmin()
     xmax = hist2d.GetXaxis().GetXmax()
-    ymin = hist2d.GetYaxis().GetXmin()
-    ymax = hist2d.GetYaxis().GetXmax()
+    #ymin = hist2d.GetYaxis().GetXmin()
+    #ymax = hist2d.GetYaxis().GetXmax()
  
     xs = []
     ys = []
@@ -1360,8 +1364,8 @@ def get1DHistogramMedianY(hist2d):
         error = TMath.Sqrt(0.5 * 0.5 / ( n * f * f ) )
 
       xval = hist2d.GetBinCenter(x)
-      xval_e_up = hist2d.GetBinWidth(x)/2.
-      xval_e_dw = hist2d.GetBinWidth(x)/2.
+      #xval_e_up = hist2d.GetBinWidth(x)/2.
+      #xval_e_dw = hist2d.GetBinWidth(x)/2.
       
       yval = q[1]
       if n<=1:
@@ -1420,8 +1424,7 @@ def get1DHistogramFractionY(hist2d, fraction=.9):
     ys_e_up = []
     ys_e_dw = []
 
-
-    r1 = TH1F("r1","",xBins,xmin,xmax)
+    r1 = TH1F("r1","",hist2d.GetXaxis().GetNbins(), hist2d.GetXaxis().GetXbins().GetArray())
     for x in range(1,xBins+1):
       #print "bin:", x
       probSum = array.array('d', [.90])
@@ -1430,6 +1433,7 @@ def get1DHistogramFractionY(hist2d, fraction=.9):
       ## do not compute quantiles for empty histograms!!!
       if entries == 0:
         continue
+      #print "check", xBins, x, hist2d.GetBinCenter(x)
       tempHist = hist2d.ProjectionY("bin1",x,x)
       tempHist.GetQuantiles(len(probSum), q, probSum)
       #print "q", q
@@ -1640,8 +1644,8 @@ def getTotalEventNumber(tree):
 #______________________________________________________________________________
 def scaleToRate(tree, h):
     ntotalEvents = tree.GetEntries()
-    averageRate = 30000 #40000. * 0.795 #[kHz]
-    bunchCrossingWindow = 1#3.
+    averageRate = 30000. #40000. * 0.795 #[kHz]
+    bunchCrossingWindow = 1.#3.
     h.Scale(averageRate/bunchCrossingWindow/ntotalEvents)
     return h
 

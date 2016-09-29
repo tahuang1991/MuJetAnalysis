@@ -51,11 +51,11 @@ if __name__ == "__main__":
   dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU140_L1MuANA_v2/160913_042635/0000/'
 
   ch = addfiles(ch, dirname=dirname)
-  ch = addfiles(ch, dirname=dirname2)
-  ch = addfiles(ch, dirname=dirname3)
+  #ch = addfiles(ch, dirname=dirname2)
+  #ch = addfiles(ch, dirname=dirname3)
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20160929"
+  label = "DisplacedL1MuTrigger_20160929_v2"
   targetDir = label + "/"
   
   verbose = False
@@ -461,8 +461,6 @@ if __name__ == "__main__":
       treeHits.GetEntry(k)
       if k%1000==0: print "Event", k+1, "nL1Mu", treeHits.nL1Mu
       if k>10000 and runTest: break
-      
-      continue
       
       ## plots for Alexei July 27 2016
       random_number = random.random()

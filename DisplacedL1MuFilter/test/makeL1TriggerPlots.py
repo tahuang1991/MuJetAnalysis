@@ -1,4 +1,4 @@
-# run quiet mode
+# run quiet modebr
 import sys
 sys.argv.append( '-b' )
 
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     #MatchingL1TkMinPt = 0; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160209_VetoL1TkPt0"; pu = 'PU140'
   else:   
     location = "/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/Neutrino_Pt2to20_TTI2023Upg14D_PU140bx25_ILT_ANA_v4/160207_164050/0000/"
-    MatchingL1TkMinPt = 4; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160927_ECFA_v2"; pu = 'PU140'
+    MatchingL1TkMinPt = 4; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160929_ECFA"; pu = 'PU140'
     #MatchingL1TkMinPt = 3; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160209_VetoL1TkPt3"; pu = 'PU140'
     #MatchingL1TkMinPt = 2.5; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160209_VetoL1TkPt2p5"; pu = 'PU140'
     #MatchingL1TkMinPt = 2; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160209_VetoL1TkPt2"; pu = 'PU140'
@@ -360,7 +360,7 @@ if __name__ == "__main__":
         leg.AddEntry(h5,"Veto Matching L1Tk #DeltaR#leq0.12 with p_{T}#geq%.0f"%(MatchingL1TkMinPt), "f")
         leg.Draw("same")
       else:
-        leg = TLegend(0.2,0.2,0.5,0.4,"","brNDC")
+        leg = TLegend(0.2,0.15,0.5,0.4,"","brNDC")
         leg.SetFillColor(kWhite)
         leg.SetBorderSize(1)
         #leg.SetFillStyle(kWhite)
@@ -377,6 +377,11 @@ if __name__ == "__main__":
         #leg.AddEntry(h3,"p_{T} #geq 2.5 GeV", "f")
         #leg.AddEntry(h2,"p_{T} #geq 2 GeV", "f")
         leg.Draw("same")
+
+      latex2 = TLatex(0.8, 0.85, "0<|#eta|<2.4")
+      latex2.SetTextSize(0.05)
+      latex2.SetNDC()
+      latex2.Draw("same")
 
       c.SaveAs(targetDir + title + ext)
       c.SaveAs(targetDir + title + ".C")
@@ -444,8 +449,8 @@ if __name__ == "__main__":
       print title, "%.2f"%(1./h5.GetBinContent(16))
       """
 
-      latex = applyTdrStyle()      
-
+      latex = applyTdrStyle() 
+      
       if isolation_cone == 0.12:
         leg = TLegend(0.2,0.2,0.9,0.4,"","brNDC")
         leg.SetFillColor(kWhite)
@@ -457,7 +462,7 @@ if __name__ == "__main__":
         leg.AddEntry(h5,"Veto Matching L1Tk #DeltaR#leq0.12 with p_{T}#geq%.0f"%(MatchingL1TkMinPt), "l")
         leg.Draw("same")
       else:
-        leg = TLegend(0.2,0.2,0.9,0.4,"","brNDC")
+        leg = TLegend(0.2,0.15,0.9,0.4,"","brNDC")
         leg.SetFillColor(kWhite)
         leg.SetBorderSize(0)
         leg.SetFillStyle(0)
@@ -475,6 +480,7 @@ if __name__ == "__main__":
 
       c.SaveAs(targetDir + title + "_ratio" + ext)
       c.SaveAs(targetDir + title + "_ratio.C")
+      c.SaveAs(targetDir + title + "_ratio.png")
 
     ## trigger rate plots vs pt
     makePlots(h_single_L1Mu_rate, 

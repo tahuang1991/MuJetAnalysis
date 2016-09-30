@@ -59,7 +59,7 @@ if __name__ == "__main__":
   targetDir = label + "/"
   
   verbose = False
-  runTest = True
+  runTest = False
   printExtraInfo = False
   processRPC = False
   doBarrelStudies = True
@@ -813,14 +813,14 @@ if __name__ == "__main__":
               if ok_DTTF_st3 and ok_DTTF_st4: GenMuPt_vs_abs_phiDTst3_phiDTst4.Fill(pt, abs_DTTF_phib3_phib4)
 
               ## base histograms for pT from dphi assignment
-              if ok_DTTF_st1 and ok_DTTF_st2: mapTH1F["GenMuPt_DT1_DT2"].Fill(pt)
-              if ok_DTTF_st1 and ok_DTTF_st3: mapTH1F["GenMuPt_DT1_DT3"].Fill(pt)
-              if ok_DTTF_st1 and ok_DTTF_st4: mapTH1F["GenMuPt_DT1_DT4"].Fill(pt)
-              if ok_DTTF_st2 and ok_DTTF_st3: mapTH1F["GenMuPt_DT2_DT3"].Fill(pt)
-              if ok_DTTF_st3 and ok_DTTF_st4: mapTH1F["GenMuPt_DT2_DT4"].Fill(pt)
-              if ok_DTTF_st4 and ok_DTTF_st4: mapTH1F["GenMuPt_DT3_DT4"].Fill(pt)
+              if ok_DTTF_st1 and ok_DTTF_st2 and pt>4: mapTH1F["GenMuPt_DT1_DT2"].Fill(pt)
+              if ok_DTTF_st1 and ok_DTTF_st3 and pt>4: mapTH1F["GenMuPt_DT1_DT3"].Fill(pt)
+              if ok_DTTF_st1 and ok_DTTF_st4 and pt>4: mapTH1F["GenMuPt_DT1_DT4"].Fill(pt)
+              if ok_DTTF_st2 and ok_DTTF_st3 and pt>4: mapTH1F["GenMuPt_DT2_DT3"].Fill(pt)
+              if ok_DTTF_st3 and ok_DTTF_st4 and pt>4: mapTH1F["GenMuPt_DT2_DT4"].Fill(pt)
+              if ok_DTTF_st4 and ok_DTTF_st4 and pt>4: mapTH1F["GenMuPt_DT3_DT4"].Fill(pt)
 
-              if dxy <= 5:
+              if dxy <= 5 and pt>4:
                 if ok_DTTF_st1 and ok_DTTF_st2: mapTH1F["GenMuPt_DT1_DT2_dxy0to5"].Fill(pt)
                 if ok_DTTF_st1 and ok_DTTF_st3: mapTH1F["GenMuPt_DT1_DT3_dxy0to5"].Fill(pt)
                 if ok_DTTF_st1 and ok_DTTF_st4: 
@@ -829,7 +829,7 @@ if __name__ == "__main__":
                 if ok_DTTF_st2 and ok_DTTF_st3: mapTH1F["GenMuPt_DT2_DT3_dxy0to5"].Fill(pt)
                 if ok_DTTF_st2 and ok_DTTF_st4: mapTH1F["GenMuPt_DT2_DT4_dxy0to5"].Fill(pt)
                 if ok_DTTF_st3 and ok_DTTF_st4: mapTH1F["GenMuPt_DT3_DT4_dxy0to5"].Fill(pt)
-              if 5 < dxy  and dxy <= 50:
+              if 5 < dxy  and dxy <= 50 and pt>4:
                 if ok_DTTF_st1 and ok_DTTF_st2: mapTH1F["GenMuPt_DT1_DT2_dxy5to50"].Fill(pt)
                 if ok_DTTF_st1 and ok_DTTF_st3: mapTH1F["GenMuPt_DT1_DT3_dxy5to50"].Fill(pt)
                 if ok_DTTF_st1 and ok_DTTF_st4: 
@@ -838,7 +838,7 @@ if __name__ == "__main__":
                 if ok_DTTF_st2 and ok_DTTF_st3: mapTH1F["GenMuPt_DT2_DT3_dxy5to50"].Fill(pt)
                 if ok_DTTF_st2 and ok_DTTF_st4: mapTH1F["GenMuPt_DT2_DT4_dxy5to50"].Fill(pt)
                 if ok_DTTF_st3 and ok_DTTF_st4: mapTH1F["GenMuPt_DT3_DT4_dxy5to50"].Fill(pt)
-              if 50 < dxy and dxy <= 100:
+              if 50 < dxy and dxy <= 100 and pt>4:
                 if ok_DTTF_st1 and ok_DTTF_st2: mapTH1F["GenMuPt_DT1_DT2_dxy50to100"].Fill(pt)
                 if ok_DTTF_st1 and ok_DTTF_st3: mapTH1F["GenMuPt_DT1_DT3_dxy50to100"].Fill(pt)
                 if ok_DTTF_st1 and ok_DTTF_st4: 
@@ -870,26 +870,28 @@ if __name__ == "__main__":
               if ok_DTTF_st1 and ok_DTTF_st4:
                 pt_special = 0
                 if DTTF_phib1 != DTTF_phib4:
-                  pt_special = ( ( 1./abs_DTTF_phib1_phib4) + 3.86872357483  ) /  1.48212936934
+                  #pt_special = ( ( 1./abs_DTTF_phib1_phib4) + 3.86872357483  ) /  1.48212936934
+                  pt_special = ( ( 1./abs_DTTF_phib1_phib4) + 4.082  ) /  1.056
+
                 else:
                   pt_special = 140 ## max pT  
 
-                if pt_special>=10: 
-                  mapTH1F["Displaced_L1MuPt10_GenMuPt_DT_DT4"].Fill(pt)
-                  if dxy <= 5:                mapTH1F["Displaced_L1MuPt10_GenMuPt_DT_DT4_dxy0to5"].Fill(pt)
-                  if 5 < dxy  and dxy <= 50:  mapTH1F["Displaced_L1MuPt10_GenMuPt_dxy5to50"].Fill(pt)
-                  if 50 < dxy and dxy <= 100: mapTH1F["Displaced_L1MuPt10_GenMuPt_dxy50to100"].Fill(pt)
-                if pt_special>=15:
-                  mapTH1F["Displaced_L1MuPt15_GenMuPt_DT_DT4"].Fill(pt)
-                  if dxy <= 5:                mapTH1F["Displaced_L1MuPt15_GenMuPt_DT_DT4_dxy0to5"].Fill(pt)
-                  if 5 < dxy  and dxy <= 50:  mapTH1F["Displaced_L1MuPt15_GenMuPt_DT_DT4_dxy5to50"].Fill(pt)
-                  if 50 < dxy and dxy <= 100: mapTH1F["Displaced_L1MuPt15_GenMuPt_DT_DT4_dxy50to100"].Fill(pt)
+                if pt_special>=10 and pt>4: 
+                  mapTH1F["Displaced_L1MuPt10_GenMuPt_DT1_DT4"].Fill(pt)
+                  if dxy <= 5:                mapTH1F["Displaced_L1MuPt10_GenMuPt_DT1_DT4_dxy0to5"].Fill(pt)
+                  if 5 < dxy  and dxy <= 50:  mapTH1F["Displaced_L1MuPt10_GenMuPt_DT1_DT4_dxy5to50"].Fill(pt)
+                  if 50 < dxy and dxy <= 100: mapTH1F["Displaced_L1MuPt10_GenMuPt_DT1_DT4_dxy50to100"].Fill(pt)
+                if pt_special>=15 and pt>4:
+                  mapTH1F["Displaced_L1MuPt15_GenMuPt_DT1_DT4"].Fill(pt)
+                  if dxy <= 5:                mapTH1F["Displaced_L1MuPt15_GenMuPt_DT1_DT4_dxy0to5"].Fill(pt)
+                  if 5 < dxy  and dxy <= 50:  mapTH1F["Displaced_L1MuPt15_GenMuPt_DT1_DT4_dxy5to50"].Fill(pt)
+                  if 50 < dxy and dxy <= 100: mapTH1F["Displaced_L1MuPt15_GenMuPt_DT1_DT4_dxy50to100"].Fill(pt)
  
-                if pt_special>=20: 
-                  mapTH1F["Displaced_L1MuPt20_GenMuPt_DT_DT4"].Fill(pt)
-                  if dxy <= 5:                mapTH1F["Displaced_L1MuPt20_GenMuPt_DT_DT4_dxy0to5"].Fill(pt)
-                  if 5 < dxy  and dxy <= 50:  mapTH1F["Displaced_L1MuPt20_GenMuPt_DT_DT4_dxy5to50"].Fill(pt)
-                  if 50 < dxy and dxy <= 100: mapTH1F["Displaced_L1MuPt20_GenMuPt_DT_DT4_dxy50to100"].Fill(pt)
+                if pt_special>=20 and pt>4: 
+                  mapTH1F["Displaced_L1MuPt20_GenMuPt_DT1_DT4"].Fill(pt)
+                  if dxy <= 5:                mapTH1F["Displaced_L1MuPt20_GenMuPt_DT1_DT4_dxy0to5"].Fill(pt)
+                  if 5 < dxy  and dxy <= 50:  mapTH1F["Displaced_L1MuPt20_GenMuPt_DT1_DT4_dxy5to50"].Fill(pt)
+                  if 50 < dxy and dxy <= 100: mapTH1F["Displaced_L1MuPt20_GenMuPt_DT1_DT4_dxy50to100"].Fill(pt)
 
                 
             else:
@@ -3143,23 +3145,32 @@ if __name__ == "__main__":
     def makeEffPlot(eff1, eff2, eff3, plotName, plotTitle, doPt=True):
       
       c = TCanvas("c","c",800,600)
-      c.Clear()    
-      gStyle.SetTitleBorderSize(0);
-      gStyle.SetPadLeftMargin(0.126);
-      gStyle.SetPadRightMargin(0.04);
-      gStyle.SetPadTopMargin(0.06);
-      gStyle.SetPadBottomMargin(0.13);
+      c.Clear() 
+
       gPad.SetTickx(1)
       gPad.SetTicky(1)
       c.SetGridx()
       c.SetGridy()
-      #gStyle.SetTitleFontSize(0.07)
-      #gPad.SetLogx(1)
+
+      gStyle.SetTitleStyle( 0 )
+      gStyle.SetTitleAlign(13) ##// coord in top left
+      gStyle.SetTitleX(0.)
+      gStyle.SetTitleY(1.)
+      gStyle.SetTitleW(1)
+      gStyle.SetTitleH(0.058)
+      gStyle.SetTitleBorderSize( 0 )
       
+      gStyle.SetPadLeftMargin(0.126)
+      gStyle.SetPadRightMargin(0.04)
+      gStyle.SetPadTopMargin(0.06)
+      gStyle.SetPadBottomMargin(0.13)
+      gStyle.SetOptStat( 0 )
+      gStyle.SetMarkerStyle(1)
+
       if doPt: 
         binLow = [0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,12.0,14.0,16.0,18.0,20.0,24.0,28.0,32.0,36.0,42.0,50.0]
         ptbins = np.asarray(binLow)
-        xaxisTitle = "True Muon p_{T} [GeV]"
+        xaxisTitle = "True muon p_{T} [GeV]"
         b1 = TH1F("b1","b1", len(ptbins)-1, ptbins)
       else:    
         mmax = 2.5; xaxisTitle = "True Muon #eta"
@@ -3173,19 +3184,32 @@ if __name__ == "__main__":
       b1.GetYaxis().SetTitle("Trigger efficiency")
       b1.GetXaxis().SetTitle(xaxisTitle)
       b1.GetXaxis().SetTitleOffset(1.2)
-      b1.SetTitle(plotTitle)
+      b1.GetXaxis().SetTitleSize(0.05)
+      b1.GetYaxis().SetTitleSize(0.05)
+      b1.GetXaxis().SetLabelSize(0.05)
+      b1.GetYaxis().SetLabelSize(0.05)
+      b1.SetTitle("           #scale[1.4]{#font[61]{CMS}} #font[52]{Simulation preliminary}                                                           14 TeV, 140 PU")
+
+      #b1.SetTitle(plotTitle)
       b1.SetStats(0)
       b1.Draw()
 
       eff1.SetLineColor(kBlue)
+      eff1.SetMarkerColor(kBlue)
+      eff1.SetMarkerStyle(20)
       eff1.Draw("same")
+
       eff2.SetLineColor(kRed)
+      eff2.SetMarkerColor(kRed)
+      eff2.SetMarkerStyle(21)
       eff2.Draw("same")
       if eff3 is not None:
-        eff3.SetLineColor(kGreen+1)
+        eff3.SetLineColor(kGreen+2)
+        eff3.SetMarkerColor(kGreen+2)
+        eff3.SetMarkerStyle(22)
         eff3.Draw("same")
 
-      latex = applyTdrStyle()
+      #latex = applyTdrStyle()
 
       ## get the pT cut from the title
       len_string = len('Prompt_L1MuPt')
@@ -3196,16 +3220,27 @@ if __name__ == "__main__":
       ptCut = plotName[index+len_string:index+len_string+2]
       #print len_string, ptCut
 
-      leg = TLegend(0.6,0.2,0.95,0.45,"","brNDC")
+      latex3 = TLatex(0.5, 0.6, "Stub alignment algorithm")
+      latex3.SetTextSize(0.05)
+      latex3.SetNDC()
+      latex3.Draw("same")
+
+      latex2 = TLatex(0.5, 0.5, "0<|#eta|<0.9, p_{T}^{L1}>" + ptCut +  " GeV")
+      latex2.SetTextSize(0.05)
+      latex2.SetNDC()
+      latex2.Draw("same")
+
+      leg = TLegend(0.5,0.2,0.9,0.45,"","brNDC")
       leg.SetFillColor(kWhite)
       leg.SetBorderSize(1)
       leg.SetFillStyle(1001)
-      leg.SetTextSize(0.04)
-      leg.SetHeader("L1Mu trigger p_{T} #geq " + ptCut +  " GeV")
-      leg.AddEntry(eff1,"|dxy| #leq 5 cm", "l")
-      leg.AddEntry(eff2,"5 < |dxy| #leq 50 cm", "l")
+      leg.SetTextSize(0.05)
+      #leg.SetHeader("L1Mu trigger p_{T} #geq " + ptCut +  " GeV")
+      #leg.SetHeader("")
+      leg.AddEntry(eff1,"|dxy| #leq 5 cm", "lp")
+      leg.AddEntry(eff2,"5 < |dxy| #leq 50 cm", "lp")
       if eff3 is not None:
-        leg.AddEntry(eff3,"50 < |dxy| #leq 100 cm", "l")
+        leg.AddEntry(eff3,"50 < |dxy| #leq 100 cm", "lp")
       leg.Draw("same")
       c.SaveAs(plotName + ".png")
       c.SaveAs(plotName + ".pdf")
@@ -3301,8 +3336,6 @@ if __name__ == "__main__":
     producePromptMuEfficiencyPlots = True
     if producePromptMuEfficiencyPlots:
       for ptCut in [3, 5, 7, 10, 15, 20]:
-        print mapTH1F["Prompt_L1MuPt%d_GenMuPt_dxy0to5"%(ptCut)].GetEntries()
-        print mapTH1F["GenMuPt_dxy0to5"].GetEntries()
 
         makeEffPlot(myTEfficiency("Prompt_L1MuPt%d_GenMuPt_dxy0to5"%(ptCut), "GenMuPt_dxy0to5"),
                     myTEfficiency("Prompt_L1MuPt%d_GenMuPt_dxy5to50"%(ptCut), "GenMuPt_dxy5to50"),
@@ -3338,41 +3371,49 @@ if __name__ == "__main__":
 
         
 
-    return
     ## properly normalized bending angle plots DT
     produceDTEfficiencyPlots = True
     if produceDTEfficiencyPlots:
-      makeEffPlot(myTEfficiency("Displaced_L1MuPt10_GenMuPt_DT_DT4_dxy0to5",    "GenMuPt_DT1_DT4_dxy0to5"),
-                  myTEfficiency("Displaced_L1MuPt10_GenMuPt_DT_DT4_dxy5to50",   "GenMuPt_DT1_DT4_dxy5to50"),
-                  myTEfficiency("Displaced_L1MuPt10_GenMuPt_DT_DT4_dxy50to100", "GenMuPt_DT1_DT4_dxy50to100"),
+      print mapTH1F["Displaced_L1MuPt10_GenMuPt_DT1_DT4_dxy0to5"].GetEntries()
+      print mapTH1F["Displaced_L1MuPt15_GenMuPt_DT1_DT4_dxy0to5"].GetEntries()
+      print mapTH1F["Displaced_L1MuPt20_GenMuPt_DT1_DT4_dxy0to5"].GetEntries()
+      print mapTH1F["GenMuPt_DT1_DT4_dxy0to5"].GetEntries()
+      print mapTH1F["GenMuPt_DT1_DT4_dxy0to5"].GetEntries()
+      print mapTH1F["GenMuPt_DT1_DT4_dxy0to5"].GetEntries()
+
+      makeEffPlot(myTEfficiency("Displaced_L1MuPt10_GenMuPt_DT1_DT4_dxy0to5",    "GenMuPt_DT1_DT4_dxy0to5"),
+                  myTEfficiency("Displaced_L1MuPt10_GenMuPt_DT1_DT4_dxy5to50",   "GenMuPt_DT1_DT4_dxy5to50"),
+                  myTEfficiency("Displaced_L1MuPt10_GenMuPt_DT1_DT4_dxy50to100", "GenMuPt_DT1_DT4_dxy50to100"),
                   targetDir + "Displaced_L1MuPt10_GenMuPt_DT1_DT4_dxy0to100", "Displaced L1Mu trigger algorithm performance |#eta| #leq 0.9, 14TeV, PU140")
       
-      makeEffPlot(myTEfficiency("Displaced_L1MuPt15_GenMuPt_DT_DT4_dxy0to5",    "GenMuPt_DT1_DT4_dxy0to5"),
-                  myTEfficiency("Displaced_L1MuPt15_GenMuPt_DT_DT4_dxy5to50",   "GenMuPt_DT1_DT4_dxy5to50"),
-                  myTEfficiency("Displaced_L1MuPt15_GenMuPt_DT_DT4_dxy50to100", "GenMuPt_DT1_DT4_dxy50to100"),
+      makeEffPlot(myTEfficiency("Displaced_L1MuPt15_GenMuPt_DT1_DT4_dxy0to5",    "GenMuPt_DT1_DT4_dxy0to5"),
+                  myTEfficiency("Displaced_L1MuPt15_GenMuPt_DT1_DT4_dxy5to50",   "GenMuPt_DT1_DT4_dxy5to50"),
+                  myTEfficiency("Displaced_L1MuPt15_GenMuPt_DT1_DT4_dxy50to100", "GenMuPt_DT1_DT4_dxy50to100"),
                   targetDir + "Displaced_L1MuPt15_GenMuPt_DT1_DT4_dxy0to100", "Displaced L1Mu trigger algorithm performance |#eta| #leq 0.9, 14TeV, PU140")
       
-      makeEffPlot(myTEfficiency("Displaced_L1MuPt20_GenMuPt_DT_DT4_dxy0to5",    "GenMuPt_DT1_DT4_dxy0to5"),
-                  myTEfficiency("Displaced_L1MuPt20_GenMuPt_DT_DT4_dxy5to50",   "GenMuPt_DT1_DT4_dxy5to50"),
-                  myTEfficiency("Displaced_L1MuPt20_GenMuPt_DT_DT4_dxy50to100", "GenMuPt_DT1_DT4_dxy50to100"),
+      makeEffPlot(myTEfficiency("Displaced_L1MuPt20_GenMuPt_DT1_DT4_dxy0to5",    "GenMuPt_DT1_DT4_dxy0to5"),
+                  myTEfficiency("Displaced_L1MuPt20_GenMuPt_DT1_DT4_dxy5to50",   "GenMuPt_DT1_DT4_dxy5to50"),
+                  myTEfficiency("Displaced_L1MuPt20_GenMuPt_DT1_DT4_dxy50to100", "GenMuPt_DT1_DT4_dxy50to100"),
                   targetDir + "Displaced_L1MuPt20_GenMuPt_DT1_DT4_dxy0to100", "Displaced L1Mu trigger algorithm performance |#eta| #leq 0.9, 14TeV, PU140")
       
       
-      makeEffPlot(myTEfficiency("Displaced_L1MuPt10_GenMuPt_DT_DT4_dxy0to5",    "GenMuPt_DT1_DT4_dxy0to5"),
-                  myTEfficiency("Displaced_L1MuPt10_GenMuPt_DT_DT4_dxy5to50",   "GenMuPt_DT1_DT4_dxy5to50"),
+      makeEffPlot(myTEfficiency("Displaced_L1MuPt10_GenMuPt_DT1_DT4_dxy0to5",    "GenMuPt_DT1_DT4_dxy0to5"),
+                  myTEfficiency("Displaced_L1MuPt10_GenMuPt_DT1_DT4_dxy5to50",   "GenMuPt_DT1_DT4_dxy5to50"),
                   None,
                   targetDir + "Displaced_L1MuPt10_GenMuPt_DT1_DT4_dxy0to50", "Displaced L1Mu trigger algorithm performance |#eta| #leq 0.9, 14TeV, PU140")
       
-      makeEffPlot(myTEfficiency("Displaced_L1MuPt15_GenMuPt_DT_DT4_dxy0to5",    "GenMuPt_DT1_DT4_dxy0to5"),
-                  myTEfficiency("Displaced_L1MuPt15_GenMuPt_DT_DT4_dxy5to50",   "GenMuPt_DT1_DT4_dxy5to50"),
+      makeEffPlot(myTEfficiency("Displaced_L1MuPt15_GenMuPt_DT1_DT4_dxy0to5",    "GenMuPt_DT1_DT4_dxy0to5"),
+                  myTEfficiency("Displaced_L1MuPt15_GenMuPt_DT1_DT4_dxy5to50",   "GenMuPt_DT1_DT4_dxy5to50"),
                   None,
                   targetDir + "Displaced_L1MuPt15_GenMuPt_DT1_DT4_dxy0to50", "Displaced L1Mu trigger algorithm performance |#eta| #leq 0.9, 14TeV, PU140")
       
-      makeEffPlot(myTEfficiency("Displaced_L1MuPt20_GenMuPt_DT_DT4_dxy0to5",    "GenMuPt_DT1_DT4_dxy0to5"),
-                  myTEfficiency("Displaced_L1MuPt20_GenMuPt_DT_DT4_dxy5to50",   "GenMuPt_DT1_DT4_dxy5to50"),
+      makeEffPlot(myTEfficiency("Displaced_L1MuPt20_GenMuPt_DT1_DT4_dxy0to5",    "GenMuPt_DT1_DT4_dxy0to5"),
+                  myTEfficiency("Displaced_L1MuPt20_GenMuPt_DT1_DT4_dxy5to50",   "GenMuPt_DT1_DT4_dxy5to50"),
                   None,
                   targetDir + "Displaced_L1MuPt20_GenMuPt_DT1_DT4_dxy0to50", "Displaced L1Mu trigger algorithm performance |#eta| #leq 0.9, 14TeV, PU140")
       
+    return
+
     ## Direction based pT efficiency plots (with GEMs)
     produceDirectionPtEfficiencyPlots = False
     if produceDirectionPtEfficiencyPlots:

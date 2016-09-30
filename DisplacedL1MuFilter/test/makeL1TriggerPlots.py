@@ -48,7 +48,7 @@ if __name__ == "__main__":
     #MatchingL1TkMinPt = 0; label = "DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_20160209_VetoL1TkPt0"; pu = 'PU140'
   else:   
     location = "/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/Neutrino_Pt2to20_TTI2023Upg14D_PU140bx25_ILT_ANA_v4/160207_164050/0000/"
-    MatchingL1TkMinPt = 4; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160929_ECFA"; pu = 'PU140'
+    MatchingL1TkMinPt = 4; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160930_ECFA_v4"; pu = 'PU140'
     #MatchingL1TkMinPt = 3; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160209_VetoL1TkPt3"; pu = 'PU140'
     #MatchingL1TkMinPt = 2.5; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160209_VetoL1TkPt2p5"; pu = 'PU140'
     #MatchingL1TkMinPt = 2; label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160209_VetoL1TkPt2"; pu = 'PU140'
@@ -306,12 +306,14 @@ if __name__ == "__main__":
       
 
       b1 = TH1F("b1","b1",28,myptbin)
-      b1.GetYaxis().SetRangeUser(1,10000)
+      b1.GetYaxis().SetRangeUser(2,6000)
+      b1.GetXaxis().SetRangeUser(5,100)
       b1.GetXaxis().SetTitleOffset(1.2)
       b1.GetYaxis().SetTitleOffset(1.2)
-      b1.GetYaxis().SetNdivisions(520)
+      #h->GetYaxis()->SetNdivisions(10)
+      #b1.GetYaxis().SetNdivisions(40)
       b1.GetYaxis().SetTitle("Trigger rate [kHz]")
-      b1.GetXaxis().SetTitle("L1Mu candidate p_{T} cut [GeV]")
+      b1.GetXaxis().SetTitle("Muon trigger p_{T} threshold [GeV]")
       b1.GetXaxis().SetTitleSize(0.05)
       b1.GetYaxis().SetTitleSize(0.05)
       b1.GetXaxis().SetLabelSize(0.05)
@@ -360,12 +362,13 @@ if __name__ == "__main__":
         leg.AddEntry(h5,"Veto Matching L1Tk #DeltaR#leq0.12 with p_{T}#geq%.0f"%(MatchingL1TkMinPt), "f")
         leg.Draw("same")
       else:
-        leg = TLegend(0.5,0.65,0.95,0.9,"","brNDC")
+        leg = TLegend(0.45,0.65,0.95,0.9,"","brNDC")
         leg.SetFillColor(kWhite)
         leg.SetBorderSize(1)
         #leg.SetFillStyle(kWhite)
         leg.SetTextSize(0.04)
         leg.AddEntry(h1,"Single L1Mu", "f")
+        leg.AddEntry(None,"", "")
         leg.AddEntry(None,"Single L1Mu + L1Trk veto:", "")
         leg.AddEntry(h5,"Loose veto", "f")
         leg.AddEntry(h4,"Medium veto", "f")
@@ -390,46 +393,75 @@ if __name__ == "__main__":
       ## ratios 
       c = TCanvas("c","c",800,600)
       c.Clear()    
-      gStyle.SetTitleBorderSize(0);
-      gStyle.SetPadLeftMargin(0.126);
-      gStyle.SetPadRightMargin(0.04);
-      gStyle.SetPadTopMargin(0.06);
-      gStyle.SetPadBottomMargin(0.13);
-#      gPad.SetLogy(1)
+
+      gPad.SetTickx(1)
+      gPad.SetTicky(1)
+      #gPad.SetLogy(1)
+      gPad.SetLogx(1)
+      c.SetGridx()
+      c.SetGridy()
+
+      gStyle.SetTitleStyle( 0 )
+      gStyle.SetTitleAlign(13) ##// coord in top left
+      gStyle.SetTitleX(0.)
+      gStyle.SetTitleY(1.)
+      gStyle.SetTitleW(1)
+      gStyle.SetTitleH(0.058)
+      gStyle.SetTitleBorderSize( 0 )
+      
+      gStyle.SetPadLeftMargin(0.126)
+      gStyle.SetPadRightMargin(0.04)
+      gStyle.SetPadTopMargin(0.06)
+      gStyle.SetPadBottomMargin(0.13)
+      gStyle.SetOptStat( 0 )
+      gStyle.SetMarkerStyle(1)
       
       b1 = TH1F("b1","b1",28,myptbin)
-      b1.GetYaxis().SetRangeUser(0.01,1)
+      b1.GetYaxis().SetRangeUser(0.,1)
       b1.GetYaxis().SetTitleOffset(1.2)
-      b1.GetYaxis().SetNdivisions(520)
-      b1.GetYaxis().SetTitle("Ratio (normalized to prompt L1Mu)")
-      b1.GetXaxis().SetTitle("L1Mu p_{T} cut [GeV]")
-      b1.GetXaxis().SetTitleFont(62)
+      #b1.GetYaxis().SetNdivisions(520)
+      b1.GetYaxis().SetTitle("Ratio (normalized to single L1Mu)")
+      #b1.GetXaxis().SetTitle("L1Mu p_{T} cut [GeV]")
+      #b1.GetXaxis().SetTitleFont(62)
       b1.GetXaxis().SetTitleOffset(1.2)
+      b1.GetXaxis().SetTitle("Muon trigger p_{T} threshold [GeV]")
       b1.GetXaxis().SetTitleSize(0.05)
       b1.GetYaxis().SetTitleSize(0.05)
-      b1.SetTitle("                                                                  14TeV, " + pu)
+      b1.GetXaxis().SetLabelSize(0.05)
+      b1.GetYaxis().SetLabelSize(0.05)
+      b1.SetTitle("           #scale[1.4]{#font[61]{CMS}} #font[52]{Simulation preliminary}                                                           14 TeV, 140 PU")
       b1.SetStats(0)
+      b1.GetXaxis().SetRangeUser(5,100)
       b1.Draw()
     
       #if isolation_cone != 0.12:    
-      h2.SetLineColor(kMagenta)      
+      h2.SetLineColor(kBlue)      
+      h2.SetMarkerColor(kBlue)      
+      h2.SetMarkerStyle(20)      
       h2.SetFillColor(kWhite)
       h2.Divide(h1)
+      h2.GetXaxis().SetRangeUser(5,100)
       h2.Draw("same")
       
-      h3.SetLineColor(kBlue)
-      h3.SetFillColor(kWhite)
-      h3.Divide(h1)
-      h3.Draw("same")
+      #h3.SetLineColor(kBlue)
+      #h3.SetFillColor(kWhite)
+      #h3.Divide(h1)
+      #h3.Draw("same")
       
-      h4.SetLineColor(kGreen+1)
+      h4.SetLineColor(kGreen+2)
+      h4.SetMarkerColor(kGreen+2)      
+      h4.SetMarkerStyle(21)      
       h4.SetFillColor(kWhite)
       h4.Divide(h1)
+      h4.GetXaxis().SetRangeUser(5,100)
       h4.Draw("same")
       
       h5.SetLineColor(kOrange+1)
+      h5.SetMarkerColor(kOrange+1)      
+      h5.SetMarkerStyle(22)      
       h5.SetFillColor(kWhite)
       h5.Divide(h1)
+      h5.GetXaxis().SetRangeUser(5,100)
       h5.Draw("same")
 
       print title, "%.2f"%(1./h2.GetBinContent(11))
@@ -449,9 +481,9 @@ if __name__ == "__main__":
       print title, "%.2f"%(1./h5.GetBinContent(16))
       """
 
-      latex = applyTdrStyle() 
+      #latex = applyTdrStyle() 
       
-      if isolation_cone == 0.12:
+      if isolation_cone == 0.12 and False:
         leg = TLegend(0.2,0.2,0.9,0.4,"","brNDC")
         leg.SetFillColor(kWhite)
         leg.SetBorderSize(0)
@@ -462,11 +494,17 @@ if __name__ == "__main__":
         leg.AddEntry(h5,"Veto Matching L1Tk #DeltaR#leq0.12 with p_{T}#geq%.0f"%(MatchingL1TkMinPt), "l")
         leg.Draw("same")
       else:
-        leg = TLegend(0.2,0.15,0.9,0.4,"","brNDC")
+        leg = TLegend(0.5,0.7,0.95,0.9,"","brNDC")
         leg.SetFillColor(kWhite)
-        leg.SetBorderSize(0)
-        leg.SetFillStyle(0)
-        leg.SetTextSize(0.03)
+        leg.SetBorderSize(1)
+        #leg.SetFillStyle(0)
+        leg.SetTextSize(0.04)
+#        leg.AddEntry(h1,"Single L1Mu", "f")
+        leg.AddEntry(None,"Single L1Mu + L1Trk veto:", "")
+        leg.AddEntry(h5,"Loose veto", "p")
+        leg.AddEntry(h4,"Medium veto", "p")
+        leg.AddEntry(h2,"Tight veto", "p")
+        """
         leg.AddEntry(h1,"Prompt L1Mu", "l")
         leg.AddEntry(None,"Displaced L1Mu", "")
         leg.AddEntry(None,"Veto Matching L1Tk #DeltaR#leq0.12 with p_{T}#geq%.0f"%(MatchingL1TkMinPt), "")
@@ -475,13 +513,18 @@ if __name__ == "__main__":
         leg.AddEntry(h4,"p_{T} #geq 3 GeV", "l")
         leg.AddEntry(h3,"p_{T} #geq 2.5 GeV", "l")
         leg.AddEntry(h2,"p_{T} #geq 2 GeV", "l")
+        """
         leg.Draw("same")
 
+      latex2 = TLatex(0.2, 0.8, "0<|#eta|<2.4")
+      latex2.SetTextSize(0.05)
+      latex2.SetNDC()
+      latex2.Draw("same")
 
       c.SaveAs(targetDir + title + "_ratio" + ext)
       c.SaveAs(targetDir + title + "_ratio.C")
-      c.SaveAs(targetDir + title + "_ratio.png")
-
+      c.SaveAs(targetDir + title + "_ratio.pdf")
+       
     ## trigger rate plots vs pt
     makePlots(h_single_L1Mu_rate, 
               h_single_displaced_rate_dR0p4_L1TkPt2, 

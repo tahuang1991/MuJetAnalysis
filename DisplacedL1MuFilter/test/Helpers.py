@@ -1620,7 +1620,7 @@ def getBackwardCumulative(h):
     htemp.SetBinContent(0,h.GetBinContent(0))
     for i in range(1,len(myptbin)+1):        
         sum = 0
-        for j in range(i,len(myptbin)+1):
+        for j in range(i+1,len(myptbin)+1):
             sum += h.GetBinContent(j)
         htemp.SetBinContent(i, sum)
     htemp.Sumw2()

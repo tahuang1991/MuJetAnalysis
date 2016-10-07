@@ -1433,17 +1433,17 @@ def get1DHistogramFractionY(hist2d, fraction=.9):
       ## do not compute quantiles for empty histograms!!!
       if entries == 0:
         continue
-      #print "check", xBins, x, hist2d.GetBinCenter(x)
+      #print "check", xBins, x, hist2d.GetBinLowEdge(x)
       tempHist = hist2d.ProjectionY("bin1",x,x)
       tempHist.GetQuantiles(len(probSum), q, probSum)
       #print "q", q
-      n = tempHist.GetEffectiveEntries()
+      n = tempHist.Integral(0,tempHist.GetYaxis().GetNbins()+1)#GetEffectiveEntries()
       f = TMath.Gaus(q[0], tempHist.GetMean(), tempHist.GetStdDev(), True)
       error = 0
       if (f>0 and n>1):
         error = TMath.Sqrt(fraction * (1-fraction) / ( n * f * f ) )
 
-      xval = hist2d.GetBinCenter(x)
+      xval = hist2d.GetBinLowEdge(x)
       xval_e_up = hist2d.GetBinWidth(x)/2.
       xval_e_dw = hist2d.GetBinWidth(x)/2.
 
@@ -1461,8 +1461,8 @@ def get1DHistogramFractionY(hist2d, fraction=.9):
       ys_e_up.append(yval_e_up)
       ys_e_dw.append(yval_e_dw)
 
-      g1 = TF1("g1","[0]/(x-[1])",3, 40)
-      r1.Fit(g1,"LRQM")
+      #g1 = TF1("g1","[0]/(x-[1])",3, 40)
+      #r1.Fit(g1,"LRQM")
 
 
     SetOwnership( r1, False )
@@ -1930,11 +1930,15 @@ def makeSimplePlot(targetDir, h, plotTitle, setLogx=False):
 
 
 #_______________________________________________________________________________
-def get_1D(p, title, h_name, h_bins, to_draw, cut, opt = "", color = kBlue):
+def get_1D(p, h_name, h_bins, to_draw, cut, opt = "", color = kBlue):
     gStyle.SetStatStyle(0)
     gStyle.SetOptStat(11111111)
     #nbins = len(xbins)
     #h = TH1F("h_name", "h_name", nbins, xbins);
+    binLow = [0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,12.0,14.0,16.0,18.0,20.0,24.0,28.0,32.0,36.0,42.0,50.0]
+    ptbins = np.asarray(binLow)
+
+
     p.Draw(to_draw + ">>" + h_name + h_bins, cut)
     h = TH1F(gDirectory.Get(h_name).Clone(h_name))
     if not h:
@@ -1947,5 +1951,60 @@ def get_1D(p, title, h_name, h_bins, to_draw, cut, opt = "", color = kBlue):
     return h
 
 #_______________________________________________________________________________
+def get_2D(p, xbins, h_bins, to_draw, cut, opt = "", color = kBlue):
+    gStyle.SetStatStyle(0)
+    gStyle.SetOptStat(11111111)
+    nBins = int(h_bins[1:-1].split(',')[0])
+    minBin = float(h_bins[1:-1].split(',')[1])
+    maxBin = float(h_bins[1:-1].split(',')[2])
+    nxbins = len(xbins)-1
+
+    h = TH2F("my_hist", "my_hist", nxbins, xbins, nBins, minBin, maxBin);
+
+    p.Draw(to_draw + ">>my_hist", cut)
+    #h = TH2F(gDirectory.Get("my_hist").Clone("my_hist_clone"))
+    if not h:
+        sys.exit('%s does not exist'%(to_draw))
+    #h.SetTitle("")
+    #h.SetLineWidth(2)
+    #h.SetLineColor(color)    
+    #h.SetMinimum(0.)
+    SetOwnership(h, False)
+    return h
+
+#_______________________________________________________________________________
 def to_array(x, fmt="d"):
     return array.array(fmt, x)
+
+
+#_______________________________________________________________________________
+def getEfficiency(t, to_draw, denom_cut, extra_num_cut, color = kBlue, marker_st = 20):
+    """Make an efficiency plot"""
+    
+    ## total numerator selection cut
+    num_cut = AND(denom_cut,extra_num_cut)
+
+    binLow = [0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,12.0,14.0,16.0,18.0,20.0,24.0,28.0,32.0,36.0,42.0,50.0]
+    ptbins = np.asarray(binLow)
+
+    num = TH1F("num", "", len(ptbins)-1, ptbins) 
+    den = TH1F("den", "", len(ptbins)-1, ptbins)
+
+    t.Draw(to_draw + ">>num", num_cut, "goff")
+    t.Draw(to_draw + ">>den", denom_cut, "goff")
+
+    useTEfficiency = True
+    if useTEfficiency:
+        eff = TEfficiency(num, den)
+    else:
+        eff = TGraphAsymmErrors(num, den)
+
+    eff.SetTitle("")
+    #eff.SetLineWidth(2)
+    #eff.SetLineColor(color)
+    #eff.SetMarkerStyle(marker_st)
+    #eff.SetMarkerColor(color)
+    #eff.SetMarkerSize(.5)
+
+    SetOwnership(eff, False)
+    return eff

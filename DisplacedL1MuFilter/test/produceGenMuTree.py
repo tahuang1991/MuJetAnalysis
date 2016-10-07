@@ -38,7 +38,7 @@ if __name__ == "__main__":
   ch = addfiles(ch, dirname=dirname3)
   treeHits = ch
 
-  f = ROOT.TFile("out_ana.root", "recreate")
+  f = ROOT.TFile("out_ana_pu140_displaced_L1Mu.root", "recreate")
   t = ROOT.TTree("L1MuTree", "L1MuTree")
   
   ## ranges
@@ -92,7 +92,11 @@ if __name__ == "__main__":
   ok_CSCTF_st3s = numpy.zeros(1, dtype=int)
   ok_CSCTF_st4s = numpy.zeros(1, dtype=int)
 
+  paritys = numpy.zeros(1, dtype=int)
+  partitions = numpy.zeros(1, dtype=int)
   DDY123_pts = numpy.zeros(1, dtype=float)
+  DDY123_withLCTFits = numpy.zeros(1, dtype=float)
+  DDY123_withoutLCTFits = numpy.zeros(1, dtype=float)
 
   has_DTTFs = numpy.zeros(1, dtype=int)
   DTTF_pts = numpy.zeros(1, dtype=float)
@@ -101,6 +105,8 @@ if __name__ == "__main__":
   DTTF_qualitys = numpy.zeros(1, dtype=int)
   DTTF_bxs = numpy.zeros(1, dtype=int)
 
+  DT1_DT4_pts = numpy.zeros(1, dtype=float)
+  
   ## branches
   t.Branch('gen_pt', gen_pts, 'gen_pt/D')
   t.Branch('gen_eta', gen_etas, 'gen_eta/D')
@@ -126,7 +132,11 @@ if __name__ == "__main__":
   t.Branch('ok_CSCTF_st3', ok_CSCTF_st3s, 'ok_CSCTF_st3/I')
   t.Branch('ok_CSCTF_st4', ok_CSCTF_st4s, 'ok_CSCTF_st4/I')
   
-  t.Branch('DDY123_pt', DDY123_pts, 'DDY123_pt/d')
+  t.Branch('parity', paritys, 'parity/I')
+  t.Branch('partition', partitions, 'partition/I')
+  t.Branch('DDY123_pt', DDY123_pts, 'DDY123_pt/D')
+  t.Branch('DDY123_withLCTFit', DDY123_withLCTFits, 'DDY123_withLCTFit/D')
+  t.Branch('DDY123_withoutLCTFit', DDY123_withoutLCTFits, 'DDY123_withoutLCTFit/D')
 
   t.Branch('has_DTTF', has_DTTFs, 'has_DTTF/I')
   t.Branch('DTTF_pt', DTTF_pts, 'DTTF_pt/D')
@@ -134,6 +144,8 @@ if __name__ == "__main__":
   t.Branch('DTTF_phi', DTTF_phis, 'DTTF_phi/D')
   t.Branch('DTTF_quality', DTTF_qualitys, 'DTTF_quality/I')
   t.Branch('DTTF_bx', DTTF_bxs, 'DTTF_bx/I')
+
+  t.Branch('DT1_DT4_pt', DT1_DT4_pts, 'DT1_DT4_pt/D')
 
   print "Start run on events..."
   for k in range(0,treeHits.GetEntries()):
@@ -212,12 +224,14 @@ if __name__ == "__main__":
           CSCTF_qualitys[0] = -99 
           CSCTF_bxs[0] = -99
           
-          ok_CSCTF_st1s[0] = False
-          ok_CSCTF_st2s[0] = False
-          ok_CSCTF_st3s[0] = False
-          ok_CSCTF_st4s[0] = False
+          ok_CSCTF_st1s[0] = 0
+          ok_CSCTF_st2s[0] = 0
+          ok_CSCTF_st3s[0] = 0
+          ok_CSCTF_st4s[0] = 0
           
           DDY123_pts[0] = 0
+          DDY123_withoutLCTFits[0] = -1
+          DDY123_withLCTFits[0] = -1
 
           has_DTTFs[0] = 0
 
@@ -272,10 +286,10 @@ if __name__ == "__main__":
               ok_CSCTF_st3 = CSCTF_phi3 != 99
               ok_CSCTF_st4 = CSCTF_phi4 != 99              
               
-              ok_CSCTF_st1s[0] = ok_CSCTF_st1
-              ok_CSCTF_st2s[0] = ok_CSCTF_st2
-              ok_CSCTF_st3s[0] = ok_CSCTF_st3
-              ok_CSCTF_st4s[0] = ok_CSCTF_st4  
+              ok_CSCTF_st1s[0] = int(ok_CSCTF_st1)
+              ok_CSCTF_st2s[0] = int(ok_CSCTF_st2)
+              ok_CSCTF_st3s[0] = int(ok_CSCTF_st3)
+              ok_CSCTF_st4s[0] = int(ok_CSCTF_st4)  
 
               if verbose:
                 print "\t\tok_CSCTF_st1", ok_CSCTF_st1 
@@ -390,22 +404,45 @@ if __name__ == "__main__":
               CSCTF_fit_R3 = treeHits.CSCTF_fit_R3[L1Mu_CSCTF_index]
               CSCTF_fit_R4 = treeHits.CSCTF_fit_R4[L1Mu_CSCTF_index]
 
+              """
+              GE11_phi_L1[L1Mu_CSCTF_index], GE11_phi_L2[L1Mu_CSCTF_index], GE21_phi_L1[L1Mu_CSCTF_index], GE21_phi_L2[L1Mu_CSCTF_index];
+              GE21_pad2_phi_L1[L1Mu_CSCTF_index], GE21_pad2_phi_L2[L1Mu_CSCTF_index];
+              GE11_bx_L1[L1Mu_CSCTF_index], GE11_bx_L2[L1Mu_CSCTF_index], GE21_bx_L1[L1Mu_CSCTF_index], GE21_bx_L2[L1Mu_CSCTF_index];
+              GE11_ch_L1[L1Mu_CSCTF_index], GE11_ch_L2[L1Mu_CSCTF_index], GE21_ch_L1[L1Mu_CSCTF_index], GE21_ch_L2[L1Mu_CSCTF_index];
+              GE11_z_L1[L1Mu_CSCTF_index], GE11_z_L2[L1Mu_CSCTF_index], GE21_z_L1[L1Mu_CSCTF_index], GE21_z_L2[L1Mu_CSCTF_index];
+              """
+              
+
+
               parity = get_parity(CSCTF_isEven1, CSCTF_isEven2, CSCTF_isEven3, CSCTF_isEven4)
               etaPartition = get_eta_partition(L1Mu_etas[0])
 
+              paritys[0] = parity
+              partitions[0] = etaPartition
+
               ok_position_based_endcap =  ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3 
               if ok_position_based_endcap and 0 <= parity and parity <= 3 and abs(L1Mu_etas[0])>=1.2 and abs(L1Mu_etas[0])<=2.4:
+
+                deltay12_withoutLCTFit, deltay23_withoutLCTFit = deltay12_deltay23(CSCTF_x1, CSCTF_y1, CSCTF_phi1,
+                                                                                   CSCTF_x2, CSCTF_y2, CSCTF_phi2,
+                                                                                   CSCTF_x3, CSCTF_y3, CSCTF_phi3)
 
                 deltay12_withLCTFit, deltay23_withLCTFit = deltay12_deltay23(CSCTF_fit_x1, CSCTF_fit_y1, CSCTF_fit_phi1,
                                                                              CSCTF_fit_x2, CSCTF_fit_y2, CSCTF_fit_phi2,
                                                                              CSCTF_fit_x3, CSCTF_fit_y3, CSCTF_fit_phi3)
                 
-                proportionalityFactor_withLCTFit = get_proptionality_factor_Tao(etaRanges[etaPartition], 
-                                                                                ME1ME2ME3ParityCases[parity], True)
+                proportionalityFactor = get_proptionality_factor_Tao(etaRanges[etaPartition], 
+                                                                     ME1ME2ME3ParityCases[parity], True)
                 
-                DDY123_withLCTFit    = abs(deltay23_withLCTFit - proportionalityFactor_withLCTFit * deltay12_withLCTFit)
+                DDY123_withoutLCTFit = abs(deltay23_withoutLCTFit - proportionalityFactor * deltay12_withoutLCTFit)
+                DDY123_withLCTFit    = abs(deltay23_withLCTFit - proportionalityFactor * deltay12_withLCTFit)
+
                 positionPt_withLCTFit = pt_from_DDY123_Tao(DDY123_withLCTFit, etaRanges[etaPartition], ME1ME2ME3ParityCases[parity], True)
+
                 DDY123_pts[0] = positionPt_withLCTFit
+
+                DDY123_withLCTFits[0] = DDY123_withLCTFit
+                DDY123_withoutLCTFits[0] = DDY123_withoutLCTFit
 
           ## fill the tree for each gen muon
           t.Fill()

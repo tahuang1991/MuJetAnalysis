@@ -3660,9 +3660,19 @@ DisplacedL1MuFilter::fitComparatorsLCT(const CSCComparatorDigiCollection& hCSCCo
       auto layer_geo = cscChamber->layer(detId.layer())->geometry();
       LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, 20);
       GlobalPoint csc_gp = cscGeometry_->idToDet(detId)->surface().toGlobal(csc_intersect);
+      float gpphi = csc_gp.phi();
+      
+      if (phis.size()>0 and gpphi>0 and phis[0]<0 and  (gpphi-phis[0])>3.1416)
+        phis.push_back(gpphi-2*3.1415926);
+      else if (phis.size()>0 and gpphi<0 and phis[0]>0 and (gpphi-phis[0])<-3.1416)
+        phis.push_back(gpphi+2*3.1415926);
+      else
+        phis.push_back(csc_gp.phi());
+
+
       zs.push_back(csc_gp.z());
       ezs.push_back(0);
-      phis.push_back(csc_gp.phi());
+      // phis.push_back(csc_gp.phi());
       ephis.push_back(gemvalidation::cscHalfStripWidth(detId)/sqrt(12));
     }
   }
@@ -3674,7 +3684,7 @@ DisplacedL1MuFilter::fitComparatorsLCT(const CSCComparatorDigiCollection& hCSCCo
                         event_.lumi, event_.run, event_.event, iMuon, ch_id.station(), false);
   
   fit_z = cscChamber->layer(CSCConstants::KEY_CLCT_LAYER)->centerOfStrip(20).z();
-  fit_phi = alpha + beta * fit_z;
+  fit_phi = normalizedPhi(alpha + beta * fit_z);
   
   if(verbose) {
     std::cout << "Number of comparator digis used in the fit " << ezs.size() << std::endl;

@@ -36,11 +36,11 @@ from MuJetAnalysis.DisplacedL1MuFilter.Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140b
 #from MuJetAnalysis.DisplacedL1MuFilter.SingleMuPlusFlatPt0p2To150_TTI2023Upg14D_PU140bx25_ILT_SLHC14 import files
 #from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV import files
 #from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_100_14TeV import files
-from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV import files
+#from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV import files
 #from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_10_14TeV import files
 #from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_50_14TeV_PU140 import files
 #from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_100_14TeV_PU140 import files
-from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140 import files
+#from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140 import files
 #from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_0400_ctau_0_14TeV import files
 from MuJetAnalysis.DisplacedL1MuFilter.DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140_DTTF import files
 
@@ -62,14 +62,41 @@ process.DisplacedL1MuFilter_PhaseIIGE21 = cms.EDFilter("DisplacedL1MuFilter",
     L1Mu_input = cms.InputTag("simGmtDigis"),
     L1TkMu_input = cms.InputTag("L1TkMuonsMerge"),
     simTrackMatching = SimTrackMatching,
+    processRPCb = cms.bool(False),
+    processRPCf = cms.bool(False),
+    processTTI = cms.bool(False),
+    processDTTF = cms.bool(True),
+    doSimAnalysis = cms.bool(True),
+    doGenAnalysis = cms.bool(True)
 )
+matching = process.DisplacedL1MuFilter_PhaseIIGE21.simTrackMatching
+matching.simTrack.minPt = 1.5
+matching.matchprint = cms.bool(False)
+
+doGem = True
+if doGem:
+  matching.cscSimHit.minNHitsChamber = 3
+  matching.cscStripDigi.minNHitsChamber = 3
+  matching.cscWireDigi.minNHitsChamber = 3
+  matching.cscCLCT.minNHitsChamber = 3
+  matching.cscALCT.minNHitsChamber = 3
+  matching.cscLCT.minNHitsChamber = 3
+  matching.cscLCT.matchAlctGemME11 = True
+  matching.cscLCT.matchAlctGemME21 = True
+  matching.cscMPLCT.minNHitsChamber = 3
+doRpc = False
+if doRpc:
+  matching.cscLCT.matchAlctRpc = True
+
 
 process.source = cms.Source(
     "PoolSource",
-    fileNames = cms.untracked.vstring(*files)
+    #fileNames = cms.untracked.vstring(*files),
+    #skipEvents=cms.untracked.uint32(0)
     #fileNames = cms.untracked.vstring('file:out_DTTF_ctau_1000_PU140.root')
     #fileNames = cms.untracked.vstring('/store/mc/TP2023HGCALDR/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/GEN-SIM-DIGI-RAW/HGCALForMUO_PU140BX25_newsplit_PH2_1K_FB_V6-v2/40000/0097F2D6-523D-E511-BA2B-0025907254C8.root')
-    #fileNames = cms.untracked.vstring("file:filter.root")
+    #fileNames = cms.untracked.vstring("file:/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_TTI_DTTFmod_v3/161010_033403/0000/out_DTTFmod_1.root")
+    fileNames = cms.untracked.vstring("file:/eos/uscms/store/user/lpcgem/SLHC23_patch1_2023Muon_gen_sim_Pt2_50_1M/PromptMu_14TeV_PU0_TTI_DTTFmod_v3/161010_034533/0000/out_DTTFmod_1.root")
 )
 from MuJetAnalysis.HLTBendingAngle.InputFileHelpers import useInputDir
 process = useInputDir(process, "/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_DTTFmod/160622_185508/0000/","out_DTTF_ctau_1000_PU140_full") 
@@ -85,7 +112,7 @@ process.TFileService = cms.Service(
 #    fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140.test.root")
     #fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU0.root")
     #fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140.root")
-    fileName = cms.string("out_ana_ctau_1000_PU140_GEM.root")
+    fileName = cms.string("out_ana.root")
 )
 
 
@@ -95,7 +122,7 @@ process.p = cms.Path(process.DisplacedL1MuFilter_PhaseIIGE21)
 #process.p.remove(process.L1TkMuonsDTSequence)
 
 process.out = cms.OutputModule("PoolOutputModule",
-   fileName = cms.untracked.string('file:out_TTI.root'),
+   fileName = cms.untracked.string('file:out_ana.test.root'),
 #                               SelectEvents = cms.untracked.PSet(SelectEvents = cms.vstring('p')),
 )
 

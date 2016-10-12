@@ -1,0 +1,180 @@
+{
+//=========Macro generated from canvas: c/c
+//=========  (Thu Sep 29 09:10:27 2016) by ROOT version5.34/07
+   TCanvas *c = new TCanvas("c", "c",0,0,800,600);
+   c->SetHighLightColor(2);
+   c->Range(0,0,1,1);
+   c->SetFillColor(0);
+   c->SetBorderMode(0);
+   c->SetBorderSize(2);
+   c->SetTickx(1);
+   c->SetTicky(1);
+   c->SetLeftMargin(0.126);
+   c->SetRightMargin(0.04);
+   c->SetTopMargin(0.06);
+   c->SetBottomMargin(0.13);
+   c->SetFrameBorderMode(0);
+   
+   TH1F *GenMuEta_leading_MS2_random_pt10 = new TH1F("GenMuEta_leading_MS2_random_pt10","",100,-5,5);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(0,193);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(1,2);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(2,1);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(4,1);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(5,6);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(6,4);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(7,7);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(8,7);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(9,11);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(10,12);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(11,12);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(12,16);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(13,28);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(14,47);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(15,49);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(16,67);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(17,76);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(18,95);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(19,86);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(20,131);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(21,127);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(22,136);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(23,189);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(24,225);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(25,230);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(26,267);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(27,288);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(28,298);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(29,321);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(30,342);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(31,362);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(32,426);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(33,412);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(34,435);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(35,459);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(36,490);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(37,493);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(38,547);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(39,530);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(40,503);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(41,515);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(42,493);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(43,467);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(44,514);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(45,461);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(46,429);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(47,371);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(48,277);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(49,196);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(50,80);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(51,73);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(52,218);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(53,290);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(54,408);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(55,453);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(56,407);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(57,461);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(58,457);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(59,465);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(60,481);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(61,465);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(62,518);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(63,509);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(64,470);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(65,461);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(66,426);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(67,416);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(68,445);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(69,415);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(70,391);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(71,359);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(72,307);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(73,318);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(74,277);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(75,245);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(76,223);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(77,187);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(78,181);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(79,177);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(80,131);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(81,121);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(82,97);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(83,68);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(84,58);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(85,56);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(86,49);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(87,34);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(88,24);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(89,26);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(90,16);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(91,13);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(92,10);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(93,10);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(94,9);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(95,7);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(96,4);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(97,3);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(98,3);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(100,1);
+   GenMuEta_leading_MS2_random_pt10->SetBinContent(101,3);
+   GenMuEta_leading_MS2_random_pt10->SetEntries(22980);
+   
+      gStyle.SetTitleStyle( 0 )
+      gStyle.SetTitleAlign(13) ##// coord in top left
+      gStyle.SetTitleX(0.)
+      gStyle.SetTitleY(1.)
+      gStyle.SetTitleW(1)
+      gStyle.SetTitleH(0.058)
+      gStyle.SetTitleBorderSize( 0 )
+      
+      gStyle.SetPadLeftMargin(0.126)
+      gStyle.SetPadRightMargin(0.04)
+      gStyle.SetPadTopMargin(0.06)
+      gStyle.SetPadBottomMargin(0.13)
+      gStyle.SetOptStat( 0 )
+      gStyle.SetMarkerStyle(1)
+        GenMuEta_leading_MS2_random_pt10->SetTitle("      #scale[1.4]{#font[61]{CMS}} #font[52]{Simulation preliminary}                                                           14 TeV, 140 PU");
+   
+   TPaveStats *ptstats = new TPaveStats(0.78,0.615,0.98,0.935,"brNDC");
+   ptstats->SetName("stats");
+   ptstats->SetBorderSize(1);
+   ptstats->SetFillColor(0);
+   ptstats->SetFillStyle(0);
+   ptstats->SetTextAlign(12);
+   ptstats->SetTextFont(42);
+   TText *text = ptstats->AddText("GenMuEta_leading_MS2_random_pt10");
+   text->SetTextSize(0.0368);
+   text = ptstats->AddText("Entries = 22980  ");
+   text = ptstats->AddText("Mean  = -0.01997");
+   text = ptstats->AddText("RMS   =  1.719");
+   text = ptstats->AddText("Underflow =    193");
+   text = ptstats->AddText("Overflow  =      3");
+   text = ptstats->AddText("Integral = 2.278e+04");
+   text = ptstats->AddText("Skewness = 0.02039");
+   ptstats->SetOptStat(11111111);
+   ptstats->SetOptFit(0);
+   ptstats->Draw();
+   GenMuEta_leading_MS2_random_pt10->GetListOfFunctions()->Add(ptstats);
+   ptstats->SetParent(GenMuEta_leading_MS2_random_pt10);
+
+   Int_t ci;   // for color index setting
+   ci = TColor::GetColor("#000099");
+   GenMuEta_leading_MS2_random_pt10->SetLineColor(ci);
+   GenMuEta_leading_MS2_random_pt10->GetXaxis()->SetTitle("Muon #eta at 2nd muon station");
+   GenMuEta_leading_MS2_random_pt10->GetXaxis()->SetLabelFont(42);
+   GenMuEta_leading_MS2_random_pt10->GetXaxis()->SetLabelSize(0.035);
+   GenMuEta_leading_MS2_random_pt10->GetXaxis()->SetTitleSize(0.035);
+   GenMuEta_leading_MS2_random_pt10->GetXaxis()->SetTitleFont(42);
+   GenMuEta_leading_MS2_random_pt10->GetYaxis()->SetTitle(" Entries");
+   GenMuEta_leading_MS2_random_pt10->GetYaxis()->SetLabelFont(42);
+   GenMuEta_leading_MS2_random_pt10->GetYaxis()->SetLabelSize(0.035);
+   GenMuEta_leading_MS2_random_pt10->GetYaxis()->SetTitleSize(0.035);
+   GenMuEta_leading_MS2_random_pt10->GetYaxis()->SetTitleFont(42);
+   GenMuEta_leading_MS2_random_pt10->GetZaxis()->SetLabelFont(42);
+   GenMuEta_leading_MS2_random_pt10->GetZaxis()->SetLabelSize(0.035);
+   GenMuEta_leading_MS2_random_pt10->GetZaxis()->SetTitleSize(0.035);
+   GenMuEta_leading_MS2_random_pt10->GetZaxis()->SetTitleFont(42);
+   GenMuEta_leading_MS2_random_pt10->Draw("");
+   c->Modified();
+   c->cd();
+   c->SetSelected(c);
+}

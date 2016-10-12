@@ -771,6 +771,8 @@ private:
   bool processRPCf_;
   bool doSimAnalysis_;
   bool doGenAnalysis_;
+  bool processTTI_;
+  bool processDTTF_;
   
   const RPCGeometry* rpcGeometry_;
   const CSCGeometry* cscGeometry_;
@@ -823,6 +825,8 @@ DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) :
   produceFitPlots_ = iConfig.getParameter<bool>("produceFitPlots");
   processRPCb_ = iConfig.getParameter<bool>("processRPCb");
   processRPCf_ = iConfig.getParameter<bool>("processRPCf");
+  processTTI_ = iConfig.getParameter<bool>("processTTI");
+  processDTTF_ = iConfig.getParameter<bool>("processDTTF");
   doSimAnalysis_ = iConfig.getParameter<bool>("doSimAnalysis");
   doGenAnalysis_ = iConfig.getParameter<bool>("doGenAnalysis");
   
@@ -949,7 +953,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   // L1 TrackingTrigger Analysis
   edm::Handle< std::vector< TTTrack< Ref_PixelDigi_ > > > TTTrackHandle;
   iEvent.getByLabel("TTTracksFromPixelDigis", "Level1TTTracks", TTTrackHandle);
-  const std::vector< TTTrack< Ref_PixelDigi_ > >& TTTracks = *TTTrackHandle.product();
+  std::vector< TTTrack< Ref_PixelDigi_ > > TTTracks;
+  if (processTTI_){
+    TTTracks = *TTTrackHandle.product();
+  }
 
   edm::Handle<edm::SimTrackContainer> sim_tracks;
   iEvent.getByLabel("g4SimHits", sim_tracks);
@@ -972,8 +979,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   event_.event = iEvent.id().event();
 
   event_.nL1Mu = l1GmtCands.size();
-  event_.nL1Tk = TTTracks.size();
-  
+  if (processTTI_){
+    event_.nL1Tk = TTTracks.size();
+  }
   event_.beamSpot_x = 0;
   event_.beamSpot_y = 0;
   event_.beamSpot_z = 0;
@@ -1278,17 +1286,17 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         //////////////////////
         double GEN_SIM_min_dR = 99;
         for (unsigned int k=0; k<skim_sim_trks.size(); ++k) {
-          //std::cout << "Analyze SIM muon " << k << std::endl;
+          std::cout << "Analyze SIM muon " << k << std::endl;
           auto sim_muon = skim_sim_trks[k];
           event_.pt_sim[k] = sim_muon.momentum().pt();
           event_.eta_sim[k] = sim_muon.momentum().eta();
           event_.phi_sim[k] = sim_muon.momentum().phi();
           event_.charge_sim[k] = sim_muon.charge();
-          // cout << "\t"<<k<<endl;
-          // cout << "\tSIM_pt " << event_.pt_sim[k] << endl;
-          // cout << "\tSIM_eta " << event_.eta_sim[k] << endl;
-          // cout << "\tSIM_phi " << event_.phi_sim[k] << endl;
-          //cout << "\tSIM_charge " << event_.charge_sim << endl;
+          cout << "\t"<<k<<endl;
+          cout << "\tSIM_pt " << event_.pt_sim[k] << endl;
+          cout << "\tSIM_eta " << event_.eta_sim[k] << endl;
+          cout << "\tSIM_phi " << event_.phi_sim[k] << endl;
+          cout << "\tSIM_charge " << event_.charge_sim << endl;
           double deltar(reco::deltaR(event_.eta_sim[k], 
                                      event_.phi_sim[k], 
                                      event_.genGdMu_eta[i][j], 
@@ -1365,6 +1373,18 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   //////////////////////
 
   if (doSimAnalysis_){
+
+    if (not doGenAnalysis_) {
+      for (unsigned int k=0; k<skim_sim_trks.size(); ++k) {
+        //std::cout << "Analyze SIM muon " << k << std::endl;
+        auto sim_muon = skim_sim_trks[k];
+        event_.pt_sim[k] = sim_muon.momentum().pt();
+        event_.eta_sim[k] = sim_muon.momentum().eta();
+        event_.phi_sim[k] = sim_muon.momentum().phi();
+        event_.charge_sim[k] = sim_muon.charge();
+      }
+    }
+
     if(verbose) {
       cout << "++++ SIM Mu analysis ++++" << endl;
       cout << "Number of good simtracks " << skim_sim_trks.size() << endl;
@@ -1390,7 +1410,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       if (verbose) { 
         cout << endl<<"++++ CSC SimHit analysis ++++" << endl;
       }
-      for (auto d: match_csc.chamberIdsLCT()){
+      for (auto d: match_csc.chamberIdsLCT(0)){
         auto detId = CSCDetId(d);
         // only analyze ME1b and ME21
         //if (detId.station()!=1 and detId.station()!=2) continue;
@@ -1693,7 +1713,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         std::cout << "Total number of matching CSC stubs to simtrack " << std::endl;
         std::cout << "Matching CSC stub Ids " << match_csc.chamberIdsLCT().size() << std::endl;
       }
-      for (auto d: match_csc.chamberIdsLCT()){
+      for (auto d: match_csc.chamberIdsLCT(0)){
         auto detId = CSCDetId(d);
         auto simhits = match_sh.hitsInChamber(d);
         auto csc_sh_gv = match_sh.simHitsMeanMomentum(simhits);
@@ -1703,15 +1723,68 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
         }
         int nStubs = match_csc.cscLctsInChamber(d).size();
         if (nStubs==0) continue;
+
         // pick the best matching stub in the chamber
         auto stub = match_csc.bestCscLctInChamber(d);
+
+        std::vector<GlobalPoint> gps;
+        std::vector<float> phis;
+        std::vector<float> xs;
+        std::vector<float> ys;
+        std::vector<float> zs;
+        std::vector<float> ephis;
+        std::vector<float> exs;
+        std::vector<float> ezs;
+        std::vector<float> status;
+ 
+        match_csc.positionsOfComparatorInLCT(d, stub, gps);
         auto csc_gp = match_csc.getGlobalPosition(d, stub);
-        double csc_phi = csc_gp.phi();
-        double csc_eta = csc_gp.eta();
-        double csc_x = csc_gp.x();
-        double csc_y = csc_gp.y();
+
+        if (gps.size()>=3){
+          for (auto gp: gps){
+            if (gp.z() > 0)
+              zs.push_back(gp.z());
+            else zs.push_back(-gp.z());
+            xs.push_back(gp.x());
+            ys.push_back(gp.y());
+            ezs.push_back(0);
+            float gpphi = gp.phi();
+            if (phis.size()>0 and gpphi>0 and phis[0]<0 and  (gpphi-phis[0])>3.1416)
+              phis.push_back(gpphi-2*3.1415926);
+            else if (phis.size()>0 and gpphi<0 and phis[0]>0 and (gpphi-phis[0])<-3.1416)
+              phis.push_back(gpphi+2*3.1415926);
+            else     
+              phis.push_back(gp.phi());
+            ephis.push_back(gemvalidation::cscHalfStripWidth(detId)/sqrt(12));
+            float R=0.0;
+            if (detId.ring() == 1 or detId.ring() == 4) R=200;//cm
+            if (detId.ring() == 2) R=400;//cm
+            exs.push_back(gemvalidation::cscHalfStripWidth(detId)/sqrt(12)*R);
+          }
+        }else {
+          //if (verbose_) std::cout <<" the size of gloabl points in this chamber is less than 3 "<< std::endl;
+        }
+
+
+        float alpha = 0., beta = 0.;
+        fitStraightLineErrors(zs, phis, ezs, ephis,
+                              alpha, beta, 1, 1, 1, 1, 1, false);
+        float alphax = 0., betax = 0.;
+        fitStraightLineErrors(zs, xs, ezs, exs,
+                              alphax, betax, 1, 1, 1, 1, 1, false);
+        float alphay = 0., betay = 0.;
+        fitStraightLineErrors(zs, ys, ezs, exs,
+                              alphay, betay, 1, 1, 1, 1, 1, false);
+        
+
+        double csc_phi = normalizedPhi(alpha+beta*match_csc.zpositionOfLayer(d, 3)); //csc_gp.phi();
+        auto gp_new = GlobalPoint(GlobalPoint::Cylindrical(csc_gp.perp(), csc_phi, csc_gp.z()));
+        double csc_eta = match_sh.simHitPositionKeyLayer(d).eta();
         double csc_z = csc_gp.z();
-        double csc_R = TMath::Sqrt(csc_y * csc_y + csc_x * csc_x);
+        double csc_R = gp_new.perp();
+        double csc_x = gp_new.x();
+        double csc_y = gp_new.y();
+        
         if(verbose){
           std::cout << "\t\tStub " << stub << std::endl;
           std::cout << "\t\t\tPosition " << csc_phi << std::endl;
@@ -1766,185 +1839,189 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   // L1 analysis //
   /////////////////
 
-  for (int i=0; i<2; ++i){         
-    for (int j=0; j<2; ++j){
-      for (unsigned int k=0; k<TTTracks.size(); ++k) {
-        auto l1Tk = TTTracks[k];
-        const double l1Tk_eta = l1Tk.getMomentum().eta();
-        const double l1Tk_phi = normalizedPhi(l1Tk.getMomentum().phi());
-        double deltar(reco::deltaR(l1Tk_eta, l1Tk_phi, event_.genGdMu_eta[i][j], event_.genGdMu_phi[i][j]));
-        if (deltar < event_.genGdMu_L1Tk_dR_prop[i][j]) {
-          event_.genGdMu_L1Tk_dR_prop[i][j] = deltar;
-          event_.genGdMu_L1Tk_index_prop[i][j] = k;
+  if (processTTI_){
+    for (int i=0; i<2; ++i){         
+      for (int j=0; j<2; ++j){
+        for (unsigned int k=0; k<TTTracks.size(); ++k) {
+          auto l1Tk = TTTracks[k];
+          const double l1Tk_eta = l1Tk.getMomentum().eta();
+          const double l1Tk_phi = normalizedPhi(l1Tk.getMomentum().phi());
+          double deltar(reco::deltaR(l1Tk_eta, l1Tk_phi, event_.genGdMu_eta[i][j], event_.genGdMu_phi[i][j]));
+          if (deltar < event_.genGdMu_L1Tk_dR_prop[i][j]) {
+            event_.genGdMu_L1Tk_dR_prop[i][j] = deltar;
+            event_.genGdMu_L1Tk_index_prop[i][j] = k;
+          }
         }
       }
     }
   }
 
-  // store the L1Tk variables
-  for (unsigned int j=0; j<TTTracks.size(); ++j) {
-    auto l1Tk = TTTracks[j];
-    const double l1Tk_pt = l1Tk.getMomentum().perp();
-    const double l1Tk_eta = l1Tk.getMomentum().eta();
-    const double l1Tk_phi = normalizedPhi(l1Tk.getMomentum().phi());
-    const double l1Tk_charge = l1Tk.getRInv()>0? 1: -1;
-    const double l1Tk_eta_corr = l1Tk_eta;
-    const double l1Tk_phi_corr = phiHeavyCorr(l1Tk_pt, l1Tk_eta, l1Tk_phi, l1Tk_charge);
-
-    if(verbose and false) {
-      cout << "l1Tk " << j << endl; 
-      cout << "l1Tk_pt " << l1Tk_pt << endl;
-      cout << "l1Tk_eta " << l1Tk_eta << endl;
-      cout << "l1Tk_phi " << l1Tk_phi << endl;
-      cout << "l1Tk_phi_corr " << l1Tk_phi_corr << endl;
-      cout << "l1Tk_charge " << l1Tk_charge << endl;
-    }
+  if (processTTI_){
+    // store the L1Tk variables
+    for (unsigned int j=0; j<TTTracks.size(); ++j) {
+      auto l1Tk = TTTracks[j];
+      const double l1Tk_pt = l1Tk.getMomentum().perp();
+      const double l1Tk_eta = l1Tk.getMomentum().eta();
+      const double l1Tk_phi = normalizedPhi(l1Tk.getMomentum().phi());
+      const double l1Tk_charge = l1Tk.getRInv()>0? 1: -1;
+      const double l1Tk_eta_corr = l1Tk_eta;
+      const double l1Tk_phi_corr = phiHeavyCorr(l1Tk_pt, l1Tk_eta, l1Tk_phi, l1Tk_charge);
       
-    double l1Tk_eta_prop = -99;
-    double l1Tk_phi_prop = -99;
-    GlobalPoint ex_point(extrapolateGP(l1Tk));
-    if (!(ex_point == GlobalPoint())) {
-      l1Tk_eta_prop = ex_point.eta();
-      l1Tk_phi_prop = ex_point.phi();
       if(verbose and false) {
-        cout << "l1Tk_eta_prop " << l1Tk_eta_prop << endl;
-        cout << "l1Tk_phi_prop " << l1Tk_phi_prop << endl;
+        cout << "l1Tk " << j << endl; 
+        cout << "l1Tk_pt " << l1Tk_pt << endl;
+        cout << "l1Tk_eta " << l1Tk_eta << endl;
+        cout << "l1Tk_phi " << l1Tk_phi << endl;
+        cout << "l1Tk_phi_corr " << l1Tk_phi_corr << endl;
+        cout << "l1Tk_charge " << l1Tk_charge << endl;
       }
-    }
-    
-    event_.L1Tk_pt[j] = l1Tk_pt;
-    event_.L1Tk_eta[j] = l1Tk_eta;
-    event_.L1Tk_phi[j] = l1Tk_phi;
-    
-    event_.L1Tk_eta_prop[j] = l1Tk_eta_prop;
-    event_.L1Tk_phi_prop[j] = l1Tk_phi_prop;
-    event_.L1Tk_deta_prop[j] = std::abs(event_.L1Tk_eta_prop[j] - event_.L1Tk_eta[j]);
-    event_.L1Tk_dphi_prop[j] = My_dPhi(event_.L1Tk_phi_prop[j], event_.L1Tk_phi[j]); 
-    event_.L1Tk_dR_prop[j] = reco::deltaR(event_.L1Tk_eta_prop[j], event_.L1Tk_phi_prop[j], event_.L1Tk_eta[j], event_.L1Tk_phi[j]);
-    
-    event_.L1Tk_eta_corr[j] = l1Tk_eta_corr;
-    event_.L1Tk_phi_corr[j] = l1Tk_phi_corr;
-    event_.L1Tk_deta_corr[j] = std::abs(event_.L1Tk_eta_corr[j] - event_.L1Tk_eta[j]);
-    event_.L1Tk_dphi_corr[j] = My_dPhi(event_.L1Tk_phi_corr[j], event_.L1Tk_phi[j]); 
-    event_.L1Tk_dR_corr[j] = reco::deltaR(event_.L1Tk_eta_corr[j], event_.L1Tk_phi_corr[j], event_.L1Tk_eta[j], event_.L1Tk_phi[j]);
-  } // end of loop on TTTracks
-  
-  
-
-  // store the DTTF variables
-  if(verbose) std::cout << std::endl<< "Number of L1DTTrackPhis " <<L1DTTrackPhis.size() << std::endl;
-  event_.nDTTF = L1DTTrackPhis.size();
-  for (unsigned int j=0; j<L1DTTrackPhis.size(); ++j) { 
-    auto track = L1DTTrackPhis[j].first;
-    
-    event_.DTTF_pt[j] = muPtScale->getPtScale()->getLowEdge(track.pt()) + 1.e-6;
-    event_.DTTF_eta[j] = muScales->getRegionalEtaScale(0)->getCenter(track.eta());
-    event_.DTTF_phi[j] = phiL1DTTrack(track);
-    event_.DTTF_bx[j] = track.bx();
-    event_.DTTF_nStubs[j] = L1DTTrackPhis[j].second.size();
-    event_.DTTF_quality[j] = track.quality();
-    
-    if(verbose) {  
-      std::cout << std::endl
-                << "pt  = " << event_.DTTF_pt[j]
-                << ", eta  = " << event_.DTTF_eta[j] 
-                << ", phi  = " << event_.DTTF_phi[j]
-                << ", bx = " << event_.DTTF_bx[j] 
-                << ", quality = " << event_.DTTF_quality[j] 
-                << ", nStubs = " << event_.DTTF_nStubs[j]
-                << std::endl;
-    }
-    
-    for (auto stub: L1DTTrackPhis[j].second) {
-      // std::cout << "\t " << stub << std::endl;
-      // std::cout << "\t phiValue = " << stub.phiValue() << ", phibValue = " << stub.phibValue() << std::endl;
-      int station = stub.station();
-      switch(station) {
-      case 1:
-        event_.DTTF_phi1[j] = stub.phiValue();
-        event_.DTTF_phib1[j] = stub.phibValue();
-        event_.DTTF_quality1[j] = stub.quality();
-        event_.DTTF_bx1[j] = stub.bx();
-        event_.DTTF_wh1[j] = stub.wheel();
-        event_.DTTF_se1[j] = stub.sector();
-        event_.DTTF_st1[j] = stub.station();
-        break;
-      case 2:
-        event_.DTTF_phi2[j] = stub.phiValue();
-        event_.DTTF_phib2[j] = stub.phibValue();
-        event_.DTTF_quality2[j] = stub.quality();
-        event_.DTTF_bx2[j] = stub.bx();
-        event_.DTTF_wh2[j] = stub.wheel();
-        event_.DTTF_se2[j] = stub.sector();
-        event_.DTTF_st2[j] = stub.station();
-        break;
-      case 3:
-        event_.DTTF_phi3[j] = stub.phiValue();
-        event_.DTTF_phib3[j] = stub.phibValue();
-        event_.DTTF_quality3[j] = stub.quality();
-        event_.DTTF_bx3[j] = stub.bx();
-        event_.DTTF_wh3[j] = stub.wheel();
-        event_.DTTF_se3[j] = stub.sector();
-        event_.DTTF_st3[j] = stub.station();
-        break;
-      case 4:
-        event_.DTTF_phi4[j] = stub.phiValue();
-        event_.DTTF_phib4[j] = stub.phibValue();
-        event_.DTTF_quality4[j] = stub.quality();
-        event_.DTTF_bx4[j] = stub.bx();
-        event_.DTTF_wh4[j] = stub.wheel();
-        event_.DTTF_se4[j] = stub.sector();
-        event_.DTTF_st4[j] = stub.station();
-        break;
-      };
-    }
-
-    // check for stub recovery
-    bool stubMissingSt1 = event_.DTTF_st1[j] == 99;
-    bool stubMissingSt2 = event_.DTTF_st2[j] == 99;
-    bool stubMissingSt3 = event_.DTTF_st3[j] == 99;
-    bool stubMissingSt4 = event_.DTTF_st4[j] == 99;
-    bool atLeast1StubMissing = stubMissingSt1 or stubMissingSt2 or stubMissingSt3 or stubMissingSt4;
-    
-    bool doStubRecovery = true;
-    if (doStubRecovery and atLeast1StubMissing){
-      //std::cout << "DT stub recovery" << std::endl;
-
-      int triggerSector = track.spid().sector();
-      //std::cout << "trigger sector " << triggerSector << std::endl;
       
-      for (auto stub: DTTrackPhis){
+      double l1Tk_eta_prop = -99;
+      double l1Tk_phi_prop = -99;
+      GlobalPoint ex_point(extrapolateGP(l1Tk));
+      if (!(ex_point == GlobalPoint())) {
+        l1Tk_eta_prop = ex_point.eta();
+        l1Tk_phi_prop = ex_point.phi();
+        if(verbose and false) {
+          cout << "l1Tk_eta_prop " << l1Tk_eta_prop << endl;
+          cout << "l1Tk_phi_prop " << l1Tk_phi_prop << endl;
+        }
+      }
+      
+      event_.L1Tk_pt[j] = l1Tk_pt;
+      event_.L1Tk_eta[j] = l1Tk_eta;
+      event_.L1Tk_phi[j] = l1Tk_phi;
+      
+      event_.L1Tk_eta_prop[j] = l1Tk_eta_prop;
+      event_.L1Tk_phi_prop[j] = l1Tk_phi_prop;
+      event_.L1Tk_deta_prop[j] = std::abs(event_.L1Tk_eta_prop[j] - event_.L1Tk_eta[j]);
+      event_.L1Tk_dphi_prop[j] = My_dPhi(event_.L1Tk_phi_prop[j], event_.L1Tk_phi[j]); 
+      event_.L1Tk_dR_prop[j] = reco::deltaR(event_.L1Tk_eta_prop[j], event_.L1Tk_phi_prop[j], event_.L1Tk_eta[j], event_.L1Tk_phi[j]);
+      
+      event_.L1Tk_eta_corr[j] = l1Tk_eta_corr;
+      event_.L1Tk_phi_corr[j] = l1Tk_phi_corr;
+      event_.L1Tk_deta_corr[j] = std::abs(event_.L1Tk_eta_corr[j] - event_.L1Tk_eta[j]);
+      event_.L1Tk_dphi_corr[j] = My_dPhi(event_.L1Tk_phi_corr[j], event_.L1Tk_phi[j]); 
+      event_.L1Tk_dR_corr[j] = reco::deltaR(event_.L1Tk_eta_corr[j], event_.L1Tk_phi_corr[j], event_.L1Tk_eta[j], event_.L1Tk_phi[j]);
+    } // end of loop on TTTracks
+  }  
+  
+  if (processDTTF_){
+    // store the DTTF variables
+    if(verbose) std::cout << std::endl<< "Number of L1DTTrackPhis " <<L1DTTrackPhis.size() << std::endl;
+    event_.nDTTF = L1DTTrackPhis.size();
+    for (unsigned int j=0; j<L1DTTrackPhis.size(); ++j) { 
+      auto track = L1DTTrackPhis[j].first;
+      
+      event_.DTTF_pt[j] = muPtScale->getPtScale()->getLowEdge(track.pt()) + 1.e-6;
+      event_.DTTF_eta[j] = muScales->getRegionalEtaScale(0)->getCenter(track.eta());
+      event_.DTTF_phi[j] = phiL1DTTrack(track);
+      event_.DTTF_bx[j] = track.bx();
+      event_.DTTF_nStubs[j] = L1DTTrackPhis[j].second.size();
+      event_.DTTF_quality[j] = track.quality();
+      
+      if(verbose) {  
+        std::cout << std::endl
+                  << "pt  = " << event_.DTTF_pt[j]
+                  << ", eta  = " << event_.DTTF_eta[j] 
+                  << ", phi  = " << event_.DTTF_phi[j]
+                  << ", bx = " << event_.DTTF_bx[j] 
+                  << ", quality = " << event_.DTTF_quality[j] 
+                  << ", nStubs = " << event_.DTTF_nStubs[j]
+                  << std::endl;
+      }
+      
+      for (auto stub: L1DTTrackPhis[j].second) {
+        // std::cout << "\t " << stub << std::endl;
+        // std::cout << "\t phiValue = " << stub.phiValue() << ", phibValue = " << stub.phibValue() << std::endl;
         int station = stub.station();
-        // check if stub is missing in station
-        if (not stubMissingSt1 and station==1) continue;
-        if (not stubMissingSt2 and station==2) continue;
-        if (not stubMissingSt3 and station==3) continue;
-        if (not stubMissingSt4 and station==4) continue;
+        switch(station) {
+        case 1:
+          event_.DTTF_phi1[j] = stub.phiValue();
+          event_.DTTF_phib1[j] = stub.phibValue();
+          event_.DTTF_quality1[j] = stub.quality();
+          event_.DTTF_bx1[j] = stub.bx();
+          event_.DTTF_wh1[j] = stub.wheel();
+          event_.DTTF_se1[j] = stub.sector();
+          event_.DTTF_st1[j] = stub.station();
+          break;
+        case 2:
+          event_.DTTF_phi2[j] = stub.phiValue();
+          event_.DTTF_phib2[j] = stub.phibValue();
+          event_.DTTF_quality2[j] = stub.quality();
+          event_.DTTF_bx2[j] = stub.bx();
+          event_.DTTF_wh2[j] = stub.wheel();
+          event_.DTTF_se2[j] = stub.sector();
+          event_.DTTF_st2[j] = stub.station();
+          break;
+        case 3:
+          event_.DTTF_phi3[j] = stub.phiValue();
+          event_.DTTF_phib3[j] = stub.phibValue();
+          event_.DTTF_quality3[j] = stub.quality();
+          event_.DTTF_bx3[j] = stub.bx();
+          event_.DTTF_wh3[j] = stub.wheel();
+          event_.DTTF_se3[j] = stub.sector();
+          event_.DTTF_st3[j] = stub.station();
+          break;
+        case 4:
+          event_.DTTF_phi4[j] = stub.phiValue();
+          event_.DTTF_phib4[j] = stub.phibValue();
+          event_.DTTF_quality4[j] = stub.quality();
+          event_.DTTF_bx4[j] = stub.bx();
+          event_.DTTF_wh4[j] = stub.wheel();
+          event_.DTTF_se4[j] = stub.sector();
+          event_.DTTF_st4[j] = stub.station();
+          break;
+        };
+      }
+      
+      // check for stub recovery
+      bool stubMissingSt1 = event_.DTTF_st1[j] == 99;
+      bool stubMissingSt2 = event_.DTTF_st2[j] == 99;
+      bool stubMissingSt3 = event_.DTTF_st3[j] == 99;
+      bool stubMissingSt4 = event_.DTTF_st4[j] == 99;
+      bool atLeast1StubMissing = stubMissingSt1 or stubMissingSt2 or stubMissingSt3 or stubMissingSt4;
+      
+      bool doStubRecovery = true;
+      if (doStubRecovery and atLeast1StubMissing){
+        //std::cout << "DT stub recovery" << std::endl;
         
-        // stub cannot be used in any other track
-        if (stubInDTTFTracks(stub, L1DTTrackPhis)) continue;
-
-        // trigger sector must be the same
-        if (triggerSector != stub.sector()) continue;
+        int triggerSector = track.spid().sector();
+        //std::cout << "trigger sector " << triggerSector << std::endl;
         
-        // BXs have to match
-        int deltaBX = std::abs(stub.bx() - (event_.DTTF_bx[j]));
-        if (deltaBX > 1) continue;
-
-        // wheel must be valid!
-        int wheel = stub.wheel();
-        if (std::abs(wheel) > 2) continue;
-
-        // station must be valid!
-        if (station < 0 or station > 4) continue;
+        for (auto stub: DTTrackPhis){
+          int station = stub.station();
+          // check if stub is missing in station
+          if (not stubMissingSt1 and station==1) continue;
+          if (not stubMissingSt2 and station==2) continue;
+          if (not stubMissingSt3 and station==3) continue;
+          if (not stubMissingSt4 and station==4) continue;
+          
+          // stub cannot be used in any other track
+          if (stubInDTTFTracks(stub, L1DTTrackPhis)) continue;
+          
+          // trigger sector must be the same
+          if (triggerSector != stub.sector()) continue;
+          
+          // BXs have to match
+          int deltaBX = std::abs(stub.bx() - (event_.DTTF_bx[j]));
+          if (deltaBX > 1) continue;
+          
+          // wheel must be valid!
+          int wheel = stub.wheel();
+          if (std::abs(wheel) > 2) continue;
+          
+          // station must be valid!
+          if (station < 0 or station > 4) continue;
         
-        DTChamberId chId(wheel, station, triggerSector);
-        if(verbose) std::cout << chId << std::endl;
-        if(verbose) std::cout<<"Candidate " << stub << std::endl;
+          DTChamberId chId(wheel, station, triggerSector);
+          if(verbose) std::cout << chId << std::endl;
+          if(verbose) std::cout<<"Candidate " << stub << std::endl;
+        }
       }
     }
   }
-
+  
 
   // store the CSCTF variables
   event_.nCSCTF = l1Tracks.size();
@@ -2661,44 +2738,46 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       cout << "l1Mu_charge " << event_.L1Mu_charge[i] << endl;
       cout << "l1Mu_bx " << event_.L1Mu_bx[i] << endl;
     }
-
-    // Matching to DTTF
-    double bestDrL1MuL1DTTrack = 99;
-    for (unsigned int j=0; j<L1DTTrackPhis.size(); ++j) {   
-      if ( ( event_.L1Mu_quality[i] > 0 ) &&
-           ( reco::deltaPhi( event_.L1Mu_phi[i], event_.DTTF_phi[j] ) < 0.001 ) &&             
-           ( event_.L1Mu_bx[i] == event_.DTTF_bx[j] ) ) {
-        double drL1MuL1DTTrack = reco::deltaR(l1Mu.etaValue(), 
-                                              normalizedPhi(l1Mu.phiValue()), 
-                                              event_.DTTF_eta[j], 
-                                              event_.DTTF_phi[j]);
-        if (drL1MuL1DTTrack < bestDrL1MuL1DTTrack and drL1MuL1DTTrack < 0.3) {
-          bestDrL1MuL1DTTrack = drL1MuL1DTTrack;
-          event_.L1Mu_DTTF_index[i] = j;
+    
+    if (processTTI_){
+      // Matching to DTTF
+      double bestDrL1MuL1DTTrack = 99;
+      for (unsigned int j=0; j<L1DTTrackPhis.size(); ++j) {   
+        if ( ( event_.L1Mu_quality[i] > 0 ) &&
+             ( reco::deltaPhi( event_.L1Mu_phi[i], event_.DTTF_phi[j] ) < 0.001 ) &&             
+             ( event_.L1Mu_bx[i] == event_.DTTF_bx[j] ) ) {
+          double drL1MuL1DTTrack = reco::deltaR(l1Mu.etaValue(), 
+                                                normalizedPhi(l1Mu.phiValue()), 
+                                                event_.DTTF_eta[j], 
+                                                event_.DTTF_phi[j]);
+          if (drL1MuL1DTTrack < bestDrL1MuL1DTTrack and drL1MuL1DTTrack < 0.3) {
+            bestDrL1MuL1DTTrack = drL1MuL1DTTrack;
+            event_.L1Mu_DTTF_index[i] = j;
+          }
         }
       }
-    }
-        
-    if(verbose) {  
-      int tempIndex = event_.L1Mu_DTTF_index[i]; 
-      if (tempIndex != -1) { // and bestDrL1MuL1DTTrack < 0.2
-        // Print matching DTTF track
-        std::cout << "\tMatching DTTF track" << std::endl;
-        std::cout << "\tpt = "  << event_.DTTF_pt[tempIndex]
-                  << ", eta = " << event_.DTTF_eta[tempIndex]
-                  << ", phi = " << event_.DTTF_phi[tempIndex] 
-                  << ", bx = "  << event_.DTTF_bx[tempIndex]
-                  << ", quality = " << event_.DTTF_quality[tempIndex] << std::endl;
-        
-        // Print stubs
-        std::cout << "\tNumber of stubs: " << event_.DTTF_nStubs[tempIndex] << std::endl; 
-        for (auto stub: L1DTTrackPhis[tempIndex].second) {
-          std::cout << "\t\t " << stub << std::endl;
-          std::cout << "\t\t phiValue = " << stub.phiValue() << ", phibValue = " << stub.phibValue() << std::endl;
-        }  
-      }
-      else {
-        std::cout << "\tNo matching DTTF track" << std::endl;
+      
+      if(verbose) {  
+        int tempIndex = event_.L1Mu_DTTF_index[i]; 
+        if (tempIndex != -1) { // and bestDrL1MuL1DTTrack < 0.2
+          // Print matching DTTF track
+          std::cout << "\tMatching DTTF track" << std::endl;
+          std::cout << "\tpt = "  << event_.DTTF_pt[tempIndex]
+                    << ", eta = " << event_.DTTF_eta[tempIndex]
+                    << ", phi = " << event_.DTTF_phi[tempIndex] 
+                    << ", bx = "  << event_.DTTF_bx[tempIndex]
+                    << ", quality = " << event_.DTTF_quality[tempIndex] << std::endl;
+          
+          // Print stubs
+          std::cout << "\tNumber of stubs: " << event_.DTTF_nStubs[tempIndex] << std::endl; 
+          for (auto stub: L1DTTrackPhis[tempIndex].second) {
+            std::cout << "\t\t " << stub << std::endl;
+            std::cout << "\t\t phiValue = " << stub.phiValue() << ", phibValue = " << stub.phibValue() << std::endl;
+          }  
+        }
+        else {
+          std::cout << "\tNo matching DTTF track" << std::endl;
+        }
       }
     }
     
@@ -2959,66 +3038,68 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
     }
     
-    // calculate the number of L1Tk within 0.12
-    for (unsigned int j=0; j<TTTracks.size(); ++j) {
-      auto l1Tk = TTTracks[j];
-      const double l1Tk_pt = l1Tk.getMomentum().perp();
-      const double l1Tk_eta = l1Tk.getMomentum().eta();
-      const double l1Tk_phi = normalizedPhi(l1Tk.getMomentum().phi());
-      const double l1Tk_charge = l1Tk.getRInv()>0? 1: -1;
-      const double l1Tk_eta_corr = l1Tk_eta;
-      const double l1Tk_phi_corr = phiHeavyCorr(l1Tk_pt, l1Tk_eta, l1Tk_phi, l1Tk_charge);
-
-      if(verbose and false) {
-        cout << "l1Tk " << j << endl; 
-        cout << "l1Tk_pt " << l1Tk_pt << endl;
-        cout << "l1Tk_eta " << l1Tk_eta << endl;
-        cout << "l1Tk_phi " << l1Tk_phi << endl;
-        cout << "l1Tk_phi_corr " << l1Tk_phi_corr << endl;
-        cout << "l1Tk_charge " << l1Tk_charge << endl;
-      }
-      
-      double l1Tk_eta_prop = -99;
-      double l1Tk_phi_prop = -99;
-      GlobalPoint ex_point(extrapolateGP(l1Tk));
-      if (!(ex_point == GlobalPoint())) {
-        l1Tk_eta_prop = ex_point.eta();
-        l1Tk_phi_prop = ex_point.phi();
+    if (processTTI_){
+      // calculate the number of L1Tk within 0.12
+      for (unsigned int j=0; j<TTTracks.size(); ++j) {
+        auto l1Tk = TTTracks[j];
+        const double l1Tk_pt = l1Tk.getMomentum().perp();
+        const double l1Tk_eta = l1Tk.getMomentum().eta();
+        const double l1Tk_phi = normalizedPhi(l1Tk.getMomentum().phi());
+        const double l1Tk_charge = l1Tk.getRInv()>0? 1: -1;
+        const double l1Tk_eta_corr = l1Tk_eta;
+        const double l1Tk_phi_corr = phiHeavyCorr(l1Tk_pt, l1Tk_eta, l1Tk_phi, l1Tk_charge);
+        
         if(verbose and false) {
-          cout << "l1Tk_eta_prop " << l1Tk_eta_prop << endl;
-          cout << "l1Tk_phi_prop " << l1Tk_phi_prop << endl;
+          cout << "l1Tk " << j << endl; 
+          cout << "l1Tk_pt " << l1Tk_pt << endl;
+          cout << "l1Tk_eta " << l1Tk_eta << endl;
+          cout << "l1Tk_phi " << l1Tk_phi << endl;
+          cout << "l1Tk_phi_corr " << l1Tk_phi_corr << endl;
+          cout << "l1Tk_charge " << l1Tk_charge << endl;
         }
-        const double dR_l1Mu_l1Tk_prop = reco::deltaR(l1Tk_eta_prop, l1Tk_phi_prop, event_.L1Mu_eta[i], event_.L1Mu_phi[i]);
-        if (dR_l1Mu_l1Tk_prop < event_.L1Mu_L1Tk_dR_prop[i]) {
-          event_.L1Mu_L1Tk_dR_prop[i] = dR_l1Mu_l1Tk_prop;
-          event_.L1Mu_L1Tk_pt_prop[i] = l1Tk_pt;
+        
+        double l1Tk_eta_prop = -99;
+        double l1Tk_phi_prop = -99;
+        GlobalPoint ex_point(extrapolateGP(l1Tk));
+        if (!(ex_point == GlobalPoint())) {
+          l1Tk_eta_prop = ex_point.eta();
+          l1Tk_phi_prop = ex_point.phi();
+          if(verbose and false) {
+            cout << "l1Tk_eta_prop " << l1Tk_eta_prop << endl;
+            cout << "l1Tk_phi_prop " << l1Tk_phi_prop << endl;
+          }
+          const double dR_l1Mu_l1Tk_prop = reco::deltaR(l1Tk_eta_prop, l1Tk_phi_prop, event_.L1Mu_eta[i], event_.L1Mu_phi[i]);
+          if (dR_l1Mu_l1Tk_prop < event_.L1Mu_L1Tk_dR_prop[i]) {
+            event_.L1Mu_L1Tk_dR_prop[i] = dR_l1Mu_l1Tk_prop;
+            event_.L1Mu_L1Tk_pt_prop[i] = l1Tk_pt;
+          }
         }
-      }
-
-      // TrajectoryStateOnSurface stateAtMB2 = extrapolate(l1Tk);
-      // if (stateAtMB2.isValid()) {
-      //   // std::cout << ">>>Final State is valid" << std::endl;
-      //   l1Tk_eta_prop = stateAtMB2.globalPosition().eta();
-      //   l1Tk_phi_prop = stateAtMB2.globalPosition().phi();
-      //   if(verbose) {
-      //     cout << "l1Tk_eta_prop " << l1Tk_eta_prop << endl;
-      //     cout << "l1Tk_phi_prop " << l1Tk_phi_prop << endl;
-      //   }
-      //   // cout << endl;
-      //   const double dR_l1Mu_l1Tk_prop = reco::deltaR(l1Tk_eta_prop, l1Tk_phi_prop, event_.L1Mu_eta[i], event_.L1Mu_phi[i]);
-      //   if (dR_l1Mu_l1Tk_prop < event_.L1Mu_L1Tk_dR_prop[i]) {
-      //     event_.L1Mu_L1Tk_dR_prop[i] = dR_l1Mu_l1Tk_prop;
-      //     event_.L1Mu_L1Tk_pt_prop[i] = l1Tk_pt;
-      //   }
-      // }
-      
-      const double dR_l1Mu_l1Tk_corr = reco::deltaR(l1Tk_eta_corr, l1Tk_phi_corr, event_.L1Mu_eta[i], event_.L1Mu_phi[i]);
-      if (dR_l1Mu_l1Tk_corr < event_.L1Mu_L1Tk_dR_corr[i]) {
-        event_.L1Mu_L1Tk_dR_corr[i] = dR_l1Mu_l1Tk_corr;
-        event_.L1Mu_L1Tk_pt_corr[i] = l1Tk_pt;
-      }
-    } // end of loop on TTTracks
-
+        
+        // TrajectoryStateOnSurface stateAtMB2 = extrapolate(l1Tk);
+        // if (stateAtMB2.isValid()) {
+        //   // std::cout << ">>>Final State is valid" << std::endl;
+        //   l1Tk_eta_prop = stateAtMB2.globalPosition().eta();
+        //   l1Tk_phi_prop = stateAtMB2.globalPosition().phi();
+        //   if(verbose) {
+        //     cout << "l1Tk_eta_prop " << l1Tk_eta_prop << endl;
+        //     cout << "l1Tk_phi_prop " << l1Tk_phi_prop << endl;
+        //   }
+        //   // cout << endl;
+        //   const double dR_l1Mu_l1Tk_prop = reco::deltaR(l1Tk_eta_prop, l1Tk_phi_prop, event_.L1Mu_eta[i], event_.L1Mu_phi[i]);
+        //   if (dR_l1Mu_l1Tk_prop < event_.L1Mu_L1Tk_dR_prop[i]) {
+        //     event_.L1Mu_L1Tk_dR_prop[i] = dR_l1Mu_l1Tk_prop;
+        //     event_.L1Mu_L1Tk_pt_prop[i] = l1Tk_pt;
+        //   }
+        // }
+        
+        const double dR_l1Mu_l1Tk_corr = reco::deltaR(l1Tk_eta_corr, l1Tk_phi_corr, event_.L1Mu_eta[i], event_.L1Mu_phi[i]);
+        if (dR_l1Mu_l1Tk_corr < event_.L1Mu_L1Tk_dR_corr[i]) {
+          event_.L1Mu_L1Tk_dR_corr[i] = dR_l1Mu_l1Tk_corr;
+          event_.L1Mu_L1Tk_pt_corr[i] = l1Tk_pt;
+        }
+      } // end of loop on TTTracks
+    }
+    
     if (doGenAnalysis_) {
     
       // match the L1Mu to GEN
@@ -3116,14 +3197,16 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
           break;
         };
         
-        for (int k=0; k<2; ++k){ 
-          for (int j=0; j<2; ++j){
-            if (event_.genGdMu_L1Tk_index_prop[k][j] != -99) {
-              double deltaRL1MuTrueL1Tk(reco::deltaR(TTTracks[event_.genGdMu_L1Tk_index_prop[k][j]].getMomentum().eta(), 
-                                                     normalizedPhi(TTTracks[event_.genGdMu_L1Tk_index_prop[k][j]].getMomentum().phi()), 
-                                                     event_.L1Mu_eta[i], event_.L1Mu_phi[i]));
-              if (deltaRL1MuTrueL1Tk < event_.L1Mu_L1Tk_dR_prop_true[i]) {
-                event_.L1Mu_L1Tk_dR_prop_true[i] = deltaRL1MuTrueL1Tk;
+        if (processTTI_){
+          for (int k=0; k<2; ++k){ 
+            for (int j=0; j<2; ++j){
+              if (event_.genGdMu_L1Tk_index_prop[k][j] != -99) {
+                double deltaRL1MuTrueL1Tk(reco::deltaR(TTTracks[event_.genGdMu_L1Tk_index_prop[k][j]].getMomentum().eta(), 
+                                                       normalizedPhi(TTTracks[event_.genGdMu_L1Tk_index_prop[k][j]].getMomentum().phi()), 
+                                                       event_.L1Mu_eta[i], event_.L1Mu_phi[i]));
+                if (deltaRL1MuTrueL1Tk < event_.L1Mu_L1Tk_dR_prop_true[i]) {
+                  event_.L1Mu_L1Tk_dR_prop_true[i] = deltaRL1MuTrueL1Tk;
+                }
               }
             }
           } 
@@ -4949,41 +5032,41 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_rec_y4", event_.CSCTF_rec_y4,"CSCTF_rec_y4[50]/F");
   event_tree_->Branch("CSCTF_rec_z4", event_.CSCTF_rec_z4,"CSCTF_rec_z4[50]/F");
 
-  event_tree_->Branch("CSCTF_rec_eta1", event_.CSCTF_rec_eta1,"CSCTF_rec_eta1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_rec_eta2", event_.CSCTF_rec_eta2,"CSCTF_rec_eta2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_rec_eta3", event_.CSCTF_rec_eta3,"CSCTF_rec_eta3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_rec_eta4", event_.CSCTF_rec_eta4,"CSCTF_rec_eta4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_rec_eta1", event_.CSCTF_rec_eta1,"CSCTF_rec_eta1[50]/F");
+  event_tree_->Branch("CSCTF_rec_eta2", event_.CSCTF_rec_eta2,"CSCTF_rec_eta2[50]/F");
+  event_tree_->Branch("CSCTF_rec_eta3", event_.CSCTF_rec_eta3,"CSCTF_rec_eta3[50]/F");
+  event_tree_->Branch("CSCTF_rec_eta4", event_.CSCTF_rec_eta4,"CSCTF_rec_eta4[50]/F");
 
 
-  event_tree_->Branch("CSCTF_fit_phi1", event_.CSCTF_fit_phi1,"CSCTF_fit_phi1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_fit_phi2", event_.CSCTF_fit_phi2,"CSCTF_fit_phi2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_fit_phi3", event_.CSCTF_fit_phi3,"CSCTF_fit_phi3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_fit_phi4", event_.CSCTF_fit_phi4,"CSCTF_fit_phi4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_fit_phi1", event_.CSCTF_fit_phi1,"CSCTF_fit_phi1[50]/F");
+  event_tree_->Branch("CSCTF_fit_phi2", event_.CSCTF_fit_phi2,"CSCTF_fit_phi2[50]/F");
+  event_tree_->Branch("CSCTF_fit_phi3", event_.CSCTF_fit_phi3,"CSCTF_fit_phi3[50]/F");
+  event_tree_->Branch("CSCTF_fit_phi4", event_.CSCTF_fit_phi4,"CSCTF_fit_phi4[50]/F");
 
-  event_tree_->Branch("CSCTF_fit_dphi1", event_.CSCTF_fit_dphi1,"CSCTF_fit_dphi1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_fit_dphi2", event_.CSCTF_fit_dphi2,"CSCTF_fit_dphi2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_fit_dphi3", event_.CSCTF_fit_dphi3,"CSCTF_fit_dphi3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_fit_dphi4", event_.CSCTF_fit_dphi4,"CSCTF_fit_dphi4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_fit_dphi1", event_.CSCTF_fit_dphi1,"CSCTF_fit_dphi1[50]/F");
+  event_tree_->Branch("CSCTF_fit_dphi2", event_.CSCTF_fit_dphi2,"CSCTF_fit_dphi2[50]/F");
+  event_tree_->Branch("CSCTF_fit_dphi3", event_.CSCTF_fit_dphi3,"CSCTF_fit_dphi3[50]/F");
+  event_tree_->Branch("CSCTF_fit_dphi4", event_.CSCTF_fit_dphi4,"CSCTF_fit_dphi4[50]/F");
 
-  event_tree_->Branch("CSCTF_fit_R1", event_.CSCTF_fit_R1,"CSCTF_fit_R1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_fit_R2", event_.CSCTF_fit_R2,"CSCTF_fit_R2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_fit_R3", event_.CSCTF_fit_R3,"CSCTF_fit_R3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_fit_R4", event_.CSCTF_fit_R4,"CSCTF_fit_R4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_fit_R1", event_.CSCTF_fit_R1,"CSCTF_fit_R1[50]/F");
+  event_tree_->Branch("CSCTF_fit_R2", event_.CSCTF_fit_R2,"CSCTF_fit_R2[50]/F");
+  event_tree_->Branch("CSCTF_fit_R3", event_.CSCTF_fit_R3,"CSCTF_fit_R3[50]/F");
+  event_tree_->Branch("CSCTF_fit_R4", event_.CSCTF_fit_R4,"CSCTF_fit_R4[50]/F");
 
-  event_tree_->Branch("CSCTF_fit_x1", event_.CSCTF_fit_x1,"CSCTF_fit_x1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_fit_x2", event_.CSCTF_fit_x2,"CSCTF_fit_x2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_fit_x3", event_.CSCTF_fit_x3,"CSCTF_fit_x3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_fit_x4", event_.CSCTF_fit_x4,"CSCTF_fit_x4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_fit_x1", event_.CSCTF_fit_x1,"CSCTF_fit_x1[50]/F");
+  event_tree_->Branch("CSCTF_fit_x2", event_.CSCTF_fit_x2,"CSCTF_fit_x2[50]/F");
+  event_tree_->Branch("CSCTF_fit_x3", event_.CSCTF_fit_x3,"CSCTF_fit_x3[50]/F");
+  event_tree_->Branch("CSCTF_fit_x4", event_.CSCTF_fit_x4,"CSCTF_fit_x4[50]/F");
 
-  event_tree_->Branch("CSCTF_fit_y1", event_.CSCTF_fit_y1,"CSCTF_fit_y1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_fit_y2", event_.CSCTF_fit_y2,"CSCTF_fit_y2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_fit_y3", event_.CSCTF_fit_y3,"CSCTF_fit_y3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_fit_y4", event_.CSCTF_fit_y4,"CSCTF_fit_y4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_fit_y1", event_.CSCTF_fit_y1,"CSCTF_fit_y1[50]/F");
+  event_tree_->Branch("CSCTF_fit_y2", event_.CSCTF_fit_y2,"CSCTF_fit_y2[50]/F");
+  event_tree_->Branch("CSCTF_fit_y3", event_.CSCTF_fit_y3,"CSCTF_fit_y3[50]/F");
+  event_tree_->Branch("CSCTF_fit_y4", event_.CSCTF_fit_y4,"CSCTF_fit_y4[50]/F");
 
-  event_tree_->Branch("CSCTF_fit_z1", event_.CSCTF_fit_z1,"CSCTF_fit_z1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_fit_z2", event_.CSCTF_fit_z2,"CSCTF_fit_z2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_fit_z3", event_.CSCTF_fit_z3,"CSCTF_fit_z3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_fit_z4", event_.CSCTF_fit_z4,"CSCTF_fit_z4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_fit_z1", event_.CSCTF_fit_z1,"CSCTF_fit_z1[50]/F");
+  event_tree_->Branch("CSCTF_fit_z2", event_.CSCTF_fit_z2,"CSCTF_fit_z2[50]/F");
+  event_tree_->Branch("CSCTF_fit_z3", event_.CSCTF_fit_z3,"CSCTF_fit_z3[50]/F");
+  event_tree_->Branch("CSCTF_fit_z4", event_.CSCTF_fit_z4,"CSCTF_fit_z4[50]/F");
 
   event_tree_->Branch("CSCTF_fitline_x1", event_.CSCTF_fitline_x1,"CSCTF_fitline_x1[50]/F");
   event_tree_->Branch("CSCTF_fitline_x2", event_.CSCTF_fitline_x2,"CSCTF_fitline_x2[50]/F");

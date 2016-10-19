@@ -31,8 +31,6 @@
 <use name="L1Trigger/DTTrackFinder"/>
 <use name="L1Trigger/CSCTrackFinder"/>
 <use name="L1Trigger/CSCCommonTrigger"/>
-<use name="CondFormats/DataRecord/"/>
-<use name="CondFormats/L1TObjects/"/>
 <use name="RecoMuon/DetLayers"/>
 <use name="RecoMuon/Records"/>
 <use name="GEMCode/GEMValidation"/>

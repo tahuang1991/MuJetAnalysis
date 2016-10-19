@@ -112,7 +112,7 @@
 #include <L1Trigger/CSCCommonTrigger/interface/CSCConstants.h>
 #include <L1Trigger/CSCTrackFinder/interface/CSCTFPtLUT.h>
 #include "GEMCode/GEMValidation/interface/SimTrackMatchManager.h"
-#include "MuJetAnalysis/DisplacedL1MuFilter/plugins/CSCStubPatterns.h"
+#include "GEMCode/GEMValidation/interface/DisplacedMuonTriggerPtassignment.h"
 
 #include "DataFormats/CSCDigi/interface/CSCComparatorDigiCollection.h"
 #include "DataFormats/CSCDigi/interface/CSCWireDigiCollection.h"
@@ -339,6 +339,9 @@ struct MyEvent
   Float_t CSCTF_y1[kMaxCSCTF], CSCTF_y2[kMaxCSCTF], CSCTF_y3[kMaxCSCTF], CSCTF_y4[kMaxCSCTF];
   Float_t CSCTF_z1[kMaxCSCTF], CSCTF_z2[kMaxCSCTF], CSCTF_z3[kMaxCSCTF], CSCTF_z4[kMaxCSCTF];
   
+  Float_t CSCTF_sim_DDY123[kMaxCSCTF];
+  Float_t CSCTF_L1_DDY123[kMaxCSCTF];
+
   // recovered stubs using the SIM information (stubs not used in track building...)
   Int_t CSCTF_rec_ch1[kMaxCSCTF], CSCTF_rec_ch2[kMaxCSCTF], CSCTF_rec_ch3[kMaxCSCTF], CSCTF_rec_ch4[kMaxCSCTF];
   Float_t CSCTF_rec_phi1[kMaxCSCTF], CSCTF_rec_phi2[kMaxCSCTF], CSCTF_rec_phi3[kMaxCSCTF], CSCTF_rec_phi4[kMaxCSCTF];
@@ -773,6 +776,7 @@ private:
   bool doGenAnalysis_;
   bool processTTI_;
   bool processDTTF_;
+  bool doStubRecovery_;
   
   const RPCGeometry* rpcGeometry_;
   const CSCGeometry* cscGeometry_;
@@ -829,7 +833,7 @@ DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) :
   processDTTF_ = iConfig.getParameter<bool>("processDTTF");
   doSimAnalysis_ = iConfig.getParameter<bool>("doSimAnalysis");
   doGenAnalysis_ = iConfig.getParameter<bool>("doGenAnalysis");
-  
+  doStubRecovery_ = iConfig.getParameter<bool>("doStubRecovery");  
   L1Mu_input = iConfig.getParameter<edm::InputTag>("L1Mu_input");
   L1TkMu_input = iConfig.getParameter<edm::InputTag>("L1TkMu_input");
   
@@ -846,18 +850,18 @@ DisplacedL1MuFilter::~DisplacedL1MuFilter()
 
 
 bool
-DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
+DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSetup)
 {
   double eq = 0.000001;
 
   clearBranches();
   
   // propagator
-  iSetup.get<IdealMagneticFieldRecord>().get(magfield_);
-  iSetup.get<TrackingComponentsRecord>().get("SteppingHelixPropagatorAlong", propagator_);
-  iSetup.get<TrackingComponentsRecord>().get("SteppingHelixPropagatorOpposite", propagatorOpposite_);
-  iSetup.get<TrackingComponentsRecord>().get("SteppingHelixPropagatorAny",      propagatorAny_);
-  iSetup.get<MuonRecoGeometryRecord>().get(muonGeometry_);
+  iEventSetup.get<IdealMagneticFieldRecord>().get(magfield_);
+  iEventSetup.get<TrackingComponentsRecord>().get("SteppingHelixPropagatorAlong", propagator_);
+  iEventSetup.get<TrackingComponentsRecord>().get("SteppingHelixPropagatorOpposite", propagatorOpposite_);
+  iEventSetup.get<TrackingComponentsRecord>().get("SteppingHelixPropagatorAny",      propagatorAny_);
+  iEventSetup.get<MuonRecoGeometryRecord>().get(muonGeometry_);
 
   // Get the barrel cylinder
   const DetLayer * dtLay = muonGeometry_->allDTLayers()[useMB2_ ? 1 : 0];
@@ -873,13 +877,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     // std::cout << "L1MuonMatcher: endcap " << i << " Z = " << endcapDiskPos_[i]->position().z() << ", radii = " << endcapRadii_[i].first << "," << endcapRadii_[i].second << std::endl;
   }
 
-  iSetup.get<MuonGeometryRecord>().get(rpc_geom_);
+  iEventSetup.get<MuonGeometryRecord>().get(rpc_geom_);
   rpcGeometry_ = &*rpc_geom_;
 
-  iSetup.get<MuonGeometryRecord>().get(csc_geom_);
+  iEventSetup.get<MuonGeometryRecord>().get(csc_geom_);
   cscGeometry_ = &*csc_geom_;
 
-  iSetup.get<MuonGeometryRecord>().get(gem_geom_);
+  iEventSetup.get<MuonGeometryRecord>().get(gem_geom_);
   gemGeometry_ = &*gem_geom_;
 
   typedef std::vector<L1MuGMTCand> GMTs;
@@ -900,14 +904,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
   iEvent.getByLabel("simCsctfTrackDigis", hl1Tracks);
   const L1CSCTrackCollection& l1Tracks(*hl1Tracks.product());
 
-  if (iSetup.get< L1MuTriggerScalesRcd >().cacheIdentifier() != muScalesCacheID_ ||
-      iSetup.get< L1MuTriggerPtScaleRcd >().cacheIdentifier() != muPtScaleCacheID_ )
+  if (iEventSetup.get< L1MuTriggerScalesRcd >().cacheIdentifier() != muScalesCacheID_ ||
+      iEventSetup.get< L1MuTriggerPtScaleRcd >().cacheIdentifier() != muPtScaleCacheID_ )
     {
-      iSetup.get< L1MuTriggerScalesRcd >().get( muScales );
-      iSetup.get< L1MuTriggerPtScaleRcd >().get( muPtScale );
+      iEventSetup.get< L1MuTriggerScalesRcd >().get( muScales );
+      iEventSetup.get< L1MuTriggerPtScaleRcd >().get( muPtScale );
 
-      muScalesCacheID_  = iSetup.get< L1MuTriggerScalesRcd >().cacheIdentifier();
-      muPtScaleCacheID_ = iSetup.get< L1MuTriggerPtScaleRcd >().cacheIdentifier();
+      muScalesCacheID_  = iEventSetup.get< L1MuTriggerScalesRcd >().cacheIdentifier();
+      muPtScaleCacheID_ = iEventSetup.get< L1MuTriggerPtScaleRcd >().cacheIdentifier();
     }
 
   edm::Handle< std::vector<L1MuRegionalCand> > hL1MuRPCbs;
@@ -1399,7 +1403,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
              <<" phi "<< sim_muon.momentum().phi() << endl << endl;
       }
       auto sim_vertex = sim_vtxs[sim_muon.vertIndex()];
-      SimTrackMatchManager match(sim_muon, sim_vertex, cfg_, iEvent, iSetup);
+      SimTrackMatchManager match(sim_muon, sim_vertex, cfg_, iEvent, iEventSetup);
       
       const SimHitMatcher& match_sh = match.simhits();
       //const CSCDigiMatcher& match_cd = match.cscDigis();
@@ -1982,8 +1986,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
       bool stubMissingSt4 = event_.DTTF_st4[j] == 99;
       bool atLeast1StubMissing = stubMissingSt1 or stubMissingSt2 or stubMissingSt3 or stubMissingSt4;
       
-      bool doStubRecovery = true;
-      if (doStubRecovery and atLeast1StubMissing){
+      //bool doStubRecovery = true;
+      if (doStubRecovery_ and atLeast1StubMissing){
         //std::cout << "DT stub recovery" << std::endl;
         
         int triggerSector = track.spid().sector();
@@ -2084,8 +2088,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iSetup)
     bool stubMissingSt4 = event_.CSCTF_st4[j] == 99;
     bool atLeast1StubMissing = stubMissingSt1 or stubMissingSt2 or stubMissingSt3 or stubMissingSt4;
     
-    bool doStubRecovery = true;
-    if (doStubRecovery and atLeast1StubMissing){
+    //bool doStubRecovery = true;
+    if (doStubRecovery_ and atLeast1StubMissing){
       
       std::vector<float> xs;
       std::vector<float> ys;
@@ -5108,6 +5112,8 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_sim_z3", event_.CSCTF_sim_z3,"CSCTF_sim_z3[50]/F");
   event_tree_->Branch("CSCTF_sim_z4", event_.CSCTF_sim_z4,"CSCTF_sim_z4[50]/F");
 
+  event_tree_->Branch("CSCTF_sim_DDY123", event_.CSCTF_sim_DDY123,"CSCTF_sim_DDY123[50]/F");
+  event_tree_->Branch("CSCTF_L1_DDY123", event_.CSCTF_L1_DDY123,"CSCTF_L1_DDY123[50]/F");
 
   if (processRPCb_) {
   event_tree_->Branch("nRPCb", &event_.nRPCb);
@@ -5677,6 +5683,8 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_fit_dphi3[i] = 99;
     event_.CSCTF_fit_dphi4[i] = 99;
 
+    event_.CSCTF_sim_DDY123[i] = 99;
+    event_.CSCTF_L1_DDY123[i] = 99;  
   }
 
   event_.nRPCb = 0;

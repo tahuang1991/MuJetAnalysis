@@ -1711,6 +1711,16 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     }
     */
 
+      DisplacedMuonTriggerPtassignment ptAssignmentUnit(match_csc.allLctsMatched2SimMuon(),
+                                                        match_gd.allGempadsMatch2SimMuon(),
+                                                        iEventSetup,
+                                                        iEvent);
+      
+      if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runPositionbased()){
+        event_.CSCTF_sim_DDY123[k] = ptAssignmentUnit.getdeltaY123();
+      }
+      
+
       // recover the missing stubs in station 1 and 2... (because they were not used in the track building)
       // GEM digis and pads in superchambers
       if(verbose){
@@ -2055,9 +2065,15 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     }
     event_.CSCTF_nStubs[j] = 0;
     auto stubCollection(l1Tracks[j].second);
+
+    // organize stubs in a map
+    std::map<unsigned int, CSCCorrelatedLCTDigiContainer> chamberid_lct;
+    std::map<unsigned int, GEMCSCPadDigiContainer> detid_pads;
+
     for (auto detUnitIt = stubCollection.begin(); detUnitIt != stubCollection.end(); detUnitIt++) {
       const CSCDetId& ch_id = (*detUnitIt).first;
       const auto range = (*detUnitIt).second;
+      std::vector<CSCCorrelatedLCTDigi> v;
       for (auto digiIt = range.first; digiIt != range.second; digiIt++) {
         //if (!(*digiIt).isValid()) continue;
         event_.CSCTF_nStubs[j] += 1;
@@ -2074,7 +2090,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         fitComparatorsLCT(*hCSCComparators.product(), stub, ch_id, int(digiIt-range.first), z_pos_L3, bestFitPhi, bestFitDPhi);
 
         fillCSCStubProperties(ch_id, stub, j, gp, z_pos_L3, bestFitPhi, bestFitDPhi);
+
+        v.push_back(stub);
       }
+      chamberid_lct[ch_id] = v;
     }
     
     /* 
@@ -2192,6 +2211,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           if (bestMatchingStub.second != CSCCorrelatedLCTDigi()) {
             // stub position
             auto gp = getCSCSpecificPoint2(bestMatchingStub.first.rawId(), bestMatchingStub.second);
+
+            // add the stub to the collection
+            std::vector<CSCCorrelatedLCTDigi> v;
+            v.push_back(bestMatchingStub.second);
+            chamberid_lct[bestMatchingStub.first] = v;
+
             if (reco::deltaR(gp.eta(), normalizedPhi(gp.phi()), 
                              event_.CSCTF_eta[j] , normalizedPhi(event_.CSCTF_phi[j])) < 0.2){ 
 
@@ -2219,6 +2244,15 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         }
       } 
     }
+    DisplacedMuonTriggerPtassignment ptAssignmentUnit(chamberid_lct,
+                                                      detid_pads,
+                                                      iEventSetup,
+                                                      iEvent);
+    
+    if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runPositionbased()){
+      event_.CSCTF_L1_DDY123[j] = ptAssignmentUnit.getdeltaY123();
+    }
+
     stubMissingSt1 = event_.CSCTF_st1[j] == 99;
     stubMissingSt2 = event_.CSCTF_st2[j] == 99;
     if(verbose) cout << "Stub missing in station 1: " << bool(stubMissingSt1) << endl; 

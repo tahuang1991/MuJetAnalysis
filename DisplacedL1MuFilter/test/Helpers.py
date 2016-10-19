@@ -699,7 +699,7 @@ def get_eta_partition(eta):
   elif (abs(eta)>=1.6 and abs(eta)<1.8): etaPartition = 2
   elif (abs(eta)>=1.8 and abs(eta)<2.0): etaPartition = 3
   elif (abs(eta)>=2.0 and abs(eta)<2.2): etaPartition = 4
-  elif (abs(eta)>=2.2 and abs(eta)<=2.4): etaPartition = 5
+  elif (abs(eta)>=2.2 and abs(eta)<2.4): etaPartition = 5
   return etaPartition
  
 

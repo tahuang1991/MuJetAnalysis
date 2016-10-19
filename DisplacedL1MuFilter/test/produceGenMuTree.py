@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
   set_style()
 
-  verbose = True
+  verbose = False
  
   ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
   #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v36/160907_181932/0000/'
@@ -42,24 +42,24 @@ if __name__ == "__main__":
   #dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU0_L1MuANA/161010_203525/0000/'
   #dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU0_L1MuANA/161010_203345/0000/'
 
-  #dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU0_L1MuANA_v2/161013_152019/0000/'
-  #dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU0_L1MuANA_v2/161013_151727/0000/'
-  #dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_L1MuANA_v2/161013_152110/0000/'
+  dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU0_L1MuANA_v2/161013_152019/0000/'
+  dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU0_L1MuANA_v2/161013_151727/0000/'
+  dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_L1MuANA_v2/161013_152110/0000/'
   
   #dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_L1MuANA_v2/161013_152110/0000/'
   #dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_L1MuANA_v4/161013_153027/0000/'
   #dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU140_L1MuANA_v4/161013_152818/0000/'
 
-  dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU0_L1MuANA_v3_NoStubRec/161019_031932/0000/'
-  dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU0_L1MuANA_v3_NoStubRec/161019_032027/0000/'
-  dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_L1MuANA_v3_NoStubRec/161019_032238/0000/'
+  #dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU0_L1MuANA_v3_NoStubRec/161019_031932/0000/'
+  #dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU0_L1MuANA_v3_NoStubRec/161019_032027/0000/'
+  #dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_L1MuANA_v3_NoStubRec/161019_032238/0000/'
 
   ch = addfiles(ch, dirname=dirname1)
   ch = addfiles(ch, dirname=dirname2)
   ch = addfiles(ch, dirname=dirname3)
   treeHits = ch
 
-  f = ROOT.TFile("out_ana_pu0_displaced_L1Mu_DDY123_NoStubRec.root", "recreate")
+  f = ROOT.TFile("out_ana_pu0_displaced_L1Mu_DDY123_StubRec.root", "recreate")
   t = ROOT.TTree("L1MuTree", "L1MuTree")
   
   ## ranges
@@ -206,7 +206,7 @@ if __name__ == "__main__":
   t.Branch('sim_phi', sim_phis, 'sim_phi/D')
 
   t.Branch('SIM_L1Mu_index', SIM_L1Mu_indexs, 'SIM_L1Mu_index/I')
-  t.Branch('SIM_L1Mu_dR', SIM_L1Mu_dRs, 'SIM_L1Mu_dR/I')
+  t.Branch('SIM_L1Mu_dR', SIM_L1Mu_dRs, 'SIM_L1Mu_dR/D')
 
   t.Branch('has_L1Mu', has_L1Mus, 'has_L1Mu/I')
   t.Branch('L1Mu_pt', L1Mu_pts, 'L1Mu_pt/D')
@@ -307,7 +307,7 @@ if __name__ == "__main__":
   for k in range(0,treeHits.GetEntries()):
       treeHits.GetEntry(k)
       if k%1000==0: print "Event", k+1, "nL1Mu", treeHits.nL1Mu
-      if k>2500: break
+      #if k>10000: break
 
       #print "event_number", event_number
       #print "lumi_number", lumi_number
@@ -501,15 +501,17 @@ if __name__ == "__main__":
           ok_CSCTF_sim_st3s[0] = int(ok_CSCTF_sim_st3)
           ok_CSCTF_sim_st4s[0] = int(ok_CSCTF_sim_st4)  
 
+          #print ok_CSCTF_sim_st1s[0], ok_CSCTF_sim_st2s[0], ok_CSCTF_sim_st3s[0], ok_CSCTF_sim_st4s[0]
+
           ## find the L1Mu closest matching to the 
           deltaRMin = 999
           SIM_L1Mu_index = 999
           for iii in range(0,len(treeHits.L1Mu_pt)):
-            print "Checking muon" , iii
+            #print "Checking muon" , iii
             L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[iii]
-            print "CSCTF index", L1Mu_CSCTF_index, "max", len(treeHits.CSCTF_phi1)
+            #print "CSCTF index", L1Mu_CSCTF_index, "max", len(treeHits.CSCTF_phi1)
             if L1Mu_CSCTF_index == -1:
-              print "\tNot an endcap muon. Skipping...\n"
+              #print "\tNot an endcap muon. Skipping...\n"
               continue
             CSCTF_phi1 = treeHits.CSCTF_phi1[L1Mu_CSCTF_index]
             CSCTF_phi2 = treeHits.CSCTF_phi2[L1Mu_CSCTF_index]
@@ -554,18 +556,18 @@ if __name__ == "__main__":
             if deltaEta3 == 99. or deltaPhi3 == 99.: deltaR3 = 99.
             if deltaEta4 == 99. or deltaPhi4 == 99.: deltaR4 = 99.
 
-
-            print "\t\tCSCTF_sim_phi1", CSCTF_sim_phi1s[0], "\tCSCTF_phi1", CSCTF_phi1, "Delta", deltaPhi1
-            print "\t\tCSCTF_sim_phi2", CSCTF_sim_phi2s[0], "\tCSCTF_phi2", CSCTF_phi2, "Delta", deltaPhi2
-            print "\t\tCSCTF_sim_phi3", CSCTF_sim_phi3s[0], "\tCSCTF_phi3", CSCTF_phi3, "Delta", deltaPhi3
-            print "\t\tCSCTF_sim_phi4", CSCTF_sim_phi4s[0], "\tCSCTF_phi4", CSCTF_phi4, "Delta", deltaPhi4
-            print
+            if verbose: 
+              print "\t\tCSCTF_sim_phi1", CSCTF_sim_phi1s[0], "\tCSCTF_phi1", CSCTF_phi1, "Delta", deltaPhi1
+              print "\t\tCSCTF_sim_phi2", CSCTF_sim_phi2s[0], "\tCSCTF_phi2", CSCTF_phi2, "Delta", deltaPhi2
+              print "\t\tCSCTF_sim_phi3", CSCTF_sim_phi3s[0], "\tCSCTF_phi3", CSCTF_phi3, "Delta", deltaPhi3
+              print "\t\tCSCTF_sim_phi4", CSCTF_sim_phi4s[0], "\tCSCTF_phi4", CSCTF_phi4, "Delta", deltaPhi4
+              print
   
-            print "\t\tCSCTF_sim_eta1", CSCTF_sim_eta1s[0], "\tCSCTF_eta1", CSCTF_eta1, "Delta", deltaEta1
-            print "\t\tCSCTF_sim_eta2", CSCTF_sim_eta2s[0], "\tCSCTF_eta2", CSCTF_eta2, "Delta", deltaEta2
-            print "\t\tCSCTF_sim_eta3", CSCTF_sim_eta3s[0], "\tCSCTF_eta3", CSCTF_eta3, "Delta", deltaEta3
-            print "\t\tCSCTF_sim_eta4", CSCTF_sim_eta4s[0], "\tCSCTF_eta4", CSCTF_eta4, "Delta", deltaEta4
-            print
+              print "\t\tCSCTF_sim_eta1", CSCTF_sim_eta1s[0], "\tCSCTF_eta1", CSCTF_eta1, "Delta", deltaEta1
+              print "\t\tCSCTF_sim_eta2", CSCTF_sim_eta2s[0], "\tCSCTF_eta2", CSCTF_eta2, "Delta", deltaEta2
+              print "\t\tCSCTF_sim_eta3", CSCTF_sim_eta3s[0], "\tCSCTF_eta3", CSCTF_eta3, "Delta", deltaEta3
+              print "\t\tCSCTF_sim_eta4", CSCTF_sim_eta4s[0], "\tCSCTF_eta4", CSCTF_eta4, "Delta", deltaEta4
+              print
 
             deltaR = 0
             if deltaR1 != 99.: deltaR += deltaR1
@@ -576,23 +578,26 @@ if __name__ == "__main__":
 
             #print "phi values", treeHits.L1Mu_phi[iii], treeHits.CSCTF_rec_phi2[sim_index]
             #print "deltaEta", deltaEta, "deltaPhi", deltaPhi
-            print "sim", iii, deltaR
+            #print "sim", iii, deltaR
             if deltaR < deltaRMin:
               SIM_L1Mu_index = iii
               deltaRMin = deltaR
-          print "found index", SIM_L1Mu_index, "deltaRMin", deltaRMin, "L1Mu index", L1Mu_index
+          #print "found index", SIM_L1Mu_index, "deltaRMin", deltaRMin, "L1Mu index", L1Mu_index
           #print
           if SIM_L1Mu_index == L1Mu_index:
             L1Mu_trues[0] = 1
-          else:
-            print 
-            print "ERROR: found index", SIM_L1Mu_index, "deltaRMin", deltaRMin, "L1Mu index", L1Mu_index
-            print 
-            break
+            #print 
+            #print "ERROR: found index", SIM_L1Mu_index, "deltaRMin", deltaRMin, "L1Mu index", L1Mu_index
+            #print 
+            #break
 
           SIM_L1Mu_indexs[0] = SIM_L1Mu_index
           SIM_L1Mu_dRs[0] = deltaRMin
  
+          ## matching L1Mu was not found
+          if SIM_L1Mu_index == 999:
+            continue
+
             #print "ok L1",  L1Mu_pts[0], L1Mu_etas[0], L1Mu_phis[0]
 
           L1Mu_pts[0] = treeHits.L1Mu_pt[L1Mu_index]
@@ -602,6 +607,7 @@ if __name__ == "__main__":
           L1Mu_qualitys[0] = treeHits.L1Mu_quality[L1Mu_index]
           
           L1Mu_DTTF_index  = treeHits.L1Mu_DTTF_index[L1Mu_index]
+          #print "index", SIM_L1Mu_index, len(treeHits.L1Mu_CSCTF_index)
           L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[SIM_L1Mu_index]
           
           has_CSCTFs[0] = L1Mu_CSCTF_index != 99 and L1Mu_CSCTF_index != -1
@@ -640,25 +646,40 @@ if __name__ == "__main__":
           ok_CSCTF_st3s[0] = int(ok_CSCTF_st3)
           ok_CSCTF_st4s[0] = int(ok_CSCTF_st4)  
 
-          print "\t\tCompare stubs SIM vs L1Mu"
-          print "\t\tCSCTF_sim_phi1", CSCTF_sim_phi1s[0], "\tCSCTF_phi1", CSCTF_phi1s[0]
-          print "\t\tCSCTF_sim_phi2", CSCTF_sim_phi2s[0], "\tCSCTF_phi2", CSCTF_phi2s[0]
-          print "\t\tCSCTF_sim_phi3", CSCTF_sim_phi3s[0], "\tCSCTF_phi3", CSCTF_phi3s[0]
-          print "\t\tCSCTF_sim_phi4", CSCTF_sim_phi4s[0], "\tCSCTF_phi4", CSCTF_phi4s[0]
-          print
+          if verbose: 
+            print "\t\tCompare stubs SIM vs L1Mu"
+            print "\t\tCSCTF_sim_phi1", CSCTF_sim_phi1s[0], "\tCSCTF_phi1", CSCTF_phi1s[0]
+            print "\t\tCSCTF_sim_phi2", CSCTF_sim_phi2s[0], "\tCSCTF_phi2", CSCTF_phi2s[0]
+            print "\t\tCSCTF_sim_phi3", CSCTF_sim_phi3s[0], "\tCSCTF_phi3", CSCTF_phi3s[0]
+            print "\t\tCSCTF_sim_phi4", CSCTF_sim_phi4s[0], "\tCSCTF_phi4", CSCTF_phi4s[0]
+            print
 
-          print "\t\tCSCTF_sim_eta1", CSCTF_sim_eta1s[0], "\tCSCTF_eta1", CSCTF_eta1s[0]
-          print "\t\tCSCTF_sim_eta2", CSCTF_sim_eta2s[0], "\tCSCTF_eta2", CSCTF_eta2s[0]
-          print "\t\tCSCTF_sim_eta3", CSCTF_sim_eta3s[0], "\tCSCTF_eta3", CSCTF_eta3s[0]
-          print "\t\tCSCTF_sim_eta4", CSCTF_sim_eta4s[0], "\tCSCTF_eta4", CSCTF_eta4s[0]
-          print
+            print "\t\tCSCTF_sim_eta1", CSCTF_sim_eta1s[0], "\tCSCTF_eta1", CSCTF_eta1s[0]
+            print "\t\tCSCTF_sim_eta2", CSCTF_sim_eta2s[0], "\tCSCTF_eta2", CSCTF_eta2s[0]
+            print "\t\tCSCTF_sim_eta3", CSCTF_sim_eta3s[0], "\tCSCTF_eta3", CSCTF_eta3s[0]
+            print "\t\tCSCTF_sim_eta4", CSCTF_sim_eta4s[0], "\tCSCTF_eta4", CSCTF_eta4s[0]
+            print
 
-          print "\t\tCSCTF_sim_z1", CSCTF_sim_z1s[0], "\tCSCTF_z1", CSCTF_z1s[0]
-          print "\t\tCSCTF_sim_z2", CSCTF_sim_z2s[0], "\tCSCTF_z2", CSCTF_z2s[0]
-          print "\t\tCSCTF_sim_z3", CSCTF_sim_z3s[0], "\tCSCTF_z3", CSCTF_z3s[0]
-          print "\t\tCSCTF_sim_z4", CSCTF_sim_z4s[0], "\tCSCTF_z4", CSCTF_z4s[0]
-          print
+            print "\t\tCSCTF_sim_z1", CSCTF_sim_z1s[0], "\tCSCTF_z1", CSCTF_z1s[0]
+            print "\t\tCSCTF_sim_z2", CSCTF_sim_z2s[0], "\tCSCTF_z2", CSCTF_z2s[0]
+            print "\t\tCSCTF_sim_z3", CSCTF_sim_z3s[0], "\tCSCTF_z3", CSCTF_z3s[0]
+            print "\t\tCSCTF_sim_z4", CSCTF_sim_z4s[0], "\tCSCTF_z4", CSCTF_z4s[0]
+            print
 
+          #parity_sim = get_parity(CSCTF_rec_isEven1, CSCTF_rec_isEven2, CSCTF_rec_isEven3, CSCTF_rec_isEven4)
+          #parity_L1 = get_parity(CSCTF_isEven1, CSCTF_isEven2, CSCTF_isEven3, CSCTF_isEven4)
+          
+          etaPartition_sim = get_eta_partition(CSCTF_sim_eta2s[0])
+          etaPartition_L1 = get_eta_partition(CSCTF_eta2s[0])
+          
+          #paritys_sim[0] = parity_sim
+          partitions_sim[0] = etaPartition_sim
+          #print "partition", partitions_sim[0]
+
+          #paritys_L1[0] = parity_L1
+          partitions_L1[0] = etaPartition_L1
+          
+          t.Fill()
           continue
           """
               
@@ -948,7 +969,7 @@ if __name__ == "__main__":
 
           """
           ## fill the tree for each gen muon
-          t.Fill()
+#          t.Fill()
           
           
 f.Write()

@@ -279,7 +279,7 @@ struct MyEvent
   Int_t genGdMu_SIM_index[2][2];
   Float_t genGdMu_SIM_dR[2][2];
   Int_t has_sim;
-  Float_t pt_sim[kMaxSIM], eta_sim[kMaxSIM], phi_sim[kMaxSIM], charge_sim[kMaxSIM];
+  Float_t pt_sim[kMaxSIM], eta_sim[kMaxSIM], phi_sim[kMaxSIM], charge_sim[kMaxSIM], dxy_sim[kMaxSIM];
   Float_t eta_sim_prop, phi_sim_prop;
   Float_t eta_sim_corr, phi_sim_corr;
   Float_t dEta_sim_corr, dPhi_sim_corr, dR_sim_corr;
@@ -663,12 +663,12 @@ bool
 isSimTrackGood(const SimTrack &t)
 {
   // SimTrack selection
-  //if (t.noVertex()) return false;
-  //if (t.noGenpart()) return false;
+  if (t.noVertex()) return false;
+  if (t.noGenpart()) return false;
   // only muons 
   if (std::abs(t.type()) != 13) return false;
   // pt selection
-  if (t.momentum().pt() < 0) return false;
+  if (t.momentum().pt() < 1.5) return false;
   // eta selection
   const float eta(std::abs(t.momentum().eta()));
   if (eta > 3.0) return false; 
@@ -1290,17 +1290,17 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         //////////////////////
         double GEN_SIM_min_dR = 99;
         for (unsigned int k=0; k<skim_sim_trks.size(); ++k) {
-          std::cout << "Analyze SIM muon " << k << std::endl;
+          //std::cout << "Analyze SIM muon " << k << std::endl;
           auto sim_muon = skim_sim_trks[k];
           event_.pt_sim[k] = sim_muon.momentum().pt();
           event_.eta_sim[k] = sim_muon.momentum().eta();
           event_.phi_sim[k] = sim_muon.momentum().phi();
           event_.charge_sim[k] = sim_muon.charge();
-          cout << "\t"<<k<<endl;
-          cout << "\tSIM_pt " << event_.pt_sim[k] << endl;
-          cout << "\tSIM_eta " << event_.eta_sim[k] << endl;
-          cout << "\tSIM_phi " << event_.phi_sim[k] << endl;
-          cout << "\tSIM_charge " << event_.charge_sim << endl;
+          //cout << "\t"<<k<<endl;
+          //cout << "\tSIM_pt " << event_.pt_sim[k] << endl;
+          //cout << "\tSIM_eta " << event_.eta_sim[k] << endl;
+          //cout << "\tSIM_phi " << event_.phi_sim[k] << endl;
+          //cout << "\tSIM_charge " << event_.charge_sim[k] << endl;
           double deltar(reco::deltaR(event_.eta_sim[k], 
                                      event_.phi_sim[k], 
                                      event_.genGdMu_eta[i][j], 
@@ -1404,8 +1404,11 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       }
       auto sim_vertex = sim_vtxs[sim_muon.vertIndex()];
       SimTrackMatchManager match(sim_muon, sim_vertex, cfg_, iEvent, iEventSetup);
-      
+      const DisplacedGENMuonMatcher& match_disp = match.genMuons();
+      std::cout << "sim dxy " << match_disp.matchedGenMudxy() << std::endl;
+        
       const SimHitMatcher& match_sh = match.simhits();
+      
       //const CSCDigiMatcher& match_cd = match.cscDigis();
       const CSCStubMatcher& match_csc = match.cscStubs();
       const GEMDigiMatcher& match_gd = match.gemDigis();
@@ -2830,6 +2833,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                                                event_.CSCTF_eta[j], 
                                                event_.CSCTF_phi[j]);
         if (drL1MuL1CSCTrack < bestDrL1MuL1CSCTrack and drL1MuL1CSCTrack < 0.3) {
+          std::cout << "new best csctf track " << drL1MuL1CSCTrack << " " << event_.CSCTF_eta[j] << " " << event_.CSCTF_quality[j] << std::endl;
+
           bestDrL1MuL1CSCTrack = drL1MuL1CSCTrack;
           event_.L1Mu_CSCTF_index[i] = j;
         }

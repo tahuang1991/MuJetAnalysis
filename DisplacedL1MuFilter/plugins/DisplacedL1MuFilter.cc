@@ -777,6 +777,7 @@ private:
   bool processTTI_;
   bool processDTTF_;
   bool doStubRecovery_;
+  bool useTrackFinderStubs_;
   
   const RPCGeometry* rpcGeometry_;
   const CSCGeometry* cscGeometry_;
@@ -1794,9 +1795,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                               alphay, betay, 1, 1, 1, 1, 1, false);
         
 
-        double csc_phi = normalizedPhi(alpha+beta*match_csc.zpositionOfLayer(d, 3)); //csc_gp.phi();
+        double csc_phi = csc_gp.phi(); //normalizedPhi(alpha+beta*match_csc.zpositionOfLayer(d, 3)); //csc_gp.phi();
         auto gp_new = GlobalPoint(GlobalPoint::Cylindrical(csc_gp.perp(), csc_phi, csc_gp.z()));
-        double csc_eta = match_sh.simHitPositionKeyLayer(d).eta();
+        double csc_eta = csc_gp.eta(); // match_sh.simHitPositionKeyLayer(d).eta();
         double csc_z = csc_gp.z();
         double csc_R = gp_new.perp();
         double csc_x = gp_new.x();

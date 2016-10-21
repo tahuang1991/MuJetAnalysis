@@ -7,11 +7,11 @@ ROOT.gErrorIgnoreLevel=1001
 from Helpers import *
 from ROOT import *
 
-file = TFile("out_ana_pu0_displaced_L1Mu_DDY123.root")
+file = TFile("out_ana_pu0_displaced_L1Mu_DDY123_NoStubRec_20161020.root")
 treeHits = file.Get("L1MuTree")
 
 ## plots
-targetDir = 'DisplacedL1MuTrigger_20161018_PU0/'
+targetDir = 'DisplacedL1MuTrigger_20161020_PU0_NoStubRecovery/'
 
 ## Style
 gStyle.SetStatStyle(0)
@@ -43,7 +43,7 @@ def makeEffPlot(eff1, eff2, eff3, plotName, plotTitle, doPt=True):
     gStyle.SetOptStat( 0 )
     gStyle.SetMarkerStyle(1)
     
-    if doPt: 
+    if doPt:
         binLow = [0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,12.0,14.0,16.0,18.0,20.0,24.0,28.0,32.0,36.0,42.0,50.0]
         ptbins = np.asarray(binLow)
         xaxisTitle = "True muon p_{T} [GeV]"
@@ -881,7 +881,7 @@ def generateEfficiencyPlots_V2():
 def L1MuMatchingEfficiency():
 
     stationCut = TCut('ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && ok_CSCTF_sim_st3==1')
-    numCut = TCut('has_L1Mu==1')
+    numCut = TCut('SIM_L1Mu_index != 999 && SIM_L1Mu_dR < 0.1')#  
     
     ## 12 to 14
     etaCut = TCut('partition_sim==0')
@@ -1100,9 +1100,9 @@ def correctL1MuMatchingEfficiency():
 
 def stubReconstructionEfficiency():
     
-    stationCut = TCut('has_CSCTF==1 && ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && ok_CSCTF_sim_st3==1 && has_L1Mu==1 && L1Mu_true==1')
+    stationCut = TCut('ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && ok_CSCTF_sim_st3==1 && SIM_L1Mu_index != 999 && SIM_L1Mu_dR < 0.1')
     numCut = TCut('ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1')
-    
+
     ## 12 to 14
     etaCut = TCut('partition_sim==0')
     baselineCut = AND(stationCut, etaCut)
@@ -1172,8 +1172,12 @@ def stubReconstructionEfficiency():
 
 def correctStubReconstructionEfficiency(stubSelection):
     
-    stationCut = TCut('has_CSCTF==1 && ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && ok_CSCTF_sim_st3==1 && has_L1Mu==1 && L1Mu_true==1 ')
+    stationCut = TCut('ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && ok_CSCTF_sim_st3==1 && SIM_L1Mu_index != 999 && SIM_L1Mu_dR < 0.1')
     L1_stationCut = TCut('ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1')
+    additionPhiCut = TCut('CSCTF_phi1 != 99. &&CSCTF_phi1 != 0. && CSCTF_phi2 != 99. && CSCTF_phi2 != 0. && CSCTF_phi3 != 99. && CSCTF_phi3 != 0.')
+
+    #stationCut = TCut('has_CSCTF==1 && ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && ok_CSCTF_sim_st3==1 && has_L1Mu==1 && L1Mu_true==1 ')
+    #L1_stationCut = TCut('ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1')
 
     if stubSelection == 0:
         stubPhiCut = TCut('abs(CSCTF_phi1 - CSCTF_sim_phi1)/CSCTF_sim_phi1 > 0.01 && abs(CSCTF_phi2 - CSCTF_sim_phi2)/CSCTF_sim_phi2 > 0.01 && abs(CSCTF_phi3 - CSCTF_sim_phi3)/CSCTF_sim_phi3 > 0.01')
@@ -1220,9 +1224,10 @@ def correctStubReconstructionEfficiency(stubSelection):
     if stubSelection == 123:
         stubPhiCut = TCut('abs(CSCTF_phi1 - CSCTF_sim_phi1)/CSCTF_sim_phi1 < 0.01 && abs(CSCTF_phi2 - CSCTF_sim_phi2)/CSCTF_sim_phi2 < 0.01 && abs(CSCTF_phi3 - CSCTF_sim_phi3)/CSCTF_sim_phi3 < 0.01')
         stubEtaCut = TCut('abs(CSCTF_eta1 - CSCTF_sim_eta1)/CSCTF_sim_eta1 < 0.01 && abs(CSCTF_eta2 - CSCTF_sim_eta2)/CSCTF_sim_eta2 < 0.01 && abs(CSCTF_eta3 - CSCTF_sim_eta3)/CSCTF_sim_eta3 < 0.01')
-        stubZCut = TCut('abs(CSCTF_z1 - CSCTF_sim_z1) < 0.1 && abs(CSCTF_z2 - CSCTF_sim_z2) < 0.1 && abs(CSCTF_z3 - CSCTF_sim_z3) < 0.1')
+        stubZCut = TCut('abs(CSCTF_z1 - CSCTF_sim_z1) < 0.01 && abs(CSCTF_z2 - CSCTF_sim_z2) < 0.01 && abs(CSCTF_z3 - CSCTF_sim_z3) < 0.01')
         stubSelectionStr = 'CorrectME1ME2ME3_'
-
+        #stubEtaCut = TCut('')
+        #stubZCut = TCut('')
     
 
     sameStubCut = AND(stubPhiCut, stubEtaCut, stubZCut)
@@ -1230,7 +1235,7 @@ def correctStubReconstructionEfficiency(stubSelection):
 
     ## 12 to 14
     etaCut = TCut('partition_sim==0')
-    baselineCut = AND(stationCut, etaCut, L1_stationCut)
+    baselineCut = AND(stationCut, etaCut, L1_stationCut, additionPhiCut)
 
     eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
     eff10 = getEfficiency(treeHits,  "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), baselineCut), numCut)
@@ -1240,7 +1245,7 @@ def correctStubReconstructionEfficiency(stubSelection):
 
     ## 14 to 16
     etaCut = TCut('partition_sim==1')
-    baselineCut = AND(stationCut, etaCut)
+    baselineCut = AND(stationCut, etaCut, L1_stationCut, additionPhiCut)
 
     eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
     eff10 = getEfficiency(treeHits,  "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), baselineCut), numCut)
@@ -1251,7 +1256,7 @@ def correctStubReconstructionEfficiency(stubSelection):
 
     ## 16 to 18
     etaCut = TCut('partition_sim==2')
-    baselineCut = AND(stationCut, etaCut)
+    baselineCut = AND(stationCut, etaCut, L1_stationCut, additionPhiCut)
 
     eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
     eff10 = getEfficiency(treeHits,  "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), baselineCut), numCut)
@@ -1262,7 +1267,7 @@ def correctStubReconstructionEfficiency(stubSelection):
 
     ## 18 to 20
     etaCut = TCut('partition_sim==3')
-    baselineCut = AND(stationCut, etaCut)
+    baselineCut = AND(stationCut, etaCut, L1_stationCut, additionPhiCut)
 
     eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
     eff10 = getEfficiency(treeHits,  "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), baselineCut), numCut)
@@ -1273,7 +1278,7 @@ def correctStubReconstructionEfficiency(stubSelection):
 
     ## 20 to 22
     etaCut = TCut('partition_sim==4')
-    baselineCut = AND(stationCut, etaCut)
+    baselineCut = AND(stationCut, etaCut, L1_stationCut, additionPhiCut)
 
     eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
 
@@ -1285,7 +1290,7 @@ def correctStubReconstructionEfficiency(stubSelection):
 
     ## 22 to 24
     etaCut = TCut('partition_sim==5')
-    baselineCut = AND(stationCut, etaCut)
+    baselineCut = AND(stationCut, etaCut, L1_stationCut, additionPhiCut)
     
     eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
 

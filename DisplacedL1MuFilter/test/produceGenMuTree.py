@@ -196,6 +196,54 @@ if __name__ == "__main__":
   CSCTF_sim_DDY123s = numpy.zeros(1, dtype=float)
   CSCTF_L1_DDY123s = numpy.zeros(1, dtype=float)
 
+
+
+
+  ok_GE11_L1s = numpy.zeros(1, dtype=int)
+  ok_GE11_L2s = numpy.zeros(1, dtype=int)
+  ok_GE21_L1s = numpy.zeros(1, dtype=int)
+  ok_GE21_L2s = numpy.zeros(1, dtype=int)
+
+  ok_GE11_sim_L1s = numpy.zeros(1, dtype=int)
+  ok_GE11_sim_L2s = numpy.zeros(1, dtype=int)
+  ok_GE21_sim_L1s = numpy.zeros(1, dtype=int)
+  ok_GE21_sim_L2s = numpy.zeros(1, dtype=int)
+
+  GE11_L1_phis = numpy.zeros(1, dtype=float)
+  GE11_L2_phis = numpy.zeros(1, dtype=float)
+  GE21_L1_phis = numpy.zeros(1, dtype=float)
+  GE21_L2_phis = numpy.zeros(1, dtype=float)
+
+  GE11_sim_L1_phis = numpy.zeros(1, dtype=float)
+  GE11_sim_L2_phis = numpy.zeros(1, dtype=float)
+  GE21_sim_L1_phis = numpy.zeros(1, dtype=float)
+  GE21_sim_L2_phis = numpy.zeros(1, dtype=float)
+
+  GE11_L1_etas = numpy.zeros(1, dtype=float)
+  GE11_L2_etas = numpy.zeros(1, dtype=float)
+  GE21_L1_etas = numpy.zeros(1, dtype=float)
+  GE21_L2_etas = numpy.zeros(1, dtype=float)
+
+  GE11_sim_L1_etas = numpy.zeros(1, dtype=float)
+  GE11_sim_L2_etas = numpy.zeros(1, dtype=float)
+  GE21_sim_L1_etas = numpy.zeros(1, dtype=float)
+  GE21_sim_L2_etas = numpy.zeros(1, dtype=float)
+
+  GE11_L1_zs = numpy.zeros(1, dtype=float)
+  GE11_L2_zs = numpy.zeros(1, dtype=float)
+  GE21_L1_zs = numpy.zeros(1, dtype=float)
+  GE21_L2_zs = numpy.zeros(1, dtype=float)
+
+  GE11_sim_L1_zs = numpy.zeros(1, dtype=float)
+  GE11_sim_L2_zs = numpy.zeros(1, dtype=float)
+  GE21_sim_L1_zs = numpy.zeros(1, dtype=float)
+  GE21_sim_L2_zs = numpy.zeros(1, dtype=float)
+
+
+
+
+
+
   has_DTTFs = numpy.zeros(1, dtype=int)
   DTTF_pts = numpy.zeros(1, dtype=float)
   DTTF_etas = numpy.zeros(1, dtype=float)
@@ -303,6 +351,47 @@ if __name__ == "__main__":
 
   t.Branch('CSCTF_sim_DDY123', CSCTF_sim_DDY123s, 'CSCTF_sim_DDY123/D')
   t.Branch('CSCTF_L1_DDY123', CSCTF_L1_DDY123s, 'CSCTF_L1_DDY123/D')
+
+  t.Branch('ok_GE11_L1', ok_GE11_L1s, 'ok_GE11_L1/D')
+  t.Branch('ok_GE11_L2', ok_GE11_L2s, 'ok_GE11_L2/D')
+  t.Branch('ok_GE21_L1', ok_GE21_L1s, 'ok_GE21_L1/D')
+  t.Branch('ok_GE21_L2', ok_GE21_L2s, 'ok_GE21_L2/D')
+
+  t.Branch('ok_GE11_sim_L1', ok_GE11_sim_L1s, 'ok_GE11_sim_L1/D')
+  t.Branch('ok_GE11_sim_L2', ok_GE11_sim_L2s, 'ok_GE11_sim_L2/D')
+  t.Branch('ok_GE21_sim_L1', ok_GE21_sim_L1s, 'ok_GE21_sim_L1/D')
+  t.Branch('ok_GE21_sim_L2', ok_GE21_sim_L2s, 'ok_GE21_sim_L2/D')
+
+  t.Branch('GE11_L1_phi', GE11_L1_phis, 'GE11_L1_phi/D')
+  t.Branch('GE11_L2_phi', GE11_L2_phis, 'GE11_L2_phi/D')
+  t.Branch('GE21_L1_phi', GE21_L1_phis, 'GE21_L1_phi/D')
+  t.Branch('GE21_L2_phi', GE21_L2_phis, 'GE21_L2_phi/D')
+
+  t.Branch('GE11_sim_L1_phi', GE11_sim_L1_phis, 'GE11_sim_L1_phi/D')
+  t.Branch('GE11_sim_L2_phi', GE11_sim_L2_phis, 'GE11_sim_L2_phi/D')
+  t.Branch('GE21_sim_L1_phi', GE21_sim_L1_phis, 'GE21_sim_L1_phi/D')
+  t.Branch('GE21_sim_L2_phi', GE21_sim_L2_phis, 'GE21_sim_L2_phi/D')
+
+  t.Branch('GE11_L1_eta', GE11_L1_etas, 'GE11_L1_eta/D')
+  t.Branch('GE11_L2_eta', GE11_L2_etas, 'GE11_L2_eta/D')
+  t.Branch('GE21_L1_eta', GE21_L1_etas, 'GE21_L1_eta/D')
+  t.Branch('GE21_L2_eta', GE21_L2_etas, 'GE21_L2_eta/D')
+
+  t.Branch('GE11_sim_L1_eta', GE11_sim_L1_etas, 'GE11_sim_L1_eta/D')
+  t.Branch('GE11_sim_L2_eta', GE11_sim_L2_etas, 'GE11_sim_L2_eta/D')
+  t.Branch('GE21_sim_L1_eta', GE21_sim_L1_etas, 'GE21_sim_L1_eta/D')
+  t.Branch('GE21_sim_L2_eta', GE21_sim_L2_etas, 'GE21_sim_L2_eta/D')
+
+  t.Branch('GE11_L1_z', GE11_L1_zs, 'GE11_L1_z/D')
+  t.Branch('GE11_L2_z', GE11_L2_zs, 'GE11_L2_z/D')
+  t.Branch('GE21_L1_z', GE21_L1_zs, 'GE21_L1_z/D')
+  t.Branch('GE21_L2_z', GE21_L2_zs, 'GE21_L2_z/D')
+
+  t.Branch('GE11_sim_L1_z', GE11_sim_L1_zs, 'GE11_sim_L1_z/D')
+  t.Branch('GE11_sim_L2_z', GE11_sim_L2_zs, 'GE11_sim_L2_z/D')
+  t.Branch('GE21_sim_L1_z', GE21_sim_L1_zs, 'GE21_sim_L1_z/D')
+  t.Branch('GE21_sim_L2_z', GE21_sim_L2_zs, 'GE21_sim_L2_z/D')
+
 
   t.Branch('has_DTTF', has_DTTFs, 'has_DTTF/I')
   t.Branch('DTTF_pt', DTTF_pts, 'DTTF_pt/D')
@@ -472,6 +561,36 @@ if __name__ == "__main__":
           CSCTF_sim_DDY123s[0] = 99
           CSCTF_L1_DDY123s[0] = 99
 
+          GE11_L1_phis[0] = -99
+          GE11_L2_phis[0] = -99
+          GE21_L1_phis[0] = -99
+          GE21_L2_phis[0] = -99
+
+          GE11_sim_L1_phis[0] = -99
+          GE11_sim_L2_phis[0] = -99
+          GE21_sim_L1_phis[0] = -99
+          GE21_sim_L2_phis[0] = -99
+
+          GE11_L1_etas[0] = -99
+          GE11_L2_etas[0] = -99
+          GE21_L1_etas[0] = -99
+          GE21_L2_etas[0] = -99
+
+          GE11_sim_L1_etas[0] = -99
+          GE11_sim_L2_etas[0] = -99
+          GE21_sim_L1_etas[0] = -99
+          GE21_sim_L2_etas[0] = -99
+
+          GE11_L1_zs[0] = -99
+          GE11_L2_zs[0] = -99
+          GE21_L1_zs[0] = -99
+          GE21_L2_zs[0] = -99
+
+          GE11_sim_L1_zs[0] = -99
+          GE11_sim_L2_zs[0] = -99
+          GE21_sim_L1_zs[0] = -99
+          GE21_sim_L2_zs[0] = -99
+
 
           paritys_L1[0] = 99
           paritys_sim[0] = 99
@@ -510,6 +629,27 @@ if __name__ == "__main__":
           ok_CSCTF_sim_st2s[0] = int(ok_CSCTF_sim_st2)
           ok_CSCTF_sim_st3s[0] = int(ok_CSCTF_sim_st3)
           ok_CSCTF_sim_st4s[0] = int(ok_CSCTF_sim_st4)
+
+          GE11_sim_L1_phis[0] = treeHits.GE11_sim_phi_L1[sim_index]
+          GE11_sim_L2_phis[0] = treeHits.GE11_sim_phi_L2[sim_index]
+          GE21_sim_L1_phis[0] = treeHits.GE21_sim_phi_L1[sim_index]
+          GE21_sim_L2_phis[0]  =treeHits.GE21_sim_phi_L2[sim_index]
+
+          GE11_sim_L1_etas[0] = treeHits.GE11_sim_eta_L1[sim_index]
+          GE11_sim_L2_etas[0] = treeHits.GE11_sim_eta_L2[sim_index]
+          GE21_sim_L1_etas[0] = treeHits.GE21_sim_eta_L1[sim_index]
+          GE21_sim_L2_etas[0]  =treeHits.GE21_sim_eta_L2[sim_index]
+
+          GE11_sim_L1_zs[0] = treeHits.GE11_sim_z_L1[sim_index]
+          GE11_sim_L2_zs[0] = treeHits.GE11_sim_z_L2[sim_index]
+          GE21_sim_L1_zs[0] = treeHits.GE21_sim_z_L1[sim_index]
+          GE21_sim_L2_zs[0] = treeHits.GE21_sim_z_L2[sim_index]
+
+          ok_GE11_sim_L1[0] = int(GE11_sim_L1_phis[0] != 99)
+          ok_GE11_sim_L2[0] = int(GE11_sim_L2_phis[0] != 99)
+          ok_GE21_sim_L1[0] = int(GE21_sim_L1_phis[0] != 99)
+          ok_GE21_sim_L2[0] = int(GE21_sim_L2_phis[0] != 99)
+
 
           #print ok_CSCTF_sim_st1s[0], ok_CSCTF_sim_st2s[0], ok_CSCTF_sim_st3s[0], ok_CSCTF_sim_st4s[0]
 
@@ -655,6 +795,28 @@ if __name__ == "__main__":
           ok_CSCTF_st2s[0] = int(ok_CSCTF_st2)
           ok_CSCTF_st3s[0] = int(ok_CSCTF_st3)
           ok_CSCTF_st4s[0] = int(ok_CSCTF_st4)
+
+
+          GE11_L1_phis[0] = treeHits.GE11_phi_L1[L1Mu_CSCTF_index]
+          GE11_L2_phis[0] = treeHits.GE11_phi_L2[L1Mu_CSCTF_index]
+          GE21_L1_phis[0] = treeHits.GE21_phi_L1[L1Mu_CSCTF_index]
+          GE21_L2_phis[0]  =treeHits.GE21_phi_L2[L1Mu_CSCTF_index]
+
+          GE11_L1_etas[0] = treeHits.GE11_eta_L1[L1Mu_CSCTF_index]
+          GE11_L2_etas[0] = treeHits.GE11_eta_L2[L1Mu_CSCTF_index]
+          GE21_L1_etas[0] = treeHits.GE21_eta_L1[L1Mu_CSCTF_index]
+          GE21_L2_etas[0] = treeHits.GE21_eta_L2[L1Mu_CSCTF_index]
+
+          GE11_L1_zs[0] = treeHits.GE11_z_L1[L1Mu_CSCTF_index]
+          GE11_L2_zs[0] = treeHits.GE11_z_L2[L1Mu_CSCTF_index]
+          GE21_L1_zs[0] = treeHits.GE21_z_L1[L1Mu_CSCTF_index]
+          GE21_L2_zs[0] = treeHits.GE21_z_L2[L1Mu_CSCTF_index]
+
+          ok_GE11_L1[0] = int(GE11_L1_phis[0] != 99)
+          ok_GE11_L2[0] = int(GE11_L2_phis[0] != 99)
+          ok_GE21_L1[0] = int(GE21_L1_phis[0] != 99)
+          ok_GE21_L2[0] = int(GE21_L2_phis[0] != 99)
+
 
           if verbose:
             print "\t\tCompare stubs SIM vs L1Mu"

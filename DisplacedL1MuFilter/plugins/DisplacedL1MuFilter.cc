@@ -4,18 +4,18 @@
 // Class:      DisplacedL1MuFilter
 /**\class DisplacedL1MuFilter DisplacedL1MuFilter.cc MuJetAnalysis/DisplacedL1MuFilter/plugins/DisplacedL1MuFilter.cc
 
-   We assume that the displacement is reasonable (What is reasonable here? $d_{xy} < 10$ cm) 
-   We require the L1Mu to be of good quality (Q>=4). L1Tk matching to L1Mu within dR<0.12 
-   are vetoed. Most muons in minbias events stem from kaon decay and b-quark decay and are 
-   sufficiently prompt. The (eta,phi) coordinates of L1Mu used in the dR calculation are 
-   those of the second station. In addition, we veto L1Tk with pT>4 GeV (somewhat ad-hoc 
-   number) within dR<0.4. This cut is effectively an isolation cut. For studies with highly 
-   parallel muons, coming from e.g. low mass dark photon decay, this may cut significantly 
+   We assume that the displacement is reasonable (What is reasonable here? $d_{xy} < 10$ cm)
+   We require the L1Mu to be of good quality (Q>=4). L1Tk matching to L1Mu within dR<0.12
+   are vetoed. Most muons in minbias events stem from kaon decay and b-quark decay and are
+   sufficiently prompt. The (eta,phi) coordinates of L1Mu used in the dR calculation are
+   those of the second station. In addition, we veto L1Tk with pT>4 GeV (somewhat ad-hoc
+   number) within dR<0.4. This cut is effectively an isolation cut. For studies with highly
+   parallel muons, coming from e.g. low mass dark photon decay, this may cut significantly
    on the signal. To suppress the fake rate, one might set an upper cut, e.g. pT<10 GeV.
 
- 1;95;0c  To estimate the rate reduction Sven will take a MinBias sample from Slava and build a 
-   filter. We reject all events that have at least one muon that pass the requirements 
-   for a prompt muon: (1) Q>=4 and matched to L1Tk within dR<0.12 or (2) unmatched to 
+ 1;95;0c  To estimate the rate reduction Sven will take a MinBias sample from Slava and build a
+   filter. We reject all events that have at least one muon that pass the requirements
+   for a prompt muon: (1) Q>=4 and matched to L1Tk within dR<0.12 or (2) unmatched to
    L1Tk but with at least one L1Tk within  dR<0.4 with pt>4
 
  Description: [one line class summary]
@@ -187,7 +187,7 @@ struct MyEvent
   Float_t genH_vy;
   Float_t genH_vz;
 
-  // Dark photon  
+  // Dark photon
   Float_t genGd_m[2];
   Float_t genGd_E[2];
   Float_t genGd_p[2];
@@ -304,28 +304,28 @@ struct MyEvent
   Int_t DTTF_se1[kMaxDTTF], DTTF_se2[kMaxDTTF], DTTF_se3[kMaxDTTF], DTTF_se4[kMaxDTTF];
   Int_t DTTF_st1[kMaxDTTF], DTTF_st2[kMaxDTTF], DTTF_st3[kMaxDTTF], DTTF_st4[kMaxDTTF];
 
-  // Matching the L1Mu to CSCTF  
+  // Matching the L1Mu to CSCTF
   Int_t nCSCTF;
   Int_t L1Mu_CSCTF_index[kMaxL1Mu];
   Float_t CSCTF_pt[kMaxCSCTF], CSCTF_eta[kMaxCSCTF], CSCTF_phi[kMaxCSCTF];
   Int_t CSCTF_bx[kMaxCSCTF], CSCTF_nStubs[kMaxCSCTF], CSCTF_quality[kMaxCSCTF];
 
   Int_t CSCTF_st1[kMaxCSCTF], CSCTF_ri1[kMaxCSCTF], CSCTF_ch1[kMaxCSCTF], CSCTF_en1[kMaxCSCTF];
-  Int_t CSCTF_trk1[kMaxCSCTF], CSCTF_quality1[kMaxCSCTF], CSCTF_wg1[kMaxCSCTF], CSCTF_hs1[kMaxCSCTF]; 
+  Int_t CSCTF_trk1[kMaxCSCTF], CSCTF_quality1[kMaxCSCTF], CSCTF_wg1[kMaxCSCTF], CSCTF_hs1[kMaxCSCTF];
   Int_t CSCTF_pat1[kMaxCSCTF], CSCTF_bend1[kMaxCSCTF], CSCTF_bx1[kMaxCSCTF], CSCTF_clctpat1[kMaxCSCTF];
-  
+
   Int_t CSCTF_st2[kMaxCSCTF], CSCTF_ri2[kMaxCSCTF], CSCTF_ch2[kMaxCSCTF], CSCTF_en2[kMaxCSCTF];
-  Int_t CSCTF_trk2[kMaxCSCTF], CSCTF_quality2[kMaxCSCTF], CSCTF_wg2[kMaxCSCTF], CSCTF_hs2[kMaxCSCTF]; 
+  Int_t CSCTF_trk2[kMaxCSCTF], CSCTF_quality2[kMaxCSCTF], CSCTF_wg2[kMaxCSCTF], CSCTF_hs2[kMaxCSCTF];
   Int_t CSCTF_pat2[kMaxCSCTF], CSCTF_bend2[kMaxCSCTF], CSCTF_bx2[kMaxCSCTF], CSCTF_clctpat2[kMaxCSCTF];
 
   Int_t CSCTF_st3[kMaxCSCTF], CSCTF_ri3[kMaxCSCTF], CSCTF_ch3[kMaxCSCTF], CSCTF_en3[kMaxCSCTF];
-  Int_t CSCTF_trk3[kMaxCSCTF], CSCTF_quality3[kMaxCSCTF], CSCTF_wg3[kMaxCSCTF], CSCTF_hs3[kMaxCSCTF]; 
+  Int_t CSCTF_trk3[kMaxCSCTF], CSCTF_quality3[kMaxCSCTF], CSCTF_wg3[kMaxCSCTF], CSCTF_hs3[kMaxCSCTF];
   Int_t CSCTF_pat3[kMaxCSCTF], CSCTF_bend3[kMaxCSCTF], CSCTF_bx3[kMaxCSCTF], CSCTF_clctpat3[kMaxCSCTF];
 
   Int_t CSCTF_st4[kMaxCSCTF], CSCTF_ri4[kMaxCSCTF], CSCTF_ch4[kMaxCSCTF], CSCTF_en4[kMaxCSCTF];
-  Int_t CSCTF_trk4[kMaxCSCTF], CSCTF_quality4[kMaxCSCTF], CSCTF_wg4[kMaxCSCTF], CSCTF_hs4[kMaxCSCTF]; 
+  Int_t CSCTF_trk4[kMaxCSCTF], CSCTF_quality4[kMaxCSCTF], CSCTF_wg4[kMaxCSCTF], CSCTF_hs4[kMaxCSCTF];
   Int_t CSCTF_pat4[kMaxCSCTF], CSCTF_bend4[kMaxCSCTF], CSCTF_bx4[kMaxCSCTF], CSCTF_clctpat4[kMaxCSCTF];
-  
+
   Int_t CSCTF_id1[kMaxCSCTF], CSCTF_id2[kMaxCSCTF], CSCTF_id3[kMaxCSCTF], CSCTF_id4[kMaxCSCTF];
 
   Int_t CSCTF_val1[kMaxCSCTF], CSCTF_val2[kMaxCSCTF], CSCTF_val3[kMaxCSCTF], CSCTF_val4[kMaxCSCTF];
@@ -338,7 +338,7 @@ struct MyEvent
   Float_t CSCTF_x1[kMaxCSCTF], CSCTF_x2[kMaxCSCTF], CSCTF_x3[kMaxCSCTF], CSCTF_x4[kMaxCSCTF];
   Float_t CSCTF_y1[kMaxCSCTF], CSCTF_y2[kMaxCSCTF], CSCTF_y3[kMaxCSCTF], CSCTF_y4[kMaxCSCTF];
   Float_t CSCTF_z1[kMaxCSCTF], CSCTF_z2[kMaxCSCTF], CSCTF_z3[kMaxCSCTF], CSCTF_z4[kMaxCSCTF];
-  
+
   Float_t CSCTF_sim_DDY123[kMaxCSCTF];
   Float_t CSCTF_L1_DDY123[kMaxCSCTF];
 
@@ -373,9 +373,9 @@ struct MyEvent
   Float_t CSCTF_fitline_x1[kMaxCSCTF], CSCTF_fitline_x2[kMaxCSCTF], CSCTF_fitline_x3[kMaxCSCTF], CSCTF_fitline_x4[kMaxCSCTF];
   Float_t CSCTF_fitline_y1[kMaxCSCTF], CSCTF_fitline_y2[kMaxCSCTF], CSCTF_fitline_y3[kMaxCSCTF], CSCTF_fitline_y4[kMaxCSCTF];
   Float_t CSCTF_fitline_z1[kMaxCSCTF], CSCTF_fitline_z2[kMaxCSCTF], CSCTF_fitline_z3[kMaxCSCTF], CSCTF_fitline_z4[kMaxCSCTF];
-  
 
-  // Matching the L1Mu to RPCb  
+
+  // Matching the L1Mu to RPCb
   Int_t nRPCb;
   Int_t L1Mu_RPCb_index[kMaxL1Mu];
   Float_t RPCb_pt[kMaxRPCb], RPCb_eta[kMaxRPCb], RPCb_phi[kMaxRPCb];
@@ -387,7 +387,7 @@ struct MyEvent
   Int_t RPCb_bx1[kMaxRPCb], RPCb_strip1[kMaxRPCb];
   Int_t RPCb_re1[kMaxRPCb], RPCb_ri1[kMaxRPCb], RPCb_st1[kMaxRPCb], RPCb_se1[kMaxRPCb];
   Int_t RPCb_la1[kMaxRPCb], RPCb_su1[kMaxRPCb], RPCb_ro1[kMaxRPCb];
- 
+
   Int_t RPCb_bx2[kMaxRPCb], RPCb_strip2[kMaxRPCb];
   Int_t RPCb_re2[kMaxRPCb], RPCb_ri2[kMaxRPCb], RPCb_st2[kMaxRPCb], RPCb_se2[kMaxRPCb];
   Int_t RPCb_la2[kMaxRPCb], RPCb_su2[kMaxRPCb], RPCb_ro2[kMaxRPCb];
@@ -409,7 +409,7 @@ struct MyEvent
   Int_t RPCb_la6[kMaxRPCb], RPCb_su6[kMaxRPCb], RPCb_ro6[kMaxRPCb];
 
 
-  // Matching the L1Mu to RPCf  
+  // Matching the L1Mu to RPCf
   Int_t nRPCf;
   Int_t L1Mu_RPCf_index[kMaxL1Mu];
   Float_t RPCf_pt[kMaxRPCf], RPCf_eta[kMaxRPCf], RPCf_phi[kMaxRPCf];
@@ -421,7 +421,7 @@ struct MyEvent
   Int_t RPCf_bx1[kMaxRPCf], RPCf_strip1[kMaxRPCf];
   Int_t RPCf_re1[kMaxRPCf], RPCf_ri1[kMaxRPCf], RPCf_st1[kMaxRPCf], RPCf_se1[kMaxRPCf];
   Int_t RPCf_la1[kMaxRPCf], RPCf_su1[kMaxRPCf], RPCf_ro1[kMaxRPCf];
- 
+
   Int_t RPCf_bx2[kMaxRPCf], RPCf_strip2[kMaxRPCf];
   Int_t RPCf_re2[kMaxRPCf], RPCf_ri2[kMaxRPCf], RPCf_st2[kMaxRPCf], RPCf_se2[kMaxRPCf];
   Int_t RPCf_la2[kMaxRPCf], RPCf_su2[kMaxRPCf], RPCf_ro2[kMaxRPCf];
@@ -467,20 +467,20 @@ struct MyEvent
   Float_t GE21_sim_pad8_phi_L1[kMaxGEM], GE21_sim_pad8_phi_L2[kMaxGEM];
 };
 
-bool 
-PtOrder (const reco::GenParticle* p1, const reco::GenParticle* p2) 
-{ 
-  return (p1->pt() > p2->pt() ); 
+bool
+PtOrder (const reco::GenParticle* p1, const reco::GenParticle* p2)
+{
+  return (p1->pt() > p2->pt() );
 }
 
-double 
+double
 dxy(double px, double py, double vx, double vy, double pt)
 {
   //Source: https://cmssdt.cern.ch/SDT/lxr/source/DataFormats/TrackReco/interface/TrackBase.h#119
   return (- vx * py + vy * px ) / pt;
 }
 
-double 
+double
 phiHeavyCorr(double pt, double eta, double phi, double q)
 {
   //  float resEta = eta;
@@ -492,7 +492,7 @@ phiHeavyCorr(double pt, double eta, double phi, double q)
   return resPhi;
 }
 
-double 
+double
 dRWeighted(double eta1, double phi1, double eta2, double phi2, double sigma_eta=2., double sigma_phi=1.)
 {
   double dEta = std::abs(eta1 - eta2);
@@ -501,7 +501,7 @@ dRWeighted(double eta1, double phi1, double eta2, double phi2, double sigma_eta=
   return dR;
 }
 
-double 
+double
 My_dPhi(double phi1, double phi2) {
   double dPhi = phi1 - phi2;
   if (dPhi >  M_PI) dPhi -= 2.*M_PI;
@@ -509,18 +509,18 @@ My_dPhi(double phi1, double phi2) {
   return dPhi;
 }
 
-double 
+double
 phiL1DTTrack(const L1MuDTTrack& track)
 {
   int phi_local = track.phi_packed(); //range: 0 < phi_local < 31
-  if ( phi_local > 15 ) phi_local -= 32; //range: -16 < phi_local < 15    
-  double dttrk_phi_global = normalizedPhi((phi_local*(M_PI/72.))+((M_PI/6.)*track.spid().sector()));// + 12*i->scNum(); //range: -16 < phi_global < 147 
+  if ( phi_local > 15 ) phi_local -= 32; //range: -16 < phi_local < 15
+  double dttrk_phi_global = normalizedPhi((phi_local*(M_PI/72.))+((M_PI/6.)*track.spid().sector()));// + 12*i->scNum(); //range: -16 < phi_global < 147
   // if(dttrk_phi_global < 0) dttrk_phi_global+=2*M_PI; //range: 0 < phi_global < 147
   // if(dttrk_phi_global > 2*M_PI) dttrk_phi_global-=2*M_PI; //range: 0 < phi_global < 143
   return dttrk_phi_global;
 }
 
-double 
+double
 phiL1CSCTrack(const csc::L1Track& track)
 {
   unsigned gbl_phi(track.localPhi() + ((track.sector() - 1)*24) + 6);
@@ -530,29 +530,29 @@ phiL1CSCTrack(const csc::L1Track& track)
 }
 
 int
-getHalfStrip(const CSCComparatorDigi& digi) 
+getHalfStrip(const CSCComparatorDigi& digi)
 {
   return (digi.getStrip() - 1) * 2 + digi.getComparator();
 }
 
-float 
+float
 getFractionalStrip(const CSCComparatorDigi&d)
 {
   return d.getStrip() + d.getComparator()/2. - 3/4.;
 }
 
-void fitStraightLineErrors(const std::vector<float>& v, 
-                           const std::vector<float>& w, 
-                           const std::vector<float>& ev, 
-                           const std::vector<float>& ew, 
-                           float& alpha, float& beta, 
+void fitStraightLineErrors(const std::vector<float>& v,
+                           const std::vector<float>& w,
+                           const std::vector<float>& ev,
+                           const std::vector<float>& ew,
+                           float& alpha, float& beta,
                            int lumi, int run, int event, int muon, int stub,
                            bool debug)
 {
-  //std::cout << "size of v: "<<v.size() << std::endl; 
-  
+  //std::cout << "size of v: "<<v.size() << std::endl;
+
   if (v.size()>=3) {
-  
+
   float zmin;
   float zmax;
   if (v.front() < v.back()){
@@ -564,14 +564,14 @@ void fitStraightLineErrors(const std::vector<float>& v,
     zmax = v.front();
   }
 
-  TF1 *fit1 = new TF1("fit1","pol1",zmin,zmax); 
-  //where 0 = x-axis_lowest and 48 = x_axis_highest 
+  TF1 *fit1 = new TF1("fit1","pol1",zmin,zmax);
+  //where 0 = x-axis_lowest and 48 = x_axis_highest
   TGraphErrors* gr = new TGraphErrors(v.size(),&(v[0]),&(w[0]),&(ev[0]),&(ew[0]));
   gr->SetMinimum(w[2]-5*0.002);
   gr->SetMaximum(w[2]+5*0.002);
- 
-  gr->Fit(fit1,"RQ"); 
-  
+
+  gr->Fit(fit1,"RQ");
+
   alpha = fit1->GetParameter(0); //value of 0th parameter
   beta  = fit1->GetParameter(1); //value of 1st parameter
 
@@ -582,7 +582,7 @@ void fitStraightLineErrors(const std::vector<float>& v,
     c1->SetGrid();
     // c1->GetFrame()->SetFillColor(21);
     // c1->GetFrame()->SetBorderSize(12);
-    
+
     TString slumi;  slumi.Form("%d", lumi);
     TString srun;   srun.Form("%d", run);
     TString sevent; sevent.Form("%d", event);
@@ -593,7 +593,7 @@ void fitStraightLineErrors(const std::vector<float>& v,
     gr->SetMarkerColor(4);
     gr->SetMarkerStyle(21);
     gr->Draw("ALP");
-    
+
     c1->SaveAs("ComparatoDigiLinearFits/c_debug_fit_L" + slumi + "_R" + srun + "_E" + sevent + "_M" + smuon + "_S" + sstub + ".png");
     delete c1;
   }
@@ -606,13 +606,13 @@ void fitStraightLineErrors(const std::vector<float>& v,
 }
 
 
-void fitStraightLine(const std::vector<float>& v, 
-                     const std::vector<float>& w, 
-                     float& alpha, float& beta, 
+void fitStraightLine(const std::vector<float>& v,
+                     const std::vector<float>& w,
+                     float& alpha, float& beta,
                      bool debug = false)
 {
   if (v.size()>=2) {
-    
+
     float zmin;
     float zmax;
     if (v.front() < v.back()){
@@ -623,15 +623,15 @@ void fitStraightLine(const std::vector<float>& v,
       zmin = v.back();
       zmax = v.front();
     }
-    
-    TF1 *fit1 = new TF1("fit1","pol1",zmin,zmax); 
-    //where 0 = x-axis_lowest and 48 = x_axis_highest 
+
+    TF1 *fit1 = new TF1("fit1","pol1",zmin,zmax);
+    //where 0 = x-axis_lowest and 48 = x_axis_highest
     TGraph* gr = new TGraph(v.size(),&(v[0]),&(w[0]));
-    gr->Fit(fit1,"RQ"); 
-    
+    gr->Fit(fit1,"RQ");
+
     alpha = fit1->GetParameter(0); //value of 0th parameter
     beta  = fit1->GetParameter(1); //value of 1st parameter
-    
+
     delete fit1;
     delete gr;
   }
@@ -642,8 +642,8 @@ void fitStraightLine(const std::vector<float>& v,
 }
 
 
-void getPositionsStations(float alpha_x, float beta_x, float alpha_y, float beta_y, 
-                          std::vector<float>& xs, std::vector<float>& ys, 
+void getPositionsStations(float alpha_x, float beta_x, float alpha_y, float beta_y,
+                          std::vector<float>& xs, std::vector<float>& ys,
                           int sign_z,
                           float z1 = 600, float z2 = 825, float z3 = 935, float z4 = 1020)
 {
@@ -651,7 +651,7 @@ void getPositionsStations(float alpha_x, float beta_x, float alpha_y, float beta
   xs.push_back(alpha_x + beta_x * z2*sign_z);
   xs.push_back(alpha_x + beta_x * z3*sign_z);
   xs.push_back(alpha_x + beta_x * z4*sign_z);
-  
+
   ys.push_back(alpha_y + beta_y * z1*sign_z);
   ys.push_back(alpha_y + beta_y * z2*sign_z);
   ys.push_back(alpha_y + beta_y * z3*sign_z);
@@ -659,32 +659,32 @@ void getPositionsStations(float alpha_x, float beta_x, float alpha_y, float beta
 }
 
 
-bool 
+bool
 isSimTrackGood(const SimTrack &t)
 {
   // SimTrack selection
   if (t.noVertex()) return false;
   if (t.noGenpart()) return false;
-  // only muons 
+  // only muons
   if (std::abs(t.type()) != 13) return false;
   // pt selection
   if (t.momentum().pt() < 1.5) return false;
   // eta selection
   const float eta(std::abs(t.momentum().eta()));
-  if (eta > 3.0) return false; 
+  if (eta > 3.0) return false;
   return true;
 }
 
 using namespace std;
 
-class DisplacedL1MuFilter : public edm::EDFilter 
+class DisplacedL1MuFilter : public edm::EDFilter
 {
 public:
   explicit DisplacedL1MuFilter(const edm::ParameterSet&);
   ~DisplacedL1MuFilter();
-  
+
   static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-  
+
 private:
   void bookL1MuTree();
   void clearBranches();
@@ -695,30 +695,30 @@ private:
 
   float getGlobalPhi(unsigned int rawid, int stripN);
   double calcCSCSpecificPhi(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const;
-  GlobalPoint getGlobalPointPad(unsigned int rawId, const GEMCSCPadDigi& tp) const;;  
+  GlobalPoint getGlobalPointPad(unsigned int rawId, const GEMCSCPadDigi& tp) const;;
   GlobalPoint getCSCSpecificPoint(unsigned int rawid, const CSCCorrelatedLCTDigi& tp) const;
   GlobalPoint getCSCSpecificPoint2(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const;
-  
+
   GlobalPoint getCSCSpecificPointStrips(const SimTrackMatchManager& tp) const;
   bool isCSCCounterClockwise(const std::unique_ptr<const CSCLayer>& layer) const;
-  void fitComparatorsLCT(const CSCComparatorDigiCollection&, const CSCCorrelatedLCTDigi& tp, 
+  void fitComparatorsLCT(const CSCComparatorDigiCollection&, const CSCCorrelatedLCTDigi& tp,
                          CSCDetId chid, int iMuon, float& fit_z, float& fit_phi, float& dphi) const;
-  void getStubPositions(int index, std::vector<float>& x, 
+  void getStubPositions(int index, std::vector<float>& x,
                         std::vector<float>& y, std::vector<float>& z) const;
   std::vector<GlobalPoint> positionPad2InDetId(const GEMDigiCollection&, unsigned int ch_id, int refBX) const;
   std::vector<GlobalPoint> positionPad4InDetId(const GEMDigiCollection&, unsigned int ch_id, int refBX) const;
-  
-  void printCSCStubProperties(int index) const;
-  
 
-  CSCCorrelatedLCTDigiId 
+  void printCSCStubProperties(int index) const;
+
+
+  CSCCorrelatedLCTDigiId
   pickBestMatchingStub(float x1, float y1,
                        const CSCCorrelatedLCTDigiId& oldCoPad,
-                       const CSCCorrelatedLCTDigiId& newCoPad, 
+                       const CSCCorrelatedLCTDigiId& newCoPad,
                        int refBx) const;
-  
+
   bool stubInCSCTFTracks(const CSCCorrelatedLCTDigi& stub, const L1CSCTrackCollection& l1Tracks) const;
-  bool stubInDTTFTracks(const L1MuDTTrackSegPhi& candidateStub, 
+  bool stubInDTTFTracks(const L1MuDTTrackSegPhi& candidateStub,
                         const L1MuDTTrackCollection& l1Tracks) const;
 
   GEMCSCPadDigiId
@@ -778,14 +778,14 @@ private:
   bool processDTTF_;
   bool doStubRecovery_;
   bool useTrackFinderStubs_;
-  
+
   const RPCGeometry* rpcGeometry_;
   const CSCGeometry* cscGeometry_;
   const GEMGeometry* gemGeometry_;
- 
+
   edm::InputTag L1Mu_input;
   edm::InputTag L1TkMu_input;
-  
+
   edm::ESHandle<MagneticField> magfield_;
   edm::ESHandle<Propagator> propagator_;
   edm::ESHandle<Propagator> propagatorOpposite_;
@@ -794,7 +794,7 @@ private:
   edm::ESHandle<RPCGeometry> rpc_geom_;
   edm::ESHandle<CSCGeometry> csc_geom_;
   edm::ESHandle<GEMGeometry> gem_geom_;
-  
+
   const  BoundCylinder *barrelCylinder_;
   const  BoundDisk *endcapDiskPos_[3], *endcapDiskNeg_[3];
   double barrelHalfLength_;
@@ -812,7 +812,7 @@ private:
   edm::ParameterSet cfg_;
 };
 
-DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) : 
+DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) :
   useSimpleGeometry_(iConfig.getParameter<bool>("useSimpleGeometry")),
   useMB2_(iConfig.existsAs<bool>("useStation2") ? iConfig.getParameter<bool>("useStation2") : true),
   fallbackToME1_(iConfig.existsAs<bool>("fallbackToME1") ? iConfig.getParameter<bool>("fallbackToME1") : false),
@@ -834,10 +834,10 @@ DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) :
   processDTTF_ = iConfig.getParameter<bool>("processDTTF");
   doSimAnalysis_ = iConfig.getParameter<bool>("doSimAnalysis");
   doGenAnalysis_ = iConfig.getParameter<bool>("doGenAnalysis");
-  doStubRecovery_ = iConfig.getParameter<bool>("doStubRecovery");  
+  doStubRecovery_ = iConfig.getParameter<bool>("doStubRecovery");
   L1Mu_input = iConfig.getParameter<edm::InputTag>("L1Mu_input");
   L1TkMu_input = iConfig.getParameter<edm::InputTag>("L1TkMu_input");
-  
+
   bookL1MuTree();
 
   muScalesCacheID_ = 0ULL ;
@@ -856,7 +856,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   double eq = 0.000001;
 
   clearBranches();
-  
+
   // propagator
   iEventSetup.get<IdealMagneticFieldRecord>().get(magfield_);
   iEventSetup.get<TrackingComponentsRecord>().get("SteppingHelixPropagatorAlong", propagator_);
@@ -918,15 +918,15 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   edm::Handle< std::vector<L1MuRegionalCand> > hL1MuRPCbs;
   iEvent.getByLabel("simRpcTriggerDigis", "RPCb", hL1MuRPCbs);
   const std::vector<L1MuRegionalCand>& l1MuRPCbs(*hL1MuRPCbs.product());
-  
+
   edm::Handle< std::vector<RPCDigiL1Link> > hL1MuRPCbLinks;
   iEvent.getByLabel("simRpcTriggerDigis", "RPCb", hL1MuRPCbLinks);
   const std::vector<RPCDigiL1Link>& l1MuRPCbLinks(*hL1MuRPCbLinks.product());
-  
+
   edm::Handle< std::vector<L1MuRegionalCand> > hL1MuRPCfs;
   iEvent.getByLabel("simRpcTriggerDigis", "RPCf", hL1MuRPCfs);
   const std::vector<L1MuRegionalCand>& l1MuRPCfs(*hL1MuRPCfs.product());
-  
+
   edm::Handle< std::vector<RPCDigiL1Link> > hL1MuRPCfLinks;
   iEvent.getByLabel("simRpcTriggerDigis", "RPCf", hL1MuRPCfLinks);
   const std::vector<RPCDigiL1Link>& l1MuRPCfLinks(*hL1MuRPCfLinks.product());
@@ -935,7 +935,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   edm::Handle< CSCComparatorDigiCollection > hCSCComparators;
   iEvent.getByLabel("simMuonCSCDigis", "MuonCSCComparatorDigi", hCSCComparators);
   //const CSCComparatorDigiCollection& CSCComparators(*hCSCComparators.product());
-  
+
   // LCTs
   edm::Handle< CSCCorrelatedLCTDigiCollection > hCSCCorrelatedLCTs;
   iEvent.getByLabel("simCscTriggerPrimitiveDigis", "MPCSORTED", hCSCCorrelatedLCTs);
@@ -973,12 +973,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     auto sim_muon = sim_trks[k];
     if (!isSimTrackGood(sim_muon)) continue;
     skim_sim_trks.push_back(sim_muon);
-  }        
+  }
 
   edm::Handle<edm::SimVertexContainer> sim_vertices;
   iEvent.getByLabel("g4SimHits", sim_vertices);
   const edm::SimVertexContainer & sim_vtxs = *sim_vertices.product();
-  
+
   event_.lumi = iEvent.id().luminosityBlock();
   event_.run = iEvent.id().run();
   event_.event = iEvent.id().event();
@@ -1000,10 +1000,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   std::vector<const reco::Candidate*> genMuonGroupsMothers;
 
   if (doGenAnalysis_) {
-  
+
   edm::Handle<reco::GenParticleCollection> genParticles;
   iEvent.getByLabel("genParticles", genParticles);
-  
+
   // Loop over all genParticles and save prompt muons from particles with codes 36 (a1) or 3000022 (gammaD) in vector genMuons
   std::vector<const reco::GenParticle*> genGlu_unsorted;
   std::vector<const reco::GenParticle*> genGlu;
@@ -1012,7 +1012,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   std::vector<const reco::GenParticle*> genGd;
   std::vector<const reco::GenParticle*> genMuons;
   std::vector<const reco::Candidate*>   genMuonMothers;
-  
+
 // Loop over all gen particles
   int counterGenParticle = 0;
   for(reco::GenParticleCollection::const_iterator iGenParticle = genParticles->begin();  iGenParticle != genParticles->end();  ++iGenParticle) {
@@ -1059,7 +1059,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
             ) {
       genGd_unsorted.push_back(&(*iGenParticle));
     }
-    // Check if gen particle is gluon 
+    // Check if gen particle is gluon
     if (iGenParticle->status() == 3 and iGenParticle->pdgId() == 21){
       genGlu_unsorted.push_back(&(*iGenParticle));
     }
@@ -1081,7 +1081,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     }
   }
   genGd = genGd_unsorted;
-  
+
   // check again that the gluons are in fact the mother particles
   if ( genGlu_unsorted.size() >= 2 ) {
     // Sort genGlu by pt (leading pt first)
@@ -1126,12 +1126,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   }
 
   // event_.genGd0Gd1_m = invariantMass(genGd[0],genGd[1]);
-  event_.genGd0Gd1_dR = deltaR(event_.genGd_eta[0], 
-                               event_.genGd_phi[0], 
-                               event_.genGd_eta[1], 
+  event_.genGd0Gd1_dR = deltaR(event_.genGd_eta[0],
+                               event_.genGd_phi[0],
+                               event_.genGd_eta[1],
                                event_.genGd_phi[1]);
 
-  if ( genGlu.size() >= 2 ) {    
+  if ( genGlu.size() >= 2 ) {
     for (int i=0; i<2; ++i){
       event_.genGlu_p[i] = genGlu[i]->p();
       event_.genGlu_pt[i]  = genGlu[i]->pt();
@@ -1144,7 +1144,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   } else {
     cout << "WARNING! genGlu.size() < 2" << endl;
   }
- 
+
   // Group muons with the same mother
   std::vector< std::vector<const reco::GenParticle*> > genMuonGroupsUnsorted;
   std::vector<const reco::Candidate*> genMuonGroupsUnsortedMothers;
@@ -1190,12 +1190,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       cout << "Error! Muon group has no matched boson A" << endl;
     }
   }
-  
+
   if ( genMuonGroups.size() == 2 and genMuonGroups[0].size() == 2 and genMuonGroups[1].size() == 2 ) {
     std::sort( genMuonGroups[0].begin(), genMuonGroups[0].end(), PtOrder );
     std::sort( genMuonGroups[1].begin(), genMuonGroups[1].end(), PtOrder );
-    
-    for (int i=0; i<2; ++i){ 
+
+    for (int i=0; i<2; ++i){
       for (int j=0; j<2; ++j){
         event_.genGdMu_q[i][j] = genMuonGroups[i][j]->charge();
         event_.genGdMu_p[i][j] = genMuonGroups[i][j]->p();
@@ -1206,13 +1206,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         event_.genGdMu_eta[i][j] = genMuonGroups[i][j]->eta();
         event_.genGdMu_phi[i][j] = genMuonGroups[i][j]->phi();
         event_.genGdMu_eta_corr[i][j] = genMuonGroups[i][j]->eta();
-        event_.genGdMu_phi_corr[i][j] = phiHeavyCorr(genMuonGroups[i][j]->pt(), genMuonGroups[i][j]->eta(), 
+        event_.genGdMu_phi_corr[i][j] = phiHeavyCorr(genMuonGroups[i][j]->pt(), genMuonGroups[i][j]->eta(),
                                                      genMuonGroups[i][j]->phi(), genMuonGroups[i][j]->charge());
         event_.genGdMu_deta_corr[i][j] = std::abs(event_.genGdMu_eta[i][j] - event_.genGdMu_eta_corr[i][j]);
         event_.genGdMu_dphi_corr[i][j] = My_dPhi(event_.genGdMu_phi[i][j], event_.genGdMu_phi_corr[i][j]);
         event_.genGdMu_dR_corr[i][j] = reco::deltaR(event_.genGdMu_eta[i][j], event_.genGdMu_phi[i][j],
                                                     event_.genGdMu_eta_corr[i][j], event_.genGdMu_phi_corr[i][j]);
-        
+
         event_.genGdMu_vx[i][j] = genMuonGroups[i][j]->vx();
         event_.genGdMu_vy[i][j] = genMuonGroups[i][j]->vy();
         event_.genGdMu_vz[i][j] = genMuonGroups[i][j]->vz();
@@ -1246,44 +1246,44 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         }
       }
     }
-    
+
     if (fabs(event_.genGdMu_vx[0][0] - event_.genGdMu_vx[0][1]) < eq and
         fabs(event_.genGdMu_vx[1][0] - event_.genGdMu_vx[1][1]) < eq and
         fabs(event_.genGdMu_vy[0][0] - event_.genGdMu_vy[0][1]) < eq and
         fabs(event_.genGdMu_vy[1][0] - event_.genGdMu_vy[1][1]) < eq and
         fabs(event_.genGdMu_vz[0][0] - event_.genGdMu_vz[0][1]) < eq and
         fabs(event_.genGdMu_vz[1][0] - event_.genGdMu_vz[1][1]) < eq) {
-      
-      for (int i=0; i<2; ++i){         
+
+      for (int i=0; i<2; ++i){
         for (int j=0; j<2; ++j){
-          event_.genGdMu_dxy[i][j] = dxy(event_.genGdMu_px[i][j], 
-                                         event_.genGdMu_py[i][j], 
-                                         event_.genGdMu_vx[i][j] - event_.beamSpot_x, 
-                                         event_.genGdMu_vy[i][j] - event_.beamSpot_y, 
+          event_.genGdMu_dxy[i][j] = dxy(event_.genGdMu_px[i][j],
+                                         event_.genGdMu_py[i][j],
+                                         event_.genGdMu_vx[i][j] - event_.beamSpot_x,
+                                         event_.genGdMu_vy[i][j] - event_.beamSpot_y,
                                          event_.genGdMu_pt[i][j]);
         }
         event_.genGd_vLx[i] = event_.genGdMu_vx[i][0] - event_.genGd_vx[i];
         event_.genGd_vLy[i] = event_.genGdMu_vy[i][0] - event_.genGd_vy[i];
         event_.genGd_vLz[i] = event_.genGdMu_vz[i][0] - event_.genGd_vz[i];
-        event_.genGd_lxy[i] = sqrt(event_.genGd_vLx[i] * event_.genGd_vLx[i] + 
+        event_.genGd_lxy[i] = sqrt(event_.genGd_vLx[i] * event_.genGd_vLx[i] +
                                    event_.genGd_vLy[i] * event_.genGd_vLy[i]);
-        event_.genGd_l[i]   = sqrt(event_.genGd_vLx[i] * event_.genGd_vLx[i] + 
-                                   event_.genGd_vLy[i] * event_.genGd_vLy[i] + 
+        event_.genGd_l[i]   = sqrt(event_.genGd_vLx[i] * event_.genGd_vLx[i] +
+                                   event_.genGd_vLy[i] * event_.genGd_vLy[i] +
                                    event_.genGd_vLz[i] * event_.genGd_vLz[i]);
         event_.genGdMu_dxy_max[i] = std::max(event_.genGdMu_dxy[i][0], event_.genGdMu_dxy[i][1]);
-      }     
+      }
     } else {
       cout << "WARNING! Muon vertices are different" << endl;
     }
-    for (int i=0; i<2; ++i){         
+    for (int i=0; i<2; ++i){
       event_.genGd_genMuMu_dEta[i] = My_dPhi(genMuonGroups[i][0]->eta(), genMuonGroups[i][1]->eta());
       event_.genGd_genMuMu_dPhi[i] = My_dPhi(genMuonGroups[i][0]->phi(), genMuonGroups[i][1]->phi());
-      event_.genGd_genMuMu_dR[i]   = sqrt(event_.genGd_genMuMu_dEta[i]*event_.genGd_genMuMu_dEta[i] + 
+      event_.genGd_genMuMu_dR[i]   = sqrt(event_.genGd_genMuMu_dEta[i]*event_.genGd_genMuMu_dEta[i] +
                                           event_.genGd_genMuMu_dPhi[i]*event_.genGd_genMuMu_dPhi[i]);
       for (int j=0; j<2; ++j){
         event_.genGd_genMu_dEta[i][j] = event_.genGd_eta[i] - event_.genGdMu_eta[i][j];
         event_.genGd_genMu_dPhi[i][j] = event_.genGd_phi[i] - event_.genGdMu_phi[i][j];
-        event_.genGd_genMu_dR[i][j]   = deltaR(event_.genGd_eta[i], event_.genGd_phi[i], 
+        event_.genGd_genMu_dR[i][j]   = deltaR(event_.genGd_eta[i], event_.genGd_phi[i],
                                                event_.genGdMu_eta[i][j], event_.genGdMu_phi[i][j]);
 
         //////////////////////
@@ -1302,9 +1302,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           //cout << "\tSIM_eta " << event_.eta_sim[k] << endl;
           //cout << "\tSIM_phi " << event_.phi_sim[k] << endl;
           //cout << "\tSIM_charge " << event_.charge_sim[k] << endl;
-          double deltar(reco::deltaR(event_.eta_sim[k], 
-                                     event_.phi_sim[k], 
-                                     event_.genGdMu_eta[i][j], 
+          double deltar(reco::deltaR(event_.eta_sim[k],
+                                     event_.phi_sim[k],
+                                     event_.genGdMu_eta[i][j],
                                      event_.genGdMu_phi[i][j]));
           if (deltar < GEN_SIM_min_dR and deltar < 0.1){
             GEN_SIM_min_dR = deltar;
@@ -1315,8 +1315,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         // std::cout << "Matched SIM " << event_.genGdMu_SIM_index[i][j] << " " << event_.genGdMu_SIM_dR[i][j] << std::endl;
       }
     }
-    if(verbose) { 
-      std::cout << "++++ GEN Mu analysis ++++" << std::endl; 
+    if(verbose) {
+      std::cout << "++++ GEN Mu analysis ++++" << std::endl;
       std::cout << std::setw(4) << std::left << "Mu"
                 << std::setw(10) << std::left << "pt"
                 << std::setw(10) << std::left << "eta"
@@ -1331,7 +1331,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                 << std::setw(10) << std::left << "SIM phi"
                 << std::endl;
 
-      for (int i=0; i<2; ++i){ 
+      for (int i=0; i<2; ++i){
         for (int j=0; j<2; ++j){
           std::string ijs(std::to_string(i) + std::to_string(j));
           std::cout << std::setw(4) << std::left << ijs
@@ -1349,9 +1349,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                       << std::setw(10) << std::left << event_.phi_sim[event_.genGdMu_SIM_index[i][j]]
                       << std::endl;
           } else {
-            std::cout << std::setw(10) << std::left << -1 
-                      << std::setw(10) << std::left << -1 
-                      << std::setw(10) << std::left << -1 
+            std::cout << std::setw(10) << std::left << -1
+                      << std::setw(10) << std::left << -1
+                      << std::setw(10) << std::left << -1
                       << std::endl;
           }
         }
@@ -1368,11 +1368,11 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   //   //loop over digis of given roll
   //   for (auto digiItr = (*cItr ).second.first; digiItr != (*cItr ).second.second; ++digiItr){
   //     auto stub = *digiItr;
-  //     if (stub.getTimeBin() < 4 or stub.getTimeBin() > 8) continue; 
+  //     if (stub.getTimeBin() < 4 or stub.getTimeBin() > 8) continue;
   //     // std::cout << "Comparator digi L1Mu " << id << " " << stub << " " << getHalfStrip(stub) << std::endl;
   //   }
   // }
- 
+
   //////////////////////
   // SIM-L1  analysis //
   //////////////////////
@@ -1395,11 +1395,11 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       cout << "Number of good simtracks " << skim_sim_trks.size() << endl;
     }
     for (unsigned int k=0; k<skim_sim_trks.size(); ++k) {
-      
+
       auto sim_muon = skim_sim_trks[k];
       if(verbose) {
         cout << "Mu "<< k
-             <<" pT " << sim_muon.momentum().pt() 
+             <<" pT " << sim_muon.momentum().pt()
              <<" eta "<< sim_muon.momentum().eta()
              <<" phi "<< sim_muon.momentum().phi() << endl << endl;
       }
@@ -1407,15 +1407,15 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       SimTrackMatchManager match(sim_muon, sim_vertex, cfg_, iEvent, iEventSetup);
       const DisplacedGENMuonMatcher& match_disp = match.genMuons();
       std::cout << "sim dxy " << match_disp.matchedGenMudxy() << std::endl;
-        
+
       const SimHitMatcher& match_sh = match.simhits();
-      
+
       //const CSCDigiMatcher& match_cd = match.cscDigis();
       const CSCStubMatcher& match_csc = match.cscStubs();
       const GEMDigiMatcher& match_gd = match.gemDigis();
-      
+
       // True position of the CSC hits in a chamber with an LCT
-      if (verbose) { 
+      if (verbose) {
         cout << endl<<"++++ CSC SimHit analysis ++++" << endl;
       }
       for (auto d: match_csc.chamberIdsLCT(0)){
@@ -1423,12 +1423,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         // only analyze ME1b and ME21
         //if (detId.station()!=1 and detId.station()!=2) continue;
         //if (detId.ring()!=1) continue;
-        
+
         edm::PSimHitContainer simhits = match_sh.hitsInChamber(d);
         auto gp_csc = match_sh.simHitPositionKeyLayer(d);
-        if(verbose) std::cout << detId 
-                              << " n CSC hits " << simhits.size() 
-                              << " key phi " << gp_csc.phi() 
+        if(verbose) std::cout << detId
+                              << " n CSC hits " << simhits.size()
+                              << " key phi " << gp_csc.phi()
                               << " key eta " << gp_csc.eta()
                               << " GP " << gp_csc
                               << endl;
@@ -1465,10 +1465,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           event_.CSCTF_sim_R4[k] = gp_csc.perp();
         }
       }
-      
+
       // GEM simhit
       auto hits = match_sh.simHitsGEM();
-      if (verbose) { 
+      if (verbose) {
         cout << endl<<"++++ GEM SimHit analysis ++++" << endl;
         cout << "Number of GEM hits " << hits.size() << endl;
       }
@@ -1512,9 +1512,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
               event_.GE21_sim_z_L2[k] = gem_z;
             }
           }
-        } 
+        }
       }
-      
+
       if(verbose){
       std::cout << std::endl<<"++++ GEM pad analysis ++++" <<std::endl;
       }
@@ -1532,7 +1532,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           }
         }
       }
-      
+
       // GEM digis and pads in superchambers
       if(verbose){
         std::cout << std::endl<<"++++ GEM pad analysis ++++" <<std::endl;
@@ -1577,9 +1577,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
               event_.GE21_sim_pad_z_L2[k] = gem_z;
             }
           }
-        } 
+        }
       }
-      
+
       // pad positions for GE21...
       if(verbose) std::cout << "++++ GEM pad analysis: pad positions in GE21 ++++" << std::endl;
       for (auto d: match_gd.detIdsDigi(GEMType::GEM_ME21)){
@@ -1593,14 +1593,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           std::cout << "firstPositionPad1 " << firstPositionPad1 << std::endl;
           std::cout << "firstPositionPad2 " << firstPositionPad2 << std::endl;
           std::cout << "firstPositionPad4 " << firstPositionPad4 << std::endl;
-          std::cout << "firstPositionPad8 " << firstPositionPad8 << std::endl;  
+          std::cout << "firstPositionPad8 " << firstPositionPad8 << std::endl;
         }
         if (detId.station()==3) {
           if (detId.layer()==1) {
-            event_.GE21_sim_pad1_phi_L1[k] = firstPositionPad1; 
-            event_.GE21_sim_pad2_phi_L1[k] = firstPositionPad2; 
-            event_.GE21_sim_pad4_phi_L1[k] = firstPositionPad4; 
-            event_.GE21_sim_pad8_phi_L1[k] = firstPositionPad8; 
+            event_.GE21_sim_pad1_phi_L1[k] = firstPositionPad1;
+            event_.GE21_sim_pad2_phi_L1[k] = firstPositionPad2;
+            event_.GE21_sim_pad4_phi_L1[k] = firstPositionPad4;
+            event_.GE21_sim_pad8_phi_L1[k] = firstPositionPad8;
           }
           if (detId.layer()==2) {
             event_.GE21_sim_pad1_phi_L2[k] = firstPositionPad1;
@@ -1610,9 +1610,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           }
         }
       }
-      
-      
-      //SIM based analysis to get the positions - obsolete since I derive the positions using only 
+
+
+      //SIM based analysis to get the positions - obsolete since I derive the positions using only
       //DIGI-L1 quantities
 
     /*
@@ -1658,7 +1658,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
             closestCompDigi = jj;
             bestz = csc_gp.z();
             bestphi = csc_gp.phi();
-            if(verbose) std::cout << "minDist closestCompDigi bestz bestphi " << " " << minDist 
+            if(verbose) std::cout << "minDist closestCompDigi bestz bestphi " << " " << minDist
                                   << " " << closestCompDigi << " " << bestz << " " << bestphi << std::endl;
           }
           ++jj;
@@ -1669,7 +1669,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           phis.push_back(bestphi);
           ephis.push_back(gemvalidation::cscHalfStripWidth(detId)/sqrt(12));
         }
-        
+
         if(verbose) std::cout << std::endl;
       }
       auto compDigis = match_csc.matchingComparatorDigisLCT(detId, bestMatchingLCT);
@@ -1677,13 +1677,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
       float alpha = 0., beta = 0.;
       fitStraightLineErrors(zs, phis, ezs, ephis,
-                            alpha, beta, 
+                            alpha, beta,
                             event_.lumi, event_.run, event_.event, k, 0, produceFitPlots_);
-      
+
       float z_pos_L3 = cscChamber->layer(CSCConstants::KEY_CLCT_LAYER)->centerOfStrip(20).z();
       float bestFitPhi = alpha + beta * z_pos_L3;
       if(verbose) std::cout << "best fit phi position " << z_pos_L3 << " " << bestFitPhi << std::endl;
-      
+
       if (detId.station()==1) {
         event_.CSCTF_fit_phi1[k] = bestFitPhi;
         event_.CSCTF_fit_x1[k] = radius*cos(bestFitPhi);
@@ -1719,11 +1719,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                                                         match_gd.allGempadsMatch2SimMuon(),
                                                         iEventSetup,
                                                         iEvent);
-      
+
       if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runPositionbased()){
         event_.CSCTF_sim_DDY123[k] = ptAssignmentUnit.getdeltaY123();
+        std::cout << "SIM_DDY123 " << event_.CSCTF_sim_DDY123[k] << std::endl;
       }
-      
+
 
       // recover the missing stubs in station 1 and 2... (because they were not used in the track building)
       // GEM digis and pads in superchambers
@@ -1754,7 +1755,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         std::vector<float> exs;
         std::vector<float> ezs;
         std::vector<float> status;
- 
+
         match_csc.positionsOfComparatorInLCT(d, stub, gps);
         auto csc_gp = match_csc.getGlobalPosition(d, stub);
 
@@ -1771,7 +1772,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
               phis.push_back(gpphi-2*3.1415926);
             else if (phis.size()>0 and gpphi<0 and phis[0]>0 and (gpphi-phis[0])<-3.1416)
               phis.push_back(gpphi+2*3.1415926);
-            else     
+            else
               phis.push_back(gp.phi());
             ephis.push_back(gemvalidation::cscHalfStripWidth(detId)/sqrt(12));
             float R=0.0;
@@ -1793,7 +1794,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         float alphay = 0., betay = 0.;
         fitStraightLineErrors(zs, ys, ezs, exs,
                               alphay, betay, 1, 1, 1, 1, 1, false);
-        
+
 
         double csc_phi = csc_gp.phi(); //normalizedPhi(alpha+beta*match_csc.zpositionOfLayer(d, 3)); //csc_gp.phi();
         auto gp_new = GlobalPoint(GlobalPoint::Cylindrical(csc_gp.perp(), csc_phi, csc_gp.z()));
@@ -1802,7 +1803,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         double csc_R = gp_new.perp();
         double csc_x = gp_new.x();
         double csc_y = gp_new.y();
-        
+
         if(verbose){
           std::cout << "\t\tStub " << stub << std::endl;
           std::cout << "\t\t\tPosition " << csc_phi << std::endl;
@@ -1827,7 +1828,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           event_.CSCTF_rec_y2[k] = csc_y;
           event_.CSCTF_rec_z2[k] = csc_z;
           event_.CSCTF_rec_R2[k] = csc_R;
-        }        
+        }
         if (detId.station()==3) {
           event_.CSCTF_rec_ch3[k] = detId.chamber();
           event_.CSCTF_rec_phi3[k] = csc_phi;
@@ -1837,7 +1838,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           event_.CSCTF_rec_y3[k] = csc_y;
           event_.CSCTF_rec_z3[k] = csc_z;
           event_.CSCTF_rec_R3[k] = csc_R;
-        }        
+        }
         if (detId.station()==4) {
           event_.CSCTF_rec_ch4[k] = detId.chamber();
           event_.CSCTF_rec_phi4[k] = csc_phi;
@@ -1847,18 +1848,18 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           event_.CSCTF_rec_y4[k] = csc_y;
           event_.CSCTF_rec_z4[k] = csc_z;
           event_.CSCTF_rec_R4[k] = csc_R;
-        }        
-      }      
+        }
+      }
     }
   }
-  
-  
+
+
   /////////////////
   // L1 analysis //
   /////////////////
 
   if (processTTI_){
-    for (int i=0; i<2; ++i){         
+    for (int i=0; i<2; ++i){
       for (int j=0; j<2; ++j){
         for (unsigned int k=0; k<TTTracks.size(); ++k) {
           auto l1Tk = TTTracks[k];
@@ -1884,16 +1885,16 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       const double l1Tk_charge = l1Tk.getRInv()>0? 1: -1;
       const double l1Tk_eta_corr = l1Tk_eta;
       const double l1Tk_phi_corr = phiHeavyCorr(l1Tk_pt, l1Tk_eta, l1Tk_phi, l1Tk_charge);
-      
+
       if(verbose and false) {
-        cout << "l1Tk " << j << endl; 
+        cout << "l1Tk " << j << endl;
         cout << "l1Tk_pt " << l1Tk_pt << endl;
         cout << "l1Tk_eta " << l1Tk_eta << endl;
         cout << "l1Tk_phi " << l1Tk_phi << endl;
         cout << "l1Tk_phi_corr " << l1Tk_phi_corr << endl;
         cout << "l1Tk_charge " << l1Tk_charge << endl;
       }
-      
+
       double l1Tk_eta_prop = -99;
       double l1Tk_phi_prop = -99;
       GlobalPoint ex_point(extrapolateGP(l1Tk));
@@ -1905,50 +1906,50 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           cout << "l1Tk_phi_prop " << l1Tk_phi_prop << endl;
         }
       }
-      
+
       event_.L1Tk_pt[j] = l1Tk_pt;
       event_.L1Tk_eta[j] = l1Tk_eta;
       event_.L1Tk_phi[j] = l1Tk_phi;
-      
+
       event_.L1Tk_eta_prop[j] = l1Tk_eta_prop;
       event_.L1Tk_phi_prop[j] = l1Tk_phi_prop;
       event_.L1Tk_deta_prop[j] = std::abs(event_.L1Tk_eta_prop[j] - event_.L1Tk_eta[j]);
-      event_.L1Tk_dphi_prop[j] = My_dPhi(event_.L1Tk_phi_prop[j], event_.L1Tk_phi[j]); 
+      event_.L1Tk_dphi_prop[j] = My_dPhi(event_.L1Tk_phi_prop[j], event_.L1Tk_phi[j]);
       event_.L1Tk_dR_prop[j] = reco::deltaR(event_.L1Tk_eta_prop[j], event_.L1Tk_phi_prop[j], event_.L1Tk_eta[j], event_.L1Tk_phi[j]);
-      
+
       event_.L1Tk_eta_corr[j] = l1Tk_eta_corr;
       event_.L1Tk_phi_corr[j] = l1Tk_phi_corr;
       event_.L1Tk_deta_corr[j] = std::abs(event_.L1Tk_eta_corr[j] - event_.L1Tk_eta[j]);
-      event_.L1Tk_dphi_corr[j] = My_dPhi(event_.L1Tk_phi_corr[j], event_.L1Tk_phi[j]); 
+      event_.L1Tk_dphi_corr[j] = My_dPhi(event_.L1Tk_phi_corr[j], event_.L1Tk_phi[j]);
       event_.L1Tk_dR_corr[j] = reco::deltaR(event_.L1Tk_eta_corr[j], event_.L1Tk_phi_corr[j], event_.L1Tk_eta[j], event_.L1Tk_phi[j]);
     } // end of loop on TTTracks
-  }  
-  
+  }
+
   if (processDTTF_){
     // store the DTTF variables
     if(verbose) std::cout << std::endl<< "Number of L1DTTrackPhis " <<L1DTTrackPhis.size() << std::endl;
     event_.nDTTF = L1DTTrackPhis.size();
-    for (unsigned int j=0; j<L1DTTrackPhis.size(); ++j) { 
+    for (unsigned int j=0; j<L1DTTrackPhis.size(); ++j) {
       auto track = L1DTTrackPhis[j].first;
-      
+
       event_.DTTF_pt[j] = muPtScale->getPtScale()->getLowEdge(track.pt()) + 1.e-6;
       event_.DTTF_eta[j] = muScales->getRegionalEtaScale(0)->getCenter(track.eta());
       event_.DTTF_phi[j] = phiL1DTTrack(track);
       event_.DTTF_bx[j] = track.bx();
       event_.DTTF_nStubs[j] = L1DTTrackPhis[j].second.size();
       event_.DTTF_quality[j] = track.quality();
-      
-      if(verbose) {  
+
+      if(verbose) {
         std::cout << std::endl
                   << "pt  = " << event_.DTTF_pt[j]
-                  << ", eta  = " << event_.DTTF_eta[j] 
+                  << ", eta  = " << event_.DTTF_eta[j]
                   << ", phi  = " << event_.DTTF_phi[j]
-                  << ", bx = " << event_.DTTF_bx[j] 
-                  << ", quality = " << event_.DTTF_quality[j] 
+                  << ", bx = " << event_.DTTF_bx[j]
+                  << ", quality = " << event_.DTTF_quality[j]
                   << ", nStubs = " << event_.DTTF_nStubs[j]
                   << std::endl;
       }
-      
+
       for (auto stub: L1DTTrackPhis[j].second) {
         // std::cout << "\t " << stub << std::endl;
         // std::cout << "\t phiValue = " << stub.phiValue() << ", phibValue = " << stub.phibValue() << std::endl;
@@ -1992,21 +1993,21 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           break;
         };
       }
-      
+
       // check for stub recovery
       bool stubMissingSt1 = event_.DTTF_st1[j] == 99;
       bool stubMissingSt2 = event_.DTTF_st2[j] == 99;
       bool stubMissingSt3 = event_.DTTF_st3[j] == 99;
       bool stubMissingSt4 = event_.DTTF_st4[j] == 99;
       bool atLeast1StubMissing = stubMissingSt1 or stubMissingSt2 or stubMissingSt3 or stubMissingSt4;
-      
+
       //bool doStubRecovery = true;
       if (doStubRecovery_ and atLeast1StubMissing){
         //std::cout << "DT stub recovery" << std::endl;
-        
+
         int triggerSector = track.spid().sector();
         //std::cout << "trigger sector " << triggerSector << std::endl;
-        
+
         for (auto stub: DTTrackPhis){
           int station = stub.station();
           // check if stub is missing in station
@@ -2014,24 +2015,24 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           if (not stubMissingSt2 and station==2) continue;
           if (not stubMissingSt3 and station==3) continue;
           if (not stubMissingSt4 and station==4) continue;
-          
+
           // stub cannot be used in any other track
           if (stubInDTTFTracks(stub, L1DTTrackPhis)) continue;
-          
+
           // trigger sector must be the same
           if (triggerSector != stub.sector()) continue;
-          
+
           // BXs have to match
           int deltaBX = std::abs(stub.bx() - (event_.DTTF_bx[j]));
           if (deltaBX > 1) continue;
-          
+
           // wheel must be valid!
           int wheel = stub.wheel();
           if (std::abs(wheel) > 2) continue;
-          
+
           // station must be valid!
           if (station < 0 or station > 4) continue;
-        
+
           DTChamberId chId(wheel, station, triggerSector);
           if(verbose) std::cout << chId << std::endl;
           if(verbose) std::cout<<"Candidate " << stub << std::endl;
@@ -2039,7 +2040,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       }
     }
   }
-  
+
 
   // store the CSCTF variables
   event_.nCSCTF = l1Tracks.size();
@@ -2050,20 +2051,20 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     unsigned gpt = 0, quality = 0;
     csc::L1Track::decodeRank(track.rank(), gpt, quality);
 
-    // calculate pt, eta and phi (don't forget to store the sign)                                                                                   
+    // calculate pt, eta and phi (don't forget to store the sign)
     event_.CSCTF_pt[j] = muPtScale->getPtScale()->getLowEdge(gpt & 0x1f) + 1.e-6;
     event_.CSCTF_eta[j] = muScales->getRegionalEtaScale(2)->getCenter(track.eta_packed()) * sign;
     event_.CSCTF_phi[j] = normalizedPhi(muScales->getPhiScale()->getLowEdge(phiL1CSCTrack(track)));
     event_.CSCTF_bx[j] = track.bx();
     event_.CSCTF_quality[j] = quality;
-    
-    if(verbose) {  
+
+    if(verbose) {
       std::cout << std::endl
                 << "L1CSC pt  = " << event_.CSCTF_pt[j]
-                << ", eta  = " << event_.CSCTF_eta[j] 
+                << ", eta  = " << event_.CSCTF_eta[j]
                 << ", phi  = " << event_.CSCTF_phi[j]
                 << ", bx = " << event_.CSCTF_bx[j]
-                << ", quality = " << event_.CSCTF_quality[j] 
+                << ", quality = " << event_.CSCTF_quality[j]
                 << std::endl<< std::endl;
       std::cout << "Print CSCTF stubs:" << std::endl;
     }
@@ -2083,12 +2084,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         event_.CSCTF_nStubs[j] += 1;
         auto stub = *digiIt;
         auto gp = getCSCSpecificPoint2(ch_id.rawId(), stub);
-        if(verbose)std::cout << "\t" << ch_id << " " << stub 
+        if(verbose)std::cout << "\t" << ch_id << " " << stub
                              << " GP " << gp
                              << " key eta " << gp.eta() << " key phi " << gp.phi() << std::endl;
-        
+
         // stub position
-        
+
         float z_pos_L3, bestFitPhi, bestFitDPhi;
 
         fitComparatorsLCT(*hCSCComparators.product(), stub, ch_id, int(digiIt-range.first), z_pos_L3, bestFitPhi, bestFitDPhi);
@@ -2099,8 +2100,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       }
       chamberid_lct[ch_id] = v;
     }
-    
-    /* 
+
+    /*
     CSCTF stub recovery per CSCTF track
     The CSC track-finder may drop certain stubs if they don't match the pattern
     First get the station numbers where stubs are not filled
@@ -2110,21 +2111,21 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     bool stubMissingSt3 = event_.CSCTF_st3[j] == 99;
     bool stubMissingSt4 = event_.CSCTF_st4[j] == 99;
     bool atLeast1StubMissing = stubMissingSt1 or stubMissingSt2 or stubMissingSt3 or stubMissingSt4;
-    
+
     //bool doStubRecovery = true;
     if (doStubRecovery_ and atLeast1StubMissing){
-      
+
       std::vector<float> xs;
       std::vector<float> ys;
       std::vector<float> zs;
       //std::cout << "Get stub positions" << std::endl;
       getStubPositions(j, xs, ys, zs);
-      
+
       //std::cout << "fit stub positions with straight line" << std::endl;
       float alpha_x, beta_x, alpha_y, beta_y;
-      fitStraightLine(zs, xs, alpha_x, beta_x); 
-      fitStraightLine(zs, ys, alpha_y, beta_y); 
-      
+      fitStraightLine(zs, xs, alpha_x, beta_x);
+      fitStraightLine(zs, ys, alpha_y, beta_y);
+
       //std::cout << "Get positions stations" << std::endl;
       std::vector<float> allxs;
       std::vector<float> allys;
@@ -2132,16 +2133,16 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       getPositionsStations(alpha_x, beta_x, alpha_y, beta_y,
                            allxs, allys, sign_z);
 
-      
+
       int triggerSector = track.sector();
       //std::cout << "trigger sector " << triggerSector << std::endl;
-      
+
       for (int endcap=1; endcap<=2; endcap++){
         //do not consider stubs in the wrong endcap
         int zendcap(endcap!=1 ? -1 : +1 );
         if (zendcap * event_.CSCTF_eta[j] < 0) continue;
         for (int station=1; station<=4; station++){
-          
+
           // ignore station where a L1Mu stub is present!
           if (not stubMissingSt1 and station==1) continue;
           if (not stubMissingSt2 and station==2) continue;
@@ -2154,19 +2155,19 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           for (int ring=1; ring<=3; ring++){
             if (station!=1 and ring==3) continue;
             //std::cout << "Analyzing ring " << ring << std::endl;
-            
+
             for (int chamber=1; chamber<=36; chamber++){
               // do not consider invalid detids
-              if ( (station==2 or station==3 or station==4) and 
+              if ( (station==2 or station==3 or station==4) and
                    (ring==1) and chamber>18) continue;
-              //std::cout << "Analyzing chamber " << chamber << std::endl; 
+              //std::cout << "Analyzing chamber " << chamber << std::endl;
               // create the detid
               CSCDetId ch_id(endcap, station, ring, chamber);
               //std::cout << "ch_id " <<  ch_id << std::endl;
               // get the stubs in this detid
               auto range = CSCCorrelatedLCTs.get(ch_id);
               for (auto digiItr = range.first; digiItr != range.second; ++digiItr){
-                iStub++; 
+                iStub++;
 
                 auto stub(*digiItr);
 
@@ -2175,14 +2176,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
                 // trigger sector must be the same
                 if (triggerSector != ch_id.triggerSector()) continue;
-                
+
                 // BXs have to match
                 int deltaBX = std::abs(stub.getBX() - (6 + event_.CSCTF_bx[j]));
                 if (deltaBX > 1) continue;
 
                 if(verbose) std::cout << ch_id << std::endl;
                 if(verbose) std::cout<<"Candidate " << stub << std::endl;
-                bestMatchingStub = pickBestMatchingStub(allxs[ch_id.station()-1], allys[ch_id.station()-1], 
+                bestMatchingStub = pickBestMatchingStub(allxs[ch_id.station()-1], allys[ch_id.station()-1],
                                                         bestMatchingStub, std::make_pair(ch_id, stub), 6 + event_.CSCTF_bx[j]);
               }
               // consider the case ME1a
@@ -2195,19 +2196,19 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
                   // check that this stub is not already part of a CSC TF track
                   if (stubInCSCTFTracks(stub, l1Tracks)) continue;
-                  
+
                   // trigger sector must be the same
                   if (triggerSector != me1a_id.triggerSector()) continue;
-                  
+
                   // BXs have to match
                   int deltaBX = std::abs(stub.getBX() - (6 + event_.CSCTF_bx[j]));
-                  if (deltaBX > 1) continue; 
+                  if (deltaBX > 1) continue;
 
                   if(verbose) std::cout << me1a_id << std::endl;
                   if(verbose) std::cout<<"Candidate " << stub << std::endl;
-                  bestMatchingStub = pickBestMatchingStub(allxs[me1a_id.station()-1], allys[me1a_id.station()-1], 
+                  bestMatchingStub = pickBestMatchingStub(allxs[me1a_id.station()-1], allys[me1a_id.station()-1],
                                                           bestMatchingStub, std::make_pair(me1a_id, stub), 6 + event_.CSCTF_bx[j]);
-                  
+
                 }
               }
             }
@@ -2221,21 +2222,21 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
             v.push_back(bestMatchingStub.second);
             chamberid_lct[bestMatchingStub.first] = v;
 
-            if (reco::deltaR(gp.eta(), normalizedPhi(gp.phi()), 
-                             event_.CSCTF_eta[j] , normalizedPhi(event_.CSCTF_phi[j])) < 0.2){ 
+            if (reco::deltaR(gp.eta(), normalizedPhi(gp.phi()),
+                             event_.CSCTF_eta[j] , normalizedPhi(event_.CSCTF_phi[j])) < 0.2){
 
               if(verbose) {
-                std::cout << "\tChoice:" 
-                          << bestMatchingStub.first << " " 
-                          << bestMatchingStub.second << " " 
+                std::cout << "\tChoice:"
+                          << bestMatchingStub.first << " "
+                          << bestMatchingStub.second << " "
                           << "key eta " << gp.eta() << " "
                           << "key phi " << gp.phi() << std::endl;
               }
-              
+
               float z_pos_L3, bestFitPhi, bestFitDPhi;
               fitComparatorsLCT(*hCSCComparators.product(), bestMatchingStub.second, bestMatchingStub.first, j, z_pos_L3, bestFitPhi, bestFitDPhi);
-              
-              fillCSCStubProperties(bestMatchingStub.first, bestMatchingStub.second, j, 
+
+              fillCSCStubProperties(bestMatchingStub.first, bestMatchingStub.second, j,
                                     gp, z_pos_L3, bestFitPhi, bestFitDPhi);
             }
             else{
@@ -2246,21 +2247,22 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
             if(verbose) if (iStub!=0) std::cout << "\tNone " << std::endl;
           }
         }
-      } 
+      }
     }
     DisplacedMuonTriggerPtassignment ptAssignmentUnit(chamberid_lct,
                                                       detid_pads,
                                                       iEventSetup,
                                                       iEvent);
-    
+    ptAssignmentUnit.setVerbose(true);
     if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runPositionbased()){
       event_.CSCTF_L1_DDY123[j] = ptAssignmentUnit.getdeltaY123();
+      std::cout << "L1_DDY123 " << event_.CSCTF_L1_DDY123[j] << std::endl;
     }
 
     stubMissingSt1 = event_.CSCTF_st1[j] == 99;
     stubMissingSt2 = event_.CSCTF_st2[j] == 99;
-    if(verbose) cout << "Stub missing in station 1: " << bool(stubMissingSt1) << endl; 
-    if(verbose) cout << "Stub missing in station 2: " << bool(stubMissingSt2) << endl; 
+    if(verbose) cout << "Stub missing in station 1: " << bool(stubMissingSt1) << endl;
+    if(verbose) cout << "Stub missing in station 2: " << bool(stubMissingSt2) << endl;
     /*
 
     std::cout << "Matching copads" << std::endl;
@@ -2276,7 +2278,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         CSCDetId csc_st1(event_.CSCTF_id1[ j ]);
         std::cout << "CSC " << csc_st1 << endl;
         // chambers need to be compatible
-        if (gem_id.station() != 1 or 
+        if (gem_id.station() != 1 or
             csc_st1.chamber() != gem_id.chamber() or
             (csc_st1.ring() != 4 and csc_st1.ring() != 1)) continue;
         std::cout << "Investigate GE11 chamber " << gem_id << std::endl;
@@ -2286,7 +2288,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           auto copad(*digiItr);
           std::cout << "\tCandidate copad " << copad  << std::endl;
           bestCoPad_GE11 = pickBestMatchingCoPad(event_.CSCTF_fit_x1[ j ],
-                                                 event_.CSCTF_fit_y1[ j ], 
+                                                 event_.CSCTF_fit_y1[ j ],
                                                  bestCoPad_GE11, std::make_pair(gem_id, copad), event_.CSCTF_bx[j]);
         }
       }
@@ -2295,7 +2297,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         CSCDetId csc_st2(event_.CSCTF_id2[ j ]);
         std::cout << "CSC " << csc_st2 << endl;
         // chambers need to be compatible
-        if (gem_id.station() != 3 or 
+        if (gem_id.station() != 3 or
             csc_st2.chamber() != gem_id.chamber() or
             csc_st2.ring() != 1) continue;
         std::cout << "Investigate GE21 chamber " << gem_id << std::endl;
@@ -2305,7 +2307,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           auto copad(*digiItr);
           std::cout << "\tCandidate copad " << copad  << std::endl;
           bestCoPad_GE21 = pickBestMatchingCoPad(event_.CSCTF_fit_x2[ j ],
-                                                 event_.CSCTF_fit_y2[ j ], 
+                                                 event_.CSCTF_fit_y2[ j ],
                                                  bestCoPad_GE21, std::make_pair(gem_id, copad), event_.CSCTF_bx[j]);
         }
       }
@@ -2323,7 +2325,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     } else {
       std::cout << "No best GE11 copad" << std::endl;
     }
-    
+
     if (bestCoPad_GE21.second != GEMCSCPadDigi()){
       std::cout << "\tBest GE21 copad" << bestCoPad_GE21.second << std::endl;
       if (bestCoPad_GE21.first.station()==2) {
@@ -2335,9 +2337,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       }
     } else {
       std::cout << "No best GE21 copad" << std::endl;
-    } 
-    
-    
+    }
+
+
 
     // check copads were matched
     const bool GE11_copad_matched( event_.GE11_phi_L1[j]!=99 );
@@ -2352,7 +2354,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       GEMCSCPadDigiId bestPad_GE11_L2;
       GEMCSCPadDigiId bestPad_GE21_L1;
       GEMCSCPadDigiId bestPad_GE21_L2;
-      
+
       for(auto cItr = hGEMCSCPads->begin(); cItr != hGEMCSCPads->end(); ++cItr) {
         GEMDetId gem_id = (*cItr).first;
         //cout << "Check GEMDetId " << gem_id << endl;
@@ -2360,10 +2362,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         if (not stubMissingSt1) {// and not GE11_copad_matched
           // get the CSCDetId of station 1
           CSCDetId csc_st1(event_.CSCTF_id1[ j ]);
-          
+
           // chambers need to be compatible
-          if (gem_id.region() == csc_st1.zendcap() and 
-              gem_id.station() == 1 and 
+          if (gem_id.region() == csc_st1.zendcap() and
+              gem_id.station() == 1 and
               csc_st1.chamber() == gem_id.chamber() and
               (csc_st1.ring() == 4 or csc_st1.ring() == 1)) {
             if(verbose) std::cout << "Investigate GE11 chamber " << gem_id << std::endl;
@@ -2373,18 +2375,18 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
               auto GE11_pad(*digiItr);
               int deltaBX = std::abs(GE11_pad.bx() - event_.CSCTF_bx[j]);
               if (deltaBX <= 1) {
-              
+
                 if(verbose) std::cout << "\tCandidate Pad " << GE11_pad  << " " << getGlobalPointPad(gem_id.rawId(), GE11_pad) << std::endl;
                 if (gem_id.layer()==1){
                   // BXs have to match
-                  
+
                   bestPad_GE11_L1 = pickBestMatchingPad(event_.CSCTF_fit_x1[ j ],
-                                                        event_.CSCTF_fit_y1[ j ], 
+                                                        event_.CSCTF_fit_y1[ j ],
                                                         bestPad_GE11_L1, std::make_pair(gem_id, GE11_pad), event_.CSCTF_bx[j]);
                 }
                 if (gem_id.layer()==2){
                   bestPad_GE11_L2 = pickBestMatchingPad(event_.CSCTF_fit_x1[ j ],
-                                                        event_.CSCTF_fit_y1[ j ], 
+                                                        event_.CSCTF_fit_y1[ j ],
                                                         bestPad_GE11_L2, std::make_pair(gem_id, GE11_pad), event_.CSCTF_bx[j]);
                 }
               }
@@ -2397,7 +2399,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           //int index = i;
           // chambers need to be compatible
           if (gem_id.region() == csc_st2.zendcap() and
-              gem_id.station() == 3 and 
+              gem_id.station() == 3 and
               csc_st2.chamber() == gem_id.chamber() and
               csc_st2.ring() == 1) {
             if(verbose) std::cout << "Investigate GE21 chamber " << gem_id << std::endl;
@@ -2410,14 +2412,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                 if(verbose) std::cout << "\tCandidate Pad " << pad  << " " << getGlobalPointPad(gem_id.rawId(), pad)  << std::endl;
                 if (gem_id.layer()==1){
                   bestPad_GE21_L1 = pickBestMatchingPad(event_.CSCTF_fit_x2[ j ],
-                                                        event_.CSCTF_fit_y2[ j ], 
+                                                        event_.CSCTF_fit_y2[ j ],
                                                         bestPad_GE21_L1, std::make_pair(gem_id, pad), event_.CSCTF_bx[j]);
                 }
                 if (gem_id.layer()==2){
                   bestPad_GE21_L2 = pickBestMatchingPad(event_.CSCTF_fit_x2[ j ],
-                                                        event_.CSCTF_fit_y2[ j ], 
+                                                        event_.CSCTF_fit_y2[ j ],
                                                         bestPad_GE21_L2, std::make_pair(gem_id, pad), event_.CSCTF_bx[j]);
-                }     
+                }
               }
             }
           }
@@ -2432,12 +2434,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           event_.GE11_phi_L1[j] = gem_gp1.phi();
           event_.GE11_bx_L1[j] = bestPad_GE11_L1.second.bx();
           event_.GE11_ch_L1[j] = bestPad_GE11_L1.first.chamber();
-          event_.GE11_z_L1[j] = gem_gp1.z();              
+          event_.GE11_z_L1[j] = gem_gp1.z();
         }
       } else {
         if(verbose) std::cout << "No best pad GE11 L1" << std::endl;
       }
-      
+
       if (bestPad_GE11_L2.second != GEMCSCPadDigi()){
         if(verbose) std::cout << "Best pad GE11 L2" << bestPad_GE11_L2.second << std::endl;
         if (bestPad_GE11_L2.first.station()==1 and bestPad_GE11_L2.first.layer()==2) {
@@ -2446,7 +2448,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           event_.GE11_phi_L2[j] = gem_gp1.phi();
           event_.GE11_bx_L2[j] = bestPad_GE11_L2.second.bx();
           event_.GE11_ch_L2[j] = bestPad_GE11_L2.first.chamber();
-          event_.GE11_z_L2[j] = gem_gp1.z();              
+          event_.GE11_z_L2[j] = gem_gp1.z();
         }
       } else {
         if(verbose) std::cout << "No best pad GE11 L2" << std::endl;
@@ -2460,12 +2462,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           event_.GE21_phi_L1[j] = gem_gp1.phi();
           event_.GE21_bx_L1[j] = bestPad_GE21_L1.second.bx();
           event_.GE21_ch_L1[j] = bestPad_GE21_L1.first.chamber();
-          event_.GE21_z_L1[j] = gem_gp1.z();              
+          event_.GE21_z_L1[j] = gem_gp1.z();
         }
       } else {
         if(verbose) std::cout << "No best pad GE21 L1" << std::endl;
       }
-      
+
       if (bestPad_GE21_L2.second != GEMCSCPadDigi()){
         if(verbose) std::cout << "Best pad GE21 L2" << bestPad_GE21_L2.second << std::endl;
         if (bestPad_GE21_L2.first.station()==3 and bestPad_GE21_L2.first.layer()==2) {
@@ -2474,7 +2476,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           event_.GE21_phi_L2[j] = gem_gp1.phi();
           event_.GE21_bx_L2[j] = bestPad_GE21_L2.second.bx();
           event_.GE21_ch_L2[j] = bestPad_GE21_L2.first.chamber();
-          event_.GE21_z_L2[j] = gem_gp1.z();              
+          event_.GE21_z_L2[j] = gem_gp1.z();
         }
       } else {
         if(verbose) std::cout << "No best pad GE21 L2" << std::endl;
@@ -2486,7 +2488,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         std::vector<GlobalPoint> positionPadsGE11 = positionPad2InDetId(GEMDigis, event_.CSCTF_id1[j], event_.CSCTF_bx[j]);
         std::cout << "Check positions of 2-strip pads for " << CSCDetId(event_.CSCTF_id1[j]) << " in BX " << event_.CSCTF_bx[j] << std::endl;
         std::cout << "GE11: " << std::endl;
-        for (auto p: positionPadsGE11) std::cout << p << " " << p.phi() << std::endl; 
+        for (auto p: positionPadsGE11) std::cout << p << " " << p.phi() << std::endl;
 
         std::vector<GlobalPoint> positionPads4GE11 = positionPad4InDetId(GEMDigis, event_.CSCTF_id1[j], event_.CSCTF_bx[j]);
         std::cout << "Check positions of 4-strip pads for " << CSCDetId(event_.CSCTF_id1[j]) << " in BX " << event_.CSCTF_bx[j] << std::endl;
@@ -2498,8 +2500,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         std::vector<GlobalPoint> positionPadsGE21 = positionPad2InDetId(GEMDigis, event_.CSCTF_id2[j], event_.CSCTF_bx[j]);
         //std::cout << "Check positions of 2-strip pads for " << CSCDetId(event_.CSCTF_id2[j]) << " in BX " << event_.CSCTF_bx[j] << std::endl;
         //std::cout << "GE21: " << std::endl;
-        float minDPhi_L1=99, minDPhi_L2=992; 
-        
+        float minDPhi_L1=99, minDPhi_L2=992;
+
         for (auto p: positionPadsGE21){
           // L1
           if ( std::abs(p.z() - 794.439) < 0.0001 or std::abs(p.z() + 794.439) < 0.0001 ) {
@@ -2508,16 +2510,16 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
               minDPhi_L1 = dPhiGEMCSC;
               event_.GE21_pad2_phi_L1[j] = p.phi();
             }
-          } 
+          }
           // L2
           if ( std::abs(p.z() - 798.179) < 0.0001 or std::abs(p.z() + 798.179) < 0.0001 ) {
             float dPhiGEMCSC(std::abs(reco::deltaPhi(event_.CSCTF_fit_phi2[j], p.phi())));
             if (dPhiGEMCSC  < minDPhi_L2) {
               minDPhi_L2 = dPhiGEMCSC;
-              event_.GE21_pad2_phi_L2[j] = p.phi();            
+              event_.GE21_pad2_phi_L2[j] = p.phi();
             }
           }
-        }        
+        }
         // std::vector<GlobalPoint> positionPads4GE21 = positionPad4InDetId(GEMDigis, event_.CSCTF_id2[j], event_.CSCTF_bx[j]);
         // std::cout << "Check positions of 4-strip pads for " << CSCDetId(event_.CSCTF_id2[j]) << " in BX " << event_.CSCTF_bx[j] << std::endl;
         // std::cout << "GE21: " << std::endl;
@@ -2530,16 +2532,16 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   if(verbose) std::cout << "Number of l1MuRPCbs: " <<l1MuRPCbs.size() << std::endl;
   event_.nRPCb = l1MuRPCbs.size();
   if (processRPCb_) {
-    for (unsigned int j=0; j<l1MuRPCbs.size(); ++j) { 
+    for (unsigned int j=0; j<l1MuRPCbs.size(); ++j) {
       auto track = l1MuRPCbs[j];
-      
+
       event_.RPCb_pt[j] = muPtScale->getPtScale()->getLowEdge(track.pt_packed());
       event_.RPCb_eta[j] = muScales->getRegionalEtaScale(track.type_idx())->getCenter(track.eta_packed());
       event_.RPCb_phi[j] = normalizedPhi(muScales->getPhiScale()->getLowEdge(track.phi_packed()));
       event_.RPCb_bx[j] = track.bx();
       event_.RPCb_quality[j] = track.quality();
-      
-      if(verbose) {  
+
+      if(verbose) {
         std::cout << "pt " << event_.RPCb_pt[j]
                   << ", eta " << event_.RPCb_eta[j]
                   << ", phi " << event_.RPCb_phi[j]
@@ -2547,7 +2549,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                   << ", quality " << event_.RPCb_quality[j]
                   << std::endl;
       }
-      
+
       auto link = l1MuRPCbLinks[j];
       event_.RPCb_nStubs[j] = 0;
       for (unsigned int ii=1; ii<=link.nlayer(); ++ii){
@@ -2555,89 +2557,89 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         event_.RPCb_nStubs[j] += 1;
         double phi = getGlobalPhi(link.rawdetId(ii), link.strip(ii));
         auto detId = RPCDetId(link.rawdetId(ii));
-        if(verbose) {  
-          std::cout << "\t" << ii 
-                    << ", RPCDetId " << detId 
-                    << ", strip " << link.strip(ii) 
-                    << ", bx " << link.bx(ii) 
+        if(verbose) {
+          std::cout << "\t" << ii
+                    << ", RPCDetId " << detId
+                    << ", strip " << link.strip(ii)
+                    << ", bx " << link.bx(ii)
                     << ", phi " << phi
                     << std::endl;
-        } 
+        }
         switch(ii) {
         case 1:
-          event_.RPCb_bx1[j] = link.bx(ii); 
-          event_.RPCb_strip1[j] = link.strip(ii); 
+          event_.RPCb_bx1[j] = link.bx(ii);
+          event_.RPCb_strip1[j] = link.strip(ii);
           event_.RPCb_phi1[j] = phi;
-          event_.RPCb_re1[j] = detId.region(); 
-          event_.RPCb_ri1[j] = detId.ring(); 
-          event_.RPCb_st1[j] = detId.station(); 
+          event_.RPCb_re1[j] = detId.region();
+          event_.RPCb_ri1[j] = detId.ring();
+          event_.RPCb_st1[j] = detId.station();
           event_.RPCb_se1[j] = detId.sector();
-          event_.RPCb_la1[j] = detId.layer(); 
-          event_.RPCb_su1[j] = detId.subsector(); 
+          event_.RPCb_la1[j] = detId.layer();
+          event_.RPCb_su1[j] = detId.subsector();
           event_.RPCb_ro1[j] = detId.roll();
           break;
         case 2:
-          event_.RPCb_bx2[j] = link.bx(ii); 
-          event_.RPCb_strip2[j] = link.strip(ii); 
+          event_.RPCb_bx2[j] = link.bx(ii);
+          event_.RPCb_strip2[j] = link.strip(ii);
           event_.RPCb_phi2[j] = phi;
-          event_.RPCb_re2[j] = detId.region(); 
-          event_.RPCb_ri2[j] = detId.ring(); 
-          event_.RPCb_st2[j] = detId.station(); 
+          event_.RPCb_re2[j] = detId.region();
+          event_.RPCb_ri2[j] = detId.ring();
+          event_.RPCb_st2[j] = detId.station();
           event_.RPCb_se2[j] = detId.sector();
-          event_.RPCb_la2[j] = detId.layer(); 
-          event_.RPCb_su2[j] = detId.subsector(); 
+          event_.RPCb_la2[j] = detId.layer();
+          event_.RPCb_su2[j] = detId.subsector();
           event_.RPCb_ro2[j] = detId.roll();
           break;
         case 3:
-          event_.RPCb_bx3[j] = link.bx(ii); 
-          event_.RPCb_strip3[j] = link.strip(ii); 
+          event_.RPCb_bx3[j] = link.bx(ii);
+          event_.RPCb_strip3[j] = link.strip(ii);
           event_.RPCb_phi3[j] = phi;
-          event_.RPCb_re3[j] = detId.region(); 
-          event_.RPCb_ri3[j] = detId.ring(); 
-          event_.RPCb_st3[j] = detId.station(); 
+          event_.RPCb_re3[j] = detId.region();
+          event_.RPCb_ri3[j] = detId.ring();
+          event_.RPCb_st3[j] = detId.station();
           event_.RPCb_se3[j] = detId.sector();
-          event_.RPCb_la3[j] = detId.layer(); 
-          event_.RPCb_su3[j] = detId.subsector(); 
+          event_.RPCb_la3[j] = detId.layer();
+          event_.RPCb_su3[j] = detId.subsector();
           event_.RPCb_ro3[j] = detId.roll();
           break;
         case 4:
-          event_.RPCb_bx4[j] = link.bx(ii); 
-          event_.RPCb_strip4[j] = link.strip(ii); 
+          event_.RPCb_bx4[j] = link.bx(ii);
+          event_.RPCb_strip4[j] = link.strip(ii);
           event_.RPCb_phi4[j] = phi;
-          event_.RPCb_re4[j] = detId.region(); 
-          event_.RPCb_ri4[j] = detId.ring(); 
-          event_.RPCb_st4[j] = detId.station(); 
+          event_.RPCb_re4[j] = detId.region();
+          event_.RPCb_ri4[j] = detId.ring();
+          event_.RPCb_st4[j] = detId.station();
           event_.RPCb_se4[j] = detId.sector();
-          event_.RPCb_la4[j] = detId.layer(); 
-          event_.RPCb_su4[j] = detId.subsector(); 
+          event_.RPCb_la4[j] = detId.layer();
+          event_.RPCb_su4[j] = detId.subsector();
           event_.RPCb_ro4[j] = detId.roll();
           break;
         case 5:
-          event_.RPCb_bx5[j] = link.bx(ii); 
-          event_.RPCb_strip5[j] = link.strip(ii); 
+          event_.RPCb_bx5[j] = link.bx(ii);
+          event_.RPCb_strip5[j] = link.strip(ii);
           event_.RPCb_phi5[j] = phi;
-          event_.RPCb_re5[j] = detId.region(); 
-          event_.RPCb_ri5[j] = detId.ring(); 
-          event_.RPCb_st5[j] = detId.station(); 
+          event_.RPCb_re5[j] = detId.region();
+          event_.RPCb_ri5[j] = detId.ring();
+          event_.RPCb_st5[j] = detId.station();
           event_.RPCb_se5[j] = detId.sector();
-          event_.RPCb_la5[j] = detId.layer(); 
-          event_.RPCb_su5[j] = detId.subsector(); 
+          event_.RPCb_la5[j] = detId.layer();
+          event_.RPCb_su5[j] = detId.subsector();
           event_.RPCb_ro5[j] = detId.roll();
           break;
         case 6:
-          event_.RPCb_bx6[j] = link.bx(ii); 
-          event_.RPCb_strip6[j] = link.strip(ii); 
+          event_.RPCb_bx6[j] = link.bx(ii);
+          event_.RPCb_strip6[j] = link.strip(ii);
           event_.RPCb_phi6[j] = phi;
-          event_.RPCb_re6[j] = detId.region(); 
-          event_.RPCb_ri6[j] = detId.ring(); 
-          event_.RPCb_st6[j] = detId.station(); 
+          event_.RPCb_re6[j] = detId.region();
+          event_.RPCb_ri6[j] = detId.ring();
+          event_.RPCb_st6[j] = detId.station();
           event_.RPCb_se6[j] = detId.sector();
-          event_.RPCb_la6[j] = detId.layer(); 
-          event_.RPCb_su6[j] = detId.subsector(); 
+          event_.RPCb_la6[j] = detId.layer();
+          event_.RPCb_su6[j] = detId.subsector();
           event_.RPCb_ro6[j] = detId.roll();
           break;
         };
-      } 
+      }
     }
   }
 
@@ -2646,16 +2648,16 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   if(verbose) std::cout << "Number of l1MuRPCfs: " <<l1MuRPCfs.size() << std::endl;
   event_.nRPCf = l1MuRPCfs.size();
   if (processRPCf_) {
-    for (unsigned int j=0; j<l1MuRPCfs.size(); ++j) { 
+    for (unsigned int j=0; j<l1MuRPCfs.size(); ++j) {
       auto track = l1MuRPCfs[j];
-      
+
       event_.RPCf_pt[j] = muPtScale->getPtScale()->getLowEdge(track.pt_packed());
       event_.RPCf_eta[j] = muScales->getRegionalEtaScale(track.type_idx())->getCenter(track.eta_packed());
       event_.RPCf_phi[j] = normalizedPhi(muScales->getPhiScale()->getLowEdge(track.phi_packed()));
       event_.RPCf_bx[j] = track.bx();
       event_.RPCf_quality[j] = track.quality();
-      
-      if(verbose) {  
+
+      if(verbose) {
         std::cout << "pt " << event_.RPCf_pt[j]
                   << ", eta " << event_.RPCf_eta[j]
                   << ", phi " << event_.RPCf_phi[j]
@@ -2663,7 +2665,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                   << ", quality " << event_.RPCf_quality[j]
                   << std::endl;
       }
-      
+
       auto link = l1MuRPCfLinks[j];
       event_.RPCf_nStubs[j] = 0;
       for (unsigned int ii=1; ii<=link.nlayer(); ++ii){
@@ -2671,96 +2673,96 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         event_.RPCf_nStubs[j] += 1;
         double phi = getGlobalPhi(link.rawdetId(ii), link.strip(ii));
         auto detId = RPCDetId(link.rawdetId(ii));
-        if(verbose) {  
+        if(verbose) {
           std::cout << "\t" << ii
-                    << ", RPCDetId " << detId 
-                    << ", strip " << link.strip(ii) 
-                    << ", bx " << link.bx(ii) 
+                    << ", RPCDetId " << detId
+                    << ", strip " << link.strip(ii)
+                    << ", bx " << link.bx(ii)
                     << ", phi " << phi
                     << std::endl;
-        } 
+        }
         switch(ii) {
         case 1:
-          event_.RPCf_bx1[j] = link.bx(ii); 
-          event_.RPCf_strip1[j] = link.strip(ii); 
+          event_.RPCf_bx1[j] = link.bx(ii);
+          event_.RPCf_strip1[j] = link.strip(ii);
           event_.RPCf_phi1[j] = phi;
-          event_.RPCf_re1[j] = detId.region(); 
-          event_.RPCf_ri1[j] = detId.ring(); 
-          event_.RPCf_st1[j] = detId.station(); 
+          event_.RPCf_re1[j] = detId.region();
+          event_.RPCf_ri1[j] = detId.ring();
+          event_.RPCf_st1[j] = detId.station();
           event_.RPCf_se1[j] = detId.sector();
-          event_.RPCf_la1[j] = detId.layer(); 
-          event_.RPCf_su1[j] = detId.subsector(); 
+          event_.RPCf_la1[j] = detId.layer();
+          event_.RPCf_su1[j] = detId.subsector();
           event_.RPCf_ro1[j] = detId.roll();
           break;
         case 2:
-          event_.RPCf_bx2[j] = link.bx(ii); 
-          event_.RPCf_strip2[j] = link.strip(ii); 
+          event_.RPCf_bx2[j] = link.bx(ii);
+          event_.RPCf_strip2[j] = link.strip(ii);
           event_.RPCf_phi2[j] = phi;
-          event_.RPCf_re2[j] = detId.region(); 
-          event_.RPCf_ri2[j] = detId.ring(); 
-          event_.RPCf_st2[j] = detId.station(); 
+          event_.RPCf_re2[j] = detId.region();
+          event_.RPCf_ri2[j] = detId.ring();
+          event_.RPCf_st2[j] = detId.station();
           event_.RPCf_se2[j] = detId.sector();
-          event_.RPCf_la2[j] = detId.layer(); 
-          event_.RPCf_su2[j] = detId.subsector(); 
+          event_.RPCf_la2[j] = detId.layer();
+          event_.RPCf_su2[j] = detId.subsector();
           event_.RPCf_ro2[j] = detId.roll();
           break;
         case 3:
-          event_.RPCf_bx3[j] = link.bx(ii); 
-          event_.RPCf_strip3[j] = link.strip(ii); 
+          event_.RPCf_bx3[j] = link.bx(ii);
+          event_.RPCf_strip3[j] = link.strip(ii);
           event_.RPCf_phi3[j] = phi;
-          event_.RPCf_re3[j] = detId.region(); 
-          event_.RPCf_ri3[j] = detId.ring(); 
-          event_.RPCf_st3[j] = detId.station(); 
+          event_.RPCf_re3[j] = detId.region();
+          event_.RPCf_ri3[j] = detId.ring();
+          event_.RPCf_st3[j] = detId.station();
           event_.RPCf_se3[j] = detId.sector();
-          event_.RPCf_la3[j] = detId.layer(); 
-          event_.RPCf_su3[j] = detId.subsector(); 
+          event_.RPCf_la3[j] = detId.layer();
+          event_.RPCf_su3[j] = detId.subsector();
           event_.RPCf_ro3[j] = detId.roll();
           break;
         case 4:
-          event_.RPCf_bx4[j] = link.bx(ii); 
-          event_.RPCf_strip4[j] = link.strip(ii); 
+          event_.RPCf_bx4[j] = link.bx(ii);
+          event_.RPCf_strip4[j] = link.strip(ii);
           event_.RPCf_phi4[j] = phi;
-          event_.RPCf_re4[j] = detId.region(); 
-          event_.RPCf_ri4[j] = detId.ring(); 
-          event_.RPCf_st4[j] = detId.station(); 
+          event_.RPCf_re4[j] = detId.region();
+          event_.RPCf_ri4[j] = detId.ring();
+          event_.RPCf_st4[j] = detId.station();
           event_.RPCf_se4[j] = detId.sector();
-          event_.RPCf_la4[j] = detId.layer(); 
-          event_.RPCf_su4[j] = detId.subsector(); 
+          event_.RPCf_la4[j] = detId.layer();
+          event_.RPCf_su4[j] = detId.subsector();
           event_.RPCf_ro4[j] = detId.roll();
           break;
         case 5:
-          event_.RPCf_bx5[j] = link.bx(ii); 
-          event_.RPCf_strip5[j] = link.strip(ii); 
+          event_.RPCf_bx5[j] = link.bx(ii);
+          event_.RPCf_strip5[j] = link.strip(ii);
           event_.RPCf_phi5[j] = phi;
-          event_.RPCf_re5[j] = detId.region(); 
-          event_.RPCf_ri5[j] = detId.ring(); 
-          event_.RPCf_st5[j] = detId.station(); 
+          event_.RPCf_re5[j] = detId.region();
+          event_.RPCf_ri5[j] = detId.ring();
+          event_.RPCf_st5[j] = detId.station();
           event_.RPCf_se5[j] = detId.sector();
-          event_.RPCf_la5[j] = detId.layer(); 
-          event_.RPCf_su5[j] = detId.subsector(); 
+          event_.RPCf_la5[j] = detId.layer();
+          event_.RPCf_su5[j] = detId.subsector();
           event_.RPCf_ro5[j] = detId.roll();
           break;
         case 6:
-          event_.RPCf_bx6[j] = link.bx(ii); 
-          event_.RPCf_strip6[j] = link.strip(ii); 
+          event_.RPCf_bx6[j] = link.bx(ii);
+          event_.RPCf_strip6[j] = link.strip(ii);
           event_.RPCf_phi6[j] = phi;
-          event_.RPCf_re6[j] = detId.region(); 
-          event_.RPCf_ri6[j] = detId.ring(); 
-          event_.RPCf_st6[j] = detId.station(); 
+          event_.RPCf_re6[j] = detId.region();
+          event_.RPCf_ri6[j] = detId.ring();
+          event_.RPCf_st6[j] = detId.station();
           event_.RPCf_se6[j] = detId.sector();
-          event_.RPCf_la6[j] = detId.layer(); 
-          event_.RPCf_su6[j] = detId.subsector(); 
+          event_.RPCf_la6[j] = detId.layer();
+          event_.RPCf_su6[j] = detId.subsector();
           event_.RPCf_ro6[j] = detId.roll();
           break;
         };
-      } 
+      }
     }
   }
 
 
   // Store the L1Mu variables
   // also check which DTTF, CSCTF, RPCf, RPCb this L1Mu corresponds to!
-  if(verbose) std::cout << "Number of L1Mu candidates before selections " << event_.nL1Mu << std::endl; 
+  if(verbose) std::cout << "Number of L1Mu candidates before selections " << event_.nL1Mu << std::endl;
 
   for (unsigned int i=0; i<l1GmtCands.size(); ++i) {
     auto l1Mu = l1GmtCands[i];
@@ -2770,9 +2772,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     event_.L1Mu_charge[i] = l1Mu.charge();
     event_.L1Mu_quality[i] = l1Mu.quality();
     event_.L1Mu_bx[i] = l1Mu.bx();
-  
+
     if(verbose) {
-      cout << "l1Mu " << i << endl; 
+      cout << "l1Mu " << i << endl;
       cout << "l1Mu_pt " << event_.L1Mu_pt[i] << endl;
       cout << "l1Mu_eta " << event_.L1Mu_eta[i] << endl;
       cout << "l1Mu_phi " << event_.L1Mu_phi[i] << endl;
@@ -2780,17 +2782,17 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       cout << "l1Mu_charge " << event_.L1Mu_charge[i] << endl;
       cout << "l1Mu_bx " << event_.L1Mu_bx[i] << endl;
     }
-    
+
     if (processTTI_){
       // Matching to DTTF
       double bestDrL1MuL1DTTrack = 99;
-      for (unsigned int j=0; j<L1DTTrackPhis.size(); ++j) {   
+      for (unsigned int j=0; j<L1DTTrackPhis.size(); ++j) {
         if ( ( event_.L1Mu_quality[i] > 0 ) &&
-             ( reco::deltaPhi( event_.L1Mu_phi[i], event_.DTTF_phi[j] ) < 0.001 ) &&             
+             ( reco::deltaPhi( event_.L1Mu_phi[i], event_.DTTF_phi[j] ) < 0.001 ) &&
              ( event_.L1Mu_bx[i] == event_.DTTF_bx[j] ) ) {
-          double drL1MuL1DTTrack = reco::deltaR(l1Mu.etaValue(), 
-                                                normalizedPhi(l1Mu.phiValue()), 
-                                                event_.DTTF_eta[j], 
+          double drL1MuL1DTTrack = reco::deltaR(l1Mu.etaValue(),
+                                                normalizedPhi(l1Mu.phiValue()),
+                                                event_.DTTF_eta[j],
                                                 event_.DTTF_phi[j]);
           if (drL1MuL1DTTrack < bestDrL1MuL1DTTrack and drL1MuL1DTTrack < 0.3) {
             bestDrL1MuL1DTTrack = drL1MuL1DTTrack;
@@ -2798,40 +2800,40 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           }
         }
       }
-      
-      if(verbose) {  
-        int tempIndex = event_.L1Mu_DTTF_index[i]; 
+
+      if(verbose) {
+        int tempIndex = event_.L1Mu_DTTF_index[i];
         if (tempIndex != -1) { // and bestDrL1MuL1DTTrack < 0.2
           // Print matching DTTF track
           std::cout << "\tMatching DTTF track" << std::endl;
           std::cout << "\tpt = "  << event_.DTTF_pt[tempIndex]
                     << ", eta = " << event_.DTTF_eta[tempIndex]
-                    << ", phi = " << event_.DTTF_phi[tempIndex] 
+                    << ", phi = " << event_.DTTF_phi[tempIndex]
                     << ", bx = "  << event_.DTTF_bx[tempIndex]
                     << ", quality = " << event_.DTTF_quality[tempIndex] << std::endl;
-          
+
           // Print stubs
-          std::cout << "\tNumber of stubs: " << event_.DTTF_nStubs[tempIndex] << std::endl; 
+          std::cout << "\tNumber of stubs: " << event_.DTTF_nStubs[tempIndex] << std::endl;
           for (auto stub: L1DTTrackPhis[tempIndex].second) {
             std::cout << "\t\t " << stub << std::endl;
             std::cout << "\t\t phiValue = " << stub.phiValue() << ", phibValue = " << stub.phibValue() << std::endl;
-          }  
+          }
         }
         else {
           std::cout << "\tNo matching DTTF track" << std::endl;
         }
       }
     }
-    
-    // Matching to CSCTF     
+
+    // Matching to CSCTF
     double bestDrL1MuL1CSCTrack = 99;
     for (unsigned int j=0; j<l1Tracks.size(); ++j) {
       if ( ( event_.L1Mu_quality[i] > 0 ) &&
-           ( reco::deltaPhi( event_.L1Mu_phi[i], event_.CSCTF_phi[j] ) < 0.001 ) &&             
+           ( reco::deltaPhi( event_.L1Mu_phi[i], event_.CSCTF_phi[j] ) < 0.001 ) &&
            ( event_.L1Mu_bx[i] == event_.CSCTF_bx[j] ) ) {
-        double drL1MuL1CSCTrack = reco::deltaR(l1Mu.etaValue(), 
-                                               normalizedPhi(l1Mu.phiValue()), 
-                                               event_.CSCTF_eta[j], 
+        double drL1MuL1CSCTrack = reco::deltaR(l1Mu.etaValue(),
+                                               normalizedPhi(l1Mu.phiValue()),
+                                               event_.CSCTF_eta[j],
                                                event_.CSCTF_phi[j]);
         if (drL1MuL1CSCTrack < bestDrL1MuL1CSCTrack and drL1MuL1CSCTrack < 0.3) {
           std::cout << "new best csctf track " << drL1MuL1CSCTrack << " " << event_.CSCTF_eta[j] << " " << event_.CSCTF_quality[j] << std::endl;
@@ -2839,12 +2841,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           bestDrL1MuL1CSCTrack = drL1MuL1CSCTrack;
           event_.L1Mu_CSCTF_index[i] = j;
         }
-      }                
+      }
     }
-    
 
-    if(verbose) {  
-      int tempIndex = event_.L1Mu_CSCTF_index[i]; 
+
+    if(verbose) {
+      int tempIndex = event_.L1Mu_CSCTF_index[i];
       if (tempIndex != -1) { // and bestDrL1MuL1CSCTrack < 0.2
         // Print matching CSCTF track
         std::cout << "\tMatching CSCTF track" << std::endl;
@@ -2876,7 +2878,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       }
     }
 
-    /* 
+    /*
        CSCTF stub recovery
        The CSC track-finder may drop certain stubs if they don't match the pattern
        First get the station numbers where stubs are not filled
@@ -2888,17 +2890,17 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       bool stubMissingSt3 = event_.CSCTF_st3[ event_.L1Mu_CSCTF_index[i] ] == 99;
       bool stubMissingSt4 = event_.CSCTF_st4[ event_.L1Mu_CSCTF_index[i] ] == 99;
       bool doStubRecovery = stubMissingSt1 or stubMissingSt2 or stubMissingSt3 or stubMissingSt4;
-      
+
       std::vector<float> xs;
       std::vector<float> ys;
       std::vector<float> zs;
       std::cout << "Get stub positions" << std::endl;
       getStubPositions(event_.L1Mu_CSCTF_index[i], xs, ys, zs);
-      
+
       std::cout << "fit stub positions with straight line" << std::endl;
       float alpha_x, beta_x, alpha_y, beta_y;
-      fitStraightLine(zs, xs, alpha_x, beta_x); 
-      fitStraightLine(zs, ys, alpha_y, beta_y); 
+      fitStraightLine(zs, xs, alpha_x, beta_x);
+      fitStraightLine(zs, ys, alpha_y, beta_y);
 
       std::cout << "Get positions stations" << std::endl;
       std::vector<float> allxs;
@@ -2920,13 +2922,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       if (doStubRecovery and event_.L1Mu_CSCTF_index[i] != -1) {
         int triggerSector = (l1Tracks[ event_.L1Mu_CSCTF_index[i] ].first).sector();
         std::cout << "trigger sector " << triggerSector << std::endl;
-        
+
         for (int endcap=1; endcap<=2; endcap++){
           //do not consider stubs in the wrong endcap
           int zendcap(endcap!=1 ? -1 : +1 );
           if (zendcap * event_.L1Mu_eta[i] < 0) continue;
           for (int station=1; station<=4; station++){
-            
+
             // ignore station where a L1Mu stub is present!
             if (not stubMissingSt1 and station==1) continue;
             if (not stubMissingSt2 and station==2) continue;
@@ -2939,29 +2941,29 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
             for (int ring=1; ring<=3; ring++){
               if (station!=1 and ring==3) continue;
               std::cout << "Analyzing ring " << ring << std::endl;
-              
+
               for (int chamber=1; chamber<=36; chamber++){
                 // do not consider invalid detids
-                if ( (station==2 or station==3 or station==4) and 
+                if ( (station==2 or station==3 or station==4) and
                      (ring==1) and chamber>18) continue;
-                //std::cout << "Analyzing chamber " << chamber << std::endl; 
+                //std::cout << "Analyzing chamber " << chamber << std::endl;
                 // create the detid
                 CSCDetId ch_id(endcap, station, ring, chamber);
                 //std::cout << "ch_id " <<  ch_id << std::endl;
                 // get the stubs in this detid
                 auto range = CSCCorrelatedLCTs.get(ch_id);
                 for (auto digiItr = range.first; digiItr != range.second; ++digiItr){
-                  iStub++; 
+                  iStub++;
                   // trigger sector must be the same
                   if (triggerSector != ch_id.triggerSector()) continue;
                   auto stub(*digiItr);
                   int deltaBX = std::abs(stub.getBX() - (6 + event_.L1Mu_bx[i]));
-                  
+
                   // BXs have to match
                   if (deltaBX > 1) continue;
                   std::cout << ch_id << std::endl;
                   std::cout<<"Candidate " << stub << std::endl;
-                  bestMatchingStub = pickBestMatchingStub(allxs[ch_id.station()-1], allys[ch_id.station()-1], 
+                  bestMatchingStub = pickBestMatchingStub(allxs[ch_id.station()-1], allys[ch_id.station()-1],
                                                           bestMatchingStub, std::make_pair(ch_id, stub), 6 + event_.L1Mu_bx[i]);
                 }
                 // consider the case ME1a
@@ -2974,14 +2976,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                     if (triggerSector != me1a_id.triggerSector()) continue;
                     auto stub(*digiItr);
                     int deltaBX = std::abs(stub.getBX() - (6 + event_.L1Mu_bx[i]));
-                    
+
                     // BXs have to match
-                    if (deltaBX > 1) continue; 
+                    if (deltaBX > 1) continue;
                     std::cout << me1a_id << std::endl;
                     std::cout<<"Candidate " << stub << std::endl;
-                    bestMatchingStub = pickBestMatchingStub(allxs[me1a_id.station()-1], allys[me1a_id.station()-1], 
+                    bestMatchingStub = pickBestMatchingStub(allxs[me1a_id.station()-1], allys[me1a_id.station()-1],
                                                             bestMatchingStub, std::make_pair(me1a_id, stub), 6 + event_.L1Mu_bx[i]);
-                    
+
                   }
                 }
                 //std::cout << "Current best: " << bestMatchingStub.second << std::endl;
@@ -2990,14 +2992,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
             }
             if (bestMatchingStub.second != CSCCorrelatedLCTDigi()) {
               std::cout << "Best matching stub " << bestMatchingStub.first << " " << bestMatchingStub.second <<std::endl;
-            
+
               // stub position
               auto gp = getCSCSpecificPoint2(bestMatchingStub.first.rawId(), bestMatchingStub.second);
 
               float z_pos_L3, bestFitPhi, bestFitDPhi;
               fitComparatorsLCT(*hCSCComparators.product(), bestMatchingStub.second, bestMatchingStub.first, 0, z_pos_L3, bestFitPhi, bestFitDPhi);
-              
-              fillCSCStubProperties(bestMatchingStub.first, bestMatchingStub.second, event_.L1Mu_CSCTF_index[i], 
+
+              fillCSCStubProperties(bestMatchingStub.first, bestMatchingStub.second, event_.L1Mu_CSCTF_index[i],
                                     gp, z_pos_L3, bestFitPhi, bestFitDPhi);
             }
             else{
@@ -3011,23 +3013,23 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     if (processRPCb_) {
       // Matching to RPCb cands
       double bestDrL1MuL1RPCb = 99;
-      for (unsigned int j=0; j<l1MuRPCbs.size(); ++j) { 
+      for (unsigned int j=0; j<l1MuRPCbs.size(); ++j) {
         if ( ( event_.L1Mu_quality[i] > 0 ) &&
-             ( reco::deltaPhi( event_.L1Mu_phi[i], event_.RPCb_phi[j] ) < 0.001 ) &&             
+             ( reco::deltaPhi( event_.L1Mu_phi[i], event_.RPCb_phi[j] ) < 0.001 ) &&
              ( event_.L1Mu_bx[i] == event_.RPCb_bx[j] ) ) {
-          double drL1MuL1RPCb = reco::deltaR(l1Mu.etaValue(), 
-                                             normalizedPhi(l1Mu.phiValue()), 
-                                             event_.RPCb_eta[j], 
+          double drL1MuL1RPCb = reco::deltaR(l1Mu.etaValue(),
+                                             normalizedPhi(l1Mu.phiValue()),
+                                             event_.RPCb_eta[j],
                                              event_.RPCb_phi[j]);
           if (drL1MuL1RPCb < bestDrL1MuL1RPCb and drL1MuL1RPCb < 0.3) {
             bestDrL1MuL1RPCb = drL1MuL1RPCb;
             event_.L1Mu_RPCb_index[i] = j;
           }
-        }                
+        }
       }
-      
-      if(verbose) {  
-        int tempIndex = event_.L1Mu_RPCb_index[i]; 
+
+      if(verbose) {
+        int tempIndex = event_.L1Mu_RPCb_index[i];
         if (tempIndex != -1) { // and bestDrL1MuL1CSCTrack < 0.2
           // Print matching RPCb track
           std::cout << "\tMatching RPCb track" << std::endl;
@@ -3044,27 +3046,27 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         }
       }
     }
-    
+
     if (processRPCf_) {
       // Matching to RPCf cands
       double bestDrL1MuL1RPCf = 99;
-      for (unsigned int j=0; j<l1MuRPCfs.size(); ++j) { 
+      for (unsigned int j=0; j<l1MuRPCfs.size(); ++j) {
         if ( ( event_.L1Mu_quality[i] > 0 ) &&
-             ( reco::deltaPhi( event_.L1Mu_phi[i], event_.RPCf_phi[j] ) < 0.001 ) &&             
+             ( reco::deltaPhi( event_.L1Mu_phi[i], event_.RPCf_phi[j] ) < 0.001 ) &&
              ( event_.L1Mu_bx[i] == event_.RPCf_bx[j] ) ) {
-          double drL1MuL1RPCf = reco::deltaR(l1Mu.etaValue(), 
-                                             normalizedPhi(l1Mu.phiValue()), 
-                                             event_.RPCf_eta[j], 
+          double drL1MuL1RPCf = reco::deltaR(l1Mu.etaValue(),
+                                             normalizedPhi(l1Mu.phiValue()),
+                                             event_.RPCf_eta[j],
                                              event_.RPCf_phi[j]);
           if (drL1MuL1RPCf < bestDrL1MuL1RPCf and drL1MuL1RPCf < 0.3) {
             bestDrL1MuL1RPCf = drL1MuL1RPCf;
             event_.L1Mu_RPCf_index[i] = j;
           }
-        }                
+        }
       }
-      
-      if(verbose) {  
-        int tempIndex = event_.L1Mu_RPCf_index[i]; 
+
+      if(verbose) {
+        int tempIndex = event_.L1Mu_RPCf_index[i];
         if (tempIndex != -1) { // and bestDrL1MuL1CSCTrack < 0.2
           // Print matching RPCf track
           std::cout << "\tMatching RPCf track" << std::endl;
@@ -3081,7 +3083,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         }
       }
     }
-    
+
     if (processTTI_){
       // calculate the number of L1Tk within 0.12
       for (unsigned int j=0; j<TTTracks.size(); ++j) {
@@ -3092,16 +3094,16 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         const double l1Tk_charge = l1Tk.getRInv()>0? 1: -1;
         const double l1Tk_eta_corr = l1Tk_eta;
         const double l1Tk_phi_corr = phiHeavyCorr(l1Tk_pt, l1Tk_eta, l1Tk_phi, l1Tk_charge);
-        
+
         if(verbose and false) {
-          cout << "l1Tk " << j << endl; 
+          cout << "l1Tk " << j << endl;
           cout << "l1Tk_pt " << l1Tk_pt << endl;
           cout << "l1Tk_eta " << l1Tk_eta << endl;
           cout << "l1Tk_phi " << l1Tk_phi << endl;
           cout << "l1Tk_phi_corr " << l1Tk_phi_corr << endl;
           cout << "l1Tk_charge " << l1Tk_charge << endl;
         }
-        
+
         double l1Tk_eta_prop = -99;
         double l1Tk_phi_prop = -99;
         GlobalPoint ex_point(extrapolateGP(l1Tk));
@@ -3118,7 +3120,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
             event_.L1Mu_L1Tk_pt_prop[i] = l1Tk_pt;
           }
         }
-        
+
         // TrajectoryStateOnSurface stateAtMB2 = extrapolate(l1Tk);
         // if (stateAtMB2.isValid()) {
         //   // std::cout << ">>>Final State is valid" << std::endl;
@@ -3135,7 +3137,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         //     event_.L1Mu_L1Tk_pt_prop[i] = l1Tk_pt;
         //   }
         // }
-        
+
         const double dR_l1Mu_l1Tk_corr = reco::deltaR(l1Tk_eta_corr, l1Tk_phi_corr, event_.L1Mu_eta[i], event_.L1Mu_phi[i]);
         if (dR_l1Mu_l1Tk_corr < event_.L1Mu_L1Tk_dR_corr[i]) {
           event_.L1Mu_L1Tk_dR_corr[i] = dR_l1Mu_l1Tk_corr;
@@ -3143,49 +3145,49 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         }
       } // end of loop on TTTracks
     }
-    
+
     if (doGenAnalysis_) {
-    
+
       // match the L1Mu to GEN
       if (genMuonGroups.size() == 2 and genMuonGroups[0].size() == 2 and genMuonGroups[1].size() == 2) {
         double newDR[2][2];
-        for (int k=0; k<2; ++k){ 
+        for (int k=0; k<2; ++k){
           for (int j=0; j<2; ++j){
-            newDR[k][j] = deltaR(event_.genGdMu_eta[k][j], event_.genGdMu_phi_corr[k][j], event_.L1Mu_eta[i], event_.L1Mu_phi[i]);        
+            newDR[k][j] = deltaR(event_.genGdMu_eta[k][j], event_.genGdMu_phi_corr[k][j], event_.L1Mu_eta[i], event_.L1Mu_phi[i]);
             if(verbose) cout << "newDR " << k <<  j << " " << newDR[k][j] << " pt " << event_.genGdMu_pt[k][j]
-                             << " eta_corr " << event_.genGdMu_eta[k][j] << " phi_corr " << event_.genGdMu_phi_corr[k][j] 
+                             << " eta_corr " << event_.genGdMu_eta[k][j] << " phi_corr " << event_.genGdMu_phi_corr[k][j]
                              << " Q " << event_.genGdMu_q[k][j] << endl;
           }
         }
-        
+
         const std::vector<double> v{newDR[0][0], newDR[0][1], newDR[1][0], newDR[1][1]};
         auto result(std::min_element(std::begin(v), std::end(v)));
         auto dis(std::distance(std::begin(v), result));
-        
+
         switch (dis){
-        case 0: 
-          if (newDR[0][0] < event_.genGdMu_L1Mu_dR_corr[0][0]) { 
+        case 0:
+          if (newDR[0][0] < event_.genGdMu_L1Mu_dR_corr[0][0]) {
             event_.genGdMu_L1Mu_index_corr[0][0] = i;
             event_.genGdMu_L1Mu_dR_corr[0][0] = newDR[0][0];
             if(verbose) cout << "Muon[0][0] was matched within " << event_.genGdMu_L1Mu_dR_corr[0][0] <<" to L1Mu "<<i<<std::endl;
           }
           break;
         case 1:
-          if (newDR[0][1] < event_.genGdMu_L1Mu_dR_corr[0][1]) { 
+          if (newDR[0][1] < event_.genGdMu_L1Mu_dR_corr[0][1]) {
             event_.genGdMu_L1Mu_index_corr[0][1] = i;
             event_.genGdMu_L1Mu_dR_corr[0][1] = newDR[0][1];
             if(verbose) cout << "Muon[0][1] was matched within " << event_.genGdMu_L1Mu_dR_corr[0][1] <<" to L1Mu "<<i<< std::endl;
           }
           break;
         case 2:
-          if (newDR[1][0] < event_.genGdMu_L1Mu_dR_corr[1][0]) { 
+          if (newDR[1][0] < event_.genGdMu_L1Mu_dR_corr[1][0]) {
             event_.genGdMu_L1Mu_index_corr[1][0] = i;
             event_.genGdMu_L1Mu_dR_corr[1][0] = newDR[1][0];
             if(verbose) cout << "Muon[1][0] was matched within " << event_.genGdMu_L1Mu_dR_corr[1][0] <<" to L1Mu "<<i<< std::endl;
           }
           break;
         case 3:
-          if (newDR[1][1] < event_.genGdMu_L1Mu_dR_corr[1][1]) { 
+          if (newDR[1][1] < event_.genGdMu_L1Mu_dR_corr[1][1]) {
             event_.genGdMu_L1Mu_index_corr[1][1] = i;
             event_.genGdMu_L1Mu_dR_corr[1][1] = newDR[1][1];
             if(verbose) cout << "Muon[1][1] was matched within " << event_.genGdMu_L1Mu_dR_corr[1][1] <<" to L1Mu "<<i<< std::endl;
@@ -3193,91 +3195,91 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           break;
         };
       }
-      
+
       // match the L1Mu to GEN    (propagated)
       if (genMuonGroups.size() == 2 and genMuonGroups[0].size() == 2 and genMuonGroups[1].size() == 2) {
         double newDR[2][2];
-        for (int k=0; k<2; ++k){ 
+        for (int k=0; k<2; ++k){
           for (int j=0; j<2; ++j){
-            newDR[k][j] = deltaR(event_.genGdMu_eta_prop[k][j], event_.genGdMu_phi_prop[k][j], event_.L1Mu_eta[i], event_.L1Mu_phi[i]);        
+            newDR[k][j] = deltaR(event_.genGdMu_eta_prop[k][j], event_.genGdMu_phi_prop[k][j], event_.L1Mu_eta[i], event_.L1Mu_phi[i]);
             if(verbose) cout << "newDR " << k <<  j << " " << newDR[k][j] << " pt " << event_.genGdMu_pt[k][j]
-                             << " eta_prop " << event_.genGdMu_eta_prop[k][j] << " phi_prop " << event_.genGdMu_phi_prop[k][j] 
+                             << " eta_prop " << event_.genGdMu_eta_prop[k][j] << " phi_prop " << event_.genGdMu_phi_prop[k][j]
                              << " Q " << event_.genGdMu_q[k][j] << endl;
           }
         }
-        
+
         const std::vector<double> v{newDR[0][0], newDR[0][1], newDR[1][0], newDR[1][1]};
         auto result(std::min_element(std::begin(v), std::end(v)));
         auto dis(std::distance(std::begin(v), result));
-        
+
         switch (dis){
-        case 0: 
-          if (newDR[0][0] < event_.genGdMu_L1Mu_dR_prop[0][0]) { 
+        case 0:
+          if (newDR[0][0] < event_.genGdMu_L1Mu_dR_prop[0][0]) {
             event_.genGdMu_L1Mu_index_prop[0][0] = i;
             event_.genGdMu_L1Mu_dR_prop[0][0] = newDR[0][0];
             if(verbose) cout << "Muon[0][0] was matched within " << event_.genGdMu_L1Mu_dR_prop[0][0] <<" to L1Mu "<<i<<std::endl;
           }
           break;
         case 1:
-          if (newDR[0][1] < event_.genGdMu_L1Mu_dR_prop[0][1]) { 
+          if (newDR[0][1] < event_.genGdMu_L1Mu_dR_prop[0][1]) {
             event_.genGdMu_L1Mu_index_prop[0][1] = i;
             event_.genGdMu_L1Mu_dR_prop[0][1] = newDR[0][1];
             if(verbose) cout << "Muon[0][1] was matched within " << event_.genGdMu_L1Mu_dR_prop[0][1] <<" to L1Mu "<<i<< std::endl;
           }
           break;
         case 2:
-          if (newDR[1][0] < event_.genGdMu_L1Mu_dR_prop[1][0]) { 
+          if (newDR[1][0] < event_.genGdMu_L1Mu_dR_prop[1][0]) {
             event_.genGdMu_L1Mu_index_prop[1][0] = i;
             event_.genGdMu_L1Mu_dR_prop[1][0] = newDR[1][0];
             if(verbose) cout << "Muon[1][0] was matched within " << event_.genGdMu_L1Mu_dR_prop[1][0] <<" to L1Mu "<<i<< std::endl;
           }
           break;
         case 3:
-          if (newDR[1][1] < event_.genGdMu_L1Mu_dR_prop[1][1]) { 
+          if (newDR[1][1] < event_.genGdMu_L1Mu_dR_prop[1][1]) {
             event_.genGdMu_L1Mu_index_prop[1][1] = i;
             event_.genGdMu_L1Mu_dR_prop[1][1] = newDR[1][1];
             if(verbose) cout << "Muon[1][1] was matched within " << event_.genGdMu_L1Mu_dR_prop[1][1] <<" to L1Mu "<<i<< std::endl;
           }
           break;
         };
-        
+
         if (processTTI_){
-          for (int k=0; k<2; ++k){ 
+          for (int k=0; k<2; ++k){
             for (int j=0; j<2; ++j){
               if (event_.genGdMu_L1Tk_index_prop[k][j] != -99) {
-                double deltaRL1MuTrueL1Tk(reco::deltaR(TTTracks[event_.genGdMu_L1Tk_index_prop[k][j]].getMomentum().eta(), 
-                                                       normalizedPhi(TTTracks[event_.genGdMu_L1Tk_index_prop[k][j]].getMomentum().phi()), 
+                double deltaRL1MuTrueL1Tk(reco::deltaR(TTTracks[event_.genGdMu_L1Tk_index_prop[k][j]].getMomentum().eta(),
+                                                       normalizedPhi(TTTracks[event_.genGdMu_L1Tk_index_prop[k][j]].getMomentum().phi()),
                                                        event_.L1Mu_eta[i], event_.L1Mu_phi[i]));
                 if (deltaRL1MuTrueL1Tk < event_.L1Mu_L1Tk_dR_prop_true[i]) {
                   event_.L1Mu_L1Tk_dR_prop_true[i] = deltaRL1MuTrueL1Tk;
                 }
               }
             }
-          } 
+          }
         }
       }
     }
   }
-  
-  event_tree_->Fill();  
-  
+
+  event_tree_->Fill();
+
   return true;
 }
 
 
           // get the one closest to the CSC Stub
           // auto gem_gp1 = getGlobalPointPad(gem_id,copad.first());
-          
+
           // auto gem_gp2 = getGlobalPointPad(gem_id,copad.second());
           // float dPhi1(reco::deltaPhi(gem_gp1.phi(), event_.CSCTF_phi1[ event_.L1Mu_CSCTF_index[i] ] ));
           // float dPhi2(reco::deltaPhi(gem_gp2.phi(), event_.CSCTF_phi1[ event_.L1Mu_CSCTF_index[i] ] ));
-            
+
           //   if (dPhi1 < bestGEMCSCDPhi or dPhi2 < bestGEMCSCDPhi) {
           //     bestGEMCSCDPhi = std::min(dPhi1, dPhi2);
           //     bestCoPad = copad;
           //   }
           // }
-          
+
           // if(verbose){
           //   std::cout << "\tPad " << bestCoPad  << std::endl;
           // }
@@ -3294,14 +3296,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       nSimMu++;
       indexFound = i;
     }
-   
+
     auto sim_muon = sim_trks[indexFound];
     auto sim_vertex = sim_vtxs[sim_muon.vertIndex()];
     event_.pt_sim = sim_muon.momentum().pt();
     event_.eta_sim = sim_muon.momentum().eta();
     event_.phi_sim = sim_muon.momentum().phi();
     event_.charge_sim = sim_muon.charge();
-    
+
     // first loop on tracker tracks to get the best matching TTTrack
     double dR_SIM_L1Tk_min = 9999;
     int i_SIM_L1Tk_min = -1;
@@ -3322,19 +3324,19 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     event_.eta_L1Tk = l1Tk.getMomentum().eta();
     event_.phi_L1Tk = l1Tk.getMomentum().phi();
     event_.charge_L1Tk = l1Tk.getRInv()>0? 1: -1;
-  
+
     // only keep the L1Mu which is associated to a SIM muon
     // propagate the SIM muon to the outer stations
     double sim_muon_eta_prop;
     double sim_muon_phi_prop;
-    
+
     GlobalPoint inner_point(sim_vertex.position().x(), sim_vertex.position().y(), sim_vertex.position().z());
     GlobalVector inner_vec (sim_muon.momentum().x(), sim_muon.momentum().y(), sim_muon.momentum().z());
     if (std::abs(sim_muon.momentum().eta())<1.1) {
       GlobalPoint loc_barrel(propagateToR(inner_point, inner_vec, sim_muon.charge(), 500.));
        sim_muon_eta_prop = loc_barrel.eta();
        sim_muon_phi_prop = loc_barrel.phi();
-     } 
+     }
      else if (1.1 < sim_muon.momentum().eta() and sim_muon.momentum().eta() < 2.5) {
        GlobalPoint loc_endcap_pos(propagateToZ(inner_point, inner_vec, sim_muon.charge(), 850.));
        sim_muon_eta_prop = loc_endcap_pos.eta();
@@ -3349,7 +3351,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
        sim_muon_eta_prop = 99.;
        sim_muon_phi_prop = 99.;
      }
-    
+
     // propagate the muon with steppinghelixpropagators
     event_.eta_sim_prop = sim_muon_eta_prop;
     event_.phi_sim_prop = sim_muon_phi_prop -  M_PI/144.; // do a phi correction after the propagation of PI/144 as suggested by Slava
@@ -3364,19 +3366,19 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                                        event_.eta_sim,
                                        event_.phi_sim,
                                        event_.charge_sim);
-    
+
     event_.dEta_sim_corr = std::abs(event_.eta_sim_corr - l1Mu_eta);
     event_.dPhi_sim_corr = reco::deltaPhi(event_.phi_sim_corr, l1Mu_phi);
     event_.dR_sim_corr = reco::deltaR(event_.eta_sim_corr, event_.phi_sim_corr, l1Mu_eta, l1Mu_phi);
-    
+
     // propagate the L1Tk object to the muon station with steppinghelixpropagator
     double eta_L1Tk_prop;
-    double phi_L1Tk_prop;    
+    double phi_L1Tk_prop;
     if (std::abs(event_.eta_L1Tk)<1.1) {
       GlobalPoint loc_barrel(propagateToR(l1Tk.getPOCA(), l1Tk.getMomentum(), event_.charge_L1Tk, 500.));
       eta_L1Tk_prop = loc_barrel.eta();
       phi_L1Tk_prop = loc_barrel.phi();
-    } 
+    }
     else if (1.1 < event_.eta_L1Tk and event_.eta_L1Tk < 2.5) {
       GlobalPoint loc_endcap_pos(propagateToZ(l1Tk.getPOCA(), l1Tk.getMomentum(), event_.charge_L1Tk, 850.));
       eta_L1Tk_prop = loc_endcap_pos.eta();
@@ -3393,7 +3395,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     }
 
     // propagate the muon with steppinghelixpropagator
-    event_.eta_L1Tk_prop = eta_L1Tk_prop; 
+    event_.eta_L1Tk_prop = eta_L1Tk_prop;
     event_.phi_L1Tk_prop = phi_L1Tk_prop - M_PI/144.;
 
     event_.dEta_L1Tk_prop = std::abs(event_.eta_L1Tk_prop - l1Mu_eta);
@@ -3411,13 +3413,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     event_.dPhi_L1Tk_corr = reco::deltaPhi(event_.phi_L1Tk_corr, l1Mu_phi);
     event_.dR_L1Tk_corr = reco::deltaR(event_.eta_L1Tk_corr, event_.phi_L1Tk_corr, l1Mu_eta, l1Mu_phi);
 
-    if(verbose) {  
-      cout << "l1Mu " << i << endl; 
+    if(verbose) {
+      cout << "l1Mu " << i << endl;
       cout << "l1Mu_pt " << l1Mu_pt << endl;
       cout << "l1Mu_eta " << l1Mu_eta << endl;
       cout << "l1Mu_phi " << l1Mu_phi << endl;
       cout << "l1Mu_quality " << l1Mu_quality << endl;
-      
+
       cout << "SIM " << indexFound << endl;
       cout << "SIM_pt " << event_.pt_sim << endl;
       cout << "SIM_eta " << event_.eta_sim << endl;
@@ -3427,7 +3429,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       cout << "SIM_eta_prop " << event_.eta_sim_prop << endl;
       cout << "SIM_phi_prop " << event_.phi_sim_prop << endl;
       cout << "SIM_charge " << event_.charge_sim << endl;
-    
+
       cout << "l1Tk " << i_SIM_L1Tk_min << endl;
       cout << "l1Tk_pt " << event_.pt_L1Tk << endl;
       cout << "l1Tk_eta " << event_.eta_L1Tk << endl;
@@ -3451,15 +3453,15 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
            << "event_.dPhi_L1Tk_corr " << event_.dPhi_L1Tk_corr << endl
            << "event_.dR_L1Tk_corr " << event_.dR_L1Tk_corr << endl;
     }
-    
+
 
     //   // calculate the dR between the two L1Mus
     //   // const double dRL1Mu(reco::deltaR(l1Mu_eta, l1Mu_phi, L1Mu_of_L1TkMu.etaValue(), L1Mu_of_L1TkMu.phiValue()));
 
     //   // const double l1TkMu_phi_corr = phiHeavyCorr(l1TkMu_pt, l1TkMu_eta, l1TkMu_phi, l1TkMu_charge);
-      
+
     //   //if(verbose) std::cout << "\tl1Tk_phi_corr " << l1Tk_phi_corr << std::endl;
-      
+
     //   // calculate dR
     //   const double dR_prop(reco::deltaR(l1Mu_eta, l1Mu_phi, l1Tk_eta_prop, l1Tk_phi_prop));
     //   const double dR_corr(reco::deltaR(l1Mu_eta, l1Mu_phi, l1Tk_eta, l1Tk_phi_corr));
@@ -3469,7 +3471,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     //     dR_SIM_L1Tk_min = dR_SIM_L1Tk;
     //     i_SIM_L1Tk_min = j;
     //   }
-    
+
     //   event_.pt_L1Tk = l1Tk_pt;
     //   event_.eta_L1Tk = l1Tk_eta_prop;
     //   event_.phi_L1Tk = l1Tk_phi_prop;
@@ -3477,7 +3479,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     //   event_.dEta_L1Tk_prop = std::abs(l1Tk_eta_prop - l1Mu_eta);
     //   event_.dPhi_L1Tk_prop = reco::deltaPhi(l1Tk_phi_prop, l1Mu_phi);
     //   event_.dR_L1Tk_prop = dR_prop;
-      
+
     //   event_.dEta_L1Tk_corr = std::abs(l1Tk_eta - l1Mu_eta);
     //   event_.dPhi_L1Tk_corr = reco::deltaPhi(l1Tk_phi_corr, l1Mu_phi);
     //   event_.dR_L1Tk_corr = dR_corr;
@@ -3491,23 +3493,23 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     // // std::cout << "Pt " << event_.pt_sim << endl
     // //           << "Eta " << event_.eta_sim<< endl
     // //           << "Phi " << event_.phi_sim<< endl
-    
+
     // double sim_muon_eta_prop;
     // double sim_muon_phi_prop;
 
     // GlobalPoint inner_point(sim_vertex.position().x(), sim_vertex.position().y(), sim_vertex.position().z());
     // GlobalVector inner_vec (sim_muon.momentum().x(), sim_muon.momentum().y(), sim_muon.momentum().z());
-     
-    // double sim_phi_corrected = phiHeavyCorr(sim_muon.momentum().pt(), 
-    //                                         sim_muon.momentum().eta(), 
-    //                                         sim_muon.momentum().phi(), 
+
+    // double sim_phi_corrected = phiHeavyCorr(sim_muon.momentum().pt(),
+    //                                         sim_muon.momentum().eta(),
+    //                                         sim_muon.momentum().phi(),
     //                                         sim_muon.charge());
-    
+
     // event_.dEta_sim_corr = std::abs(sim_muon.momentum().eta() - l1Mu_eta);
     // event_.dPhi_sim_corr = reco::deltaPhi(sim_phi_corrected, l1Mu_phi);
     // event_.dR_sim_corr = reco::deltaR(sim_muon.momentum().eta(), sim_phi_corrected, l1Mu_eta, l1Mu_phi);
     // std::cout << "event_.dEta_sim_corr " << event_.dEta_sim_corr << " event_.dPhi_sim_corr " << event_.dPhi_sim_corr << " event_.dR_sim_corr " << event_.dR_sim_corr << std::endl;
-    
+
     // event_.dEta_sim_prop = std::abs(sim_muon_eta_prop - l1Mu_eta);
     // event_.dPhi_sim_prop = reco::deltaPhi(sim_muon_phi_prop, l1Mu_phi);
     // event_.dR_sim_prop = reco::deltaR(sim_muon_eta_prop, sim_muon_phi_prop, l1Mu_eta, l1Mu_phi);
@@ -3526,9 +3528,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     //   const double l1Tk_eta = l1Tk.getMomentum().eta();
     //   const double l1Tk_phi = l1Tk.getMomentum().phi();
     //   double l1Tk_charge = l1Tk.getRInv()>0? 1: -1;
-    //   const double l1Tk_phi_corr = phiHeavyCorr(l1Tk_pt, 
-    //                                             l1Tk_eta, 
-    //                                             l1Tk_phi, 
+    //   const double l1Tk_phi_corr = phiHeavyCorr(l1Tk_pt,
+    //                                             l1Tk_eta,
+    //                                             l1Tk_phi,
     //                                             l1Tk_charge);
     //   if (std::abs(l1Tk_eta - sim_muon.momentum().eta()) < event_.dEta_sim_L1Tk)
     //     event_.dEta_sim_L1Tk = std::abs(l1Tk_eta - sim_muon.momentum().eta());
@@ -3537,20 +3539,20 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     //     event_.dPhi_sim_L1Tk = reco::deltaPhi(sim_muon.momentum().phi(), l1Tk_phi);
 
     //   if (reco::deltaR(l1Tk_eta, l1Tk_phi, sim_muon.momentum().eta(), sim_muon.momentum().phi()) < event_.dR_sim_L1Tk)
-    //     event_.dR_sim_L1Tk = reco::deltaR(l1Tk_eta, l1Tk_phi, sim_muon.momentum().eta(), sim_muon.momentum().phi());      
+    //     event_.dR_sim_L1Tk = reco::deltaR(l1Tk_eta, l1Tk_phi, sim_muon.momentum().eta(), sim_muon.momentum().phi());
 
     //   //
-      
+
     //   // propagate the L1Tk to the second station
-      
+
     //   double l1Tk_eta_prop;
     //   double l1Tk_phi_prop;
-      
+
     //   if (std::abs(l1Tk_eta)<1.1){
     //     GlobalPoint loc_barrel(propagateToR(l1Tk.getPOCA(), l1Tk.getMomentum(), l1Tk_charge, 500.));
     //     l1Tk_eta_prop = loc_barrel.eta();
     //     l1Tk_phi_prop = loc_barrel.phi();
-    //   } 
+    //   }
     //   else if (1.1 < l1Tk_eta and l1Tk_eta < 2.5) {
     //     GlobalPoint loc_endcap_pos(propagateToZ(l1Tk.getPOCA(), l1Tk.getMomentum(), l1Tk_charge, 850.));
     //     l1Tk_eta_prop = loc_endcap_pos.eta();
@@ -3573,14 +3575,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     //   // std::cout << "dEta L1Tk prop " << std::abs(l1Tk_eta - l1Tk_eta_prop) << std::endl;
     //   // std::cout << "dPhi L1Tk prop " << reco::deltaPhi(l1Tk_phi_prop, l1Tk_phi) << std::endl;
     //   // std::cout << "dPhi L1Tk corr " << reco::deltaPhi(l1Tk_phi_corr, l1Tk_phi) << std::endl;
-  
+
     //   // calculate the dR between the two L1Mus
     //   // const double dRL1Mu(reco::deltaR(l1Mu_eta, l1Mu_phi, L1Mu_of_L1TkMu.etaValue(), L1Mu_of_L1TkMu.phiValue()));
 
     //   // const double l1TkMu_phi_corr = phiHeavyCorr(l1TkMu_pt, l1TkMu_eta, l1TkMu_phi, l1TkMu_charge);
-      
+
     //   //if(verbose) std::cout << "\tl1Tk_phi_corr " << l1Tk_phi_corr << std::endl;
-      
+
     //   // calculate dR
     //   const double dR_prop(reco::deltaR(l1Mu_eta, l1Mu_phi, l1Tk_eta_prop, l1Tk_phi_prop));
     //   const double dR_corr(reco::deltaR(l1Mu_eta, l1Mu_phi, l1Tk_eta, l1Tk_phi_corr));
@@ -3590,7 +3592,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     //     dR_SIM_L1Tk_min = dR_SIM_L1Tk;
     //     i_SIM_L1Tk_min = j;
     //   }
-    
+
     //   event_.pt_L1Tk = l1Tk_pt;
     //   event_.eta_L1Tk = l1Tk_eta_prop;
     //   event_.phi_L1Tk = l1Tk_phi_prop;
@@ -3598,13 +3600,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     //   event_.dEta_L1Tk_prop = std::abs(l1Tk_eta_prop - l1Mu_eta);
     //   event_.dPhi_L1Tk_prop = reco::deltaPhi(l1Tk_phi_prop, l1Mu_phi);
     //   event_.dR_L1Tk_prop = dR_prop;
-      
+
     //   event_.dEta_L1Tk_corr = std::abs(l1Tk_eta - l1Mu_eta);
     //   event_.dPhi_L1Tk_corr = reco::deltaPhi(l1Tk_phi_corr, l1Mu_phi);
     //   event_.dR_L1Tk_corr = dR_corr;
 
     //   // if(verbose) std::cout << "\tdRL1Mu " << dRL1Mu << std::endl;
-      
+
     //   // if (dR < dR_L1Mu_L1Tk){
     //   //   nL1MuL1TkdR012++;
     //   //   if(verbose) std::cout << "\t-- L1Mu matched to L1Tk" << std::endl;
@@ -3614,10 +3616,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     //   //   nL1MuQuality4++;
     //   //   std::cout << "\t-- L1Mu Q>=4" << std::endl;
     //   // }
-      
-      
+
+
     //   //cout << "dR_SIM_L1Tk " << dR_SIM_L1Tk << endl;
-      
+
     //   // if (dR_prop < dR_L1Mu_L1Tk and l1Mu_quality >= min_L1Mu_Quality) {
     //   //   event_.isMatched = 1;
     //   //   ++nL1MuMatched;
@@ -3627,14 +3629,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     //   //   if(verbose) std::cout << "\tl1Tk_eta " << l1Tk_eta << std::endl;
     //   //   if(verbose) std::cout << "\tl1Tk_phi " << l1Tk_phi << std::endl;
     //   //   if(verbose) std::cout << "\tl1Tk_charge " << l1Tk_charge << std::endl;
-        
+
     //   //   if(verbose) std::cout << "\tl1Tk_eta_prop " << l1Tk_eta_prop << std::endl;
     //   //   if(verbose) std::cout << "\tl1Tk_phi_prop " << l1Tk_phi_prop << std::endl;
     //   //   if(verbose) std::cout << "\tdR_prop " << dR_prop << std::endl;
     //   //   isMatched = true;
     //   //   break;
-    //   // } 
-    //   // if (dR_prop < dR_L1Mu_noL1Tk and l1Tk_pt>4) {        
+    //   // }
+    //   // if (dR_prop < dR_L1Mu_noL1Tk and l1Tk_pt>4) {
     //   //   event_.isUnMatched = 1;
     //   //   ++nL1MuUnMatched;
     //   //   // std::cout << "\t-- L1Mu not matched to L1Tk" << std::endl;
@@ -3643,7 +3645,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     //   //   if(verbose) std::cout << "\tl1Tk_eta " << l1Tk_eta << std::endl;
     //   //   if(verbose) std::cout << "\tl1Tk_phi " << l1Tk_phi << std::endl;
     //   //   if(verbose) std::cout << "\tl1Tk_charge " << l1Tk_charge << std::endl;
-        
+
     //   //   if(verbose) std::cout << "\tl1Tk_eta_prop " << l1Tk_eta_prop << std::endl;
     //   //   if(verbose) std::cout << "\tl1Tk_phi_prop " << l1Tk_phi_prop << std::endl;
     //   //   if(verbose) std::cout << "\tdR_prop " << dR_prop << std::endl;
@@ -3652,7 +3654,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     //   // }
     //   // std::cout << std::endl;
     // }
-    
+
     // std::cout << "\tl1Tk " << i_SIM_L1Tk_min << std::endl;
     // std::cout << "\tl1Tk_pt " << TTTracks[i_SIM_L1Tk_min].getMomentum().perp() << std::endl;
     // std::cout << "\tl1Tk_eta " << TTTracks[i_SIM_L1Tk_min].getMomentum().eta() << std::endl;
@@ -3660,12 +3662,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     // double charge = TTTracks[i_SIM_L1Tk_min].getRInv()>0? 1: -1;
     // std::cout << "\tl1Tk_charge " << charge << std::endl;
     // std::cout << "dR_SIM_L1Tk_min " << dR_SIM_L1Tk_min << std::endl;
-    
+
     // if (isUnMatched or isMatched) {
     //   nPromptMuons++;
     // }
 
-    event_tree_->Fill();  
+    event_tree_->Fill();
   }
   std::cout << endl << "--------------------------------" << endl;
   std::cout << "event report" << endl;
@@ -3676,28 +3678,28 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   std::cout << "nL1Mu " << nL1Mu << endl;
   std::cout << "nL1Tk " << nL1Tk << endl;
   std::cout << "Filter " << nL1MuMatched + nL1MuUnMatched << endl;
-  
+
   return(nL1MuMatched + nL1MuUnMatched)==0;
 
   // match l1 mu to simulated mu check that the delta R is less than 0.2 after propagation
-  // impose selection on the L1Mu 
+  // impose selection on the L1Mu
   // use the central bunch crossing instead of +- 1
-  
+
   // use pt>20, plot the dEta, dPhi for the (SIM,L1) mapping
-  */  
+  */
 
 // ------------ method called once each job just before starting event loop  ------------
-void 
+void
 DisplacedL1MuFilter::beginJob()
 {
 }
- 
+
 // ------------ method called once each job just after ending the event loop  ------------
- void 
+ void
    DisplacedL1MuFilter::endJob()
 {
 }
- 
+
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void
 DisplacedL1MuFilter::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
@@ -3709,9 +3711,9 @@ DisplacedL1MuFilter::fillDescriptions(edm::ConfigurationDescriptions& descriptio
 }
 
 void
-DisplacedL1MuFilter::getStubPositions(int index, 
-                                      std::vector<float>& x, 
-                                      std::vector<float>& y, 
+DisplacedL1MuFilter::getStubPositions(int index,
+                                      std::vector<float>& x,
+                                      std::vector<float>& y,
                                       std::vector<float>& z) const
 {
   x.clear();
@@ -3737,17 +3739,17 @@ DisplacedL1MuFilter::getStubPositions(int index,
     y.push_back(event_.CSCTF_y4[index]);
     z.push_back(event_.CSCTF_z4[index]);
   }
-} 
+}
 
-void 
+void
 DisplacedL1MuFilter::fitComparatorsLCT(const CSCComparatorDigiCollection& hCSCComparators,
-                                       const CSCCorrelatedLCTDigi& stub, CSCDetId ch_id, 
+                                       const CSCCorrelatedLCTDigi& stub, CSCDetId ch_id,
                                        int iMuon, float& fit_z, float& fit_phi, float& fit_dphi) const
 {
   bool verbose = false;
-  
+
   auto cscChamber = cscGeometry_->chamber(ch_id);
-  
+
   // fetch the CSC comparator digis in this chamber
   CSCComparatorDigiContainerIds compDigisIds;
   for (int iLayer=1; iLayer<=6; ++iLayer){
@@ -3762,7 +3764,7 @@ DisplacedL1MuFilter::fitComparatorsLCT(const CSCComparatorDigiCollection& hCSCCo
       // these comparator digis never fit the pattern anyway!
       if (std::abs(stubHalfStrip-stub.getStrip())>5) continue;
       // check if this comparator digi fits the pattern
-      //if(verbose) std::cout << "Comparator digi L1Mu " << layerId << " " << compDigi << " HS " << stubHalfStrip << " stubKeyHS " << stub.getStrip() << std::endl; 
+      //if(verbose) std::cout << "Comparator digi L1Mu " << layerId << " " << compDigi << " HS " << stubHalfStrip << " stubKeyHS " << stub.getStrip() << std::endl;
       if (comparatorInLCTPattern(stub.getStrip(), stub.getPattern(), iLayer, stubHalfStrip)) {
         //if(verbose) std::cout<<"\tACCEPT"<<std::endl;
         compDigis.push_back(compDigi);
@@ -3774,7 +3776,7 @@ DisplacedL1MuFilter::fitComparatorsLCT(const CSCComparatorDigiCollection& hCSCCo
     // if(verbose) if (compDigis.size() > 2) std::cout << ">>> INFO: " << compDigis.size() << " matched comp digis in this layer!" << std::endl;
     compDigisIds.push_back(std::make_pair(layerId, compDigis));
   }
-  
+
   // get the z and phi positions
   std::vector<float> phis;
   std::vector<float> zs;
@@ -3788,7 +3790,7 @@ DisplacedL1MuFilter::fitComparatorsLCT(const CSCComparatorDigiCollection& hCSCCo
       LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, 20);
       GlobalPoint csc_gp = cscGeometry_->idToDet(detId)->surface().toGlobal(csc_intersect);
       float gpphi = csc_gp.phi();
-      
+
       if (phis.size()>0 and gpphi>0 and phis[0]<0 and  (gpphi-phis[0])>3.1416)
         phis.push_back(gpphi-2*3.1415926);
       else if (phis.size()>0 and gpphi<0 and phis[0]>0 and (gpphi-phis[0])<-3.1416)
@@ -3803,16 +3805,16 @@ DisplacedL1MuFilter::fitComparatorsLCT(const CSCComparatorDigiCollection& hCSCCo
       ephis.push_back(gemvalidation::cscHalfStripWidth(detId)/sqrt(12));
     }
   }
-  
+
   // do a fit to the comparator digis
   float alpha = 0., beta = 0.;
   fitStraightLineErrors(zs, phis, ezs, ephis,
-                        alpha, beta, 
+                        alpha, beta,
                         event_.lumi, event_.run, event_.event, iMuon, ch_id.station(), false);
-  
+
   fit_z = cscChamber->layer(CSCConstants::KEY_CLCT_LAYER)->centerOfStrip(20).z();
   fit_phi = normalizedPhi(alpha + beta * fit_z);
-  
+
   if(verbose) {
     std::cout << "Number of comparator digis used in the fit " << ezs.size() << std::endl;
     std::cout << "best CSC stub fit phi position (L1Only) " << fit_z << " " << fit_phi << std::endl;
@@ -3826,9 +3828,9 @@ DisplacedL1MuFilter::fitComparatorsLCT(const CSCComparatorDigiCollection& hCSCCo
 }
 
 
-float 
+float
 DisplacedL1MuFilter::getGlobalPhi(unsigned int rawid, int stripN)
-{  
+{
   const RPCDetId id(rawid);
   std::unique_ptr<const RPCRoll>  roll(rpcGeometry_->roll(id));
   const uint16_t strip = stripN;
@@ -3838,13 +3840,13 @@ DisplacedL1MuFilter::getGlobalPhi(unsigned int rawid, int stripN)
   return gp.phi();
 }
 
-double 
+double
 DisplacedL1MuFilter::calcCSCSpecificPhi(unsigned int rawId, const CSCCorrelatedLCTDigi& lct) const
 {
   return getCSCSpecificPoint2(rawId, lct).phi();
 }
 
-GlobalPoint 
+GlobalPoint
 DisplacedL1MuFilter::getGlobalPointPad(unsigned int rawId, const GEMCSCPadDigi& tp) const
 {
   GEMDetId gem_id(rawId);
@@ -3860,12 +3862,12 @@ DisplacedL1MuFilter::getGlobalPointPad(unsigned int rawId, const GEMCSCPadDigi& 
 
 
 GlobalPoint
-DisplacedL1MuFilter::getCSCSpecificPoint2(unsigned int rawId, const CSCCorrelatedLCTDigi& lct) const 
+DisplacedL1MuFilter::getCSCSpecificPoint2(unsigned int rawId, const CSCCorrelatedLCTDigi& lct) const
 {
   // taken from https://github.com/cms-sw/cmssw/blob/dc9f78b6af4ad56c9342cf14041b6485a60b0691/L1Trigger/CSCTriggerPrimitives/src/CSCMotherboardME11GEM.cc
   CSCDetId cscId = CSCDetId(rawId);
   CSCDetId key_id(cscId.endcap(), cscId.station(), cscId.ring(), cscId.chamber(), CSCConstants::KEY_CLCT_LAYER);
-  
+
   auto cscChamber = cscGeometry_->chamber(cscId);
   // "strip" here is actually a half-strip in geometry's terms
   // note that LCT::getStrip() starts from 0
@@ -3880,10 +3882,10 @@ DisplacedL1MuFilter::getCSCSpecificPoint2(unsigned int rawId, const CSCCorrelate
   return csc_gp;
 }
 
-CSCCorrelatedLCTDigiId 
+CSCCorrelatedLCTDigiId
 DisplacedL1MuFilter::pickBestMatchingStub(float xref, float yref,
                                           const CSCCorrelatedLCTDigiId& oldStub,
-                                          const CSCCorrelatedLCTDigiId& newStub, 
+                                          const CSCCorrelatedLCTDigiId& newStub,
                                           int refBx) const
 {
   bool debug=false;
@@ -3903,10 +3905,10 @@ DisplacedL1MuFilter::pickBestMatchingStub(float xref, float yref,
     if (debug) cout<< "New stub invalid"<<endl;
     return oldStub;
   }
-  
+
   int deltaBXOld = std::abs(oldStub.second.getBX() - refBx);
   int deltaBXNew = std::abs(newStub.second.getBX() - refBx);
-  
+
   if (deltaBXOld==0 and deltaBXNew!=0) {
     if (debug) cout<<"Old stub in time, new stub out of time"<<endl;
     return oldStub;
@@ -3915,7 +3917,7 @@ DisplacedL1MuFilter::pickBestMatchingStub(float xref, float yref,
     if (debug) cout<<"New stub in time, old stub out of time"<<endl;
     return newStub;
   }
-  if ( (deltaBXOld!=0 and deltaBXNew!=0) or 
+  if ( (deltaBXOld!=0 and deltaBXNew!=0) or
        (deltaBXOld==0 and deltaBXNew==0) ){
     if (debug) cout<<"Both stubs out of time"<<endl;
     // pick the one with the better matching wiregroup and halfstrip
@@ -3925,9 +3927,9 @@ DisplacedL1MuFilter::pickBestMatchingStub(float xref, float yref,
     float deltaXYNew = TMath::Sqrt( (xref-gpNew.x())*(xref-gpNew.x()) + (yref-gpNew.y())*(yref-gpNew.y()) );
     if (debug) {
       cout<<"xref "<< xref << " yref " << yref << endl;
-      cout <<"gpOld " << gpOld << " gpNew " << gpNew << endl; 
+      cout <<"gpOld " << gpOld << " gpNew " << gpNew << endl;
       cout << "deltaXYOld " << deltaXYOld << " deltaXYNew " << deltaXYNew <<endl;
-    }  
+    }
     if (deltaXYOld < deltaXYNew) {
       if (debug) cout<<"Old  stub better matching XY"<<endl;
       return oldStub;
@@ -3942,7 +3944,7 @@ DisplacedL1MuFilter::pickBestMatchingStub(float xref, float yref,
   return CSCCorrelatedLCTDigiId();
 }
 
-bool 
+bool
 DisplacedL1MuFilter::stubInCSCTFTracks(const CSCCorrelatedLCTDigi& candidateStub, const L1CSCTrackCollection& l1Tracks) const
 {
   bool isMatched = false;
@@ -3953,7 +3955,7 @@ DisplacedL1MuFilter::stubInCSCTFTracks(const CSCCorrelatedLCTDigi& candidateStub
       for (auto digiIt = range.first; digiIt != range.second; digiIt++) {
         //if (!(*digiIt).isValid()) continue;
         auto stub = *digiIt;
-        if (candidateStub == stub) { 
+        if (candidateStub == stub) {
           isMatched = true;
           break;
         }
@@ -3964,15 +3966,15 @@ DisplacedL1MuFilter::stubInCSCTFTracks(const CSCCorrelatedLCTDigi& candidateStub
 }
 
 
-bool 
-DisplacedL1MuFilter::stubInDTTFTracks(const L1MuDTTrackSegPhi& candidateStub, 
+bool
+DisplacedL1MuFilter::stubInDTTFTracks(const L1MuDTTrackSegPhi& candidateStub,
                                       const L1MuDTTrackCollection& l1Tracks) const
 {
   bool isMatched = false;
   for (auto tftrack: l1Tracks){
     auto stubCollection = tftrack.second;
     for (auto stub: stubCollection) {
-      if (candidateStub == stub) { 
+      if (candidateStub == stub) {
         isMatched = true;
         break;
       }
@@ -3985,7 +3987,7 @@ DisplacedL1MuFilter::stubInDTTFTracks(const L1MuDTTrackSegPhi& candidateStub,
 GEMCSCPadDigiId
 DisplacedL1MuFilter::pickBestMatchingCoPad(float xref, float yref,
                                            const GEMCSCPadDigiId& oldCoPad,
-                                           const GEMCSCPadDigiId& newCoPad, 
+                                           const GEMCSCPadDigiId& newCoPad,
                                            int bxref) const
 {
   bool debug = true;
@@ -3998,7 +4000,7 @@ DisplacedL1MuFilter::pickBestMatchingCoPad(float xref, float yref,
     if (debug) cout<< "New copad invalid"<<endl;
     return oldCoPad;
   }
-  
+
   // check the timing
   bool oldCoPadInTime = oldCoPad.second.bx() - bxref==0;// and oldCoPad.second.second().bx() - bxref==0;
   bool newCoPadInTime = newCoPad.second.bx() - bxref==0;// and newCoPad.second.second().bx() - bxref==0;
@@ -4020,9 +4022,9 @@ DisplacedL1MuFilter::pickBestMatchingCoPad(float xref, float yref,
     float deltaXYNew = TMath::Sqrt( (xref-gpNew.x())*(xref-gpNew.x()) + (yref-gpNew.y())*(yref-gpNew.y()) );
     if (debug) {
       cout<<"xref "<< xref << " yref " << yref << endl;
-      cout <<"gpOld " << gpOld << " gpNew " << gpNew << endl; 
+      cout <<"gpOld " << gpOld << " gpNew " << gpNew << endl;
       cout << "deltaXYOld " << deltaXYOld << " deltaXYNew " << deltaXYNew <<endl;
-    }  
+    }
     if (deltaXYOld < deltaXYNew) {
       if (debug) cout<<"Old  copad better matching XY"<<endl;
       return oldCoPad;
@@ -4040,7 +4042,7 @@ DisplacedL1MuFilter::pickBestMatchingCoPad(float xref, float yref,
 GEMCSCPadDigiId
 DisplacedL1MuFilter::pickBestMatchingPad(float xref, float yref,
                                          const GEMCSCPadDigiId& oldPad,
-                                         const GEMCSCPadDigiId& newPad, 
+                                         const GEMCSCPadDigiId& newPad,
                                          int bxref) const
 {
   bool debug = false;
@@ -4053,7 +4055,7 @@ DisplacedL1MuFilter::pickBestMatchingPad(float xref, float yref,
     if (debug) cout<< "New pad invalid"<<endl;
     return oldPad;
   }
-  
+
   // check the timing
   bool oldPadInTime = oldPad.second.bx() - bxref==0 and oldPad.second.bx() - bxref==0;
   bool newPadInTime = newPad.second.bx() - bxref==0 and newPad.second.bx() - bxref==0;
@@ -4075,9 +4077,9 @@ DisplacedL1MuFilter::pickBestMatchingPad(float xref, float yref,
     float deltaXYNew = TMath::Sqrt( (xref-gpNew.x())*(xref-gpNew.x()) + (yref-gpNew.y())*(yref-gpNew.y()) );
     if (debug) {
       cout<<"xref "<< xref << " yref " << yref << endl;
-      cout <<"gpOld " << gpOld << " gpNew " << gpNew << endl; 
+      cout <<"gpOld " << gpOld << " gpNew " << gpNew << endl;
       cout << "deltaXYOld " << deltaXYOld << " deltaXYNew " << deltaXYNew <<endl;
-    }  
+    }
     if (deltaXYOld < deltaXYNew) {
       if (debug) cout<<"Old  copad better matching XY"<<endl;
       return oldPad;
@@ -4092,37 +4094,37 @@ DisplacedL1MuFilter::pickBestMatchingPad(float xref, float yref,
 }
 
 
-std::vector<GlobalPoint> 
+std::vector<GlobalPoint>
 DisplacedL1MuFilter::positionPad2InDetId(const GEMDigiCollection& hGEMDigis, unsigned int ch_id, int refBX) const
 {
-  // get the digis in detid 
+  // get the digis in detid
   std::vector<GlobalPoint> result;
   bool verbose = false;
-  
+
   CSCDetId csc_id(ch_id);
   if (verbose) std::cout << "In function positionPad2InDetId csc_id " << csc_id << std::endl;
-  
+
   for(auto cItr = hGEMDigis.begin(); cItr != hGEMDigis.end(); ++cItr) {
     GEMDetId gem_id = (*cItr).first;
-    
+
     // chambers need to be compatible
     // no cut on the eta partition!
     if (gem_id.station() == 2) continue;
-    if (gem_id.region() == csc_id.zendcap() and 
-        (gem_id.station() == csc_id.station() or (gem_id.station( )== 3 and csc_id.station() == 2)) and 
+    if (gem_id.region() == csc_id.zendcap() and
+        (gem_id.station() == csc_id.station() or (gem_id.station( )== 3 and csc_id.station() == 2)) and
         csc_id.chamber() == gem_id.chamber() and
         (csc_id.ring() == 4 or csc_id.ring() == 1)) {
-            
+
       if(verbose) std::cout << "Investigate GEM chamber " << gem_id << std::endl;
-      
+
       // get the digis
       auto digi_range = (*cItr).second;
       for (auto digiItr = digi_range.first; digiItr != digi_range.second; ++digiItr){
         auto digi(*digiItr);
-    
+
         int deltaBX = std::abs(digi.bx() - refBX);
         if (deltaBX <= 1) {
-          
+
           if(verbose) std::cout << "\tCandidate digi " << digi << std::endl;
           float middleStripOfPad = 0.;
           if (digi.strip()%2==0){
@@ -4143,37 +4145,37 @@ DisplacedL1MuFilter::positionPad2InDetId(const GEMDigiCollection& hGEMDigis, uns
 }
 
 
-std::vector<GlobalPoint> 
+std::vector<GlobalPoint>
 DisplacedL1MuFilter::positionPad4InDetId(const GEMDigiCollection& hGEMDigis, unsigned int ch_id, int refBX) const
 {
-  // get the digis in detid 
+  // get the digis in detid
   std::vector<GlobalPoint> result;
   bool verbose = false;
-  
+
   CSCDetId csc_id(ch_id);
   if (verbose) std::cout << "In function positionPad4InDetId csc_id " << csc_id << std::endl;
-  
+
   for(auto cItr = hGEMDigis.begin(); cItr != hGEMDigis.end(); ++cItr) {
     GEMDetId gem_id = (*cItr).first;
-    
+
     // chambers need to be compatible
     // no cut on the eta partition!
     if (gem_id.station() == 2) continue;
-    if (gem_id.region() == csc_id.zendcap() and 
-        (gem_id.station() == csc_id.station() or (gem_id.station()==3 and csc_id.station()==2)) and 
+    if (gem_id.region() == csc_id.zendcap() and
+        (gem_id.station() == csc_id.station() or (gem_id.station()==3 and csc_id.station()==2)) and
         csc_id.chamber() == gem_id.chamber() and
         (csc_id.ring() == 4 or csc_id.ring() == 1)) {
-            
+
       if(verbose) std::cout << "Investigate GEM chamber " << gem_id << std::endl;
-      
+
       // get the digis
       auto digi_range = (*cItr).second;
       for (auto digiItr = digi_range.first; digiItr != digi_range.second; ++digiItr){
         auto digi(*digiItr);
-    
+
         int deltaBX = std::abs(digi.bx() - refBX);
         if (deltaBX <= 1) {
-          
+
           if(verbose) std::cout << "\tCandidate digi " << digi  << std::endl;
           float middleStripOfPad = 0.;
           if (digi.strip()%4==0){
@@ -4200,7 +4202,7 @@ DisplacedL1MuFilter::positionPad4InDetId(const GEMDigiCollection& hGEMDigis, uns
 }
 
 
-void 
+void
 DisplacedL1MuFilter::fillCSCStubProperties(const CSCDetId& ch_id,
                                            const CSCCorrelatedLCTDigi& stub,
                                            int index,
@@ -4213,18 +4215,18 @@ DisplacedL1MuFilter::fillCSCStubProperties(const CSCDetId& ch_id,
   double csc_R = TMath::Sqrt(gp.y()*gp.y() + gp.x()*gp.x());
   float radius = csc_R;
 
-  // std::cout << "Printing stub properties" << std::endl 
-  //           << "Id " << ch_id << " stub " << stub 
-  //           << "GP " << gp << " eta " << gp.eta() << " phi " << gp.phi() << std::endl << std::endl;  
+  // std::cout << "Printing stub properties" << std::endl
+  //           << "Id " << ch_id << " stub " << stub
+  //           << "GP " << gp << " eta " << gp.eta() << " phi " << gp.phi() << std::endl << std::endl;
 
   switch(ch_id.station()) {
   case 1:
     event_.CSCTF_id1[index] = ch_id.rawId();
     event_.CSCTF_st1[index] = ch_id.station();
-    event_.CSCTF_ri1[index] = ch_id.ring(); 
+    event_.CSCTF_ri1[index] = ch_id.ring();
     event_.CSCTF_ch1[index] = ch_id.chamber();
     event_.CSCTF_en1[index] = ch_id.zendcap();
-    event_.CSCTF_trk1[index] = stub.getTrknmb(); 
+    event_.CSCTF_trk1[index] = stub.getTrknmb();
     event_.CSCTF_quality1[index] = stub.getQuality();
     event_.CSCTF_wg1[index] = stub.getKeyWG();
     event_.CSCTF_hs1[index] = stub.getStrip();
@@ -4251,10 +4253,10 @@ DisplacedL1MuFilter::fillCSCStubProperties(const CSCDetId& ch_id,
   case 2:
     event_.CSCTF_id2[index] = ch_id.rawId();
     event_.CSCTF_st2[index] = ch_id.station();
-    event_.CSCTF_ri2[index] = ch_id.ring(); 
+    event_.CSCTF_ri2[index] = ch_id.ring();
     event_.CSCTF_ch2[index] = ch_id.chamber();
     event_.CSCTF_en2[index] = ch_id.zendcap();
-    event_.CSCTF_trk2[index] = stub.getTrknmb(); 
+    event_.CSCTF_trk2[index] = stub.getTrknmb();
     event_.CSCTF_quality2[index] = stub.getQuality();
     event_.CSCTF_wg2[index] = stub.getKeyWG();
     event_.CSCTF_hs2[index] = stub.getStrip();
@@ -4281,10 +4283,10 @@ DisplacedL1MuFilter::fillCSCStubProperties(const CSCDetId& ch_id,
   case 3:
     event_.CSCTF_id3[index] = ch_id.rawId();
     event_.CSCTF_st3[index] = ch_id.station();
-    event_.CSCTF_ri3[index] = ch_id.ring(); 
+    event_.CSCTF_ri3[index] = ch_id.ring();
     event_.CSCTF_ch3[index] = ch_id.chamber();
     event_.CSCTF_en3[index] = ch_id.zendcap();
-    event_.CSCTF_trk3[index] = stub.getTrknmb(); 
+    event_.CSCTF_trk3[index] = stub.getTrknmb();
     event_.CSCTF_quality3[index] = stub.getQuality();
     event_.CSCTF_wg3[index] = stub.getKeyWG();
     event_.CSCTF_hs3[index] = stub.getStrip();
@@ -4310,10 +4312,10 @@ DisplacedL1MuFilter::fillCSCStubProperties(const CSCDetId& ch_id,
   case 4:
     event_.CSCTF_id4[index] = ch_id.rawId();
     event_.CSCTF_st4[index] = ch_id.station();
-    event_.CSCTF_ri4[index] = ch_id.ring(); 
+    event_.CSCTF_ri4[index] = ch_id.ring();
     event_.CSCTF_ch4[index] = ch_id.chamber();
     event_.CSCTF_en4[index] = ch_id.zendcap();
-    event_.CSCTF_trk4[index] = stub.getTrknmb(); 
+    event_.CSCTF_trk4[index] = stub.getTrknmb();
     event_.CSCTF_quality4[index] = stub.getQuality();
     event_.CSCTF_wg4[index] = stub.getKeyWG();
     event_.CSCTF_hs4[index] = stub.getStrip();
@@ -4340,16 +4342,16 @@ DisplacedL1MuFilter::fillCSCStubProperties(const CSCDetId& ch_id,
 }
 
 
-void 
+void
 DisplacedL1MuFilter::printCSCStubProperties(int index) const
 {
-  
+
   cout << "id1 "<< event_.CSCTF_id1[index] << endl;
   cout << "st1 "<< event_.CSCTF_st1[index] << endl;
-  cout << "ri1 "<< event_.CSCTF_ri1[index] << endl; 
+  cout << "ri1 "<< event_.CSCTF_ri1[index] << endl;
   cout << "ch1 "<< event_.CSCTF_ch1[index] << endl;
   cout << "en1 "<< event_.CSCTF_en1[index] << endl;
-  cout << "trk1 "<< event_.CSCTF_trk1[index]<< endl; 
+  cout << "trk1 "<< event_.CSCTF_trk1[index]<< endl;
   cout << "quality1 "<< event_.CSCTF_quality1[index] << endl;
   cout << "wg1 "<< event_.CSCTF_wg1[index] << endl;
   cout << "hs1 "<< event_.CSCTF_hs1[index] << endl;
@@ -4374,10 +4376,10 @@ DisplacedL1MuFilter::printCSCStubProperties(int index) const
 
   cout << "id2 "<< event_.CSCTF_id2[index] << endl;
   cout << "st2 "<< event_.CSCTF_st2[index] << endl;
-  cout << "ri2 "<< event_.CSCTF_ri2[index] << endl; 
+  cout << "ri2 "<< event_.CSCTF_ri2[index] << endl;
   cout << "ch2 "<< event_.CSCTF_ch2[index] << endl;
   cout << "en2 "<< event_.CSCTF_en2[index] << endl;
-  cout << "trk2 "<< event_.CSCTF_trk2[index]<< endl; 
+  cout << "trk2 "<< event_.CSCTF_trk2[index]<< endl;
   cout << "quality2 "<< event_.CSCTF_quality2[index] << endl;
   cout << "wg2 "<< event_.CSCTF_wg2[index] << endl;
   cout << "hs2 "<< event_.CSCTF_hs2[index] << endl;
@@ -4402,10 +4404,10 @@ DisplacedL1MuFilter::printCSCStubProperties(int index) const
 
   cout << "id3 "<< event_.CSCTF_id3[index] << endl;
   cout << "st3 "<< event_.CSCTF_st3[index] << endl;
-  cout << "ri3 "<< event_.CSCTF_ri3[index] << endl; 
+  cout << "ri3 "<< event_.CSCTF_ri3[index] << endl;
   cout << "ch3 "<< event_.CSCTF_ch3[index] << endl;
   cout << "en3 "<< event_.CSCTF_en3[index] << endl;
-  cout << "trk3 "<< event_.CSCTF_trk3[index]<< endl; 
+  cout << "trk3 "<< event_.CSCTF_trk3[index]<< endl;
   cout << "quality3 "<< event_.CSCTF_quality3[index] << endl;
   cout << "wg3 "<< event_.CSCTF_wg3[index] << endl;
   cout << "hs3 "<< event_.CSCTF_hs3[index] << endl;
@@ -4429,10 +4431,10 @@ DisplacedL1MuFilter::printCSCStubProperties(int index) const
 
   cout << "id4 "<< event_.CSCTF_id4[index] << endl;
   cout << "st4 "<< event_.CSCTF_st4[index] << endl;
-  cout << "ri4 "<< event_.CSCTF_ri4[index] << endl; 
+  cout << "ri4 "<< event_.CSCTF_ri4[index] << endl;
   cout << "ch4 "<< event_.CSCTF_ch4[index] << endl;
   cout << "en4 "<< event_.CSCTF_en4[index] << endl;
-  cout << "trk4 "<< event_.CSCTF_trk4[index]<< endl; 
+  cout << "trk4 "<< event_.CSCTF_trk4[index]<< endl;
   cout << "quality4 "<< event_.CSCTF_quality4[index] << endl;
   cout << "wg4 "<< event_.CSCTF_wg4[index] << endl;
   cout << "hs4 "<< event_.CSCTF_hs4[index] << endl;
@@ -4457,10 +4459,10 @@ DisplacedL1MuFilter::printCSCStubProperties(int index) const
 }
 
 
-GlobalPoint 
-DisplacedL1MuFilter::getCSCSpecificPoint(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const 
+GlobalPoint
+DisplacedL1MuFilter::getCSCSpecificPoint(unsigned int rawId, const CSCCorrelatedLCTDigi& tp) const
 {
-  const CSCDetId id(rawId); 
+  const CSCDetId id(rawId);
   // we should change this to weak_ptrs at some point
   // requires introducing std::shared_ptrs to geometry
   std::unique_ptr<const CSCChamber> chamb(cscGeometry_->chamber(id));
@@ -4470,13 +4472,13 @@ DisplacedL1MuFilter::getCSCSpecificPoint(unsigned int rawId, const CSCCorrelated
   std::unique_ptr<const CSCLayer> layer(
                                         chamb->layer(CSCConstants::KEY_ALCT_LAYER)
                                         );
-  
+
   const uint16_t halfstrip = tp.getStrip();
   const uint16_t pattern = tp.getPattern();
-  const uint16_t keyWG = tp.getKeyWG(); 
-  //const unsigned maxStrips = layer_geom->numberOfStrips();  
+  const uint16_t keyWG = tp.getKeyWG();
+  //const unsigned maxStrips = layer_geom->numberOfStrips();
 
-  // so we can extend this later 
+  // so we can extend this later
   // assume TMB2007 half-strips only as baseline
   double offset = 0.0;
   switch(1) {
@@ -4488,40 +4490,40 @@ DisplacedL1MuFilter::getCSCSpecificPoint(unsigned int rawId, const CSCCorrelated
 
   // the rough location of the hit at the ALCT key layer
   // we will refine this using the half strip information
-  const LocalPoint coarse_lp = 
-    layer_geom->stripWireGroupIntersection(strip,keyWG);  
-  const GlobalPoint coarse_gp = layer->surface().toGlobal(coarse_lp);  
-  
+  const LocalPoint coarse_lp =
+    layer_geom->stripWireGroupIntersection(strip,keyWG);
+  const GlobalPoint coarse_gp = layer->surface().toGlobal(coarse_lp);
+
   // the strip width/4.0 gives the offset of the half-strip
   // center with respect to the strip center
   const double hs_offset = layer_geom->stripPhiPitch()/4.0;
-  
+
   // determine handedness of the chamber
   const bool ccw = isCSCCounterClockwise(layer);
   // we need to subtract the offset of even half strips and add the odd ones
   const double phi_offset = ( ( halfstrip_offs%2 ? 1 : -1)*
                               ( ccw ? -hs_offset : hs_offset ) );
-  
+
   // the global eta calculation uses the middle of the strip
   // so no need to increment it
   const GlobalPoint final_gp( GlobalPoint::Polar( coarse_gp.theta(),
-                                                  (coarse_gp.phi().value() + 
+                                                  (coarse_gp.phi().value() +
                                                    phi_offset),
                                                   coarse_gp.mag() ) );
-    
+
   // We need to add in some notion of the 'error' on trigger primitives
   // like the width of the wire group by the width of the strip
-  // or something similar      
+  // or something similar
 
   // release ownership of the pointers
   chamb.release();
   layer_geom.release();
   layer.release();
-  
+
   return final_gp;
 }
 
-GlobalPoint 
+GlobalPoint
 DisplacedL1MuFilter::getCSCSpecificPointStrips(const SimTrackMatchManager& match) const
 {
   // do a fit through the comparator digis in this chamber
@@ -4529,7 +4531,7 @@ DisplacedL1MuFilter::getCSCSpecificPointStrips(const SimTrackMatchManager& match
   // ME11: 0.00020
   // ME21: 0.00036
   const CSCDigiMatcher& match_cd = match.cscDigis();
-    
+
   for (auto d: match_cd.chamberIdsStrip()){
     auto detId = CSCDetId(d);
     std::cout << "\tNumber of matching CSC comparator strips " << match_cd.cscComparatorDigisInChamber(d).size() << std::endl;
@@ -4552,16 +4554,16 @@ DisplacedL1MuFilter::getCSCSpecificPointStrips(const SimTrackMatchManager& match
   return GlobalPoint();
 }
 
-bool 
+bool
 DisplacedL1MuFilter::isCSCCounterClockwise(const std::unique_ptr<const CSCLayer>& layer) const {
   const int nStrips = layer->geometry()->numberOfStrips();
   const double phi1 = layer->centerOfStrip(1).phi();
   const double phiN = layer->centerOfStrip(nStrips).phi();
-  return ( (std::abs(phi1 - phiN) < M_PI  && phi1 >= phiN) || 
-           (std::abs(phi1 - phiN) >= M_PI && phi1 < phiN)     );  
+  return ( (std::abs(phi1 - phiN) < M_PI  && phi1 >= phiN) ||
+           (std::abs(phi1 - phiN) >= M_PI && phi1 < phiN)     );
 }
 
-void 
+void
 DisplacedL1MuFilter::extrapolate(const reco::GenParticle &tk, int station, GlobalPoint& gp, GlobalVector& gv)
 {
   TrajectoryStateOnSurface tsos;
@@ -4602,7 +4604,7 @@ DisplacedL1MuFilter::extrapolate(const reco::GenParticle &tk, int station, Globa
   }
 }
 
-void 
+void
 DisplacedL1MuFilter::extrapolate(const TTTrack< Ref_PixelDigi_ > &tk, int station, GlobalPoint& gp, GlobalVector& gv)
 {
   TrajectoryStateOnSurface tsos;
@@ -4634,7 +4636,7 @@ DisplacedL1MuFilter::extrapolate(const TTTrack< Ref_PixelDigi_ > &tk, int statio
   }
 }
 
-// void 
+// void
 // DisplacedL1MuFilter::extrapolate(const SimTrack&tk, const SimVertex& vtx, double z, GlobalPoint& gp)
 // {
 //   TrajectoryStateOnSurface tsos;
@@ -4661,7 +4663,7 @@ DisplacedL1MuFilter::extrapolate(const TTTrack< Ref_PixelDigi_ > &tk, int statio
 //   tsos = propagateToZ(inner_point, inner_vec, tk.charge(), z);
 
 //   // if (std::abs(tk.eta())<1.2) tsos = propagateToR(inner_point, inner_vec, tk.charge(), R);
-//   // else if (tk.eta()>1.2)      
+//   // else if (tk.eta()>1.2)
 //   // else if (tk.eta()<-1.2)     tsos = propagateToZ(inner_point, inner_vec, tk.charge(), Zmin);
 //   // else                        tsos = TrajectoryStateOnSurface();
 
@@ -4698,7 +4700,7 @@ DisplacedL1MuFilter::extrapolateGP(const TTTrack< Ref_PixelDigi_ > &tk, int stat
   else if (tk.getMomentum().eta()>1.2)      tsos = propagateToZ(inner_point, inner_vec, charge, Zmax);
   else if (tk.getMomentum().eta()<-1.2)     tsos = propagateToZ(inner_point, inner_vec, charge, Zmin);
   else                                      tsos = TrajectoryStateOnSurface();
-  
+
   if (tsos.isValid()) return tsos.globalPosition();
   else                return GlobalPoint();
 }
@@ -4759,7 +4761,7 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("genH_vx",   &event_.genH_vx,   "genH_vx/F");
   event_tree_->Branch("genH_vy",   &event_.genH_vy,   "genH_vy/F");
   event_tree_->Branch("genH_vz",   &event_.genH_vz,   "genH_vz/F");
-  
+
   event_tree_->Branch("genGd_m",   event_.genGd_m,   "genGd_m[2]/F");
   event_tree_->Branch("genGd_E",   event_.genGd_E,   "genGd_E[2]/F");
   event_tree_->Branch("genGd_p",   event_.genGd_p,   "genGd_p[2]/F");
@@ -4811,7 +4813,7 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("genGdMu_vy", event_.genGdMu_vy, "genGdMu_vy[2][2]/F");
   event_tree_->Branch("genGdMu_vz", event_.genGdMu_vz, "genGdMu_vz[2][2]/F");
   event_tree_->Branch("genGdMu_dxy", event_.genGdMu_dxy, "genGdMu_dxy[2][2]/F");
-  
+
   event_tree_->Branch("genGdMu_L1Tk_dR_prop", event_.genGdMu_L1Tk_dR_prop, "genGdMu_L1Tk_dR_prop[2][2]/F");
   event_tree_->Branch("genGdMu_L1Tk_index_prop", event_.genGdMu_L1Tk_index_prop, "genGdMu_L1Tk_index_prop[2][2]/F");
   event_tree_->Branch("genGdMu_L1Tk_dR_corr", event_.genGdMu_L1Tk_dR_corr, "genGdMu_L1Tk_dR_corr[2][2]/F");
@@ -5176,7 +5178,7 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("RPCb_la1", event_.RPCb_la1,"RPCb_la1[nRPCb]/I");
   event_tree_->Branch("RPCb_su1", event_.RPCb_su1,"RPCb_su1[nRPCb]/I");
   event_tree_->Branch("RPCb_ro1", event_.RPCb_ro1,"RPCb_ro1[nRPCb]/I");
-  
+
   event_tree_->Branch("RPCb_bx2", event_.RPCb_bx2,"RPCb_bx2[nRPCb]/I");
   event_tree_->Branch("RPCb_strip2", event_.RPCb_strip2,"RPCb_strip2[nRPCb]/I");
   event_tree_->Branch("RPCb_phi2", event_.RPCb_phi2,"RPCb_phi2[nRPCb]/F");
@@ -5254,7 +5256,7 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("RPCf_la1", event_.RPCf_la1,"RPCf_la1[nRPCf]/I");
   event_tree_->Branch("RPCf_su1", event_.RPCf_su1,"RPCf_su1[nRPCf]/I");
   event_tree_->Branch("RPCf_ro1", event_.RPCf_ro1,"RPCf_ro1[nRPCf]/I");
-  
+
   event_tree_->Branch("RPCf_bx2", event_.RPCf_bx2,"RPCf_bx2[nRPCf]/I");
   event_tree_->Branch("RPCf_strip2", event_.RPCf_strip2,"RPCf_strip2[nRPCf]/I");
   event_tree_->Branch("RPCf_phi2", event_.RPCf_phi2,"RPCf_phi2[nRPCf]/F");
@@ -5377,7 +5379,7 @@ void DisplacedL1MuFilter::bookL1MuTree()
 
 
 
-void 
+void
 DisplacedL1MuFilter::clearBranches()
 {
   event_.lumi = -99;
@@ -5391,7 +5393,7 @@ DisplacedL1MuFilter::clearBranches()
     event_.genGlu_py[i] = -99;
     event_.genGlu_pz[i] = -99;
     event_.genGlu_eta[i] = -99;
-    event_.genGlu_phi[i] = -99;    
+    event_.genGlu_phi[i] = -99;
   }
 
   event_.genH_m = -99;
@@ -5426,7 +5428,7 @@ DisplacedL1MuFilter::clearBranches()
     event_.genGd_lxy[i] = -99;
     event_.genGd_l[i] = -99;
     event_.genGdMu_dxy_max[i] = -99;
- 
+
     event_.genGd_genMuMu_dEta[i] = 99;
     event_.genGd_genMuMu_dPhi[i] = 99;
     event_.genGd_genMuMu_dR[i] = 99;
@@ -5434,8 +5436,8 @@ DisplacedL1MuFilter::clearBranches()
   }
 
   event_.genGd0Gd1_dR = -99;
-    
-  for (int i=0; i<2; ++i){ 
+
+  for (int i=0; i<2; ++i){
     for (int j=0; j<2; ++j){
       event_.genGdMu_q[i][j] = -99;
       event_.genGdMu_p[i][j] = -99;
@@ -5451,7 +5453,7 @@ DisplacedL1MuFilter::clearBranches()
       event_.genGdMu_deta_corr[i][j] = 99;
       event_.genGdMu_dphi_corr[i][j] = 99;
       event_.genGdMu_dR_corr[i][j] = 99;
-      
+
       event_.genGdMu_eta_prop[i][j] = -99;
       event_.genGdMu_phi_prop[i][j] = -99;
       event_.genGdMu_deta_prop[i][j] = 99;
@@ -5509,7 +5511,7 @@ DisplacedL1MuFilter::clearBranches()
 
   for (int i=0; i<kMaxL1Tk; ++i){
     event_.L1Tk_pt[i] = -99;
-    event_.L1Tk_eta[i] = -99; 
+    event_.L1Tk_eta[i] = -99;
     event_.L1Tk_phi[i] = -99;
 
     event_.L1Tk_eta_prop[i] = -99;
@@ -5522,7 +5524,7 @@ DisplacedL1MuFilter::clearBranches()
     event_.L1Tk_phi_corr[i] = -99;
     event_.L1Tk_deta_corr[i] = -99;
     event_.L1Tk_dphi_corr[i]  = -99;
-    event_.L1Tk_dR_corr[i] = -99;    
+    event_.L1Tk_dR_corr[i] = -99;
   }
 
   for (int i=0; i<50; ++i){
@@ -5606,65 +5608,65 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_phi[i] = 99;
     event_.CSCTF_nStubs[i] = 0;
 
-    event_.CSCTF_st1[i] = 99; 
-    event_.CSCTF_ri1[i] = 99; 
-    event_.CSCTF_ch1[i] = 99; 
+    event_.CSCTF_st1[i] = 99;
+    event_.CSCTF_ri1[i] = 99;
+    event_.CSCTF_ch1[i] = 99;
     event_.CSCTF_en1[i] = 99;
-    event_.CSCTF_trk1[i] = 99; 
-    event_.CSCTF_quality1[i] = 99; 
-    event_.CSCTF_wg1[i] = 99; 
-    event_.CSCTF_hs1[i] = 99; 
-    event_.CSCTF_pat1[i] = 99; 
-    event_.CSCTF_bend1[i] = 99; 
-    event_.CSCTF_bx1[i] = 99; 
+    event_.CSCTF_trk1[i] = 99;
+    event_.CSCTF_quality1[i] = 99;
+    event_.CSCTF_wg1[i] = 99;
+    event_.CSCTF_hs1[i] = 99;
+    event_.CSCTF_pat1[i] = 99;
+    event_.CSCTF_bend1[i] = 99;
+    event_.CSCTF_bx1[i] = 99;
     event_.CSCTF_clctpat1[i] = 99;
     event_.CSCTF_val1[i] = 99;
     event_.CSCTF_phi1[i] = 99;
     event_.CSCTF_phib1[i] = 99;
 
-    event_.CSCTF_st2[i] = 99; 
-    event_.CSCTF_ri2[i] = 99; 
-    event_.CSCTF_ch2[i] = 99; 
+    event_.CSCTF_st2[i] = 99;
+    event_.CSCTF_ri2[i] = 99;
+    event_.CSCTF_ch2[i] = 99;
     event_.CSCTF_en2[i] = 99;
-    event_.CSCTF_trk2[i] = 99; 
-    event_.CSCTF_quality2[i] = 99; 
-    event_.CSCTF_wg2[i] = 99; 
-    event_.CSCTF_hs2[i] = 99; 
-    event_.CSCTF_pat2[i] = 99; 
-    event_.CSCTF_bend2[i] = 99; 
-    event_.CSCTF_bx2[i] = 99; 
+    event_.CSCTF_trk2[i] = 99;
+    event_.CSCTF_quality2[i] = 99;
+    event_.CSCTF_wg2[i] = 99;
+    event_.CSCTF_hs2[i] = 99;
+    event_.CSCTF_pat2[i] = 99;
+    event_.CSCTF_bend2[i] = 99;
+    event_.CSCTF_bx2[i] = 99;
     event_.CSCTF_clctpat2[i] = 99;
     event_.CSCTF_val2[i] = 99;
     event_.CSCTF_phi2[i] = 99;
     event_.CSCTF_phib2[i] = 99;
 
-    event_.CSCTF_st3[i] = 99; 
-    event_.CSCTF_ri3[i] = 99; 
-    event_.CSCTF_ch3[i] = 99; 
+    event_.CSCTF_st3[i] = 99;
+    event_.CSCTF_ri3[i] = 99;
+    event_.CSCTF_ch3[i] = 99;
     event_.CSCTF_en3[i] = 99;
-    event_.CSCTF_trk3[i] = 99; 
-    event_.CSCTF_quality3[i] = 99; 
-    event_.CSCTF_wg3[i] = 99; 
-    event_.CSCTF_hs3[i] = 99; 
-    event_.CSCTF_pat3[i] = 99; 
-    event_.CSCTF_bend3[i] = 99; 
-    event_.CSCTF_bx3[i] = 99; 
+    event_.CSCTF_trk3[i] = 99;
+    event_.CSCTF_quality3[i] = 99;
+    event_.CSCTF_wg3[i] = 99;
+    event_.CSCTF_hs3[i] = 99;
+    event_.CSCTF_pat3[i] = 99;
+    event_.CSCTF_bend3[i] = 99;
+    event_.CSCTF_bx3[i] = 99;
     event_.CSCTF_clctpat3[i] = 99;
     event_.CSCTF_val3[i] = 99;
     event_.CSCTF_phi3[i] = 99;
     event_.CSCTF_phib3[i] = 99;
 
-    event_.CSCTF_st4[i] = 99; 
-    event_.CSCTF_ri4[i] = 99; 
-    event_.CSCTF_ch4[i] = 99; 
+    event_.CSCTF_st4[i] = 99;
+    event_.CSCTF_ri4[i] = 99;
+    event_.CSCTF_ch4[i] = 99;
     event_.CSCTF_en4[i] = 99;
-    event_.CSCTF_trk4[i] = 99; 
-    event_.CSCTF_quality4[i] = 99; 
-    event_.CSCTF_wg4[i] = 99; 
-    event_.CSCTF_hs4[i] = 99; 
-    event_.CSCTF_pat4[i] = 99; 
-    event_.CSCTF_bend4[i] = 99; 
-    event_.CSCTF_bx4[i] = 99; 
+    event_.CSCTF_trk4[i] = 99;
+    event_.CSCTF_quality4[i] = 99;
+    event_.CSCTF_wg4[i] = 99;
+    event_.CSCTF_hs4[i] = 99;
+    event_.CSCTF_pat4[i] = 99;
+    event_.CSCTF_bend4[i] = 99;
+    event_.CSCTF_bx4[i] = 99;
     event_.CSCTF_clctpat4[i] = 99;
     event_.CSCTF_val4[i] = 99;
     event_.CSCTF_phi4[i] = 99;
@@ -5724,7 +5726,7 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_fit_dphi4[i] = 99;
 
     event_.CSCTF_sim_DDY123[i] = 99;
-    event_.CSCTF_L1_DDY123[i] = 99;  
+    event_.CSCTF_L1_DDY123[i] = 99;
   }
 
   event_.nRPCb = 0;
@@ -5736,7 +5738,7 @@ DisplacedL1MuFilter::clearBranches()
     event_.RPCb_bx[i] = 99;
     event_.RPCb_nStubs[i] = 0;
     event_.RPCb_quality[i] = 99;
-    
+
     event_.RPCb_bx1[i] = 99;
     event_.RPCb_strip1[i] = 99;
     event_.RPCb_phi1[i] = 99;
@@ -5813,7 +5815,7 @@ DisplacedL1MuFilter::clearBranches()
     event_.RPCf_bx[i] = 99;
     event_.RPCf_nStubs[i] = 0;
     event_.RPCf_quality[i] = 99;
-    
+
     event_.RPCf_bx1[i] = 99;
     event_.RPCf_strip1[i] = 99;
     event_.RPCf_phi1[i] = 99;
@@ -5903,15 +5905,15 @@ DisplacedL1MuFilter::clearBranches()
     event_.GE21_z_L1[i] = 99;
     event_.GE21_z_L2[i] = 99;
 
-    event_.GE21_sim_pad1_phi_L1[i] = 99.; 
+    event_.GE21_sim_pad1_phi_L1[i] = 99.;
     event_.GE21_sim_pad1_phi_L2[i] = 99.;
-    event_.GE21_sim_pad2_phi_L1[i] = 99.; 
+    event_.GE21_sim_pad2_phi_L1[i] = 99.;
     event_.GE21_sim_pad2_phi_L2[i] = 99.;
-    event_.GE21_sim_pad4_phi_L1[i] = 99.; 
+    event_.GE21_sim_pad4_phi_L1[i] = 99.;
     event_.GE21_sim_pad4_phi_L2[i] = 99.;
-    event_.GE21_sim_pad8_phi_L1[i] = 99.; 
+    event_.GE21_sim_pad8_phi_L1[i] = 99.;
     event_.GE21_sim_pad8_phi_L2[i] = 99.;
-    
+
     event_.GE11_sim_phi_L1[i] = 99.;
     event_.GE11_sim_phi_L2[i] = 99.;
     event_.GE21_sim_phi_L1[i] = 99.;
@@ -5928,7 +5930,7 @@ DisplacedL1MuFilter::clearBranches()
     event_.GE11_sim_z_L2[i] = 99;
     event_.GE21_sim_z_L1[i] = 99;
     event_.GE21_sim_z_L2[i] = 99;
-    
+
     event_.GE11_sim_pad_phi_L1[i] = 99.;
     event_.GE11_sim_pad_phi_L2[i] = 99.;
     event_.GE21_sim_pad_phi_L1[i] = 99.;
@@ -5976,12 +5978,12 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_fitline_x2[i] = 99;
     event_.CSCTF_fitline_x3[i] = 99;
     event_.CSCTF_fitline_x4[i] = 99;
-    
+
     event_.CSCTF_fitline_y1[i] = 99;
     event_.CSCTF_fitline_y2[i] = 99;
     event_.CSCTF_fitline_y3[i] = 99;
     event_.CSCTF_fitline_y4[i] = 99;
-    
+
     event_.CSCTF_sim_phi1[i] = 99;
     event_.CSCTF_sim_phi2[i] = 99;
     event_.CSCTF_sim_phi3[i] = 99;

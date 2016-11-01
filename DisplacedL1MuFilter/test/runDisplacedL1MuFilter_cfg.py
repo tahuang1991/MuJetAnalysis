@@ -17,7 +17,7 @@ process.load('Geometry.GEMGeometryBuilder.me0Geometry_cfi')
 
 process.load('Configuration.StandardSequences.L1Reco_cff')
 process.load("SLHCUpgradeSimulations.L1TrackTrigger.L1TkMuonSequence_cfi")
-#process.pMuons = cms.Path( process.L1TkMuons ) #process.l1extraParticles + 
+#process.pMuons = cms.Path( process.L1TkMuons ) #process.l1extraParticles +
 process.load("L1Trigger.TrackTrigger.TrackTrigger_cff")
 process.load('L1TriggerConfig.L1ScalesProducers.L1MuTriggerScalesConfig_cff')
 
@@ -68,7 +68,7 @@ process.DisplacedL1MuFilter_PhaseIIGE21 = cms.EDFilter("DisplacedL1MuFilter",
     processDTTF = cms.bool(True),
     doSimAnalysis = cms.bool(True),
     doGenAnalysis = cms.bool(True),
-    doStubRecovery = cms.bool(False)
+    doStubRecovery = cms.bool(True)
 )
 matching = process.DisplacedL1MuFilter_PhaseIIGE21.simTrackMatching
 matching.simTrack.minPt = 1.5
@@ -100,7 +100,7 @@ process.source = cms.Source(
     fileNames = cms.untracked.vstring("file:/eos/uscms/store/user/lpcgem/SLHC23_patch1_2023Muon_gen_sim_Pt2_50_1M/PromptMu_14TeV_PU0_TTI_DTTFmod_v3/161010_034533/0000/out_DTTFmod_1.root")
 )
 from MuJetAnalysis.HLTBendingAngle.InputFileHelpers import useInputDir
-process = useInputDir(process, "/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_DTTFmod/160622_185508/0000/","out_DTTF_ctau_1000_PU140_full") 
+process = useInputDir(process, "/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_DTTFmod/160622_185508/0000/","out_DTTF_ctau_1000_PU140_full")
 #process = useInputDir(process, "/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_TTI_DTTFmod_v3/161010_033403/0000/","out_DTTFmod")
 
 process.dump=cms.EDAnalyzer('EventContentAnalyzer')

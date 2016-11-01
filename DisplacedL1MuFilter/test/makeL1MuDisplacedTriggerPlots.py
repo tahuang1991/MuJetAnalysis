@@ -1,33 +1,33 @@
 import sys
 sys.argv.append( '-b' )
-import ROOT 
+import ROOT
 ROOT.gROOT.SetBatch(1)
 ROOT.gErrorIgnoreLevel=1001
 
 from Helpers import *
 from ROOT import *
 
-file = TFile("out_ana_pu0_displaced_L1Mu_DDY123_NoStubRec_20161020.root")
+file = TFile("out_ana_pu0_displaced_L1Mu_DDY123_StubRec_20161024.root")
 treeHits = file.Get("L1MuTree")
 
 ## plots
-targetDir = 'DisplacedL1MuTrigger_20161020_PU0_NoStubRecovery/'
+targetDir = 'DisplacedL1MuTrigger_20161025_PU0_StubRecovery/'
 
 ## Style
 gStyle.SetStatStyle(0)
 set_style()
-  
+
 ## L1Mu pT trigger turn-on curves
 def makeEffPlot(eff1, eff2, eff3, plotName, plotTitle, doPt=True):
-      
+
     c = TCanvas("c","c",800,600)
-    c.Clear() 
-    
+    c.Clear()
+
     gPad.SetTickx(1)
     gPad.SetTicky(1)
     c.SetGridx()
     c.SetGridy()
-    
+
     gStyle.SetTitleStyle( 0 )
     gStyle.SetTitleAlign(13) ##// coord in top left
     gStyle.SetTitleX(0.)
@@ -35,23 +35,23 @@ def makeEffPlot(eff1, eff2, eff3, plotName, plotTitle, doPt=True):
     gStyle.SetTitleW(1)
     gStyle.SetTitleH(0.058)
     gStyle.SetTitleBorderSize( 0 )
-    
+
     gStyle.SetPadLeftMargin(0.126)
     gStyle.SetPadRightMargin(0.04)
     gStyle.SetPadTopMargin(0.06)
     gStyle.SetPadBottomMargin(0.13)
     gStyle.SetOptStat( 0 )
     gStyle.SetMarkerStyle(1)
-    
+
     if doPt:
         binLow = [0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,12.0,14.0,16.0,18.0,20.0,24.0,28.0,32.0,36.0,42.0,50.0]
         ptbins = np.asarray(binLow)
         xaxisTitle = "True muon p_{T} [GeV]"
         b1 = TH1F("b1","b1", 50,0,50)
-    else:    
+    else:
         mmax = 2.5; xaxisTitle = "True Muon #eta"
         b1 = TH1F("b1","b1", 25, 0, mmax)
-        
+
     #b1.GetYaxis().SetRangeUser(.01,100)
     b1.GetYaxis().SetTitleOffset(1.2)
     b1.SetMaximum(1.05)
@@ -69,7 +69,7 @@ def makeEffPlot(eff1, eff2, eff3, plotName, plotTitle, doPt=True):
     #b1.SetTitle(plotTitle)
     b1.SetStats(0)
     b1.Draw()
-    
+
     eff1.SetLineColor(kBlue)
     eff1.SetMarkerColor(kBlue)
     eff1.SetMarkerStyle(20)
@@ -111,7 +111,7 @@ def makeEffPlot(eff1, eff2, eff3, plotName, plotTitle, doPt=True):
     latex2.SetTextSize(0.05)
     latex2.SetNDC()
     latex2.Draw("same")
-    
+
     leg = TLegend(0.5,0.2,0.9,0.45,"","brNDC")
     leg.SetFillColor(kWhite)
     leg.SetBorderSize(1)
@@ -128,18 +128,18 @@ def makeEffPlot(eff1, eff2, eff3, plotName, plotTitle, doPt=True):
     c.SaveAs(plotName + ".png")
     c.SaveAs(plotName + ".pdf")
     c.SaveAs(plotName + ".C")
-    
+
 ## L1Mu pT trigger turn-on curves
 def makeEffPlot2(eff1, eff2, eff3, plotName, plotTitle, doPt=True):
-      
+
     c = TCanvas("c","c",800,600)
-    c.Clear() 
-    
+    c.Clear()
+
     gPad.SetTickx(1)
     gPad.SetTicky(1)
     c.SetGridx()
     c.SetGridy()
-    
+
     gStyle.SetTitleStyle( 0 )
     gStyle.SetTitleAlign(13) ##// coord in top left
     gStyle.SetTitleX(0.)
@@ -147,23 +147,23 @@ def makeEffPlot2(eff1, eff2, eff3, plotName, plotTitle, doPt=True):
     gStyle.SetTitleW(1)
     gStyle.SetTitleH(0.058)
     gStyle.SetTitleBorderSize( 0 )
-    
+
     gStyle.SetPadLeftMargin(0.126)
     gStyle.SetPadRightMargin(0.04)
     gStyle.SetPadTopMargin(0.06)
     gStyle.SetPadBottomMargin(0.13)
     gStyle.SetOptStat( 0 )
     gStyle.SetMarkerStyle(1)
-    
-    if doPt: 
+
+    if doPt:
         binLow = [0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,12.0,14.0,16.0,18.0,20.0,24.0,28.0,32.0,36.0,42.0,50.0]
         ptbins = np.asarray(binLow)
         xaxisTitle = "True muon p_{T} [GeV]"
         b1 = TH1F("b1","b1", 50,0,50)
-    else:    
+    else:
         mmax = 2.5; xaxisTitle = "True Muon #eta"
         b1 = TH1F("b1","b1", 25, 0, mmax)
-        
+
     #b1.GetYaxis().SetRangeUser(.01,100)
     b1.GetYaxis().SetTitleOffset(1.2)
     b1.SetMaximum(1.05)
@@ -181,7 +181,7 @@ def makeEffPlot2(eff1, eff2, eff3, plotName, plotTitle, doPt=True):
     #b1.SetTitle(plotTitle)
     b1.SetStats(0)
     b1.Draw()
-    
+
     eff1.SetLineColor(kBlue)
     eff1.SetMarkerColor(kBlue)
     eff1.SetMarkerStyle(20)
@@ -223,7 +223,7 @@ def makeEffPlot2(eff1, eff2, eff3, plotName, plotTitle, doPt=True):
     latex2.SetTextSize(0.05)
     latex2.SetNDC()
     latex2.Draw("same")
-    
+
     leg = TLegend(0.5,0.2,0.9,0.45,"","brNDC")
     leg.SetFillColor(kWhite)
     leg.SetBorderSize(1)
@@ -326,20 +326,20 @@ def generateEfficiencyPlots():
         #print etaRanges[etaPart] + "_" + ME1ME2ME3ParityCases[parity]
         ptbins = ptbin_[etaRanges[etaPart] + "_" + ME1ME2ME3ParityCases[parity]]
         ddy123cuts = ddy123cut_[etaRanges[etaPart] + "_" + ME1ME2ME3ParityCases[parity]]
-        
+
         #print ptbins
         #print ddy123cuts
         pt_index = ptbins.index(ptCut)
         ddy123cut = ddy123cuts[pt_index]
         #print "10", pt_index, ddy123cut
         #print
-        
+
         return ddy123cut
 
 
     stationCut = TCut('has_CSCTF==1 && ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1 && DDY123_withLCTFit<=40 && has_L1Mu==1')
 
-    
+
     ## 12 to 14
     etaCut = TCut('partition==0')
     baselineCut = AND(stationCut, etaCut)
@@ -441,7 +441,7 @@ def generateEfficiencyPlots():
 
     makeEffPlot(eff0, eff10, None,
                 targetDir + "Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta18to20_dxy0to50", "Displaced L1Mu algorithm;1.8<|#eta|<2.0")
-        
+
 
     ## 20 to 22
     etaCut = TCut('partition==4')
@@ -472,7 +472,7 @@ def generateEfficiencyPlots():
     ## 22 to 24
     etaCut = TCut('partition==5')
     baselineCut = AND(stationCut, etaCut)
-    
+
     eff0 = getEfficiency(treeHits, "gen_pt", AND(TCut("abs(gen_dxy)<5 && parity==0"), baselineCut), TCut("DDY123_withLCTFit<=%f"%(getDDY123Cut(0,5,9))))
     eff1 = getEfficiency(treeHits, "gen_pt", AND(TCut("abs(gen_dxy)<5 && parity==1"), baselineCut), TCut("DDY123_withLCTFit<=%f"%(getDDY123Cut(1,5,9))))
     eff2 = getEfficiency(treeHits, "gen_pt", AND(TCut("abs(gen_dxy)<5 && parity==2"), baselineCut), TCut("DDY123_withLCTFit<=%f"%(getDDY123Cut(2,5,9))))
@@ -501,7 +501,7 @@ def generateEfficiencyPlots():
     makeEffPlot(eff3, eff13, None,
                 targetDir + "Displaced_L1MuPt10_GenMuPt_ME1_ME2_ME3_eta22to24_dxy0to50_eoo", "Displaced L1Mu algorithm;2.2<|#eta|<2.4")
 
-    
+
     makeEffPlot(getEfficiency(treeHits, "(50,0,50)", "gen_pt", TCut("has_L1Mu==1 && abs(gen_eta)<2.4 && abs(gen_dxy)<5"), TCut("L1Mu_pt>=%s"%(ptCut))),
     getEfficiency(treeHits, "(50,0,50)", "gen_pt", TCut("has_L1Mu==1 && abs(gen_eta)<2.4 && abs(gen_dxy)>5 && abs(gen_dxy)<50"), TCut("L1Mu_pt>=%s"%(ptCut))),
     None,
@@ -510,44 +510,44 @@ def generateEfficiencyPlots():
     getEfficiency(treeHits, "(50,0,50)", "gen_pt", TCut("has_L1Mu==1 && abs(gen_eta)<2.4 && abs(gen_dxy)>5 && abs(gen_dxy)<50"), TCut("L1Mu_pt>=%s"%(ptCut))),
     getEfficiency(treeHits, "(50,0,50)", "gen_pt", TCut("has_L1Mu==1 && abs(gen_eta)<2.4 && abs(gen_dxy)>50 && abs(gen_dxy)<100"), TCut("L1Mu_pt>=%s"%(ptCut))),
     targetDir + "Prompt_L1MuPt%s_GenMuPt_eta00to24_dxy0to100"%(ptCut), "Prompt L1Mu algorithm;|#eta|<2.4")
-    """                 
-    
+    """
+
 
 def goldenL1MuPtPlots():
 
     ptbin = [
-        2.0,   2.5,   3.0,   3.5,   4.0,   4.5,   5.0,   6.0,   7.0,   8.0,  
-        10.0,  12.0,  14.0,  16.0,  18.0,  20.0,  25.0,  30.0,  35.0,  40.0,  
+        2.0,   2.5,   3.0,   3.5,   4.0,   4.5,   5.0,   6.0,   7.0,   8.0,
+        10.0,  12.0,  14.0,  16.0,  18.0,  20.0,  25.0,  30.0,  35.0,  40.0,
         45.0,  50.0,  60.0,  70.0,  80.0,  90.0, 100.0, 120.0, 140.0]
     ptbinString = [
-        '2',   '2p5',   '3',   '3p5',   '4',   '4p5',   '5',   '6',   '7',   '8',  
-        '10',  '12',  '14',  '16',  '18',  '20',  '25',  '30',  '35',  '40',  
+        '2',   '2p5',   '3',   '3p5',   '4',   '4p5',   '5',   '6',   '7',   '8',
+        '10',  '12',  '14',  '16',  '18',  '20',  '25',  '30',  '35',  '40',
         '45',  '50',  '60',  '70',  '80',  '90', '100', '120', '140']
 
     golden_pt_factor = {
         '12to14' : [
-            '2',   '2p5',   '3',   '3p5',   '4',   '4p5',   1.,   '6',   '7',   '8',  
-            '10',  '12',  '14',  '16',  '18',  1.5,  '25',  2,  '35',  '40',  
+            '2',   '2p5',   '3',   '3p5',   '4',   '4p5',   1.,   '6',   '7',   '8',
+            '10',  '12',  '14',  '16',  '18',  1.5,  '25',  2,  '35',  '40',
             '45',  '50',  '60',  '70',  '80',  '90', '100', '120', '140'],
         '14to16' : [
-            '2',   '2p5',   '3',   '3p5',   '4',   '4p5',   '5',   '6',   '7',   '8',  
-            '10',  '12',  '14',  '16',  '18',  '20',  '25',  '30',  '35',  '40',  
+            '2',   '2p5',   '3',   '3p5',   '4',   '4p5',   '5',   '6',   '7',   '8',
+            '10',  '12',  '14',  '16',  '18',  '20',  '25',  '30',  '35',  '40',
             '45',  '50',  '60',  '70',  '80',  '90', '100', '120', '140'],
         '16to18' : [
-            '2',   '2p5',   '3',   '3p5',   '4',   '4p5',   '5',   '6',   '7',   '8',  
-            '10',  '12',  '14',  '16',  '18',  '20',  '25',  '30',  '35',  '40',  
+            '2',   '2p5',   '3',   '3p5',   '4',   '4p5',   '5',   '6',   '7',   '8',
+            '10',  '12',  '14',  '16',  '18',  '20',  '25',  '30',  '35',  '40',
             '45',  '50',  '60',  '70',  '80',  '90', '100', '120', '140'],
         '18to20' : [
-            '2',   '2p5',   '3',   '3p5',   '4',   '4p5',   '5',   '6',   '7',   '8',  
-            '10',  '12',  '14',  '16',  '18',  '20',  '25',  '30',  '35',  '40',  
+            '2',   '2p5',   '3',   '3p5',   '4',   '4p5',   '5',   '6',   '7',   '8',
+            '10',  '12',  '14',  '16',  '18',  '20',  '25',  '30',  '35',  '40',
             '45',  '50',  '60',  '70',  '80',  '90', '100', '120', '140'],
         '20to22' : [
-            '2',   '2p5',   '3',   '3p5',   '4',   '4p5',   '5',   '6',   '7',   '8',  
-            '10',  '12',  '14',  '16',  '18',  '20',  '25',  '30',  '35',  '40',  
+            '2',   '2p5',   '3',   '3p5',   '4',   '4p5',   '5',   '6',   '7',   '8',
+            '10',  '12',  '14',  '16',  '18',  '20',  '25',  '30',  '35',  '40',
             '45',  '50',  '60',  '70',  '80',  '90', '100', '120', '140'],
         '22to24' : [
-            '2',   '2p5',   '3',   '3p5',   '4',   '4p5',   '5',   '6',   '7',   '8',  
-            '10',  '12',  '14',  '16',  '18',  '20',  '25',  '30',  '35',  '40',  
+            '2',   '2p5',   '3',   '3p5',   '4',   '4p5',   '5',   '6',   '7',   '8',
+            '10',  '12',  '14',  '16',  '18',  '20',  '25',  '30',  '35',  '40',
             '45',  '50',  '60',  '70',  '80',  '90', '100', '120', '140'],
         }
 
@@ -556,16 +556,16 @@ def goldenL1MuPtPlots():
     #print float(num)/float(denom)
 
     ptbin = [
-        1,   2.5,   3.0,   3.5,   4.0,   4.5,   5.0,   6.0,   7.0,   8.0,  
-        10.0,  12.0,  14.0,  16.0,  18.0,  20.0,  25.0,  30.0,  35.0,  40.0,  
+        1,   2.5,   3.0,   3.5,   4.0,   4.5,   5.0,   6.0,   7.0,   8.0,
+        10.0,  12.0,  14.0,  16.0,  18.0,  20.0,  25.0,  30.0,  35.0,  40.0,
         45.0,  50.0,  60.0,  70.0,  80.0,  90.0, 100.0, 120.0, 140.0]
 
     for i in range(1,len(ptbin)-1):
         num =   treeHits.GetEntries("abs(L1Mu_eta)>1.2 && abs(L1Mu_eta)<1.4 && has_L1Mu==1 && abs(gen_dxy)<5 && ((L1Mu_pt) >=%f) && gen_pt>=%f && gen_pt<%f"%(ptbin[i], ptbin[i], ptbin[i+1]))
         denom = treeHits.GetEntries("abs(L1Mu_eta)>1.2 && abs(L1Mu_eta)<1.4 && has_L1Mu==1 && abs(gen_dxy)<5 && gen_pt>=%f && gen_pt<%f"%(ptbin[i], ptbin[i+1]))
         print ptbin[i], num, denom, float(num)/float(denom)
-        
-        
+
+
 
 
     return
@@ -626,14 +626,14 @@ def pt_vs_ddy123Plots():
     print treeHits.GetEntries("abs(gen_eta)>2.2 && abs(gen_eta)<2.4 && has_L1Mu==1 && has_CSCTF==1 && ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1")
     """
 
-    binLow = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 
-              7.0, 8.0, 9.0, 11.0, 12.0, 14.0, 
+    binLow = [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0,
+              7.0, 8.0, 9.0, 11.0, 12.0, 14.0,
               16.0, 18.0, 20.0, 24.0, 28.0, 32.0,
               36.0, 42.0, 50.0]
     ptbins = np.asarray(binLow)
-    
+
     for pp in range(0,6):
-        
+
         #  ME1ME2ME3ParityCases = ['oee','ooo','eee','eoo']
         etaRanges = ['12to14','14to16','16to18','18to20','20to22','22to24']
         etaRangesString = ['1.2 #leq |#eta| #leq 1.4',
@@ -642,9 +642,9 @@ def pt_vs_ddy123Plots():
                            '1.8 #leq |#eta| #leq 2.0',
                            '2.0 #leq |#eta| #leq 2.2',
                            '2.2 #leq |#eta| #leq 2.4']
-        
+
         yBinning = ["(4000,0.,40.)", "(4000,0.,40.)","(4000,0.,40.)","(4000,0.,40.)","(4000,0.,40.)","(4000,0.,40.)"]
-        
+
         extraCut = TCut("has_L1Mu==1 && has_CSCTF==1 && ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1")
         makeSimplePlot(get_2D(treeHits, ptbins, yBinning[pp], "DDY123_withLCTFit:gen_pt", AND(TCut("abs(gen_dxy)<50 && partition==%d && parity==0"%(pp)), extraCut)), targetDir + "GenMuPt_vs_DDY123_withLCTFit_eta%s_oee.png"%(etaRanges[pp]),
                        "%s, parity: oee; True muon pT [GeV]; DDY123 [cm]"%(etaRangesString[pp]),"COLZ")
@@ -668,8 +668,8 @@ def pt_vs_ddy123Plots():
         lut1 = get1DHistogramFractionY(get_2D(treeHits, ptbins, yBinning[pp], "DDY123_withLCTFit:gen_pt", AND(TCut("abs(gen_dxy)<50 && partition==%d && parity==3"%(pp)), extraCut)), .90)
         print '    ptbin_["' + etaRanges[pp] + '_eoo"] = ', lut1[0]
         print '    ddy123cut_["' + etaRanges[pp] + '_eoo"] = ', lut1[1]
-        print 
- 
+        print
+
 def generateEfficiencyPlots_V2():
 
     ptbin_ = {}
@@ -677,9 +677,9 @@ def generateEfficiencyPlots_V2():
 
     ddy123cut_["12to14_oee"] = 4.280000
     ddy123cut_["12to14_ooo"] = 2.458800
-    ddy123cut_["12to14_eee"] = 4.896000 
+    ddy123cut_["12to14_eee"] = 4.896000
     ddy123cut_["12to14_eoo"] = 3.030000
-    
+
     ddy123cut_["14to16_oee"] =  3.428333
     ddy123cut_["14to16_ooo"] =  1.986684
     ddy123cut_["14to16_eee"] =  3.964500
@@ -709,21 +709,21 @@ def generateEfficiencyPlots_V2():
         ME1ME2ME3ParityCases = ['oee','ooo','eee','eoo']
         etaRanges = ['12to14','14to16','16to18','18to20','20to22','22to24']
         ddy123cut = ddy123cut_[etaRanges[etaPart] + "_" + ME1ME2ME3ParityCases[parity]]
-        
+
         #print ptbins
         #print ddy123cuts
         #pt_index = ptbins.index(ptCut)
         #ddy123cut = ddy123cuts[pt_index]
         #print "10", pt_index, ddy123cut
         #print
-        
+
         return ddy123cut
 
     #    stationCut = TCut('has_CSCTF==1 && ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1 && abs(CSCTF_sim_DDY123)<=40 && has_L1Mu==1')
     #    stationCut = TCut('has_CSCTF==1 && ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1 && abs(CSCTF_sim_DDY123)<=40 && has_L1Mu==1')
     stationCut = TCut('ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && ok_CSCTF_sim_st3==1 && abs(CSCTF_sim_DDY123)<=40')
 
-    
+
     ## 12 to 14
     etaCut = TCut('partition_sim==0')
     baselineCut = AND(stationCut, etaCut)
@@ -825,7 +825,7 @@ def generateEfficiencyPlots_V2():
 
     makeEffPlot(eff0, eff10, None,
                 targetDir + "Displaced_L1MuPt10_SimMuPt_ME1_ME2_ME3_eta18to20_dxy0to50", "Displaced L1Mu algorithm;1.8<|#eta|<2.0")
-        
+
 
     ## 20 to 22
     etaCut = TCut('partition_sim==4')
@@ -856,7 +856,7 @@ def generateEfficiencyPlots_V2():
     ## 22 to 24
     etaCut = TCut('partition_sim==5')
     baselineCut = AND(stationCut, etaCut)
-    
+
     eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,5,9))))
     eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,5,9))))
     eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,5,9))))
@@ -881,8 +881,8 @@ def generateEfficiencyPlots_V2():
 def L1MuMatchingEfficiency():
 
     stationCut = TCut('ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && ok_CSCTF_sim_st3==1')
-    numCut = TCut('SIM_L1Mu_index != 999 && SIM_L1Mu_dR < 0.1')#  
-    
+    numCut = TCut('SIM_L1Mu_index != 999 && SIM_L1Mu_dR < 0.1')#
+
     ## 12 to 14
     etaCut = TCut('partition_sim==0')
     baselineCut = AND(stationCut, etaCut)
@@ -924,7 +924,7 @@ def L1MuMatchingEfficiency():
 
     makeEffPlot2(eff0, eff10, None,
                  targetDir + "L1Mu_MatchingEfficiency_SimMuPt_ME1_ME2_ME3_eta18to20_dxy0to50", ";1.8<|#eta|<2.0")
-        
+
 
     ## 20 to 22
     etaCut = TCut('partition_sim==4')
@@ -941,14 +941,14 @@ def L1MuMatchingEfficiency():
     ## 22 to 24
     etaCut = TCut('partition_sim==5')
     baselineCut = AND(stationCut, etaCut)
-    
+
     eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
 
     eff10 = getEfficiency(treeHits,  "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), baselineCut), numCut)
 
     makeEffPlot2(eff0, eff10, None,
                  targetDir + "L1Mu_MatchingEfficiency_SimMuPt_ME1_ME2_ME3_eta22to24_dxy0to50", ";2.2<|#eta|<2.4")
-    
+
 
 
 
@@ -957,7 +957,7 @@ def CSCTFMatchingEfficiency():
 
     stationCut = TCut('has_L1Mu==1 && L1Mu_true==1 && ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && ok_CSCTF_sim_st3==1')
     numCut = TCut('has_CSCTF==1')
-    
+
     ## 12 to 14
     etaCut = TCut('partition_sim==0')
     baselineCut = AND(stationCut, etaCut)
@@ -999,7 +999,7 @@ def CSCTFMatchingEfficiency():
 
     makeEffPlot2(eff0, eff10, None,
                  targetDir + "CSCTF_MatchingEfficiency_SimMuPt_ME1_ME2_ME3_eta18to20_dxy0to50", ";1.8<|#eta|<2.0")
-        
+
 
     ## 20 to 22
     etaCut = TCut('partition_sim==4')
@@ -1016,7 +1016,7 @@ def CSCTFMatchingEfficiency():
     ## 22 to 24
     etaCut = TCut('partition_sim==5')
     baselineCut = AND(stationCut, etaCut)
-    
+
     eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
 
     eff10 = getEfficiency(treeHits,  "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), baselineCut), numCut)
@@ -1030,7 +1030,7 @@ def correctL1MuMatchingEfficiency():
 
     stationCut = TCut('has_L1Mu==1 && ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && ok_CSCTF_sim_st3==1')
     numCut = TCut('L1Mu_true==1')
-    
+
     ## 12 to 14
     etaCut = TCut('partition_sim==0')
     baselineCut = AND(stationCut, etaCut)
@@ -1072,7 +1072,7 @@ def correctL1MuMatchingEfficiency():
 
     makeEffPlot2(eff0, eff10, None,
                  targetDir + "CorrectL1Mu_MatchingEfficiency_SimMuPt_ME1_ME2_ME3_eta18to20_dxy0to50", ";1.8<|#eta|<2.0")
-        
+
 
     ## 20 to 22
     etaCut = TCut('partition_sim==4')
@@ -1089,7 +1089,7 @@ def correctL1MuMatchingEfficiency():
     ## 22 to 24
     etaCut = TCut('partition_sim==5')
     baselineCut = AND(stationCut, etaCut)
-    
+
     eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
 
     eff10 = getEfficiency(treeHits,  "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), baselineCut), numCut)
@@ -1099,7 +1099,7 @@ def correctL1MuMatchingEfficiency():
 
 
 def stubReconstructionEfficiency():
-    
+
     stationCut = TCut('ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && ok_CSCTF_sim_st3==1 && SIM_L1Mu_index != 999 && SIM_L1Mu_dR < 0.1')
     numCut = TCut('ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1')
 
@@ -1144,7 +1144,7 @@ def stubReconstructionEfficiency():
 
     makeEffPlot2(eff0, eff10, None,
                  targetDir + "StubMatching_SimMuPt_ME1_ME2_ME3_eta18to20_dxy0to50", ";1.8<|#eta|<2.0")
-        
+
 
     ## 20 to 22
     etaCut = TCut('partition_sim==4')
@@ -1161,17 +1161,17 @@ def stubReconstructionEfficiency():
     ## 22 to 24
     etaCut = TCut('partition_sim==5')
     baselineCut = AND(stationCut, etaCut)
-    
+
     eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
 
     eff10 = getEfficiency(treeHits,  "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), baselineCut), numCut)
 
     makeEffPlot2(eff0, eff10, None,
                  targetDir + "StubMatching_SimMuPt_ME1_ME2_ME3_eta22to24_dxy0to50", ";2.2<|#eta|<2.4")
-    
+
 
 def correctStubReconstructionEfficiency(stubSelection):
-    
+
     stationCut = TCut('ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && ok_CSCTF_sim_st3==1 && SIM_L1Mu_index != 999 && SIM_L1Mu_dR < 0.1')
     L1_stationCut = TCut('ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1')
     additionPhiCut = TCut('CSCTF_phi1 != 99. &&CSCTF_phi1 != 0. && CSCTF_phi2 != 99. && CSCTF_phi2 != 0. && CSCTF_phi3 != 99. && CSCTF_phi3 != 0.')
@@ -1228,7 +1228,7 @@ def correctStubReconstructionEfficiency(stubSelection):
         stubSelectionStr = 'CorrectME1ME2ME3_'
         #stubEtaCut = TCut('')
         #stubZCut = TCut('')
-    
+
 
     sameStubCut = AND(stubPhiCut, stubEtaCut, stubZCut)
     numCut = sameStubCut
@@ -1274,7 +1274,7 @@ def correctStubReconstructionEfficiency(stubSelection):
 
     makeEffPlot2(eff0, eff10, None,
                  targetDir + "CorrectStubMatching_" + stubSelectionStr + "SimMuPt_ME1_ME2_ME3_eta18to20_dxy0to50", ";1.8<|#eta|<2.0")
-        
+
 
     ## 20 to 22
     etaCut = TCut('partition_sim==4')
@@ -1291,7 +1291,7 @@ def correctStubReconstructionEfficiency(stubSelection):
     ## 22 to 24
     etaCut = TCut('partition_sim==5')
     baselineCut = AND(stationCut, etaCut, L1_stationCut, additionPhiCut)
-    
+
     eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
 
     eff10 = getEfficiency(treeHits,  "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), baselineCut), numCut)
@@ -1300,6 +1300,151 @@ def correctStubReconstructionEfficiency(stubSelection):
                  targetDir + "CorrectStubMatching_" + stubSelectionStr + "SimMuPt_ME1_ME2_ME3_eta22to24_dxy0to50", ";2.2<|#eta|<2.4")
 
 
+def gemPadReconstructionEfficiency(selection):
+
+    stationCut = TCut('ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && SIM_L1Mu_index != 999 && SIM_L1Mu_dR < 0.1')
+    #stationCut = AND(stationCut, TCut("ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1"))
+    if (selection==1):
+        numCut = TCut('ok_GE11_sim_L1==1 || ok_GE11_sim_L2==1')
+        stubSelectionStr = 'GE11_'
+    if (selection==2):
+        numCut = TCut('ok_GE21_sim_L1==1 || ok_GE21_sim_L2==1')
+        stubSelectionStr = 'GE21_'
+    if (selection==12):
+        numCut = TCut('(ok_GE11_sim_L1==1 || ok_GE11_sim_L2==1) && (ok_GE21_sim_L1==1 || ok_GE21_sim_L2==1)')
+        stubSelectionStr = 'GE11GE21_'
+
+
+    ## 16 to 18
+    etaCut = TCut('partition_sim==2 || partition_sim==3 || partition_sim==4')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
+    eff10 = getEfficiency(treeHits,  "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), baselineCut), numCut)
+
+    makeEffPlot2(eff0, eff10, None,
+                 targetDir + "GEMPadMatching_" + stubSelectionStr + "SimMuPt_ME1_ME2_ME3_eta16to22_dxy0to50", ";1.6<|#eta|<2.2")
+
+
+    ## 16 to 18
+    etaCut = TCut('partition_sim==2')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
+    eff10 = getEfficiency(treeHits,  "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), baselineCut), numCut)
+
+    makeEffPlot2(eff0, eff10, None,
+                 targetDir + "GEMPadMatching_" + stubSelectionStr + "SimMuPt_ME1_ME2_ME3_eta18to20_dxy0to50", ";1.6<|#eta|<1.8")
+
+
+    ## 18 to 20
+    etaCut = TCut('partition_sim==3')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
+    eff10 = getEfficiency(treeHits,  "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), baselineCut), numCut)
+
+    makeEffPlot2(eff0, eff10, None,
+                 targetDir + "GEMPadMatching_" + stubSelectionStr + "SimMuPt_ME1_ME2_ME3_eta18to20_dxy0to50", ";1.8<|#eta|<2.0")
+
+
+    ## 20 to 22
+    etaCut = TCut('partition_sim==4')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
+
+    eff10 = getEfficiency(treeHits,  "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), baselineCut), numCut)
+
+    makeEffPlot2(eff0, eff10, None,
+                 targetDir + "GEMPadMatching_" + stubSelectionStr + "SimMuPt_ME1_ME2_ME3_eta20to22_dxy0to50", ";2.0<|#eta|<2.2")
+
+
+    ## 22 to 24
+    etaCut = TCut('partition_sim==5')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
+
+    eff10 = getEfficiency(treeHits,  "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), baselineCut), numCut)
+
+    makeEffPlot2(eff0, eff10, None,
+                 targetDir + "GEMPadMatching_" + stubSelectionStr + "SimMuPt_ME1_ME2_ME3_eta22to24_dxy0to50", ";2.2<|#eta|<2.4")
+
+
+def gemPadReconstructionEfficiency2(selection):
+
+    stationCut = TCut('ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && SIM_L1Mu_index != 999 && SIM_L1Mu_dR < 0.1')
+    #stationCut = AND(stationCut, TCut("ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1"))
+    if (selection==1):
+        stationCut = AND(stationCut, TCut('ok_GE11_sim_L1==1 || ok_GE11_sim_L2==1'))
+        numCut = TCut('ok_GE11_L1==1 || ok_GE11_L2==1')
+        stubSelectionStr = 'L1GE11_'
+    if (selection==2):
+        stationCut = AND(stationCut, TCut('ok_GE21_sim_L1==1 || ok_GE21_sim_L2==1'))
+        numCut = TCut('ok_GE21_L1==1 || ok_GE21_L2==1')
+        stubSelectionStr = 'L1GE21_'
+    if (selection==12):
+        stationCut = AND(stationCut, TCut('(ok_GE11_sim_L1==1 || ok_GE11_sim_L2==1) && (ok_GE21_sim_L1==1 || ok_GE21_sim_L2==1)'))
+        numCut = TCut('(ok_GE11_L1==1 || ok_GE11_L2==1) && (ok_GE21_L1==1 || ok_GE21_L2==1)')
+        stubSelectionStr = 'L1GE11GE21_'
+
+
+    ## 16 to 18
+    etaCut = TCut('partition_sim==2 || partition_sim==3 || partition_sim==4')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
+    eff10 = getEfficiency(treeHits,  "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), baselineCut), numCut)
+
+    makeEffPlot2(eff0, eff10, None,
+                 targetDir + "GEMPadMatching_" + stubSelectionStr + "SimMuPt_ME1_ME2_ME3_eta16to22_dxy0to50", ";1.6<|#eta|<2.2")
+
+
+    ## 16 to 18
+    etaCut = TCut('partition_sim==2')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
+    eff10 = getEfficiency(treeHits,  "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), baselineCut), numCut)
+
+    makeEffPlot2(eff0, eff10, None,
+                 targetDir + "GEMPadMatching_" + stubSelectionStr + "SimMuPt_ME1_ME2_ME3_eta18to20_dxy0to50", ";1.6<|#eta|<1.8")
+
+
+    ## 18 to 20
+    etaCut = TCut('partition_sim==3')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
+    eff10 = getEfficiency(treeHits,  "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), baselineCut), numCut)
+
+    makeEffPlot2(eff0, eff10, None,
+                 targetDir + "GEMPadMatching_" + stubSelectionStr + "SimMuPt_ME1_ME2_ME3_eta18to20_dxy0to50", ";1.8<|#eta|<2.0")
+
+
+    ## 20 to 22
+    etaCut = TCut('partition_sim==4')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
+
+    eff10 = getEfficiency(treeHits,  "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), baselineCut), numCut)
+
+    makeEffPlot2(eff0, eff10, None,
+                 targetDir + "GEMPadMatching_" + stubSelectionStr + "SimMuPt_ME1_ME2_ME3_eta20to22_dxy0to50", ";2.0<|#eta|<2.2")
+
+
+    ## 22 to 24
+    etaCut = TCut('partition_sim==5')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5"), baselineCut), numCut)
+
+    eff10 = getEfficiency(treeHits,  "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), baselineCut), numCut)
+
+    makeEffPlot2(eff0, eff10, None,
+                 targetDir + "GEMPadMatching_" + stubSelectionStr + "SimMuPt_ME1_ME2_ME3_eta22to24_dxy0to50", ";2.2<|#eta|<2.4")
 #generateEfficiencyPlots()
 
 #goldenL1MuPtPlots()
@@ -1312,12 +1457,18 @@ CSCTFMatchingEfficiency()
 correctL1MuMatchingEfficiency()
 stubReconstructionEfficiency()
 
-correctStubReconstructionEfficiency(0)
-correctStubReconstructionEfficiency(1)
-correctStubReconstructionEfficiency(2)
-correctStubReconstructionEfficiency(3)
-correctStubReconstructionEfficiency(12)
-correctStubReconstructionEfficiency(23)
-correctStubReconstructionEfficiency(13)
+#correctStubReconstructionEfficiency(0)
+#correctStubReconstructionEfficiency(1)
+#correctStubReconstructionEfficiency(2)
+#correctStubReconstructionEfficiency(3)
+#correctStubReconstructionEfficiency(12)
+#correctStubReconstructionEfficiency(23)
+#correctStubReconstructionEfficiency(13)
 correctStubReconstructionEfficiency(123)
+gemPadReconstructionEfficiency(1)
+gemPadReconstructionEfficiency(2)
+gemPadReconstructionEfficiency(12)
+gemPadReconstructionEfficiency2(1)
+gemPadReconstructionEfficiency2(2)
+gemPadReconstructionEfficiency2(12)
 

@@ -7,10 +7,11 @@ from math import log10, floor
 from logic import *
 import numpy as np
 import os
+import random
 
 ptbin = [
-    2.0,   2.5,   3.0,   3.5,   4.0,   4.5,   5.0,   6.0,   7.0,   8.0,  
-    10.0,  12.0,  14.0,  16.0,  18.0,  20.0,  25.0,  30.0,  35.0,  40.0,  
+    2.0,   2.5,   3.0,   3.5,   4.0,   4.5,   5.0,   6.0,   7.0,   8.0,
+    10.0,  12.0,  14.0,  16.0,  18.0,  20.0,  25.0,  30.0,  35.0,  40.0,
     45.0,  50.0,  60.0,  70.0,  80.0,  90.0, 100.0, 120.0, 140.0]
 myptbin = np.asarray(ptbin)
 nmyptbin = len(myptbin) - 1
@@ -20,30 +21,30 @@ ptbins = np.asarray(binLow)
 
 
 etabin = [
-    0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 
+    0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9,
     1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9,
     2.0, 2.1, 2.2, 2.3, 2.4, 2.5]
 myetabin = np.asarray(etabin)
 
-#______________________________________________________________________________                                           
+#______________________________________________________________________________
 M_PI = 4*math.atan(1)
 
 
-#______________________________________________________________________________                        
+#______________________________________________________________________________
 def get_golden_pT(L1Mu_pt, L1Mu_eta):
-  
+
   ptbin = [
-    2.0,   2.5,   3.0,   3.5,   4.0,   4.5,   5.0,   6.0,   7.0,   8.0,  
-    10.0,  12.0,  14.0,  16.0,  18.0,  20.0,  25.0,  30.0,  35.0,  40.0,  
+    2.0,   2.5,   3.0,   3.5,   4.0,   4.5,   5.0,   6.0,   7.0,   8.0,
+    10.0,  12.0,  14.0,  16.0,  18.0,  20.0,  25.0,  30.0,  35.0,  40.0,
     45.0,  50.0,  60.0,  70.0,  80.0,  90.0, 100.0, 120.0, 140.0]
   L1Mu_pt_index = ptbin.index(L1Mu_pt)
-  
+
   ## look-up-tables
-  
-  
-#______________________________________________________________________________                 
+
+
+#______________________________________________________________________________
 def passDPhicutTFTrack(st, ch, dphi, pt):
-  
+
   ME11GEMdPhi = [
     [-2, 1.0, 1.0],
     [5.0,  0.02131422,  0.00907379 ],
@@ -81,22 +82,22 @@ def passDPhicutTFTrack(st, ch, dphi, pt):
       ptValue = row[0]
       bendingOdd = row[1]
       bendingEven = row[2]
-    
+
       ## check with odd/even value
       if pt >= ptValue:
-      
+
         ## check if pass/fail
         if ((is_odd and bendingOdd > fabs(dphi)) or (not is_odd and bendingEven > fabs(dphi))):
           returnValue = True;
-        else:    
+        else:
           returnValue = False;
-  else: 
+  else:
     returnValue = False;
 
   return returnValue
 
 
-#______________________________________________________________________________                                            
+#______________________________________________________________________________
 def fitStraightLine(v, w, debug=False):
     alpha = 0
     beta = 0
@@ -109,11 +110,11 @@ def fitStraightLine(v, w, debug=False):
     else:
         zmin = v[-1]
         zmax = v[0]
-    
-    fit1 = TF1("fit1","pol1",zmin,zmax) 
+
+    fit1 = TF1("fit1","pol1",zmin,zmax)
     gr = TGraph(len(v),array.array("f",v), array.array("f",w));
     gr.Fit(fit1,"RQ")
-    
+
     alpha = fit1.GetParameter(0)#; //value of 0th parameter
     beta  = fit1.GetParameter(1)#; //value of 1st parameter
     chi2 = fit1.GetChisquare()
@@ -123,7 +124,7 @@ def fitStraightLine(v, w, debug=False):
     return alpha, beta, chi2, ndf
 
 def getFittedPositions(xs, zs):
-    
+
     st_input = []
     xs_input = []
     zs_input = []
@@ -189,14 +190,14 @@ def frange(end,start=0,inc=0,precision=1):
 
 
 
-#______________________________________________________________________________                        
+#______________________________________________________________________________
 def getBestValue(value1, value2):
     if abs(value1) != 99.: return value1
     else:                  return value2
 
 
-                   
-#______________________________________________________________________________                        
+
+#______________________________________________________________________________
 def getRadius(padSize, eta, doFit):
     radius_dict = {}
     radius_dict['pad1_eta12to14_withoutLCTFit'] = 0
@@ -257,7 +258,7 @@ def getRadius(padSize, eta, doFit):
 
     return radius_dict[padSize + '_eta' + eta + fitString]
 
-#______________________________________________________________________________                        
+#______________________________________________________________________________
 def passEllipseCut(DDY123, delta_phi_dir,
                    padSize, eta, doFit):
     radius = getRadius(padSize, eta, doFit)
@@ -265,16 +266,16 @@ def passEllipseCut(DDY123, delta_phi_dir,
     x2value = DDY123 * DDY123
     yvalue = scaleFactor * delta_phi_dir
     y2value = yvalue * yvalue
-    
+
     return  x2value + y2value <= radius*radius
 
 
-#______________________________________________________________________________                        
+#______________________________________________________________________________
 def pt_from_DPhi_DT(DPhi, DT_type):
 
     Pt_dict = {}
     DPhi_dict = {}
-  
+
     Pt_dict['DT1_DT2'] =  [3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 11.0, 13.0, 15.0, 17.0, 19.0, 22.0, 26.0, 30.0, 34.0, 39.0, 46.0, 55.0]
     DPhi_dict['DT1_DT2'] =  [0.3092222222222223, 0.15859793814433001, 0.10226506024096395, 0.07503067484662582, 0.05959266055045877, 0.05363519313304725, 0.04648048048048052, 0.03838693467336686, 0.036337468982630294, 0.03297127222982218, 0.031985267034990814, 0.028920821114369534, 0.024994444444444482, 0.02293392070484583, 0.02709333333333337, 0.027034482758620717, 0.026360655737704942, 0.02350000000000004, 0.019245901639344264]
 
@@ -307,12 +308,12 @@ def pt_from_DPhi_DT(DPhi, DT_type):
         if DPhi > DPhi_range[ii]:
           found_pt = pt_range[ii-1]
           break
-    
+
     return found_pt
 
-#______________________________________________________________________________                        
+#______________________________________________________________________________
 def pt_from_DDY123(DDY123, eta, parity, doFit):
-    
+
     DDY123_dict = {}
 
 
@@ -687,10 +688,10 @@ def pt_from_DDY123_v2(DDY123, eta, parity, doFit):
       foundPtValue = (values[0] / 0.0000001) + values[1]
     return foundPtValue
 
-#______________________________________________________________________________                                           
+#______________________________________________________________________________
 def get_pt_slice(pt):
     return 0
-    
+
 def get_eta_partition(eta):
 
   etaPartition = -1
@@ -701,7 +702,7 @@ def get_eta_partition(eta):
   elif (abs(eta)>=2.0 and abs(eta)<2.2): etaPartition = 4
   elif (abs(eta)>=2.2 and abs(eta)<2.4): etaPartition = 5
   return etaPartition
- 
+
 
 def get_eta_partition_GE11(eta):
 
@@ -711,7 +712,7 @@ def get_eta_partition_GE11(eta):
   elif (abs(eta)>=2.0 and abs(eta)<2.2): etaPartition = 2
   return etaPartition
 
-#______________________________________________________________________________                                           
+#______________________________________________________________________________
 def deltay12_deltay23(x1, y1, phi1,
                       x2, y2, phi2,
                       x3, y3, phi3):
@@ -720,10 +721,10 @@ def deltay12_deltay23(x1, y1, phi1,
 
   ## calculate the difference between the y' after the transformation
   ## this function needs more information August 16th 2016
-  y1_prime = - x1 * sin(referenceAngle) + y1 * cos(referenceAngle) 
-  y2_prime = - x2 * sin(referenceAngle) + y2 * cos(referenceAngle) 
-  y3_prime = - x3 * sin(referenceAngle) + y3 * cos(referenceAngle) 
-  
+  y1_prime = - x1 * sin(referenceAngle) + y1 * cos(referenceAngle)
+  y2_prime = - x2 * sin(referenceAngle) + y2 * cos(referenceAngle)
+  y3_prime = - x3 * sin(referenceAngle) + y3 * cos(referenceAngle)
+
   deltay12 = y2_prime - y1_prime
   deltay23 = y3_prime - y2_prime
   return deltay12, deltay23
@@ -745,20 +746,20 @@ def deltay12_deltay23_R(R1, phi1,
 
   ## calculate the difference between the y' after the transformation
   ## this function needs more information August 16th 2016
-  y1_prime = - x1 * sin(referenceAngle) + y1 * cos(referenceAngle) 
-  y2_prime = - x2 * sin(referenceAngle) + y2 * cos(referenceAngle) 
-  y3_prime = - x3 * sin(referenceAngle) + y3 * cos(referenceAngle) 
-  
+  y1_prime = - x1 * sin(referenceAngle) + y1 * cos(referenceAngle)
+  y2_prime = - x2 * sin(referenceAngle) + y2 * cos(referenceAngle)
+  y3_prime = - x3 * sin(referenceAngle) + y3 * cos(referenceAngle)
+
   deltay12 = y2_prime - y1_prime
   deltay23 = y3_prime - y2_prime
   return deltay12, deltay23
 
 
-#______________________________________________________________________________                                           
+#______________________________________________________________________________
 def get_eta_from_Z_R(r, z):
-    
+
     theta = TMath.ATan(r/z)
-    
+
     returnValue = -TMath.Log(TMath.Abs(TMath.Tan(theta/2.)))
     if z<0:
       returnValue = returnValue * (-1)
@@ -766,14 +767,14 @@ def get_eta_from_Z_R(r, z):
     #  returnValue = -TMath.Log(TMath.Tan(theta/2.))
     return returnValue
 
-#______________________________________________________________________________                                           
+#______________________________________________________________________________
 def get_parity(isEven1, isEven2, isEven3, isEven4):
   ## parity cases
   ## 0. odd even even
   ## 1. odd odd odd
   ## 2. even even even
   ## 3. even odd odd
-  
+
   totalParity = -1
   if not isEven1 and     isEven2 and     isEven3: totalParity = 0
   if not isEven1 and not isEven2 and not isEven3: totalParity = 1
@@ -788,7 +789,7 @@ def get_parity_ME11_ME21(isEven1, isEven2):
   ## 1. odd odd
   ## 2. even even
   ## 3. even odd
-  
+
   totalParity = -1
   if not isEven1 and     isEven2: totalParity = 0
   if not isEven1 and not isEven2: totalParity = 1
@@ -796,7 +797,7 @@ def get_parity_ME11_ME21(isEven1, isEven2):
   if     isEven1 and not isEven2: totalParity = 3
   return totalParity
 
-#______________________________________________________________________________                                               
+#______________________________________________________________________________
 ## dictionary with:
 ## 1. proportionality factor
 ## 2. slope
@@ -883,12 +884,12 @@ dict_prop_slope_intercept_DIGIL1 = {
 }
 
 
-#______________________________________________________________________________                       
+#______________________________________________________________________________
 #def get_proptionality_factor(etaPartition, parity):
 #  return dict_prop_slope_intercept_DIGIL1[parity][etaPartition][0]
 
 
-#______________________________________________________________________________               
+#______________________________________________________________________________
 def get_proptionality_factor(eta, parity, doFit):
 
     deltay12_deltay23_dict = {}
@@ -919,7 +920,7 @@ def get_proptionality_factor(eta, parity, doFit):
 
 
 
-    deltay12_deltay23_dict['eta12to14_ooo_withoutLCTFit'] = 0.62 
+    deltay12_deltay23_dict['eta12to14_ooo_withoutLCTFit'] = 0.62
 
     deltay12_deltay23_dict['eta12to14_ooo_withLCTFit'] =  0.62
 
@@ -994,19 +995,19 @@ def get_proptionality_factor(eta, parity, doFit):
     deltay12_deltay23_dict['eta22to24_eoo_withoutLCTFit'] = 0.3
 
     deltay12_deltay23_dict['eta22to24_eoo_withLCTFit'] = 0.3
-    
-    
-    
+
+
+
 
     ## find the LUT corresponding to this particular case
     if doFit:
         fitString = '_withLCTFit'
     else:
         fitString = '_withoutLCTFit'
-       
+
     return deltay12_deltay23_dict["eta" + eta + '_' + parity + fitString]
 
-#______________________________________________________________________________               
+#______________________________________________________________________________
 def get_proptionality_factor_Tao(eta, parity, doFit):
   if eta in ['12to14','14to16']:
     if parity is 'ooo': return 0.635700 #1
@@ -1019,7 +1020,7 @@ def get_proptionality_factor_Tao(eta, parity, doFit):
     if parity is 'eee': return 0.555000 #2
     if parity is 'oee': return 0.64     #0
 
-  
+
 def pt_from_DDY123_Tao(DDY123, eta, parity, doFit):
 
   pt_range = [2.0, 3.0, 4.0, 5.0, 7., 10., 15., 20., 30., 40.]
@@ -1027,20 +1028,20 @@ def pt_from_DDY123_Tao(DDY123, eta, parity, doFit):
     if parity is 'ooo': DDY123_range = [20.328000, 21.324000, 15.827000, 7.965000, 3.957500, 2.458800, 1.513750, 1.184231, 0.920385, 0.772333]
     if parity is 'eoo': DDY123_range = [0.000000,  21.218000, 17.509000, 7.974000, 3.986000, 3.030000, 1.442000, 1.345000, 0.964000, 0.964000] ##last entry is the same as next to last!! 1.050000
     if parity is 'eee': DDY123_range = [39.496000, 36.456000, 29.482000, 16.108000, 8.219333, 4.896000, 2.985833, 2.211182, 1.532800, 1.280222]
-    if parity is 'oee': DDY123_range = [0.000000,  28.185000,27.864000,12.517000,6.794000,4.280000,2.725000,2.007000,1.404000,1.227000]
+    if parity is 'oee': DDY123_range = [0.000000,  28.185000, 27.864000, 12.517000, 6.794000, 4.280000, 2.725000, 2.007000, 1.404000, 1.227000]
 
   if eta is '14to16':
     if parity is 'ooo': DDY123_range = [18.444000, 16.404000, 9.447000, 5.219000, 3.092500, 1.986684, 1.316571, 1.002167, 0.795053, 0.678313]
-    if parity is 'eoo': DDY123_range = [16.420000,14.537000,8.994000,5.373000,3.238000,2.129500,1.476000,1.058000,0.832000,0.579000]  
+    if parity is 'eoo': DDY123_range = [16.420000, 14.537000, 8.994000, 5.373000, 3.238000, 2.129500, 1.476000, 1.058000, 0.832000, 0.579000]
     if parity is 'eee': DDY123_range = [35.217000, 31.514000, 17.737000, 10.534000, 6.225500, 3.964500, 2.572125, 1.909250, 1.350200, 1.131909]
-    if parity is 'oee': DDY123_range = [23.340000,20.437000,13.771000,8.995000,5.285000,3.428333,2.180000,1.811000,1.300000,1.078000]
+    if parity is 'oee': DDY123_range = [23.340000, 20.437000, 13.771000, 8.995000, 5.285000, 3.428333, 2.180000, 1.811000, 1.300000, 1.078000]
 
   if eta is '16to18':
     if parity is 'ooo': DDY123_range = [24.157000, 17.957000, 7.858333, 4.944000, 3.067000, 1.972000, 1.358000, 1.038333, 0.828000, 0.702500]
     if parity is 'eoo': DDY123_range = [25.953000, 18.818000, 7.909000, 5.117000, 3.109000, 1.977000, 1.275000, 1.072000, 0.857667, 0.752750]
     if parity is 'eee': DDY123_range = [34.693000, 28.912000, 14.246000, 8.881000, 5.232000, 3.286000, 2.016500, 1.585500, 1.215000, 1.041000]
     if parity is 'oee': DDY123_range = [35.200000, 29.289000, 13.686000, 8.835000, 4.743000, 3.417500, 2.072000, 1.631000, 1.290500, 1.101000]
-  
+
   if eta is '18to20':
     if parity is 'ooo': DDY123_range = [19.976000, 11.661000, 5.336000, 3.572333, 2.197000, 1.473667, 0.979800, 0.831000, 0.717800, 0.654333]
     if parity is 'eoo': DDY123_range = [20.034000, 11.569000, 5.346000, 3.636000, 2.142500, 1.468778, 1.024833, 0.820273, 0.688400, 0.632500]
@@ -1062,10 +1063,10 @@ def pt_from_DDY123_Tao(DDY123, eta, parity, doFit):
   #print "Pt range", pt_range
   #print "DDY123_range", DDY123_range
   #print "DDY123", DDY123
-  
+
   if DDY123 < 0:
     print "ALARM", DDY123
-  found_pt = 0
+  found_pt = 2
   #if   DDY123 >= DDY123_range[0] and DDY123_range[0] != 0:
   #  found_pt = 0
   if DDY123 < DDY123_range[0] and DDY123 >= DDY123_range[1]:
@@ -1087,9 +1088,9 @@ def pt_from_DDY123_Tao(DDY123, eta, parity, doFit):
   elif DDY123 < DDY123_range[8] and DDY123 >= DDY123_range[9]:
     found_pt = 30
   elif DDY123 < DDY123_range[9]:
-    found_pt = 40
+    found_pt = 140 ## assign 140 GeV to highest pT muons by default!!!!
   else:
-    found_pt = 0
+    found_pt = 2
   """
   ## in case the DDY123 is larger than the first value, assign it pt = 2 GeV
   elif DDY123 < DDY123_range[-1]:
@@ -1101,9 +1102,10 @@ def pt_from_DDY123_Tao(DDY123, eta, parity, doFit):
         break
   #print "Found pt", found_pt
   """
+  #print found_pt
   return found_pt
 
-#______________________________________________________________________________               
+#______________________________________________________________________________
 def pt_from_position(x1, y1, z1, phi1, isEven1,
                      x2, y2, z2, phi2, isEven2,
                      x3, y3, z3, phi3, isEven3,
@@ -1121,19 +1123,19 @@ def pt_from_position(x1, y1, z1, phi1, isEven1,
     print "etaPartition", etaPartition
     print "totalParity", totalParity
     print "deltay12", deltay12, "deltay23", deltay23
-  
+
 
   if totalParity < 0 or totalParity > 3 or etaPartition == -1: return -99
-  
+
   preResult1 = 1./abs(deltay23 - dict_prop_slope_intercept[totalParity][etaPartition][0] * deltay12)
   preResult2 = dict_prop_slope_intercept[totalParity][etaPartition][1]
   preResult3 = dict_prop_slope_intercept[totalParity][etaPartition][2]
-  
+
   result = (preResult1 + preResult2) / preResult3
   return result
 
 
-#______________________________________________________________________________                                                                                                  
+#______________________________________________________________________________
 def poly_library(st1, st2, pol):
   if pol == 'pol1':
     if st1==1 and st2==2: return [5.746, 1.787, 0, 0]
@@ -1160,7 +1162,7 @@ def poly_library(st1, st2, pol):
     if st1==3 and st2==4: return [-12.02, 4.979, -0.1118, 0.0006741]
 
 
-#______________________________________________________________________________                                                                                                  
+#______________________________________________________________________________
 def poly_resolution_library(st1, st2, pol):
   if pol == 'pol1':
     if st1==1 and st2==2: return [ 0.232997504786 ,  0.017828278707 ,  0 ,  0 ]
@@ -1185,15 +1187,15 @@ def poly_resolution_library(st1, st2, pol):
     if st1==2 and st2==3: return [ 0.695634434177 ,  0.127903932904 ,  0.00623745201508 ,  8.16246655536e-05 ]
     if st1==2 and st2==4: return [ 0.553850340289 ,  0.103963455628 ,  0.00524106684519 ,  7.24391536905e-05 ]
     if st1==3 and st2==4: return [ 1.10865695068 ,  0.196820380084 ,  0.00978414190039 ,  0.000138975821929 ]
-    
 
-#______________________________________________________________________________                                                                                                  
+
+#______________________________________________________________________________
 def getPtFromDphi(st1, st2, dphi1, dphi2, pol):
   if dphi1 != 99 and dphi2 != 99 and dphi1 != dphi2:
     values = poly_library(st1, st2, pol)
     abs_deltaPhi_inv = 1./abs(deltaPhi(dphi1, dphi2))
     values_corr = [values[3], values[2], values[1], values[0] - abs_deltaPhi_inv]
-    
+
     roots = np.roots(values_corr)
     #print roots
     #p0_term = values[0]
@@ -1201,11 +1203,11 @@ def getPtFromDphi(st1, st2, dphi1, dphi2, pol):
     #p2_term = abs_deltaPhi_inv*abs_deltaPhi_inv*values[2]
     #p3_term = abs_deltaPhi_inv*abs_deltaPhi_inv*abs_deltaPhi_inv*values[3]
     return 0#p0_term + p1_term + p2_term + p3_term
-  else: 
+  else:
     return 0
- 
 
-#______________________________________________________________________________                                                                                                  
+
+#______________________________________________________________________________
 def getPtErrorFromDphi(st1, st2, dphi1, dphi2, pol):
   if dphi1 != 99 and dphi2 != 99 and dphi1 != dphi2:
     values = poly_library(st1, st2, pol)
@@ -1216,11 +1218,11 @@ def getPtErrorFromDphi(st1, st2, dphi1, dphi2, pol):
     p2_term = abs_deltaPhi_inv*abs_deltaPhi_inv*values[2]
     p3_term = abs_deltaPhi_inv*abs_deltaPhi_inv*abs_deltaPhi_inv*values[3]
     return p0_term + p1_term + p2_term + p3_term
-  else: 
+  else:
     return 0
 
 
-#______________________________________________________________________________                                                                                                  
+#______________________________________________________________________________
 def L1Mu_status(st1, st2, st3, st4):
   def ok(st):
     return st != 99
@@ -1254,7 +1256,7 @@ def L1Mu_status(st1, st2, st3, st4):
 
   return status
 
-#______________________________________________________________________________                                                                                                  
+#______________________________________________________________________________
 def addfiles(ch, dirname=".", ext=".root"):
   theInputFiles = []
   if not os.path.isdir(dirname):
@@ -1271,44 +1273,44 @@ def addfiles(ch, dirname=".", ext=".root"):
   return ch
 
 
-#______________________________________________________________________________                                                                                                  
+#______________________________________________________________________________
 def deltaPhi(phi1, phi2):
   result = phi1 - phi2;
-  while (result > 2*M_PI): 
+  while (result > 2*M_PI):
     result -= 4*M_PI;
   while (result <= -2*M_PI):
     result += 4*M_PI;
   return result;
 
 
-#______________________________________________________________________________                                                                                                  
+#______________________________________________________________________________
 def deltaPhi2(phi1, phi2):
   result = phi1 - phi2;
-  while (result > M_PI): 
+  while (result > M_PI):
     result -= 2*M_PI;
   while (result <= -M_PI):
     result += 2*M_PI;
   return result;
 
-#______________________________________________________________________________                       
+#______________________________________________________________________________
 def normalizedPhi(phi1):
   result = phi1;
-  while (result > 2*M_PI): 
+  while (result > 2*M_PI):
     result -= 4*M_PI;
   while (result <= -2*M_PI):
     result += 4*M_PI;
   return result;
 
-#______________________________________________________________________________                       
+#______________________________________________________________________________
 def normalizedPhi2(phi1):
   result = phi1;
-  while (result > M_PI): 
+  while (result > M_PI):
     result -= 2*M_PI;
   while (result <= -M_PI):
     result += 2*M_PI;
   return result;
 
-#______________________________________________________________________________                                      
+#______________________________________________________________________________
 def getQuantilesX(hist2d):
   probs = array.array('d', [0.025, 0.16, 0.5, 1 - 0.16, 0.975] )
   q = array.array('d', [0.0]*len(probs))
@@ -1317,15 +1319,15 @@ def getQuantilesX(hist2d):
   return hist1d
 
 
-#______________________________________________________________________________                                              
+#______________________________________________________________________________
 def getMedian(yintegral):
   if (yintegral%2 == 1):
     return (yintegral-1)/2 + 1
   else:
     return (yintegral/2) + 0.5
-  
 
-#______________________________________________________________________________                                                                                                  
+
+#______________________________________________________________________________
 def get1DHistogramMedianY(hist2d):
     '''this function returns a 1d histogram
     for a 2d histgram using the median and the x-sigma resolution on the median'''
@@ -1336,7 +1338,7 @@ def get1DHistogramMedianY(hist2d):
     xmax = hist2d.GetXaxis().GetXmax()
     #ymin = hist2d.GetYaxis().GetXmin()
     #ymax = hist2d.GetYaxis().GetXmax()
- 
+
     xs = []
     ys = []
     xs_e_up = []
@@ -1366,7 +1368,7 @@ def get1DHistogramMedianY(hist2d):
       xval = hist2d.GetBinCenter(x)
       #xval_e_up = hist2d.GetBinWidth(x)/2.
       #xval_e_dw = hist2d.GetBinWidth(x)/2.
-      
+
       yval = q[1]
       if n<=1:
         yval=0
@@ -1374,7 +1376,7 @@ def get1DHistogramMedianY(hist2d):
       r1.SetBinError(x, error)
 
       """
-      xs.append(xval) 
+      xs.append(xval)
       xs_e_up.append(xval_e_up)
       xs_e_dw.append(xval_e_dw)
       ys.append(yval)
@@ -1394,20 +1396,20 @@ def get1DHistogramMedianY(hist2d):
     SetOwnership( r1, False )
     return r1
     """
-    tgraph = TGraphAsymmErrors(len(xs), 
-                               array.array("f",xs), 
-                               array.array("f",ys), 
-                               array.array("f",xs_e_dw), 
-                               array.array("f",xs_e_up), 
-                               array.array("f",ys_e_dw), 
+    tgraph = TGraphAsymmErrors(len(xs),
+                               array.array("f",xs),
+                               array.array("f",ys),
+                               array.array("f",xs_e_dw),
+                               array.array("f",xs_e_up),
+                               array.array("f",ys_e_dw),
                                array.array("f",ys_e_up))
     SetOwnership( tgraph, False )
     return tgraph
     """
 
-#______________________________________________________________________________                                                                                                  
+#______________________________________________________________________________
 def get1DHistogramFractionY(hist2d, fraction=.9):
-    '''this function returns 2 arrays, the x-values and the array with the  
+    '''this function returns 2 arrays, the x-values and the array with the
     with the 90% fraction on the yaxis'''
 
     xBins = hist2d.GetXaxis().GetNbins()
@@ -1416,7 +1418,7 @@ def get1DHistogramFractionY(hist2d, fraction=.9):
     xmax = hist2d.GetXaxis().GetXmax()
     ymin = hist2d.GetYaxis().GetXmin()
     ymax = hist2d.GetYaxis().GetXmax()
- 
+
     xs = []
     ys = []
     xs_e_up = []
@@ -1454,7 +1456,7 @@ def get1DHistogramFractionY(hist2d, fraction=.9):
       r1.SetBinContent(x, yval)
       r1.SetBinError(x, max(yval_e_up, yval_e_dw))
 
-      xs.append(xval) 
+      xs.append(xval)
       xs_e_up.append(xval_e_up)
       xs_e_dw.append(xval_e_dw)
       ys.append(yval)
@@ -1469,8 +1471,8 @@ def get1DHistogramFractionY(hist2d, fraction=.9):
     return xs, ys, r1
 
 
-#______________________________________________________________________________                                           
-def FitHistoFunction(hist2d, fraction, printa=False): 
+#______________________________________________________________________________
+def FitHistoFunction(hist2d, fraction, printa=False):
 
     xBins = hist2d.GetXaxis().GetNbins()
     yBins = hist2d.GetYaxis().GetNbins()
@@ -1486,8 +1488,8 @@ def FitHistoFunction(hist2d, fraction, printa=False):
     eyl = array.array('d')
     exh = array.array('d')
     eyh = array.array('d')
-    ybinwidth = (ymax-ymin)/(1.0*yBins) 
-    xbinwidth = (xmax-xmin)/(1.0*yBins) 
+    ybinwidth = (ymax-ymin)/(1.0*yBins)
+    xbinwidth = (xmax-xmin)/(1.0*yBins)
     Totfreq = hist2d.Integral(0,xBins+1,0,yBins+1)
     if Totfreq < 10:
       return (0,0,0,0,0,0)
@@ -1496,19 +1498,19 @@ def FitHistoFunction(hist2d, fraction, printa=False):
 
         if (printa > 0):
             print "*********** For bin x: %d **********************"%x
-            
+
 
         # Find the total number of frequencies
         totalfreq = hist2d.Integral(x,x,0,yBins+1)
         if totalfreq*1.0/(Totfreq*1.0)<0.0001:
           if printa>0:print "bin ",x," two small bincontent here "
           continue
-        # calculate the expected integral  
+        # calculate the expected integral
         med = totalfreq*(1.0-fraction)
 
         temporal = 0
         midbin = 0
-        content =0 
+        content =0
         for m in range (0,yBins+1):
                 temporal = hist2d.Integral(x,x,0,m)
                 if (temporal >= med):
@@ -1520,22 +1522,22 @@ def FitHistoFunction(hist2d, fraction, printa=False):
                   continue
 
         content = hist2d.GetBinContent(x,midbin)
-        p=temporal*1.0/(totalfreq*1.0) 
+        p=temporal*1.0/(totalfreq*1.0)
         ledge = ymin+(midbin-1)*ybinwidth
         p1 = (temporal-content)*1.0/(totalfreq*1.0)
         if printa>0:print "temporal ",temporal," temporal/totalfreq ",p," (temporal-thisbincontent)/totalfreq ",p1," total ",totalfreq," thisbin content ",content," this bin ",midbin
         y = ledge+ybinwidth*(1-fraction-p1)/(p-p1)
-        
+
         Xs.append(hist2d.GetBinCenter(x))
         Ys.append(y)
         exl.append(xbinwidth/2.0)
         exh.append(xbinwidth/2.0)
-        eyl.append(y*1.0/math.sqrt(totalfreq*(1-fraction)))  
-        eyh.append(y*1.0/math.sqrt(totalfreq*(fraction)))  
+        eyl.append(y*1.0/math.sqrt(totalfreq*(1-fraction)))
+        eyh.append(y*1.0/math.sqrt(totalfreq*(fraction)))
         if printa>0:print "x ",hist2d.GetBinCenter(x)," y ",y," exl ",xbinwidth/2.," exh ",xbinwidth/2," eyl ",math.sqrt(totalfreq*(1-fraction))," eyh ",math.sqrt(totalfreq*(fraction))
 
-    return (Xs, Ys, exl, exh, eyl, eyh)                               #Return the histogram 1D 
-                             #Return the histogram 1D 
+    return (Xs, Ys, exl, exh, eyl, eyh)                               #Return the histogram 1D
+                             #Return the histogram 1D
 
 
 #_______________________________________________________________________________
@@ -1547,11 +1549,11 @@ def applyTdrStyle():
     lumiTextOffset   = 0.2
     cmsTextSize      = 0.75
     cmsTextOffset    = 0.1  ## only used in outOfFrame version
-    
+
     relPosX    = 0.045
     relPosY    = 0.035
     relExtraDY = 1.2
-    
+
     ## ratio of "CMS" and extra text size
     extraOverCmsTextSize  = 0.76
 
@@ -1571,21 +1573,21 @@ def applyTdrStyle():
     latex = TLatex()
     latex.SetNDC();
     latex.SetTextAngle(0);
-    latex.SetTextColor(kBlack);    
-    
+    latex.SetTextColor(kBlack);
+
     extraTextSize = extraOverCmsTextSize*cmsTextSize;
     """
     latex.SetTextFont(cmsTextFont);
     latex.SetTextSize(cmsTextSize*t);
     latex.SetTextFont(42);
-    latex.SetTextAlign(31); 
-    latex.SetTextSize(lumiTextSize*t);    
-    latex.DrawLatex(1-r,1-t+lumiTextOffset*t,lumiText);    
+    latex.SetTextAlign(31);
+    latex.SetTextSize(lumiTextSize*t);
+    latex.DrawLatex(1-r,1-t+lumiTextOffset*t,lumiText);
     """
 
     """
     alignY_=3;
-    alignX_=2;    
+    alignX_=2;
     align_ = 10*alignX_ + alignY_;
     latex.SetTextAlign(align_);
     posX_ = 1-r - relPosX*(1-l-r)
@@ -1604,7 +1606,7 @@ def addfiles(ch, dirname=".", ext=".root"):
   ls = os.listdir(dirname)
   theInputFiles.extend([dirname[:] + x for x in ls if x.endswith(ext)])
   for pfile in theInputFiles:
-    ch.Add(pfile)  
+    ch.Add(pfile)
 
   return ch
 
@@ -1618,7 +1620,7 @@ def getBackwardCumulative(h):
     htemp = TH1F("htemp"," ",len(myptbin)-1, myptbin)
     ## keep the underflow
     htemp.SetBinContent(0,h.GetBinContent(0))
-    for i in range(1,len(myptbin)+1):        
+    for i in range(1,len(myptbin)+1):
         sum = 0
         for j in range(i+1,len(myptbin)+1):
             sum += h.GetBinContent(j)
@@ -1642,27 +1644,28 @@ def getTotalEventNumber(tree):
     return len(set(eventList))
 
 #______________________________________________________________________________
-def scaleToRate(tree, h):
-    ntotalEvents = tree.GetEntries()
+def scaleToRate(nEvents, h):
+    ntotalEvents = nEvents #tree.GetEntries()
     averageRate = 30000. #40000. * 0.795 #[kHz]
     bunchCrossingWindow = 1.#3.
     h.Scale(averageRate/bunchCrossingWindow/ntotalEvents)
     return h
 
 #______________________________________________________________________________
-def getRatePtHistogram(tree, h):
+def getRatePtHistogram(nEvents, h):
     h = getBackwardCumulative(h)
-    h = scaleToRate(tree, h)
+    h = scaleToRate(nEvents, h)
     return h
-        
+
 #______________________________________________________________________________
-def getRateEtaHistogram(tree, h):
-    h = scaleToRate(tree, h)
+def getRateEtaHistogram(nEvents, h):
+    h.Sumw2()
+    h = scaleToRate(nEvents, h)
     return h
 
 #______________________________________________________________________________
 def getRate(treecut):
-   
+
     #f = ROOT.TFile(file)
     #t = f.Get(dir)
     h = TH1F("h"," ",len(myptbin)-1, myptbin)
@@ -1694,7 +1697,7 @@ def set_style():
    gStyle.SetPadRightMargin(0.04);
    gStyle.SetPadTopMargin(0.06);
    gStyle.SetPadBottomMargin(0.13);
-   
+
 #______________________________________________________________________________
 def draw_1D(p, to_draw, c_title, title, h_bins, cut="", opt = ""):
    gStyle.SetStatStyle(0)
@@ -1724,7 +1727,7 @@ def draw_1D(p, to_draw, c_title, title, h_bins, cut="", opt = ""):
    h.SetMinimum(0.)
    h.SetMaximum(h.GetMaximum()*1.2)
    c.SaveAs("" + c_title + ".png")
-      
+
 
 #______________________________________________________________________________
 def draw_1D_root(p, to_draw, c_title, title, h_bins, cut="", opt = ""):
@@ -1763,7 +1766,7 @@ def draw_2D(p, to_draw, c_title, title, h_bins, cut="", opt = ""):
   h.SetTitle(title)
   h.SetLineWidth(2)
   h.SetLineColor(kBlue)
-  h.Draw(opt) 
+  h.Draw(opt)
   c.SaveAs("" + c_title + ".png")
 
 
@@ -1776,11 +1779,11 @@ def applyTdrStyle():
     lumiTextOffset   = 0.2
     cmsTextSize      = 0.75
     cmsTextOffset    = 0.1  ## only used in outOfFrame version
-    
+
     relPosX    = 0.045
     relPosY    = 0.035
     relExtraDY = 1.2
-    
+
     ## ratio of "CMS" and extra text size
     extraOverCmsTextSize  = 0.76
 
@@ -1798,21 +1801,21 @@ def applyTdrStyle():
     latex = TLatex()
     latex.SetNDC();
     latex.SetTextAngle(0);
-    latex.SetTextColor(kBlack);    
-    
+    latex.SetTextColor(kBlack);
+
     extraTextSize = extraOverCmsTextSize*cmsTextSize;
     """
     latex.SetTextFont(cmsTextFont);
     latex.SetTextSize(cmsTextSize*t);
     latex.SetTextFont(42);
-    latex.SetTextAlign(31); 
-    latex.SetTextSize(lumiTextSize*t);    
-    latex.DrawLatex(1-r,1-t+lumiTextOffset*t,lumiText);    
+    latex.SetTextAlign(31);
+    latex.SetTextSize(lumiTextSize*t);
+    latex.DrawLatex(1-r,1-t+lumiTextOffset*t,lumiText);
     """
 
     """
     alignY_=3;
-    alignX_=2;    
+    alignX_=2;
     align_ = 10*alignX_ + alignY_;
     latex.SetTextAlign(align_);
     posX_ = 1-r - relPosX*(1-l-r)
@@ -1945,7 +1948,7 @@ def get_1D(p, h_name, h_bins, to_draw, cut, opt = "", color = kBlue):
         sys.exit('%s does not exist'%(to_draw))
     h.SetTitle(title)
     h.SetLineWidth(2)
-    h.SetLineColor(color)    
+    h.SetLineColor(color)
     h.SetMinimum(0.)
     SetOwnership(h, False)
     return h
@@ -1967,7 +1970,7 @@ def get_2D(p, xbins, h_bins, to_draw, cut, opt = "", color = kBlue):
         sys.exit('%s does not exist'%(to_draw))
     #h.SetTitle("")
     #h.SetLineWidth(2)
-    #h.SetLineColor(color)    
+    #h.SetLineColor(color)
     #h.SetMinimum(0.)
     SetOwnership(h, False)
     return h
@@ -1980,14 +1983,14 @@ def to_array(x, fmt="d"):
 #_______________________________________________________________________________
 def getEfficiency(t, to_draw, denom_cut, extra_num_cut, color = kBlue, marker_st = 20):
     """Make an efficiency plot"""
-    
+
     ## total numerator selection cut
     num_cut = AND(denom_cut,extra_num_cut)
 
     binLow = [0.0,1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,12.0,14.0,16.0,18.0,20.0,24.0,28.0,32.0,36.0,42.0,50.0]
     ptbins = np.asarray(binLow)
 
-    num = TH1F("num", "", len(ptbins)-1, ptbins) 
+    num = TH1F("num", "", len(ptbins)-1, ptbins)
     den = TH1F("den", "", len(ptbins)-1, ptbins)
 
     t.Draw(to_draw + ">>num", num_cut, "goff")

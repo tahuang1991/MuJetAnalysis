@@ -31,85 +31,94 @@ def isME21StubDisabled(failRate):
     random_number = random.random()
     return random_number < failRate
 
+def fillPtEtaHistogram(ptHistogram,
+                       etaHistogram,
+                       treeHits,
+                       doBXCut,
+                       etaCutMin,
+                       etaCutMax,
+                       stubCut=2,
+                       qualityCut=4,
+                       hasME1Cut=False,
+                       hasME2Cut=False,
+                       hasME3Cut=False,
+                       hasME4Cut=False,
+                       hasME11Cut=False,
+                       hasME21Cut=False,
+                       hasGE11Cut=False,
+                       hasGE21Cut=False,
+                       hasME11ME21Cut=False,
+                       hasGE11GE21Cut=False,
+                       ME11FailRate=0,
+                       ME21FailRate=0,
+                       hasMB1Cut=False,
+                       hasMB2Cut=False,
+                       hasMB3Cut=False,
+                       hasMB4Cut=False):
+    prompt_L1Mu_pt, prompt_L1Mu_eta = getMaxPromptPtEtaEvent(treeHits,
+                                                             doBXCut,
+                                                             etaCutMin,
+                                                             etaCutMax,
+                                                             stubCut,
+                                                             qualityCut,
+                                                             hasME1Cut,
+                                                             hasME2Cut,
+                                                             hasME3Cut,
+                                                             hasME4Cut,
+                                                             hasME11Cut,
+                                                             hasME21Cut,
+                                                             hasGE11Cut,
+                                                             hasGE21Cut,
+                                                             hasME11ME21Cut,
+                                                             hasGE11GE21Cut,
+                                                             ME11FailRate,
+                                                             ME21FailRate,
+                                                             hasMB1Cut,
+                                                             hasMB2Cut,
+                                                             hasMB3Cut,
+                                                             hasMB4Cut)
+    if (prompt_L1Mu_pt>0):
+        ptHistogram.Fill(prompt_L1Mu_pt)
+    ## apply a 10 GeV pT cut for the eta histograms!!!
+    #if (prompt_L1Mu_pt>20):
+    #print "Max prompt pt, eta event", prompt_L1Mu_pt, prompt_L1Mu_eta
+    if (prompt_L1Mu_pt>15):
+        etaHistogram.Fill(abs(prompt_L1Mu_eta))
 
-def fillPtHistogram(histogram,
-                    treeHits,
-                    doBXCut,
-                    etaCutMin,
-                    etaCutMax,
-                    stubCut=2,
-                    qualityCut=4,
-                    hasME1Cut=False,
-                    hasME2Cut=False,
-                    hasME3Cut=False,
-                    hasME4Cut=False,
-                    hasME11Cut=False,
-                    hasME21Cut=False,
-                    hasGE11Cut=False,
-                    hasGE21Cut=False,
-                    hasME11ME21Cut=False,
-                    hasGE11GE21Cut=False,
-                    ME11FailRate=0,
-                    ME21FailRate=0,
-                    hasMB1Cut=False,
-                    hasMB2Cut=False,
-                    hasMB3Cut=False,
-                    hasMB4Cut=False):
-    prompt_L1Mu_pt = getMaxPromptPtEvent(treeHits,
-                                         doBXCut,
-                                         etaCutMin,
-                                         etaCutMax,
-                                         stubCut,
-                                         qualityCut,
-                                         hasME1Cut,
-                                         hasME2Cut,
-                                         hasME3Cut,
-                                         hasME4Cut,
-                                         hasME11Cut,
-                                         hasME21Cut,
-                                         hasGE11Cut,
-                                         hasGE21Cut,
-                                         hasME11ME21Cut,
-                                         hasGE11GE21Cut,
-                                         ME11FailRate,
-                                         ME21FailRate,
-                                         hasMB1Cut,
-                                         hasMB2Cut,
-                                         hasMB3Cut,
-                                         hasMB4Cut)
-    if (prompt_L1Mu_pt>0): histogram.Fill(prompt_L1Mu_pt)
 
 
-def getMaxPromptPtEvent(treeHits,
-                        doBXCut,
-                        etaCutMin,
-                        etaCutMax,
-                        stubCut,
-                        qualityCut,
-                        hasME1Cut=False,
-                        hasME2Cut=False,
-                        hasME3Cut=False,
-                        hasME4Cut=False,
-                        hasME11Cut=False,
-                        hasME21Cut=False,
-                        hasGE11Cut=False,
-                        hasGE21Cut=False,
-                        hasME11ME21Cut=False,
-                        hasGE11GE21Cut=False,
-                        ME11FailRate=0,
-                        ME21FailRate=0,
-                        hasMB1Cut=False,
-                        hasMB2Cut=False,
-                        hasMB3Cut=False,
-                        hasMB4Cut=False):
+def getMaxPromptPtEtaEvent(treeHits,
+                           doBXCut,
+                           etaCutMin,
+                           etaCutMax,
+                           stubCut,
+                           qualityCut,
+                           hasME1Cut=False,
+                           hasME2Cut=False,
+                           hasME3Cut=False,
+                           hasME4Cut=False,
+                           hasME11Cut=False,
+                           hasME21Cut=False,
+                           hasGE11Cut=False,
+                           hasGE21Cut=False,
+                           hasME11ME21Cut=False,
+                           hasGE11GE21Cut=False,
+                           ME11FailRate=0,
+                           ME21FailRate=0,
+                           hasMB1Cut=False,
+                           hasMB2Cut=False,
+                           hasMB3Cut=False,
+                           hasMB4Cut=False):
 
     max_prompt_L1Mu_pt = -1
+    max_prompt_L1Mu_eta = -99
 
     ## check if this event has L1Mus
     if len(list(treeHits.L1Mu_pt))==0:
-        return max_prompt_L1Mu_pt
+        return max_prompt_L1Mu_pt, max_prompt_L1Mu_eta
 
     pts = list(treeHits.L1Mu_pt)
+    #print "\tN L1Mus event", len(pts)
     for i in range(0,len(pts)):
         L1Mu_pt = treeHits.L1Mu_pt[i]
         L1Mu_eta = treeHits.L1Mu_eta[i]
@@ -118,6 +127,17 @@ def getMaxPromptPtEvent(treeHits,
         L1Mu_quality = treeHits.L1Mu_quality[i]
         L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[i]
         L1Mu_DTTF_index = treeHits.L1Mu_DTTF_index[i]
+
+        ## get the DTTF index
+        getDTTFindex = True
+        if getDTTFindex:
+            iDTTF_index = -1
+            iDTTF_dEta = 99
+            for iDTTF in range(0,len(treeHits.DTTF_bx)):
+                if treeHits.DTTF_bx[iDTTF] == L1Mu_bx and deltaPhi2(L1Mu_phi, treeHits.DTTF_phi[iDTTF])<0.001:
+                    iDTTF_index = iDTTF
+                    #print "found index",
+            L1Mu_DTTF_index = iDTTF_index
 
         ## eta cut
         if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue
@@ -186,7 +206,7 @@ def getMaxPromptPtEvent(treeHits,
 
         nCSCStubs = has_actual_CSC_ME1 + has_actual_CSC_ME2 + has_CSC_ME3 + has_CSC_ME4
 
-        if L1Mu_DTTF_index != -1 and  L1Mu_DTTF_index < len(treeHits.DTTF_phi1):
+        if L1Mu_DTTF_index != -1 and L1Mu_DTTF_index < len(treeHits.DTTF_phi1):
             has_DT_MB1 = treeHits.DTTF_phi1[L1Mu_DTTF_index] != 99
             has_DT_MB2 = treeHits.DTTF_phi2[L1Mu_DTTF_index] != 99
             has_DT_MB3 = treeHits.DTTF_phi3[L1Mu_DTTF_index] != 99
@@ -202,6 +222,12 @@ def getMaxPromptPtEvent(treeHits,
         ## L1Mu selection - CSC type
         if is_CSC_Muon:
             if nCSCStubs < stubCut: continue
+
+            #print "CSC muon!"
+            #print "has_CSC_ME1", has_CSC_ME1
+            #print "has_CSC_ME2", has_CSC_ME2
+            #print "has_CSC_ME3", has_CSC_ME3
+            #print "has_CSC_ME4", has_CSC_ME4
 
             if hasME1Cut and not has_CSC_ME1: continue
             if hasME2Cut and not has_CSC_ME2: continue
@@ -219,8 +245,9 @@ def getMaxPromptPtEvent(treeHits,
                                    (not passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt))): continue
 
         ## L1Mu selection - DT type
-        if is_DT_Muon:
-            if nDTStubs < stubCut: continue
+        if L1Mu_DTTF_index != -1:
+            continue
+            #if nDTStubs < stubCut: continue
             """
             print "DT muon!"
             print "has_DT_MB1", has_DT_MB1
@@ -235,10 +262,10 @@ def getMaxPromptPtEvent(treeHits,
             if hasMB4Cut and not has_DT_MB4: continue
 
         ## muon must be DT or CSC (no RPC)
-        if not (is_DT_Muon or is_CSC_Muon):
-            continue
+        #if not (is_DT_Muon or is_CSC_Muon):
+        #    continue
 
-        if False:
+        if True:
             print "\t\tMatched: L1Mu", "pt", L1Mu_pt, "eta", L1Mu_eta,
             print "phi", L1Mu_phi, "Quality", L1Mu_quality, "L1mu_bx", L1Mu_bx,
             print "L1Mu_CSCTF_index", L1Mu_CSCTF_index, "nCSCStubs", nCSCStubs,
@@ -250,9 +277,11 @@ def getMaxPromptPtEvent(treeHits,
         #  print k,i, "pt", L1Mu_pt, "eta", L1Mu_eta, "phi", L1Mu_phi, "bx", L1Mu_bx, "quality", L1Mu_quality
 
         ## calculate the max pT for the muons that pass the criteria
-        if L1Mu_pt > max_prompt_L1Mu_pt:   max_prompt_L1Mu_pt = L1Mu_pt
+        if L1Mu_pt > max_prompt_L1Mu_pt:
+            max_prompt_L1Mu_pt = L1Mu_pt
+            max_prompt_L1Mu_eta = L1Mu_eta
 
-    return max_prompt_L1Mu_pt
+    return max_prompt_L1Mu_pt, max_prompt_L1Mu_eta
 
 
 
@@ -263,28 +292,35 @@ Displaced_L1Mu_pt = pt_endcap_position_based_algorithm(treeHits, i, L1Mu_CSCTF_i
 isIsolated = is_L1Mu_isolated(treeHits, i, 0.4, 4, 0.12, 0)
 """
 
-def fillDisplacedPtHistogram(histogram,
-                             treeHits,
-                             doBXCut,
-                             etaCutMin,
-                             etaCutMax,
-                             stubCut,
-                             qualityCut,
-                             hasMB1Cut=False,
-                             hasMB2Cut=False,
-                             hasMB3Cut=False,
-                             hasMB4Cut=False):
-    displaced_L1Mu_pt = getMaxDisplacedPtEvent(treeHits,
-                                               doBXCut,
-                                               etaCutMin,
-                                               etaCutMax,
-                                               stubCut,
-                                               qualityCut,
-                                               hasMB1Cut,
-                                               hasMB2Cut,
-                                               hasMB3Cut,
-                                               hasMB4Cut)
-    if (displaced_L1Mu_pt>0): histogram.Fill(displaced_L1Mu_pt)
+def fillDisplacedPtEtaHistogram(ptHistogram,
+                                etaHistogram,
+                                treeHits,
+                                doBXCut,
+                                etaCutMin,
+                                etaCutMax,
+                                stubCut,
+                                qualityCut,
+                                hasMB1Cut=False,
+                                hasMB2Cut=False,
+                                hasMB3Cut=False,
+                                hasMB4Cut=False):
+    displaced_L1Mu_pt, displaced_L1Mu_eta = getMaxDisplacedPtEtaEvent(treeHits,
+                                                                      doBXCut,
+                                                                      etaCutMin,
+                                                                      etaCutMax,
+                                                                      stubCut,
+                                                                      qualityCut,
+                                                                      hasMB1Cut,
+                                                                      hasMB2Cut,
+                                                                      hasMB3Cut,
+                                                                      hasMB4Cut)
+    #print "check pT ok", displaced_L1Mu_pt
+    if (displaced_L1Mu_pt>0):
+        ptHistogram.Fill(displaced_L1Mu_pt)
+        #print "Max displaced pT event", displaced_L1Mu_pt
+    if (displaced_L1Mu_pt>15):
+        etaHistogram.Fill(abs(displaced_L1Mu_pt))
+        #print "Max displaced pT event", displaced_L1Mu_pt
 
 
 
@@ -294,22 +330,23 @@ def fillDisplacedPtHistogram(histogram,
 ## 4: direction based barrel
 displaced_pt_methods = [1, 2, 3]
 
-def getMaxDisplacedPtEvent(treeHits,
-                           doBXCut,
-                           etaCutMin,
-                           etaCutMax,
-                           stubCut,
-                           qualityCut,
-                           hasMB1Cut=False,
-                           hasMB2Cut=False,
-                           hasMB3Cut=False,
-                           hasMB4Cut=False):
+def getMaxDisplacedPtEtaEvent(treeHits,
+                              doBXCut,
+                              etaCutMin,
+                              etaCutMax,
+                              stubCut,
+                              qualityCut,
+                              hasMB1Cut=False,
+                              hasMB2Cut=False,
+                              hasMB3Cut=False,
+                              hasMB4Cut=False):
 
     max_displaced_L1Mu_pt = -1
+    max_displaced_L1Mu_eta = -99
 
     ## check if this event has L1Mus
     if len(list(treeHits.L1Mu_pt))==0:
-        return max_displaced_L1Mu_pt
+        return max_displaced_L1Mu_pt, max_displaced_L1Mu_eta
 
     pts = list(treeHits.L1Mu_pt)
     for i in range(0,len(pts)):
@@ -391,17 +428,20 @@ def getMaxDisplacedPtEvent(treeHits,
 
         #print L1Mu_CSCTF_index
         if is_CSC_Muon:
-            DisplacedL1Mu_pt = pt_endcap_position_based_algorithm(treeHits, i, True)
-        elif is_DT_Muon:
-            DisplacedL1Mu_pt = pt_barrel_direction_based_algorithm(treeHits, i,
-                                                                   hasMB1Cut,
-                                                                   hasMB2Cut,
-                                                                   hasMB3Cut,
-                                                                   hasMB4Cut)
+            DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_position_based_algorithm(treeHits, i, True)
+            #print "displacedL1Mu_pt", DisplacedL1Mu_pt
+        #elif is_DT_Muon:
+        #    DisplacedL1Mu_pt = pt_barrel_direction_based_algorithm(treeHits, i,
+        #                                                           hasMB1Cut,
+        #                                                           hasMB2Cut,
+        #                                                           hasMB3Cut,
+        #                                                           hasMB4Cut)
         else:
             DisplacedL1Mu_pt = -1
 
         ## calculate the max pT for the muons that pass the criteria
-        if DisplacedL1Mu_pt > max_displaced_L1Mu_pt:   max_displaced_L1Mu_pt = DisplacedL1Mu_pt
+        if DisplacedL1Mu_pt > max_displaced_L1Mu_pt:
+            max_displaced_L1Mu_pt = DisplacedL1Mu_pt
+            max_displaced_L1Mu_eta = DisplacedL1Mu_eta
 
-    return max_displaced_L1Mu_pt
+    return max_displaced_L1Mu_pt, max_displaced_L1Mu_eta

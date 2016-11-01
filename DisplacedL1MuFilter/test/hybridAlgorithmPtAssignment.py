@@ -236,6 +236,7 @@ def pt_endcap_position_based_algorithm(treeHits, L1Mu_index, doComparatorFit):
     CSCTF_fit_R4 = treeHits.CSCTF_fit_R4[L1Mu_CSCTF_index]
 
     ## do a fit to eta
+    """
     Rs_out, st_out, chi2ndf_R = getFittedPositions(
         [CSCTF_fit_R1, CSCTF_fit_R2, CSCTF_fit_R3, CSCTF_fit_R4],
         [CSCTF_fit_z1, CSCTF_fit_z2, CSCTF_fit_z3, CSCTF_fit_z4])
@@ -254,20 +255,20 @@ def pt_endcap_position_based_algorithm(treeHits, L1Mu_index, doComparatorFit):
     CSCTF_etafit_eta2 = 99
     CSCTF_etafit_eta3 = 99
     CSCTF_etafit_eta4 = 99
-
-    if ok_CSCTF_st1:
+    """
+    if ok_CSCTF_st1 and False:
         CSCTF_etafit_R1 = Rs_out[index_st1]
         CSCTF_etafit_eta1 = get_eta_from_Z_R(CSCTF_etafit_R1, CSCTF_fit_z1)
 
-    if ok_CSCTF_st2:
+    if ok_CSCTF_st2 and False:
         CSCTF_etafit_R2 = Rs_out[index_st2]
         CSCTF_etafit_eta2 = get_eta_from_Z_R(CSCTF_etafit_R2, CSCTF_fit_z2)
 
-    if ok_CSCTF_st3:
+    if ok_CSCTF_st3 and False:
         CSCTF_etafit_R3 = Rs_out[index_st3]
         CSCTF_etafit_eta3 = get_eta_from_Z_R(CSCTF_etafit_R3, CSCTF_fit_z3)
 
-    if ok_CSCTF_st4:
+    if ok_CSCTF_st4 and False:
         CSCTF_etafit_R4 = Rs_out[index_st4]
         CSCTF_etafit_eta4 = get_eta_from_Z_R(CSCTF_etafit_R4, CSCTF_fit_z4)
 
@@ -305,7 +306,7 @@ def pt_endcap_position_based_algorithm(treeHits, L1Mu_index, doComparatorFit):
     CSCTF_algo_R3 = CSCTF_R3
     CSCTF_algo_R4 = CSCTF_R4
 
-    if doComparatorFit:
+    if doComparatorFit and False:
         CSCTF_algo_phi1 = CSCTF_fit_phi1
         CSCTF_algo_phi2 = CSCTF_fit_phi2
         CSCTF_algo_phi3 = CSCTF_fit_phi3
@@ -405,7 +406,7 @@ def pt_endcap_position_based_algorithm(treeHits, L1Mu_index, doComparatorFit):
         #positionPt_withLCTFit =    pt_from_DDY123_v2(DDY123_withLCTFit,    etaRanges[etaPartition], ME1ME2ME3ParityCases[parity], True)
         returnValue = positionPt
 
-    return returnValue
+    return returnValue, CSCTF_eta2
 
 def pt_endcap_hybrid_algorithm(tree, L1Mu_index, L1Mu_CSCTF_index, doComparatorFit):
     pass

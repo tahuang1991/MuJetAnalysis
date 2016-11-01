@@ -339,8 +339,11 @@ struct MyEvent
   Float_t CSCTF_y1[kMaxCSCTF], CSCTF_y2[kMaxCSCTF], CSCTF_y3[kMaxCSCTF], CSCTF_y4[kMaxCSCTF];
   Float_t CSCTF_z1[kMaxCSCTF], CSCTF_z2[kMaxCSCTF], CSCTF_z3[kMaxCSCTF], CSCTF_z4[kMaxCSCTF];
 
+  // pT assignment module branches
   Float_t CSCTF_sim_DDY123[kMaxCSCTF];
   Float_t CSCTF_L1_DDY123[kMaxCSCTF];
+
+
 
   // recovered stubs using the SIM information (stubs not used in track building...)
   Int_t CSCTF_rec_ch1[kMaxCSCTF], CSCTF_rec_ch2[kMaxCSCTF], CSCTF_rec_ch3[kMaxCSCTF], CSCTF_rec_ch4[kMaxCSCTF];
@@ -2783,7 +2786,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       cout << "l1Mu_bx " << event_.L1Mu_bx[i] << endl;
     }
 
-    if (processTTI_){
+    if (processDTTF_){
       // Matching to DTTF
       double bestDrL1MuL1DTTrack = 99;
       for (unsigned int j=0; j<L1DTTrackPhis.size(); ++j) {

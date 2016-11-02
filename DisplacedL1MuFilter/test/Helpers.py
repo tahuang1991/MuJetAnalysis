@@ -1021,6 +1021,7 @@ def get_proptionality_factor_Tao(eta, parity, doFit):
     if parity is 'oee': return 0.64     #0
 
 
+#______________________________________________________________________________
 def pt_from_DDY123_Tao(DDY123, eta, parity, doFit):
 
   pt_range = [2.0, 3.0, 4.0, 5.0, 7., 10., 15., 20., 30., 40.]
@@ -1102,6 +1103,252 @@ def pt_from_DDY123_Tao(DDY123, eta, parity, doFit):
         break
   #print "Found pt", found_pt
   """
+  #print found_pt
+  return found_pt
+
+#______________________________________________________________________________
+def pt_from_dPhi_GE21(DPhi, eta, parity):
+
+  ## parity cases
+  ## 0. odd even even
+  ## 1. odd odd odd
+  ## 2. even even even
+  ## 3. even odd odd
+
+  pt_range = [2.0, 3.0, 4.0, 5.0, 7., 10., 15., 20., 30., 40.]
+  if eta is '12to14':
+    if parity is 'oee': DPhi_range = [0.000000, 0.479900, 0.448070, 0.295200, 0.150740, 0.123340, 0.091260, 0.083980, 0.080160, 0.077500]
+    if parity is 'ooo': DPhi_range = [0.428160,
+                                      0.553460,
+                                      0.409480,
+                                      0.260860,
+                                      0.162850,
+                                      0.123056,
+                                      0.098670,
+                                      0.093020,
+                                      0.093080,
+                                      0.091140]
+    if parity is 'eee': DPhi_range = [0.405140,
+                                      0.526660,
+                                      0.437500,
+                                      0.267670,
+                                      0.162340,
+                                      0.118900,
+                                      0.090760,
+                                      0.087080,
+                                      0.087673,
+                                      0.088280]
+    if parity is 'eoo': DPhi_range = [0.000000,
+                                      0.213980,
+                                      0.359100,
+                                      0.216380,
+                                      0.128560,
+                                      0.123140,
+                                      0.109440,
+                                      0.158620,
+                                      0.060580,
+                                      0.035120]
+
+  if eta is '14to16':
+    if parity is 'oee': DPhi_range = [0.532780,
+                                      0.415120,
+                                      0.271000,
+                                      0.237780,
+                                      0.164000,
+                                      0.125380,
+                                      0.088880,
+                                      0.082840,
+                                      0.093260,
+                                      0.089680]
+    if parity is 'ooo': DPhi_range = [0.544040,
+                                      0.496380,
+                                      0.348800,
+                                      0.230900,
+                                      0.151420,
+                                      0.120467,
+                                      0.095460,
+                                      0.091833,
+                                      0.094695,
+                                      0.091255]
+    if parity is 'eee': DPhi_range = [0.531780,
+                                      0.509440,
+                                      0.338870,
+                                      0.226220,
+                                      0.160200,
+                                      0.120060,
+                                      0.101780,
+                                      0.093290,
+                                      0.091740,
+                                      0.090350]
+    if parity is 'eoo': DPhi_range = [0.424840,
+                                      0.395900,
+                                      0.306500,
+                                      0.219840,
+                                      0.157500,
+                                      0.128060,
+                                      0.104160,
+                                      0.072620,
+                                      0.078500,
+                                      0.093520]
+
+  if eta is '16to18':
+    if parity is 'oee': DPhi_range = [0.529040,
+                                      0.475500,
+                                      0.235420,
+                                      0.162560,
+                                      0.105260,
+                                      0.079680,
+                                      0.065440,
+                                      0.061420,
+                                      0.063960,
+                                      0.058960]
+
+    if parity is 'ooo': DPhi_range = [0.535000,
+                                      0.472900,
+                                      0.217160,
+                                      0.145120,
+                                      0.085973,
+                                      0.060900,
+                                      0.041930,
+                                      0.035773,
+                                      0.029827,
+                                      0.027020]
+    if parity is 'eee': DPhi_range = [0.485420,
+                                      0.435300,
+                                      0.226580,
+                                      0.164780,
+                                      0.107020,
+                                      0.076700,
+                                      0.064600,
+                                      0.058750,
+                                      0.059580,
+                                      0.057300]
+    if parity is 'eoo': DPhi_range = [0.515740,
+                                      0.462140,
+                                      0.210820,
+                                      0.149220,
+                                      0.085680,
+                                      0.056373,
+                                      0.045200,
+                                      0.039680,
+                                      0.036830,
+                                      0.039740]
+
+  if eta is '18to20':
+    if parity is 'oee': DPhi_range = [0.430960,
+                                      0.354890,
+                                      0.179560,
+                                      0.119847,
+                                      0.086280,
+                                      0.067560,
+                                      0.054710,
+                                      0.050720,
+                                      0.052300,
+                                      0.050613]
+    if parity is 'ooo': DPhi_range = [0.451560,
+                                      0.340600,
+                                      0.174860,
+                                      0.113700,
+                                      0.072760,
+                                      0.051200,
+                                      0.038830,
+                                      0.035883,
+                                      0.030160,
+                                      0.030160]
+    if parity is 'eee': DPhi_range = [0.437460,
+                                      0.324620,
+                                      0.171980,
+                                      0.108540,
+                                      0.079680,
+                                      0.065740,
+                                      0.057560,
+                                      0.057427,
+                                      0.053260,
+                                      0.057700]
+    if parity is 'eoo': DPhi_range = [0.410720,
+                                      0.324380,
+                                      0.152780,
+                                      0.114020,
+                                      0.069780,
+                                      0.051320,
+                                      0.042787,
+                                      0.040627,
+                                      0.040880,
+                                      0.039740]
+
+  if eta is '20to22':
+    if parity is 'oee': DPhi_range = [0.344860,
+                                      0.209760,
+                                      0.113700,
+                                      0.106650,
+                                      0.076220,
+                                      0.061433,
+                                      0.055220,
+                                      0.056900,
+                                      0.056940,
+                                      0.057360]
+
+    if parity is 'ooo': DPhi_range = [0.308380,
+                                      0.214270,
+                                      0.111480,
+                                      0.086350,
+                                      0.055780,
+                                      0.044500,
+                                      0.039690,
+                                      0.036030,
+                                      0.031624,
+                                      0.031720]
+
+    if parity is 'eee': DPhi_range = [0.324680,
+                                      0.232940,
+                                      0.124380,
+                                      0.101380,
+                                      0.078520,
+                                      0.064773,
+                                      0.063380,
+                                      0.068680,
+                                      0.060340,
+                                      0.066100]
+
+    if parity is 'eoo': DPhi_range = [0.276480,
+                                      0.187680,
+                                      0.114080,
+                                      0.081240,
+                                      0.064930,
+                                      0.055440,
+                                      0.043670,
+                                      0.042980,
+                                      0.043550,
+                                      0.044590]
+
+  if DPhi < 0:
+    print "ALARM", DPhi
+  found_pt = 2
+  #if   DPhi >= DPhi_range[0] and DPhi_range[0] != 0:
+  #  found_pt = 0
+  if DPhi < DPhi_range[0] and DPhi >= DPhi_range[1]:
+    found_pt = 2
+  elif DPhi < DPhi_range[1] and DPhi >= DPhi_range[2]:
+    found_pt = 3
+  elif DPhi < DPhi_range[2] and DPhi >= DPhi_range[3]:
+    found_pt = 4
+  elif DPhi < DPhi_range[3] and DPhi >= DPhi_range[4]:
+    found_pt = 5
+  elif DPhi < DPhi_range[4] and DPhi >= DPhi_range[5]:
+    found_pt = 7
+  elif DPhi < DPhi_range[5] and DPhi >= DPhi_range[6]:
+    found_pt = 10
+  elif DPhi < DPhi_range[6] and DPhi >= DPhi_range[7]:
+    found_pt = 15
+  elif DPhi < DPhi_range[7] and DPhi >= DPhi_range[8]:
+    found_pt = 20
+  elif DPhi < DPhi_range[8] and DPhi >= DPhi_range[9]:
+    found_pt = 30
+  elif DPhi < DPhi_range[9]:
+    found_pt = 140 ## assign 140 GeV to highest pT muons by default!!!!
+  else:
+    found_pt = 2
+
   #print found_pt
   return found_pt
 

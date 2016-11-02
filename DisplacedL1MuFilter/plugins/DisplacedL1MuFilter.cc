@@ -342,6 +342,10 @@ struct MyEvent
   // pT assignment module branches
   Float_t CSCTF_sim_DDY123[kMaxCSCTF];
   Float_t CSCTF_L1_DDY123[kMaxCSCTF];
+  Float_t CSCTF_sim_DPhi12_noGE21[kMaxCSCTF];
+  Float_t CSCTF_L1_DPhi12_noGE21[kMaxCSCTF];
+  Float_t CSCTF_sim_DPhi12_GE21[kMaxCSCTF];
+  Float_t CSCTF_L1_DPhi12_GE21[kMaxCSCTF];
 
 
 
@@ -1725,7 +1729,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
       if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runPositionbased()){
         event_.CSCTF_sim_DDY123[k] = ptAssignmentUnit.getdeltaY123();
-        std::cout << "SIM_DDY123 " << event_.CSCTF_sim_DDY123[k] << std::endl;
+        //std::cout << "SIM_DDY123 " << event_.CSCTF_sim_DDY123[k] << std::endl;
+      }
+      if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(false)){
+        event_.CSCTF_sim_DPhi12_noGE21[k] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
+      }
+      if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(true)){
+        event_.CSCTF_sim_DPhi12_GE21[k] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
       }
 
 
@@ -2260,6 +2270,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runPositionbased()){
       event_.CSCTF_L1_DDY123[j] = ptAssignmentUnit.getdeltaY123();
       std::cout << "L1_DDY123 " << event_.CSCTF_L1_DDY123[j] << std::endl;
+    }
+    if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(false)){
+      event_.CSCTF_L1_DPhi12_noGE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
+    }
+    if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(true)){
+      event_.CSCTF_L1_DPhi12_GE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
     }
 
     stubMissingSt1 = event_.CSCTF_st1[j] == 99;
@@ -5159,6 +5175,10 @@ void DisplacedL1MuFilter::bookL1MuTree()
 
   event_tree_->Branch("CSCTF_sim_DDY123", event_.CSCTF_sim_DDY123,"CSCTF_sim_DDY123[50]/F");
   event_tree_->Branch("CSCTF_L1_DDY123", event_.CSCTF_L1_DDY123,"CSCTF_L1_DDY123[50]/F");
+  event_tree_->Branch("CSCTF_sim_DPhi12_noGE21", event_.CSCTF_sim_DPhi12_noGE21,"CSCTF_sim_DPhi12_noGE21[50]/F");
+  event_tree_->Branch("CSCTF_L1_DPhi12_noGE21", event_.CSCTF_L1_DPhi12_noGE21,"CSCTF_L1_DPhi12_noGE21[50]/F");
+  event_tree_->Branch("CSCTF_sim_DPhi12_GE21", event_.CSCTF_sim_DPhi12_GE21,"CSCTF_sim_DPhi12_GE21[50]/F");
+  event_tree_->Branch("CSCTF_L1_DPhi12_GE21", event_.CSCTF_L1_DPhi12_GE21,"CSCTF_L1_DPhi12_GE21[50]/F");
 
   if (processRPCb_) {
   event_tree_->Branch("nRPCb", &event_.nRPCb);
@@ -5730,6 +5750,10 @@ DisplacedL1MuFilter::clearBranches()
 
     event_.CSCTF_sim_DDY123[i] = 99;
     event_.CSCTF_L1_DDY123[i] = 99;
+    event_.CSCTF_sim_DPhi12_noGE21[i] = 99;
+    event_.CSCTF_L1_DPhi12_noGE21[i] = 99;
+    event_.CSCTF_sim_DPhi12_GE21[i] = 99;
+    event_.CSCTF_L1_DPhi12_GE21[i] = 99;
   }
 
   event_.nRPCb = 0;

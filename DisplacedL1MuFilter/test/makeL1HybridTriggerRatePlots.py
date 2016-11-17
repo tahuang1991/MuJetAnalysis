@@ -18,7 +18,7 @@ if __name__ == "__main__":
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20160926"; pu = 'PU140'; eff = False
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20161024"; pu = 'PU140'; eff = False
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20161025"; pu = 'PU140'; eff = False
-  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20161101"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20161104"; pu = 'PU140'; eff = False
 
   ## extension for figures - add more?
   ext = ".png"
@@ -47,9 +47,13 @@ if __name__ == "__main__":
   location1 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v6/161022_023147/0001/'
   location2 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v6/161022_023147/0002/'
 
-  location = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v6_NoStubRec/161101_045101/0000/'
-  location1 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v6_NoStubRec/161101_045101/0000/'
-  location2 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v6_NoStubRec/161101_045101/0000/'
+  #location = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v6_NoStubRec/161101_045101/0000/'
+  #location1 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v6_NoStubRec/161101_045101/0001/'
+  #location2 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v6_NoStubRec/161101_045101/0002/'
+
+  location = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v8_StubReco/161108_192441/0000/'
+  location1 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v8_StubReco/161108_192441/0001/'
+  location2 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v8_StubReco/161108_192441/0002/'
 
   treeHits = addfiles(ch, dirname=location, ext=".root")
   treeHits = addfiles(ch, dirname=location1, ext=".root")
@@ -134,6 +138,10 @@ if __name__ == "__main__":
       0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9,
       1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9,
       2.0, 2.1, 2.2, 2.3, 2.4, 2.5]
+    etabin = [
+      0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95,
+      1.0, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45, 1.5, 1.55, 1.6, 1.65, 1.7, 1.75, 1.8, 1.85, 1.9, 1.95,
+      2.0, 2.05, 2.1, 2.15, 2.2, 2.25, 2.3, 2.35, 2.4, 2.45, 2.5]
     myetabin = np.asarray(etabin)
 
     addPlotToMapTH1F_v2("h_single_prompt_L1Mu_rate_eta_eta00to24", myetabin)
@@ -221,18 +229,6 @@ if __name__ == "__main__":
                           mapTH1F["h_single_prompt_L1Mu_rate_eta_3_stubs_eta00to24"],
                           treeHits,True, 0.0, 2.4, 3, minQuality)
 
-      """
-      ## barrel rates
-      fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_eta16to22"],
-                          mapTH1F["h_single_prompt_L1Mu_rate_eta_eta16to22"],
-                          treeHits, True, 1.6, 2.2, 0, minQuality)
-      fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_2_stubs_eta16to22"],
-                          mapTH1F["h_single_prompt_L1Mu_rate_eta_2_stubs_eta16to22"],
-                          treeHits,True, 1.6, 2.2, 2, minQuality)
-      fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_3_stubs_eta16to22"],
-                          mapTH1F["h_single_prompt_L1Mu_rate_eta_3_stubs_eta16to22"],
-                          treeHits,True, 1.6, 2.2, 3, minQuality)
-
       fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_eta12to24"],
                           mapTH1F["h_single_prompt_L1Mu_rate_eta_eta12to24"],
                           treeHits, True, 1.2, 2.4, 0, minQuality)
@@ -247,6 +243,27 @@ if __name__ == "__main__":
                           mapTH1F["h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24"],
                           treeHits, True, 1.2, 2.4, 0, minQuality,
                           hasME1Cut=True, hasME2Cut=True, hasME3Cut=True)
+      """
+      fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_2_stubs_ME11_Fail10p_eta16to22"],
+                          mapTH1F["h_single_prompt_L1Mu_rate_eta_2_stubs_ME11_Fail10p_eta16to22"],
+                          treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True, ME11FailRate=0.1)
+      fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_3_stubs_ME11_Fail10p_eta16to22"],
+                          mapTH1F["h_single_prompt_L1Mu_rate_eta_3_stubs_ME11_Fail10p_eta16to22"],
+                          treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True, ME11FailRate=0.1)
+      """
+      """
+      ## barrel rates
+      fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_eta16to22"],
+                          mapTH1F["h_single_prompt_L1Mu_rate_eta_eta16to22"],
+                          treeHits, True, 1.6, 2.2, 0, minQuality)
+      fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_2_stubs_eta16to22"],
+                          mapTH1F["h_single_prompt_L1Mu_rate_eta_2_stubs_eta16to22"],
+                          treeHits,True, 1.6, 2.2, 2, minQuality)
+      fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_3_stubs_eta16to22"],
+                          mapTH1F["h_single_prompt_L1Mu_rate_eta_3_stubs_eta16to22"],
+                          treeHits,True, 1.6, 2.2, 3, minQuality)
+
+
 
       fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_eta00to09"],
                           mapTH1F["h_single_prompt_L1Mu_rate_eta_eta00to09"],
@@ -272,8 +289,6 @@ if __name__ == "__main__":
       #fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_3_stubs_ME11orME21_eta16to22"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11ME21Cut=True)
 
 
-      #fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_2_stubs_ME11_Fail10p_eta16to22"], treeHits,True, 1.6, 2.2, 2, minQuality, hasME11Cut=True, ME11FailRate=0.1)
-      #fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_3_stubs_ME11_Fail10p_eta16to22"], treeHits,True, 1.6, 2.2, 3, minQuality, hasME11Cut=True, ME11FailRate=0.1)
 
 
       fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_2_stubs_ME11_GE11_eta16to22"],
@@ -377,6 +392,10 @@ if __name__ == "__main__":
         0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9,
         1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9,
         2.0, 2.1, 2.2, 2.3, 2.4, 2.5]
+      etabin = [
+        0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95,
+        1.0, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45, 1.5, 1.55, 1.6, 1.65, 1.7, 1.75, 1.8, 1.85, 1.9, 1.95,
+        2.0, 2.05, 2.1, 2.15, 2.2, 2.25, 2.3, 2.35, 2.4, 2.45, 2.5]
       myetabin = np.asarray(etabin)
       nmyetabin = len(myetabin) - 1
 
@@ -417,15 +436,15 @@ if __name__ == "__main__":
       if doEta:
         h1.SetLineColor(kRed)
         h1.SetFillColor(kRed)
-        h1.Draw("e3 same")
+        h1.Draw("e1 same")
 
         h2.SetLineColor(kViolet)
         h2.SetFillColor(kViolet)
-        h2.Draw("e3 same")
+        h2.Draw("e1 same")
 
         h3.SetLineColor(kBlue)
         h3.SetFillColor(kBlue)
-        h3.Draw("e3 same")
+        h3.Draw("e1 same")
       else:
         h1.SetFillColor(kRed)
         h1.Draw("e3 same")

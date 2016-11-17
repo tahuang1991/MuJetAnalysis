@@ -1,0 +1,189 @@
+{
+//=========Macro generated from canvas: c/c
+//=========  (Thu Oct 27 15:31:25 2016) by ROOT version5.34/07
+   TCanvas *c = new TCanvas("c", "c",0,0,800,600);
+   gStyle->SetOptStat(0);
+   c->SetHighLightColor(2);
+   c->Range(-0.3928058,-16.04938,2.7247,107.4074);
+   c->SetFillColor(0);
+   c->SetBorderMode(0);
+   c->SetBorderSize(2);
+   c->SetGridx();
+   c->SetGridy();
+   c->SetTickx(1);
+   c->SetTicky(1);
+   c->SetLeftMargin(0.126);
+   c->SetRightMargin(0.04);
+   c->SetTopMargin(0.06);
+   c->SetBottomMargin(0.13);
+   c->SetFrameBorderMode(0);
+   c->SetFrameBorderMode(0);
+   Double_t xAxis77[26] = {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2, 2.3, 2.4, 2.5}; 
+   
+   TH1F *b1 = new TH1F("b1","           #scale[1.4]{#font[61]{CMS}} #font[52]{Simulation preliminary}                                                           14 TeV, 140 PU",25, xAxis77);
+   b1->SetMinimum(0);
+   b1->SetMaximum(100);
+   b1->SetStats(0);
+
+   Int_t ci;   // for color index setting
+   ci = TColor::GetColor("#000099");
+   b1->SetLineColor(ci);
+   b1->GetXaxis()->SetTitle("Muon trigger #eta");
+   b1->GetXaxis()->SetRange(1,26);
+   b1->GetXaxis()->SetLabelFont(42);
+   b1->GetXaxis()->SetLabelSize(0.05);
+   b1->GetXaxis()->SetTitleSize(0.05);
+   b1->GetXaxis()->SetTitleFont(42);
+   b1->GetYaxis()->SetTitle("Trigger rate [kHz]");
+   b1->GetYaxis()->SetLabelFont(42);
+   b1->GetYaxis()->SetLabelSize(0.05);
+   b1->GetYaxis()->SetTitleSize(0.05);
+   b1->GetYaxis()->SetTitleOffset(1.2);
+   b1->GetYaxis()->SetTitleFont(42);
+   b1->GetZaxis()->SetLabelFont(42);
+   b1->GetZaxis()->SetLabelSize(0.035);
+   b1->GetZaxis()->SetTitleSize(0.035);
+   b1->GetZaxis()->SetTitleFont(42);
+   b1->Draw("");
+   Double_t xAxis78[26] = {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2, 2.3, 2.4, 2.5}; 
+   
+   TH1F *h_single_prompt_L1Mu_rate_eta_eta12to24 = new TH1F("h_single_prompt_L1Mu_rate_eta_eta12to24","",25, xAxis78);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->SetBinContent(13,9);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->SetBinContent(14,15);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->SetBinContent(15,12);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->SetBinContent(16,24);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->SetBinContent(17,9);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->SetBinContent(18,3);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->SetBinContent(19,15);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->SetBinContent(20,18);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->SetBinContent(21,6);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->SetBinContent(22,15);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->SetBinContent(23,21);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->SetBinContent(24,30);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->SetEntries(59);
+
+   ci = TColor::GetColor("#ff0000");
+   h_single_prompt_L1Mu_rate_eta_eta12to24->SetLineColor(ci);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->GetXaxis()->SetLabelFont(42);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->GetXaxis()->SetLabelSize(0.035);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->GetXaxis()->SetTitleSize(0.035);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->GetXaxis()->SetTitleFont(42);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->GetYaxis()->SetLabelFont(42);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->GetYaxis()->SetLabelSize(0.035);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->GetYaxis()->SetTitleSize(0.035);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->GetYaxis()->SetTitleFont(42);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->GetZaxis()->SetLabelFont(42);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->GetZaxis()->SetLabelSize(0.035);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->GetZaxis()->SetTitleSize(0.035);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->GetZaxis()->SetTitleFont(42);
+   h_single_prompt_L1Mu_rate_eta_eta12to24->Draw("e1 same");
+   Double_t xAxis79[26] = {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2, 2.3, 2.4, 2.5}; 
+   
+   TH1F *h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24 = new TH1F("h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24","",25, xAxis79);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->SetBinContent(13,9);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->SetBinContent(14,12);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->SetBinContent(15,9);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->SetBinContent(16,9);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->SetBinContent(19,15);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->SetBinContent(20,15);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->SetBinContent(21,3);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->SetBinContent(22,9);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->SetBinContent(23,15);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->SetBinContent(24,30);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->SetEntries(42);
+
+   ci = TColor::GetColor("#cc00ff");
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->SetLineColor(ci);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetXaxis()->SetLabelFont(42);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetXaxis()->SetLabelSize(0.035);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetXaxis()->SetTitleSize(0.035);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetXaxis()->SetTitleFont(42);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetYaxis()->SetLabelFont(42);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetYaxis()->SetLabelSize(0.035);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetYaxis()->SetTitleSize(0.035);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetYaxis()->SetTitleFont(42);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetZaxis()->SetLabelFont(42);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetZaxis()->SetLabelSize(0.035);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetZaxis()->SetTitleSize(0.035);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetZaxis()->SetTitleFont(42);
+   h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->Draw("e1 same");
+   Double_t xAxis80[26] = {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2, 2.1, 2.2, 2.3, 2.4, 2.5}; 
+   
+   TH1F *h_single_displaced_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24 = new TH1F("h_single_displaced_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24","",25, xAxis80);
+
+   ci = TColor::GetColor("#0000ff");
+   h_single_displaced_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->SetLineColor(ci);
+   h_single_displaced_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetXaxis()->SetLabelFont(42);
+   h_single_displaced_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetXaxis()->SetLabelSize(0.035);
+   h_single_displaced_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetXaxis()->SetTitleSize(0.035);
+   h_single_displaced_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetXaxis()->SetTitleFont(42);
+   h_single_displaced_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetYaxis()->SetLabelFont(42);
+   h_single_displaced_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetYaxis()->SetLabelSize(0.035);
+   h_single_displaced_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetYaxis()->SetTitleSize(0.035);
+   h_single_displaced_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetYaxis()->SetTitleFont(42);
+   h_single_displaced_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetZaxis()->SetLabelFont(42);
+   h_single_displaced_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetZaxis()->SetLabelSize(0.035);
+   h_single_displaced_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetZaxis()->SetTitleSize(0.035);
+   h_single_displaced_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->GetZaxis()->SetTitleFont(42);
+   h_single_displaced_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24->Draw("e1 same");
+   
+   TLegend *leg = new TLegend(0.15,0.2,0.5,0.35,NULL,"brNDC");
+   leg->SetBorderSize(0);
+   leg->SetTextSize(0.04);
+   leg->SetLineColor(1);
+   leg->SetLineStyle(1);
+   leg->SetLineWidth(1);
+   leg->SetFillColor(0);
+   leg->SetFillStyle(0);
+   TLegendEntry *entry=leg->AddEntry("NULL","1.2<|#eta|<2.4","h");
+   entry->SetLineColor(1);
+   entry->SetLineStyle(1);
+   entry->SetLineWidth(1);
+   entry->SetMarkerColor(1);
+   entry->SetMarkerStyle(21);
+   entry->SetMarkerSize(1);
+   entry->SetTextFont(42);
+   entry=leg->AddEntry("h_single_prompt_L1Mu_rate_eta_eta12to24","Prompt L1Mu","f");
+   entry->SetFillStyle(1001);
+
+   ci = TColor::GetColor("#ff0000");
+   entry->SetLineColor(ci);
+   entry->SetLineStyle(1);
+   entry->SetLineWidth(1);
+   entry->SetMarkerColor(1);
+   entry->SetMarkerStyle(21);
+   entry->SetMarkerSize(1);
+   entry=leg->AddEntry("h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24","Prompt L1Mu, hit in ME1, ME2, ME3","f");
+   entry->SetFillStyle(1001);
+
+   ci = TColor::GetColor("#cc00ff");
+   entry->SetLineColor(ci);
+   entry->SetLineStyle(1);
+   entry->SetLineWidth(1);
+   entry->SetMarkerColor(1);
+   entry->SetMarkerStyle(21);
+   entry->SetMarkerSize(1);
+   entry=leg->AddEntry("h_single_displaced_L1Mu_rate_eta_ME1_ME2_ME3_eta12to24","Displaced L1Mu, hit in ME1, ME2, ME3, position based","f");
+   entry->SetFillStyle(1001);
+
+   ci = TColor::GetColor("#0000ff");
+   entry->SetLineColor(ci);
+   entry->SetLineStyle(1);
+   entry->SetLineWidth(1);
+   entry->SetMarkerColor(1);
+   entry->SetMarkerStyle(21);
+   entry->SetMarkerSize(1);
+   leg->Draw();
+   
+   TPaveText *pt = new TPaveText(0,0.942,1,1,"blNDC");
+   pt->SetName("title");
+   pt->SetBorderSize(0);
+   pt->SetFillColor(0);
+   pt->SetFillStyle(0);
+   pt->SetTextFont(42);
+   TText *text = pt->AddText("           #scale[1.4]{#font[61]{CMS}} #font[52]{Simulation preliminary}                                                           14 TeV, 140 PU");
+   pt->Draw();
+   c->Modified();
+   c->cd();
+   c->SetSelected(c);
+}

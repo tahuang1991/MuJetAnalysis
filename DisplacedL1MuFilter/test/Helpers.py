@@ -1089,7 +1089,7 @@ def pt_from_DDY123_Tao(DDY123, eta, parity, doFit):
   elif DDY123 < DDY123_range[8] and DDY123 >= DDY123_range[9]:
     found_pt = 30
   elif DDY123 < DDY123_range[9]:
-    found_pt = 140 ## assign 140 GeV to highest pT muons by default!!!!
+    found_pt = 120 ## assign 140 GeV to highest pT muons by default!!!!
   else:
     found_pt = 2
   """
@@ -2242,6 +2242,8 @@ def getEfficiency(t, to_draw, denom_cut, extra_num_cut, color = kBlue, marker_st
 
     t.Draw(to_draw + ">>num", num_cut, "goff")
     t.Draw(to_draw + ">>den", denom_cut, "goff")
+
+    print num.GetEntries(), den.GetEntries()
 
     useTEfficiency = True
     if useTEfficiency:

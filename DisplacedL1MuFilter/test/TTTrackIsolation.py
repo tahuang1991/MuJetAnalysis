@@ -82,7 +82,7 @@ def fillPtEtaHistogram(ptHistogram,
     ## apply a 10 GeV pT cut for the eta histograms!!!
     #if (prompt_L1Mu_pt>20):
     #print "Max prompt pt, eta event", prompt_L1Mu_pt, prompt_L1Mu_eta
-    if (prompt_L1Mu_pt>15):
+    if (prompt_L1Mu_pt>=20):
         etaHistogram.Fill(abs(prompt_L1Mu_eta))
 
 
@@ -127,6 +127,8 @@ def getMaxPromptPtEtaEvent(treeHits,
         L1Mu_quality = treeHits.L1Mu_quality[i]
         L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[i]
         L1Mu_DTTF_index = treeHits.L1Mu_DTTF_index[i]
+
+        L1Mu_eta_ME2 = -99
 
         ## get the DTTF index
         getDTTFindex = True
@@ -181,8 +183,18 @@ def getMaxPromptPtEtaEvent(treeHits,
             has_CSC_ME3 = treeHits.CSCTF_bx3[L1Mu_CSCTF_index] != 99
             has_CSC_ME4 = treeHits.CSCTF_bx4[L1Mu_CSCTF_index] != 99
 
+            L1Mu_eta_ME2 = treeHits.CSCTF_eta2[L1Mu_CSCTF_index]
+
+            if hasME1Cut and not has_CSC_ME1: continue
+            if hasME2Cut and not has_CSC_ME2: continue
+            if hasME3Cut and not has_CSC_ME3: continue
+            if hasME4Cut and not has_CSC_ME4: continue
+
             has_CSC_ME11 = treeHits.CSCTF_ri1[L1Mu_CSCTF_index] == 1 or treeHits.CSCTF_ri1[L1Mu_CSCTF_index] == 4
             has_CSC_ME21 = treeHits.CSCTF_ri2[L1Mu_CSCTF_index] == 1
+
+            if hasME11Cut and not has_CSC_ME11: continue
+            if hasME21Cut and not has_CSC_ME21: continue
 
             GE11_dPhi = treeHits.CSCTF_gemdphi1[L1Mu_CSCTF_index]
             GE21_dPhi = treeHits.CSCTF_gemdphi2[L1Mu_CSCTF_index]
@@ -192,6 +204,13 @@ def getMaxPromptPtEtaEvent(treeHits,
 
             CSC_ME1_ch  = treeHits.CSCTF_ch1[L1Mu_CSCTF_index]
             CSC_ME2_ch  = treeHits.CSCTF_ch2[L1Mu_CSCTF_index]
+
+            if hasGE11Cut and not passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt): continue
+            if hasGE21Cut and not passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt): continue
+
+            if (hasME11ME21Cut and not has_CSC_ME11 and not has_CSC_ME21): continue
+            if (hasGE11GE21Cut and (not passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt)) and
+                                   (not passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt))): continue
 
             ## check if stubs in station 1 and 2 can really be counted! -- they may be disabled
             if not has_CSC_ME11: has_actual_CSC_ME1 = has_CSC_ME1
@@ -204,7 +223,10 @@ def getMaxPromptPtEtaEvent(treeHits,
             if is_CSC_ME11_disabled: GE11_dPhi = 99
             if is_CSC_ME21_disabled: GE21_dPhi = 99
 
-        nCSCStubs = has_actual_CSC_ME1 + has_actual_CSC_ME2 + has_CSC_ME3 + has_CSC_ME4
+            nCSCStubs = has_actual_CSC_ME1 + has_actual_CSC_ME2 + has_CSC_ME3 + has_CSC_ME4
+            if nCSCStubs < stubCut: continue
+            #print "is csc muon"
+            #print "\t", nCSCStubs
 
         if L1Mu_DTTF_index != -1 and L1Mu_DTTF_index < len(treeHits.DTTF_phi1):
             has_DT_MB1 = treeHits.DTTF_phi1[L1Mu_DTTF_index] != 99
@@ -212,60 +234,26 @@ def getMaxPromptPtEtaEvent(treeHits,
             has_DT_MB3 = treeHits.DTTF_phi3[L1Mu_DTTF_index] != 99
             has_DT_MB4 = treeHits.DTTF_phi4[L1Mu_DTTF_index] != 99
 
-        nDTStubs = has_DT_MB1 + has_DT_MB2 + has_DT_MB3 + has_DT_MB4
+            if hasMB1Cut and not has_DT_MB1: continue
+            if hasMB2Cut and not has_DT_MB2: continue
+            if hasMB3Cut and not has_DT_MB3: continue
+            if hasMB4Cut and not has_DT_MB4: continue
+
+            nDTStubs = has_DT_MB1 + has_DT_MB2 + has_DT_MB3 + has_DT_MB4
+            if nDTStubs < stubCut: continue
+            #print "is dt muon"
+            #print "\t", nDTStubs
 
         ## define the L1Mu objects!!
         is_CSC_Muon =   (1.2 <= abs(L1Mu_eta) and abs(L1Mu_eta) <= 2.4) and L1Mu_CSCTF_index != -1
         is_DT_Muon =    (0.0 <= abs(L1Mu_eta) and abs(L1Mu_eta) <= 0.9) and L1Mu_DTTF_index != -1
         is_DTCSC_Muon = (0.9 <= abs(L1Mu_eta) and abs(L1Mu_eta) <= 1.2) and (L1Mu_DTTF_index != -1 or L1Mu_CSCTF_index != -1)
 
-        ## L1Mu selection - CSC type
-        if is_CSC_Muon:
-            if nCSCStubs < stubCut: continue
-
-            #print "CSC muon!"
-            #print "has_CSC_ME1", has_CSC_ME1
-            #print "has_CSC_ME2", has_CSC_ME2
-            #print "has_CSC_ME3", has_CSC_ME3
-            #print "has_CSC_ME4", has_CSC_ME4
-
-            if hasME1Cut and not has_CSC_ME1: continue
-            if hasME2Cut and not has_CSC_ME2: continue
-            if hasME3Cut and not has_CSC_ME3: continue
-            if hasME4Cut and not has_CSC_ME4: continue
-
-            if hasME11Cut and not has_CSC_ME11: continue
-            if hasME21Cut and not has_CSC_ME21: continue
-
-            if hasGE11Cut and not passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt): continue
-            if hasGE21Cut and not passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt): continue
-
-            if (hasME11ME21Cut and not has_CSC_ME11 and not has_CSC_ME21): continue
-            if (hasGE11GE21Cut and (not passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt)) and
-                                   (not passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt))): continue
-
-        ## L1Mu selection - DT type
-        if L1Mu_DTTF_index != -1:
-            continue
-            #if nDTStubs < stubCut: continue
-            """
-            print "DT muon!"
-            print "has_DT_MB1", has_DT_MB1
-            print "has_DT_MB2", has_DT_MB2
-            print "has_DT_MB3", has_DT_MB3
-            print "has_DT_MB4", has_DT_MB4
-            print "n DTTF stubs", treeHits.DTTF_nStubs[L1Mu_DTTF_index]
-            """
-            if hasMB1Cut and not has_DT_MB1: continue
-            if hasMB2Cut and not has_DT_MB2: continue
-            if hasMB3Cut and not has_DT_MB3: continue
-            if hasMB4Cut and not has_DT_MB4: continue
-
         ## muon must be DT or CSC (no RPC)
         #if not (is_DT_Muon or is_CSC_Muon):
         #    continue
 
-        if True:
+        if False:
             print "\t\tMatched: L1Mu", "pt", L1Mu_pt, "eta", L1Mu_eta,
             print "phi", L1Mu_phi, "Quality", L1Mu_quality, "L1mu_bx", L1Mu_bx,
             print "L1Mu_CSCTF_index", L1Mu_CSCTF_index, "nCSCStubs", nCSCStubs,
@@ -279,7 +267,7 @@ def getMaxPromptPtEtaEvent(treeHits,
         ## calculate the max pT for the muons that pass the criteria
         if L1Mu_pt > max_prompt_L1Mu_pt:
             max_prompt_L1Mu_pt = L1Mu_pt
-            max_prompt_L1Mu_eta = L1Mu_eta
+            max_prompt_L1Mu_eta = L1Mu_eta_ME2#L1Mu_eta
 
     return max_prompt_L1Mu_pt, max_prompt_L1Mu_eta
 
@@ -318,9 +306,9 @@ def fillDisplacedPtEtaHistogram(ptHistogram,
     if (displaced_L1Mu_pt>0):
         ptHistogram.Fill(displaced_L1Mu_pt)
         #print "Max displaced pT event", displaced_L1Mu_pt
-    if (displaced_L1Mu_pt>15):
-        etaHistogram.Fill(abs(displaced_L1Mu_pt))
-        #print "Max displaced pT event", displaced_L1Mu_pt
+    if (displaced_L1Mu_pt>=20):
+        etaHistogram.Fill(abs(displaced_L1Mu_eta))
+        print "Max displaced pT eta event", displaced_L1Mu_pt, abs(displaced_L1Mu_eta)
 
 
 
@@ -356,6 +344,8 @@ def getMaxDisplacedPtEtaEvent(treeHits,
         L1Mu_quality = treeHits.L1Mu_quality[i]
         L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[i]
         L1Mu_DTTF_index = treeHits.L1Mu_DTTF_index[i]
+
+        L1Mu_eta_ME2 = -99
 
         ## define the L1Mu objects!!
         is_CSC_Muon =   (1.2 <= abs(L1Mu_eta) and abs(L1Mu_eta) <= 2.4) and L1Mu_CSCTF_index != -1
@@ -394,6 +384,8 @@ def getMaxDisplacedPtEtaEvent(treeHits,
             has_CSC_ME2 = treeHits.CSCTF_bx2[L1Mu_CSCTF_index] != 99
             has_CSC_ME3 = treeHits.CSCTF_bx3[L1Mu_CSCTF_index] != 99
             has_CSC_ME4 = treeHits.CSCTF_bx4[L1Mu_CSCTF_index] != 99
+
+            L1Mu_eta_ME2 = treeHits.CSCTF_eta2[L1Mu_CSCTF_index]
 
             has_CSC_ME11 = treeHits.CSCTF_ri1[L1Mu_CSCTF_index] == 1 or treeHits.CSCTF_ri1[L1Mu_CSCTF_index] == 4
             has_CSC_ME21 = treeHits.CSCTF_ri2[L1Mu_CSCTF_index] == 1
@@ -442,6 +434,6 @@ def getMaxDisplacedPtEtaEvent(treeHits,
         ## calculate the max pT for the muons that pass the criteria
         if DisplacedL1Mu_pt > max_displaced_L1Mu_pt:
             max_displaced_L1Mu_pt = DisplacedL1Mu_pt
-            max_displaced_L1Mu_eta = DisplacedL1Mu_eta
+            max_displaced_L1Mu_eta = L1Mu_eta_ME2#DisplacedL1Mu_eta
 
     return max_displaced_L1Mu_pt, max_displaced_L1Mu_eta

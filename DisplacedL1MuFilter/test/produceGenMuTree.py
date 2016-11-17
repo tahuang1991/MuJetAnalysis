@@ -31,47 +31,20 @@ if __name__ == "__main__":
 
   set_style()
 
-  verbose = True
+  verbose = False
 
   ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
-  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v36/160907_181932/0000/'
-  #dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_L1MuANA_v2/160913_042859/0000/'
-  #dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU140_L1MuANA_v2/160913_042635/0000/'
 
-  #dirname='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_L1MuANA/161010_203715/0000/'
-  #dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU0_L1MuANA/161010_203525/0000/'
-  #dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU0_L1MuANA/161010_203345/0000/'
-
-  #dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU0_L1MuANA_v2/161013_152019/0000/'
-  #dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU0_L1MuANA_v2/161013_151727/0000/'
-  #dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_L1MuANA_v2/161013_152110/0000/'
-
-  #dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_L1MuANA_v2/161013_152110/0000/'
-  #dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_L1MuANA_v4/161013_153027/0000/'
-  #dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU140_L1MuANA_v4/161013_152818/0000/'
-
-  #dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU0_L1MuANA_v3_NoStubRec/161019_031932/0000/'
-  #dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU0_L1MuANA_v3_NoStubRec/161019_032027/0000/'
-  #dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_L1MuANA_v3_NoStubRec/161019_032238/0000/'
-
-  #dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU0_L1MuANA_v4_NoStubRec/161019_193146/0000/'
-  #dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU0_L1MuANA_v4_NoStubRec/161019_193443/0000/'
-  #dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_L1MuANA_v4_NoStubRec/161019_193512/0000/'
-
-  #dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU0_L1MuANA_v4_StubRec/161019_193736/0000/'
-  #dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU0_L1MuANA_v4_StubRec/161019_193814/0000/'
-  #dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_L1MuANA_v4_StubRec/161019_193841/0000/'
-
-  dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU0_L1MuANA_v41_StubRecovery/161022_031725/0000/'
-  dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU0_L1MuANA_v41_StubRecovery/161022_031841/0000/'
-  dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_L1MuANA_v41_StubRecovery/161022_031912/0000/'
+  dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU0_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU0_L1MuANA_v2/'
+  dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU0_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU0_L1MuANA_v2/'
+  dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU0_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_L1MuANA_v2/'
 
   ch = addfiles(ch, dirname=dirname1)
   ch = addfiles(ch, dirname=dirname2)
   ch = addfiles(ch, dirname=dirname3)
   treeHits = ch
 
-  f = ROOT.TFile("out_ana_pu0_displaced_L1Mu_DDY123_StubRec_20161025.root", "recreate")
+  f = ROOT.TFile("out_ana_pu0_displaced_L1Mu_DDY123_StubRec_20161117.root", "recreate")
   t = ROOT.TTree("L1MuTree", "L1MuTree")
 
   ## ranges
@@ -131,6 +104,7 @@ if __name__ == "__main__":
   CSCTF_eta2s = numpy.zeros(1, dtype=float)
   CSCTF_sim_eta2s = numpy.zeros(1, dtype=float)
 
+  ## check if station is there
   ok_CSCTF_st1s = numpy.zeros(1, dtype=int)
   ok_CSCTF_st2s = numpy.zeros(1, dtype=int)
   ok_CSCTF_st3s = numpy.zeros(1, dtype=int)
@@ -141,6 +115,7 @@ if __name__ == "__main__":
   ok_CSCTF_sim_st3s = numpy.zeros(1, dtype=int)
   ok_CSCTF_sim_st4s = numpy.zeros(1, dtype=int)
 
+  ## phi-eta
   CSCTF_phi1s = numpy.zeros(1, dtype=float)
   CSCTF_phi2s = numpy.zeros(1, dtype=float)
   CSCTF_phi3s = numpy.zeros(1, dtype=float)
@@ -150,11 +125,6 @@ if __name__ == "__main__":
   CSCTF_sim_phi2s = numpy.zeros(1, dtype=float)
   CSCTF_sim_phi3s = numpy.zeros(1, dtype=float)
   CSCTF_sim_phi4s = numpy.zeros(1, dtype=float)
-
-  CSC_sim_phi1s = numpy.zeros(1, dtype=float)
-  CSC_sim_phi2s = numpy.zeros(1, dtype=float)
-  CSC_sim_phi3s = numpy.zeros(1, dtype=float)
-  CSC_sim_phi4s = numpy.zeros(1, dtype=float)
 
   CSCTF_eta1s = numpy.zeros(1, dtype=float)
   CSCTF_eta2s = numpy.zeros(1, dtype=float)
@@ -166,11 +136,18 @@ if __name__ == "__main__":
   CSCTF_sim_eta3s = numpy.zeros(1, dtype=float)
   CSCTF_sim_eta4s = numpy.zeros(1, dtype=float)
 
-  CSC_sim_eta1s = numpy.zeros(1, dtype=float)
-  CSC_sim_eta2s = numpy.zeros(1, dtype=float)
-  CSC_sim_eta3s = numpy.zeros(1, dtype=float)
-  CSC_sim_eta4s = numpy.zeros(1, dtype=float)
+  ## ch number
+  CSCTF_ch1s = numpy.zeros(1, dtype=float)
+  CSCTF_ch2s = numpy.zeros(1, dtype=float)
+  CSCTF_ch3s = numpy.zeros(1, dtype=float)
+  CSCTF_ch4s = numpy.zeros(1, dtype=float)
 
+  CSCTF_sim_ch1s = numpy.zeros(1, dtype=float)
+  CSCTF_sim_ch2s = numpy.zeros(1, dtype=float)
+  CSCTF_sim_ch3s = numpy.zeros(1, dtype=float)
+  CSCTF_sim_ch4s = numpy.zeros(1, dtype=float)
+
+  ## global z
   CSCTF_z1s = numpy.zeros(1, dtype=float)
   CSCTF_z2s = numpy.zeros(1, dtype=float)
   CSCTF_z3s = numpy.zeros(1, dtype=float)
@@ -181,10 +158,28 @@ if __name__ == "__main__":
   CSCTF_sim_z3s = numpy.zeros(1, dtype=float)
   CSCTF_sim_z4s = numpy.zeros(1, dtype=float)
 
-  CSC_sim_z1s = numpy.zeros(1, dtype=float)
-  CSC_sim_z2s = numpy.zeros(1, dtype=float)
-  CSC_sim_z3s = numpy.zeros(1, dtype=float)
-  CSC_sim_z4s = numpy.zeros(1, dtype=float)
+  ## chamber number
+  CSCTF_ch1s = numpy.zeros(1, dtype=int)
+  CSCTF_ch2s = numpy.zeros(1, dtype=int)
+  CSCTF_ch3s = numpy.zeros(1, dtype=int)
+  CSCTF_ch4s = numpy.zeros(1, dtype=int)
+
+  CSCTF_sim_ch1s = numpy.zeros(1, dtype=int)
+  CSCTF_sim_ch2s = numpy.zeros(1, dtype=int)
+  CSCTF_sim_ch3s = numpy.zeros(1, dtype=int)
+  CSCTF_sim_ch4s = numpy.zeros(1, dtype=int)
+
+  CSCTF_isEven1s = numpy.zeros(1, dtype=int)
+  CSCTF_isEven2s = numpy.zeros(1, dtype=int)
+  CSCTF_isEven3s = numpy.zeros(1, dtype=int)
+  CSCTF_isEven4s = numpy.zeros(1, dtype=int)
+
+  CSCTF_sim_isEven1s = numpy.zeros(1, dtype=int)
+  CSCTF_sim_isEven2s = numpy.zeros(1, dtype=int)
+  CSCTF_sim_isEven3s = numpy.zeros(1, dtype=int)
+  CSCTF_sim_isEven4s = numpy.zeros(1, dtype=int)
+
+
 
   paritys_sim = numpy.zeros(1, dtype=int)
   partitions_sim = numpy.zeros(1, dtype=int)
@@ -198,9 +193,13 @@ if __name__ == "__main__":
   CSCTF_sim_DDY123s = numpy.zeros(1, dtype=float)
   CSCTF_L1_DDY123s = numpy.zeros(1, dtype=float)
 
+  CSCTF_sim_DPhi12_noGE21s = numpy.zeros(1, dtype=float)
+  CSCTF_L1_DPhi12_noGE21s = numpy.zeros(1, dtype=float)
+  CSCTF_sim_DPhi12_GE21s = numpy.zeros(1, dtype=float)
+  CSCTF_L1_DPhi12_GE21s = numpy.zeros(1, dtype=float)
 
 
-
+  ## gem hits are there!!
   ok_GE11_L1s = numpy.zeros(1, dtype=int)
   ok_GE11_L2s = numpy.zeros(1, dtype=int)
   ok_GE21_L1s = numpy.zeros(1, dtype=int)
@@ -211,6 +210,7 @@ if __name__ == "__main__":
   ok_GE21_sim_L1s = numpy.zeros(1, dtype=int)
   ok_GE21_sim_L2s = numpy.zeros(1, dtype=int)
 
+  ## phi
   GE11_L1_phis = numpy.zeros(1, dtype=float)
   GE11_L2_phis = numpy.zeros(1, dtype=float)
   GE21_L1_phis = numpy.zeros(1, dtype=float)
@@ -221,6 +221,7 @@ if __name__ == "__main__":
   GE21_sim_L1_phis = numpy.zeros(1, dtype=float)
   GE21_sim_L2_phis = numpy.zeros(1, dtype=float)
 
+  ## BX
   GE11_L1_bxs = numpy.zeros(1, dtype=int)
   GE11_L2_bxs = numpy.zeros(1, dtype=int)
   GE21_L1_bxs = numpy.zeros(1, dtype=int)
@@ -231,6 +232,7 @@ if __name__ == "__main__":
   GE21_sim_L1_bxs = numpy.zeros(1, dtype=int)
   GE21_sim_L2_bxs = numpy.zeros(1, dtype=int)
 
+  ## global z
   GE11_L1_zs = numpy.zeros(1, dtype=float)
   GE11_L2_zs = numpy.zeros(1, dtype=float)
   GE21_L1_zs = numpy.zeros(1, dtype=float)
@@ -307,11 +309,6 @@ if __name__ == "__main__":
   t.Branch('CSCTF_sim_phi3', CSCTF_sim_phi3s, 'CSCTF_sim_phi3/D')
   t.Branch('CSCTF_sim_phi4', CSCTF_sim_phi4s, 'CSCTF_sim_phi4/D')
 
-  t.Branch('CSC_sim_phi1', CSC_sim_phi1s, 'CSC_sim_phi1/D')
-  t.Branch('CSC_sim_phi2', CSC_sim_phi2s, 'CSC_sim_phi2/D')
-  t.Branch('CSC_sim_phi3', CSC_sim_phi3s, 'CSC_sim_phi3/D')
-  t.Branch('CSC_sim_phi4', CSC_sim_phi4s, 'CSC_sim_phi4/D')
-
   t.Branch('CSCTF_eta1', CSCTF_eta1s, 'CSCTF_eta1/D')
   t.Branch('CSCTF_eta2', CSCTF_eta2s, 'CSCTF_eta2/D')
   t.Branch('CSCTF_eta3', CSCTF_eta3s, 'CSCTF_eta3/D')
@@ -321,11 +318,6 @@ if __name__ == "__main__":
   t.Branch('CSCTF_sim_eta2', CSCTF_sim_eta2s, 'CSCTF_sim_eta2/D')
   t.Branch('CSCTF_sim_eta3', CSCTF_sim_eta3s, 'CSCTF_sim_eta3/D')
   t.Branch('CSCTF_sim_eta4', CSCTF_sim_eta4s, 'CSCTF_sim_eta4/D')
-
-  t.Branch('CSC_sim_eta1', CSC_sim_eta1s, 'CSC_sim_eta1/D')
-  t.Branch('CSC_sim_eta2', CSC_sim_eta2s, 'CSC_sim_eta2/D')
-  t.Branch('CSC_sim_eta3', CSC_sim_eta3s, 'CSC_sim_eta3/D')
-  t.Branch('CSC_sim_eta4', CSC_sim_eta4s, 'CSC_sim_eta4/D')
 
   t.Branch('CSCTF_z1', CSCTF_z1s, 'CSCTF_z1/D')
   t.Branch('CSCTF_z2', CSCTF_z2s, 'CSCTF_z2/D')
@@ -337,10 +329,25 @@ if __name__ == "__main__":
   t.Branch('CSCTF_sim_z3', CSCTF_sim_z3s, 'CSCTF_sim_z3/D')
   t.Branch('CSCTF_sim_z4', CSCTF_sim_z4s, 'CSCTF_sim_z4/D')
 
-  t.Branch('CSC_sim_z1', CSC_sim_z1s, 'CSC_sim_z1/D')
-  t.Branch('CSC_sim_z2', CSC_sim_z2s, 'CSC_sim_z2/D')
-  t.Branch('CSC_sim_z3', CSC_sim_z3s, 'CSC_sim_z3/D')
-  t.Branch('CSC_sim_z4', CSC_sim_z4s, 'CSC_sim_z4/D')
+  t.Branch('CSCTF_ch1', CSCTF_ch1s, 'CSCTF_ch1/I')
+  t.Branch('CSCTF_ch2', CSCTF_ch2s, 'CSCTF_ch2/I')
+  t.Branch('CSCTF_ch3', CSCTF_ch3s, 'CSCTF_ch3/I')
+  t.Branch('CSCTF_ch4', CSCTF_ch4s, 'CSCTF_ch4/I')
+
+  t.Branch('CSCTF_sim_ch1', CSCTF_sim_ch1s, 'CSCTF_sim_ch1/I')
+  t.Branch('CSCTF_sim_ch2', CSCTF_sim_ch2s, 'CSCTF_sim_ch2/I')
+  t.Branch('CSCTF_sim_ch3', CSCTF_sim_ch3s, 'CSCTF_sim_ch3/I')
+  t.Branch('CSCTF_sim_ch4', CSCTF_sim_ch4s, 'CSCTF_sim_ch4/I')
+
+  t.Branch('CSCTF_isEven1', CSCTF_isEven1s, 'CSCTF_isEven1/I')
+  t.Branch('CSCTF_isEven2', CSCTF_isEven2s, 'CSCTF_isEven2/I')
+  t.Branch('CSCTF_isEven3', CSCTF_isEven3s, 'CSCTF_isEven3/I')
+  t.Branch('CSCTF_isEven4', CSCTF_isEven4s, 'CSCTF_isEven4/I')
+
+  t.Branch('CSCTF_sim_isEven1', CSCTF_sim_isEven1s, 'CSCTF_sim_isEven1/I')
+  t.Branch('CSCTF_sim_isEven2', CSCTF_sim_isEven2s, 'CSCTF_sim_isEven2/I')
+  t.Branch('CSCTF_sim_isEven3', CSCTF_sim_isEven3s, 'CSCTF_sim_isEven3/I')
+  t.Branch('CSCTF_sim_isEven4', CSCTF_sim_isEven4s, 'CSCTF_sim_isEven4/I')
 
   t.Branch('parity_L1', paritys_L1, 'parity_L1/I')
   t.Branch('parity_sim', paritys_sim, 'parity_sim/I')
@@ -354,6 +361,12 @@ if __name__ == "__main__":
   t.Branch('CSCTF_sim_DDY123', CSCTF_sim_DDY123s, 'CSCTF_sim_DDY123/D')
   t.Branch('CSCTF_L1_DDY123', CSCTF_L1_DDY123s, 'CSCTF_L1_DDY123/D')
 
+  t.Branch('CSCTF_sim_DPhi12_noGE21', CSCTF_sim_DPhi12_noGE21s, 'CSCTF_sim_DPhi12_noGE21/D')
+  t.Branch('CSCTF_L1_DPhi12_noGE21', CSCTF_L1_DPhi12_noGE21s, 'CSCTF_L1_DPhi12_noGE21/D')
+  t.Branch('CSCTF_sim_DPhi12_GE21', CSCTF_sim_DPhi12_GE21s, 'CSCTF_sim_DPhi12_GE21/D')
+  t.Branch('CSCTF_L1_DPhi12_GE21', CSCTF_L1_DPhi12_GE21s, 'CSCTF_L1_DPhi12_GE21/D')
+
+  ## GEM information
   t.Branch('ok_GE11_L1', ok_GE11_L1s, 'ok_GE11_L1/I')
   t.Branch('ok_GE11_L2', ok_GE11_L2s, 'ok_GE11_L2/I')
   t.Branch('ok_GE21_L1', ok_GE21_L1s, 'ok_GE21_L1/I')
@@ -404,7 +417,7 @@ if __name__ == "__main__":
 
   t.Branch('DT1_DT4_pt', DT1_DT4_pts, 'DT1_DT4_pt/D')
 
-  print "Start run on events..."
+  print "Start run on", treeHits.GetEntries(), "events."
   for k in range(0,treeHits.GetEntries()):
       treeHits.GetEntry(k)
       if k%1000==0: print "Event", k+1, "nL1Mu", treeHits.nL1Mu
@@ -482,6 +495,7 @@ if __name__ == "__main__":
 
           #print "sim_index", sim_index
           sim_pts[0] = treeHits.pt_sim[sim_index]
+          if verbose: print "sim_pt", sim_pts[0]
 
           #if abs(float(gen_pts[0]) - float(sim_pts[0])) > 0.01:
           #  print "Error, different gen-sim pt", gen_pts[0], sim_pts[0]
@@ -521,11 +535,6 @@ if __name__ == "__main__":
           CSCTF_sim_phi3s[0] = -99
           CSCTF_sim_phi4s[0] = -99
 
-          CSC_sim_phi1s[0] = -99
-          CSC_sim_phi2s[0] = -99
-          CSC_sim_phi3s[0] = -99
-          CSC_sim_phi4s[0] = -99
-
           CSCTF_eta1s[0] = -99
           CSCTF_eta2s[0] = -99
           CSCTF_eta3s[0] = -99
@@ -535,11 +544,6 @@ if __name__ == "__main__":
           CSCTF_sim_eta2s[0] = -99
           CSCTF_sim_eta3s[0] = -99
           CSCTF_sim_eta4s[0] = -99
-
-          CSC_sim_eta1s[0] = -99
-          CSC_sim_eta2s[0] = -99
-          CSC_sim_eta3s[0] = -99
-          CSC_sim_eta4s[0] = -99
 
           CSCTF_z1s[0] = -99
           CSCTF_z2s[0] = -99
@@ -551,10 +555,25 @@ if __name__ == "__main__":
           CSCTF_sim_z3s[0] = -99
           CSCTF_sim_z4s[0] = -99
 
-          CSC_sim_z1s[0] = -99
-          CSC_sim_z2s[0] = -99
-          CSC_sim_z3s[0] = -99
-          CSC_sim_z4s[0] = -99
+          CSCTF_ch1s[0] = -99
+          CSCTF_ch2s[0] = -99
+          CSCTF_ch3s[0] = -99
+          CSCTF_ch4s[0] = -99
+
+          CSCTF_sim_ch1s[0] = -99
+          CSCTF_sim_ch2s[0] = -99
+          CSCTF_sim_ch3s[0] = -99
+          CSCTF_sim_ch4s[0] = -99
+
+          CSCTF_isEven1s[0] = -99
+          CSCTF_isEven2s[0] = -99
+          CSCTF_isEven3s[0] = -99
+          CSCTF_isEven4s[0] = -99
+
+          CSCTF_sim_isEven1s[0] = -99
+          CSCTF_sim_isEven2s[0] = -99
+          CSCTF_sim_isEven3s[0] = -99
+          CSCTF_sim_isEven4s[0] = -99
 
           DDY123_pts[0] = 0
           DDY123_withoutLCTFits[0] = -1
@@ -562,6 +581,11 @@ if __name__ == "__main__":
 
           CSCTF_sim_DDY123s[0] = 99
           CSCTF_L1_DDY123s[0] = 99
+
+          CSCTF_sim_DPhi12_noGE21s[0] = 99
+          CSCTF_L1_DPhi12_noGE21s[0] = 99
+          CSCTF_sim_DPhi12_GE21s[0] = 99
+          CSCTF_L1_DPhi12_GE21s[0] = 99
 
           ok_GE11_L1s[0] = 0
           ok_GE11_L2s[0] = 0
@@ -623,6 +647,11 @@ if __name__ == "__main__":
           CSCTF_sim_phi3s[0] = treeHits.CSCTF_rec_phi3[sim_index]
           CSCTF_sim_phi4s[0] = treeHits.CSCTF_rec_phi4[sim_index]
 
+          ok_CSCTF_sim_st1s[0] = int(CSCTF_sim_phi1s[0] != 99)
+          ok_CSCTF_sim_st2s[0] = int(CSCTF_sim_phi2s[0] != 99)
+          ok_CSCTF_sim_st3s[0] = int(CSCTF_sim_phi3s[0] != 99)
+          ok_CSCTF_sim_st4s[0] = int(CSCTF_sim_phi4s[0] != 99)
+
           CSCTF_sim_eta1s[0] = treeHits.CSCTF_rec_eta1[sim_index]
           CSCTF_sim_eta2s[0] = treeHits.CSCTF_rec_eta2[sim_index]
           CSCTF_sim_eta3s[0] = treeHits.CSCTF_rec_eta3[sim_index]
@@ -633,16 +662,18 @@ if __name__ == "__main__":
           CSCTF_sim_z3s[0] = treeHits.CSCTF_rec_z3[sim_index]
           CSCTF_sim_z4s[0] = treeHits.CSCTF_rec_z4[sim_index]
 
-          ok_CSCTF_sim_st1 = CSCTF_sim_phi1s[0] != 99
-          ok_CSCTF_sim_st2 = CSCTF_sim_phi2s[0] != 99
-          ok_CSCTF_sim_st3 = CSCTF_sim_phi3s[0] != 99
-          ok_CSCTF_sim_st4 = CSCTF_sim_phi4s[0] != 99
+          CSCTF_sim_ch1s[0] = treeHits.CSCTF_rec_ch1[sim_index]
+          CSCTF_sim_ch2s[0] = treeHits.CSCTF_rec_ch2[sim_index]
+          CSCTF_sim_ch3s[0] = treeHits.CSCTF_rec_ch3[sim_index]
+          CSCTF_sim_ch4s[0] = treeHits.CSCTF_rec_ch4[sim_index]
 
-          ok_CSCTF_sim_st1s[0] = int(ok_CSCTF_sim_st1)
-          ok_CSCTF_sim_st2s[0] = int(ok_CSCTF_sim_st2)
-          ok_CSCTF_sim_st3s[0] = int(ok_CSCTF_sim_st3)
-          ok_CSCTF_sim_st4s[0] = int(ok_CSCTF_sim_st4)
+          CSCTF_sim_isEven1s[0] = CSCTF_sim_ch1s[0]%2==0
+          CSCTF_sim_isEven2s[0] = CSCTF_sim_ch2s[0]%2==0
+          CSCTF_sim_isEven3s[0] = CSCTF_sim_ch3s[0]%2==0
+          CSCTF_sim_isEven4s[0] = CSCTF_sim_ch4s[0]%2==0
 
+
+          ## GEM information
           GE11_sim_L1_phis[0] = treeHits.GE11_sim_phi_L1[sim_index]
           GE11_sim_L2_phis[0] = treeHits.GE11_sim_phi_L2[sim_index]
           GE21_sim_L1_phis[0] = treeHits.GE21_sim_phi_L1[sim_index]
@@ -788,8 +819,19 @@ if __name__ == "__main__":
           if verbose: print "CSCTF_sim_DDY123s[0]", CSCTF_sim_DDY123s[0]
           if verbose: print "CSCTF_L1_DDY123s[0]", CSCTF_L1_DDY123s[0]
 
+          CSCTF_sim_DPhi12_noGE21s[0] = treeHits.CSCTF_sim_DPhi12_noGE21[sim_index]
+          CSCTF_L1_DPhi12_noGE21s[0] = treeHits.CSCTF_L1_DPhi12_noGE21[L1Mu_CSCTF_index]
+          if verbose: print "CSCTF_sim_DPhi12_noGE21s[0]", CSCTF_sim_DPhi12_noGE21s[0]
+          if verbose: print "CSCTF_L1_DPhi12_noGE21s[0]", CSCTF_L1_DPhi12_noGE21s[0]
+
+          CSCTF_sim_DPhi12_GE21s[0] = treeHits.CSCTF_sim_DPhi12_GE21[sim_index]
+          CSCTF_L1_DPhi12_GE21s[0] = treeHits.CSCTF_L1_DPhi12_GE21[L1Mu_CSCTF_index]
+          if verbose: print "CSCTF_sim_DPhi12_GE21s[0]", CSCTF_sim_DPhi12_GE21s[0]
+          if verbose: print "CSCTF_L1_DPhi12_GE21s[0]", CSCTF_L1_DPhi12_GE21s[0]
 
 
+
+          ## CSC information
           CSCTF_eta1s[0] = treeHits.CSCTF_eta1[L1Mu_CSCTF_index]
           CSCTF_eta2s[0] = treeHits.CSCTF_eta2[L1Mu_CSCTF_index]
           CSCTF_eta3s[0] = treeHits.CSCTF_eta3[L1Mu_CSCTF_index]
@@ -805,17 +847,29 @@ if __name__ == "__main__":
           CSCTF_z3s[0] = treeHits.CSCTF_z3[L1Mu_CSCTF_index]
           CSCTF_z4s[0] = treeHits.CSCTF_z4[L1Mu_CSCTF_index]
 
-          ok_CSCTF_st1 = CSCTF_phi1s[0] != 99
-          ok_CSCTF_st2 = CSCTF_phi2s[0] != 99
-          ok_CSCTF_st3 = CSCTF_phi3s[0] != 99
-          ok_CSCTF_st4 = CSCTF_phi4s[0] != 99
+          CSCTF_ch1s[0] = treeHits.CSCTF_ch1[L1Mu_CSCTF_index]
+          CSCTF_ch2s[0] = treeHits.CSCTF_ch2[L1Mu_CSCTF_index]
+          CSCTF_ch3s[0] = treeHits.CSCTF_ch3[L1Mu_CSCTF_index]
+          CSCTF_ch4s[0] = treeHits.CSCTF_ch4[L1Mu_CSCTF_index]
 
-          ok_CSCTF_st1s[0] = int(ok_CSCTF_st1)
-          ok_CSCTF_st2s[0] = int(ok_CSCTF_st2)
-          ok_CSCTF_st3s[0] = int(ok_CSCTF_st3)
-          ok_CSCTF_st4s[0] = int(ok_CSCTF_st4)
+          ok_CSCTF_st1s[0] = int(CSCTF_phi1s[0] != 99)
+          ok_CSCTF_st2s[0] = int(CSCTF_phi2s[0] != 99)
+          ok_CSCTF_st3s[0] = int(CSCTF_phi3s[0] != 99)
+          ok_CSCTF_st4s[0] = int(CSCTF_phi4s[0] != 99)
+
+          CSCTF_ch1s[0] = treeHits.CSCTF_ch1[L1Mu_CSCTF_index]
+          CSCTF_ch2s[0] = treeHits.CSCTF_ch2[L1Mu_CSCTF_index]
+          CSCTF_ch3s[0] = treeHits.CSCTF_ch3[L1Mu_CSCTF_index]
+          CSCTF_ch4s[0] = treeHits.CSCTF_ch4[L1Mu_CSCTF_index]
+
+          CSCTF_isEven1s[0] = CSCTF_ch1s[0]%2==0
+          CSCTF_isEven2s[0] = CSCTF_ch2s[0]%2==0
+          CSCTF_isEven3s[0] = CSCTF_ch3s[0]%2==0
+          CSCTF_isEven4s[0] = CSCTF_ch4s[0]%2==0
 
 
+
+          ## GEM information
           GE11_L1_phis[0] = treeHits.GE11_phi_L1[L1Mu_CSCTF_index]
           GE11_L2_phis[0] = treeHits.GE11_phi_L2[L1Mu_CSCTF_index]
           GE21_L1_phis[0] = treeHits.GE21_phi_L1[L1Mu_CSCTF_index]
@@ -857,18 +911,27 @@ if __name__ == "__main__":
             print "\t\tCSCTF_sim_z4", CSCTF_sim_z4s[0], "\tCSCTF_z4", CSCTF_z4s[0]
             print
 
-          #parity_sim = get_parity(CSCTF_rec_isEven1, CSCTF_rec_isEven2, CSCTF_rec_isEven3, CSCTF_rec_isEven4)
-          #parity_L1 = get_parity(CSCTF_isEven1, CSCTF_isEven2, CSCTF_isEven3, CSCTF_isEven4)
+          parity_sim = get_parity(CSCTF_sim_isEven1s[0],
+                                  CSCTF_sim_isEven2s[0],
+                                  CSCTF_sim_isEven3s[0],
+                                  CSCTF_sim_isEven4s[0])
+
+          parity_L1 = get_parity(CSCTF_isEven1s[0],
+                                 CSCTF_isEven2s[0],
+                                 CSCTF_isEven3s[0],
+                                 CSCTF_isEven4s[0])
 
           etaPartition_sim = get_eta_partition(CSCTF_sim_eta2s[0])
           etaPartition_L1 = get_eta_partition(CSCTF_eta2s[0])
 
-          #paritys_sim[0] = parity_sim
-          partitions_sim[0] = etaPartition_sim
-          #print "partition", partitions_sim[0]
+          paritys_sim[0] = parity_sim
+          paritys_L1[0] = parity_L1
 
-          #paritys_L1[0] = parity_L1
+          partitions_sim[0] = etaPartition_sim
           partitions_L1[0] = etaPartition_L1
+
+          #print "partition", partitions_sim[0]
+          #print "partition L1", partitions_L1[0]
 
           t.Fill()
           continue

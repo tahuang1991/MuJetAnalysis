@@ -291,7 +291,10 @@ def fillDisplacedPtEtaHistogram(ptHistogram,
                                 hasMB1Cut=False,
                                 hasMB2Cut=False,
                                 hasMB3Cut=False,
-                                hasMB4Cut=False):
+                                hasMB4Cut=False,
+                                doPositionBased=False,
+                                doDirectionBased=False,
+                                doHybridBased=False):
     displaced_L1Mu_pt, displaced_L1Mu_eta = getMaxDisplacedPtEtaEvent(treeHits,
                                                                       doBXCut,
                                                                       etaCutMin,
@@ -301,7 +304,10 @@ def fillDisplacedPtEtaHistogram(ptHistogram,
                                                                       hasMB1Cut,
                                                                       hasMB2Cut,
                                                                       hasMB3Cut,
-                                                                      hasMB4Cut)
+                                                                      hasMB4Cut,
+                                                                      doPositionBased,
+                                                                      doDirectionBased,
+                                                                      doHybridBased)
     #print "check pT ok", displaced_L1Mu_pt
     if (displaced_L1Mu_pt>0):
         ptHistogram.Fill(displaced_L1Mu_pt)
@@ -327,7 +333,10 @@ def getMaxDisplacedPtEtaEvent(treeHits,
                               hasMB1Cut=False,
                               hasMB2Cut=False,
                               hasMB3Cut=False,
-                              hasMB4Cut=False):
+                              hasMB4Cut=False,
+                              doPositionBased=False,
+                              doDirectionBased=False,
+                              doHybridBased=False):
 
     max_displaced_L1Mu_pt = -1
     max_displaced_L1Mu_eta = -99

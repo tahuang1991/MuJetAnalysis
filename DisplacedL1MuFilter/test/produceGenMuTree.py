@@ -35,16 +35,16 @@ if __name__ == "__main__":
 
   ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
 
-  dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU0_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU0_L1MuANA_v2/'
-  dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU0_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU0_L1MuANA_v2/'
-  dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU0_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_L1MuANA_v2/'
+  dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU0_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU0_L1MuANA_v4/'
+  dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU0_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU0_L1MuANA_v4/'
+  dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU0_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_L1MuANA_v4/'
 
   ch = addfiles(ch, dirname=dirname1)
   ch = addfiles(ch, dirname=dirname2)
   ch = addfiles(ch, dirname=dirname3)
   treeHits = ch
 
-  f = ROOT.TFile("out_ana_pu0_displaced_L1Mu_DDY123_StubRec_20161117.root", "recreate")
+  f = ROOT.TFile("out_ana_pu0_displaced_L1Mu_DDY123_StubRec_20161117_v2.root", "recreate")
   t = ROOT.TTree("L1MuTree", "L1MuTree")
 
   ## ranges

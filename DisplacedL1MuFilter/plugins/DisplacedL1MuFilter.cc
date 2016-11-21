@@ -2398,7 +2398,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
           // save pad to detid_pads
           GEMCSCPadDigiContainer cont;
-          cont.push_back(convert4StripPadTo2StripPad(bestPad_GE11_L1, GEMDigis));
+          cont.push_back(bestPad_GE11_L1.second);
           detid_pads[bestPad_GE11_L1.first] = cont;
 
           auto gem_gp1 = getGlobalPointPad(bestPad_GE11_L1.first, bestPad_GE11_L1.second);
@@ -2418,7 +2418,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
           // save pad to detid_pads
           GEMCSCPadDigiContainer cont;
-          cont.push_back(convert4StripPadTo2StripPad(bestPad_GE11_L2, GEMDigis));
+          cont.push_back(bestPad_GE11_L2.second);
           detid_pads[bestPad_GE11_L2.first] = cont;
 
           auto gem_gp1 = getGlobalPointPad(bestPad_GE11_L2.first, bestPad_GE11_L2.second);
@@ -4107,13 +4107,16 @@ DisplacedL1MuFilter::convert4StripPadTo2StripPad(const GEMCSCPadDigiId& oldPad,
   // 1. get all digis in this chamber
   std::vector<GEMCSCPadDigi> vdigis;
   vdigis.clear();
-
+  std::cout << "conversion" << std::endl;
   const GEMDetId detId(oldPad.first);
+  std::cout << detId << " " << oldPad.second << std::endl;
   auto digis = hGEMDigis.get(detId);
 
   for (auto d = digis.first; d != digis.second; ++d) {
     auto digi = *d;
+    std::cout << "digi " << digi << std::endl;
     if (digi.strip() >= 4*oldPad.second.pad() - 3 and digi.strip() <= 4*oldPad.second.pad()){
+      std::cout << "matches!" << std::endl;
       // 2. transform the 1-strip digis into 2-strip pads
       vdigis.push_back(GEMCSCPadDigi((digi.strip()+1)/2, digi.bx()));
     }

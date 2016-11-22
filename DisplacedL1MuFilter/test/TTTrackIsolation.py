@@ -205,8 +205,13 @@ def getMaxPromptPtEtaEvent(treeHits,
             CSC_ME1_ch  = treeHits.CSCTF_ch1[L1Mu_CSCTF_index]
             CSC_ME2_ch  = treeHits.CSCTF_ch2[L1Mu_CSCTF_index]
 
-            if hasGE11Cut and not passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt): continue
-            if hasGE21Cut and not passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt): continue
+
+            if hasGE11Cut and not passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt):
+                #print "muon failed the GE11 cut", CSC_ME1_ch, GE11_dPhi, L1Mu_pt
+                continue
+            if hasGE21Cut and not passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt):
+                #print "muon failed the GE21 cut", CSC_ME1_ch, GE11_dPhi, L1Mu_pt
+                continue
 
             if (hasME11ME21Cut and not has_CSC_ME11 and not has_CSC_ME21): continue
             if (hasGE11GE21Cut and (not passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt)) and
@@ -429,8 +434,10 @@ def getMaxDisplacedPtEtaEvent(treeHits,
 
         #print L1Mu_CSCTF_index
         if is_CSC_Muon:
-            DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_position_based_algorithm(treeHits, i, True)
-            #print "displacedL1Mu_pt", DisplacedL1Mu_pt
+            if doPositionBased:  DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_position_based_algorithm(treeHits, i, True)
+            if doDirectionBased: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_direction_based_algorithm(treeHits, i)
+            if doHybridBased:    DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_hybrid_algorithm(treeHits, i)
+
         #elif is_DT_Muon:
         #    DisplacedL1Mu_pt = pt_barrel_direction_based_algorithm(treeHits, i,
         #                                                           hasMB1Cut,

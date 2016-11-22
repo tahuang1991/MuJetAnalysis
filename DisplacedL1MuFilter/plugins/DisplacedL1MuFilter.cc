@@ -346,6 +346,10 @@ struct MyEvent
   Float_t CSCTF_L1_DPhi12_noGE21[kMaxCSCTF];
   Float_t CSCTF_sim_DPhi12_GE21[kMaxCSCTF];
   Float_t CSCTF_L1_DPhi12_GE21[kMaxCSCTF];
+  Float_t CSCTF_sim_hybrid_pt_noGE21[kMaxCSCTF];
+  Float_t CSCTF_L1_hybrid_pt_noGE21[kMaxCSCTF];
+  Float_t CSCTF_sim_hybrid_pt_GE21[kMaxCSCTF];
+  Float_t CSCTF_L1_hybrid_pt_GE21[kMaxCSCTF];
 
 
 
@@ -715,7 +719,7 @@ private:
   std::vector<GlobalPoint> positionPad2InDetId(const GEMDigiCollection&, unsigned int ch_id, int refBX) const;
   std::vector<GlobalPoint> positionPad4InDetId(const GEMDigiCollection&, unsigned int ch_id, int refBX) const;
 
-  GEMCSCPadDigi
+  GEMCSCPadDigiContainer
   convert4StripPadTo2StripPad(const GEMCSCPadDigiId& oldPad,
                               const GEMDigiCollection& hGEMDigis) const;
 
@@ -1742,6 +1746,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         event_.CSCTF_sim_DPhi12_GE21[k] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
       }
 
+      ptAssignmentUnit.runHybrid(false);
+      event_.CSCTF_sim_hybrid_pt_noGE21[k] = ptAssignmentUnit.getHybridPt();
+
+      ptAssignmentUnit.runHybrid(true);
+      event_.CSCTF_sim_hybrid_pt_GE21[k] = ptAssignmentUnit.getHybridPt();
+
 
       // recover the missing stubs in station 1 and 2... (because they were not used in the track building)
       // GEM digis and pads in superchambers
@@ -2437,9 +2447,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         if (bestPad_GE21_L1.first.station()==3 and bestPad_GE21_L1.first.layer()==1) {
 
           // save pad to detid_pads
-          GEMCSCPadDigiContainer cont;
-          cont.push_back(convert4StripPadTo2StripPad(bestPad_GE21_L1, GEMDigis));
-          detid_pads[bestPad_GE21_L1.first] = cont;
+          detid_pads[bestPad_GE21_L1.first] = convert4StripPadTo2StripPad(bestPad_GE21_L1, GEMDigis);
 
           auto gem_gp1 = getGlobalPointPad(bestPad_GE21_L1.first, bestPad_GE21_L1.second);
           if(verbose) cout << "\t"<<gem_gp1<<" " << gem_gp1.phi() << endl;
@@ -2457,9 +2465,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         if (bestPad_GE21_L2.first.station()==3 and bestPad_GE21_L2.first.layer()==2) {
 
           // save pad to detid_pads
-          GEMCSCPadDigiContainer cont;
-          cont.push_back(convert4StripPadTo2StripPad(bestPad_GE21_L2, GEMDigis));
-          detid_pads[bestPad_GE21_L2.first] = cont;
+          detid_pads[bestPad_GE21_L2.first] = convert4StripPadTo2StripPad(bestPad_GE21_L2, GEMDigis);
 
           auto gem_gp1 = getGlobalPointPad(bestPad_GE21_L2.first, bestPad_GE21_L2.second);
           if(verbose) cout << "\t"<<gem_gp1<<" " << gem_gp1.phi() << endl;
@@ -2532,6 +2538,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(true)){
       event_.CSCTF_L1_DPhi12_GE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
     }
+
+    ptAssignmentUnit.runHybrid(false);
+    event_.CSCTF_L1_hybrid_pt_noGE21[j] = ptAssignmentUnit.getHybridPt();
+
+    ptAssignmentUnit.runHybrid(true);
+    event_.CSCTF_L1_hybrid_pt_GE21[j] = ptAssignmentUnit.getHybridPt();
 
   } // loop on csctf tracks
 
@@ -4100,7 +4112,7 @@ DisplacedL1MuFilter::pickBestMatchingPad(float xref, float yref,
   return GEMCSCPadDigiId();
 }
 
-GEMCSCPadDigi
+GEMCSCPadDigiContainer
 DisplacedL1MuFilter::convert4StripPadTo2StripPad(const GEMCSCPadDigiId& oldPad,
                                                  const GEMDigiCollection& hGEMDigis) const
 {
@@ -4123,7 +4135,7 @@ DisplacedL1MuFilter::convert4StripPadTo2StripPad(const GEMCSCPadDigiId& oldPad,
   }
 
   // 3. pick the best matching one!!
-  return vdigis[0];
+  return vdigis;
 }
 
 
@@ -5190,10 +5202,16 @@ void DisplacedL1MuFilter::bookL1MuTree()
 
   event_tree_->Branch("CSCTF_sim_DDY123", event_.CSCTF_sim_DDY123,"CSCTF_sim_DDY123[50]/F");
   event_tree_->Branch("CSCTF_L1_DDY123", event_.CSCTF_L1_DDY123,"CSCTF_L1_DDY123[50]/F");
+
   event_tree_->Branch("CSCTF_sim_DPhi12_noGE21", event_.CSCTF_sim_DPhi12_noGE21,"CSCTF_sim_DPhi12_noGE21[50]/F");
   event_tree_->Branch("CSCTF_L1_DPhi12_noGE21", event_.CSCTF_L1_DPhi12_noGE21,"CSCTF_L1_DPhi12_noGE21[50]/F");
   event_tree_->Branch("CSCTF_sim_DPhi12_GE21", event_.CSCTF_sim_DPhi12_GE21,"CSCTF_sim_DPhi12_GE21[50]/F");
   event_tree_->Branch("CSCTF_L1_DPhi12_GE21", event_.CSCTF_L1_DPhi12_GE21,"CSCTF_L1_DPhi12_GE21[50]/F");
+
+  event_tree_->Branch("CSCTF_sim_hybrid_pt_noGE21", event_.CSCTF_sim_hybrid_pt_noGE21,"CSCTF_sim_hybrid_pt_noGE21[50]/F");
+  event_tree_->Branch("CSCTF_L1_hybrid_pt_noGE21", event_.CSCTF_L1_hybrid_pt_noGE21,"CSCTF_L1_hybrid_pt_noGE21[50]/F");
+  event_tree_->Branch("CSCTF_sim_hybrid_pt_GE21", event_.CSCTF_sim_hybrid_pt_GE21,"CSCTF_sim_hybrid_pt_GE21[50]/F");
+  event_tree_->Branch("CSCTF_L1_hybrid_pt_GE21", event_.CSCTF_L1_hybrid_pt_GE21,"CSCTF_L1_hybrid_pt_GE21[50]/F");
 
   if (processRPCb_) {
   event_tree_->Branch("nRPCb", &event_.nRPCb);
@@ -5765,10 +5783,16 @@ DisplacedL1MuFilter::clearBranches()
 
     event_.CSCTF_sim_DDY123[i] = 99;
     event_.CSCTF_L1_DDY123[i] = 99;
+
     event_.CSCTF_sim_DPhi12_noGE21[i] = 99;
     event_.CSCTF_L1_DPhi12_noGE21[i] = 99;
     event_.CSCTF_sim_DPhi12_GE21[i] = 99;
     event_.CSCTF_L1_DPhi12_GE21[i] = 99;
+
+    event_.CSCTF_sim_hybrid_pt_noGE21[i] = 99;
+    event_.CSCTF_L1_hybrid_pt_noGE21[i] = 99;
+    event_.CSCTF_sim_hybrid_pt_GE21[i] = 99;
+    event_.CSCTF_L1_hybrid_pt_GE21[i] = 99;
   }
 
   event_.nRPCb = 0;

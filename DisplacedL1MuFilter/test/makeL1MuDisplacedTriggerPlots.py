@@ -7,12 +7,12 @@ ROOT.gROOT.SetBatch(1)
 from Helpers import *
 from ROOT import *
 
-file = TFile("out_ana_pu0_displaced_L1Mu_DDY123_StubRec_20161117_v2.root")
+file = TFile("out_ana_pu0_displaced_L1Mu_DDY123_StubRec_20161122.root")
 treeHits = file.Get("L1MuTree")
 
 ## plots
 targetDir = 'DisplacedL1MuTrigger_20161117_PU0_StubRecovery_v2/'
-targetDir = 'DisplacedL1MuTrigger_20161121_PU0_StubRecovery_v2/'
+targetDir = 'DisplacedL1MuTrigger_20161122_PU0_StubRecovery/'
 
 ## Style
 gStyle.SetStatStyle(0)
@@ -1677,17 +1677,31 @@ def correctGEMPadMatchingEfficiency(selection):
     if selection == 1:
         numCut1 = TCut('abs(GE11_L1_phi - GE11_sim_L1_phi)/GE11_sim_L1_phi < 0.01')
         numCut2 = TCut('abs(GE11_L2_phi - GE11_sim_L2_phi)/GE11_sim_L2_phi < 0.01')
-        numCut = OR(numCut1,numCut2)
+        numCut3 = TCut('abs(GE11_L1_phi - GE11_sim_L1_phi) <= 1')
+        numCut4 = TCut('abs(GE11_L2_phi - GE11_sim_L2_phi) <= 1')
+        numCut = OR( AND(numCut1,numCut3), AND(numCut2, numCut4) )
+
     if selection == 2:
         numCut1 = TCut('abs(GE21_L1_phi - GE21_sim_L1_phi)/GE21_sim_L1_phi < 0.01')
         numCut2 = TCut('abs(GE21_L2_phi - GE21_sim_L2_phi)/GE21_sim_L2_phi < 0.01')
-        numCut = OR(numCut1,numCut2)
+        numCut3 = TCut('abs(GE21_L1_phi - GE21_sim_L1_phi) <= 1')
+        numCut4 = TCut('abs(GE21_L2_phi - GE21_sim_L2_phi) <= 1')
+        numCut = OR( AND(numCut1,numCut3), AND(numCut2, numCut4) )
+
     if selection == 12:
         numCut1 = TCut('abs(GE11_L1_phi - GE11_sim_L1_phi)/GE11_sim_L1_phi < 0.01')
         numCut2 = TCut('abs(GE11_L2_phi - GE11_sim_L2_phi)/GE11_sim_L2_phi < 0.01')
-        numCut3 = TCut('abs(GE21_L1_phi - GE21_sim_L1_phi)/GE21_sim_L1_phi < 0.01')
-        numCut4 = TCut('abs(GE21_L2_phi - GE21_sim_L2_phi)/GE21_sim_L2_phi < 0.01')
-        numCut = AND( OR(numCut1,numCut2), OR(numCut3,numCut4) )
+        numCut3 = TCut('abs(GE11_L1_phi - GE11_sim_L1_phi) <= 1')
+        numCut4 = TCut('abs(GE11_L2_phi - GE11_sim_L2_phi) <= 1')
+        numCut9 = OR( AND(numCut1, numCut3), AND(numCut2, numCut4) )
+
+        numCut5 = TCut('abs(GE21_L1_phi - GE21_sim_L1_phi)/GE21_sim_L1_phi < 0.01')
+        numCut6 = TCut('abs(GE21_L2_phi - GE21_sim_L2_phi)/GE21_sim_L2_phi < 0.01')
+        numCut7 = TCut('abs(GE21_L1_phi - GE21_sim_L1_phi) <= 1')
+        numCut8 = TCut('abs(GE21_L2_phi - GE21_sim_L2_phi) <= 1')
+        numCut10 = OR( AND(numCut5, numCut6), AND(numCut7, numCut8) )
+
+        numCut = AND(numCut9, numCut10)
 
     if selection == 1:
         title = "GE11_ME11"

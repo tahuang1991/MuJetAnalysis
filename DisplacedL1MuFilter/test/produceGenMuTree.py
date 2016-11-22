@@ -35,16 +35,16 @@ if __name__ == "__main__":
 
   ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
 
-  dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU0_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU0_L1MuANA_v4/'
-  dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU0_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU0_L1MuANA_v4/'
-  dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU0_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_L1MuANA_v4/'
+  dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU0_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU0_L1MuANA_v7/'
+  dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU0_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU0_L1MuANA_v7/'
+  dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU0_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_L1MuANA_v7'
 
   ch = addfiles(ch, dirname=dirname1)
   ch = addfiles(ch, dirname=dirname2)
-  ch = addfiles(ch, dirname=dirname3)
+  #ch = addfiles(ch, dirname=dirname3)
   treeHits = ch
 
-  f = ROOT.TFile("out_ana_pu0_displaced_L1Mu_DDY123_StubRec_20161117_v2.root", "recreate")
+  f = ROOT.TFile("out_ana_pu0_displaced_L1Mu_DDY123_StubRec_20161122.root", "recreate")
   t = ROOT.TTree("L1MuTree", "L1MuTree")
 
   ## ranges
@@ -608,15 +608,15 @@ if __name__ == "__main__":
           GE21_sim_L1_phis[0] = -99
           GE21_sim_L2_phis[0] = -99
 
-          GE11_L1_bxs[0] = -99
-          GE11_L2_bxs[0] = -99
-          GE21_L1_bxs[0] = -99
-          GE21_L2_bxs[0] = -99
+          GE11_L1_bxs[0] = 99
+          GE11_L2_bxs[0] = 99
+          GE21_L1_bxs[0] = 99
+          GE21_L2_bxs[0] = 99
 
-          GE11_sim_L1_bxs[0] = -99
-          GE11_sim_L2_bxs[0] = -99
-          GE21_sim_L1_bxs[0] = -99
-          GE21_sim_L2_bxs[0] = -99
+          GE11_sim_L1_bxs[0] = 99
+          GE11_sim_L2_bxs[0] = 99
+          GE21_sim_L1_bxs[0] = 99
+          GE21_sim_L2_bxs[0] = 99
 
           GE11_L1_zs[0] = -99
           GE11_L2_zs[0] = -99
@@ -674,15 +674,15 @@ if __name__ == "__main__":
 
 
           ## GEM information
-          GE11_sim_L1_phis[0] = treeHits.GE11_sim_phi_L1[sim_index]
-          GE11_sim_L2_phis[0] = treeHits.GE11_sim_phi_L2[sim_index]
-          GE21_sim_L1_phis[0] = treeHits.GE21_sim_phi_L1[sim_index]
-          GE21_sim_L2_phis[0]  =treeHits.GE21_sim_phi_L2[sim_index]
+          GE11_sim_L1_phis[0] = treeHits.GE11_sim_pad_phi_L1[sim_index]
+          GE11_sim_L2_phis[0] = treeHits.GE11_sim_pad_phi_L2[sim_index]
+          GE21_sim_L1_phis[0] = treeHits.GE21_sim_pad_phi_L1[sim_index]
+          GE21_sim_L2_phis[0] = treeHits.GE21_sim_pad_phi_L2[sim_index]
 
-          GE11_sim_L1_bxs[0] = treeHits.GE11_sim_bx_L1[sim_index]
-          GE11_sim_L2_bxs[0] = treeHits.GE11_sim_bx_L2[sim_index]
-          GE21_sim_L1_bxs[0] = treeHits.GE21_sim_bx_L1[sim_index]
-          GE21_sim_L2_bxs[0]  =treeHits.GE21_sim_bx_L2[sim_index]
+          GE11_sim_L1_bxs[0] = treeHits.GE11_sim_pad_bx_L1[sim_index]
+          GE11_sim_L2_bxs[0] = treeHits.GE11_sim_pad_bx_L2[sim_index]
+          GE21_sim_L1_bxs[0] = treeHits.GE21_sim_pad_bx_L1[sim_index]
+          GE21_sim_L2_bxs[0] = treeHits.GE21_sim_pad_bx_L2[sim_index]
 
           GE11_sim_L1_zs[0] = treeHits.GE11_sim_z_L1[sim_index]
           GE11_sim_L2_zs[0] = treeHits.GE11_sim_z_L2[sim_index]
@@ -695,10 +695,10 @@ if __name__ == "__main__":
           ok_GE21_sim_L2s[0] = int(GE21_sim_L2_phis[0] != 99)
 
           if verbose:
-            print "\t\tGE11_sim_L1_phis", GE11_sim_L1_phis[0]
-            print "\t\tGE11_sim_L2_phis", GE11_sim_L2_phis[0]
-            print "\t\tGE21_sim_L1_phis", GE21_sim_L1_phis[0]
-            print "\t\tGE21_sim_L2_phis", GE21_sim_L2_phis[0]
+            print "\t\tGE11_sim_L1_phis", GE11_sim_pad_L1_phis[0]
+            print "\t\tGE11_sim_L2_phis", GE11_sim_pad_L2_phis[0]
+            print "\t\tGE21_sim_L1_phis", GE21_sim_pad_L1_phis[0]
+            print "\t\tGE21_sim_L2_phis", GE21_sim_pad_L2_phis[0]
             print
 
           #print ok_CSCTF_sim_st1s[0], ok_CSCTF_sim_st2s[0], ok_CSCTF_sim_st3s[0], ok_CSCTF_sim_st4s[0]
@@ -879,6 +879,12 @@ if __name__ == "__main__":
           GE11_L2_bxs[0] = treeHits.GE11_bx_L2[L1Mu_CSCTF_index]
           GE21_L1_bxs[0] = treeHits.GE21_bx_L1[L1Mu_CSCTF_index]
           GE21_L2_bxs[0] = treeHits.GE21_bx_L2[L1Mu_CSCTF_index]
+
+          if verbose:
+            print "BX", GE11_sim_L1_bxs[0], GE11_L1_bxs[0]
+            print "BX", GE11_sim_L2_bxs[0], GE11_L2_bxs[0]
+            print "BX", GE21_sim_L1_bxs[0], GE21_L1_bxs[0]
+            print "BX", GE21_sim_L2_bxs[0], GE21_L2_bxs[0]
 
           GE11_L1_zs[0] = treeHits.GE11_z_L1[L1Mu_CSCTF_index]
           GE11_L2_zs[0] = treeHits.GE11_z_L2[L1Mu_CSCTF_index]

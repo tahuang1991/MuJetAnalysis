@@ -132,10 +132,6 @@ def pt_barrel_direction_based_algorithm(treeHits,
 
     return returnValue
 
-def pt_endcap_hybrid_algorithm(tree, L1Mu_index):
-    returnValue = 0
-    return returnValue
-
 def pt_endcap_position_based_algorithm(treeHits, L1Mu_index, doComparatorFit):
     '''First argument is the analysis tree. Second argument is the L1Mu to CSCTF index'''
     returnValue = 0
@@ -221,6 +217,9 @@ def pt_endcap_direction_based_algorithm(treeHits, L1Mu_index):
     ok_GE11 = GE11_phi_L1 != 99 or GE11_phi_L2 != 99
     ok_GE21 = GE21_phi_L1 != 99 or GE21_phi_L2 != 99
 
+    ok_GE11 = treeHits.CSCTF_gemdphi1[L1Mu_CSCTF_index] != 99
+    ok_GE21 = treeHits.CSCTF_gemdphi2[L1Mu_CSCTF_index] != 99
+
     ## actual calctulation of the pT
     if ok_CSCTF_st1 and ok_CSCTF_st2 and ok_GE11 and ok_GE21:
         DPhi = abs(treeHits.CSCTF_L1_DPhi12_GE21[L1Mu_CSCTF_index])
@@ -229,5 +228,50 @@ def pt_endcap_direction_based_algorithm(treeHits, L1Mu_index):
 
         ## get the reconstruction pT value
         returnValue = pt_from_dPhi_GE21(DPhi, etaRanges[etaPartition], ME1ME2ME3ParityCases[parity3])
+
+    return returnValue, CSCTF_eta2
+
+def pt_endcap_hybrid_algorithm(treeHits, L1Mu_index):
+
+    returnValue = 0
+
+    ## L1Mu variables
+    L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[L1Mu_index]
+
+    ## CSC variables
+    CSCTF_phi1 = treeHits.CSCTF_phi1[L1Mu_CSCTF_index]
+    CSCTF_phi2 = treeHits.CSCTF_phi2[L1Mu_CSCTF_index]
+    CSCTF_phi3 = treeHits.CSCTF_phi3[L1Mu_CSCTF_index]
+
+    CSCTF_eta1 = treeHits.CSCTF_eta1[L1Mu_CSCTF_index]
+    CSCTF_eta2 = treeHits.CSCTF_eta2[L1Mu_CSCTF_index]
+
+    ## check if ME1, ME2 and ME3 are available
+    ok_CSCTF_st1 = CSCTF_phi1 != 99
+    ok_CSCTF_st2 = CSCTF_phi2 != 99
+    ok_CSCTF_st3 = CSCTF_phi3 != 99
+
+    CSCTF_ch1 = treeHits.CSCTF_ch1[L1Mu_CSCTF_index]
+    CSCTF_ch2 = treeHits.CSCTF_ch2[L1Mu_CSCTF_index]
+    CSCTF_ch3 = treeHits.CSCTF_ch3[L1Mu_CSCTF_index]
+
+    GE11_phi_L1 = treeHits.GE11_phi_L1[L1Mu_CSCTF_index]
+    GE11_phi_L2 = treeHits.GE11_phi_L2[L1Mu_CSCTF_index]
+    GE21_phi_L1 = treeHits.GE21_phi_L1[L1Mu_CSCTF_index]
+    GE21_phi_L2 = treeHits.GE21_phi_L2[L1Mu_CSCTF_index]
+
+    ok_GE11 = GE11_phi_L1 != 99 or GE11_phi_L2 != 99
+    ok_GE21 = GE21_phi_L1 != 99 or GE21_phi_L2 != 99
+
+    ok_GE11 = treeHits.CSCTF_gemdphi1[L1Mu_CSCTF_index] != 99
+    ok_GE21 = treeHits.CSCTF_gemdphi2[L1Mu_CSCTF_index] != 99
+
+
+    ## actual calctulation of the pT
+    if ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3 and ok_GE11 and ok_GE21:
+
+        ## get the reconstruction pT value
+        returnValue = treeHits.CSCTF_L1_hybrid_pt_GE21[L1Mu_CSCTF_index]
+        print "hybrid pt", returnValue
 
     return returnValue, CSCTF_eta2

@@ -308,7 +308,7 @@ struct MyEvent
   Int_t nCSCTF;
   Int_t L1Mu_CSCTF_index[kMaxL1Mu];
   Float_t CSCTF_pt[kMaxCSCTF], CSCTF_eta[kMaxCSCTF], CSCTF_phi[kMaxCSCTF];
-  Int_t CSCTF_bx[kMaxCSCTF], CSCTF_nStubs[kMaxCSCTF], CSCTF_quality[kMaxCSCTF];
+  Int_t CSCTF_bx[kMaxCSCTF], CSCTF_nStubs[kMaxCSCTF], CSCTF_quality[kMaxCSCTF], CSCTF_charge[kMaxCSCTF];
 
   Int_t CSCTF_st1[kMaxCSCTF], CSCTF_ri1[kMaxCSCTF], CSCTF_ch1[kMaxCSCTF], CSCTF_en1[kMaxCSCTF];
   Int_t CSCTF_trk1[kMaxCSCTF], CSCTF_quality1[kMaxCSCTF], CSCTF_wg1[kMaxCSCTF], CSCTF_hs1[kMaxCSCTF];
@@ -462,12 +462,12 @@ struct MyEvent
   Float_t GE11_z_L1[kMaxGEM], GE11_z_L2[kMaxGEM], GE21_z_L1[kMaxGEM], GE21_z_L2[kMaxGEM];
 
   Float_t GE11_sim_phi_L1[kMaxGEM], GE11_sim_phi_L2[kMaxGEM], GE21_sim_phi_L1[kMaxGEM], GE21_sim_phi_L2[kMaxGEM];
-  Float_t GE11_sim_bx_L1[kMaxGEM], GE11_sim_bx_L2[kMaxGEM], GE21_sim_bx_L1[kMaxGEM], GE21_sim_bx_L2[kMaxGEM];
+  Int_t   GE11_sim_bx_L1[kMaxGEM], GE11_sim_bx_L2[kMaxGEM], GE21_sim_bx_L1[kMaxGEM], GE21_sim_bx_L2[kMaxGEM];
   Int_t   GE11_sim_ch_L1[kMaxGEM], GE11_sim_ch_L2[kMaxGEM], GE21_sim_ch_L1[kMaxGEM], GE21_sim_ch_L2[kMaxGEM];
   Float_t GE11_sim_z_L1[kMaxGEM], GE11_sim_z_L2[kMaxGEM], GE21_sim_z_L1[kMaxGEM], GE21_sim_z_L2[kMaxGEM];
 
   Float_t GE11_sim_pad_phi_L1[kMaxGEM], GE11_sim_pad_phi_L2[kMaxGEM], GE21_sim_pad_phi_L1[kMaxGEM], GE21_sim_pad_phi_L2[kMaxGEM];
-  Float_t GE11_sim_pad_bx_L1[kMaxGEM], GE11_sim_pad_bx_L2[kMaxGEM], GE21_sim_pad_bx_L1[kMaxGEM], GE21_sim_pad_bx_L2[kMaxGEM];
+  Int_t   GE11_sim_pad_bx_L1[kMaxGEM], GE11_sim_pad_bx_L2[kMaxGEM], GE21_sim_pad_bx_L1[kMaxGEM], GE21_sim_pad_bx_L2[kMaxGEM];
   Int_t   GE11_sim_pad_ch_L1[kMaxGEM], GE11_sim_pad_ch_L2[kMaxGEM], GE21_sim_pad_ch_L1[kMaxGEM], GE21_sim_pad_ch_L2[kMaxGEM];
   Float_t GE11_sim_pad_z_L1[kMaxGEM], GE11_sim_pad_z_L2[kMaxGEM], GE21_sim_pad_z_L1[kMaxGEM], GE21_sim_pad_z_L2[kMaxGEM];
 
@@ -1734,6 +1734,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                                                         match_gd.allGempadsMatch2SimMuon_2strip(),
                                                         iEventSetup,
                                                         iEvent);
+      ptAssignmentUnit.setCharge(match_csc.trk().charge());
 
       if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runPositionbased()){
         event_.CSCTF_sim_DDY123[k] = ptAssignmentUnit.getdeltaY123();
@@ -2084,6 +2085,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     event_.CSCTF_phi[j] = normalizedPhi(muScales->getPhiScale()->getLowEdge(phiL1CSCTrack(track)));
     event_.CSCTF_bx[j] = track.bx();
     event_.CSCTF_quality[j] = quality;
+    event_.CSCTF_charge[j] = track.chargeValue();
 
     if(verbose) {
       std::cout << std::endl
@@ -2528,6 +2530,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                                                       iEventSetup,
                                                       iEvent);
     ptAssignmentUnit.setVerbose(true);
+    ptAssignmentUnit.setCharge(event_.CSCTF_charge[j]);
+
     if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runPositionbased()){
       event_.CSCTF_L1_DDY123[j] = ptAssignmentUnit.getdeltaY123();
       std::cout << "L1_DDY123 " << event_.CSCTF_L1_DDY123[j] << std::endl;
@@ -5393,10 +5397,10 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("GE11_sim_phi_L2", event_.GE11_sim_phi_L2,"GE11_sim_phi_L2[50]/F");
   event_tree_->Branch("GE21_sim_phi_L1", event_.GE21_sim_phi_L1,"GE21_sim_phi_L1[50]/F");
   event_tree_->Branch("GE21_sim_phi_L2", event_.GE21_sim_phi_L2,"GE21_sim_phi_L2[50]/F");
-  event_tree_->Branch("GE11_sim_bx_L1", event_.GE11_sim_bx_L1,"GE11_sim_bx_L1[50]/F");
-  event_tree_->Branch("GE11_sim_bx_L2", event_.GE11_sim_bx_L2,"GE11_sim_bx_L2[50]/F");
-  event_tree_->Branch("GE21_sim_bx_L1", event_.GE21_sim_bx_L1,"GE21_sim_bx_L1[50]/F");
-  event_tree_->Branch("GE21_sim_bx_L2", event_.GE21_sim_bx_L2,"GE21_sim_bx_L2[50]/F");
+  event_tree_->Branch("GE11_sim_bx_L1", event_.GE11_sim_bx_L1,"GE11_sim_bx_L1[50]/I");
+  event_tree_->Branch("GE11_sim_bx_L2", event_.GE11_sim_bx_L2,"GE11_sim_bx_L2[50]/I");
+  event_tree_->Branch("GE21_sim_bx_L1", event_.GE21_sim_bx_L1,"GE21_sim_bx_L1[50]/I");
+  event_tree_->Branch("GE21_sim_bx_L2", event_.GE21_sim_bx_L2,"GE21_sim_bx_L2[50]/I");
   event_tree_->Branch("GE11_sim_ch_L1", event_.GE11_sim_ch_L1,"GE11_sim_ch_L1[50]/I");
   event_tree_->Branch("GE11_sim_ch_L2", event_.GE11_sim_ch_L2,"GE11_sim_ch_L2[50]/I");
   event_tree_->Branch("GE21_sim_ch_L1", event_.GE21_sim_ch_L1,"GE21_sim_ch_L1[50]/I");
@@ -5410,10 +5414,10 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("GE11_sim_pad_phi_L2", event_.GE11_sim_pad_phi_L2,"GE11_sim_pad_phi_L2[50]/F");
   event_tree_->Branch("GE21_sim_pad_phi_L1", event_.GE21_sim_pad_phi_L1,"GE21_sim_pad_phi_L1[50]/F");
   event_tree_->Branch("GE21_sim_pad_phi_L2", event_.GE21_sim_pad_phi_L2,"GE21_sim_pad_phi_L2[50]/F");
-  event_tree_->Branch("GE11_sim_pad_bx_L1", event_.GE11_sim_pad_bx_L1,"GE11_sim_pad_bx_L1[50]/F");
-  event_tree_->Branch("GE11_sim_pad_bx_L2", event_.GE11_sim_pad_bx_L2,"GE11_sim_pad_bx_L2[50]/F");
-  event_tree_->Branch("GE21_sim_pad_bx_L1", event_.GE21_sim_pad_bx_L1,"GE21_sim_pad_bx_L1[50]/F");
-  event_tree_->Branch("GE21_sim_pad_bx_L2", event_.GE21_sim_pad_bx_L2,"GE21_sim_pad_bx_L2[50]/F");
+  event_tree_->Branch("GE11_sim_pad_bx_L1", event_.GE11_sim_pad_bx_L1,"GE11_sim_pad_bx_L1[50]/I");
+  event_tree_->Branch("GE11_sim_pad_bx_L2", event_.GE11_sim_pad_bx_L2,"GE11_sim_pad_bx_L2[50]/I");
+  event_tree_->Branch("GE21_sim_pad_bx_L1", event_.GE21_sim_pad_bx_L1,"GE21_sim_pad_bx_L1[50]/I");
+  event_tree_->Branch("GE21_sim_pad_bx_L2", event_.GE21_sim_pad_bx_L2,"GE21_sim_pad_bx_L2[50]/I");
   event_tree_->Branch("GE11_sim_pad_ch_L1", event_.GE11_sim_pad_ch_L1,"GE11_sim_pad_ch_L1[50]/I");
   event_tree_->Branch("GE11_sim_pad_ch_L2", event_.GE11_sim_pad_ch_L2,"GE11_sim_pad_ch_L2[50]/I");
   event_tree_->Branch("GE21_sim_pad_ch_L1", event_.GE21_sim_pad_ch_L1,"GE21_sim_pad_ch_L1[50]/I");

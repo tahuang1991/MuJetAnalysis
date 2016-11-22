@@ -1118,8 +1118,7 @@ def pt_from_dPhi_GE21(DPhi, eta, parity):
   pt_range = [2.0, 3.0, 4.0, 5.0, 7., 10., 15., 20., 30., 40.]
   if eta is '12to14':
     if parity is 'oee': DPhi_range = [0.000000, 0.479900, 0.448070, 0.295200, 0.150740, 0.123340, 0.091260, 0.083980, 0.080160, 0.077500]
-    if parity is 'ooo': DPhi_range = [0.428160,
-                                      0.553460,
+    if parity is 'ooo': DPhi_range = [0.428160, 0.553460,
                                       0.409480,
                                       0.260860,
                                       0.162850,
@@ -1324,9 +1323,7 @@ def pt_from_dPhi_GE21(DPhi, eta, parity):
   if DPhi < 0:
     print "ALARM", DPhi
   found_pt = 2
-  #if   DPhi >= DPhi_range[0] and DPhi_range[0] != 0:
-  #  found_pt = 0
-  if DPhi < DPhi_range[0] and DPhi >= DPhi_range[1]:
+  if   DPhi < DPhi_range[0] and DPhi >= DPhi_range[1]:
     found_pt = 2
   elif DPhi < DPhi_range[1] and DPhi >= DPhi_range[2]:
     found_pt = 3
@@ -1345,7 +1342,7 @@ def pt_from_dPhi_GE21(DPhi, eta, parity):
   elif DPhi < DPhi_range[8] and DPhi >= DPhi_range[9]:
     found_pt = 30
   elif DPhi < DPhi_range[9]:
-    found_pt = 140 ## assign 140 GeV to highest pT muons by default!!!!
+    found_pt = 120 ## assign 120 GeV to highest pT muons by default!!!!
   else:
     found_pt = 2
 

@@ -13,7 +13,7 @@ import random
 #______________________________________________________________________________
 if __name__ == "__main__":
 
-  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20161122"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20161130"; pu = 'PU140'; eff = False
 
   ## extension for figures - add more?
   ext = ".png"
@@ -25,13 +25,13 @@ if __name__ == "__main__":
 
   set_style()
 
-  doTest = True
+  doTest = False
 
   ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
 
-  location =  '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v12_StubReco/0000/'
-  #location1 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v11_StubReco/0001/'
-  #location2 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v11_StubReco/0002/'
+  location =  '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v15_StubReco/0000/'
+  location1 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v15_StubReco/0001/'
+  location2 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v15_StubReco/0002/'
 
   treeHits = addfiles(ch, dirname=location, ext=".root")
   #treeHits = addfiles(ch, dirname=location1, ext=".root")
@@ -82,6 +82,7 @@ if __name__ == "__main__":
                        "h_single_prompt_L1Mu_rate_eta00to24",
                        "h_single_prompt_L1Mu_rate_eta12to24",
                        "h_single_prompt_L1Mu_rate_eta16to22",
+                       "h_single_prompt_L1Mu_rate_eta16to20",
                        "h_single_prompt_L1Mu_rate_eta12to16",
 
                        "h_single_prompt_L1Mu_rate_2_stubs_eta00to24",
@@ -124,6 +125,9 @@ if __name__ == "__main__":
                        "h_single_prompt_L1Mu_rate_2_stubs_GE11_ME11_OR_GE21_ME21_eta16to22",
                        "h_single_prompt_L1Mu_rate_3_stubs_GE11_ME11_OR_GE21_ME21_eta16to22",
 
+                       "h_single_prompt_L1Mu_rate_GE11_ME11_GE21_ME21_eta16to20",
+                       "h_single_prompt_L1Mu_rate_GE11_ME11_GE21_ME21_ME3_eta16to20",
+
                        ## failing stations
                        "h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_eta16to22",
                        "h_single_prompt_L1Mu_rate_3_stubs_ME11_Fail10p_eta16to22",
@@ -146,6 +150,9 @@ if __name__ == "__main__":
 
                        "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_eta16to22",
                        "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_ME3_eta16to22",
+
+                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_eta16to20",
+                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_ME3_eta16to20",
                        )
 
 
@@ -195,6 +202,9 @@ if __name__ == "__main__":
 
       fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_eta16to22"],
                           mapTH1F["h_single_prompt_L1Mu_rate_eta_eta16to22"],
+                          treeHits, True, 1.6, 2.2, 0, minQuality)
+      fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_eta16to20"],
+                          mapTH1F["h_single_prompt_L1Mu_rate_eta_eta16to20"],
                           treeHits, True, 1.6, 2.2, 0, minQuality)
       fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_2_stubs_eta16to22"],
                           mapTH1F["h_single_prompt_L1Mu_rate_eta_2_stubs_eta16to22"],
@@ -299,6 +309,14 @@ if __name__ == "__main__":
                           mapTH1F["h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to22"],
                           treeHits,True, 1.6, 2.2, 0, minQuality, hasME11Cut=True, hasME21Cut=True, hasGE11Cut=True, hasGE21Cut=True, hasME3Cut=True)
 
+      fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to20"],
+                          mapTH1F["h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to20"],
+                          treeHits,True, 1.6, 2.0, 0, minQuality, hasME11Cut=True, hasME21Cut=True, hasGE11Cut=True, hasGE21Cut=True)
+
+      fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to20"],
+                          mapTH1F["h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to20"],
+                          treeHits,True, 1.6, 2.0, 0, minQuality, hasME11Cut=True, hasME21Cut=True, hasGE11Cut=True, hasGE21Cut=True, hasME3Cut=True)
+
       ## displaced L1Mu trigger rate curves
       #fillDisplacedPtHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_MB1_MB4_eta00to09"], treeHits, True, 0.0, 0.9, 0, minQuality, hasMB1Cut=True, hasMB4Cut=True)
       fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta16to22"],
@@ -316,6 +334,14 @@ if __name__ == "__main__":
       fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to22"],
                                    mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to22"],
                                    treeHits, True, 1.6, 2.2, 0, minQuality, doHybridBased=True)
+
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to20"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to20"],
+                                   treeHits, True, 1.6, 2.0, 0, minQuality, doDirectionBased=True)
+
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to20"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to20"],
+                                   treeHits, True, 1.6, 2.0, 0, minQuality, doHybridBased=True)
 
     def makeEtaPlots(legendTitle,
                      h1, h1Legend,
@@ -660,6 +686,18 @@ if __name__ == "__main__":
               mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to22"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based",
               "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuHybridBased_eta16to22")
 
+    makePlots("1.6<|#eta|<2.0",
+              mapTH1F["h_single_prompt_L1Mu_rate_pt_eta16to20"], "Prompt L1Mu",
+              mapTH1F["h_single_prompt_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to20"], "Prompt L1Mu, hit in GE11, ME11, GE21, ME21",
+              mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to20"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21 direction based",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuDirectionBased_eta16to20")
+
+    makePlots("1.6<|#eta|<2.0",
+              mapTH1F["h_single_prompt_L1Mu_rate_pt_eta16to20"], "Prompt L1Mu",
+              mapTH1F["h_single_prompt_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to20"], "Prompt L1Mu, hit in GE11, ME11, GE21, ME21, ME3",
+              mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to20"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuHybridBased_eta16to20")
+
     makePlots("0.0<|#eta|<0.9",
               mapTH1F["h_single_prompt_L1Mu_rate_pt_eta00to09"], "Prompt L1Mu",
               mapTH1F["h_single_prompt_L1Mu_rate_pt_MB1_MB4_eta00to09"], "Prompt L1Mu, hit in MB1, MB4",
@@ -674,6 +712,12 @@ if __name__ == "__main__":
                  mapTH1F["h_single_displaced_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta12to24"], "Displaced L1Mu, hit in ME1, ME2, ME3 position based",
                  "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_eta12to24", doEta=True)
 
+    makeEtaPlots("1.6<|#eta|<2.0",
+                 mapTH1F["h_single_prompt_L1Mu_rate_eta_eta16to20"], "Prompt L1Mu",
+                 mapTH1F["h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to20"], "Prompt L1Mu, hit in GE11, ME11, GE21, ME21",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to20"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21 direction based",
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuDirectionBased_eta16to20", doEta=True)
+
     makeEtaPlots("1.6<|#eta|<2.2",
                  mapTH1F["h_single_prompt_L1Mu_rate_eta_eta16to22"], "Prompt L1Mu",
                  mapTH1F["h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to22"], "Prompt L1Mu, hit in GE11, ME11, GE21, ME21",
@@ -685,6 +729,12 @@ if __name__ == "__main__":
                  mapTH1F["h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to22"], "Prompt L1Mu, hit in GE11, ME11, GE21, ME21, ME3",
                  mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to22"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based",
                  "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuhybridBased_eta16to22", doEta=True)
+
+    makeEtaPlots("1.6<|#eta|<2.0",
+                 mapTH1F["h_single_prompt_L1Mu_rate_eta_eta16to20"], "Prompt L1Mu",
+                 mapTH1F["h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to20"], "Prompt L1Mu, hit in GE11, ME11, GE21, ME21, ME3",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to20"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based",
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuhybridBased_eta16to20", doEta=True)
 
     makeEtaPlots("0.0<|#eta|<2.4",
                  mapTH1F["h_single_prompt_L1Mu_rate_eta_eta00to24"], "Prompt L1Mu",

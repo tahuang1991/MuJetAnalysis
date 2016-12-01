@@ -272,6 +272,7 @@ def pt_endcap_hybrid_algorithm(treeHits, L1Mu_index):
 
         ## get the reconstruction pT value
         returnValue = treeHits.CSCTF_L1_hybrid_pt_GE21[L1Mu_CSCTF_index]
-        print "hybrid pt", returnValue
+        if returnValue == 0.0:  returnValue = 2
+        if returnValue == 30.0: returnValue = 120 ## very large value
 
     return returnValue, CSCTF_eta2

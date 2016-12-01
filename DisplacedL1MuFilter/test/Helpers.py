@@ -1319,6 +1319,8 @@ def pt_from_dPhi_GE21(DPhi, eta, parity):
                                       0.042980,
                                       0.043550,
                                       0.044590]
+  if eta is '22to24':
+    return 0
 
   if DPhi < 0:
     print "ALARM", DPhi
@@ -1499,23 +1501,6 @@ def L1Mu_status(st1, st2, st3, st4):
   if ok(st1) and ok(st2) and ok(st3) and ok(st4):  status = 15
 
   return status
-
-#______________________________________________________________________________
-def addfiles(ch, dirname=".", ext=".root"):
-  theInputFiles = []
-  if not os.path.isdir(dirname):
-      print "ERROR: This is not a valid directory: ", dirname
-      exit()
-  ls = os.listdir(dirname)
-  theInputFiles.extend([dirname[:] + x for x in ls if x.endswith(ext)])
-  for pfile in theInputFiles:
-      ## drop the /eos/uscms
-      pfile_mod = 'root://cmseos.fnal.gov/' + pfile[10:]
-      print pfile
-      ch.Add(pfile_mod)
-
-  return ch
-
 
 #______________________________________________________________________________
 def deltaPhi(phi1, phi2):
@@ -1850,6 +1835,7 @@ def addfiles(ch, dirname=".", ext=".root"):
   ls = os.listdir(dirname)
   theInputFiles.extend([dirname[:] + x for x in ls if x.endswith(ext)])
   for pfile in theInputFiles:
+    #print pfile
     ch.Add(pfile)
 
   return ch

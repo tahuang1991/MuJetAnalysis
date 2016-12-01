@@ -350,7 +350,8 @@ struct MyEvent
   Float_t CSCTF_L1_hybrid_pt_noGE21[kMaxCSCTF];
   Float_t CSCTF_sim_hybrid_pt_GE21[kMaxCSCTF];
   Float_t CSCTF_L1_hybrid_pt_GE21[kMaxCSCTF];
-
+  Float_t CSCTF_sim_eta_st2[kMaxCSCTF];
+  Float_t CSCTF_L1_eta_st2[kMaxCSCTF];
 
 
   // recovered stubs using the SIM information (stubs not used in track building...)
@@ -1735,6 +1736,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                                                         iEventSetup,
                                                         iEvent);
       ptAssignmentUnit.setCharge(match_csc.trk().charge());
+      event_.CSCTF_sim_eta_st2[k] = ptAssignmentUnit.getTrackEta();
 
       if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runPositionbased()){
         event_.CSCTF_sim_DDY123[k] = ptAssignmentUnit.getdeltaY123();
@@ -2531,6 +2533,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                                                       iEvent);
     ptAssignmentUnit.setVerbose(true);
     ptAssignmentUnit.setCharge(event_.CSCTF_charge[j]);
+    event_.CSCTF_L1_eta_st2[j] = ptAssignmentUnit.getTrackEta();
 
     if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runPositionbased()){
       event_.CSCTF_L1_DDY123[j] = ptAssignmentUnit.getdeltaY123();
@@ -5217,6 +5220,9 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_sim_hybrid_pt_GE21", event_.CSCTF_sim_hybrid_pt_GE21,"CSCTF_sim_hybrid_pt_GE21[50]/F");
   event_tree_->Branch("CSCTF_L1_hybrid_pt_GE21", event_.CSCTF_L1_hybrid_pt_GE21,"CSCTF_L1_hybrid_pt_GE21[50]/F");
 
+  event_tree_->Branch("CSCTF_sim_eta_st2", event_.CSCTF_sim_eta_st2,"CSCTF_sim_eta_st2[50]/F");
+  event_tree_->Branch("CSCTF_L1_eta_st2", event_.CSCTF_L1_eta_st2,"CSCTF_L1_eta_st2[50]/F");
+
   if (processRPCb_) {
   event_tree_->Branch("nRPCb", &event_.nRPCb);
   event_tree_->Branch("L1Mu_RPCb_index", event_.L1Mu_RPCb_index,"L1Mu_RPCb_index[nL1Mu]/I");
@@ -5797,6 +5803,9 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_L1_hybrid_pt_noGE21[i] = 99;
     event_.CSCTF_sim_hybrid_pt_GE21[i] = 99;
     event_.CSCTF_L1_hybrid_pt_GE21[i] = 99;
+
+    event_.CSCTF_sim_eta_st2[i] = 99;
+    event_.CSCTF_L1_eta_st2[i] = 99;
   }
 
   event_.nRPCb = 0;

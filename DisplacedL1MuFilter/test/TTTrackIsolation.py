@@ -144,14 +144,14 @@ def getMaxPromptPtEtaEvent(treeHits,
 
         """
 
+        ## eta cut
+        if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue
+
         ## quality cut
         if L1Mu_quality < qualityCut: continue
 
         ## BX cut
         if abs(L1Mu_bx)>0 and doBXCut: continue
-
-        ## eta cut
-        if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue
 
         ## CSC quantities
         has_CSC_ME1 = False
@@ -367,7 +367,7 @@ def getMaxDisplacedPtEtaEvent(treeHits,
         if abs(L1Mu_bx)>0 and doBXCut: continue
 
         ## eta cut
-        if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue
+        #if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue
 
         L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[i]
         L1Mu_DTTF_index = treeHits.L1Mu_DTTF_index[i]
@@ -427,6 +427,10 @@ def getMaxDisplacedPtEtaEvent(treeHits,
 
             if not has_CSC_ME21: has_actual_CSC_ME2 = has_CSC_ME2
             else:                has_actual_CSC_ME2 = (not is_CSC_ME21_disabled)
+
+            L1Mu_eta = treeHits.CSCTF_L1_eta_st2[L1Mu_CSCTF_index]
+
+            if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue
 
             if doPositionBased:  DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_position_based_algorithm(treeHits, i, True)
             if doDirectionBased: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_direction_based_algorithm(treeHits, i)

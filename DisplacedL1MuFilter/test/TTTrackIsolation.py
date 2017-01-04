@@ -3,9 +3,8 @@ from Helpers import *
 from hybridAlgorithmPtAssignment import *
 import random
 
-def is_L1Mu_isolated(treeHits, L1Mu_index,
-                     dR_largeCone, ptCut_largeCone,
-                     dR_smallCone, ptCut_smallCone):
+##_________________________________________________
+def is_L1Mu_isolated(treeHits, L1Mu_index, isolationType):
     """checks if muon is isolated from track trigger track"""
 
     L1Mu_L1Tk_dR_min = treeHits.L1Mu_L1Tk_dR_prop[L1Mu_index]
@@ -13,6 +12,32 @@ def is_L1Mu_isolated(treeHits, L1Mu_index,
 
     isMatched = False
     isUnmatched = False
+
+    # The loose veto rejects prompt muons by matching a L1Tk within
+    # a radius R<0.12 with an L1Tk pT > 4 GeV. The medium and tight
+    # veto apply L1Tk pT cuts of 3 and 2 GeV respectively on L1Tk
+    # in R<0.12.
+
+    ## loose
+    if isolationType == 1:
+        dR_largeCone = 0.12
+        ptCut_largeCone = 4
+        dR_smallCone = 0.12
+        ptCut_smallCone = 4
+
+    ## medium
+    if isolationType == 2:
+        dR_largeCone = 0.12
+        ptCut_largeCone = 4
+        dR_smallCone = 0.12
+        ptCut_smallCone = 3
+
+    ## tight
+    if isolationType == 3:
+        dR_largeCone = 0.12
+        ptCut_largeCone = 4
+        dR_smallCone = 0.12
+        ptCut_smallCone = 2
 
     ## check if matched or unmatched
     ## L1Tk should have a momentum above a certain threshold to be matched or unmatched
@@ -22,15 +47,18 @@ def is_L1Mu_isolated(treeHits, L1Mu_index,
     ## isolated means neither matched nor unmatched!
     return (not isMatched) and (not isUnmatched)
 
+##_________________________________________________
 def isME11StubDisabled(failRate):
     random_number = random.random()
     return random_number < failRate
 
 
+##_________________________________________________
 def isME21StubDisabled(failRate):
     random_number = random.random()
     return random_number < failRate
 
+##_________________________________________________
 def fillPtEtaHistogram(ptHistogram,
                        etaHistogram,
                        treeHits,
@@ -302,7 +330,9 @@ def fillDisplacedPtEtaHistogram(ptHistogram,
                                 hasMB4Cut=False,
                                 doPositionBased=False,
                                 doDirectionBased=False,
-                                doHybridBased=False):
+                                doHybridBased=False,
+                                doIsolation=False,
+                                isolationType=1):
     displaced_L1Mu_pt, displaced_L1Mu_eta = getMaxDisplacedPtEtaEvent(treeHits,
                                                                       doBXCut,
                                                                       etaCutMin,
@@ -315,7 +345,9 @@ def fillDisplacedPtEtaHistogram(ptHistogram,
                                                                       hasMB4Cut,
                                                                       doPositionBased,
                                                                       doDirectionBased,
-                                                                      doHybridBased)
+                                                                      doHybridBased,
+                                                                      doIsolation,
+                                                                      isolationType)
     #print "check pT ok", displaced_L1Mu_pt
     if (displaced_L1Mu_pt>0):
         ptHistogram.Fill(displaced_L1Mu_pt)
@@ -344,7 +376,9 @@ def getMaxDisplacedPtEtaEvent(treeHits,
                               hasMB4Cut=False,
                               doPositionBased=False,
                               doDirectionBased=False,
-                              doHybridBased=False):
+                              doHybridBased=False,
+                              doIsolation=False,
+                              isolationType =1):
 
     max_displaced_L1Mu_pt = -1
     max_displaced_L1Mu_eta = -99
@@ -365,6 +399,10 @@ def getMaxDisplacedPtEtaEvent(treeHits,
 
         ## BX cut
         if abs(L1Mu_bx)>0 and doBXCut: continue
+
+        ## check if muon is isolated
+        if doIsolation and (not is_L1Mu_isolated(treeHits, i, isolationType)): continue
+
 
         ## eta cut
         #if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue

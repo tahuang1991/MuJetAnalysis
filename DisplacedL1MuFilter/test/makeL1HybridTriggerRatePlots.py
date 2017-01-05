@@ -13,7 +13,7 @@ import random
 #______________________________________________________________________________
 if __name__ == "__main__":
 
-  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170104"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170105"; pu = 'PU140'; eff = False
 
   ## extension for figures - add more?
   ext = ".png"
@@ -25,13 +25,13 @@ if __name__ == "__main__":
 
   set_style()
 
-  doTest = True
+  doTest = False
 
   ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
 
-  location =  '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v15_StubReco/0000/'
-  location1 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v15_StubReco/0001/'
-  location2 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v15_StubReco/0002/'
+  location =  '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v17_StubReco/0000/'
+  location1 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v16_StubReco/0001/'
+  location2 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v16_StubReco/0002/'
 
   treeHits = addfiles(ch, dirname=location, ext=".root")
   #treeHits = addfiles(ch, dirname=location1, ext=".root")
@@ -155,43 +155,43 @@ if __name__ == "__main__":
                        "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_ME3_eta16to20",
 
                        ## displaced muons + loose TT isolation
-                       "h_single_displaced_L1Mu_rate_MB1_MB4_eta00to09_looseIso",
+                       "h_single_displaced_L1Mu_rate_MB1_MB4_eta00to09_looseVeto",
 
-                       "h_single_displaced_L1Mu_rate_3_stubs_ME1_ME2_ME3_eta12to16_looseIso",
-                       "h_single_displaced_L1Mu_rate_3_stubs_ME1_ME2_ME3_eta16to22_looseIso",
-                       "h_single_displaced_L1Mu_rate_3_stubs_ME1_ME2_ME3_eta12to24_looseIso",
+                       "h_single_displaced_L1Mu_rate_3_stubs_ME1_ME2_ME3_eta12to16_looseVeto",
+                       "h_single_displaced_L1Mu_rate_3_stubs_ME1_ME2_ME3_eta16to22_looseVeto",
+                       "h_single_displaced_L1Mu_rate_3_stubs_ME1_ME2_ME3_eta12to24_looseVeto",
 
-                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_eta16to22_looseIso",
-                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_ME3_eta16to22_looseIso",
+                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_eta16to22_looseVeto",
+                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_ME3_eta16to22_looseVeto",
 
-                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_eta16to20_looseIso",
-                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_ME3_eta16to20_looseIso",
+                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_eta16to20_looseVeto",
+                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_ME3_eta16to20_looseVeto",
 
                        ## displaced muons + medium TT isolation
-                       "h_single_displaced_L1Mu_rate_MB1_MB4_eta00to09_mediumIso",
+                       "h_single_displaced_L1Mu_rate_MB1_MB4_eta00to09_mediumVeto",
 
-                       "h_single_displaced_L1Mu_rate_3_stubs_ME1_ME2_ME3_eta12to16_mediumIso",
-                       "h_single_displaced_L1Mu_rate_3_stubs_ME1_ME2_ME3_eta16to22_mediumIso",
-                       "h_single_displaced_L1Mu_rate_3_stubs_ME1_ME2_ME3_eta12to24_mediumIso",
+                       "h_single_displaced_L1Mu_rate_3_stubs_ME1_ME2_ME3_eta12to16_mediumVeto",
+                       "h_single_displaced_L1Mu_rate_3_stubs_ME1_ME2_ME3_eta16to22_mediumVeto",
+                       "h_single_displaced_L1Mu_rate_3_stubs_ME1_ME2_ME3_eta12to24_mediumVeto",
 
-                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_eta16to22_mediumIso",
-                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_ME3_eta16to22_mediumIso",
+                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_eta16to22_mediumVeto",
+                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_ME3_eta16to22_mediumVeto",
 
-                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_eta16to20_mediumIso",
-                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_ME3_eta16to20_mediumIso",
+                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_eta16to20_mediumVeto",
+                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_ME3_eta16to20_mediumVeto",
 
                        ## displaced muons + tight TT isolation
-                       "h_single_displaced_L1Mu_rate_MB1_MB4_eta00to09_tightIso",
+                       "h_single_displaced_L1Mu_rate_MB1_MB4_eta00to09_tightVeto",
 
-                       "h_single_displaced_L1Mu_rate_3_stubs_ME1_ME2_ME3_eta12to16_tightIso",
-                       "h_single_displaced_L1Mu_rate_3_stubs_ME1_ME2_ME3_eta16to22_tightIso",
-                       "h_single_displaced_L1Mu_rate_3_stubs_ME1_ME2_ME3_eta12to24_tightIso",
+                       "h_single_displaced_L1Mu_rate_3_stubs_ME1_ME2_ME3_eta12to16_tightVeto",
+                       "h_single_displaced_L1Mu_rate_3_stubs_ME1_ME2_ME3_eta16to22_tightVeto",
+                       "h_single_displaced_L1Mu_rate_3_stubs_ME1_ME2_ME3_eta12to24_tightVeto",
 
-                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_eta16to22_tightIso",
-                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_ME3_eta16to22_tightIso",
+                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_eta16to22_tightVeto",
+                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_ME3_eta16to22_tightVeto",
 
-                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_eta16to20_tightIso",
-                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_ME3_eta16to20_tightIso",
+                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_eta16to20_tightVeto",
+                       "h_single_displaced_L1Mu_rate_GE11_ME11_GE21_ME21_ME3_eta16to20_tightVeto",
                        )
 
 
@@ -387,98 +387,98 @@ if __name__ == "__main__":
                                    treeHits, True, 1.6, 2.0, 0, minQuality, doHybridBased=True)
 
       ## loose isolation
-      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta16to22_looseIso"],
-                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta16to22_looseIso"],
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta16to22_looseVeto"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta16to22_looseVeto"],
                                    treeHits, True, 1.6, 2.2, 0, minQuality, doPositionBased=True,
-                                   doIsolation=True, isolationType=1)
+                                   doVetolation=True, isolationType=1)
 
-      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta12to24_looseIso"],
-                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta12to24_looseIso"],
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta12to24_looseVeto"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta12to24_looseVeto"],
                                    treeHits, True, 1.2, 2.4, 0, minQuality, doPositionBased=True,
-                                   doIsolation=True, isolationType=1)
+                                   doVetolation=True, isolationType=1)
 
-      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to22_looseIso"],
-                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to22_looseIso"],
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to22_looseVeto"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to22_looseVeto"],
                                    treeHits, True, 1.6, 2.2, 0, minQuality, doDirectionBased=True,
-                                   doIsolation=True, isolationType=1)
+                                   doVetolation=True, isolationType=1)
 
-      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to22_looseIso"],
-                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to22_looseIso"],
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to22_looseVeto"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to22_looseVeto"],
                                    treeHits, True, 1.6, 2.2, 0, minQuality, doHybridBased=True,
-                                   doIsolation=True, isolationType=1)
+                                   doVetolation=True, isolationType=1)
 
-      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to20_looseIso"],
-                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to20_looseIso"],
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to20_looseVeto"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to20_looseVeto"],
                                    treeHits, True, 1.6, 2.0, 0, minQuality, doDirectionBased=True,
-                                   doIsolation=True, isolationType=1)
+                                   doVetolation=True, isolationType=1)
 
-      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to20_looseIso"],
-                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to20_looseIso"],
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to20_looseVeto"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to20_looseVeto"],
                                    treeHits, True, 1.6, 2.0, 0, minQuality, doHybridBased=True,
-                                   doIsolation=True, isolationType=1)
+                                   doVetolation=True, isolationType=1)
 
       ## medium isolation
-      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta16to22_mediumIso"],
-                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta16to22_mediumIso"],
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta16to22_mediumVeto"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta16to22_mediumVeto"],
                                    treeHits, True, 1.6, 2.2, 0, minQuality, doPositionBased=True,
-                                   doIsolation=True, isolationType=2)
+                                   doVetolation=True, isolationType=2)
 
-      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta12to24_mediumIso"],
-                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta12to24_mediumIso"],
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta12to24_mediumVeto"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta12to24_mediumVeto"],
                                    treeHits, True, 1.2, 2.4, 0, minQuality, doPositionBased=True,
-                                   doIsolation=True, isolationType=2)
+                                   doVetolation=True, isolationType=2)
 
-      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to22_mediumIso"],
-                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to22_mediumIso"],
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to22_mediumVeto"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to22_mediumVeto"],
                                    treeHits, True, 1.6, 2.2, 0, minQuality, doDirectionBased=True,
-                                   doIsolation=True, isolationType=2)
+                                   doVetolation=True, isolationType=2)
 
-      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to22_mediumIso"],
-                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to22_mediumIso"],
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to22_mediumVeto"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to22_mediumVeto"],
                                    treeHits, True, 1.6, 2.2, 0, minQuality, doHybridBased=True,
-                                   doIsolation=True, isolationType=2)
+                                   doVetolation=True, isolationType=2)
 
-      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to20_mediumIso"],
-                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to20_mediumIso"],
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to20_mediumVeto"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to20_mediumVeto"],
                                    treeHits, True, 1.6, 2.0, 0, minQuality, doDirectionBased=True,
-                                   doIsolation=True, isolationType=2)
+                                   doVetolation=True, isolationType=2)
 
-      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to20_mediumIso"],
-                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to20_mediumIso"],
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to20_mediumVeto"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to20_mediumVeto"],
                                    treeHits, True, 1.6, 2.0, 0, minQuality, doHybridBased=True,
-                                   doIsolation=True, isolationType=2)
+                                   doVetolation=True, isolationType=2)
 
 
       ## tight isolation
-      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta16to22_tightIso"],
-                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta16to22_tightIso"],
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta16to22_tightVeto"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta16to22_tightVeto"],
                                    treeHits, True, 1.6, 2.2, 0, minQuality, doPositionBased=True,
-                                   doIsolation=True, isolationType=3)
+                                   doVetolation=True, isolationType=3)
 
-      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta12to24_tightIso"],
-                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta12to24_tightIso"],
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta12to24_tightVeto"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta12to24_tightVeto"],
                                    treeHits, True, 1.2, 2.4, 0, minQuality, doPositionBased=True,
-                                   doIsolation=True, isolationType=3)
+                                   doVetolation=True, isolationType=3)
 
-      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to22_tightIso"],
-                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to22_tightIso"],
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to22_tightVeto"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to22_tightVeto"],
                                    treeHits, True, 1.6, 2.2, 0, minQuality, doDirectionBased=True,
-                                   doIsolation=True, isolationType=3)
+                                   doVetolation=True, isolationType=3)
 
-      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to22_tightIso"],
-                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to22_tightIso"],
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to22_tightVeto"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to22_tightVeto"],
                                    treeHits, True, 1.6, 2.2, 0, minQuality, doHybridBased=True,
-                                   doIsolation=True, isolationType=3)
+                                   doVetolation=True, isolationType=3)
 
-      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to20_tightIso"],
-                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to20_tightIso"],
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to20_tightVeto"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to20_tightVeto"],
                                    treeHits, True, 1.6, 2.0, 0, minQuality, doDirectionBased=True,
-                                   doIsolation=True, isolationType=3)
+                                   doVetolation=True, isolationType=3)
 
-      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to20_tightIso"],
-                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to20_tightIso"],
+      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to20_tightVeto"],
+                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to20_tightVeto"],
                                    treeHits, True, 1.6, 2.0, 0, minQuality, doHybridBased=True,
-                                   doIsolation=True, isolationType=3)
+                                   doVetolation=True, isolationType=3)
 
 
     def makeEtaPlots(legendTitle,
@@ -611,7 +611,7 @@ if __name__ == "__main__":
       leg.SetFillColor(kWhite)
       leg.SetBorderSize(0)
       leg.SetFillStyle(0)
-      leg.SetTextSize(0.04)
+      leg.SetTextSize(0.03)
       leg.AddEntry(h1, h1Legend, "f")
       leg.AddEntry(h2, h2Legend, "f")
       leg.AddEntry(h3, h3Legend, "f")
@@ -890,11 +890,127 @@ if __name__ == "__main__":
 
     ## rates with isolation
 
+    ## pt
     makePlots("1.2<|#eta|<2.4",
               mapTH1F["h_single_prompt_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta12to24"], "Prompt L1Mu, hit in ME1, ME2, ME3",
               mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta12to24"], "Displaced L1Mu, hit in ME1, ME2, ME3, position based",
-              mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta12to24_looseIso"], "Displaced L1Mu, hit in ME1, ME2, ME3, position based, loose Iso",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_eta12to24_looseIso")
+              mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta12to24_looseVeto"], "Displaced L1Mu, hit in ME1, ME2, ME3, position based, loose Veto",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_eta12to24_looseVeto")
+
+    makePlots("1.2<|#eta|<2.4",
+              mapTH1F["h_single_prompt_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta12to24"], "Prompt L1Mu, hit in ME1, ME2, ME3",
+              mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta12to24"], "Displaced L1Mu, hit in ME1, ME2, ME3, position based",
+              mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta12to24_mediumVeto"], "Displaced L1Mu, hit in ME1, ME2, ME3, position based, medium Veto",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_eta12to24_mediumVeto")
+
+    makePlots("1.2<|#eta|<2.4",
+              mapTH1F["h_single_prompt_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta12to24"], "Prompt L1Mu, hit in ME1, ME2, ME3",
+              mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta12to24"], "Displaced L1Mu, hit in ME1, ME2, ME3, position based",
+              mapTH1F["h_single_displaced_L1Mu_rate_pt_3_stubs_ME1_ME2_ME3_eta12to24_tightVeto"], "Displaced L1Mu, hit in ME1, ME2, ME3, position based, tight Veto",
+              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_eta12to24_tightVeto")
+
+
+    makePlots("1.6<|#eta|<2.0",
+                 mapTH1F["h_single_prompt_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to20"], "Prompt L1Mu, hit in GE11, ME11, GE21, ME21",
+                 mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to20"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21 direction based",
+                 mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to20_looseVeto"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21 direction based, loose Veto",
+                 "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuDirectionBased_eta16to20_looseVeto")
+
+    makePlots("1.6<|#eta|<2.0",
+                 mapTH1F["h_single_prompt_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to20"], "Prompt L1Mu, hit in GE11, ME11, GE21, ME21",
+                 mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to20"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21 direction based",
+                 mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to20_mediumVeto"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21 direction based, medium Veto",
+                 "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuDirectionBased_eta16to20_mediumVeto")
+
+    makePlots("1.6<|#eta|<2.0",
+                 mapTH1F["h_single_prompt_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to20"], "Prompt L1Mu, hit in GE11, ME11, GE21, ME21",
+                 mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to20"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21 direction based",
+                 mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta16to20_tightVeto"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21 direction based, tight Veto",
+                 "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuDirectionBased_eta16to20_tightVeto")
+
+
+
+    makePlots("1.6<|#eta|<2.0",
+                 mapTH1F["h_single_prompt_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to20"], "Prompt L1Mu, hit in GE11, ME11, GE21, ME21, ME3",
+                 mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to20"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based",
+                 mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to20_looseVeto"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based, loose Veto",
+                 "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuhybridBased_eta16to20_looseVeto")
+
+    makePlots("1.6<|#eta|<2.0",
+                 mapTH1F["h_single_prompt_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to20"], "Prompt L1Mu, hit in GE11, ME11, GE21, ME21, ME3",
+                 mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to20"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based",
+                 mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to20_mediumVeto"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based, medium Veto",
+                 "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuhybridBased_eta16to20_mediumVeto")
+
+    makePlots("1.6<|#eta|<2.0",
+                 mapTH1F["h_single_prompt_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to20"], "Prompt L1Mu, hit in GE11, ME11, GE21, ME21, ME3",
+                 mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to20"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based",
+                 mapTH1F["h_single_displaced_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta16to20_tightVeto"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based, tight Veto",
+                 "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuhybridBased_eta16to20_tightVeto")
+
+
+
+
+
+    ## eta
+    makeEtaPlots("1.2<|#eta|<2.4",
+                 mapTH1F["h_single_prompt_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta12to24"], "Prompt L1Mu, hit in ME1, ME2, ME3",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta12to24"], "Displaced L1Mu, hit in ME1, ME2, ME3 position based",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta12to24_looseVeto"], "Displaced L1Mu, hit in ME1, ME2, ME3 position based, loose Veto",
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu3st__DispL1MuPositionBased_eta12to24_looseVeto", doEta=True)
+
+    makeEtaPlots("1.2<|#eta|<2.4",
+                 mapTH1F["h_single_prompt_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta12to24"], "Prompt L1Mu, hit in ME1, ME2, ME3",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta12to24"], "Displaced L1Mu, hit in ME1, ME2, ME3 position based",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta12to24_mediumVeto"], "Displaced L1Mu, hit in ME1, ME2, ME3 position based, medium Veto",
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu3st__DispL1MuPositionBased_eta12to24_mediumVeto", doEta=True)
+
+    makeEtaPlots("1.2<|#eta|<2.4",
+                 mapTH1F["h_single_prompt_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta12to24"], "Prompt L1Mu, hit in ME1, ME2, ME3",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta12to24"], "Displaced L1Mu, hit in ME1, ME2, ME3 position based",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_3_stubs_ME1_ME2_ME3_eta12to24_tightVeto"], "Displaced L1Mu, hit in ME1, ME2, ME3 position based, tight Veto",
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu3st__DispL1MuPositionBased_eta12to24_tightVeto", doEta=True)
+
+
+
+    makeEtaPlots("1.6<|#eta|<2.0",
+                 mapTH1F["h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to20"], "Prompt L1Mu, hit in GE11, ME11, GE21, ME21",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to20"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21 direction based",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to20_looseVeto"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21 direction based, loose Veto",
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuDirectionBased_eta16to20_looseVeto", doEta=True)
+
+    makeEtaPlots("1.6<|#eta|<2.0",
+                 mapTH1F["h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to20"], "Prompt L1Mu, hit in GE11, ME11, GE21, ME21",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to20"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21 direction based",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to20_mediumVeto"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21 direction based, medium Veto",
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuDirectionBased_eta16to20_mediumVeto", doEta=True)
+
+    makeEtaPlots("1.6<|#eta|<2.0",
+                 mapTH1F["h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to20"], "Prompt L1Mu, hit in GE11, ME11, GE21, ME21",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to20"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21 direction based",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta16to20_tightVeto"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21 direction based, tight Veto",
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuDirectionBased_eta16to20_tightVeto", doEta=True)
+
+
+
+    makeEtaPlots("1.6<|#eta|<2.0",
+                 mapTH1F["h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to20"], "Prompt L1Mu, hit in GE11, ME11, GE21, ME21, ME3",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to20"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to20_looseVeto"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based, loose Veto",
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuhybridBased_eta16to20_looseVeto", doEta=True)
+
+    makeEtaPlots("1.6<|#eta|<2.0",
+                 mapTH1F["h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to20"], "Prompt L1Mu, hit in GE11, ME11, GE21, ME21, ME3",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to20"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to20_mediumVeto"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based, medium Veto",
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuhybridBased_eta16to20_mediumVeto", doEta=True)
+
+    makeEtaPlots("1.6<|#eta|<2.0",
+                 mapTH1F["h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to20"], "Prompt L1Mu, hit in GE11, ME11, GE21, ME21, ME3",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to20"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta16to20_tightVeto"], "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based, tight Veto",
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuhybridBased_eta16to20_tightVeto", doEta=True)
+
 
 
   displacedL1MuHybridTriggerRate()

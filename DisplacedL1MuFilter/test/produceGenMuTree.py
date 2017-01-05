@@ -48,7 +48,7 @@ if __name__ == "__main__":
   print "Start run on", ch.GetEntries(), "events."
   treeHits = ch
 
-  f = ROOT.TFile("out_ana_pu0_displaced_L1Mu_DDY123_StubRec_20161130.root", "recreate")
+  f = ROOT.TFile("out_ana_pu0_displaced_L1Mu_DDY123_StubRec_20170105.root", "recreate")
   t = ROOT.TTree("L1MuTree", "L1MuTree")
 
   ## ranges
@@ -184,7 +184,7 @@ if __name__ == "__main__":
   CSCTF_sim_isEven4s = numpy.zeros(1, dtype=int)
 
 
-
+  ## displaced trigger
   paritys_sim = numpy.zeros(1, dtype=int)
   partitions_sim = numpy.zeros(1, dtype=int)
   paritys_L1 = numpy.zeros(1, dtype=int)
@@ -209,6 +209,11 @@ if __name__ == "__main__":
 
   CSCTF_sim_eta_st2s = numpy.zeros(1, dtype=float)
   CSCTF_L1_eta_st2s = numpy.zeros(1, dtype=float)
+
+  ## isolation
+  L1Mu_isLooseVetos = numpy.zeros(1, dtype=int)
+  L1Mu_isMediumVetos = numpy.zeros(1, dtype=int)
+  L1Mu_isTightVetos = numpy.zeros(1, dtype=int)
 
   ## gem hits are there!!
   ok_GE11_L1s = numpy.zeros(1, dtype=int)
@@ -384,6 +389,11 @@ if __name__ == "__main__":
 
   t.Branch('CSCTF_sim_eta_st2', CSCTF_sim_eta_st2s, 'CSCTF_sim_eta_st2/D')
   t.Branch('CSCTF_L1_eta_st2', CSCTF_L1_eta_st2s, 'CSCTF_L1_eta_st2/D')
+
+  ## isolation
+  t.Branch('L1Mu_isLooseVeto', L1Mu_isLooseVetos, 'L1Mu_isLooseVeto/I')
+  t.Branch('L1Mu_isMediumVeto', L1Mu_isMediumVetos, 'L1Mu_isMediumVeto/I')
+  t.Branch('L1Mu_isTightVeto', L1Mu_isTightVetos, 'L1Mu_isTightVeto/I')
 
   ## GEM information
   t.Branch('ok_GE11_L1', ok_GE11_L1s, 'ok_GE11_L1/I')
@@ -613,6 +623,10 @@ if __name__ == "__main__":
 
           CSCTF_sim_eta_st2s[0] = 99
           CSCTF_L1_eta_st2s[0] = 99
+
+          L1Mu_isLooseVetos[0] = 0
+          L1Mu_isMediumVetos[0] = 0
+          L1Mu_isTightVetos[0] = 0
 
           ok_GE11_L1s[0] = 0
           ok_GE11_L2s[0] = 0
@@ -976,6 +990,21 @@ if __name__ == "__main__":
 
           partitions_sim[0] = etaPartition_sim
           partitions_L1[0] = etaPartition_L1
+
+          ## Track-Trigger isolation
+          L1Mu_L1Tk_dR_min = treeHits.L1Mu_L1Tk_dR_prop[L1Mu_index]
+          L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt_prop[L1Mu_index]
+
+          if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_L1Tk_pt >= 4:
+            L1Mu_isLooseVetos[0] = 1
+
+          if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_L1Tk_pt >= 3:
+            L1Mu_isMediumVetos[0] = 1
+
+          if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_L1Tk_pt >= 2:
+            L1Mu_isTightVetos[0] = 1
+
+
 
           #print "partition", partitions_sim[0]
           #print "partition L1", partitions_L1[0]

@@ -181,7 +181,7 @@ def pt_endcap_position_based_algorithm(treeHits, L1Mu_index, doComparatorFit):
 
     return returnValue, CSCTF_eta2
 
-def pt_endcap_direction_based_algorithm(treeHits, L1Mu_index):
+def pt_endcap_direction_based_algorithm(treeHits, L1Mu_index, useGEMs):
 
     returnValue = 0
 
@@ -231,7 +231,7 @@ def pt_endcap_direction_based_algorithm(treeHits, L1Mu_index):
 
     return returnValue, CSCTF_eta2
 
-def pt_endcap_hybrid_algorithm(treeHits, L1Mu_index):
+def pt_endcap_hybrid_algorithm(treeHits, L1Mu_index, useGEMs):
 
     returnValue = 0
 
@@ -271,7 +271,8 @@ def pt_endcap_hybrid_algorithm(treeHits, L1Mu_index):
     if ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3 and ok_GE11 and ok_GE21:
 
         ## get the reconstruction pT value
-        returnValue = treeHits.CSCTF_L1_hybrid_pt_GE21[L1Mu_CSCTF_index]
+        if useGEMs: returnValue = treeHits.CSCTF_L1_hybrid_pt_GE21[L1Mu_CSCTF_index]
+        else:       returnValue = treeHits.CSCTF_L1_hybrid_pt_noGE21[L1Mu_CSCTF_index]
         if returnValue == 0.0:  returnValue = 5
         if returnValue == 30.0: returnValue = 120 ## very large value
 

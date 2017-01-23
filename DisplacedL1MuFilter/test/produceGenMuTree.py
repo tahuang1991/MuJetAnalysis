@@ -35,9 +35,13 @@ if __name__ == "__main__":
 
   ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
 
-  dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU0_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU0_L1MuANA_v9/'
-  dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU0_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU0_L1MuANA_v9/'
-  dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU0_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_L1MuANA_v9/'
+  dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU140_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU140_L1MuANA_v1/'
+  dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU140_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_L1MuANA_v1/'
+  dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU140_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v1/'
+
+  #dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v38/161013_153046/0000/'
+  #dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_L1MuANA_v41_StubRecovery/161024_181853/0000/'
+  #dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU140_L1MuANA_v41_StubRecovery/161024_181450/0000/'
 
   print "Start run on", ch.GetEntries(), "events."
   ch = addfiles(ch, dirname=dirname1)
@@ -48,7 +52,7 @@ if __name__ == "__main__":
   print "Start run on", ch.GetEntries(), "events."
   treeHits = ch
 
-  f = ROOT.TFile("out_ana_pu0_displaced_L1Mu_DDY123_StubRec_20170105.root", "recreate")
+  f = ROOT.TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_20170123.root", "recreate")
   t = ROOT.TTree("L1MuTree", "L1MuTree")
 
   ## ranges
@@ -995,14 +999,20 @@ if __name__ == "__main__":
           L1Mu_L1Tk_dR_min = treeHits.L1Mu_L1Tk_dR_prop[L1Mu_index]
           L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt_prop[L1Mu_index]
 
+          #print "L1Mu_L1Tk_dR_min", L1Mu_L1Tk_dR_min
+          #print "L1Mu_L1Tk_pt", L1Mu_L1Tk_pt
+
           if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_L1Tk_pt >= 4:
             L1Mu_isLooseVetos[0] = 1
+            #print "L1Mu_isLooseVetos"
 
           if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_L1Tk_pt >= 3:
             L1Mu_isMediumVetos[0] = 1
+            #print "L1Mu_isMediumVetos"
 
           if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_L1Tk_pt >= 2:
             L1Mu_isTightVetos[0] = 1
+            #print "L1Mu_isTightVetos"
 
 
 

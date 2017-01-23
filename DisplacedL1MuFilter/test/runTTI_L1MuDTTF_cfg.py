@@ -16,7 +16,7 @@ process.load('Configuration.Geometry.GeometryExtended2023TTI_cff')
 
 process.load('Configuration.StandardSequences.L1Reco_cff')
 process.load("SLHCUpgradeSimulations.L1TrackTrigger.L1TkMuonSequence_cfi")
-#process.pMuons = cms.Path( process.L1TkMuons ) #process.l1extraParticles + 
+#process.pMuons = cms.Path( process.L1TkMuons ) #process.l1extraParticles +
 process.load("L1Trigger.TrackTrigger.TrackTrigger_cff")
 
 process.maxEvents = cms.untracked.PSet(
@@ -86,7 +86,7 @@ process.load('L1Trigger.DTTrackFinder.dttfDigis_cfi')
 process.dttfDigis.DTDigi_Source = "simDtTriggerPrimitiveDigis"
 process.dttfDigis.CSCStub_Source = "simCsctfTrackDigis"
 process.p = cms.Path(
-    #process.TrackTriggerClustersStubs * process.TrackTriggerTTTracks  * 
+    process.TrackTriggerClustersStubs * process.TrackTriggerTTTracks  *
     process.dttfDigis)
 # * process.dump * process.DisplacedL1MuFilter_PhaseIIGE21
 #process.p.remove(process.L1TkMuonsDTSequence)

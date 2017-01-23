@@ -354,6 +354,12 @@ struct MyEvent
   Float_t CSCTF_L1_eta_st2[kMaxCSCTF];
 
 
+  // directions
+  Float_t CSCTF_L1_Phi1_noGE21[kMaxCSCTF], CSCTF_L1_Phi2_noGE21[kMaxCSCTF];
+  Float_t CSCTF_L1_Phi1_GE21[kMaxCSCTF], CSCTF_L1_Phi2_GE21[kMaxCSCTF];
+  Float_t CSCTF_sim_Phi1_noGE21[kMaxCSCTF], CSCTF_sim_Phi2_noGE21[kMaxCSCTF];
+  Float_t CSCTF_sim_Phi1_GE21[kMaxCSCTF], CSCTF_sim_Phi2_GE21[kMaxCSCTF];
+
   // recovered stubs using the SIM information (stubs not used in track building...)
   Int_t CSCTF_rec_ch1[kMaxCSCTF], CSCTF_rec_ch2[kMaxCSCTF], CSCTF_rec_ch3[kMaxCSCTF], CSCTF_rec_ch4[kMaxCSCTF];
   Float_t CSCTF_rec_phi1[kMaxCSCTF], CSCTF_rec_phi2[kMaxCSCTF], CSCTF_rec_phi3[kMaxCSCTF], CSCTF_rec_phi4[kMaxCSCTF];
@@ -1744,9 +1750,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       }
       if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(false)){
         event_.CSCTF_sim_DPhi12_noGE21[k] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
+        event_.CSCTF_sim_Phi1_noGE21[k] = ptAssignmentUnit.getlocalPhiDirection(1);
+        event_.CSCTF_sim_Phi2_noGE21[k] = ptAssignmentUnit.getlocalPhiDirection(2);
       }
       if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(true)){
         event_.CSCTF_sim_DPhi12_GE21[k] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
+        event_.CSCTF_sim_Phi1_GE21[k] = ptAssignmentUnit.getlocalPhiDirection(1);
+        event_.CSCTF_sim_Phi2_GE21[k] = ptAssignmentUnit.getlocalPhiDirection(2);
       }
 
       ptAssignmentUnit.runHybrid(false);
@@ -1916,7 +1926,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       const double l1Tk_eta_corr = l1Tk_eta;
       const double l1Tk_phi_corr = phiHeavyCorr(l1Tk_pt, l1Tk_eta, l1Tk_phi, l1Tk_charge);
 
-      if(verbose and false) {
+      if(verbose) {
         cout << "l1Tk " << j << endl;
         cout << "l1Tk_pt " << l1Tk_pt << endl;
         cout << "l1Tk_eta " << l1Tk_eta << endl;
@@ -2498,23 +2508,25 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       */
       if (not stubMissingSt2){
         std::vector<GlobalPoint> positionPadsGE21 = positionPad2InDetId(GEMDigis, event_.CSCTF_id2[j], event_.CSCTF_bx[j]);
-        //std::cout << "Check positions of 2-strip pads for " << CSCDetId(event_.CSCTF_id2[j]) << " in BX " << event_.CSCTF_bx[j] << std::endl;
-        //std::cout << "GE21: " << std::endl;
+        std::cout << "Check positions of 2-strip pads for " << CSCDetId(event_.CSCTF_id2[j]) << " in BX " << event_.CSCTF_bx[j] << std::endl;
+        std::cout << "GE21: " << std::endl;
         float minDPhi_L1=99, minDPhi_L2=992;
-
+        std::cout << "size " << positionPadsGE21.size() << std::endl;
         for (auto p: positionPadsGE21){
           // L1
-          if ( std::abs(p.z() - 794.439) < 0.0001 or std::abs(p.z() + 794.439) < 0.0001 ) {
+          if ( std::abs(p.z() - 794.439) < 0.01 or std::abs(p.z() + 794.439) < 0.01 ) {
             float dPhiGEMCSC(std::abs(reco::deltaPhi(event_.CSCTF_fit_phi2[j], p.phi())));
             if (dPhiGEMCSC  < minDPhi_L1) {
+              std::cout << "New 2-pad GE21 phi L1 " << p.phi() << std::endl;
               minDPhi_L1 = dPhiGEMCSC;
               event_.GE21_pad2_phi_L1[j] = p.phi();
             }
           }
           // L2
-          if ( std::abs(p.z() - 798.179) < 0.0001 or std::abs(p.z() + 798.179) < 0.0001 ) {
+          if ( std::abs(p.z() - 798.179) < 0.01 or std::abs(p.z() + 798.179) < 0.01 ) {
             float dPhiGEMCSC(std::abs(reco::deltaPhi(event_.CSCTF_fit_phi2[j], p.phi())));
             if (dPhiGEMCSC  < minDPhi_L2) {
+              std::cout << "New 2-pad GE21 phi L2 " << p.phi() << std::endl;
               minDPhi_L2 = dPhiGEMCSC;
               event_.GE21_pad2_phi_L2[j] = p.phi();
             }
@@ -2541,9 +2553,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     }
     if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(false)){
       event_.CSCTF_L1_DPhi12_noGE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
+      event_.CSCTF_L1_Phi1_noGE21[j] = ptAssignmentUnit.getlocalPhiDirection(1);
+      event_.CSCTF_L1_Phi2_noGE21[j] = ptAssignmentUnit.getlocalPhiDirection(2);
     }
     if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(true)){
       event_.CSCTF_L1_DPhi12_GE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
+      event_.CSCTF_L1_Phi1_GE21[j] = ptAssignmentUnit.getlocalPhiDirection(1);
+      event_.CSCTF_L1_Phi2_GE21[j] = ptAssignmentUnit.getlocalPhiDirection(2);
     }
 
     ptAssignmentUnit.runHybrid(false);
@@ -5223,6 +5239,15 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_sim_eta_st2", event_.CSCTF_sim_eta_st2,"CSCTF_sim_eta_st2[50]/F");
   event_tree_->Branch("CSCTF_L1_eta_st2", event_.CSCTF_L1_eta_st2,"CSCTF_L1_eta_st2[50]/F");
 
+  event_tree_->Branch("CSCTF_sim_Phi1_noGE21", event_.CSCTF_sim_Phi1_noGE21,"CSCTF_sim_Phi1_noGE21[50]/F");
+  event_tree_->Branch("CSCTF_sim_Phi2_noGE21", event_.CSCTF_sim_Phi2_noGE21,"CSCTF_sim_Phi2_noGE21[50]/F");
+  event_tree_->Branch("CSCTF_sim_Phi1_GE21", event_.CSCTF_sim_Phi1_GE21,"CSCTF_sim_Phi1_GE21[50]/F");
+  event_tree_->Branch("CSCTF_sim_Phi2_GE21", event_.CSCTF_sim_Phi2_GE21,"CSCTF_sim_Phi2_GE21[50]/F");
+  event_tree_->Branch("CSCTF_L1_Phi1_noGE21", event_.CSCTF_L1_Phi1_noGE21,"CSCTF_L1_Phi1_noGE21[50]/F");
+  event_tree_->Branch("CSCTF_L1_Phi2_noGE21", event_.CSCTF_L1_Phi2_noGE21,"CSCTF_L1_Phi2_noGE21[50]/F");
+  event_tree_->Branch("CSCTF_L1_Phi1_GE21", event_.CSCTF_L1_Phi1_GE21,"CSCTF_L1_Phi1_GE21[50]/F");
+  event_tree_->Branch("CSCTF_L1_Phi2_GE21", event_.CSCTF_L1_Phi2_GE21,"CSCTF_L1_Phi2_GE21[50]/F");
+
   if (processRPCb_) {
   event_tree_->Branch("nRPCb", &event_.nRPCb);
   event_tree_->Branch("L1Mu_RPCb_index", event_.L1Mu_RPCb_index,"L1Mu_RPCb_index[nL1Mu]/I");
@@ -5806,6 +5831,15 @@ DisplacedL1MuFilter::clearBranches()
 
     event_.CSCTF_sim_eta_st2[i] = 99;
     event_.CSCTF_L1_eta_st2[i] = 99;
+
+    event_.CSCTF_L1_Phi1_noGE21[i] = 99;
+    event_.CSCTF_L1_Phi2_noGE21[i] = 99;
+    event_.CSCTF_L1_Phi1_GE21[i] = 99;
+    event_.CSCTF_L1_Phi2_GE21[i] = 99;
+    event_.CSCTF_sim_Phi1_noGE21[i] = 99;
+    event_.CSCTF_sim_Phi2_noGE21[i] = 99;
+    event_.CSCTF_sim_Phi1_GE21[i] = 99;
+    event_.CSCTF_sim_Phi2_GE21[i] = 99;
   }
 
   event_.nRPCb = 0;

@@ -7,13 +7,11 @@ ROOT.gROOT.SetBatch(1)
 from Helpers import *
 from ROOT import *
 
-file = TFile("out_ana_pu0_displaced_L1Mu_DDY123_StubRec_20170105.root")
+file = TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_20170123.root")
 treeHits = file.Get("L1MuTree")
 
 ## plots
-targetDir = 'DisplacedL1MuTrigger_20161117_PU0_StubRecovery_v2/'
-targetDir = 'DisplacedL1MuTrigger_20161130_PU0_StubRecovery/'
-targetDir = 'DisplacedL1MuTrigger_20170105_PU0_StubRecovery/'
+targetDir = 'DisplacedL1MuTrigger_20170123_PU140_StubRecovery/'
 
 ## Style
 gStyle.SetStatStyle(0)
@@ -671,426 +669,6 @@ def pt_vs_ddy123Plots():
         print '    ptbin_["' + etaRanges[pp] + '_eoo"] = ', lut1[0]
         print '    ddy123cut_["' + etaRanges[pp] + '_eoo"] = ', lut1[1]
         print
-
-def generateEfficiencyPlots_V2():
-
-    ptbin_ = {}
-    ddy123cut_ = {}
-
-    ddy123cut_["12to14_oee"] = 4.280000
-    ddy123cut_["12to14_ooo"] = 2.458800
-    ddy123cut_["12to14_eee"] = 4.896000
-    ddy123cut_["12to14_eoo"] = 3.030000
-
-    ddy123cut_["14to16_oee"] =  3.428333
-    ddy123cut_["14to16_ooo"] =  1.986684
-    ddy123cut_["14to16_eee"] =  3.964500
-    ddy123cut_["14to16_eoo"] =  2.129500
-
-    ddy123cut_["16to18_oee"] =  3.417500
-    ddy123cut_["16to18_ooo"] =  1.972000
-    ddy123cut_["16to18_eee"] =  3.286000
-    ddy123cut_["16to18_eoo"] =  1.977000
-
-    ddy123cut_["18to20_oee"] =  2.391250
-    ddy123cut_["18to20_ooo"] =  1.473667
-    ddy123cut_["18to20_eee"] =  2.396400
-    ddy123cut_["18to20_eoo"] =  1.468778
-
-    ddy123cut_["20to22_oee"] =  1.396600
-    ddy123cut_["20to22_ooo"] =  0.846875
-    ddy123cut_["20to22_eee"] =  1.429000
-    ddy123cut_["20to22_eoo"] =  0.898750
-
-    ddy123cut_["22to24_oee"] =  0.815000
-    ddy123cut_["22to24_ooo"] =  0.553600
-    ddy123cut_["22to24_eee"] =  0.849000
-    ddy123cut_["22to24_eoo"] =  0.555909
-
-    def getDDY123Cut(parity, etaPart, ptCut):
-        ME1ME2ME3ParityCases = ['oee','ooo','eee','eoo']
-        etaRanges = ['12to14','14to16','16to18','18to20','20to22','22to24']
-        ddy123cut = ddy123cut_[etaRanges[etaPart] + "_" + ME1ME2ME3ParityCases[parity]]
-
-        #print ptbins
-        #print ddy123cuts
-        #pt_index = ptbins.index(ptCut)
-        #ddy123cut = ddy123cuts[pt_index]
-        #print "10", pt_index, ddy123cut
-        #print
-
-        return ddy123cut
-
-    #    stationCut = TCut('has_CSCTF==1 && ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1 && abs(CSCTF_sim_DDY123)<=40 && has_L1Mu==1')
-    #    stationCut = TCut('has_CSCTF==1 && ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1 && abs(CSCTF_sim_DDY123)<=40 && has_L1Mu==1')
-    stationCut = TCut('ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && ok_CSCTF_sim_st3==1 && abs(CSCTF_sim_DDY123)<=40')
-    #stationCut = TCut('')
-
-    print 'entries', treeHits.GetEntries('ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && ok_CSCTF_sim_st3==1 && abs(CSCTF_sim_DDY123)<=40')
-    print 'entries', treeHits.GetEntries('ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && ok_CSCTF_sim_st3==1 && abs(CSCTF_sim_DDY123)<=40 && partition_sim==0 && abs(gen_dxy)<5')
-    ## 12 to 14
-    etaCut = TCut('partition_sim==0')
-    #etaCut = TCut('')
-    baselineCut = AND(stationCut, etaCut)
-#abs(gen_dxy)<5 && parity_sim==0
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,0,9))))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,0,9))))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,0,9))))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,0,9))))
-
-    eff0 += eff1
-    eff0 += eff2
-    eff0 += eff3
-
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,0,9))))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,0,9))))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,0,9))))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,0,9))))
-
-    eff10 += eff11
-    eff10 += eff12
-    eff10 += eff13
-
-    makeEffPlot(eff0, eff10, None,
-                targetDir + "Displaced_L1MuPt10_SimMuPt_Sim_ME1_ME2_ME3_eta12to14_dxy0to50", "Displaced L1Mu algorithm;1.2<|#eta|<1.4")
-
-    ## 14 to 16
-    etaCut = TCut('partition_sim==1')
-    baselineCut = AND(stationCut, etaCut)
-
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,1,9))))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,1,9))))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,1,9))))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,1,9))))
-
-    eff0 += eff1
-    eff0 += eff2
-    eff0 += eff3
-
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,1,9))))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,1,9))))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,1,9))))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,1,9))))
-
-    eff10 += eff11
-    eff10 += eff12
-    eff10 += eff13
-
-    makeEffPlot(eff0, eff10, None,
-                targetDir + "Displaced_L1MuPt10_SimMuPt_Sim_ME1_ME2_ME3_eta14to16_dxy0to50", "Displaced L1Mu algorithm;1.4<|#eta|<1.6")
-
-
-    ## 16 to 18
-    etaCut = TCut('partition_sim==2')
-    baselineCut = AND(stationCut, etaCut)
-
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,2,9))))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,2,9))))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,2,9))))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,2,9))))
-
-    eff0 += eff1
-    eff0 += eff2
-    eff0 += eff3
-
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,2,9))))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,2,9))))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,2,9))))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,2,9))))
-
-    eff10 += eff11
-    eff10 += eff12
-    eff10 += eff13
-
-    makeEffPlot(eff0, eff10, None,
-                targetDir + "Displaced_L1MuPt10_SimMuPt_Sim_ME1_ME2_ME3_eta16to18_dxy0to50", "Displaced L1Mu algorithm;1.6<|#eta|<1.8")
-
-
-    ## 18 to 20
-    etaCut = TCut('partition_sim==3')
-    baselineCut = AND(stationCut, etaCut)
-
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,3,9))))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,3,9))))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,3,9))))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,3,9))))
-
-    eff0 += eff1
-    eff0 += eff2
-    eff0 += eff3
-
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,3,9))))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,3,9))))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,3,9))))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,3,9))))
-
-    eff10 += eff11
-    eff10 += eff12
-    eff10 += eff13
-
-    makeEffPlot(eff0, eff10, None,
-                targetDir + "Displaced_L1MuPt10_SimMuPt_Sim_ME1_ME2_ME3_eta18to20_dxy0to50", "Displaced L1Mu algorithm;1.8<|#eta|<2.0")
-
-
-    ## 20 to 22
-    etaCut = TCut('partition_sim==4')
-    baselineCut = AND(stationCut, etaCut)
-
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,4,9))))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,4,9))))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,4,9))))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,4,9))))
-
-    eff0 += eff1
-    eff0 += eff2
-    eff0 += eff3
-
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,4,9))))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,4,9))))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,4,9))))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,4,9))))
-
-    eff10 += eff11
-    eff10 += eff12
-    eff10 += eff13
-
-    makeEffPlot(eff0, eff10, None,
-                targetDir + "Displaced_L1MuPt10_SimMuPt_Sim_ME1_ME2_ME3_eta20to22_dxy0to50", "Displaced L1Mu algorithm;2.0<|#eta|<2.2")
-
-
-    ## 22 to 24
-    etaCut = TCut('partition_sim==5')
-    baselineCut = AND(stationCut, etaCut)
-
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,5,9))))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,5,9))))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,5,9))))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,5,9))))
-
-    eff0 += eff1
-    eff0 += eff2
-    eff0 += eff3
-
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,5,9))))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,5,9))))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,5,9))))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,5,9))))
-
-    eff10 += eff11
-    eff10 += eff12
-    eff10 += eff13
-
-    makeEffPlot(eff0, eff10, None,
-                targetDir + "Displaced_L1MuPt10_SimMuPt_Sim_ME1_ME2_ME3_eta22to24_dxy0to50", "Displaced L1Mu algorithm;2.2<|#eta|<2.4")
-
-
-def generateEfficiencyPlots_V3():
-
-    ptbin_ = {}
-    ddy123cut_ = {}
-
-    ddy123cut_["12to14_oee"] = 4.280000
-    ddy123cut_["12to14_ooo"] = 2.458800
-    ddy123cut_["12to14_eee"] = 4.896000
-    ddy123cut_["12to14_eoo"] = 3.030000
-
-    ddy123cut_["14to16_oee"] =  3.428333
-    ddy123cut_["14to16_ooo"] =  1.986684
-    ddy123cut_["14to16_eee"] =  3.964500
-    ddy123cut_["14to16_eoo"] =  2.129500
-
-    ddy123cut_["16to18_oee"] =  3.417500
-    ddy123cut_["16to18_ooo"] =  1.972000
-    ddy123cut_["16to18_eee"] =  3.286000
-    ddy123cut_["16to18_eoo"] =  1.977000
-
-    ddy123cut_["18to20_oee"] =  2.391250
-    ddy123cut_["18to20_ooo"] =  1.473667
-    ddy123cut_["18to20_eee"] =  2.396400
-    ddy123cut_["18to20_eoo"] =  1.468778
-
-    ddy123cut_["20to22_oee"] =  1.396600
-    ddy123cut_["20to22_ooo"] =  0.846875
-    ddy123cut_["20to22_eee"] =  1.429000
-    ddy123cut_["20to22_eoo"] =  0.898750
-
-    ddy123cut_["22to24_oee"] =  0.815000
-    ddy123cut_["22to24_ooo"] =  0.553600
-    ddy123cut_["22to24_eee"] =  0.849000
-    ddy123cut_["22to24_eoo"] =  0.555909
-
-    def getDDY123Cut(parity, etaPart, ptCut):
-        ME1ME2ME3ParityCases = ['oee','ooo','eee','eoo']
-        etaRanges = ['12to14','14to16','16to18','18to20','20to22','22to24']
-        ddy123cut = ddy123cut_[etaRanges[etaPart] + "_" + ME1ME2ME3ParityCases[parity]]
-
-        #print ptbins
-        #print ddy123cuts
-        #pt_index = ptbins.index(ptCut)
-        #ddy123cut = ddy123cuts[pt_index]
-        #print "10", pt_index, ddy123cut
-        #print
-
-        return ddy123cut
-
-    #    stationCut = TCut('has_CSCTF==1 && ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1 && abs(CSCTF_L1_DDY123)<=40 && has_L1Mu==1')
-    #    stationCut = TCut('has_CSCTF==1 && ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1 && abs(CSCTF_L1_DDY123)<=40 && has_L1Mu==1')
-    stationCut = TCut('ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1 && abs(CSCTF_L1_DDY123)<=40 && SIM_L1Mu_index != 999 && SIM_L1Mu_dR < 0.1')
-
-
-    ## 12 to 14
-    etaCut = TCut('partition_sim==0')
-    baselineCut = AND(stationCut, etaCut)
-
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,0,9))))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,0,9))))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,0,9))))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,0,9))))
-
-    eff0 += eff1
-    eff0 += eff2
-    eff0 += eff3
-
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,0,9))))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,0,9))))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,0,9))))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,0,9))))
-
-    eff10 += eff11
-    eff10 += eff12
-    eff10 += eff13
-
-    makeEffPlot(eff0, eff10, None,
-                targetDir + "Displaced_L1MuPt10_SimMuPt_ME1_ME2_ME3_eta12to14_dxy0to50", "Displaced L1Mu algorithm;1.2<|#eta|<1.4")
-
-    ## 14 to 16
-    etaCut = TCut('partition_sim==1')
-    baselineCut = AND(stationCut, etaCut)
-
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,1,9))))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,1,9))))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,1,9))))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,1,9))))
-
-    eff0 += eff1
-    eff0 += eff2
-    eff0 += eff3
-
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,1,9))))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,1,9))))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,1,9))))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,1,9))))
-
-    eff10 += eff11
-    eff10 += eff12
-    eff10 += eff13
-
-    makeEffPlot(eff0, eff10, None,
-                targetDir + "Displaced_L1MuPt10_SimMuPt_ME1_ME2_ME3_eta14to16_dxy0to50", "Displaced L1Mu algorithm;1.4<|#eta|<1.6")
-
-
-    ## 16 to 18
-    etaCut = TCut('partition_sim==2')
-    baselineCut = AND(stationCut, etaCut)
-
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,2,9))))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,2,9))))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,2,9))))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,2,9))))
-
-    eff0 += eff1
-    eff0 += eff2
-    eff0 += eff3
-
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,2,9))))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,2,9))))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,2,9))))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,2,9))))
-
-    eff10 += eff11
-    eff10 += eff12
-    eff10 += eff13
-
-    makeEffPlot(eff0, eff10, None,
-                targetDir + "Displaced_L1MuPt10_SimMuPt_ME1_ME2_ME3_eta16to18_dxy0to50", "Displaced L1Mu algorithm;1.6<|#eta|<1.8")
-
-
-    ## 18 to 20
-    etaCut = TCut('partition_sim==3')
-    baselineCut = AND(stationCut, etaCut)
-
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,3,9))))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,3,9))))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,3,9))))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,3,9))))
-
-    eff0 += eff1
-    eff0 += eff2
-    eff0 += eff3
-
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,3,9))))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,3,9))))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,3,9))))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,3,9))))
-
-    eff10 += eff11
-    eff10 += eff12
-    eff10 += eff13
-
-    makeEffPlot(eff0, eff10, None,
-                targetDir + "Displaced_L1MuPt10_SimMuPt_ME1_ME2_ME3_eta18to20_dxy0to50", "Displaced L1Mu algorithm;1.8<|#eta|<2.0")
-
-
-    ## 20 to 22
-    etaCut = TCut('partition_sim==4')
-    baselineCut = AND(stationCut, etaCut)
-
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,4,9))))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,4,9))))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,4,9))))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,4,9))))
-
-    eff0 += eff1
-    eff0 += eff2
-    eff0 += eff3
-
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,4,9))))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,4,9))))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,4,9))))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,4,9))))
-
-    eff10 += eff11
-    eff10 += eff12
-    eff10 += eff13
-
-    makeEffPlot(eff0, eff10, None,
-                targetDir + "Displaced_L1MuPt10_SimMuPt_ME1_ME2_ME3_eta20to22_dxy0to50", "Displaced L1Mu algorithm;2.0<|#eta|<2.2")
-
-
-    ## 22 to 24
-    etaCut = TCut('partition_sim==5')
-    baselineCut = AND(stationCut, etaCut)
-
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,5,9))))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,5,9))))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,5,9))))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,5,9))))
-
-    eff0 += eff1
-    eff0 += eff2
-    eff0 += eff3
-
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,5,9))))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,5,9))))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,5,9))))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,5,9))))
-
-    eff10 += eff11
-    eff10 += eff12
-    eff10 += eff13
-
-    makeEffPlot(eff0, eff10, None,
-                targetDir + "Displaced_L1MuPt10_SimMuPt_ME1_ME2_ME3_eta22to24_dxy0to50", "Displaced L1Mu algorithm;2.2<|#eta|<2.4")
 
 
 def L1MuMatchingEfficiency():
@@ -1774,7 +1352,671 @@ def correctGEMPadMatchingEfficiency(selection):
 
 
 
-def generateDirectionTriggerEfficiencyPlots(doSim=True):
+def generateEfficiencyPlots_V2():
+
+    ptbin_ = {}
+    ddy123cut_ = {}
+
+    ddy123cut_["12to14_oee"] = 4.280000
+    ddy123cut_["12to14_ooo"] = 2.458800
+    ddy123cut_["12to14_eee"] = 4.896000
+    ddy123cut_["12to14_eoo"] = 3.030000
+
+    ddy123cut_["14to16_oee"] =  3.428333
+    ddy123cut_["14to16_ooo"] =  1.986684
+    ddy123cut_["14to16_eee"] =  3.964500
+    ddy123cut_["14to16_eoo"] =  2.129500
+
+    ddy123cut_["16to18_oee"] =  3.417500
+    ddy123cut_["16to18_ooo"] =  1.972000
+    ddy123cut_["16to18_eee"] =  3.286000
+    ddy123cut_["16to18_eoo"] =  1.977000
+
+    ddy123cut_["18to20_oee"] =  2.391250
+    ddy123cut_["18to20_ooo"] =  1.473667
+    ddy123cut_["18to20_eee"] =  2.396400
+    ddy123cut_["18to20_eoo"] =  1.468778
+
+    ddy123cut_["20to22_oee"] =  1.396600
+    ddy123cut_["20to22_ooo"] =  0.846875
+    ddy123cut_["20to22_eee"] =  1.429000
+    ddy123cut_["20to22_eoo"] =  0.898750
+
+    ddy123cut_["22to24_oee"] =  0.815000
+    ddy123cut_["22to24_ooo"] =  0.553600
+    ddy123cut_["22to24_eee"] =  0.849000
+    ddy123cut_["22to24_eoo"] =  0.555909
+
+    def getDDY123Cut(parity, etaPart, ptCut):
+        ME1ME2ME3ParityCases = ['oee','ooo','eee','eoo']
+        etaRanges = ['12to14','14to16','16to18','18to20','20to22','22to24']
+        ddy123cut = ddy123cut_[etaRanges[etaPart] + "_" + ME1ME2ME3ParityCases[parity]]
+
+        #print ptbins
+        #print ddy123cuts
+        #pt_index = ptbins.index(ptCut)
+        #ddy123cut = ddy123cuts[pt_index]
+        #print "10", pt_index, ddy123cut
+        #print
+
+        return ddy123cut
+
+    #    stationCut = TCut('has_CSCTF==1 && ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1 && abs(CSCTF_sim_DDY123)<=40 && has_L1Mu==1')
+    #    stationCut = TCut('has_CSCTF==1 && ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1 && abs(CSCTF_sim_DDY123)<=40 && has_L1Mu==1')
+    stationCut = TCut('ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && ok_CSCTF_sim_st3==1 && abs(CSCTF_sim_DDY123)<=40')
+    #stationCut = TCut('')
+
+    print 'entries', treeHits.GetEntries('ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && ok_CSCTF_sim_st3==1 && abs(CSCTF_sim_DDY123)<=40')
+    print 'entries', treeHits.GetEntries('ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && ok_CSCTF_sim_st3==1 && abs(CSCTF_sim_DDY123)<=40 && partition_sim==0 && abs(gen_dxy)<5')
+    ## 12 to 14
+    etaCut = TCut('partition_sim==0')
+    #etaCut = TCut('')
+    baselineCut = AND(stationCut, etaCut)
+#abs(gen_dxy)<5 && parity_sim==0
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,0,9))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,0,9))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,0,9))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,0,9))))
+
+    eff0 += eff1
+    eff0 += eff2
+    eff0 += eff3
+
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,0,9))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,0,9))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,0,9))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,0,9))))
+
+    eff10 += eff11
+    eff10 += eff12
+    eff10 += eff13
+
+    makeEffPlot(eff0, eff10, None,
+                targetDir + "Displaced_L1MuPt10_SimMuPt_Sim_ME1_ME2_ME3_eta12to14_dxy0to50", "Displaced L1Mu algorithm;1.2<|#eta|<1.4")
+
+    ## 14 to 16
+    etaCut = TCut('partition_sim==1')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,1,9))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,1,9))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,1,9))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,1,9))))
+
+    eff0 += eff1
+    eff0 += eff2
+    eff0 += eff3
+
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,1,9))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,1,9))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,1,9))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,1,9))))
+
+    eff10 += eff11
+    eff10 += eff12
+    eff10 += eff13
+
+    makeEffPlot(eff0, eff10, None,
+                targetDir + "Displaced_L1MuPt10_SimMuPt_Sim_ME1_ME2_ME3_eta14to16_dxy0to50", "Displaced L1Mu algorithm;1.4<|#eta|<1.6")
+
+
+    ## 16 to 18
+    etaCut = TCut('partition_sim==2')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,2,9))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,2,9))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,2,9))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,2,9))))
+
+    eff0 += eff1
+    eff0 += eff2
+    eff0 += eff3
+
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,2,9))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,2,9))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,2,9))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,2,9))))
+
+    eff10 += eff11
+    eff10 += eff12
+    eff10 += eff13
+
+    makeEffPlot(eff0, eff10, None,
+                targetDir + "Displaced_L1MuPt10_SimMuPt_Sim_ME1_ME2_ME3_eta16to18_dxy0to50", "Displaced L1Mu algorithm;1.6<|#eta|<1.8")
+
+
+    ## 18 to 20
+    etaCut = TCut('partition_sim==3')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,3,9))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,3,9))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,3,9))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,3,9))))
+
+    eff0 += eff1
+    eff0 += eff2
+    eff0 += eff3
+
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,3,9))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,3,9))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,3,9))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,3,9))))
+
+    eff10 += eff11
+    eff10 += eff12
+    eff10 += eff13
+
+    makeEffPlot(eff0, eff10, None,
+                targetDir + "Displaced_L1MuPt10_SimMuPt_Sim_ME1_ME2_ME3_eta18to20_dxy0to50", "Displaced L1Mu algorithm;1.8<|#eta|<2.0")
+
+
+    ## 20 to 22
+    etaCut = TCut('partition_sim==4')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,4,9))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,4,9))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,4,9))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,4,9))))
+
+    eff0 += eff1
+    eff0 += eff2
+    eff0 += eff3
+
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,4,9))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,4,9))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,4,9))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,4,9))))
+
+    eff10 += eff11
+    eff10 += eff12
+    eff10 += eff13
+
+    makeEffPlot(eff0, eff10, None,
+                targetDir + "Displaced_L1MuPt10_SimMuPt_Sim_ME1_ME2_ME3_eta20to22_dxy0to50", "Displaced L1Mu algorithm;2.0<|#eta|<2.2")
+
+
+    ## 22 to 24
+    etaCut = TCut('partition_sim==5')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,5,9))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,5,9))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,5,9))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,5,9))))
+
+    eff0 += eff1
+    eff0 += eff2
+    eff0 += eff3
+
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(0,5,9))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(1,5,9))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(2,5,9))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_sim_DDY123)<=%f"%(getDDY123Cut(3,5,9))))
+
+    eff10 += eff11
+    eff10 += eff12
+    eff10 += eff13
+
+    makeEffPlot(eff0, eff10, None,
+                targetDir + "Displaced_L1MuPt10_SimMuPt_Sim_ME1_ME2_ME3_eta22to24_dxy0to50", "Displaced L1Mu algorithm;2.2<|#eta|<2.4")
+
+
+def generateEfficiencyPlots_V3():
+
+    ptbin_ = {}
+    ddy123cut_ = {}
+
+    ddy123cut_["12to14_oee"] = 4.280000
+    ddy123cut_["12to14_ooo"] = 2.458800
+    ddy123cut_["12to14_eee"] = 4.896000
+    ddy123cut_["12to14_eoo"] = 3.030000
+
+    ddy123cut_["14to16_oee"] =  3.428333
+    ddy123cut_["14to16_ooo"] =  1.986684
+    ddy123cut_["14to16_eee"] =  3.964500
+    ddy123cut_["14to16_eoo"] =  2.129500
+
+    ddy123cut_["16to18_oee"] =  3.417500
+    ddy123cut_["16to18_ooo"] =  1.972000
+    ddy123cut_["16to18_eee"] =  3.286000
+    ddy123cut_["16to18_eoo"] =  1.977000
+
+    ddy123cut_["18to20_oee"] =  2.391250
+    ddy123cut_["18to20_ooo"] =  1.473667
+    ddy123cut_["18to20_eee"] =  2.396400
+    ddy123cut_["18to20_eoo"] =  1.468778
+
+    ddy123cut_["20to22_oee"] =  1.396600
+    ddy123cut_["20to22_ooo"] =  0.846875
+    ddy123cut_["20to22_eee"] =  1.429000
+    ddy123cut_["20to22_eoo"] =  0.898750
+
+    ddy123cut_["22to24_oee"] =  0.815000
+    ddy123cut_["22to24_ooo"] =  0.553600
+    ddy123cut_["22to24_eee"] =  0.849000
+    ddy123cut_["22to24_eoo"] =  0.555909
+
+    def getDDY123Cut(parity, etaPart, ptCut):
+        ME1ME2ME3ParityCases = ['oee','ooo','eee','eoo']
+        etaRanges = ['12to14','14to16','16to18','18to20','20to22','22to24']
+        ddy123cut = ddy123cut_[etaRanges[etaPart] + "_" + ME1ME2ME3ParityCases[parity]]
+
+        #print ptbins
+        #print ddy123cuts
+        #pt_index = ptbins.index(ptCut)
+        #ddy123cut = ddy123cuts[pt_index]
+        #print "10", pt_index, ddy123cut
+        #print
+
+        return ddy123cut
+
+    #    stationCut = TCut('has_CSCTF==1 && ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1 && abs(CSCTF_L1_DDY123)<=40 && has_L1Mu==1')
+    #    stationCut = TCut('has_CSCTF==1 && ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1 && abs(CSCTF_L1_DDY123)<=40 && has_L1Mu==1')
+    stationCut = TCut('ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1 && abs(CSCTF_L1_DDY123)<=40 && SIM_L1Mu_index != 999 && SIM_L1Mu_dR < 0.1')
+
+
+    ## 12 to 14
+    etaCut = TCut('partition_sim==0')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,0,9))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,0,9))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,0,9))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,0,9))))
+
+    eff0 += eff1
+    eff0 += eff2
+    eff0 += eff3
+
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,0,9))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,0,9))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,0,9))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,0,9))))
+
+    eff10 += eff11
+    eff10 += eff12
+    eff10 += eff13
+
+    makeEffPlot(eff0, eff10, None,
+                targetDir + "Displaced_L1MuPt10_SimMuPt_ME1_ME2_ME3_eta12to14_dxy0to50", "Displaced L1Mu algorithm;1.2<|#eta|<1.4")
+
+    ## 14 to 16
+    etaCut = TCut('partition_sim==1')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,1,9))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,1,9))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,1,9))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,1,9))))
+
+    eff0 += eff1
+    eff0 += eff2
+    eff0 += eff3
+
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,1,9))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,1,9))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,1,9))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,1,9))))
+
+    eff10 += eff11
+    eff10 += eff12
+    eff10 += eff13
+
+    makeEffPlot(eff0, eff10, None,
+                targetDir + "Displaced_L1MuPt10_SimMuPt_ME1_ME2_ME3_eta14to16_dxy0to50", "Displaced L1Mu algorithm;1.4<|#eta|<1.6")
+
+
+    ## 16 to 18
+    etaCut = TCut('partition_sim==2')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,2,9))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,2,9))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,2,9))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,2,9))))
+
+    eff0 += eff1
+    eff0 += eff2
+    eff0 += eff3
+
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,2,9))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,2,9))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,2,9))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,2,9))))
+
+    eff10 += eff11
+    eff10 += eff12
+    eff10 += eff13
+
+    makeEffPlot(eff0, eff10, None,
+                targetDir + "Displaced_L1MuPt10_SimMuPt_ME1_ME2_ME3_eta16to18_dxy0to50", "Displaced L1Mu algorithm;1.6<|#eta|<1.8")
+
+
+    ## 18 to 20
+    etaCut = TCut('partition_sim==3')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,3,9))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,3,9))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,3,9))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,3,9))))
+
+    eff0 += eff1
+    eff0 += eff2
+    eff0 += eff3
+
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,3,9))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,3,9))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,3,9))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,3,9))))
+
+    eff10 += eff11
+    eff10 += eff12
+    eff10 += eff13
+
+    makeEffPlot(eff0, eff10, None,
+                targetDir + "Displaced_L1MuPt10_SimMuPt_ME1_ME2_ME3_eta18to20_dxy0to50", "Displaced L1Mu algorithm;1.8<|#eta|<2.0")
+
+
+    ## 20 to 22
+    etaCut = TCut('partition_sim==4')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,4,9))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,4,9))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,4,9))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,4,9))))
+
+    eff0 += eff1
+    eff0 += eff2
+    eff0 += eff3
+
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,4,9))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,4,9))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,4,9))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,4,9))))
+
+    eff10 += eff11
+    eff10 += eff12
+    eff10 += eff13
+
+    makeEffPlot(eff0, eff10, None,
+                targetDir + "Displaced_L1MuPt10_SimMuPt_ME1_ME2_ME3_eta20to22_dxy0to50", "Displaced L1Mu algorithm;2.0<|#eta|<2.2")
+
+
+    ## 22 to 24
+    etaCut = TCut('partition_sim==5')
+    baselineCut = AND(stationCut, etaCut)
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,5,9))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,5,9))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,5,9))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,5,9))))
+
+    eff0 += eff1
+    eff0 += eff2
+    eff0 += eff3
+
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,5,9))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,5,9))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,5,9))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,5,9))))
+
+    eff10 += eff11
+    eff10 += eff12
+    eff10 += eff13
+
+    makeEffPlot(eff0, eff10, None,
+                targetDir + "Displaced_L1MuPt10_SimMuPt_ME1_ME2_ME3_eta22to24_dxy0to50", "Displaced L1Mu algorithm;2.2<|#eta|<2.4")
+
+
+def generatePositionBasedTriggerEffciencyPlots(doSim=True, vetoType=0):
+
+    ptbin_ = {}
+    ddy123cut_ = {}
+
+    ddy123cut_["12to14_oee"] = 4.280000
+    ddy123cut_["12to14_ooo"] = 2.458800
+    ddy123cut_["12to14_eee"] = 4.896000
+    ddy123cut_["12to14_eoo"] = 3.030000
+
+    ddy123cut_["14to16_oee"] =  3.428333
+    ddy123cut_["14to16_ooo"] =  1.986684
+    ddy123cut_["14to16_eee"] =  3.964500
+    ddy123cut_["14to16_eoo"] =  2.129500
+
+    ddy123cut_["16to18_oee"] =  3.417500
+    ddy123cut_["16to18_ooo"] =  1.972000
+    ddy123cut_["16to18_eee"] =  3.286000
+    ddy123cut_["16to18_eoo"] =  1.977000
+
+    ddy123cut_["18to20_oee"] =  2.391250
+    ddy123cut_["18to20_ooo"] =  1.473667
+    ddy123cut_["18to20_eee"] =  2.396400
+    ddy123cut_["18to20_eoo"] =  1.468778
+
+    ddy123cut_["20to22_oee"] =  1.396600
+    ddy123cut_["20to22_ooo"] =  0.846875
+    ddy123cut_["20to22_eee"] =  1.429000
+    ddy123cut_["20to22_eoo"] =  0.898750
+
+    ddy123cut_["22to24_oee"] =  0.815000
+    ddy123cut_["22to24_ooo"] =  0.553600
+    ddy123cut_["22to24_eee"] =  0.849000
+    ddy123cut_["22to24_eoo"] =  0.555909
+
+    def getDDY123Cut(parity, etaPart, ptCut):
+        ME1ME2ME3ParityCases = ['oee','ooo','eee','eoo']
+        etaRanges = ['12to14','14to16','16to18','18to20','20to22','22to24']
+        return ddy123cut_[etaRanges[etaPart] + "_" + ME1ME2ME3ParityCases[parity]]
+
+
+    #    stationCut = TCut('has_CSCTF==1 && ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1 && abs(CSCTF_L1_DDY123)<=40 && has_L1Mu==1')
+    #    stationCut = TCut('has_CSCTF==1 && ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1 && abs(CSCTF_L1_DDY123)<=40 && has_L1Mu==1')
+    stationCut = TCut('ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && ok_CSCTF_st3==1 && abs(CSCTF_L1_DDY123)<=40 && SIM_L1Mu_index != 999 && SIM_L1Mu_dR < 0.1')
+
+
+    if doSim:
+        stationCut = TCut('ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && SIM_L1Mu_index != 999 && SIM_L1Mu_dR < 0.1')
+        gemCut = TCut('(ok_GE11_sim_L1==1 || ok_GE11_sim_L2==1) && (ok_GE21_sim_L1==1 || ok_GE21_sim_L2==1)')
+        extraCut = TCut('abs(CSCTF_sim_DPhi12_GE21)<=1')
+        stationCut = AND(stationCut, gemCut, extraCut) #
+        numCut = "CSCTF_sim_DPhi12_GE21"
+    else:
+        stationCut = TCut('ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && SIM_L1Mu_index != 999 && SIM_L1Mu_dR < 0.1')
+        gemCut = TCut('(ok_GE11_L1==1 || ok_GE11_L2==1) && (ok_GE21_L1==1 || ok_GE21_L2==1)')
+        extraCut = TCut('abs(CSCTF_L1_DPhi12_GE21)<=1')
+        stationCut = AND(stationCut, gemCut, extraCut) #
+        numCut = "CSCTF_L1_DPhi12_GE21"
+
+    preTitle = "SIM"
+    if not doSim:
+        preTitle = "L1"
+
+    if doSim: parityCut = "parity_sim"
+    else:     parityCut = "parity_L1"
+
+    if doSim: partitionCut = "partition_sim"
+    else:     partitionCut = "partition_L1"
+
+    if vetoType==0:   vetoCut = TCut("");                     postTitle=""
+    elif vetoType==1: vetoCut = TCut("L1Mu_isLooseVeto==1");  postTitle="_looseVeto"
+    elif vetoType==2: vetoCut = TCut("L1Mu_isMediumVeto==1"); postTitle="_mediumVeto"
+    elif vetoType==3: vetoCut = TCut("L1Mu_isTightVeto==1");  postTitle="_tightVeto"
+
+
+    ## 12 to 14
+    etaCut = TCut('partition_sim==0')
+    baselineCut = AND(stationCut, etaCut)
+    dxyCut = "abs(gen_dxy)<5"
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,0,9)))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,0,9)))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,0,9)))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,0,9)))))
+
+    eff0 += eff1
+    eff0 += eff2
+    eff0 += eff3
+
+    dxyCut = "abs(gen_dxy)>10 && abs(gen_dxy)<50"
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,0,9)))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,0,9)))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,0,9)))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,0,9)))))
+
+    eff10 += eff11
+    eff10 += eff12
+    eff10 += eff13
+
+    makeEffPlot(eff0, eff10, None,
+                targetDir + "Displaced_L1MuPt10_SimMuPt_ME1_ME2_ME3_eta12to14_dxy0to50" + postTitle, "Displaced L1Mu algorithm;1.2<|#eta|<1.4")
+
+    ## 14 to 16
+    etaCut = TCut('partition_sim==1')
+    baselineCut = AND(stationCut, etaCut)
+    dxyCut = "abs(gen_dxy)<5"
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,1,9)))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,1,9)))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,1,9)))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,1,9)))))
+
+    eff0 += eff1
+    eff0 += eff2
+    eff0 += eff3
+
+    dxyCut = "abs(gen_dxy)>10 && abs(gen_dxy)<50"
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,1,9)))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,1,9)))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,1,9)))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,1,9)))))
+
+    eff10 += eff11
+    eff10 += eff12
+    eff10 += eff13
+
+    makeEffPlot(eff0, eff10, None,
+                targetDir + "Displaced_L1MuPt10_SimMuPt_ME1_ME2_ME3_eta14to16_dxy0to50" + postTitle, "Displaced L1Mu algorithm;1.4<|#eta|<1.6")
+
+
+    ## 16 to 18
+    etaCut = TCut('partition_sim==2')
+    baselineCut = AND(stationCut, etaCut)
+    dxyCut = "abs(gen_dxy)<5"
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,2,9)))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,2,9)))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,2,9)))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,2,9)))))
+
+    eff0 += eff1
+    eff0 += eff2
+    eff0 += eff3
+
+    dxyCut = "abs(gen_dxy)>10 && abs(gen_dxy)<50"
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,2,9)))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,2,9)))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,2,9)))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,2,9)))))
+
+    eff10 += eff11
+    eff10 += eff12
+    eff10 += eff13
+
+    makeEffPlot(eff0, eff10, None,
+                targetDir + "Displaced_L1MuPt10_SimMuPt_ME1_ME2_ME3_eta16to18_dxy0to50" + postTitle, "Displaced L1Mu algorithm;1.6<|#eta|<1.8")
+
+
+    ## 18 to 20
+    etaCut = TCut('partition_sim==3')
+    baselineCut = AND(stationCut, etaCut)
+    dxyCut = "abs(gen_dxy)<5"
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,3,9)))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,3,9)))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,3,9)))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,3,9)))))
+
+    eff0 += eff1
+    eff0 += eff2
+    eff0 += eff3
+
+    dxyCut = "abs(gen_dxy)>10 && abs(gen_dxy)<50"
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,3,9)))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,3,9)))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,3,9)))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,3,9)))))
+
+    eff10 += eff11
+    eff10 += eff12
+    eff10 += eff13
+
+    makeEffPlot(eff0, eff10, None,
+                targetDir + "Displaced_L1MuPt10_SimMuPt_ME1_ME2_ME3_eta18to20_dxy0to50" + postTitle, "Displaced L1Mu algorithm;1.8<|#eta|<2.0")
+
+
+    ## 20 to 22
+    etaCut = TCut('partition_sim==4')
+    baselineCut = AND(stationCut, etaCut)
+    dxyCut = "abs(gen_dxy)<5"
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,4,9)))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,4,9)))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,4,9)))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,4,9)))))
+
+    eff0 += eff1
+    eff0 += eff2
+    eff0 += eff3
+
+    dxyCut = "abs(gen_dxy)>10 && abs(gen_dxy)<50"
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,4,9)))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,4,9)))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,4,9)))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,4,9)))))
+
+    eff10 += eff11
+    eff10 += eff12
+    eff10 += eff13
+
+    makeEffPlot(eff0, eff10, None,
+                targetDir + "Displaced_L1MuPt10_SimMuPt_ME1_ME2_ME3_eta20to22_dxy0to50" + postTitle, "Displaced L1Mu algorithm;2.0<|#eta|<2.2")
+
+
+    ## 22 to 24
+    etaCut = TCut('partition_sim==5')
+    baselineCut = AND(stationCut, etaCut)
+    dxyCut = "abs(gen_dxy)<5"
+
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==0"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,5,9)))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==1"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,5,9)))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==2"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,5,9)))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && parity_sim==3"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,5,9)))))
+
+    eff0 += eff1
+    eff0 += eff2
+    eff0 += eff3
+
+    dxyCut = "abs(gen_dxy)>10 && abs(gen_dxy)<50"
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==0"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(0,5,9)))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==1"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(1,5,9)))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==2"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(2,5,9)))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && parity_sim==3"), baselineCut), AND(vetoCut, TCut("abs(CSCTF_L1_DDY123)<=%f"%(getDDY123Cut(3,5,9)))))
+
+    eff10 += eff11
+    eff10 += eff12
+    eff10 += eff13
+
+    makeEffPlot(eff0, eff10, None,
+                targetDir + "Displaced_L1MuPt10_SimMuPt_ME1_ME2_ME3_eta22to24_dxy0to50" + postTitle, "Displaced L1Mu algorithm;2.2<|#eta|<2.4")
+
+
+
+def generateDirectionTriggerEfficiencyPlots(doSim=True, vetoType=0):
 
     dphicut_ = {}
 
@@ -1818,227 +2060,102 @@ def generateDirectionTriggerEfficiencyPlots(doSim=True):
     if not doSim:
         preTitle = "L1"
 
-    if doSim:
-        parityCut = "parity_sim"
-    else:
-        parityCut = "parity_L1"
+    if doSim: parityCut = "parity_sim"
+    else:     parityCut = "parity_L1"
 
-    if doSim:
-        partitionCut = "partition_sim"
-    else:
-        partitionCut = "partition_L1"
+    if doSim: partitionCut = "partition_sim"
+    else:     partitionCut = "partition_L1"
+
+    if vetoType==0:   vetoCut = TCut("");                     postTitle=""
+    elif vetoType==1: vetoCut = TCut("L1Mu_isLooseVeto==1");  postTitle="_looseVeto"
+    elif vetoType==2: vetoCut = TCut("L1Mu_isMediumVeto==1"); postTitle="_mediumVeto"
+    elif vetoType==3: vetoCut = TCut("L1Mu_isTightVeto==1");  postTitle="_tightVeto"
 
     ## 16 to 18
     etaCut = TCut('%s==2'%(partitionCut))
     baselineCut = AND(stationCut, etaCut)
+    dxyCut = "abs(gen_dxy)<5"
 
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==0"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(0,2,9))))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==1"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(1,2,9))))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==2"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(2,2,9))))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==3"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(3,2,9))))
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==0"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(0,2,9)))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==1"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(1,2,9)))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==2"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(2,2,9)))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==3"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(3,2,9)))))
 
     eff0 += eff1
     eff0 += eff2
     eff0 += eff3
 
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==0"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(0,2,9))))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==1"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(1,2,9))))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==2"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(2,2,9))))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==3"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(3,2,9))))
+    dxyCut = "abs(gen_dxy)>10 && abs(gen_dxy)<50"
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==0"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(0,2,9)))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==1"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(1,2,9)))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==2"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(2,2,9)))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==3"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(3,2,9)))))
 
     eff10 += eff11
     eff10 += eff12
     eff10 += eff13
 
     makeEffPlot(eff0, eff10, None,
-                targetDir + preTitle + "DirectionBasedDisplaced_L1MuPt10_SimMuPt_GE11_ME11_GE21_ME21_eta16to18_dxy0to50", "Displaced L1Mu algorithm;1.6<|#eta|<1.8")
+                targetDir + preTitle + "DirectionBasedDisplaced_L1MuPt10_SimMuPt_GE11_ME11_GE21_ME21_eta16to18_dxy0to50" + postTitle, "Displaced L1Mu algorithm;1.6<|#eta|<1.8")
 
 
     ## 18 to 20
     etaCut = TCut('%s==3'%(partitionCut))
     baselineCut = AND(stationCut, etaCut)
+    dxyCut = "abs(gen_dxy)<5"
 
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==0"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(0,3,9))))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==1"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(1,3,9))))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==2"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(2,3,9))))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==3"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(3,3,9))))
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==0"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(0,3,9)))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==1"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(1,3,9)))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==2"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(2,3,9)))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==3"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(3,3,9)))))
 
     eff0 += eff1
     eff0 += eff2
     eff0 += eff3
 
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==0"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(0,3,9))))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==1"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(1,3,9))))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==2"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(2,3,9))))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==3"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(3,3,9))))
+    dxyCut = "abs(gen_dxy)>10 && abs(gen_dxy)<50"
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==0"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(0,3,9)))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==1"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(1,3,9)))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==2"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(2,3,9)))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==3"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(3,3,9)))))
 
     eff10 += eff11
     eff10 += eff12
     eff10 += eff13
 
     makeEffPlot(eff0, eff10, None,
-                targetDir + preTitle + "DirectionBasedDisplaced_L1MuPt10_SimMuPt_GE11_ME11_GE21_ME21_eta18to20_dxy0to50", "Displaced L1Mu algorithm;1.8<|#eta|<2.0")
+                targetDir + preTitle + "DirectionBasedDisplaced_L1MuPt10_SimMuPt_GE11_ME11_GE21_ME21_eta18to20_dxy0to50" + postTitle, "Displaced L1Mu algorithm;1.8<|#eta|<2.0")
 
 
     ## 20 to 22
     etaCut = TCut('%s==4'%(partitionCut))
     baselineCut = AND(stationCut, etaCut)
+    dxyCut = "abs(gen_dxy)<5"
 
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==0"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(0,4,9))))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==1"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(1,4,9))))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==2"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(2,4,9))))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==3"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(3,4,9))))
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==0"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(0,4,9)))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==1"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(1,4,9)))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==2"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(2,4,9)))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==3"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(3,4,9)))))
 
     eff0 += eff1
     eff0 += eff2
     eff0 += eff3
 
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==0"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(0,4,9))))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==1"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(1,4,9))))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==2"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(2,4,9))))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==3"%(parityCut)), baselineCut), TCut("abs(%s)<=%f"%(numCut, getDPhiCut(3,4,9))))
+    dxyCut = "abs(gen_dxy)>10 && abs(gen_dxy)<50"
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==0"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(0,4,9)))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==1"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(1,4,9)))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==2"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(2,4,9)))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==3"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)<=%f"%(numCut, getDPhiCut(3,4,9)))))
 
     eff10 += eff11
     eff10 += eff12
     eff10 += eff13
 
     makeEffPlot(eff0, eff10, None,
-                targetDir + preTitle + "DirectionBasedDisplaced_L1MuPt10_SimMuPt_GE11_ME11_GE21_ME21_eta20to22_dxy0to50", "Displaced L1Mu algorithm;2.0<|#eta|<2.2")
+                targetDir + preTitle + "DirectionBasedDisplaced_L1MuPt10_SimMuPt_GE11_ME11_GE21_ME21_eta20to22_dxy0to50" + postTitle, "Displaced L1Mu algorithm;2.0<|#eta|<2.2")
 
 
-def generateDirectionTriggerEfficiencyPlotsVetolation(doSim=True):
-
-    dphicut_ = {}
-
-    ## 10 GeV cuts
-    dphicut_["16to18_oee"] =  0.079680
-    dphicut_["16to18_ooo"] =  0.060900
-    dphicut_["16to18_eee"] =  0.076700
-    dphicut_["16to18_eoo"] =  0.056373
-
-    dphicut_["18to20_oee"] = 0.067560
-    dphicut_["18to20_ooo"] = 0.051200
-    dphicut_["18to20_eee"] = 0.065740
-    dphicut_["18to20_eoo"] = 0.051320
-
-    dphicut_["20to22_oee"] = 0.061433
-    dphicut_["20to22_ooo"] = 0.044500
-    dphicut_["20to22_eee"] = 0.064773
-    dphicut_["20to22_eoo"] = 0.055440
-
-
-    def getDPhiCut(parity, etaPart, ptCut):
-        ME1ME2ME3ParityCases = ['oee','ooo','eee','eoo']
-        etaRanges = ['12to14','14to16','16to18','18to20','20to22','22to24']
-        dphicut = dphicut_[etaRanges[etaPart] + "_" + ME1ME2ME3ParityCases[parity]]
-        return dphicut
-
-    if doSim:
-        stationCut = TCut('ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && SIM_L1Mu_index != 999 && SIM_L1Mu_dR < 0.1')
-        gemCut = TCut('(ok_GE11_sim_L1==1 || ok_GE11_sim_L2==1) && (ok_GE21_sim_L1==1 || ok_GE21_sim_L2==1)')
-        extraCut = TCut('abs(CSCTF_sim_DPhi12_GE21)<=1')
-        stationCut = AND(stationCut, gemCut, extraCut) #
-        numCut = "CSCTF_sim_DPhi12_GE21"
-    else:
-        stationCut = TCut('ok_CSCTF_st1==1 && ok_CSCTF_st2==1 && SIM_L1Mu_index != 999 && SIM_L1Mu_dR < 0.1')
-        gemCut = TCut('(ok_GE11_L1==1 || ok_GE11_L2==1) && (ok_GE21_L1==1 || ok_GE21_L2==1)')
-        extraCut = TCut('abs(CSCTF_L1_DPhi12_GE21)<=1')
-        stationCut = AND(stationCut, gemCut, extraCut) #
-        numCut = "CSCTF_L1_DPhi12_GE21"
-
-    preTitle = "SIM"
-    if not doSim:
-        preTitle = "L1"
-
-    if doSim:
-        parityCut = "parity_sim"
-    else:
-        parityCut = "parity_L1"
-
-    if doSim:
-        partitionCut = "partition_sim"
-    else:
-        partitionCut = "partition_L1"
-
-    ## 16 to 18
-    etaCut = TCut('%s==2'%(partitionCut))
-    baselineCut = AND(stationCut, etaCut)
-
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==0"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(0,2,9))))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==1"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(1,2,9))))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==2"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(2,2,9))))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==3"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(3,2,9))))
-
-    eff0 += eff1
-    eff0 += eff2
-    eff0 += eff3
-
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==0"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(0,2,9))))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==1"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(1,2,9))))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==2"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(2,2,9))))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==3"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(3,2,9))))
-
-    eff10 += eff11
-    eff10 += eff12
-    eff10 += eff13
-
-    makeEffPlot(eff0, eff10, None,
-                targetDir + preTitle + "DirectionBasedDisplaced_L1MuPt10_SimMuPt_GE11_ME11_GE21_ME21_eta16to18_dxy0to50_looseVeto", "Displaced L1Mu algorithm;1.6<|#eta|<1.8")
-
-
-    ## 18 to 20
-    etaCut = TCut('%s==3'%(partitionCut))
-    baselineCut = AND(stationCut, etaCut)
-
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==0"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(0,3,9))))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==1"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(1,3,9))))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==2"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(2,3,9))))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==3"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(3,3,9))))
-
-    eff0 += eff1
-    eff0 += eff2
-    eff0 += eff3
-
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==0"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(0,3,9))))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==1"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(1,3,9))))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==2"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(2,3,9))))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==3"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(3,3,9))))
-
-    eff10 += eff11
-    eff10 += eff12
-    eff10 += eff13
-
-    makeEffPlot(eff0, eff10, None,
-                targetDir + preTitle + "DirectionBasedDisplaced_L1MuPt10_SimMuPt_GE11_ME11_GE21_ME21_eta18to20_dxy0to50_looseVeto", "Displaced L1Mu algorithm;1.8<|#eta|<2.0")
-
-
-    ## 20 to 22
-    etaCut = TCut('%s==4'%(partitionCut))
-    baselineCut = AND(stationCut, etaCut)
-
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==0"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(0,4,9))))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==1"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(1,4,9))))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==2"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(2,4,9))))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==3"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(3,4,9))))
-
-    eff0 += eff1
-    eff0 += eff2
-    eff0 += eff3
-
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==0"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(0,4,9))))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==1"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(1,4,9))))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==2"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(2,4,9))))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==3"%(parityCut)), baselineCut), TCut("L1Mu_isLooseVeto==1 && abs(%s)<=%f"%(numCut, getDPhiCut(3,4,9))))
-
-    eff10 += eff11
-    eff10 += eff12
-    eff10 += eff13
-
-    makeEffPlot(eff0, eff10, None,
-                targetDir + preTitle + "DirectionBasedDisplaced_L1MuPt10_SimMuPt_GE11_ME11_GE21_ME21_eta20to22_dxy0to50_looseVeto", "Displaced L1Mu algorithm;2.0<|#eta|<2.2")
-
-
-def generateHybridTriggerEfficiencyPlots(doSim=True):
+def generateHybridTriggerEfficiencyPlots(doSim=True, vetoType=0):
 
     if doSim:
         stationCut = TCut('ok_CSCTF_sim_st1==1 && ok_CSCTF_sim_st2==1 && ok_CSCTF_sim_st3==1 && SIM_L1Mu_index != 999 && SIM_L1Mu_dR < 0.1')
@@ -2058,102 +2175,108 @@ def generateHybridTriggerEfficiencyPlots(doSim=True):
     if not doSim:
         preTitle = "L1"
 
-    if doSim:
-        parityCut = "parity_sim"
-    else:
-        parityCut = "parity_L1"
+    if doSim: parityCut = "parity_sim"
+    else:     parityCut = "parity_L1"
 
-    if doSim:
-        partitionCut = "partition_sim"
-    else:
-        partitionCut = "partition_L1"
+    if doSim: partitionCut = "partition_sim"
+    else:     partitionCut = "partition_L1"
+
+    if vetoType==0:   vetoCut = TCut("");                     postTitle=""
+    elif vetoType==1: vetoCut = TCut("L1Mu_isLooseVeto==1");  postTitle="_looseVeto"
+    elif vetoType==2: vetoCut = TCut("L1Mu_isMediumVeto==1"); postTitle="_mediumVeto"
+    elif vetoType==3: vetoCut = TCut("L1Mu_isTightVeto==1");  postTitle="_tightVeto"
+
 
     ## 16 to 18
     etaCut = TCut('%s==2'%(partitionCut))
     baselineCut = AND(stationCut, etaCut)
+    dxyCut = "abs(gen_dxy)<5"
 
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==0"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==1"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==2"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==3"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==0"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==1"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==2"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==3"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
 
     eff0 += eff1
     eff0 += eff2
     eff0 += eff3
 
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==0"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==1"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==2"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==3"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
+    dxyCut = "abs(gen_dxy)>10 && abs(gen_dxy)<50"
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==0"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==1"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==2"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==3"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
 
     eff10 += eff11
     eff10 += eff12
     eff10 += eff13
 
     makeEffPlot(eff0, eff10, None,
-                targetDir + preTitle + "HybridDisplaced_L1MuPt10_SimMuPt_GE11_ME11_GE21_ME21_eta16to18_dxy0to50", "Displaced L1Mu algorithm;1.6<|#eta|<1.8")
+                targetDir + preTitle + "HybridDisplaced_L1MuPt10_SimMuPt_GE11_ME11_GE21_ME21_eta16to18_dxy0to50" + postTitle, "Displaced L1Mu algorithm;1.6<|#eta|<1.8")
 
 
     ## 18 to 20
     etaCut = TCut('%s==3'%(partitionCut))
     baselineCut = AND(stationCut, etaCut)
+    dxyCut = "abs(gen_dxy)<5"
 
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==0"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==1"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==2"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==3"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==0"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==1"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==2"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==3"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
 
     eff0 += eff1
     eff0 += eff2
     eff0 += eff3
 
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==0"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==1"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==2"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==3"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
+    dxyCut = "abs(gen_dxy)>10 && abs(gen_dxy)<50"
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==0"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==1"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==2"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==3"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
 
     eff10 += eff11
     eff10 += eff12
     eff10 += eff13
 
     makeEffPlot(eff0, eff10, None,
-                targetDir + preTitle + "HybridDisplaced_L1MuPt10_SimMuPt_GE11_ME11_GE21_ME21_eta18to20_dxy0to50", "Displaced L1Mu algorithm;1.8<|#eta|<2.0")
+                targetDir + preTitle + "HybridDisplaced_L1MuPt10_SimMuPt_GE11_ME11_GE21_ME21_eta18to20_dxy0to50" + postTitle, "Displaced L1Mu algorithm;1.8<|#eta|<2.0")
 
 
     ## 20 to 22
     etaCut = TCut('%s==4'%(partitionCut))
     baselineCut = AND(stationCut, etaCut)
+    dxyCut = "abs(gen_dxy)<5"
 
-    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==0"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
-    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==1"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
-    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==2"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
-    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)<5 && %s==3"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
+    eff0 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==0"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
+    eff1 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==1"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
+    eff2 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==2"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
+    eff3 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==3"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
 
     eff0 += eff1
     eff0 += eff2
     eff0 += eff3
 
-    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==0"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
-    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==1"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
-    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==2"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
-    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50 && %s==3"%(parityCut)), baselineCut), TCut("abs(%s)>=10"%(numCut)))
+    dxyCut = "abs(gen_dxy)>10 && abs(gen_dxy)<50"
+    eff10 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==0"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
+    eff11 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==1"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
+    eff12 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==2"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
+    eff13 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyCut + "&& %s==3"%(parityCut)), baselineCut), AND(vetoCut, TCut("abs(%s)>=10"%(numCut))))
 
     eff10 += eff11
     eff10 += eff12
     eff10 += eff13
 
     makeEffPlot(eff0, eff10, None,
-                targetDir + preTitle + "HybridDisplaced_L1MuPt10_SimMuPt_GE11_ME11_GE21_ME21_eta20to22_dxy0to50", "Displaced L1Mu algorithm;2.0<|#eta|<2.2")
+                targetDir + preTitle + "HybridDisplaced_L1MuPt10_SimMuPt_GE11_ME11_GE21_ME21_eta20to22_dxy0to50" + postTitle, "Displaced L1Mu algorithm;2.0<|#eta|<2.2")
 
 
-
+### matching efficiency plots
 #generateEfficiencyPlots()
 
 #goldenL1MuPtPlots()
 #pt_vs_ddy123Plots()
 
-generateEfficiencyPlots_V2()
-generateEfficiencyPlots_V3()
 """
 L1MuMatchingEfficiency()
 CSCTFMatchingEfficiency()
@@ -2186,11 +2309,13 @@ correctGEMPadMatchingEfficiency(1)
 correctGEMPadMatchingEfficiency(2)
 correctGEMPadMatchingEfficiency(12)
 
-generateDirectionTriggerEfficiencyPlots()
-generateDirectionTriggerEfficiencyPlots(False)
+### trigger efficiencies
+generateEfficiencyPlots_V2()
+generateEfficiencyPlots_V3()
 
-generateHybridTriggerEfficiencyPlots()
-generateHybridTriggerEfficiencyPlots(False)
+for i in range(0,4):
+    generateDirectionTriggerEfficiencyPlots(True, i)
+    generateDirectionTriggerEfficiencyPlots(False, i)
 
-generateDirectionTriggerEfficiencyPlotsVetolation(True)
-generateDirectionTriggerEfficiencyPlotsVetolation(False)
+    generateHybridTriggerEfficiencyPlots(True, i)
+    generateHybridTriggerEfficiencyPlots(False, i)

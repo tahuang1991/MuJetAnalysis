@@ -63,6 +63,85 @@ def isME21StubDisabled(failRate):
     return random_number < failRate
 
 ##_________________________________________________
+def fillDPhiHistogram( h_dphi_ME11_ME21, treeHits ):
+
+    ## check if this event has L1Mus
+    if len(list(treeHits.L1Mu_pt))==0:
+        return max_prompt_L1Mu_pt, max_prompt_L1Mu_eta
+
+    pts = list(treeHits.L1Mu_pt)
+    #print "\tN L1Mus event", len(pts)
+    for i in range(0,len(pts)):
+        L1Mu_pt = treeHits.L1Mu_pt[i]
+        L1Mu_eta = treeHits.L1Mu_eta[i]
+        L1Mu_phi = treeHits.L1Mu_phi[i]
+        L1Mu_bx = treeHits.L1Mu_bx[i]
+        L1Mu_quality = treeHits.L1Mu_quality[i]
+        L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[i]
+        L1Mu_DTTF_index = treeHits.L1Mu_DTTF_index[i]
+        L1Mu_charge = treeHits.L1Mu_charge[i]
+        #print "L1Mu_charge", L1Mu_charge
+
+        #if L1Mu_pt < 10: continue
+
+        ## eta cut
+        #if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue
+
+        ## quality cut
+        if L1Mu_quality < 4: continue
+
+        ## BX cut
+        if abs(L1Mu_bx)>0 and True: continue
+
+        ## not a CSC muon
+        if L1Mu_CSCTF_index == -1: continue
+
+
+        GE11_phi_L1 = treeHits.GE11_phi_L1[L1Mu_CSCTF_index]
+        GE11_phi_L2 = treeHits.GE11_phi_L2[L1Mu_CSCTF_index]
+
+        GE21_phi_L1 = treeHits.GE21_pad2_phi_L1[L1Mu_CSCTF_index]
+        GE21_phi_L2 = treeHits.GE21_pad2_phi_L2[L1Mu_CSCTF_index]
+
+        CSCTF_fit_phi1 = treeHits.CSCTF_fit_phi1[L1Mu_CSCTF_index]
+        CSCTF_fit_phi2 = treeHits.CSCTF_fit_phi2[L1Mu_CSCTF_index]
+
+        GE11_phi = getBestValue(GE11_phi_L1, GE11_phi_L2)
+        GE21_phi = getBestValue(GE21_phi_L1, GE21_phi_L2)
+
+        #GE11_ME11_dphi = - GE11_phi + CSCTF_fit_phi1
+        #GE21_ME21_dphi = - GE21_phi + CSCTF_fit_phi2
+
+        if CSCTF_fit_phi1 == 99 or CSCTF_fit_phi2 == 99:
+            continue
+
+        if GE11_phi == 99.:
+            GE11_ME11_dphi = 0.025
+        else:
+            GE11_ME11_dphi = (- GE11_phi + CSCTF_fit_phi1)
+
+        if GE21_phi == 99.:
+            GE21_ME21_dphi = 0.025
+        else:
+            GE21_ME21_dphi = (- GE21_phi + CSCTF_fit_phi2)
+
+        """
+        print "GE11_phi_L1", GE11_phi_L1
+        print "GE11_phi_L2", GE11_phi_L2
+        print "GE21_phi_L1", GE21_phi_L1
+        print "GE21_phi_L2", GE21_phi_L2
+        print "ME11_phi", CSCTF_fit_phi1
+        print "ME21_phi", CSCTF_fit_phi2
+        print "GE11_phi", GE11_phi
+        print "GE21_phi", GE21_phi
+        print "GE11_ME11_dphi", GE11_ME11_dphi
+        print "GE21_ME21_dphi", GE21_ME21_dphi
+        print
+        """
+
+        h_dphi_ME11_ME21.Fill(GE11_ME11_dphi, GE21_ME21_dphi)
+
+##_________________________________________________
 def fillPtEtaHistogram(ptHistogram,
                        etaHistogram,
                        treeHits,
@@ -114,7 +193,7 @@ def fillPtEtaHistogram(ptHistogram,
     ## apply a 10 GeV pT cut for the eta histograms!!!
     #if (prompt_L1Mu_pt>20):
     #print "Max prompt pt, eta event", prompt_L1Mu_pt, prompt_L1Mu_eta
-    if (prompt_L1Mu_pt>=20):
+    if (prompt_L1Mu_pt>=10):
         etaHistogram.Fill(abs(prompt_L1Mu_eta))
 
 
@@ -333,8 +412,10 @@ def fillDisplacedPtEtaHistogram(ptHistogram,
                                 hasMB3Cut=False,
                                 hasMB4Cut=False,
                                 doPositionBased=False,
-                                doDirectionBased=False,
-                                doHybridBased=False,
+                                doDirectionBasedCSCOnly=False,
+                                doDirectionBasedCSCGEM=False,
+                                doHybridBasedCSCOnly=False,
+                                doHybridBasedCSCGEM=False,
                                 doVeto=False,
                                 vetoType=1):
     displaced_L1Mu_pt, displaced_L1Mu_eta = getMaxDisplacedPtEtaEvent(treeHits,
@@ -348,15 +429,17 @@ def fillDisplacedPtEtaHistogram(ptHistogram,
                                                                       hasMB3Cut,
                                                                       hasMB4Cut,
                                                                       doPositionBased,
-                                                                      doDirectionBased,
-                                                                      doHybridBased,
+                                                                      doDirectionBasedCSCOnly,
+                                                                      doDirectionBasedCSCGEM,
+                                                                      doHybridBasedCSCOnly,
+                                                                      doHybridBasedCSCGEM,
                                                                       doVeto,
                                                                       vetoType)
     #print "check pT ok", displaced_L1Mu_pt
     if (displaced_L1Mu_pt>0):
         ptHistogram.Fill(displaced_L1Mu_pt)
         #print "Max displaced pT event", displaced_L1Mu_pt
-    if (displaced_L1Mu_pt>=20):
+    if (displaced_L1Mu_pt>=10):
         etaHistogram.Fill(abs(displaced_L1Mu_eta))
         #print "Max displaced pT eta event", displaced_L1Mu_pt, abs(displaced_L1Mu_eta)
 
@@ -379,8 +462,10 @@ def getMaxDisplacedPtEtaEvent(treeHits,
                               hasMB3Cut=False,
                               hasMB4Cut=False,
                               doPositionBased=False,
-                              doDirectionBased=False,
-                              doHybridBased=False,
+                              doDirectionBasedCSCOnly=False,
+                              doDirectionBasedCSCGEM=False,
+                              doHybridBasedCSCOnly=False,
+                              doHybridBasedCSCGEM=False,
                               doVeto=False,
                               vetoType =1):
 
@@ -473,9 +558,11 @@ def getMaxDisplacedPtEtaEvent(treeHits,
 
             if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue
 
-            if doPositionBased:  DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_position_based_algorithm(treeHits, i, True)
-            if doDirectionBased: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_direction_based_algorithm(treeHits, i)
-            if doHybridBased:    DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_hybrid_algorithm(treeHits, i)
+            if doPositionBased:         DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_position_based_algorithm(treeHits, i, True)
+            if doDirectionBasedCSCOnly: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_direction_based_algorithm(treeHits, i, False)
+            if doDirectionBasedCSCGEM:  DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_direction_based_algorithm(treeHits, i, True)
+            if doHybridBasedCSCOnly:    DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_hybrid_algorithm(treeHits, i, False)
+            if doHybridBasedCSCGEM:     DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_hybrid_algorithm(treeHits, i, True)
 
         #print L1Mu_DTTF_index
         if is_DT_Muon:

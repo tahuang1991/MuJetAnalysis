@@ -2118,6 +2118,13 @@ def makeEtaEffPlot(h, plotTitle, legTitle):
     tex2 = applyTdrStyle()
     c.SaveAs(plotTitle + ".png")
 
+#_______________________________________________________________________________
+def drawLabel(title, x=0.17, y=0.35, font_size=0.05):
+    tex = TLatex(x, y,"#font[41]{%s}"%(title))
+    tex.SetTextSize(font_size)
+    tex.SetNDC()
+    tex.Draw("same")
+    return tex
 
 #_______________________________________________________________________________
 def makeSimplePlot(targetDir, h, plotTitle, setLogx=False):

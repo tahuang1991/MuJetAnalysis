@@ -63,7 +63,7 @@ def isME21StubDisabled(failRate):
     return random_number < failRate
 
 ##_________________________________________________
-def fillDPhiHistogram( h_dphi_ME11_ME21, treeHits ):
+def fillDPhiHistogram( h_dphi_ME11_ME21, treeHits, min_pt = 0, max_pt = 999 ):
 
     ## check if this event has L1Mus
     if len(list(treeHits.L1Mu_pt))==0:
@@ -82,7 +82,7 @@ def fillDPhiHistogram( h_dphi_ME11_ME21, treeHits ):
         L1Mu_charge = treeHits.L1Mu_charge[i]
         #print "L1Mu_charge", L1Mu_charge
 
-        #if L1Mu_pt < 10: continue
+        if L1Mu_pt < min_pt or L1Mu_pt > max_pt: continue
 
         ## eta cut
         #if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue
@@ -116,14 +116,14 @@ def fillDPhiHistogram( h_dphi_ME11_ME21, treeHits ):
             continue
 
         if GE11_phi == 99.:
-            GE11_ME11_dphi = 0.025
+            GE11_ME11_dphi = 99#0.025
         else:
-            GE11_ME11_dphi = (- GE11_phi + CSCTF_fit_phi1)
+            GE11_ME11_dphi = L1Mu_charge*(- GE11_phi + CSCTF_fit_phi1)
 
         if GE21_phi == 99.:
-            GE21_ME21_dphi = 0.025
+            GE21_ME21_dphi = 99#0.025
         else:
-            GE21_ME21_dphi = (- GE21_phi + CSCTF_fit_phi2)
+            GE21_ME21_dphi = L1Mu_charge*(- GE21_phi + CSCTF_fit_phi2)
 
         """
         print "GE11_phi_L1", GE11_phi_L1

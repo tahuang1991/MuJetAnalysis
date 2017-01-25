@@ -17,6 +17,8 @@ if __name__ == "__main__":
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170110"; pu = 'PU140'; eff = False
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170119"; pu = 'PU140'; eff = False
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170123"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170124"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170125"; pu = 'PU140'; eff = False
 
   ## extension for figures - add more?
   ext = ".png"
@@ -32,9 +34,9 @@ if __name__ == "__main__":
 
   ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
 
-  location0 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v21_StubReco/170119_032445/0000/'
-  location1 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v21_StubReco/170119_032445/0001/'
-  location2 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v21_StubReco/170119_032445/0002/'
+  location0 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v22_StubReco/170125_175607/0000/'
+  location1 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v22_StubReco/170125_175607/0001/'
+  location2 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v22_StubReco/170125_175607/0002/'
 
   treeHits = addfiles(ch, dirname=location0, ext=".root")
   treeHits = addfiles(ch, dirname=location1, ext=".root")
@@ -80,6 +82,13 @@ if __name__ == "__main__":
     myetabin = np.asarray(etabin)
 
     h_dphi_ME11_ME21 = TH2F("h_dphi_ME11_ME21","",100,-0.05,0.05,100,-0.05,0.05)
+    h_dphi_ME11_ME21_charge = TH2F("h_dphi_ME11_ME21_charge","",100,-0.05,0.05,100,-0.05,0.05)
+    h_dphi_ME11_ME21_charge_Pt0to5 = TH2F("h_dphi_ME11_ME21_charge_Pt0to5","",100,-0.05,0.05,100,-0.05,0.05)
+    h_dphi_ME11_ME21_charge_Pt7to140 = TH2F("h_dphi_ME11_ME21_charge_Pt7to140","",100,-0.05,0.05,100,-0.05,0.05)
+    h_dphi_ME11_ME21_charge_Pt10to140 = TH2F("h_dphi_ME11_ME21_charge_Pt10to140","",100,-0.05,0.05,100,-0.05,0.05)
+    h_dphi_ME11_ME21_charge_Pt15to140 = TH2F("h_dphi_ME11_ME21_charge_Pt15to140","",100,-0.05,0.05,100,-0.05,0.05)
+    h_dphi_ME11_ME21_charge_Pt20to140 = TH2F("h_dphi_ME11_ME21_charge_Pt20to140","",100,-0.05,0.05,100,-0.05,0.05)
+    h_dphi_ME11_ME21_charge_Pt30to140 = TH2F("h_dphi_ME11_ME21_charge_Pt30to140","",100,-0.05,0.05,100,-0.05,0.05)
 
     ## add plots
     addManyPlotsToTH1F(myptbin, myetabin,
@@ -246,6 +255,12 @@ if __name__ == "__main__":
       minQuality = 4
 
       fillDPhiHistogram( h_dphi_ME11_ME21, treeHits )
+      fillDPhiHistogram( h_dphi_ME11_ME21_charge_Pt0to5, treeHits, 0, 5 )
+      fillDPhiHistogram( h_dphi_ME11_ME21_charge_Pt7to140, treeHits, 7, 999 )
+      fillDPhiHistogram( h_dphi_ME11_ME21_charge_Pt10to140, treeHits, 10, 999 )
+      fillDPhiHistogram( h_dphi_ME11_ME21_charge_Pt15to140, treeHits, 15, 999 )
+      fillDPhiHistogram( h_dphi_ME11_ME21_charge_Pt20to140, treeHits, 20, 999 )
+      fillDPhiHistogram( h_dphi_ME11_ME21_charge_Pt30to140, treeHits, 30, 999 )
 
       ## overall rates
       fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_eta12to22"],
@@ -543,12 +558,12 @@ if __name__ == "__main__":
                                    treeHits, True, 1.6, 2.15, 0, minQuality, doHybridBasedCSCOnly=True, doVeto=True, vetoType=3)
 
     ## make plots
-    def makeDPhiPlot():
-      c = TCanvas("c","c",800,800)
+    def makeDPhiPlot(h, title):
+      c = TCanvas("c","c",800,600)
       c.Clear()
       gStyle.SetTitleBorderSize(0);
-      gStyle.SetPadLeftMargin(0.126);
-      gStyle.SetPadRightMargin(0.04);
+      #gStyle.SetPadLeftMargin(0.126);
+      #gStyle.SetPadRightMargin(0.00);
       gStyle.SetPadTopMargin(0.06);
       gStyle.SetPadBottomMargin(0.13);
       gPad.SetTickx(1)
@@ -573,27 +588,30 @@ if __name__ == "__main__":
       gStyle.SetOptStat(0)
       gStyle.SetMarkerStyle(1)
 
-      h_dphi_ME11_ME21.GetXaxis().SetTitleSize(0.05)
-      h_dphi_ME11_ME21.GetYaxis().SetTitleSize(0.05)
-      h_dphi_ME11_ME21.GetXaxis().SetLabelSize(0.05)
-      h_dphi_ME11_ME21.GetYaxis().SetLabelSize(0.05)
+      h.GetXaxis().SetTitleSize(0.05)
+      h.GetYaxis().SetTitleSize(0.05)
+      h.GetXaxis().SetLabelSize(0.05)
+      h.GetYaxis().SetLabelSize(0.05)
 
       gStyle.SetTitleFontSize(0.065)
 
-      h_dphi_ME11_ME21.SetTitle("           #scale[1.4]{#font[61]{CMS}} #font[52]{Simulation preliminary}                                                           14 TeV, 140 PU")
-      h_dphi_ME11_ME21.SetStats(0)
-      h_dphi_ME11_ME21.GetYaxis().SetTitle("GEM-CSC bending angle station 2")
-      h_dphi_ME11_ME21.GetXaxis().SetTitle("GEM-CSC bending angle station 1")
-      h_dphi_ME11_ME21.Draw("COLZ")
-
-      title = "dphi_ME11_ME21"
+      h.SetTitle("           #scale[1.4]{#font[61]{CMS}} #font[52]{Simulation preliminary}                                                           14 TeV, 140 PU")
+      h.SetStats(0)
+      h.GetYaxis().SetTitle("charge*#Delta#Phi(GE1/1-ME1/1)")
+      h.GetXaxis().SetTitle("charge*#Delta#Phi(GE2/1-ME2/1)")
+      h.Draw("COLZ")
 
       c.SaveAs(targetDir + title + ".png")
       c.SaveAs(targetDir + title + ".pdf")
       c.SaveAs(targetDir + title + ".C")
 
-    makeDPhiPlot()
-
+    makeDPhiPlot(h_dphi_ME11_ME21, "dphi_ME11_ME21")
+    makeDPhiPlot(h_dphi_ME11_ME21_charge_Pt0to5, "dphi_ME11_ME21_charge_Pt0to5")
+    makeDPhiPlot(h_dphi_ME11_ME21_charge_Pt7to140, "dphi_ME11_ME21_charge_Pt7to140")
+    makeDPhiPlot(h_dphi_ME11_ME21_charge_Pt10to140, "dphi_ME11_ME21_charge_Pt10to140")
+    makeDPhiPlot(h_dphi_ME11_ME21_charge_Pt15to140, "dphi_ME11_ME21_charge_Pt15to140")
+    makeDPhiPlot(h_dphi_ME11_ME21_charge_Pt20to140, "dphi_ME11_ME21_charge_Pt20to140")
+    makeDPhiPlot(h_dphi_ME11_ME21_charge_Pt30to140, "dphi_ME11_ME21_charge_Pt30to140")
 
     def makeEtaPlots(legendTitle,
                      h1, h1Legend,
@@ -732,21 +750,23 @@ if __name__ == "__main__":
         h31.SetMarkerStyle(22)
         h31.Draw("E1X0 same")
       else:
-        if 'Displaced' in h1Legend: setEmptyBins(h11)
+        if ('Displaced' in h1Legend) and ('hybrid' in h1Legend): setEmptyBins(h11)
         #h11.SetFillColor(kRed)
         h11.SetLineColor(kRed)
         h11.SetMarkerColor(kRed)
         h11.SetMarkerStyle(20)
         h11.Draw("E1X0 same")
 
-        if 'Displaced' in h2Legend: setEmptyBins(h21)
+        if ('Displaced' in h2Legend) and ('hybrid' in h2Legend): setEmptyBins(h21)
         #h21.SetFillColor(kViolet)
         h21.SetLineColor(kViolet)
         h21.SetMarkerColor(kViolet)
         h21.SetMarkerStyle(21)
         h21.Draw("E1X0 same")
 
-        if 'Displaced' in h3Legend: setEmptyBins(h31)
+        if ('Displaced' in h3Legend) and ('hybrid' in h3Legend):
+          tex = drawLabel("Note: p_{T,min}^{hybrid} = 5 GeV", 0.6,0.8)
+          setEmptyBins(h31)
         #h31.SetFillColor(kBlue)
         h31.SetLineColor(kBlue)
         h31.SetMarkerColor(kBlue)
@@ -1217,7 +1237,7 @@ if __name__ == "__main__":
     makePlots("0.0<|#eta|<0.9",
               mapTH1F["h_single_prompt_L1Mu_rate_pt_MB1_MB4_eta00to09"], "Prompt L1Mu, hit in MB1, MB4",
               mapTH1F["h_single_displaced_L1Mu_rate_pt_direction_MB1_MB4_eta00to09"], "Displaced L1Mu, hit in MB1, MB4, direction based",
-    mapTH1F["h_single_displaced_L1Mu_rate_pt_direction_MB1_MB4_eta00to09_mediumVeto"], "Displaced L1Mu, hit in MB1, MB4, direction based, medium veto",
+              mapTH1F["h_single_displaced_L1Mu_rate_pt_direction_MB1_MB4_eta00to09_mediumVeto"], "Displaced L1Mu, hit in MB1, MB4, direction based, medium veto",
               "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__DisplacedL1Mu2st_MB1_MB4_eta00to09_mediumVeto")
 
     ## rates vs eta
@@ -1263,6 +1283,31 @@ if __name__ == "__main__":
                  mapTH1F["h_single_displaced_L1Mu_rate_eta_direction_MB1_MB4_eta00to09_mediumVeto"], "Displaced L1Mu, hit in MB1, MB4, direction based, medium veto",
                  "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu2st__DisplacedL1Mu2st_MB1_MB4_eta00to09_mediumVeto")
 
+
+    ### FINAL PLOTS FOR MUON TDR ###
+    makePlots("1.6<|#eta|<2.2",
+                 mapTH1F["h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta16to22"], "L1Mu (constrained)",
+                 mapTH1F["h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta16to22"], "L1Mu (unconstrained)",
+                 mapTH1F["h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_GE21_ME21_ME3_eta16to22"], "L1Mu (hybrid)",
+                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta16to22")
+
+    makeEtaPlots("1.6<|#eta|<2.2",
+                 mapTH1F["h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta16to22"], "L1Mu (constrained)",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta16to22"], "L1Mu (unconstrained)",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta16to22"], "L1Mu (hybrid)",
+                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta16to22")
+
+    makePlots("1.6<|#eta|<2.2",
+                 mapTH1F["h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta16to22_mediumVeto"], "L1Mu (constrained)",
+                 mapTH1F["h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_GE21_ME21_ME3_eta16to22_mediumVeto"], "L1Mu (hybrid)",
+                 mapTH1F["h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta16to22"], "L1Mu (hybrid)",
+                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta16to22_mediumVeto")
+
+    makeEtaPlots("1.6<|#eta|<2.2",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta16to22_mediumVeto"], "L1Mu (constrained)",
+                 mapTH1F["h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta16to22_mediumVeto"], "L1Mu (hybrid)",
+                 mapTH1F["h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta16to22"], "L1Mu (hybrid)",
+                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta16to22_mediumVeto")
 
   displacedL1MuHybridTriggerRate()
 

@@ -35,13 +35,9 @@ if __name__ == "__main__":
 
   ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
 
-  dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU140_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU140_L1MuANA_v1/'
-  dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU140_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_L1MuANA_v1/'
-  dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_mH_125_mGammaD_20000_cT_X_14TeV_PU140_L1MuANA/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v1/'
-
-  #dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v38/161013_153046/0000/'
-  #dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_L1MuANA_v41_StubRecovery/161024_181853/0000/'
-  #dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU140_L1MuANA_v41_StubRecovery/161024_181450/0000/'
+  dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v52/170124_225735/0000/'
+  dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_L1MuANA_v51/170124_225629/0000/'
+  dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU140_L1MuANA_v51/170124_225450/0000/'
 
   print "Start run on", ch.GetEntries(), "events."
   ch = addfiles(ch, dirname=dirname1)
@@ -52,7 +48,7 @@ if __name__ == "__main__":
   print "Start run on", ch.GetEntries(), "events."
   treeHits = ch
 
-  f = ROOT.TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_20170123.root", "recreate")
+  f = ROOT.TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_20170125.root", "recreate")
   t = ROOT.TTree("L1MuTree", "L1MuTree")
 
   ## ranges
@@ -739,7 +735,7 @@ if __name__ == "__main__":
           ok_GE21_sim_L1s[0] = int(GE21_sim_L1_phis[0] != 99)
           ok_GE21_sim_L2s[0] = int(GE21_sim_L2_phis[0] != 99)
 
-          if verbose:
+          if verbose and False:
             print "\t\tGE11_sim_L1_phis", GE11_sim_pad_L1_phis[0]
             print "\t\tGE11_sim_L2_phis", GE11_sim_pad_L2_phis[0]
             print "\t\tGE21_sim_L1_phis", GE21_sim_pad_L1_phis[0]
@@ -845,13 +841,13 @@ if __name__ == "__main__":
 
             #print "ok L1",  L1Mu_pts[0], L1Mu_etas[0], L1Mu_phis[0]
 
-          L1Mu_pts[0] = treeHits.L1Mu_pt[L1Mu_index]
-          L1Mu_etas[0] = treeHits.L1Mu_eta[L1Mu_index]
-          L1Mu_phis[0] = treeHits.L1Mu_phi[L1Mu_index]
-          L1Mu_bxs[0] = treeHits.L1Mu_bx[L1Mu_index]
-          L1Mu_qualitys[0] = treeHits.L1Mu_quality[L1Mu_index]
+          L1Mu_pts[0] = treeHits.L1Mu_pt[SIM_L1Mu_index]
+          L1Mu_etas[0] = treeHits.L1Mu_eta[SIM_L1Mu_index]
+          L1Mu_phis[0] = treeHits.L1Mu_phi[SIM_L1Mu_index]
+          L1Mu_bxs[0] = treeHits.L1Mu_bx[SIM_L1Mu_index]
+          L1Mu_qualitys[0] = treeHits.L1Mu_quality[SIM_L1Mu_index]
 
-          L1Mu_DTTF_index  = treeHits.L1Mu_DTTF_index[L1Mu_index]
+          L1Mu_DTTF_index  = treeHits.L1Mu_DTTF_index[SIM_L1Mu_index]
           #print "index", SIM_L1Mu_index, len(treeHits.L1Mu_CSCTF_index)
           L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[SIM_L1Mu_index]
 
@@ -996,8 +992,8 @@ if __name__ == "__main__":
           partitions_L1[0] = etaPartition_L1
 
           ## Track-Trigger isolation
-          L1Mu_L1Tk_dR_min = treeHits.L1Mu_L1Tk_dR_prop[L1Mu_index]
-          L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt_prop[L1Mu_index]
+          L1Mu_L1Tk_dR_min = treeHits.L1Mu_L1Tk_dR_prop[SIM_L1Mu_index]
+          L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt_prop[SIM_L1Mu_index]
 
           #print "L1Mu_L1Tk_dR_min", L1Mu_L1Tk_dR_min
           #print "L1Mu_L1Tk_pt", L1Mu_L1Tk_pt

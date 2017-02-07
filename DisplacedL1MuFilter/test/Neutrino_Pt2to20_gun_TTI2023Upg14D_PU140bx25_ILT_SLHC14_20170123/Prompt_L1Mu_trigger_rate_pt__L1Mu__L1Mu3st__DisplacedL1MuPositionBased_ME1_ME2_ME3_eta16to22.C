@@ -1,6 +1,6 @@
 {
 //=========Macro generated from canvas: c/c
-//=========  (Mon Jan 23 13:17:02 2017) by ROOT version5.34/07
+//=========  (Mon Jan 23 18:39:24 2017) by ROOT version5.34/07
    TCanvas *c = new TCanvas("c", "c",0,0,800,600);
    gStyle->SetOptStat(0);
    c->SetHighLightColor(2);
@@ -215,10 +215,21 @@
    Double_t xAxis108[29] = {2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 120, 140}; 
    
    TH1F *htemp = new TH1F("htemp"," ",28, xAxis108);
+   htemp->SetBinContent(1,1580.87);
+   htemp->SetBinContent(2,1055.423);
+   htemp->SetBinContent(3,1055.423);
+   htemp->SetBinContent(4,601.6848);
+   htemp->SetBinContent(5,601.6848);
+   htemp->SetBinContent(6,395.9284);
    htemp->SetBinContent(7,395.9284);
+   htemp->SetBinContent(8,207.9677);
    htemp->SetBinContent(9,207.9677);
+   htemp->SetBinContent(10,121.9375);
    htemp->SetBinContent(11,121.9375);
+   htemp->SetBinContent(12,77.29028);
    htemp->SetBinContent(13,77.29028);
+   htemp->SetBinContent(14,60.65286);
+   htemp->SetBinContent(15,60.65286);
    htemp->SetBinContent(16,60.65286);
    htemp->SetBinContent(17,47.17445);
    htemp->SetBinContent(18,47.17445);
@@ -260,7 +271,7 @@
    htemp->SetBinError(26,2.145126);
    htemp->SetBinError(27,2.145126);
    htemp->SetBinError(28,2.145126);
-   htemp->SetEntries(41);
+   htemp->SetEntries(30);
    htemp->SetStats(0);
 
    ci = TColor::GetColor("#0000ff");

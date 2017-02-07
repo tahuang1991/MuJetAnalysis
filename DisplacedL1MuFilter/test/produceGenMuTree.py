@@ -48,7 +48,7 @@ if __name__ == "__main__":
   print "Start run on", ch.GetEntries(), "events."
   treeHits = ch
 
-  f = ROOT.TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_20170125.root", "recreate")
+  f = ROOT.TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_20170207.root", "recreate")
   t = ROOT.TTree("L1MuTree", "L1MuTree")
 
   ## ranges
@@ -450,7 +450,7 @@ if __name__ == "__main__":
   for k in range(0,treeHits.GetEntries()):
       treeHits.GetEntry(k)
       if k%1000==0: print "Event", k+1, "nL1Mu", treeHits.nL1Mu
-      #if k>10000: break
+      #if k>100000: break
 
       #print "event_number", event_number
       #print "lumi_number", lumi_number
@@ -524,6 +524,7 @@ if __name__ == "__main__":
 
           #print "sim_index", sim_index
           sim_pts[0] = treeHits.pt_sim[sim_index]
+          sim_etas[0] = treeHits.eta_sim[sim_index]
           if verbose: print "sim_pt", sim_pts[0]
 
           #if abs(float(gen_pts[0]) - float(sim_pts[0])) > 0.01:
@@ -780,16 +781,15 @@ if __name__ == "__main__":
             if CSCTF_sim_eta3s[0] == 99. or CSCTF_eta3 == 99.: deltaEta3 = 99.
             if CSCTF_sim_eta4s[0] == 99. or CSCTF_eta4 == 99.: deltaEta4 = 99.
 
-            if CSCTF_sim_phi1s[0] == 99. or CSCTF_sim_phi1s[0] == 0. or CSCTF_phi1 == 99. or CSCTF_phi1 == 0.: deltaPhi1 = 99.
-            if CSCTF_sim_phi2s[0] == 99. or CSCTF_sim_phi2s[0] == 0. or CSCTF_phi2 == 99. or CSCTF_phi2 == 0.: deltaPhi2 = 99.
-            if CSCTF_sim_phi3s[0] == 99. or CSCTF_sim_phi3s[0] == 0. or CSCTF_phi3 == 99. or CSCTF_phi3 == 0.: deltaPhi3 = 99.
-            if CSCTF_sim_phi4s[0] == 99. or CSCTF_sim_phi4s[0] == 0. or CSCTF_phi4 == 99. or CSCTF_phi4 == 0.: deltaPhi4 = 99.
+            if CSCTF_sim_phi1s[0] == 99. or CSCTF_phi1 == 99.: deltaPhi1 = 99.
+            if CSCTF_sim_phi2s[0] == 99. or CSCTF_phi2 == 99.: deltaPhi2 = 99.
+            if CSCTF_sim_phi3s[0] == 99. or CSCTF_phi3 == 99.: deltaPhi3 = 99.
+            if CSCTF_sim_phi4s[0] == 99. or CSCTF_phi4 == 99.: deltaPhi4 = 99.
 
-
-            deltaR1 = sqrt(deltaEta1*deltaEta1 + deltaPhi1*deltaPhi1)
-            deltaR2 = sqrt(deltaEta2*deltaEta2 + deltaPhi2*deltaPhi2)
-            deltaR3 = sqrt(deltaEta3*deltaEta3 + deltaPhi3*deltaPhi3)
-            deltaR4 = sqrt(deltaEta4*deltaEta4 + deltaPhi4*deltaPhi4)
+            deltaR1 = deltaEta1*deltaEta1 + deltaPhi1*deltaPhi1
+            deltaR2 = deltaEta2*deltaEta2 + deltaPhi2*deltaPhi2
+            deltaR3 = deltaEta3*deltaEta3 + deltaPhi3*deltaPhi3
+            deltaR4 = deltaEta4*deltaEta4 + deltaPhi4*deltaPhi4
 
             ## sanity check
             if deltaEta1 == 99. or deltaPhi1 == 99.: deltaR1 = 99.
@@ -797,7 +797,7 @@ if __name__ == "__main__":
             if deltaEta3 == 99. or deltaPhi3 == 99.: deltaR3 = 99.
             if deltaEta4 == 99. or deltaPhi4 == 99.: deltaR4 = 99.
 
-            if verbose:
+            if verbose or False:
               print "\t\tCSCTF_sim_phi1", CSCTF_sim_phi1s[0], "\tCSCTF_phi1", CSCTF_phi1, "Delta", deltaPhi1
               print "\t\tCSCTF_sim_phi2", CSCTF_sim_phi2s[0], "\tCSCTF_phi2", CSCTF_phi2, "Delta", deltaPhi2
               print "\t\tCSCTF_sim_phi3", CSCTF_sim_phi3s[0], "\tCSCTF_phi3", CSCTF_phi3, "Delta", deltaPhi3
@@ -809,6 +809,11 @@ if __name__ == "__main__":
               print "\t\tCSCTF_sim_eta3", CSCTF_sim_eta3s[0], "\tCSCTF_eta3", CSCTF_eta3, "Delta", deltaEta3
               print "\t\tCSCTF_sim_eta4", CSCTF_sim_eta4s[0], "\tCSCTF_eta4", CSCTF_eta4, "Delta", deltaEta4
               print
+
+              print "deltaR1", deltaR1
+              print "deltaR2", deltaR2
+              print "deltaR3", deltaR3
+              print "deltaR4", deltaR4
 
             deltaR = 0
             if deltaR1 != 99.: deltaR += deltaR1
@@ -825,21 +830,36 @@ if __name__ == "__main__":
               deltaRMin = deltaR
           #print "found index", SIM_L1Mu_index, "deltaRMin", deltaRMin, "L1Mu index", L1Mu_index
           #print
-          if SIM_L1Mu_index == L1Mu_index:
-            L1Mu_trues[0] = 1
-            #print
-            #print "ERROR: found index", SIM_L1Mu_index, "deltaRMin", deltaRMin, "L1Mu index", L1Mu_index
-            #print
-            #break
-
           SIM_L1Mu_indexs[0] = SIM_L1Mu_index
           SIM_L1Mu_dRs[0] = deltaRMin
+
+          if SIM_L1Mu_index == L1Mu_index:
+            L1Mu_trues[0] = 1
+          else:
+            pass
+            """
+            print
+            print "ERROR: SIM_L1Mu_index", SIM_L1Mu_index, "deltaRMin", deltaRMin, "L1Mu_index", L1Mu_index
+            print "L1Mu_index    : ", treeHits.L1Mu_pt[L1Mu_index], treeHits.L1Mu_eta[L1Mu_index], treeHits.L1Mu_phi[L1Mu_index], treeHits.L1Mu_bx[L1Mu_index]
+            if SIM_L1Mu_index != 999:
+              print "SIM_L1Mu_index: ", treeHits.L1Mu_pt[SIM_L1Mu_index], treeHits.L1Mu_eta[SIM_L1Mu_index], treeHits.L1Mu_phi[SIM_L1Mu_index], treeHits.L1Mu_bx[SIM_L1Mu_index]
+
+              print "\t\tCSCTF_sim_phi1", CSCTF_sim_phi1s[0], "\tCSCTF_phi1", treeHits.CSCTF_phi1[SIM_L1Mu_index], treeHits.CSCTF_phi1[L1Mu_index]
+              print "\t\tCSCTF_sim_phi2", CSCTF_sim_phi2s[0], "\tCSCTF_phi2", treeHits.CSCTF_phi2[SIM_L1Mu_index], treeHits.CSCTF_phi2[L1Mu_index]
+              print "\t\tCSCTF_sim_phi3", CSCTF_sim_phi3s[0], "\tCSCTF_phi3", treeHits.CSCTF_phi3[SIM_L1Mu_index], treeHits.CSCTF_phi3[L1Mu_index]
+              print "\t\tCSCTF_sim_phi4", CSCTF_sim_phi4s[0], "\tCSCTF_phi4", treeHits.CSCTF_phi4[SIM_L1Mu_index], treeHits.CSCTF_phi4[L1Mu_index]
+              print
+
+              print "\t\tCSCTF_sim_eta1", CSCTF_sim_eta1s[0], "\tCSCTF_eta1", treeHits.CSCTF_eta1[SIM_L1Mu_index], treeHits.CSCTF_eta1[L1Mu_index]
+              print "\t\tCSCTF_sim_eta2", CSCTF_sim_eta2s[0], "\tCSCTF_eta2", treeHits.CSCTF_eta2[SIM_L1Mu_index], treeHits.CSCTF_eta2[L1Mu_index]
+              print "\t\tCSCTF_sim_eta3", CSCTF_sim_eta3s[0], "\tCSCTF_eta3", treeHits.CSCTF_eta3[SIM_L1Mu_index], treeHits.CSCTF_eta3[L1Mu_index]
+              print "\t\tCSCTF_sim_eta4", CSCTF_sim_eta4s[0], "\tCSCTF_eta4", treeHits.CSCTF_eta4[SIM_L1Mu_index], treeHits.CSCTF_eta4[L1Mu_index]
+              print
+            """
 
           ## matching L1Mu was not found
           if SIM_L1Mu_index == 999:
             continue
-
-            #print "ok L1",  L1Mu_pts[0], L1Mu_etas[0], L1Mu_phis[0]
 
           L1Mu_pts[0] = treeHits.L1Mu_pt[SIM_L1Mu_index]
           L1Mu_etas[0] = treeHits.L1Mu_eta[SIM_L1Mu_index]
@@ -848,7 +868,6 @@ if __name__ == "__main__":
           L1Mu_qualitys[0] = treeHits.L1Mu_quality[SIM_L1Mu_index]
 
           L1Mu_DTTF_index  = treeHits.L1Mu_DTTF_index[SIM_L1Mu_index]
-          #print "index", SIM_L1Mu_index, len(treeHits.L1Mu_CSCTF_index)
           L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[SIM_L1Mu_index]
 
           has_CSCTFs[0] = L1Mu_CSCTF_index != 99 and L1Mu_CSCTF_index != -1

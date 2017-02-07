@@ -346,13 +346,19 @@ struct MyEvent
   Float_t CSCTF_L1_DPhi12_noGE21[kMaxCSCTF];
   Float_t CSCTF_sim_DPhi12_GE21[kMaxCSCTF];
   Float_t CSCTF_L1_DPhi12_GE21[kMaxCSCTF];
+  Float_t CSCTF_sim_eta_st2[kMaxCSCTF];
+  Float_t CSCTF_L1_eta_st2[kMaxCSCTF];
+
+  Float_t CSCTF_sim_position_pt[kMaxCSCTF];
+  Float_t CSCTF_L1_position_pt[kMaxCSCTF];
+  Float_t CSCTF_sim_direction_pt_noGE21[kMaxCSCTF];
+  Float_t CSCTF_L1_direction_pt_noGE21[kMaxCSCTF];
+  Float_t CSCTF_sim_direction_pt_GE21[kMaxCSCTF];
+  Float_t CSCTF_L1_direction_pt_GE21[kMaxCSCTF];
   Float_t CSCTF_sim_hybrid_pt_noGE21[kMaxCSCTF];
   Float_t CSCTF_L1_hybrid_pt_noGE21[kMaxCSCTF];
   Float_t CSCTF_sim_hybrid_pt_GE21[kMaxCSCTF];
   Float_t CSCTF_L1_hybrid_pt_GE21[kMaxCSCTF];
-  Float_t CSCTF_sim_eta_st2[kMaxCSCTF];
-  Float_t CSCTF_L1_eta_st2[kMaxCSCTF];
-
 
   // directions
   Float_t CSCTF_L1_Phi1_noGE21[kMaxCSCTF], CSCTF_L1_Phi2_noGE21[kMaxCSCTF];
@@ -1746,17 +1752,19 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
       if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runPositionbased()){
         event_.CSCTF_sim_DDY123[k] = ptAssignmentUnit.getdeltaY123();
-        //std::cout << "SIM_DDY123 " << event_.CSCTF_sim_DDY123[k] << std::endl;
+        event_.CSCTF_sim_position_pt[k] = ptAssignmentUnit.getPositionPt();
       }
       if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(false)){
         event_.CSCTF_sim_DPhi12_noGE21[k] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
         event_.CSCTF_sim_Phi1_noGE21[k] = ptAssignmentUnit.getlocalPhiDirection(1);
         event_.CSCTF_sim_Phi2_noGE21[k] = ptAssignmentUnit.getlocalPhiDirection(2);
+        event_.CSCTF_sim_direction_pt_noGE21[k] = ptAssignmentUnit.getDirectionPt();
       }
       if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(true)){
         event_.CSCTF_sim_DPhi12_GE21[k] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
         event_.CSCTF_sim_Phi1_GE21[k] = ptAssignmentUnit.getlocalPhiDirection(1);
         event_.CSCTF_sim_Phi2_GE21[k] = ptAssignmentUnit.getlocalPhiDirection(2);
+        event_.CSCTF_sim_hybrid_pt_GE21[k] = ptAssignmentUnit.getDirectionPt();
       }
 
       ptAssignmentUnit.runHybrid(false);
@@ -2549,17 +2557,20 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
     if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runPositionbased()){
       event_.CSCTF_L1_DDY123[j] = ptAssignmentUnit.getdeltaY123();
+      event_.CSCTF_L1_position_pt[j] = ptAssignmentUnit.getPositionPt();
       std::cout << "L1_DDY123 " << event_.CSCTF_L1_DDY123[j] << std::endl;
     }
     if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(false)){
       event_.CSCTF_L1_DPhi12_noGE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
       event_.CSCTF_L1_Phi1_noGE21[j] = ptAssignmentUnit.getlocalPhiDirection(1);
       event_.CSCTF_L1_Phi2_noGE21[j] = ptAssignmentUnit.getlocalPhiDirection(2);
+      event_.CSCTF_L1_direction_pt_noGE21[j] = ptAssignmentUnit.getDirectionPt();
     }
     if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(true)){
       event_.CSCTF_L1_DPhi12_GE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
       event_.CSCTF_L1_Phi1_GE21[j] = ptAssignmentUnit.getlocalPhiDirection(1);
       event_.CSCTF_L1_Phi2_GE21[j] = ptAssignmentUnit.getlocalPhiDirection(2);
+      event_.CSCTF_L1_hybrid_pt_GE21[j] = ptAssignmentUnit.getDirectionPt();
     }
 
     ptAssignmentUnit.runHybrid(false);
@@ -2567,7 +2578,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
     ptAssignmentUnit.runHybrid(true);
     event_.CSCTF_L1_hybrid_pt_GE21[j] = ptAssignmentUnit.getHybridPt();
-
   } // loop on csctf tracks
 
   // Store the RPCb variables
@@ -5029,13 +5039,13 @@ void DisplacedL1MuFilter::bookL1MuTree()
   // event_tree_->Branch("CSCTF_quality1", event_.CSCTF_quality1,"CSCTF_quality1[nCSCTF]/I");
   // event_tree_->Branch("CSCTF_wg1", event_.CSCTF_wg1,"CSCTF_wg1[nCSCTF]/I");
   // event_tree_->Branch("CSCTF_hs1", event_.CSCTF_hs1,"CSCTF_hs1[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_pat1", event_.CSCTF_pat1,"CSCTF_pat1[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_bend1", event_.CSCTF_bend1,"CSCTF_bend1[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_bx1", event_.CSCTF_bx1,"CSCTF_bx1[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_clctpat1", event_.CSCTF_clctpat1,"CSCTF_clctpat1[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_val1", event_.CSCTF_val1,"CSCTF_val1[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_pat1", event_.CSCTF_pat1,"CSCTF_pat1[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_bend1", event_.CSCTF_bend1,"CSCTF_bend1[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_bx1", event_.CSCTF_bx1,"CSCTF_bx1[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_clctpat1", event_.CSCTF_clctpat1,"CSCTF_clctpat1[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_val1", event_.CSCTF_val1,"CSCTF_val1[nCSCTF]/I");
   event_tree_->Branch("CSCTF_phi1", event_.CSCTF_phi1,"CSCTF_phi1[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_phib1", event_.CSCTF_phib1,"CSCTF_phib1[nCSCTF]/F");
+  // event_tree_->Branch("CSCTF_phib1", event_.CSCTF_phib1,"CSCTF_phib1[nCSCTF]/F");
 
   event_tree_->Branch("CSCTF_st2", event_.CSCTF_st2,"CSCTF_st2[nCSCTF]/I");
   event_tree_->Branch("CSCTF_ri2", event_.CSCTF_ri2,"CSCTF_ri2[nCSCTF]/I");
@@ -5045,13 +5055,13 @@ void DisplacedL1MuFilter::bookL1MuTree()
   // event_tree_->Branch("CSCTF_quality2", event_.CSCTF_quality2,"CSCTF_quality2[nCSCTF]/I");
   // event_tree_->Branch("CSCTF_wg2", event_.CSCTF_wg2,"CSCTF_wg2[nCSCTF]/I");
   // event_tree_->Branch("CSCTF_hs2", event_.CSCTF_hs2,"CSCTF_hs2[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_pat2", event_.CSCTF_pat2,"CSCTF_pat2[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_bend2", event_.CSCTF_bend2,"CSCTF_bend2[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_bx2", event_.CSCTF_bx2,"CSCTF_bx2[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_clctpat2", event_.CSCTF_clctpat2,"CSCTF_clctpat2[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_val2", event_.CSCTF_val2,"CSCTF_val2[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_pat2", event_.CSCTF_pat2,"CSCTF_pat2[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_bend2", event_.CSCTF_bend2,"CSCTF_bend2[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_bx2", event_.CSCTF_bx2,"CSCTF_bx2[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_clctpat2", event_.CSCTF_clctpat2,"CSCTF_clctpat2[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_val2", event_.CSCTF_val2,"CSCTF_val2[nCSCTF]/I");
   event_tree_->Branch("CSCTF_phi2", event_.CSCTF_phi2,"CSCTF_phi2[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_phib2", event_.CSCTF_phib2,"CSCTF_phib2[nCSCTF]/F");
+  // event_tree_->Branch("CSCTF_phib2", event_.CSCTF_phib2,"CSCTF_phib2[nCSCTF]/F");
 
   event_tree_->Branch("CSCTF_st3", event_.CSCTF_st3,"CSCTF_st3[nCSCTF]/I");
   event_tree_->Branch("CSCTF_ri3", event_.CSCTF_ri3,"CSCTF_ri3[nCSCTF]/I");
@@ -5061,13 +5071,13 @@ void DisplacedL1MuFilter::bookL1MuTree()
   // event_tree_->Branch("CSCTF_quality3", event_.CSCTF_quality3,"CSCTF_quality3[nCSCTF]/I");
   // event_tree_->Branch("CSCTF_wg3", event_.CSCTF_wg3,"CSCTF_wg3[nCSCTF]/I");
   // event_tree_->Branch("CSCTF_hs3", event_.CSCTF_hs3,"CSCTF_hs3[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_pat3", event_.CSCTF_pat3,"CSCTF_pat3[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_bend3", event_.CSCTF_bend3,"CSCTF_bend3[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_bx3", event_.CSCTF_bx3,"CSCTF_bx3[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_clctpat3", event_.CSCTF_clctpat3,"CSCTF_clctpat3[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_val3", event_.CSCTF_val3,"CSCTF_val3[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_pat3", event_.CSCTF_pat3,"CSCTF_pat3[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_bend3", event_.CSCTF_bend3,"CSCTF_bend3[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_bx3", event_.CSCTF_bx3,"CSCTF_bx3[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_clctpat3", event_.CSCTF_clctpat3,"CSCTF_clctpat3[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_val3", event_.CSCTF_val3,"CSCTF_val3[nCSCTF]/I");
   event_tree_->Branch("CSCTF_phi3", event_.CSCTF_phi3,"CSCTF_phi3[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_phib3", event_.CSCTF_phib3,"CSCTF_phib3[nCSCTF]/F");
+  // event_tree_->Branch("CSCTF_phib3", event_.CSCTF_phib3,"CSCTF_phib3[nCSCTF]/F");
 
   event_tree_->Branch("CSCTF_st4", event_.CSCTF_st4,"CSCTF_st4[nCSCTF]/I");
   event_tree_->Branch("CSCTF_ri4", event_.CSCTF_ri4,"CSCTF_ri4[nCSCTF]/I");
@@ -5077,13 +5087,13 @@ void DisplacedL1MuFilter::bookL1MuTree()
   // event_tree_->Branch("CSCTF_quality4", event_.CSCTF_quality4,"CSCTF_quality4[nCSCTF]/I");
   // event_tree_->Branch("CSCTF_wg4", event_.CSCTF_wg4,"CSCTF_wg4[nCSCTF]/I");
   // event_tree_->Branch("CSCTF_hs4", event_.CSCTF_hs4,"CSCTF_hs4[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_pat4", event_.CSCTF_pat4,"CSCTF_pat4[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_bend4", event_.CSCTF_bend4,"CSCTF_bend4[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_bx4", event_.CSCTF_bx4,"CSCTF_bx4[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_clctpat4", event_.CSCTF_clctpat4,"CSCTF_clctpat4[nCSCTF]/I");
-  event_tree_->Branch("CSCTF_val4", event_.CSCTF_val4,"CSCTF_val4[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_pat4", event_.CSCTF_pat4,"CSCTF_pat4[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_bend4", event_.CSCTF_bend4,"CSCTF_bend4[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_bx4", event_.CSCTF_bx4,"CSCTF_bx4[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_clctpat4", event_.CSCTF_clctpat4,"CSCTF_clctpat4[nCSCTF]/I");
+  // event_tree_->Branch("CSCTF_val4", event_.CSCTF_val4,"CSCTF_val4[nCSCTF]/I");
   event_tree_->Branch("CSCTF_phi4", event_.CSCTF_phi4,"CSCTF_phi4[nCSCTF]/F");
-  event_tree_->Branch("CSCTF_phib4", event_.CSCTF_phib4,"CSCTF_phib4[nCSCTF]/F");
+  // event_tree_->Branch("CSCTF_phib4", event_.CSCTF_phib4,"CSCTF_phib4[nCSCTF]/F");
 
   event_tree_->Branch("CSCTF_eta1", event_.CSCTF_eta1,"CSCTF_eta1[nCSCTF]/F");
   event_tree_->Branch("CSCTF_eta2", event_.CSCTF_eta2,"CSCTF_eta2[nCSCTF]/F");
@@ -5231,11 +5241,6 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_sim_DPhi12_GE21", event_.CSCTF_sim_DPhi12_GE21,"CSCTF_sim_DPhi12_GE21[50]/F");
   event_tree_->Branch("CSCTF_L1_DPhi12_GE21", event_.CSCTF_L1_DPhi12_GE21,"CSCTF_L1_DPhi12_GE21[50]/F");
 
-  event_tree_->Branch("CSCTF_sim_hybrid_pt_noGE21", event_.CSCTF_sim_hybrid_pt_noGE21,"CSCTF_sim_hybrid_pt_noGE21[50]/F");
-  event_tree_->Branch("CSCTF_L1_hybrid_pt_noGE21", event_.CSCTF_L1_hybrid_pt_noGE21,"CSCTF_L1_hybrid_pt_noGE21[50]/F");
-  event_tree_->Branch("CSCTF_sim_hybrid_pt_GE21", event_.CSCTF_sim_hybrid_pt_GE21,"CSCTF_sim_hybrid_pt_GE21[50]/F");
-  event_tree_->Branch("CSCTF_L1_hybrid_pt_GE21", event_.CSCTF_L1_hybrid_pt_GE21,"CSCTF_L1_hybrid_pt_GE21[50]/F");
-
   event_tree_->Branch("CSCTF_sim_eta_st2", event_.CSCTF_sim_eta_st2,"CSCTF_sim_eta_st2[50]/F");
   event_tree_->Branch("CSCTF_L1_eta_st2", event_.CSCTF_L1_eta_st2,"CSCTF_L1_eta_st2[50]/F");
 
@@ -5247,6 +5252,19 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_L1_Phi2_noGE21", event_.CSCTF_L1_Phi2_noGE21,"CSCTF_L1_Phi2_noGE21[50]/F");
   event_tree_->Branch("CSCTF_L1_Phi1_GE21", event_.CSCTF_L1_Phi1_GE21,"CSCTF_L1_Phi1_GE21[50]/F");
   event_tree_->Branch("CSCTF_L1_Phi2_GE21", event_.CSCTF_L1_Phi2_GE21,"CSCTF_L1_Phi2_GE21[50]/F");
+
+  event_tree_->Branch("CSCTF_sim_position_pt", event_.CSCTF_sim_position_pt,"CSCTF_sim_position_pt[50]/F");
+  event_tree_->Branch("CSCTF_L1_position_pt", event_.CSCTF_L1_position_pt,"CSCTF_L1_position_pt[50]/F");
+
+  event_tree_->Branch("CSCTF_sim_direction_pt_noGE21", event_.CSCTF_sim_direction_pt_noGE21,"CSCTF_sim_direction_pt_noGE21[50]/F");
+  event_tree_->Branch("CSCTF_L1_direction_pt_noGE21", event_.CSCTF_L1_direction_pt_noGE21,"CSCTF_L1_direction_pt_noGE21[50]/F");
+  event_tree_->Branch("CSCTF_sim_direction_pt_GE21", event_.CSCTF_sim_direction_pt_GE21,"CSCTF_sim_direction_pt_GE21[50]/F");
+  event_tree_->Branch("CSCTF_L1_direction_pt_GE21", event_.CSCTF_L1_direction_pt_GE21,"CSCTF_L1_direction_pt_GE21[50]/F");
+
+  event_tree_->Branch("CSCTF_sim_hybrid_pt_noGE21", event_.CSCTF_sim_hybrid_pt_noGE21,"CSCTF_sim_hybrid_pt_noGE21[50]/F");
+  event_tree_->Branch("CSCTF_L1_hybrid_pt_noGE21", event_.CSCTF_L1_hybrid_pt_noGE21,"CSCTF_L1_hybrid_pt_noGE21[50]/F");
+  event_tree_->Branch("CSCTF_sim_hybrid_pt_GE21", event_.CSCTF_sim_hybrid_pt_GE21,"CSCTF_sim_hybrid_pt_GE21[50]/F");
+  event_tree_->Branch("CSCTF_L1_hybrid_pt_GE21", event_.CSCTF_L1_hybrid_pt_GE21,"CSCTF_L1_hybrid_pt_GE21[50]/F");
 
   if (processRPCb_) {
   event_tree_->Branch("nRPCb", &event_.nRPCb);
@@ -5823,6 +5841,14 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_L1_DPhi12_noGE21[i] = 99;
     event_.CSCTF_sim_DPhi12_GE21[i] = 99;
     event_.CSCTF_L1_DPhi12_GE21[i] = 99;
+
+    event_.CSCTF_sim_position_pt[i] = 99;
+    event_.CSCTF_L1_position_pt[i] = 99;
+
+    event_.CSCTF_sim_direction_pt_noGE21[i] = 99;
+    event_.CSCTF_L1_direction_pt_noGE21[i] = 99;
+    event_.CSCTF_sim_direction_pt_GE21[i] = 99;
+    event_.CSCTF_L1_direction_pt_GE21[i] = 99;
 
     event_.CSCTF_sim_hybrid_pt_noGE21[i] = 99;
     event_.CSCTF_L1_hybrid_pt_noGE21[i] = 99;

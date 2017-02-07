@@ -2250,3 +2250,35 @@ def getEfficiency(t, to_draw, denom_cut, extra_num_cut, color = kBlue, marker_st
 
     SetOwnership(eff, False)
     return eff
+
+
+#_______________________________________________________________________________
+def getEfficiencyEta(t, to_draw, denom_cut, extra_num_cut, color = kBlue, marker_st = 20):
+    """Make an efficiency plot"""
+
+    ## total numerator selection cut
+    num_cut = AND(denom_cut,extra_num_cut)
+
+    num = TH1F("num", "", 25, 0, 2.5)
+    den = TH1F("den", "", 25, 0, 2.5)
+
+    t.Draw(to_draw + ">>num", num_cut, "goff")
+    t.Draw(to_draw + ">>den", denom_cut, "goff")
+
+    print num.GetEntries(), den.GetEntries()
+
+    useTEfficiency = True
+    if useTEfficiency:
+        eff = TEfficiency(num, den)
+    else:
+        eff = TGraphAsymmErrors(num, den)
+
+    eff.SetTitle("")
+    #eff.SetLineWidth(2)
+    #eff.SetLineColor(color)
+    #eff.SetMarkerStyle(marker_st)
+    #eff.SetMarkerColor(color)
+    #eff.SetMarkerSize(.5)
+
+    SetOwnership(eff, False)
+    return eff

@@ -1,6 +1,6 @@
 {
 //=========Macro generated from canvas: c/c
-//=========  (Mon Jan 23 13:17:08 2017) by ROOT version5.34/07
+//=========  (Mon Jan 23 18:39:29 2017) by ROOT version5.34/07
    TCanvas *c = new TCanvas("c", "c",0,0,800,600);
    gStyle->SetOptStat(0);
    c->SetHighLightColor(2);
@@ -77,7 +77,7 @@
    Double_t xAxis242[29] = {2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 120, 140}; 
    
    TH1F *htemp__68 = new TH1F("htemp__68"," ",28, xAxis242);
-   htemp__68->SetEntries(41);
+   htemp__68->SetEntries(30);
    htemp__68->SetDirectory(0);
    htemp__68->SetStats(0);
 
@@ -103,7 +103,7 @@
    Double_t xAxis243[29] = {2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 120, 140}; 
    
    TH1F *htemp = new TH1F("htemp"," ",28, xAxis243);
-   htemp->SetEntries(41);
+   htemp->SetEntries(30);
    htemp->SetStats(0);
 
    ci = TColor::GetColor("#0000ff");

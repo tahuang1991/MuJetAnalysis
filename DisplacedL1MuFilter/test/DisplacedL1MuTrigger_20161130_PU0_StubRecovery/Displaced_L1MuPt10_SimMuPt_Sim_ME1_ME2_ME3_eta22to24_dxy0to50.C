@@ -1,6 +1,6 @@
 {
 //=========Macro generated from canvas: c/c
-//=========  (Wed Nov 30 12:39:33 2016) by ROOT version5.34/07
+//=========  (Thu Dec  1 10:47:02 2016) by ROOT version5.34/07
    TCanvas *c = new TCanvas("c", "c",0,0,800,600);
    gStyle->SetOptStat(0);
    c->SetHighLightColor(2);

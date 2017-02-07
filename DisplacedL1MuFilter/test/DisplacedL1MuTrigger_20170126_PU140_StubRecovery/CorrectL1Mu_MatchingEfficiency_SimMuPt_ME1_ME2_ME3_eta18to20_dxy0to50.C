@@ -1,0 +1,236 @@
+void CorrectL1Mu_MatchingEfficiency_SimMuPt_ME1_ME2_ME3_eta18to20_dxy0to50()
+{
+//=========Macro generated from canvas: c/c
+//=========  (Fri Jan 27 08:41:39 2017) by ROOT version6.06/09
+   TCanvas *c = new TCanvas("c", "c",0,0,800,600);
+   gStyle->SetOptStat(0);
+   c->SetHighLightColor(2);
+   c->Range(-7.553957,-0.1685185,52.39808,1.127778);
+   c->SetFillColor(0);
+   c->SetBorderMode(0);
+   c->SetBorderSize(2);
+   c->SetGridx();
+   c->SetGridy();
+   c->SetTickx(1);
+   c->SetTicky(1);
+   c->SetLeftMargin(0.126);
+   c->SetRightMargin(0.04);
+   c->SetTopMargin(0.06);
+   c->SetBottomMargin(0.13);
+   c->SetFrameBorderMode(0);
+   c->SetFrameBorderMode(0);
+   
+   TH1F *b1__4 = new TH1F("b1__4","           #scale[1.4]{#font[61]{CMS}} #font[52]{Simulation preliminary}                                                         14 TeV, 0 PU",50,0,50);
+   b1__4->SetMinimum(0);
+   b1__4->SetMaximum(1.05);
+   b1__4->SetStats(0);
+
+   Int_t ci;      // for color index setting
+   TColor *color; // for color definition with alpha
+   ci = TColor::GetColor("#000099");
+   b1__4->SetLineColor(ci);
+   b1__4->GetXaxis()->SetTitle("True muon p_{T} [GeV]");
+   b1__4->GetXaxis()->SetLabelFont(42);
+   b1__4->GetXaxis()->SetLabelSize(0.05);
+   b1__4->GetXaxis()->SetTitleSize(0.05);
+   b1__4->GetXaxis()->SetTitleOffset(1.2);
+   b1__4->GetXaxis()->SetTitleFont(42);
+   b1__4->GetYaxis()->SetTitle("Trigger efficiency");
+   b1__4->GetYaxis()->SetNdivisions(520);
+   b1__4->GetYaxis()->SetLabelFont(42);
+   b1__4->GetYaxis()->SetLabelSize(0.05);
+   b1__4->GetYaxis()->SetTitleSize(0.05);
+   b1__4->GetYaxis()->SetTitleOffset(1.2);
+   b1__4->GetYaxis()->SetTitleFont(42);
+   b1__4->GetZaxis()->SetLabelFont(42);
+   b1__4->GetZaxis()->SetLabelSize(0.035);
+   b1__4->GetZaxis()->SetTitleSize(0.035);
+   b1__4->GetZaxis()->SetTitleFont(42);
+   b1__4->Draw("");
+   Double_t xAxis7[22] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 42, 50}; 
+   
+   TEfficiency * den_clone7 = new TEfficiency("den_clone","",21,xAxis7);
+   
+   den_clone7->SetConfidenceLevel(0.6826895);
+   den_clone7->SetBetaAlpha(1);
+   den_clone7->SetBetaBeta(1);
+   den_clone7->SetWeight(1);
+   den_clone7->SetStatisticOption(0);
+   den_clone7->SetPosteriorMode(0);
+   den_clone7->SetShortestInterval(0);
+   den_clone7->SetTotalEvents(0,0);
+   den_clone7->SetPassedEvents(0,0);
+   den_clone7->SetTotalEvents(1,0);
+   den_clone7->SetPassedEvents(1,0);
+   den_clone7->SetTotalEvents(2,6);
+   den_clone7->SetPassedEvents(2,6);
+   den_clone7->SetTotalEvents(3,269);
+   den_clone7->SetPassedEvents(3,265);
+   den_clone7->SetTotalEvents(4,506);
+   den_clone7->SetPassedEvents(4,502);
+   den_clone7->SetTotalEvents(5,683);
+   den_clone7->SetPassedEvents(5,679);
+   den_clone7->SetTotalEvents(6,750);
+   den_clone7->SetPassedEvents(6,748);
+   den_clone7->SetTotalEvents(7,821);
+   den_clone7->SetPassedEvents(7,819);
+   den_clone7->SetTotalEvents(8,903);
+   den_clone7->SetPassedEvents(8,900);
+   den_clone7->SetTotalEvents(9,896);
+   den_clone7->SetPassedEvents(9,893);
+   den_clone7->SetTotalEvents(10,962);
+   den_clone7->SetPassedEvents(10,962);
+   den_clone7->SetTotalEvents(11,1634);
+   den_clone7->SetPassedEvents(11,1625);
+   den_clone7->SetTotalEvents(12,1414);
+   den_clone7->SetPassedEvents(12,1409);
+   den_clone7->SetTotalEvents(13,1216);
+   den_clone7->SetPassedEvents(13,1212);
+   den_clone7->SetTotalEvents(14,1002);
+   den_clone7->SetPassedEvents(14,999);
+   den_clone7->SetTotalEvents(15,906);
+   den_clone7->SetPassedEvents(15,903);
+   den_clone7->SetTotalEvents(16,1424);
+   den_clone7->SetPassedEvents(16,1415);
+   den_clone7->SetTotalEvents(17,949);
+   den_clone7->SetPassedEvents(17,948);
+   den_clone7->SetTotalEvents(18,628);
+   den_clone7->SetPassedEvents(18,627);
+   den_clone7->SetTotalEvents(19,425);
+   den_clone7->SetPassedEvents(19,423);
+   den_clone7->SetTotalEvents(20,303);
+   den_clone7->SetPassedEvents(20,301);
+   den_clone7->SetTotalEvents(21,171);
+   den_clone7->SetPassedEvents(21,170);
+   den_clone7->SetTotalEvents(22,57);
+   den_clone7->SetPassedEvents(22,57);
+   den_clone7->SetFillColor(19);
+
+   ci = TColor::GetColor("#0000ff");
+   den_clone7->SetLineColor(ci);
+
+   ci = TColor::GetColor("#0000ff");
+   den_clone7->SetMarkerColor(ci);
+   den_clone7->SetMarkerStyle(20);
+   den_clone7->Draw("samep");
+   Double_t xAxis8[22] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 42, 50}; 
+   
+   TEfficiency * den_clone8 = new TEfficiency("den_clone","",21,xAxis8);
+   
+   den_clone8->SetConfidenceLevel(0.6826895);
+   den_clone8->SetBetaAlpha(1);
+   den_clone8->SetBetaBeta(1);
+   den_clone8->SetWeight(1);
+   den_clone8->SetStatisticOption(0);
+   den_clone8->SetPosteriorMode(0);
+   den_clone8->SetShortestInterval(0);
+   den_clone8->SetTotalEvents(0,0);
+   den_clone8->SetPassedEvents(0,0);
+   den_clone8->SetTotalEvents(1,0);
+   den_clone8->SetPassedEvents(1,0);
+   den_clone8->SetTotalEvents(2,6);
+   den_clone8->SetPassedEvents(2,5);
+   den_clone8->SetTotalEvents(3,62);
+   den_clone8->SetPassedEvents(3,59);
+   den_clone8->SetTotalEvents(4,125);
+   den_clone8->SetPassedEvents(4,123);
+   den_clone8->SetTotalEvents(5,152);
+   den_clone8->SetPassedEvents(5,150);
+   den_clone8->SetTotalEvents(6,179);
+   den_clone8->SetPassedEvents(6,179);
+   den_clone8->SetTotalEvents(7,192);
+   den_clone8->SetPassedEvents(7,191);
+   den_clone8->SetTotalEvents(8,194);
+   den_clone8->SetPassedEvents(8,192);
+   den_clone8->SetTotalEvents(9,196);
+   den_clone8->SetPassedEvents(9,196);
+   den_clone8->SetTotalEvents(10,193);
+   den_clone8->SetPassedEvents(10,193);
+   den_clone8->SetTotalEvents(11,415);
+   den_clone8->SetPassedEvents(11,410);
+   den_clone8->SetTotalEvents(12,281);
+   den_clone8->SetPassedEvents(12,278);
+   den_clone8->SetTotalEvents(13,280);
+   den_clone8->SetPassedEvents(13,280);
+   den_clone8->SetTotalEvents(14,199);
+   den_clone8->SetPassedEvents(14,197);
+   den_clone8->SetTotalEvents(15,196);
+   den_clone8->SetPassedEvents(15,191);
+   den_clone8->SetTotalEvents(16,265);
+   den_clone8->SetPassedEvents(16,260);
+   den_clone8->SetTotalEvents(17,165);
+   den_clone8->SetPassedEvents(17,163);
+   den_clone8->SetTotalEvents(18,89);
+   den_clone8->SetPassedEvents(18,88);
+   den_clone8->SetTotalEvents(19,51);
+   den_clone8->SetPassedEvents(19,48);
+   den_clone8->SetTotalEvents(20,37);
+   den_clone8->SetPassedEvents(20,36);
+   den_clone8->SetTotalEvents(21,3);
+   den_clone8->SetPassedEvents(21,3);
+   den_clone8->SetTotalEvents(22,4);
+   den_clone8->SetPassedEvents(22,4);
+   den_clone8->SetFillColor(19);
+
+   ci = TColor::GetColor("#ff0000");
+   den_clone8->SetLineColor(ci);
+
+   ci = TColor::GetColor("#ff0000");
+   den_clone8->SetMarkerColor(ci);
+   den_clone8->SetMarkerStyle(21);
+   den_clone8->Draw("samep");
+   TLatex *   tex = new TLatex(0.5,0.6,"");
+tex->SetNDC();
+   tex->SetLineWidth(2);
+   tex->Draw();
+      tex = new TLatex(0.5,0.5,"1.8<|#eta|<2.0");
+tex->SetNDC();
+   tex->SetLineWidth(2);
+   tex->Draw();
+   
+   TLegend *leg = new TLegend(0.5,0.2,0.9,0.45,NULL,"brNDC");
+   leg->SetBorderSize(1);
+   leg->SetTextSize(0.05);
+   leg->SetLineColor(1);
+   leg->SetLineStyle(1);
+   leg->SetLineWidth(1);
+   leg->SetFillColor(0);
+   leg->SetFillStyle(1001);
+   TLegendEntry *entry=leg->AddEntry("den_clone","|d_{xy}|<5 cm","lp");
+
+   ci = TColor::GetColor("#0000ff");
+   entry->SetLineColor(ci);
+   entry->SetLineStyle(1);
+   entry->SetLineWidth(1);
+
+   ci = TColor::GetColor("#0000ff");
+   entry->SetMarkerColor(ci);
+   entry->SetMarkerStyle(20);
+   entry->SetMarkerSize(1);
+   entry->SetTextFont(42);
+   entry=leg->AddEntry("den_clone","10<|d_{xy}|<50 cm","lp");
+
+   ci = TColor::GetColor("#ff0000");
+   entry->SetLineColor(ci);
+   entry->SetLineStyle(1);
+   entry->SetLineWidth(1);
+
+   ci = TColor::GetColor("#ff0000");
+   entry->SetMarkerColor(ci);
+   entry->SetMarkerStyle(21);
+   entry->SetMarkerSize(1);
+   entry->SetTextFont(42);
+   leg->Draw();
+   
+   TPaveText *pt = new TPaveText(0,0.942,1,1,"blNDC");
+   pt->SetName("title");
+   pt->SetBorderSize(0);
+   pt->SetFillColor(0);
+   pt->SetFillStyle(0);
+   pt->SetTextFont(42);
+   AText = pt->AddText("           #scale[1.4]{#font[61]{CMS}} #font[52]{Simulation preliminary}                                                         14 TeV, 0 PU");
+   pt->Draw();
+   c->Modified();
+   c->cd();
+   c->SetSelected(c);
+}

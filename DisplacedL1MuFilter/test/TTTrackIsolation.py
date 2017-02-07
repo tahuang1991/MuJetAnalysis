@@ -291,11 +291,11 @@ def getMaxPromptPtEtaEvent(treeHits,
 
         #print L1Mu_CSCTF_index
         #print L1Mu_CSCTF_index, len(treeHits.CSCTF_bx1)
-        if L1Mu_CSCTF_index != -1 and L1Mu_CSCTF_index < len(treeHits.CSCTF_bx1):
-            has_CSC_ME1 = treeHits.CSCTF_bx1[L1Mu_CSCTF_index] != 99
-            has_CSC_ME2 = treeHits.CSCTF_bx2[L1Mu_CSCTF_index] != 99
-            has_CSC_ME3 = treeHits.CSCTF_bx3[L1Mu_CSCTF_index] != 99
-            has_CSC_ME4 = treeHits.CSCTF_bx4[L1Mu_CSCTF_index] != 99
+        if L1Mu_CSCTF_index != -1 and L1Mu_CSCTF_index < len(treeHits.CSCTF_phi1):
+            has_CSC_ME1 = treeHits.CSCTF_phi1[L1Mu_CSCTF_index] != 99
+            has_CSC_ME2 = treeHits.CSCTF_phi2[L1Mu_CSCTF_index] != 99
+            has_CSC_ME3 = treeHits.CSCTF_phi3[L1Mu_CSCTF_index] != 99
+            has_CSC_ME4 = treeHits.CSCTF_phi4[L1Mu_CSCTF_index] != 99
 
             L1Mu_eta_ME2 = treeHits.CSCTF_eta2[L1Mu_CSCTF_index]
 
@@ -412,10 +412,10 @@ def fillDisplacedPtEtaHistogram(ptHistogram,
                                 hasMB3Cut=False,
                                 hasMB4Cut=False,
                                 doPositionBased=False,
-                                doDirectionBasedCSCOnly=False,
-                                doDirectionBasedCSCGEM=False,
-                                doHybridBasedCSCOnly=False,
-                                doHybridBasedCSCGEM=False,
+                                doDirectionBasedNoGE21=False,
+                                doDirectionBasedGE21=False,
+                                doHybridBasedNoGE21=False,
+                                doHybridBasedGE21=False,
                                 doVeto=False,
                                 vetoType=1):
     displaced_L1Mu_pt, displaced_L1Mu_eta = getMaxDisplacedPtEtaEvent(treeHits,
@@ -429,10 +429,10 @@ def fillDisplacedPtEtaHistogram(ptHistogram,
                                                                       hasMB3Cut,
                                                                       hasMB4Cut,
                                                                       doPositionBased,
-                                                                      doDirectionBasedCSCOnly,
-                                                                      doDirectionBasedCSCGEM,
-                                                                      doHybridBasedCSCOnly,
-                                                                      doHybridBasedCSCGEM,
+                                                                      doDirectionBasedNoGE21,
+                                                                      doDirectionBasedGE21,
+                                                                      doHybridBasedNoGE21,
+                                                                      doHybridBasedGE21,
                                                                       doVeto,
                                                                       vetoType)
     #print "check pT ok", displaced_L1Mu_pt
@@ -462,10 +462,10 @@ def getMaxDisplacedPtEtaEvent(treeHits,
                               hasMB3Cut=False,
                               hasMB4Cut=False,
                               doPositionBased=False,
-                              doDirectionBasedCSCOnly=False,
-                              doDirectionBasedCSCGEM=False,
-                              doHybridBasedCSCOnly=False,
-                              doHybridBasedCSCGEM=False,
+                              doDirectionBasedNoGE21=False,
+                              doDirectionBasedGE21=False,
+                              doHybridBasedNoGE21=False,
+                              doHybridBasedGE21=False,
                               doVeto=False,
                               vetoType =1):
 
@@ -532,11 +532,11 @@ def getMaxDisplacedPtEtaEvent(treeHits,
         DisplacedL1Mu_pt, DisplacedL1Mu_eta = -1, -1
 
         #print L1Mu_CSCTF_index
-        if L1Mu_CSCTF_index != -1 and L1Mu_CSCTF_index < len(treeHits.CSCTF_bx1):
-            has_CSC_ME1 = treeHits.CSCTF_bx1[L1Mu_CSCTF_index] != 99
-            has_CSC_ME2 = treeHits.CSCTF_bx2[L1Mu_CSCTF_index] != 99
-            has_CSC_ME3 = treeHits.CSCTF_bx3[L1Mu_CSCTF_index] != 99
-            has_CSC_ME4 = treeHits.CSCTF_bx4[L1Mu_CSCTF_index] != 99
+        if L1Mu_CSCTF_index != -1 and L1Mu_CSCTF_index < len(treeHits.CSCTF_phi1):
+            has_CSC_ME1 = treeHits.CSCTF_phi1[L1Mu_CSCTF_index] != 99
+            has_CSC_ME2 = treeHits.CSCTF_phi2[L1Mu_CSCTF_index] != 99
+            has_CSC_ME3 = treeHits.CSCTF_phi3[L1Mu_CSCTF_index] != 99
+            has_CSC_ME4 = treeHits.CSCTF_phi4[L1Mu_CSCTF_index] != 99
 
             L1Mu_eta_ME2 = treeHits.CSCTF_eta2[L1Mu_CSCTF_index]
 
@@ -558,11 +558,11 @@ def getMaxDisplacedPtEtaEvent(treeHits,
 
             if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue
 
-            if doPositionBased:         DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_position_based_algorithm(treeHits, i, True)
-            if doDirectionBasedCSCOnly: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_direction_based_algorithm(treeHits, i, False)
-            if doDirectionBasedCSCGEM:  DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_direction_based_algorithm(treeHits, i, True)
-            if doHybridBasedCSCOnly:    DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_hybrid_algorithm(treeHits, i, False)
-            if doHybridBasedCSCGEM:     DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_hybrid_algorithm(treeHits, i, True)
+            if doPositionBased:        DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_position_based_algorithm(treeHits, i, True)
+            if doDirectionBasedNoGE21: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_direction_based_algorithm(treeHits, i, False)
+            if doDirectionBasedGE21:   DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_direction_based_algorithm(treeHits, i, True)
+            if doHybridBasedNoGE21:    DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_hybrid_algorithm(treeHits, i, False)
+            if doHybridBasedGE21:      DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_hybrid_algorithm(treeHits, i, True)
 
         #print L1Mu_DTTF_index
         if is_DT_Muon:

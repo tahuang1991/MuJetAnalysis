@@ -1,6 +1,6 @@
 {
 //=========Macro generated from canvas: c/c
-//=========  (Mon Jan 23 13:17:05 2017) by ROOT version5.34/07
+//=========  (Mon Jan 23 18:39:27 2017) by ROOT version5.34/07
    TCanvas *c = new TCanvas("c", "c",0,0,800,600);
    gStyle->SetOptStat(0);
    c->SetHighLightColor(2);
@@ -133,10 +133,21 @@
    Double_t xAxis166[29] = {2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 120, 140}; 
    
    TH1F *htemp__44 = new TH1F("htemp__44"," ",28, xAxis166);
+   htemp__44->SetBinContent(1,3761.109);
+   htemp__44->SetBinContent(2,2415.269);
+   htemp__44->SetBinContent(3,2415.269);
+   htemp__44->SetBinContent(4,1602.668);
+   htemp__44->SetBinContent(5,1602.668);
+   htemp__44->SetBinContent(6,1095.016);
    htemp__44->SetBinContent(7,1095.016);
+   htemp__44->SetBinContent(8,646.9639);
    htemp__44->SetBinContent(9,646.9639);
+   htemp__44->SetBinContent(10,419.8315);
    htemp__44->SetBinContent(11,419.8315);
+   htemp__44->SetBinContent(12,299.1576);
    htemp__44->SetBinContent(13,299.1576);
+   htemp__44->SetBinContent(14,252.9308);
+   htemp__44->SetBinContent(15,252.9308);
    htemp__44->SetBinContent(16,252.9308);
    htemp__44->SetBinContent(17,219.5507);
    htemp__44->SetBinContent(18,219.5507);
@@ -178,7 +189,7 @@
    htemp__44->SetBinError(26,4.740844);
    htemp__44->SetBinError(27,4.740844);
    htemp__44->SetBinError(28,4.740844);
-   htemp__44->SetEntries(41);
+   htemp__44->SetEntries(30);
    htemp__44->SetDirectory(0);
    htemp__44->SetStats(0);
 
@@ -204,10 +215,21 @@
    Double_t xAxis167[29] = {2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 120, 140}; 
    
    TH1F *htemp = new TH1F("htemp"," ",28, xAxis167);
+   htemp->SetBinContent(1,3105.3);
+   htemp->SetBinContent(2,1813.373);
+   htemp->SetBinContent(3,1813.373);
+   htemp->SetBinContent(4,1035.732);
+   htemp->SetBinContent(5,1035.732);
+   htemp->SetBinContent(6,628.0098);
    htemp->SetBinContent(7,628.0098);
+   htemp->SetBinContent(8,366.4444);
    htemp->SetBinContent(9,366.4444);
+   htemp->SetBinContent(10,253.1414);
    htemp->SetBinContent(11,253.1414);
+   htemp->SetBinContent(12,191.6462);
    htemp->SetBinContent(13,191.6462);
+   htemp->SetBinContent(14,166.7954);
+   htemp->SetBinContent(15,166.7954);
    htemp->SetBinContent(16,166.7954);
    htemp->SetBinContent(17,146.1565);
    htemp->SetBinContent(18,146.1565);
@@ -249,7 +271,7 @@
    htemp->SetBinError(26,3.891833);
    htemp->SetBinError(27,3.891833);
    htemp->SetBinError(28,3.891833);
-   htemp->SetEntries(41);
+   htemp->SetEntries(30);
    htemp->SetStats(0);
 
    ci = TColor::GetColor("#0000ff");

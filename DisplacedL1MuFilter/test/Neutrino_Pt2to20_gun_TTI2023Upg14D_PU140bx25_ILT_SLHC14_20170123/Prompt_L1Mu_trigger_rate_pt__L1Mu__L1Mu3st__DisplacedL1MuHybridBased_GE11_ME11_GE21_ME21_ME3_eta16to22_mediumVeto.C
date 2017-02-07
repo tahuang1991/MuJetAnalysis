@@ -1,6 +1,6 @@
 {
 //=========Macro generated from canvas: c/c
-//=========  (Mon Jan 23 13:17:07 2017) by ROOT version5.34/07
+//=========  (Mon Jan 23 18:39:29 2017) by ROOT version5.34/07
    TCanvas *c = new TCanvas("c", "c",0,0,800,600);
    gStyle->SetOptStat(0);
    c->SetHighLightColor(2);
@@ -195,6 +195,10 @@
    htemp__62->GetZaxis()->SetTitleSize(0.035);
    htemp__62->GetZaxis()->SetTitleFont(42);
    htemp__62->Draw("E1X0 same");
+   TLatex *   tex = new TLatex(0.6,0.8,"#font[41]{Note: p_{T,min}^{hybrid} = 5 GeV}");
+tex->SetNDC();
+   tex->SetLineWidth(2);
+   tex->Draw();
    Double_t xAxis231[29] = {2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100, 120, 140}; 
    
    TH1F *htemp = new TH1F("htemp"," ",28, xAxis231);
@@ -317,7 +321,7 @@
    pt->SetFillColor(0);
    pt->SetFillStyle(0);
    pt->SetTextFont(42);
-   TText *text = pt->AddText("           #scale[1.4]{#font[61]{CMS}} #font[52]{Simulation preliminary}                                                           14 TeV, 140 PU");
+   text = pt->AddText("           #scale[1.4]{#font[61]{CMS}} #font[52]{Simulation preliminary}                                                           14 TeV, 140 PU");
    pt->Draw();
    c->Modified();
    c->cd();

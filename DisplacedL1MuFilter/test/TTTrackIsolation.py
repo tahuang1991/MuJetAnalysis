@@ -191,8 +191,6 @@ def fillPtEtaHistogram(ptHistogram,
     if (prompt_L1Mu_pt>0):
         ptHistogram.Fill(prompt_L1Mu_pt)
     ## apply a 10 GeV pT cut for the eta histograms!!!
-    #if (prompt_L1Mu_pt>20):
-    #print "Max prompt pt, eta event", prompt_L1Mu_pt, prompt_L1Mu_eta
     if (prompt_L1Mu_pt>=10):
         etaHistogram.Fill(abs(prompt_L1Mu_eta))
 
@@ -256,7 +254,7 @@ def getMaxPromptPtEtaEvent(treeHits,
         """
 
         ## eta cut
-        if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue
+        if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) < etaCutMax): continue
 
         ## quality cut
         if L1Mu_quality < qualityCut: continue
@@ -307,17 +305,19 @@ def getMaxPromptPtEtaEvent(treeHits,
             has_CSC_ME11 = treeHits.CSCTF_ri1[L1Mu_CSCTF_index] == 1 or treeHits.CSCTF_ri1[L1Mu_CSCTF_index] == 4
             has_CSC_ME21 = treeHits.CSCTF_ri2[L1Mu_CSCTF_index] == 1
 
-            is_CSC_ME11_disabled = isME11StubDisabled(ME11FailRate)
-            is_CSC_ME21_disabled = isME21StubDisabled(ME21FailRate)
-
-            if hasME11Cut and not has_CSC_ME11 and not is_CSC_ME11_disabled: continue
-            if hasME21Cut and not has_CSC_ME21 and not is_CSC_ME21_disabled: continue
-
             GE11_dPhi = treeHits.CSCTF_gemdphi1[L1Mu_CSCTF_index]
             GE21_dPhi = treeHits.CSCTF_gemdphi2[L1Mu_CSCTF_index]
 
             CSC_ME1_ch  = treeHits.CSCTF_ch1[L1Mu_CSCTF_index]
             CSC_ME2_ch  = treeHits.CSCTF_ch2[L1Mu_CSCTF_index]
+
+            """
+            re-enable this to disable a certain percentage of CSC
+            is_CSC_ME11_disabled = isME11StubDisabled(ME11FailRate)
+            is_CSC_ME21_disabled = isME21StubDisabled(ME21FailRate)
+
+            if hasME11Cut and not has_CSC_ME11 and not is_CSC_ME11_disabled: continue
+            if hasME21Cut and not has_CSC_ME21 and not is_CSC_ME21_disabled: continue
 
             ## check if stubs in station 1 and 2 can really be counted! -- they may be disabled
             if not has_CSC_ME11: has_actual_CSC_ME1 = has_CSC_ME1
@@ -325,9 +325,13 @@ def getMaxPromptPtEtaEvent(treeHits,
 
             if not has_CSC_ME21: has_actual_CSC_ME2 = has_CSC_ME2
             else:                has_actual_CSC_ME2 = (not is_CSC_ME21_disabled)
+            """
 
-            nCSCStubs = has_actual_CSC_ME1 + has_actual_CSC_ME2 + has_CSC_ME3 + has_CSC_ME4
+            nCSCStubs = has_CSC_ME1 + has_CSC_ME2 + has_CSC_ME3 + has_CSC_ME4
             if nCSCStubs < stubCut: continue
+
+            if hasME11Cut and not has_CSC_ME11: continue
+            if hasME21Cut and not has_CSC_ME21: continue
             #print "is csc muon"
             #print "\t", nCSCStubs
 
@@ -386,7 +390,7 @@ def getMaxPromptPtEtaEvent(treeHits,
         ## calculate the max pT for the muons that pass the criteria
         if L1Mu_pt > max_prompt_L1Mu_pt:
             max_prompt_L1Mu_pt = L1Mu_pt
-            max_prompt_L1Mu_eta = L1Mu_eta_ME2#L1Mu_eta
+            max_prompt_L1Mu_eta = L1Mu_eta#L1Mu_eta
 
     return max_prompt_L1Mu_pt, max_prompt_L1Mu_eta
 

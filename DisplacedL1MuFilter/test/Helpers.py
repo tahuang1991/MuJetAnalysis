@@ -10,7 +10,7 @@ import os
 import random
 
 ptbin = [
-    2.0,   2.5,   3.0,   3.5,   4.0,   4.5,   5.0,   6.0,   7.0,   8.0,
+    1, 2.0,   2.5,   3.0,   3.5,   4.0,   4.5,   5.0,   6.0,   7.0,   8.0,
     10.0,  12.0,  14.0,  16.0,  18.0,  20.0,  25.0,  30.0,  35.0,  40.0,
     45.0,  50.0,  60.0,  70.0,  80.0,  90.0, 100.0, 120.0, 140.0]
 myptbin = np.asarray(ptbin)
@@ -72,12 +72,12 @@ def passDPhicutTFTrack(st, ch, dphi, pt):
   returnValue = False;
 
   LUTsize = 8
-  #smalldphi = ((is_odd and fabs(dphi)<GEMdPhi[LUTsize-2][1]) || (!is_odd and fabs(dphi)<GEMdPhi[LUTsize-2][2]));
+  #smalldphi = ((is_odd and abs(dphi)<GEMdPhi[LUTsize-2][1]) || (!is_odd and abs(dphi)<GEMdPhi[LUTsize-2][2]));
 
   dPhiLib = ME11GEMdPhi
   if st==2:
     dPhiLib = ME21GEMdPhi
-  if (fabs(dphi) < 99):# and ((chargesign_ == 1 and dphi < 0) || (chargesign_ == 0 and dphi > 0) || smalldphi)){
+  if (abs(dphi) < 99):# and ((chargesign_ == 1 and dphi < 0) || (chargesign_ == 0 and dphi > 0) || smalldphi)){
     for row in dPhiLib:
       ptValue = row[0]
       bendingOdd = row[1]
@@ -87,7 +87,7 @@ def passDPhicutTFTrack(st, ch, dphi, pt):
       if pt >= ptValue:
 
         ## check if pass/fail
-        if ((is_odd and bendingOdd > fabs(dphi)) or (not is_odd and bendingEven > fabs(dphi))):
+        if ((is_odd and bendingOdd > abs(dphi)) or (not is_odd and bendingEven > abs(dphi))):
           returnValue = True;
         else:
           returnValue = False;

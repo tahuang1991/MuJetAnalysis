@@ -335,7 +335,8 @@ def getMaxPromptPtEtaEvent(treeHits,
             #print "is csc muon"
             #print "\t", nCSCStubs
 
-            if (hasME11ME21Cut and not has_CSC_ME11 and not has_CSC_ME21): continue
+            ## OR of ME11 and ME21
+            if (hasME11ME21Cut and not (has_CSC_ME11 or has_CSC_ME21)): continue
 
             ## no bending angles
             if is_CSC_ME11_disabled: GE11_dPhi = 99
@@ -347,8 +348,8 @@ def getMaxPromptPtEtaEvent(treeHits,
             if hasGE21Cut and not passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt):
                 #print "muon failed the GE21 cut", CSC_ME1_ch, GE11_dPhi, L1Mu_pt
                 continue
-            if (hasGE11GE21Cut and (not passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt)) and
-                                   (not passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt))): continue
+            if (hasGE11GE21Cut and not (passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt) or
+                                        passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt))): continue
 
 
         if L1Mu_DTTF_index != -1 and L1Mu_DTTF_index < len(treeHits.DTTF_phi1):
@@ -560,7 +561,7 @@ def getMaxDisplacedPtEtaEvent(treeHits,
 
             L1Mu_eta = treeHits.CSCTF_L1_eta_st2[L1Mu_CSCTF_index]
 
-            if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue
+            if not (etaCutMin <= abs(L1Mu_eta_ME2) and abs(L1Mu_eta_ME2) <= etaCutMax): continue
 
             if doPositionBased:        DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_position_based_algorithm(treeHits, i, True)
             if doDirectionBasedNoGE21: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_direction_based_algorithm(treeHits, i, False)

@@ -11,7 +11,7 @@ import random
 #______________________________________________________________________________
 if __name__ == "__main__":
 
-  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170213"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170214"; pu = 'PU140'; eff = False
 
   inputFile = TFile.Open(label + ".root")
 
@@ -27,6 +27,7 @@ if __name__ == "__main__":
 
   doTest = False
 
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170214"
   targetDir = label + "/"
 
   verbose = False
@@ -35,7 +36,10 @@ if __name__ == "__main__":
   import shutil
   shutil.copy2('index.php', targetDir + 'index.php')
 
-  nEvents = 10000
+  nEvents = 284900
+  nEvents = 30000
+  nEvents = 100000
+  nEvents = 273100
   
   def displacedL1MuHybridTriggerRatePlots():
 
@@ -89,6 +93,7 @@ if __name__ == "__main__":
       c.SaveAs(targetDir + title + ".pdf")
       c.SaveAs(targetDir + title + ".C")
 
+    """
     makeDPhiPlot("h_dphi_ME11_ME21", "dphi_ME11_ME21")
     makeDPhiPlot("h_dphi_ME11_ME21_charge_Pt0to5", "dphi_ME11_ME21_charge_Pt0to5")
     makeDPhiPlot("h_dphi_ME11_ME21_charge_Pt7to140", "dphi_ME11_ME21_charge_Pt7to140")
@@ -96,6 +101,7 @@ if __name__ == "__main__":
     makeDPhiPlot("h_dphi_ME11_ME21_charge_Pt15to140", "dphi_ME11_ME21_charge_Pt15to140")
     makeDPhiPlot("h_dphi_ME11_ME21_charge_Pt20to140", "dphi_ME11_ME21_charge_Pt20to140")
     makeDPhiPlot("h_dphi_ME11_ME21_charge_Pt30to140", "dphi_ME11_ME21_charge_Pt30to140")
+    """
 
     def makeEtaPlots(legendTitle,
                      h1, h1Legend,
@@ -114,9 +120,12 @@ if __name__ == "__main__":
                   h3, h3Legend,
                   title, doEta=False):
 
-      h1 = inputFile.Get(h1)
-      h2 = inputFile.Get(h2)
-      h3 = inputFile.Get(h3)
+      if h1 is not None:
+        h1 = inputFile.Get(h1)
+      if h2 is not None:
+        h2 = inputFile.Get(h2)
+      if h3 is not None:
+        h3 = inputFile.Get(h3)
 
       c = TCanvas("c","c",800,600)
       c.Clear()
@@ -190,20 +199,27 @@ if __name__ == "__main__":
       b1.SetStats(0)
       b1.Draw()
 
-      print h1, h2, h3
       h11 = h1.Clone(h1.GetTitle() + "_clone")
       h21 = h2.Clone(h2.GetTitle() + "_clone")
-      h31 = h3.Clone(h3.GetTitle() + "_clone")
+      if h3 is not None:
+        h31 = h3.Clone(h3.GetTitle() + "_clone")
 
-      print "nEvents", nEvents, "entries", h1.GetEntries(), h2.GetEntries(), h3.GetEntries()
+      print "nEvents", nEvents, "entries", h1.GetEntries(), h2.GetEntries(),
+      if h3 is not None:
+        print h3.GetEntries()
+      else:
+        print
+
       if doEta:
         h11 = getRateEtaHistogram(nEvents, h11)
         h21 = getRateEtaHistogram(nEvents, h21)
-        h31 = getRateEtaHistogram(nEvents, h31)
+        if h3 is not None:
+          h31 = getRateEtaHistogram(nEvents, h31)
       else:
         h11 = getRatePtHistogram(nEvents, h11)
         h21 = getRatePtHistogram(nEvents, h21)
-        h31 = getRatePtHistogram(nEvents, h31)
+        if h3 is not None:
+          h31 = getRatePtHistogram(nEvents, h31)
 
       ## set empty bins for displaced trigger histograms!
       def setEmptyBins(h):
@@ -229,25 +245,26 @@ if __name__ == "__main__":
         h11.SetMarkerColor(kRed)
         h11.Draw("E1X0 same")
 
-        h21.SetLineColor(kViolet)
+        h21.SetLineColor(kGreen+2)
         #h21.SetFillColor(kViolet)
-        h21.SetMarkerColor(kViolet)
+        h21.SetMarkerColor(kGreen+2)
         h21.SetMarkerStyle(21)
         h21.Draw("E1X0 same")
 
-        h31.SetLineColor(kBlue)
-        #h31.SetFillColor(kBlue)
-        h31.SetMarkerColor(kBlue)
-        h31.SetMarkerStyle(22)
-        h31.Draw("E1X0 same")
+        if h3 is not None:
+          h31.SetLineColor(kBlue)
+          #h31.SetFillColor(kBlue)
+          h31.SetMarkerColor(kBlue)
+          h31.SetMarkerStyle(22)
+          h31.Draw("E1X0 same")
 
         tex = TLatex(0.15, 0.4,"p_{T}^{Trigger} #geq 10 GeV")
         tex.SetTextSize(0.04)
         tex.SetNDC()
         tex.Draw("same")
       else:
-        if False: 
-          if (('Displaced' in h1Legend) and ('hybrid' in h1Legend)) or '(hybrid)' in h1Legend:
+        if True: 
+          if 'hybrid' in h1Legend:
             setEmptyBins(h11)
         #h11.SetFillColor(kRed)
         h11.SetLineColor(kRed)
@@ -255,24 +272,25 @@ if __name__ == "__main__":
         h11.SetMarkerStyle(20)
         h11.Draw("E1X0 same")
 
-        if False: 
-          if (('Displaced' in h2Legend) and ('hybrid' in h2Legend)) or '(hybrid)' in h2Legend:
+        if True: 
+          if '(hybrid)' in h2Legend:
             setEmptyBins(h21)
         #h21.SetFillColor(kViolet)
-        h21.SetLineColor(kViolet)
-        h21.SetMarkerColor(kViolet)
+        h21.SetLineColor(kGreen+2)
+        h21.SetMarkerColor(kGreen+2)
         h21.SetMarkerStyle(21)
         h21.Draw("E1X0 same")
 
-        if False: 
-          if (('Displaced' in h3Legend) and ('hybrid' in h3Legend)) or '(hybrid)' in h3Legend:
+        if h3 is not None:
+          if '(hybrid)' in h3Legend:
             tex = drawLabel("Note: p_{T,min}^{hybrid} = 5 GeV", 0.6,0.8)
             setEmptyBins(h31)
-        #h31.SetFillColor(kBlue)
-        h31.SetLineColor(kBlue)
-        h31.SetMarkerColor(kBlue)
-        h31.SetMarkerStyle(22)
-        h31.Draw("E1X0 same")
+
+          #h31.SetFillColor(kBlue)
+          h31.SetLineColor(kBlue)
+          h31.SetMarkerColor(kBlue)
+          h31.SetMarkerStyle(22)
+          h31.Draw("E1X0 same")
 
       #latex = applyTdrStyle()
 
@@ -283,7 +301,8 @@ if __name__ == "__main__":
       leg.SetTextSize(0.03)
       leg.AddEntry(h11, h1Legend, "p")
       leg.AddEntry(h21, h2Legend, "p")
-      leg.AddEntry(h31, h3Legend, "p")
+      if h3 is not None:
+        leg.AddEntry(h31, h3Legend, "p")
       leg.Draw("same")
 
       if doEta:
@@ -533,6 +552,63 @@ if __name__ == "__main__":
                  "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (unconstrained)",
                  "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid)",
                  "MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15")
+
+    makePlots("1.6<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (constrained)",
+                 "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid without GE21)",
+                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_ME21_ME3_eta1p6to2p15")
+
+    makeEtaPlots("1.6<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (constrained)",
+                 "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid without GE21)",
+                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__PositionBased_HybridBased_GE11_ME11_ME21_ME3_eta1p6to2p15")
+
+    makePlots("1.6<|#eta|<2.15",
+                 "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid with GE21)",
+                 "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid without GE21)",
+                 None, None,
+                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__HybridBased_Comparison_eta1p6to2p15")
+    makeEtaPlots("1.6<|#eta|<2.15",
+                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid with GE21)",
+                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid without GE21)",
+                 None, None,
+                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__HybridBased_Comparison_eta1p6to2p15")
+
+    makePlots("1.6<|#eta|<2.2",
+                 "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p6to2p15_mediumVeto", "L1Mu (unconstrained) + medium veto",
+                 "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_mediumVeto", "L1Mu (hybrid) + medium veto",
+                 None, None,
+                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_mediumVeto")
+
+    makeEtaPlots("1.6<|#eta|<2.2",
+                 "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p6to2p15_mediumVeto", "L1Mu (unconstrained) + medium veto",
+                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_mediumVeto", "L1Mu (hybrid) + medium veto",
+                 None, None,
+                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_mediumVeto")
+
+
+    makePlots("1.6<|#eta|<2.2",
+                 "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p6to2p15_looseVeto", "L1Mu (unconstrained) + loose veto",
+                 "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_looseVeto", "L1Mu (hybrid) + loose veto",
+                 None, None,
+                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_looseVeto")
+
+    makeEtaPlots("1.6<|#eta|<2.2",
+                 "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p6to2p15_looseVeto", "L1Mu (unconstrained) + loose veto",
+                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_looseVeto", "L1Mu (hybrid) + loose veto",
+                 None, None,
+                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_looseVeto")
+
+
+    makePlots("1.6<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_pt_ME11_eta1p6to2p15", "L1Mu (constrained)",
+                 "h_single_prompt_L1Mu_rate_pt_GE11_ME11_eta1p6to2p15", "L1Mu (constrained) + GE11",
+                 "h_single_prompt_L1Mu_rate_GE11_ME11_OR_GE21_ME21_eta1p6to2p15", "L1Mu (constrained) + GE11 + GE21",
+                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu___GE11_ME11_OR_GE21_ME21_eta1p6to2p15")
+
+
     exit(1)
 
 
@@ -865,30 +941,6 @@ if __name__ == "__main__":
 
 
 
-    makePlots("1.6<|#eta|<2.2",
-                 "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p6to2p2_mediumVeto", "L1Mu (unconstrained)",
-                 "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2_mediumVeto", "L1Mu (hybrid)",
-                 "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p6to2p2", "L1Mu (hybrid)",
-                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2_mediumVeto")
-
-    makeEtaPlots("1.6<|#eta|<2.2",
-                 "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p6to2p2_mediumVeto", "L1Mu (unconstrained)",
-                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2_mediumVeto", "L1Mu (hybrid)",
-                 "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p6to2p2", "L1Mu (hybrid)",
-                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2_mediumVeto")
-
-
-    makePlots("1.6<|#eta|<2.2",
-                 "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p6to2p2_looseVeto", "L1Mu (unconstrained)",
-                 "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2_looseVeto", "L1Mu (hybrid)",
-                 "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p6to2p2", "L1Mu (hybrid)",
-                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2_looseVeto")
-
-    makeEtaPlots("1.6<|#eta|<2.2",
-                 "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p6to2p2_looseVeto", "L1Mu (unconstrained)",
-                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2_looseVeto", "L1Mu (hybrid)",
-                 "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p6to2p2", "L1Mu (hybrid)",
-                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2_looseVeto")
 
   displacedL1MuHybridTriggerRatePlots()
 

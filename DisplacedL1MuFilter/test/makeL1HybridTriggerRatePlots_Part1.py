@@ -23,7 +23,7 @@ if __name__ == "__main__":
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170131"; pu = 'PU140'; eff = False
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170207"; pu = 'PU140'; eff = False
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170207_v2"; pu = 'PU140'; eff = False
-  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170213"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170214"; pu = 'PU140'; eff = False
 
   ## extension for figures - add more?
   ext = ".png"
@@ -39,9 +39,9 @@ if __name__ == "__main__":
 
   ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
 
-  location0 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v25_StubReco/0000/'
-  location1 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v25_StubReco/0001/'
-  location2 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v25_StubReco/0002/'
+  location0 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v29_StubReco/0000/'
+  location1 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v29_StubReco/0001/'
+  location2 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v29_StubReco/0002/'
 
   treeHits = addfiles(ch, dirname=location0, ext=".root")
   treeHits = addfiles(ch, dirname=location1, ext=".root")
@@ -86,7 +86,7 @@ if __name__ == "__main__":
       2.0, 2.05, 2.1, 2.15, 2.2, 2.25, 2.3, 2.35, 2.4, 2.45, 2.5]
     myetabin = np.asarray(etabin)
 
-    f = TFile.Open("Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170213.root","RECREATE")
+    f = TFile.Open(label + ".root","RECREATE")
 
     h_dphi_ME11_ME21 = TH2F("h_dphi_ME11_ME21","",100,-0.05,0.05,100,-0.05,0.05)
     h_dphi_ME11_ME21_charge = TH2F("h_dphi_ME11_ME21_charge","",100,-0.05,0.05,100,-0.05,0.05)
@@ -145,6 +145,8 @@ if __name__ == "__main__":
                        "h_single_prompt_L1Mu_rate_2_stubs_ME11orME21_eta1p6to2p2",
                        "h_single_prompt_L1Mu_rate_3_stubs_ME11orME21_eta1p6to2p2",
 
+                       "h_single_prompt_L1Mu_rate_GE11_ME11_ME21_ME3_eta1p6to2p15",
+
                        ## with GEMs
                        "h_single_prompt_L1Mu_rate_2_stubs_GE11_ME11_eta1p6to2p15",
                        "h_single_prompt_L1Mu_rate_3_stubs_GE11_ME11_eta1p6to2p15",
@@ -152,11 +154,11 @@ if __name__ == "__main__":
                        "h_single_prompt_L1Mu_rate_2_stubs_GE21_ME21_eta1p6to2p2",
                        "h_single_prompt_L1Mu_rate_3_stubs_GE21_ME21_eta1p6to2p2",
 
-                       "h_single_prompt_L1Mu_rate_GE11_ME11_GE21_ME21_eta1p6to2p2",
-                       "h_single_prompt_L1Mu_rate_GE11_ME1_ME2_ME3_eta1p6to2p2",
+                       "h_single_prompt_L1Mu_rate_GE11_ME11_OR_GE21_ME21_eta1p6to2p15",
+                       "h_single_prompt_L1Mu_rate_2_stubs_GE11_ME11_OR_GE21_ME21_eta1p6to2p15",
+                       "h_single_prompt_L1Mu_rate_3_stubs_GE11_ME11_OR_GE21_ME21_eta1p6to2p15",
 
-                       "h_single_prompt_L1Mu_rate_2_stubs_GE11_ME11_OR_GE21_ME21_eta1p6to2p2",
-                       "h_single_prompt_L1Mu_rate_3_stubs_GE11_ME11_OR_GE21_ME21_eta1p6to2p2",
+                       "h_single_prompt_L1Mu_rate_GE11_ME11_GE21_ME21_eta1p6to2p2",
 
                        "h_single_prompt_L1Mu_rate_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15",
                        "h_single_prompt_L1Mu_rate_GE11_ME11_ME21_ME3_eta1p6to2p2",
@@ -380,6 +382,13 @@ if __name__ == "__main__":
                           mapTH1F["h_single_prompt_L1Mu_rate_eta_3_stubs_GE11_ME11_eta1p6to2p15"],
                           treeHits,True, 1.6, 2.15, 3, minQuality, hasME11Cut=True, hasGE11Cut=True)
 
+      fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_2_stubs_GE11_ME11_GE21_ME21_eta1p6to2p15"],
+                          mapTH1F["h_single_prompt_L1Mu_rate_eta_2_stubs_GE11_ME11_GE21_ME21_eta1p6to2p15"],
+                          treeHits,True, 1.6, 2.15, 2, minQuality, hasME11Cut=True, hasGE11Cut=True, hasME21Cut=True, hasGE21Cut=True)
+      fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_3_stubs_GE11_ME11_GE21_ME21_eta1p6to2p15"],
+                          mapTH1F["h_single_prompt_L1Mu_rate_eta_3_stubs_GE11_ME11_GE21_ME21_eta1p6to2p15"],
+                          treeHits,True, 1.6, 2.15, 3, minQuality, hasME11Cut=True, hasGE11Cut=True, hasME21Cut=True, hasGE21Cut=True)
+
 
       fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p2to2p4"],
                           mapTH1F["h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta1p2to2p4"],
@@ -409,9 +418,6 @@ if __name__ == "__main__":
       fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15"],
                                    mapTH1F["h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15"],
                                    treeHits, True, 1.6, 2.15, 0, minQuality, doHybridBasedGE21=True)
-      fillDisplacedPtEtaHistogram( mapTH1F["h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15"],
-                                   mapTH1F["h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15"],
-                                   treeHits, True, 1.6, 2.15, 0, minQuality, doHybridBasedNoGE21=True)
 
 
       fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_GE11_ME11_ME21_ME3_eta1p6to2p15"],
@@ -495,7 +501,21 @@ if __name__ == "__main__":
                                    mapTH1F["h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15_mediumVeto"],
                                    treeHits, True, 1.6, 2.15, 0, minQuality, doHybridBasedNoGE21=True, doVeto=True, vetoType=2)
 
+
+                                   
+
+      fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_GE11_ME11_OR_GE21_ME21_eta1p6to2p15"],
+                          mapTH1F["h_single_prompt_L1Mu_rate_eta_GE11_ME11_OR_GE21_ME21_eta1p6to2p15"],
+                          treeHits,True, 1.6, 2.15, 0, minQuality, hasME11ME21Cut=True, hasGE11GE21Cut=True)
       continue
+
+      fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_2_stubs_GE11_ME11_OR_GE21_ME21_eta1p6to2p15"],
+                          mapTH1F["h_single_prompt_L1Mu_rate_eta_2_stubs_GE11_ME11_OR_GE21_ME21_eta1p6to2p15"],
+                          treeHits,True, 1.6, 2.15, 2, minQuality, hasME11ME21Cut=True, hasGE11GE21Cut=True)
+      fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_3_stubs_GE11_ME11_OR_GE21_ME21_eta1p6to2p15"],
+                          mapTH1F["h_single_prompt_L1Mu_rate_eta_3_stubs_GE11_ME11_OR_GE21_ME21_eta1p6to2p15"],
+                          treeHits,True, 1.6, 2.15, 3, minQuality, hasME11ME21Cut=True, hasGE11GE21Cut=True)
+
 
       fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_2_stubs_ME21_eta1p6to2p2"],
                           mapTH1F["h_single_prompt_L1Mu_rate_eta_2_stubs_ME21_eta1p6to2p2"],
@@ -556,14 +576,6 @@ if __name__ == "__main__":
       fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_3_stubs_GE21_ME21_eta1p6to2p2"],
                           mapTH1F["h_single_prompt_L1Mu_rate_eta_3_stubs_GE21_ME21_eta1p6to2p2"],
                           treeHits,True, 1.6, 2.15, 3, minQuality, hasME21Cut=True, hasGE21Cut=True)
-
-      fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_2_stubs_GE11_ME11_OR_GE21_ME21_eta1p6to2p2"],
-                          mapTH1F["h_single_prompt_L1Mu_rate_eta_2_stubs_GE11_ME11_OR_GE21_ME21_eta1p6to2p2"],
-                          treeHits,True, 1.6, 2.15, 2, minQuality, hasME11ME21Cut=True, hasGE11GE21Cut=True)
-      fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_3_stubs_GE11_ME11_OR_GE21_ME21_eta1p6to2p2"],
-                          mapTH1F["h_single_prompt_L1Mu_rate_eta_3_stubs_GE11_ME11_OR_GE21_ME21_eta1p6to2p2"],
-                          treeHits,True, 1.6, 2.15, 3, minQuality, hasME11ME21Cut=True, hasGE11GE21Cut=True)
-
 
       fillPtEtaHistogram( mapTH1F["h_single_prompt_L1Mu_rate_pt_GE11_ME11_GE21_ME21_eta1p6to2p2"],
                           mapTH1F["h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta1p6to2p2"],

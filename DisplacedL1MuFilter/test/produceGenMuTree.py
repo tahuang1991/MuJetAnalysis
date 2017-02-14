@@ -35,9 +35,9 @@ if __name__ == "__main__":
 
   ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
 
-  dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v52/170124_225735/0000/'
-  dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_L1MuANA_v51/170124_225629/0000/'
-  dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU140_L1MuANA_v51/170124_225450/0000/'
+  dirname1='/Users/Sven/Documents/work/DisplacedMuL1Studies/DarkSUSY_MH-125_MGammaD-20000_ctauX_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v54/'
+  dirname2='/Users/Sven/Documents/work/DisplacedMuL1Studies/DarkSUSY_MH-125_MGammaD-20000_ctauX_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_L1MuANA_v54/'
+  dirname3='/Users/Sven/Documents/work/DisplacedMuL1Studies/DarkSUSY_MH-125_MGammaD-20000_ctauX_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU140_L1MuANA_v54/'
 
   print "Start run on", ch.GetEntries(), "events."
   ch = addfiles(ch, dirname=dirname1)
@@ -48,7 +48,7 @@ if __name__ == "__main__":
   print "Start run on", ch.GetEntries(), "events."
   treeHits = ch
 
-  f = ROOT.TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_20170207.root", "recreate")
+  f = ROOT.TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_20170214.root", "recreate")
   t = ROOT.TTree("L1MuTree", "L1MuTree")
 
   ## ranges
@@ -201,6 +201,13 @@ if __name__ == "__main__":
   CSCTF_L1_DPhi12_noGE21s = numpy.zeros(1, dtype=float)
   CSCTF_sim_DPhi12_GE21s = numpy.zeros(1, dtype=float)
   CSCTF_L1_DPhi12_GE21s = numpy.zeros(1, dtype=float)
+
+  CSCTF_sim_position_pts = numpy.zeros(1, dtype=float)
+  CSCTF_L1_position_pts = numpy.zeros(1, dtype=float)
+  CSCTF_sim_direction_pt_noGE21s = numpy.zeros(1, dtype=float)
+  CSCTF_L1_direction_pt_noGE21s = numpy.zeros(1, dtype=float)
+  CSCTF_sim_direction_pt_GE21s = numpy.zeros(1, dtype=float)
+  CSCTF_L1_direction_pt_GE21s = numpy.zeros(1, dtype=float)
 
   CSCTF_sim_hybrid_pt_noGE21s = numpy.zeros(1, dtype=float)
   CSCTF_L1_hybrid_pt_noGE21s = numpy.zeros(1, dtype=float)
@@ -381,6 +388,14 @@ if __name__ == "__main__":
   t.Branch('CSCTF_L1_DPhi12_noGE21', CSCTF_L1_DPhi12_noGE21s, 'CSCTF_L1_DPhi12_noGE21/D')
   t.Branch('CSCTF_sim_DPhi12_GE21', CSCTF_sim_DPhi12_GE21s, 'CSCTF_sim_DPhi12_GE21/D')
   t.Branch('CSCTF_L1_DPhi12_GE21', CSCTF_L1_DPhi12_GE21s, 'CSCTF_L1_DPhi12_GE21/D')
+
+  t.Branch('CSCTF_sim_position_pt', CSCTF_sim_position_pts, 'CSCTF_sim_position_pt/D')
+  t.Branch('CSCTF_L1_position_pt', CSCTF_L1_position_pts, 'CSCTF_L1_position_pt/D')
+
+  t.Branch('CSCTF_sim_direction_pt_noGE21', CSCTF_sim_direction_pt_noGE21s, 'CSCTF_sim_direction_pt_noGE21/D')
+  t.Branch('CSCTF_L1_direction_pt_noGE21', CSCTF_L1_direction_pt_noGE21s, 'CSCTF_L1_direction_pt_noGE21/D')
+  t.Branch('CSCTF_sim_direction_pt_GE21', CSCTF_sim_direction_pt_GE21s, 'CSCTF_sim_direction_pt_GE21/D')
+  t.Branch('CSCTF_L1_direction_pt_GE21', CSCTF_L1_direction_pt_GE21s, 'CSCTF_L1_direction_pt_GE21/D')
 
   t.Branch('CSCTF_sim_hybrid_pt_noGE21', CSCTF_sim_hybrid_pt_noGE21s, 'CSCTF_sim_hybrid_pt_noGE21/D')
   t.Branch('CSCTF_L1_hybrid_pt_noGE21', CSCTF_L1_hybrid_pt_noGE21s, 'CSCTF_L1_hybrid_pt_noGE21/D')
@@ -617,10 +632,18 @@ if __name__ == "__main__":
           CSCTF_sim_DPhi12_GE21s[0] = 99
           CSCTF_L1_DPhi12_GE21s[0] = 99
 
-          CSCTF_sim_hybrid_pt_noGE21s[0] = 99
-          CSCTF_L1_hybrid_pt_noGE21s[0] = 99
-          CSCTF_sim_hybrid_pt_GE21s[0] = 99
-          CSCTF_L1_hybrid_pt_GE21s[0] = 99
+          CSCTF_sim_position_pts[0] = 0
+          CSCTF_L1_position_pts[0] = 0
+
+          CSCTF_sim_direction_pt_noGE21s[0] = 0
+          CSCTF_L1_direction_pt_noGE21s[0] = 0
+          CSCTF_sim_direction_pt_GE21s[0] = 0
+          CSCTF_L1_direction_pt_GE21s[0] = 0
+
+          CSCTF_sim_hybrid_pt_noGE21s[0] = 0
+          CSCTF_L1_hybrid_pt_noGE21s[0] = 0
+          CSCTF_sim_hybrid_pt_GE21s[0] = 0
+          CSCTF_L1_hybrid_pt_GE21s[0] = 0
 
           CSCTF_sim_eta_st2s[0] = 99
           CSCTF_L1_eta_st2s[0] = 99
@@ -888,6 +911,23 @@ if __name__ == "__main__":
           CSCTF_L1_DPhi12_GE21s[0] = treeHits.CSCTF_L1_DPhi12_GE21[L1Mu_CSCTF_index]
           if verbose: print "CSCTF_sim_DPhi12_GE21s[0]", CSCTF_sim_DPhi12_GE21s[0]
           if verbose: print "CSCTF_L1_DPhi12_GE21s[0]", CSCTF_L1_DPhi12_GE21s[0]
+
+
+          CSCTF_sim_position_pts[0] = treeHits.CSCTF_sim_position_pt[sim_index]
+          CSCTF_L1_position_pts[0] = treeHits.CSCTF_L1_position_pt[L1Mu_CSCTF_index]
+          if verbose: print "CSCTF_sim_position_pts[0]", CSCTF_sim_position_pts[0]
+          if verbose: print "CSCTF_L1_position_pts[0]", CSCTF_L1_position_pts[0]
+
+
+          CSCTF_sim_direction_pt_noGE21s[0] = treeHits.CSCTF_sim_direction_pt_noGE21[sim_index]
+          CSCTF_L1_direction_pt_noGE21s[0] = treeHits.CSCTF_L1_direction_pt_noGE21[L1Mu_CSCTF_index]
+          if verbose: print "CSCTF_sim_direction_pt_noGE21s[0]", CSCTF_sim_direction_pt_noGE21s[0]
+          if verbose: print "CSCTF_L1_direction_pt_noGE21s[0]", CSCTF_L1_direction_pt_noGE21s[0]
+
+          CSCTF_sim_direction_pt_GE21s[0] = treeHits.CSCTF_sim_direction_pt_GE21[sim_index]
+          CSCTF_L1_direction_pt_GE21s[0] = treeHits.CSCTF_L1_direction_pt_GE21[L1Mu_CSCTF_index]
+          if verbose: print "CSCTF_sim_direction_pt_GE21s[0]", CSCTF_sim_direction_pt_GE21s[0]
+          if verbose: print "CSCTF_L1_direction_pt_GE21s[0]", CSCTF_L1_direction_pt_GE21s[0]
 
 
           CSCTF_sim_hybrid_pt_noGE21s[0] = treeHits.CSCTF_sim_hybrid_pt_noGE21[sim_index]

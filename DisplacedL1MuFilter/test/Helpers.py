@@ -1836,8 +1836,10 @@ def addfiles(ch, dirname=".", ext=".root"):
   theInputFiles.extend([dirname[:] + x for x in ls if x.endswith(ext)])
   for pfile in theInputFiles:
     #print pfile
-    ch.Add(pfile)
-
+    rootFile = TFile(pfile)
+    if(not rootFile.IsZombie()): 
+      ch.Add(pfile)
+    
   return ch
 
 #______________________________________________________________________________
@@ -1851,7 +1853,7 @@ def getBackwardCumulative(h):
     ## keep the underflow
     htemp.SetBinContent(0,h.GetBinContent(0))
     for i in range(1,len(myptbin)+1):
-        sum = 0
+        sum = 0.
         for j in range(i+1,len(myptbin)+1):
             sum += h.GetBinContent(j)
         htemp.SetBinContent(i, sum)
@@ -1890,7 +1892,7 @@ def getRatePtHistogram(nEvents, h):
 #______________________________________________________________________________
 def getRateEtaHistogram(nEvents, h):
     h.Sumw2()
-    h = scaleToRate(nEvents, h)
+    h = scaleToRate(float(nEvents), h)
     return h
 
 #______________________________________________________________________________

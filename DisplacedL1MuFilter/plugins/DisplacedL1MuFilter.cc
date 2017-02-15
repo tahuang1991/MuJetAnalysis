@@ -1764,7 +1764,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         event_.CSCTF_sim_DPhi12_GE21[k] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
         event_.CSCTF_sim_Phi1_GE21[k] = ptAssignmentUnit.getlocalPhiDirection(1);
         event_.CSCTF_sim_Phi2_GE21[k] = ptAssignmentUnit.getlocalPhiDirection(2);
-        event_.CSCTF_sim_hybrid_pt_GE21[k] = ptAssignmentUnit.getDirectionPt();
+        event_.CSCTF_sim_direction_pt_GE21[k] = ptAssignmentUnit.getDirectionPt();
       }
 
       ptAssignmentUnit.runHybrid(false);
@@ -2522,7 +2522,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         std::cout << "size " << positionPadsGE21.size() << std::endl;
         for (auto p: positionPadsGE21){
           // L1
-          if ( std::abs(p.z() - 794.439) < 0.01 or std::abs(p.z() + 794.439) < 0.01 ) {
+          if ( std::abs(p.z() - 794.439) < 0.01 or std::abs(p.z() + 794.439) < 0.01 or
+               std::abs(p.z() - 796.941) < 0.01 or std::abs(p.z() + 796.941) < 0.01) {
             float dPhiGEMCSC(std::abs(reco::deltaPhi(event_.CSCTF_fit_phi2[j], p.phi())));
             if (dPhiGEMCSC  < minDPhi_L1) {
               std::cout << "New 2-pad GE21 phi L1 " << p.phi() << std::endl;
@@ -2531,7 +2532,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
             }
           }
           // L2
-          if ( std::abs(p.z() - 798.179) < 0.01 or std::abs(p.z() + 798.179) < 0.01 ) {
+          if ( std::abs(p.z() - 798.179) < 0.01 or std::abs(p.z() + 798.179) < 0.01 or
+               std::abs(p.z() - 800.781) < 0.01 or std::abs(p.z() + 800.781) < 0.01) {
             float dPhiGEMCSC(std::abs(reco::deltaPhi(event_.CSCTF_fit_phi2[j], p.phi())));
             if (dPhiGEMCSC  < minDPhi_L2) {
               std::cout << "New 2-pad GE21 phi L2 " << p.phi() << std::endl;
@@ -2558,7 +2560,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runPositionbased()){
       event_.CSCTF_L1_DDY123[j] = ptAssignmentUnit.getdeltaY123();
       event_.CSCTF_L1_position_pt[j] = ptAssignmentUnit.getPositionPt();
-      std::cout << "L1_DDY123 " << event_.CSCTF_L1_DDY123[j] << std::endl;
     }
     if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(false)){
       event_.CSCTF_L1_DPhi12_noGE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
@@ -2570,7 +2571,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       event_.CSCTF_L1_DPhi12_GE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
       event_.CSCTF_L1_Phi1_GE21[j] = ptAssignmentUnit.getlocalPhiDirection(1);
       event_.CSCTF_L1_Phi2_GE21[j] = ptAssignmentUnit.getlocalPhiDirection(2);
-      event_.CSCTF_L1_hybrid_pt_GE21[j] = ptAssignmentUnit.getDirectionPt();
+      event_.CSCTF_L1_direction_pt_GE21[j] = ptAssignmentUnit.getDirectionPt();
     }
 
     ptAssignmentUnit.runHybrid(false);

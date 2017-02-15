@@ -1767,12 +1767,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         event_.CSCTF_sim_direction_pt_GE21[k] = ptAssignmentUnit.getDirectionPt();
       }
 
-      ptAssignmentUnit.runHybrid(false);
-      event_.CSCTF_sim_hybrid_pt_noGE21[k] = ptAssignmentUnit.getHybridPt();
+      if (ptAssignmentUnit.getNParity()>=0){
+        ptAssignmentUnit.runHybrid(false);
+        event_.CSCTF_sim_hybrid_pt_noGE21[k] = ptAssignmentUnit.getHybridPt();
 
-      ptAssignmentUnit.runHybrid(true);
-      event_.CSCTF_sim_hybrid_pt_GE21[k] = ptAssignmentUnit.getHybridPt();
-
+        ptAssignmentUnit.runHybrid(true);
+        event_.CSCTF_sim_hybrid_pt_GE21[k] = ptAssignmentUnit.getHybridPt();
+      }
 
       // recover the missing stubs in station 1 and 2... (because they were not used in the track building)
       // GEM digis and pads in superchambers
@@ -2266,13 +2267,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
             // stub position
             auto gp = getCSCSpecificPoint2(bestMatchingStub.first.rawId(), bestMatchingStub.second);
 
-            // add the stub to the collection
-            std::vector<CSCCorrelatedLCTDigi> v;
-            v.push_back(bestMatchingStub.second);
-            chamberid_lct[bestMatchingStub.first] = v;
-
+            // extra selection - stub not too far from track
             if (reco::deltaR(gp.eta(), normalizedPhi(gp.phi()),
                              event_.CSCTF_eta[j] , normalizedPhi(event_.CSCTF_phi[j])) < 0.2){
+
+              // add the stub to the collection
+              std::vector<CSCCorrelatedLCTDigi> v;
+              v.push_back(bestMatchingStub.second);
+              chamberid_lct[bestMatchingStub.first] = v;
 
               if(verbose) {
                 std::cout << "\tChoice:"

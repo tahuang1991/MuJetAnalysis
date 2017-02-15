@@ -174,10 +174,8 @@ if __name__ == "__main__":
         b1 = TH1F("b1","b1",nmyetabin,myetabin)
       b1.GetYaxis().SetRangeUser(0.2,8000)
       b1.GetXaxis().SetRangeUser(2,50)
-      if doEta:
-        b1.GetYaxis().SetRangeUser(0,50)
-        b1.GetXaxis().SetRangeUser(1,2.5)
       b1.GetYaxis().SetTitleOffset(1.2)
+
       if not doEta:
         b1.GetYaxis().SetNdivisions(520)
       b1.GetYaxis().SetTitle("Trigger rate [kHz]")
@@ -215,6 +213,16 @@ if __name__ == "__main__":
           h31 = getRatePtHistogram(nEvents, h31)
         if h4 is not None:
           h41 = getRatePtHistogram(nEvents, h41)
+
+      ## set the xy-range user
+      if doEta:
+        b1.GetXaxis().SetRangeUser(1,2.5)
+        ## calculate the maximum of the histograms, then add 20% to the scale
+        if h1 is not None: histogramMax = h11.GetMaximum()
+        if h2 is not None: histogramMax = max(h11.GetMaximum(), h21.GetMaximum())
+        if h3 is not None: histogramMax = max(h11.GetMaximum(), h21.GetMaximum(), h31.GetMaximum())
+        if h4 is not None: histogramMax = max(h11.GetMaximum(), h21.GetMaximum(), h31.GetMaximum(), h41.GetMaximum())
+        b1.GetYaxis().SetRangeUser(0,histogramMax*1.2)
 
       ## set empty bins for displaced trigger histograms!
       def setEmptyBins(h):

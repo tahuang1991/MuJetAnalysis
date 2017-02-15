@@ -180,11 +180,9 @@ def fillDPhiHistogram( h_dphi_ME11_ME21, treeHits, min_pt = 0, max_pt = 999 ):
 def fillPromptHistogram(mapTH1F,
                        key,
                        treeHits,
-                       doBXCut,
                        etaCutMin,
                        etaCutMax,
                        stubCut=2,
-                       qualityCut=4,
                        hasME1Cut=False,
                        hasME2Cut=False,
                        hasME3Cut=False,
@@ -201,6 +199,8 @@ def fillPromptHistogram(mapTH1F,
                        hasMB2Cut=False,
                        hasMB3Cut=False,
                        hasMB4Cut=False):
+    doBXCut = True
+    qualityCut=4
     prompt_L1Mu_pt, prompt_L1Mu_eta = getMaxPromptPtEtaEvent(treeHits,
                                                              doBXCut,
                                                              etaCutMin,
@@ -448,22 +448,17 @@ isIsolated = is_L1Mu_isolated(treeHits, i, 0.4, 4, 0.12, 0)
 def fillDisplacedHistogram(mapTH1F,
                            key,
                            treeHits,
-                                doBXCut,
-                                etaCutMin,
-                                etaCutMax,
-                                stubCut,
-                                qualityCut,
-                                hasMB1Cut=False,
-                                hasMB2Cut=False,
-                                hasMB3Cut=False,
-                                hasMB4Cut=False,
-                                doPositionBased=False,
-                                doDirectionBasedNoGE21=False,
-                                doDirectionBasedGE21=False,
-                                doHybridBasedNoGE21=False,
-                                doHybridBasedGE21=False,
-                                doVeto=False,
-                                vetoType=1):
+                           etaCutMin,
+                           etaCutMax,
+                           stubCut,
+                           hasMB1Cut=False,
+                           hasMB2Cut=False,
+                           hasMB3Cut=False,
+                           hasMB4Cut=False,
+                           algorithm=0,
+                           vetoType=0):
+    doBXCut = True
+    qualityCut=4
     displaced_L1Mu_pt, displaced_L1Mu_eta = getMaxDisplacedPtEtaEvent(treeHits,
                                                                       doBXCut,
                                                                       etaCutMin,
@@ -474,12 +469,7 @@ def fillDisplacedHistogram(mapTH1F,
                                                                       hasMB2Cut,
                                                                       hasMB3Cut,
                                                                       hasMB4Cut,
-                                                                      doPositionBased,
-                                                                      doDirectionBasedNoGE21,
-                                                                      doDirectionBasedGE21,
-                                                                      doHybridBasedNoGE21,
-                                                                      doHybridBasedGE21,
-                                                                      doVeto,
+                                                                      algorithm,
                                                                       vetoType)
     if (displaced_L1Mu_pt>0):
         mapTH1F[key.replace("rate_", "rate_pt_")].Fill(displaced_L1Mu_pt)
@@ -507,13 +497,8 @@ def getMaxDisplacedPtEtaEvent(treeHits,
                               hasMB2Cut=False,
                               hasMB3Cut=False,
                               hasMB4Cut=False,
-                              doPositionBased=False,
-                              doDirectionBasedNoGE21=False,
-                              doDirectionBasedGE21=False,
-                              doHybridBasedNoGE21=False,
-                              doHybridBasedGE21=False,
-                              doVeto=False,
-                              vetoType =1):
+                              algorithm=0,
+                              vetoType=0):
 
     max_displaced_L1Mu_pt = -1
     max_displaced_L1Mu_eta = -99
@@ -536,7 +521,7 @@ def getMaxDisplacedPtEtaEvent(treeHits,
         if abs(L1Mu_bx)>0 and doBXCut: continue
 
         ## check if muon is isolated
-        if doVeto and (not is_L1Mu_isolated(treeHits, i, vetoType)): continue
+        if (vetoType!=0) and (not is_L1Mu_isolated(treeHits, i, vetoType)): continue
 
         ## eta cut
         #if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue
@@ -604,11 +589,16 @@ def getMaxDisplacedPtEtaEvent(treeHits,
 
             if not (etaCutMin <= abs(L1Mu_eta_ME2) and abs(L1Mu_eta_ME2) <= etaCutMax): continue
 
-            if doPositionBased:        DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_position_based_algorithm(treeHits, i, True)
-            if doDirectionBasedNoGE21: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_direction_based_algorithm(treeHits, i, False)
-            if doDirectionBasedGE21:   DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_direction_based_algorithm(treeHits, i, True)
-            if doHybridBasedNoGE21:    DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_hybrid_algorithm(treeHits, i, False)
-            if doHybridBasedGE21:      DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_hybrid_algorithm(treeHits, i, True)
+            ## position based
+            if algorithm==1: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_position_based_algorithm(treeHits, i, True)
+            ## direction based - no GE21
+            if algorithm==2: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_direction_based_algorithm(treeHits, i, False)
+            ## direction based - with GE21
+            if algorithm==3: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_direction_based_algorithm(treeHits, i, True)
+            ## hybrid based - no GE21
+            if algorithm==4: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_hybrid_algorithm(treeHits, i, False)
+            ## hybrid based - with GE21
+            if algorithm==5: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_hybrid_algorithm(treeHits, i, True)
 
         #print L1Mu_DTTF_index
         if is_DT_Muon:

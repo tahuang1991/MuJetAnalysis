@@ -261,22 +261,23 @@ def pt_endcap_hybrid_algorithm(treeHits, L1Mu_index, useGE21):
     ok_GE11 = GE11_phi_L1 != 99 or GE11_phi_L2 != 99
     ok_GE21 = GE21_phi_L1 != 99 or GE21_phi_L2 != 99
 
-    if ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3 and ok_GE11 and ok_GE21:
-        returnValue = treeHits.CSCTF_L1_hybrid_pt_GE21[L1Mu_CSCTF_index]
-        if returnValue == 0.0:  returnValue = 2
-        if returnValue == 30.0: returnValue = 120 ## very large value
-
+    if useGE21:
+        if ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3 and ok_GE11 and ok_GE21:
+            returnValue = treeHits.CSCTF_L1_hybrid_pt_GE21[L1Mu_CSCTF_index]
+            if returnValue == 0.0:  returnValue = 2
+            if returnValue == 30.0: returnValue = 120 ## very large value
+    else:
+        if ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3 and ok_GE11:
+            returnValue = treeHits.CSCTF_L1_hybrid_pt_noGE21[L1Mu_CSCTF_index]
+            if returnValue == 0.0:  returnValue = 2
+            if returnValue == 30.0: returnValue = 120 ## very large value
+            
     return returnValue, CSCTF_eta2
     """
-    if useGE21:
         if ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3 and ok_GE11 and ok_GE21:
             returnValue = treeHits.CSCTF_L1_hybrid_pt_GE21[L1Mu_CSCTF_index]
             if returnValue == 0.0:  returnValue = 2
             if returnValue == 30.0: returnValue = 120 ## very large value
 
     else:
-        if ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3 and ok_GE11:
-            returnValue = treeHits.CSCTF_L1_hybrid_pt_noGE21[L1Mu_CSCTF_index]
-            if returnValue == 0.0:  returnValue = 2
-            if returnValue == 30.0: returnValue = 120 ## very large value
     """

@@ -72,12 +72,12 @@ def passDPhicutTFTrack(st, ch, dphi, pt):
   returnValue = False;
 
   LUTsize = 8
-  #smalldphi = ((is_odd and fabs(dphi)<GEMdPhi[LUTsize-2][1]) || (!is_odd and fabs(dphi)<GEMdPhi[LUTsize-2][2]));
+  #smalldphi = ((is_odd and abs(dphi)<GEMdPhi[LUTsize-2][1]) || (!is_odd and abs(dphi)<GEMdPhi[LUTsize-2][2]));
 
   dPhiLib = ME11GEMdPhi
   if st==2:
     dPhiLib = ME21GEMdPhi
-  if (fabs(dphi) < 99):# and ((chargesign_ == 1 and dphi < 0) || (chargesign_ == 0 and dphi > 0) || smalldphi)){
+  if (abs(dphi) < 99):# and ((chargesign_ == 1 and dphi < 0) || (chargesign_ == 0 and dphi > 0) || smalldphi)){
     for row in dPhiLib:
       ptValue = row[0]
       bendingOdd = row[1]
@@ -87,7 +87,7 @@ def passDPhicutTFTrack(st, ch, dphi, pt):
       if pt >= ptValue:
 
         ## check if pass/fail
-        if ((is_odd and bendingOdd > fabs(dphi)) or (not is_odd and bendingEven > fabs(dphi))):
+        if ((is_odd and bendingOdd > abs(dphi)) or (not is_odd and bendingEven > abs(dphi))):
           returnValue = True;
         else:
           returnValue = False;
@@ -1836,8 +1836,10 @@ def addfiles(ch, dirname=".", ext=".root"):
   theInputFiles.extend([dirname[:] + x for x in ls if x.endswith(ext)])
   for pfile in theInputFiles:
     #print pfile
+    rootFile = TFile(pfile)
+    #if(not rootFile.IsZombie()): 
     ch.Add(pfile)
-
+    
   return ch
 
 #______________________________________________________________________________
@@ -1846,14 +1848,29 @@ def firstSecondBin(h):
     h.SetBinContent(0,0)
     return h
 #______________________________________________________________________________
-def getBackwardCumulative(h):
-    htemp = TH1F("htemp"," ",len(myptbin)-1, myptbin)
+def getBackwardCumulative(hIn):
+
+    nB = hIn.GetNbinsX();
+    #xmin = hIn.GetXaxis().GetBinLowEdge(1);
+    #xmax = hIn.GetXaxis().GetBinUpEdge(nB);
+    """
+    hRate = new TH1F(Form("%s_Rate",hIn.GetName()), Form("%s_Rate",hIn.GetName()), nB, xmin, xmax);
+    float inInt = hIn.Integral(0,nB+1);
+    for (int i = 0; i < nB +2; ++i){
+    float sumW2 =0;
+    for (int j = i; j< nB+2; ++j) sumW2+= hIn.GetBinError(j)*hIn.GetBinError(j);
+    
+    float iInt = hIn.Integral(i, nB+1);
+    float rVal = scale* iInt/ inInt;
+    hRate.SetBinContent(i, rVal);
+    hRate.SetBinError(i, sqrt(sumW2) * scale / inInt);
+    """
+    htemp = TH1F("htemp"," ",100,0,100)#len(myptbin)-1, myptbin)
     ## keep the underflow
-    htemp.SetBinContent(0,h.GetBinContent(0))
-    for i in range(1,len(myptbin)+1):
-        sum = 0
-        for j in range(i+1,len(myptbin)+1):
-            sum += h.GetBinContent(j)
+    for i in range(0,nB+2):
+        sum = hIn.Integral(i, nB+1);
+        #for j in range(i,nB+2):
+        #sum += h.GetBinContent(j)
         htemp.SetBinContent(i, sum)
     htemp.Sumw2()
     SetOwnership(htemp, False)
@@ -1890,7 +1907,7 @@ def getRatePtHistogram(nEvents, h):
 #______________________________________________________________________________
 def getRateEtaHistogram(nEvents, h):
     h.Sumw2()
-    h = scaleToRate(nEvents, h)
+    h = scaleToRate(float(nEvents), h)
     return h
 
 #______________________________________________________________________________

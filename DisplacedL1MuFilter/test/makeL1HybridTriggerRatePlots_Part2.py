@@ -11,9 +11,9 @@ import random
 #______________________________________________________________________________
 if __name__ == "__main__":
 
-  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170214"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170215"; pu = 'PU140'; eff = False
 
-  inputFile = TFile.Open(label + ".test.root")
+  inputFile = TFile.Open(label + ".root")
 
   ## extension for figures - add more?
   ext = ".png"
@@ -40,7 +40,7 @@ if __name__ == "__main__":
   nEvents = 30000
   nEvents = 100000
   nEvents = 273100
-  #nEvents = 10000
+  nEvents = 10000
   
   def displacedL1MuHybridTriggerRatePlots():
 
@@ -337,7 +337,7 @@ if __name__ == "__main__":
       c.SaveAs(targetDir + title + ".pdf")
       c.SaveAs(targetDir + title + ".C")
 
-      if True: return
+      if False: return
 
       ## ratios
       c = TCanvas("c","c",800,600)
@@ -353,7 +353,7 @@ if __name__ == "__main__":
       #gPad.SetLogx(1);
       if doEta:
         gPad.SetLogx(0);
-        gPad.SetLogy(0)
+      gPad.SetLogy(1)
       gPad.SetGridx(1);
       gPad.SetGridy(1);
       gStyle.SetErrorX(0)
@@ -368,10 +368,9 @@ if __name__ == "__main__":
       gStyle.SetMarkerStyle(1)
 
       b1 = TH1F("b1","b1",100,0,100)
-      b1 = TH1F("b1","b1",100,0,100)
       if doEta:
         b1 = TH1F("b1","b1",nmyetabin,myetabin)
-      b1.GetYaxis().SetRangeUser(0.01,1)
+      b1.GetYaxis().SetRangeUser(0.01,100)
       b1.GetXaxis().SetRangeUser(2,50)
       if doEta:
         b1.GetXaxis().SetRangeUser(1,2.5)
@@ -392,22 +391,25 @@ if __name__ == "__main__":
       b1.SetStats(0)
       b1.Draw()
 
-      h2.SetLineColor(kRed)
-      h2.SetFillColor(kWhite)
-      h2.Divide(h1)
-      h2.Draw("same")
+      h21.SetLineColor(kRed)
+      h21.SetMarkerColor(kRed)
+      h21.SetMarkerStyle(20)
+      h21.Divide(h11)
+      h21.Draw("E1X0 same")
 
       if h3 is not None:
-        h3.SetLineColor(kGreen+2)
-        h3.SetFillColor(kWhite)
-        h3.Divide(h1)
-        h3.Draw("same")
+        h31.SetLineColor(kGreen+2)
+        h31.SetMarkerColor(kGreen+2)
+        h21.SetMarkerStyle(21)
+        h31.Divide(h11)
+        h31.Draw("E1X0 same")
 
       if h4 is not None:
-        h4.SetLineColor(kBlue)
-        h4.SetFillColor(kWhite)
-        h4.Divide(h1)
-        h4.Draw("same")
+        h41.SetLineColor(kBlue)
+        h41.SetMarkerColor(kBlue)  
+        h41.SetMarkerStyle(22)
+        h41.Divide(h11)
+        h41.Draw("E1X0 same")
 
       """
       leg = TLegend(0.2,0.2,0.9,0.4,"","brNDC")

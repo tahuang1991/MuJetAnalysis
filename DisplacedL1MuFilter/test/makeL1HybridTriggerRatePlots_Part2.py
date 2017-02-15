@@ -40,6 +40,7 @@ if __name__ == "__main__":
   nEvents = 30000
   nEvents = 100000
   nEvents = 273100
+  #nEvents = 10000
   
   def displacedL1MuHybridTriggerRatePlots():
 
@@ -103,22 +104,27 @@ if __name__ == "__main__":
     makeDPhiPlot("h_dphi_ME11_ME21_charge_Pt30to140", "dphi_ME11_ME21_charge_Pt30to140")
     """
 
-    def makeEtaPlots(legendTitle,
+    def makeEtaPlots(title,
+                     legendTitle,
                      h1, h1Legend,
                      h2, h2Legend,
-                     h3, h3Legend,
-                     title, doEta=True):
-      makePlots(legendTitle,
+                     h3=None, h3Legend=None,
+                     h4=None, h4Legend=None):
+      makePlots(title, 
+                legendTitle,
                 h1, h1Legend,
                 h2, h2Legend,
                 h3, h3Legend,
-                title, doEta)
+                h4, h4Legend,
+                True)
 
-    def makePlots(legendTitle,
+    def makePlots(title, 
+                  legendTitle,
                   h1, h1Legend,
                   h2, h2Legend,
-                  h3, h3Legend,
-                  title, doEta=False):
+                  h3=None, h3Legend=None,
+                  h4=None, h4Legend=None,
+                  doEta=False):
 
       if h1 is not None:
         h1 = inputFile.Get(h1)
@@ -126,6 +132,8 @@ if __name__ == "__main__":
         h2 = inputFile.Get(h2)
       if h3 is not None:
         h3 = inputFile.Get(h3)
+      if h4 is not None:
+        h4 = inputFile.Get(h4)
 
       c = TCanvas("c","c",800,600)
       c.Clear()
@@ -137,7 +145,7 @@ if __name__ == "__main__":
       gPad.SetTickx(1)
       gPad.SetTicky(1)
       gPad.SetLogy(1)
-      gPad.SetLogx(1);
+      #gPad.SetLogx(1);
       if doEta:
         gPad.SetLogx(0);
         gPad.SetLogy(0)
@@ -161,7 +169,7 @@ if __name__ == "__main__":
       gStyle.SetMarkerStyle(1)
 
       ptbin = [
-        1, 2.0,   2.5,   3.0,   3.5,   4.0,   4.5,   5.0,   6.0,   7.0,   8.0,
+        2.0,   2.5,   3.0,   3.5,   4.0,   4.5,   5.0,   6.0,   7.0,   8.0,
         10.0,  12.0,  14.0,  16.0,  18.0,  20.0,  25.0,  30.0,  35.0,  40.0,
         45.0,  50.0,  60.0,  70.0,  80.0,  90.0, 100.0, 120.0, 140.0]
       myptbin = np.asarray(ptbin)
@@ -175,10 +183,11 @@ if __name__ == "__main__":
       nmyetabin = len(myetabin) - 1
 
       b1 = TH1F("b1","b1",nmyptbin,myptbin)
+      b1 = TH1F("b1","b1",100,0,100)
       if doEta:
         b1 = TH1F("b1","b1",nmyetabin,myetabin)
-      b1.GetYaxis().SetRangeUser(0.2,10000)
-      b1.GetXaxis().SetRangeUser(2,140)
+      b1.GetYaxis().SetRangeUser(0.2,8000)
+      b1.GetXaxis().SetRangeUser(2,50)
       if doEta:
         b1.GetYaxis().SetRangeUser(0,50)
         b1.GetXaxis().SetRangeUser(0,2.5)
@@ -203,38 +212,38 @@ if __name__ == "__main__":
       h21 = h2.Clone(h2.GetTitle() + "_clone")
       if h3 is not None:
         h31 = h3.Clone(h3.GetTitle() + "_clone")
-
-      print "nEvents", nEvents, "entries", h1.GetEntries(), h2.GetEntries(),
-      if h3 is not None:
-        print h3.GetEntries()
-      else:
-        print
+      if h4 is not None:
+        h41 = h4.Clone(h4.GetTitle() + "_clone")
 
       if doEta:
         h11 = getRateEtaHistogram(nEvents, h11)
         h21 = getRateEtaHistogram(nEvents, h21)
         if h3 is not None:
           h31 = getRateEtaHistogram(nEvents, h31)
+        if h4 is not None:
+          h41 = getRateEtaHistogram(nEvents, h41)
       else:
         h11 = getRatePtHistogram(nEvents, h11)
         h21 = getRatePtHistogram(nEvents, h21)
         if h3 is not None:
           h31 = getRatePtHistogram(nEvents, h31)
+        if h4 is not None:
+          h41 = getRatePtHistogram(nEvents, h41)
 
       ## set empty bins for displaced trigger histograms!
       def setEmptyBins(h):
         #hnew = h.Clone(h.GetName() + "_clone2");
-        h.SetBinContent(1,0)
-        h.SetBinContent(2,0)
-        h.SetBinContent(3,0)
-        h.SetBinContent(4,0)
-        h.SetBinContent(5,0)
-        h.SetBinContent(6,0)
-        h.SetBinContent(8,0)
-        h.SetBinContent(10,0)
-        h.SetBinContent(12,0)
-        h.SetBinContent(14,0)
-        h.SetBinContent(15,0)
+        #h.SetBinContent(1,0)
+        #h.SetBinContent(2,0)
+        #h.SetBinContent(3,0)
+        #h.SetBinContent(4,0)
+        #h.SetBinContent(5,0)
+        #h.SetBinContent(6,0)
+        #h.SetBinContent(8,0)
+        #h.SetBinContent(10,0)
+        #h.SetBinContent(12,0)
+        #h.SetBinContent(14,0)
+        #h.SetBinContent(15,0)
         #SetOwnership( h, False )
         return h
 
@@ -258,6 +267,13 @@ if __name__ == "__main__":
           h31.SetMarkerStyle(22)
           h31.Draw("E1X0 same")
 
+        if h4 is not None:
+          h41.SetLineColor(kOrange+1)
+          #h41.SetFillColor(kBlue)
+          h41.SetMarkerColor(kOrange+1)
+          h41.SetMarkerStyle(22)
+          h41.Draw("E1X0 same")
+
         tex = TLatex(0.15, 0.4,"p_{T}^{Trigger} #geq 10 GeV")
         tex.SetTextSize(0.04)
         tex.SetNDC()
@@ -273,7 +289,7 @@ if __name__ == "__main__":
         h11.Draw("E1X0 same")
 
         if True: 
-          if '(hybrid)' in h2Legend:
+          if 'hybrid' in h2Legend:
             setEmptyBins(h21)
         #h21.SetFillColor(kViolet)
         h21.SetLineColor(kGreen+2)
@@ -282,7 +298,7 @@ if __name__ == "__main__":
         h21.Draw("E1X0 same")
 
         if h3 is not None:
-          if '(hybrid)' in h3Legend:
+          if 'hybrid' in h3Legend:
             tex = drawLabel("Note: p_{T,min}^{hybrid} = 5 GeV", 0.6,0.8)
             setEmptyBins(h31)
 
@@ -292,18 +308,40 @@ if __name__ == "__main__":
           h31.SetMarkerStyle(22)
           h31.Draw("E1X0 same")
 
+        if h4 is not None:
+          if 'hybrid' in h4Legend:
+            tex = drawLabel("Note: p_{T,min}^{hybrid} = 5 GeV", 0.6,0.8)
+            setEmptyBins(h41)
+
+          #h31.SetFillColor(kBlue)
+          h41.SetLineColor(kOrange+1)
+          h41.SetMarkerColor(kOrange+1)
+          h41.SetMarkerStyle(22)
+          h41.Draw("E1X0 same")
+
       #latex = applyTdrStyle()
 
       leg = TLegend(0.15,0.2,0.5,0.35,legendTitle,"brNDC")
       leg.SetFillColor(kWhite)
       leg.SetBorderSize(0)
-      leg.SetFillStyle(0)
-      leg.SetTextSize(0.03)
-      leg.AddEntry(h11, h1Legend, "p")
-      leg.AddEntry(h21, h2Legend, "p")
-      if h3 is not None:
-        leg.AddEntry(h31, h3Legend, "p")
-      leg.Draw("same")
+      leg.SetFillStyle(1001)
+      leg.SetTextSize(0.04)
+      if doEta:
+        leg.AddEntry(h11, h1Legend + " (" + str("%.1f"%h11.Integral()) + " kHz)", "p")
+        leg.AddEntry(h21, h2Legend + " (" + str("%.1f"%h21.Integral()) + " kHz)", "p")
+        if h3 is not None:
+          leg.AddEntry(h31, h3Legend + " (" + str("%.1f"%h31.Integral()) + " kHz)", "p")
+        if h4 is not None:
+          leg.AddEntry(h41, h4Legend + " (" + str("%.1f"%h41.Integral()) + " kHz)", "p")
+        leg.Draw("same")
+      else:
+        leg.AddEntry(h11, h1Legend, "p")
+        leg.AddEntry(h21, h2Legend, "p")
+        if h3 is not None:
+          leg.AddEntry(h31, h3Legend, "p")
+        if h4 is not None:
+          leg.AddEntry(h41, h4Legend, "p")
+        leg.Draw("same")
 
       if doEta:
         title.replace("_rate_pt_", "_rate_eta_")
@@ -383,230 +421,243 @@ if __name__ == "__main__":
 
 
     ## Calibration plots
-    makePlots("0.0<|#eta|<2.4",
+    makePlots("Prompt_L1Mu_trigger_rate_pt__L1Mu__CALIBRATE__eta0to2p4",
+              "0.0<|#eta|<2.4",
               "h_single_prompt_L1Mu_rate_pt_eta0to2p4", "Prompt L1Mu, all",
               "h_single_prompt_L1Mu_rate_pt_eta1p1to2p4", "Prompt L1Mu, endcap",
-              "h_single_prompt_L1Mu_rate_pt_eta0to1p1", "Prompt L1Mu, barrel",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__CALIBRATE__eta0to2p4")
-    makeEtaPlots("0.0<|#eta|<2.4",
+              "h_single_prompt_L1Mu_rate_pt_eta0to1p1", "Prompt L1Mu, barrel")
+    makeEtaPlots("Prompt_L1Mu_trigger_rate_eta__L1Mu__CALIBRATE__eta0to2p4",
+                 "0.0<|#eta|<2.4",
                  "h_single_prompt_L1Mu_rate_eta_eta0to2p4", "Prompt L1Mu, all",
                  "h_single_prompt_L1Mu_rate_eta_eta1p1to2p4", "Prompt L1Mu, endcap",
-                 "h_single_prompt_L1Mu_rate_eta_eta0to1p1", "Prompt L1Mu, barrel",
-                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__CALIBRATE__eta0to2p4")
+                 "h_single_prompt_L1Mu_rate_eta_eta0to1p1", "Prompt L1Mu, barrel")
 
     ## trigger rate plots
-    makePlots("0.0<|#eta|<2.4",
+    makePlots("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__L1Mu3st_eta0to2p4",
+              "0.0<|#eta|<2.4",
               "h_single_prompt_L1Mu_rate_pt_eta0to2p4", "Prompt L1Mu",
               "h_single_prompt_L1Mu_rate_pt_2_stubs_eta0to2p4", "Prompt L1Mu, 2 stubs",
-              "h_single_prompt_L1Mu_rate_pt_3_stubs_eta0to2p4", "Prompt L1Mu, 3 stubs",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__L1Mu3st_eta0to2p4")
-    makeEtaPlots("0.0<|#eta|<2.4",
-              "h_single_prompt_L1Mu_rate_eta_eta0to2p4", "Prompt L1Mu",
-              "h_single_prompt_L1Mu_rate_eta_2_stubs_eta0to2p4", "Prompt L1Mu, 2 stubs",
-              "h_single_prompt_L1Mu_rate_eta_3_stubs_eta0to2p4", "Prompt L1Mu, 3 stubs",
-              "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu2st__L1Mu3st_eta0to2p4")
+              "h_single_prompt_L1Mu_rate_pt_3_stubs_eta0to2p4", "Prompt L1Mu, 3 stubs")
+    makeEtaPlots("Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu2st__L1Mu3st_eta0to2p4",
+                 "0.0<|#eta|<2.4",
+                 "h_single_prompt_L1Mu_rate_eta_eta0to2p4", "Prompt L1Mu",
+                 "h_single_prompt_L1Mu_rate_eta_2_stubs_eta0to2p4", "Prompt L1Mu, 2 stubs",
+                 "h_single_prompt_L1Mu_rate_eta_3_stubs_eta0to2p4", "Prompt L1Mu, 3 stubs")
 
 
-    makePlots("1.2<|#eta|<2.4",
+    makePlots("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__L1Mu3st_eta1p2to2p4",
+              "1.2<|#eta|<2.4",
               "h_single_prompt_L1Mu_rate_pt_eta1p2to2p4", "Prompt L1Mu",
               "h_single_prompt_L1Mu_rate_pt_2_stubs_eta1p2to2p4", "Prompt L1Mu, 2 CSC stubs",
-              "h_single_prompt_L1Mu_rate_pt_3_stubs_eta1p2to2p4", "Prompt L1Mu, 3 CSC stubs",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__L1Mu3st_eta1p2to2p4")
-    makeEtaPlots("1.2<|#eta|<2.4",
-              "h_single_prompt_L1Mu_rate_eta_eta1p2to2p4", "Prompt L1Mu",
-              "h_single_prompt_L1Mu_rate_eta_2_stubs_eta1p2to2p4", "Prompt L1Mu, 2 CSC stubs",
-              "h_single_prompt_L1Mu_rate_eta_3_stubs_eta1p2to2p4", "Prompt L1Mu, 3 CSC stubs",
-              "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu2st__L1Mu3st_eta1p2to2p4")
+              "h_single_prompt_L1Mu_rate_pt_3_stubs_eta1p2to2p4", "Prompt L1Mu, 3 CSC stubs")
+    makeEtaPlots("Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu2st__L1Mu3st_eta1p2to2p4",
+                 "1.2<|#eta|<2.4",
+                 "h_single_prompt_L1Mu_rate_eta_eta1p2to2p4", "Prompt L1Mu",
+                 "h_single_prompt_L1Mu_rate_eta_2_stubs_eta1p2to2p4", "Prompt L1Mu, 2 CSC stubs",
+                 "h_single_prompt_L1Mu_rate_eta_3_stubs_eta1p2to2p4", "Prompt L1Mu, 3 CSC stubs")
 
 
-    makePlots("1.6<|#eta|<2.2",
+    makePlots("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__L1Mu3st_eta1p6to2p2",
+              "1.6<|#eta|<2.2",
               "h_single_prompt_L1Mu_rate_pt_eta1p6to2p2", "Prompt L1Mu",
               "h_single_prompt_L1Mu_rate_pt_2_stubs_eta1p6to2p2", "Prompt L1Mu, 2 CSC stubs",
-              "h_single_prompt_L1Mu_rate_pt_3_stubs_eta1p6to2p2", "Prompt L1Mu, 3 CSC stubs",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__L1Mu3st_eta1p6to2p2")
-    makeEtaPlots("1.6<|#eta|<2.2",
-              "h_single_prompt_L1Mu_rate_eta_eta1p6to2p2", "Prompt L1Mu",
-              "h_single_prompt_L1Mu_rate_eta_2_stubs_eta1p6to2p2", "Prompt L1Mu, 2 CSC stubs",
-              "h_single_prompt_L1Mu_rate_eta_3_stubs_eta1p6to2p2", "Prompt L1Mu, 3 CSC stubs",
-              "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu2st__L1Mu3st_eta1p6to2p2")
+              "h_single_prompt_L1Mu_rate_pt_3_stubs_eta1p6to2p2", "Prompt L1Mu, 3 CSC stubs")
+    makeEtaPlots("Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu2st__L1Mu3st_eta1p6to2p2",
+                 "1.6<|#eta|<2.2",
+                 "h_single_prompt_L1Mu_rate_eta_eta1p6to2p2", "Prompt L1Mu",
+                 "h_single_prompt_L1Mu_rate_eta_2_stubs_eta1p6to2p2", "Prompt L1Mu, 2 CSC stubs",
+                 "h_single_prompt_L1Mu_rate_eta_3_stubs_eta1p6to2p2", "Prompt L1Mu, 3 CSC stubs")
 
 
-    makePlots("1.6<|#eta|<2.15",
+    makePlots("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__L1Mu3st_eta1p6to2p15",
+              "1.6<|#eta|<2.15",
               "h_single_prompt_L1Mu_rate_pt_eta1p6to2p15", "Prompt L1Mu",
               "h_single_prompt_L1Mu_rate_pt_2_stubs_eta1p6to2p15", "Prompt L1Mu, 2 CSC stubs",
-              "h_single_prompt_L1Mu_rate_pt_3_stubs_eta1p6to2p15", "Prompt L1Mu, 3 CSC stubs",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__L1Mu3st_eta1p6to2p15")
-    makeEtaPlots("1.6<|#eta|<2.15",
-              "h_single_prompt_L1Mu_rate_eta_eta1p6to2p15", "Prompt L1Mu",
-              "h_single_prompt_L1Mu_rate_eta_2_stubs_eta1p6to2p15", "Prompt L1Mu, 2 CSC stubs",
-              "h_single_prompt_L1Mu_rate_eta_3_stubs_eta1p6to2p15", "Prompt L1Mu, 3 CSC stubs",
-              "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu2st__L1Mu3st_eta1p6to2p15")
+              "h_single_prompt_L1Mu_rate_pt_3_stubs_eta1p6to2p15", "Prompt L1Mu, 3 CSC stubs")
+    makeEtaPlots("Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu2st__L1Mu3st_eta1p6to2p15",
+                 "1.6<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_eta1p6to2p15", "Prompt L1Mu",
+                 "h_single_prompt_L1Mu_rate_eta_2_stubs_eta1p6to2p15", "Prompt L1Mu, 2 CSC stubs",
+                 "h_single_prompt_L1Mu_rate_eta_3_stubs_eta1p6to2p15", "Prompt L1Mu, 3 CSC stubs")
 
 
-    makePlots("1.2<|#eta|<1.6",
+    makePlots("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__L1Mu3st_eta1p2to1p6",
+              "1.2<|#eta|<1.6",
               "h_single_prompt_L1Mu_rate_pt_eta1p2to1p6", "Prompt L1Mu",
               "h_single_prompt_L1Mu_rate_pt_2_stubs_eta1p2to1p6", "Prompt L1Mu, 2 CSC stubs",
-              "h_single_prompt_L1Mu_rate_pt_3_stubs_eta1p2to1p6", "Prompt L1Mu, 3 CSC stubs",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__L1Mu3st_eta1p2to1p6")
-    makeEtaPlots("1.2<|#eta|<1.6",
-              "h_single_prompt_L1Mu_rate_eta_eta1p2to1p6", "Prompt L1Mu",
-              "h_single_prompt_L1Mu_rate_eta_2_stubs_eta1p2to1p6", "Prompt L1Mu, 2 CSC stubs",
-              "h_single_prompt_L1Mu_rate_eta_3_stubs_eta1p2to1p6", "Prompt L1Mu, 3 CSC stubs",
-              "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu2st__L1Mu3st_eta1p2to1p6")
+              "h_single_prompt_L1Mu_rate_pt_3_stubs_eta1p2to1p6", "Prompt L1Mu, 3 CSC stubs")
+    makeEtaPlots("Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu2st__L1Mu3st_eta1p2to1p6",
+                 "1.2<|#eta|<1.6",
+                 "h_single_prompt_L1Mu_rate_eta_eta1p2to1p6", "Prompt L1Mu",
+                 "h_single_prompt_L1Mu_rate_eta_2_stubs_eta1p2to1p6", "Prompt L1Mu, 2 CSC stubs",
+                 "h_single_prompt_L1Mu_rate_eta_3_stubs_eta1p2to1p6", "Prompt L1Mu, 3 CSC stubs")
 
 
-    makePlots("1.6<|#eta|<2.2",
+    makePlots("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__L1Mu2stME11_eta1p6to2p2",
+              "1.6<|#eta|<2.2",
               "h_single_prompt_L1Mu_rate_pt_eta1p6to2p2", "Prompt L1Mu",
               "h_single_prompt_L1Mu_rate_pt_2_stubs_eta1p6to2p2", "Prompt L1Mu, 2 CSC stubs",
-              "h_single_prompt_L1Mu_rate_pt_2_stubs_ME11_eta1p6to2p2", "Prompt L1Mu, 2 CSC stubs, ME11",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__L1Mu2stME11_eta1p6to2p2")
-    makeEtaPlots("1.6<|#eta|<2.2",
-              "h_single_prompt_L1Mu_rate_eta_eta1p6to2p2", "Prompt L1Mu",
-              "h_single_prompt_L1Mu_rate_eta_2_stubs_eta1p6to2p2", "Prompt L1Mu, 2 CSC stubs",
-              "h_single_prompt_L1Mu_rate_eta_2_stubs_ME11_eta1p6to2p2", "Prompt L1Mu, 2 CSC stubs, ME11",
-              "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu2st__L1Mu2stME11_eta1p6to2p2")
+              "h_single_prompt_L1Mu_rate_pt_2_stubs_ME11_eta1p6to2p2", "Prompt L1Mu, 2 CSC stubs, ME11")
+    makeEtaPlots("Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu2st__L1Mu2stME11_eta1p6to2p2",
+                 "1.6<|#eta|<2.2",
+                 "h_single_prompt_L1Mu_rate_eta_eta1p6to2p2", "Prompt L1Mu",
+                 "h_single_prompt_L1Mu_rate_eta_2_stubs_eta1p6to2p2", "Prompt L1Mu, 2 CSC stubs",
+                 "h_single_prompt_L1Mu_rate_eta_2_stubs_ME11_eta1p6to2p2", "Prompt L1Mu, 2 CSC stubs, ME11")
 
 
-    makePlots("1.6<|#eta|<2.2",
+    makePlots("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__L1Mu3stME11_eta1p6to2p2",
+              "1.6<|#eta|<2.2",
               "h_single_prompt_L1Mu_rate_pt_eta1p6to2p2", "Prompt L1Mu",
               "h_single_prompt_L1Mu_rate_pt_3_stubs_eta1p6to2p2", "Prompt L1Mu, 3 CSC stubs",
-              "h_single_prompt_L1Mu_rate_pt_3_stubs_ME11_eta1p6to2p2", "Prompt L1Mu, 3 CSC stubs, ME11",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__L1Mu3stME11_eta1p6to2p2")
-    makeEtaPlots("1.6<|#eta|<2.2",
-              "h_single_prompt_L1Mu_rate_eta_eta1p6to2p2", "Prompt L1Mu",
-              "h_single_prompt_L1Mu_rate_eta_3_stubs_eta1p6to2p2", "Prompt L1Mu, 3 CSC stubs",
-              "h_single_prompt_L1Mu_rate_eta_3_stubs_ME11_eta1p6to2p2", "Prompt L1Mu, 3 CSC stubs, ME11",
-              "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__L1Mu3stME11_eta1p6to2p2")
+              "h_single_prompt_L1Mu_rate_pt_3_stubs_ME11_eta1p6to2p2", "Prompt L1Mu, 3 CSC stubs, ME11")
+    makeEtaPlots("Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__L1Mu3stME11_eta1p6to2p2",
+                 "1.6<|#eta|<2.2",
+                 "h_single_prompt_L1Mu_rate_eta_eta1p6to2p2", "Prompt L1Mu",
+                 "h_single_prompt_L1Mu_rate_eta_3_stubs_eta1p6to2p2", "Prompt L1Mu, 3 CSC stubs",
+                 "h_single_prompt_L1Mu_rate_eta_3_stubs_ME11_eta1p6to2p2", "Prompt L1Mu, 3 CSC stubs, ME11")
 
 
-    makePlots("1.6<|#eta|<2.15",
+    makePlots("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2stME11__L1Mu2stME11GE11_eta1p6to2p15",
+              "1.6<|#eta|<2.15",
               "h_single_prompt_L1Mu_rate_pt_eta1p6to2p15", "Prompt L1Mu",
               "h_single_prompt_L1Mu_rate_pt_2_stubs_ME11_eta1p6to2p15", "Prompt L1Mu, 2 CSC stubs, ME11",
-              "h_single_prompt_L1Mu_rate_pt_2_stubs_GE11_ME11_eta1p6to2p15", "Prompt L1Mu, 2 CSC stubs, ME11, GE11",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2stME11__L1Mu2stME11GE11_eta1p6to2p15")
-    makeEtaPlots("1.6<|#eta|<2.15",
-              "h_single_prompt_L1Mu_rate_eta_eta1p6to2p15", "Prompt L1Mu",
-              "h_single_prompt_L1Mu_rate_eta_2_stubs_ME11_eta1p6to2p15", "Prompt L1Mu, 2 CSC stubs, ME11",
-              "h_single_prompt_L1Mu_rate_eta_2_stubs_GE11_ME11_eta1p6to2p15", "Prompt L1Mu, 2 CSC stubs, ME11, GE11",
-              "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu2stME11__L1Mu2stME11GE11_eta1p6to2p15")
+              "h_single_prompt_L1Mu_rate_pt_2_stubs_GE11_ME11_eta1p6to2p15", "Prompt L1Mu, 2 CSC stubs, ME11, GE11")
+    makeEtaPlots("Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu2stME11__L1Mu2stME11GE11_eta1p6to2p15",
+                 "1.6<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_eta1p6to2p15", "Prompt L1Mu",
+                 "h_single_prompt_L1Mu_rate_eta_2_stubs_ME11_eta1p6to2p15", "Prompt L1Mu, 2 CSC stubs, ME11",
+                 "h_single_prompt_L1Mu_rate_eta_2_stubs_GE11_ME11_eta1p6to2p15", "Prompt L1Mu, 2 CSC stubs, ME11, GE11")
 
 
-    makePlots("1.6<|#eta|<2.15",
+    makePlots("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_ME1_ME2_ME3_eta1p6to2p15",
+              "1.6<|#eta|<2.15",
               "h_single_prompt_L1Mu_rate_pt_eta1p6to2p15", "Prompt L1Mu",
               "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p6to2p15", "Prompt L1Mu, hit in ME1, ME2, ME3",
-              "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p6to2p15", "Displaced L1Mu, hit in ME1, ME2, ME3, position based",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_ME1_ME2_ME3_eta1p6to2p15")
-    makeEtaPlots("1.6<|#eta|<2.15",
+              "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p6to2p15", "Displaced L1Mu, hit in ME1, ME2, ME3, position based")
+    makeEtaPlots("Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_ME1_ME2_ME3_eta1p6to2p15",
+                 "1.6<|#eta|<2.15",
                  "h_single_prompt_L1Mu_rate_eta_eta1p6to2p15", "Prompt L1Mu",
                  "h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta1p6to2p15", "Prompt L1Mu, hit in ME1, ME2, ME3",
-                 "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p6to2p15", "Displaced L1Mu, hit in ME1, ME2, ME3 position based",
-                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_ME1_ME2_ME3_eta1p6to2p15", doEta=True)
+                 "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p6to2p15", "Displaced L1Mu, hit in ME1, ME2, ME3 position based")
 
 
-    makePlots("1.2<|#eta|<2.4",
+    makePlots("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_ME1_ME2_ME3_eta1p2to2p4",
+              "1.2<|#eta|<2.4",
               "h_single_prompt_L1Mu_rate_pt_eta1p2to2p4", "Prompt L1Mu",
               "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p2to2p4", "Prompt L1Mu, hit in ME1, ME2, ME3",
-              "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p2to2p4", "Displaced L1Mu, hit in ME1, ME2, ME3, position based",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_ME1_ME2_ME3_eta1p2to2p4")
-    makeEtaPlots("1.2<|#eta|<2.4",
+              "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p2to2p4", "Displaced L1Mu, hit in ME1, ME2, ME3, position based")
+    makeEtaPlots("Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_ME1_ME2_ME3_eta1p2to2p4",
+                 "1.2<|#eta|<2.4",
                  "h_single_prompt_L1Mu_rate_eta_eta1p2to2p4", "Prompt L1Mu",
                  "h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta1p2to2p4", "Prompt L1Mu, hit in ME1, ME2, ME3",
-                 "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p2to2p4", "Displaced L1Mu, hit in ME1, ME2, ME3 position based",
-                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_ME1_ME2_ME3_eta1p2to2p4", doEta=True)
+                 "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p2to2p4", "Displaced L1Mu, hit in ME1, ME2, ME3 position based")
 
 
-    makePlots("1.6<|#eta|<2.15",
+    makePlots("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuHybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15",
+              "1.6<|#eta|<2.15",
               "h_single_prompt_L1Mu_rate_pt_eta1p6to2p15", "Prompt L1Mu",
               "h_single_prompt_L1Mu_rate_pt_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "Prompt L1Mu, hit in GE11, ME11, GE21, ME21, ME3",
-              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuHybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15")
-    makeEtaPlots("1.6<|#eta|<2.15",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based")
+    makeEtaPlots("Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuHybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15",
+                 "1.6<|#eta|<2.15",
                  "h_single_prompt_L1Mu_rate_eta_eta1p6to2p15", "Prompt L1Mu",
                  "h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "Prompt L1Mu, hit in GE11, ME11, GE21, ME21, ME3",
-                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based",
-                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuHybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15")
+                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based")
 
 
-    makePlots("1.6<|#eta|<2.15",
+    makePlots("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuHybridBased_GE11_ME11_ME21_ME3_eta1p6to2p15",
+              "1.6<|#eta|<2.15",
               "h_single_prompt_L1Mu_rate_pt_eta1p6to2p15", "Prompt L1Mu",
               "h_single_prompt_L1Mu_rate_pt_GE11_ME11_ME21_ME3_eta1p6to2p15", "Prompt L1Mu, hit in GE11, ME11, ME21, ME3",
-              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15", "Displaced L1Mu, hit in GE11, ME11, ME21, ME3 hybrid based",
-              "Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuHybridBased_GE11_ME11_ME21_ME3_eta1p6to2p15")
-    makeEtaPlots("1.6<|#eta|<2.15",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15", "Displaced L1Mu, hit in GE11, ME11, ME21, ME3 hybrid based")
+    makeEtaPlots("Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuHybridBased_GE11_ME11_ME21_ME3_eta1p6to2p15",
+                 "1.6<|#eta|<2.15",
                  "h_single_prompt_L1Mu_rate_eta_eta1p6to2p15", "Prompt L1Mu",
                  "h_single_prompt_L1Mu_rate_eta_GE11_ME11_ME21_ME3_eta1p6to2p15", "Prompt L1Mu, hit in GE11, ME11, ME21, ME3",
-                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15", "Displaced L1Mu, hit in GE11, ME11, ME21, ME3 hybrid based",
-                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuHybridBased_GE11_ME11_ME21_ME3_eta1p6to2p15")
+                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15", "Displaced L1Mu, hit in GE11, ME11, ME21, ME3 hybrid based")
 
 
 
     ### FINAL PLOTS FOR MUON TDR ###
-    makePlots("1.6<|#eta|<2.15",
-                 "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (constrained)",
-                 "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (unconstrained)",
-                 "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid)",
-                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15")
+    makePlots("MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15",
+              "1.6<|#eta|<2.15",
+              "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (constrained)",
+              "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (unconstrained)",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid)")
 
-    makeEtaPlots("1.6<|#eta|<2.15",
+    makeEtaPlots("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15",
+                 "1.6<|#eta|<2.15",
                  "h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (constrained)",
                  "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (unconstrained)",
-                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid)",
-                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15")
+                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid)")
 
-    makePlots("1.6<|#eta|<2.15",
-                 "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (constrained)",
-                 "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (unconstrained)",
-                 "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid without GE21)",
-                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_ME21_ME3_eta1p6to2p15")
+    makePlots("MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_ME21_ME3_eta1p6to2p15",
+              "1.6<|#eta|<2.15",
+              "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (constrained)",
+              "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (unconstrained)",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid without GE21)")
 
-    makeEtaPlots("1.6<|#eta|<2.15",
+    makeEtaPlots("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__PositionBased_HybridBased_GE11_ME11_ME21_ME3_eta1p6to2p15",
+                 "1.6<|#eta|<2.15",
                  "h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (constrained)",
                  "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid without GE21)")
+
+    makePlots("MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__HybridBased_Comparison_eta1p6to2p15",
+              "1.6<|#eta|<2.15",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid without GE21)",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid with GE21)")
+    makeEtaPlots("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__HybridBased_Comparison_eta1p6to2p15",
+                 "1.6<|#eta|<2.15",
                  "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid without GE21)",
-                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__PositionBased_HybridBased_GE11_ME11_ME21_ME3_eta1p6to2p15")
+                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid with GE21)")
 
-    makePlots("1.6<|#eta|<2.15",
-                 "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid with GE21)",
-                 "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid without GE21)",
-                 None, None,
-                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__HybridBased_Comparison_eta1p6to2p15")
-    makeEtaPlots("1.6<|#eta|<2.15",
-                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid with GE21)",
-                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid without GE21)",
-                 None, None,
-                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__HybridBased_Comparison_eta1p6to2p15")
+    makePlots("MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_mediumVeto",
+              "1.6<|#eta|<2.15",
+              "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p6to2p15_mediumVeto", "L1Mu (unconstrained) + medium veto",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_mediumVeto", "L1Mu (hybrid) + medium veto")
 
-    makePlots("1.6<|#eta|<2.2",
-                 "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p6to2p15_mediumVeto", "L1Mu (unconstrained) + medium veto",
-                 "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_mediumVeto", "L1Mu (hybrid) + medium veto",
-                 None, None,
-                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_mediumVeto")
-
-    makeEtaPlots("1.6<|#eta|<2.2",
+    makeEtaPlots("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_mediumVeto",
+                 "1.6<|#eta|<2.15",
                  "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p6to2p15_mediumVeto", "L1Mu (unconstrained) + medium veto",
-                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_mediumVeto", "L1Mu (hybrid) + medium veto",
-                 None, None,
-                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_mediumVeto")
+                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_mediumVeto", "L1Mu (hybrid) + medium veto")
 
 
-    makePlots("1.6<|#eta|<2.2",
-                 "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p6to2p15_looseVeto", "L1Mu (unconstrained) + loose veto",
-                 "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_looseVeto", "L1Mu (hybrid) + loose veto",
-                 None, None,
-                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_looseVeto")
-
-    makeEtaPlots("1.6<|#eta|<2.2",
+    makePlots("MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_looseVeto",
+              "1.6<|#eta|<2.15",
+              "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p6to2p15_looseVeto", "L1Mu (unconstrained) + loose veto",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_looseVeto", "L1Mu (hybrid) + loose veto")
+    
+    makeEtaPlots("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_looseVeto",
+                 "1.6<|#eta|<2.15",
                  "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p6to2p15_looseVeto", "L1Mu (unconstrained) + loose veto",
-                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_looseVeto", "L1Mu (hybrid) + loose veto",
-                 None, None,
-                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_looseVeto")
+                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_looseVeto", "L1Mu (hybrid) + loose veto")
 
 
-    makePlots("1.6<|#eta|<2.15",
-                 "h_single_prompt_L1Mu_rate_pt_ME11_eta1p6to2p15", "L1Mu (constrained)",
-                 "h_single_prompt_L1Mu_rate_pt_GE11_ME11_eta1p6to2p15", "L1Mu (constrained) + GE11",
-                 "h_single_prompt_L1Mu_rate_GE11_ME11_OR_GE21_ME21_eta1p6to2p15", "L1Mu (constrained) + GE11 + GE21",
-                 "MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu___GE11_ME11_OR_GE21_ME21_eta1p6to2p15")
+    makePlots("MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu___GE11_ME11_OR_GE21_ME21_eta1p6to2p15",
+              "1.6<|#eta|<2.15",
+              "h_single_prompt_L1Mu_rate_pt_2_stubs_ME11_eta1p6to2p15", "L1Mu (constrained)",
+              "h_single_prompt_L1Mu_rate_pt_2_stubs_GE11_ME11_eta1p6to2p15", "L1Mu (constrained) + GE11",
+              "h_single_prompt_L1Mu_rate_pt_GE11_ME11_OR_GE21_ME21_eta1p6to2p15", "L1Mu (constrained) + GE11 + GE21")
+    makeEtaPlots("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu___GE11_ME11_OR_GE21_ME21_eta1p6to2p15",
+                 "1.6<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_2_stubs_ME11_eta1p6to2p15", "L1Mu (constrained)",
+                 "h_single_prompt_L1Mu_rate_eta_2_stubs_GE11_ME11_eta1p6to2p15", "L1Mu (constrained) + GE11",
+                 "h_single_prompt_L1Mu_rate_eta_GE11_ME11_OR_GE21_ME21_eta1p6to2p15", "L1Mu (constrained) + GE11 + GE21")
+
+    
+    makePlots("MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_Combination",
+              "1.6<|#eta|<2.15",
+              "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (constrained)",
+              "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (unconstrained)",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid without GE21)",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid with GE21)")
+    makeEtaPlots("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_Combination",
+                 "1.6<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (constrained)",
+                 "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p6to2p15", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid without GE21)",
+                 "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid with GE21)")
 
 
     exit(1)
@@ -737,13 +788,13 @@ if __name__ == "__main__":
                  "h_single_prompt_L1Mu_rate_eta_eta1p6to2p2", "Prompt L1Mu",
                  "h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta1p6to2p2", "Prompt L1Mu, hit in GE11, ME11, GE21, ME21",
                  "h_single_displaced_L1Mu_rate_eta_direction_GE11_ME11_GE21_ME21_eta1p6to2p2", "Displaced L1Mu, hit in GE11, ME11, GE21, ME21 direction based",
-                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuDirectionBased_GE11_ME11_GE21_ME21_eta1p6to2p2", doEta=True)
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuDirectionBased_GE11_ME11_GE21_ME21_eta1p6to2p2")
 
     makeEtaPlots("1.6<|#eta|<2.2",
                  "h_single_prompt_L1Mu_rate_eta_eta1p6to2p2", "Prompt L1Mu",
                  "h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2", "Prompt L1Mu, hit in GE11, ME11, GE21, ME21, ME3",
                  "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2", "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based",
-                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuHybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2", doEta=True)
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuHybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2")
 
     makeEtaPlots("1.6<|#eta|<2.2",
                  "h_single_prompt_L1Mu_rate_eta_eta1p6to2p2", "Prompt L1Mu",
@@ -813,25 +864,25 @@ if __name__ == "__main__":
                  "h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta1p6to2p2", "Prompt L1Mu, hit in ME1, ME2, ME3",
                  "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p6to2p2", "Displaced L1Mu, hit in ME1, ME2, ME3 position based",
                  "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p6to2p2_looseVeto", "Displaced L1Mu, hit in ME1, ME2, ME3 position based, loose veto",
-                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_ME1_ME2_ME3_eta1p6to2p2_looseVeto", doEta=True)
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_ME1_ME2_ME3_eta1p6to2p2_looseVeto")
 
     makeEtaPlots("1.2<|#eta|<2.4",
                  "h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta1p2to2p4", "Prompt L1Mu, hit in ME1, ME2, ME3",
                  "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p2to2p4", "Displaced L1Mu, hit in ME1, ME2, ME3 position based",
                  "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p2to2p4_looseVeto", "Displaced L1Mu, hit in ME1, ME2, ME3 position based, loose veto",
-                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_ME1_ME2_ME3_eta1p2to2p4_looseVeto", doEta=True)
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_ME1_ME2_ME3_eta1p2to2p4_looseVeto")
 
     makeEtaPlots("1.6<|#eta|<2.2",
                  "h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta1p6to2p2", "Prompt L1Mu, hit in GE11, ME11, GE21, ME21",
                  "h_single_displaced_L1Mu_rate_eta_direction_GE11_ME11_GE21_ME21_eta1p6to2p2", "Displaced L1Mu, hit in GE11, ME11, GE21, ME21 direction based",
                  "h_single_displaced_L1Mu_rate_eta_direction_GE11_ME11_GE21_ME21_eta1p6to2p2_looseVeto", "Displaced L1Mu, hit in GE11, ME11, GE21, ME21 direction based, loose veto",
-                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuDirectionBased_GE11_ME11_GE21_ME21_eta1p6to2p2_looseVeto", doEta=True)
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuDirectionBased_GE11_ME11_GE21_ME21_eta1p6to2p2_looseVeto")
 
     makeEtaPlots("1.6<|#eta|<2.2",
                  "h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2", "Prompt L1Mu, hit in GE11, ME11, GE21, ME21, ME3",
                  "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2", "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based",
                  "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2_looseVeto", "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based, loose veto",
-                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuHybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2_looseVeto", doEta=True)
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuHybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2_looseVeto")
 
     makeEtaPlots("1.6<|#eta|<2.2",
                  "h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta1p6to2p2", "Prompt L1Mu, hit in ME1, ME2, ME3",
@@ -900,25 +951,25 @@ if __name__ == "__main__":
                  "h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta1p6to2p2", "Prompt L1Mu, hit in ME1, ME2, ME3",
                  "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p6to2p2", "Displaced L1Mu, hit in ME1, ME2, ME3 position based",
                  "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p6to2p2_mediumVeto", "Displaced L1Mu, hit in ME1, ME2, ME3 position based, medium veto",
-                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_ME1_ME2_ME3_eta1p6to2p2_mediumVeto", doEta=True)
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_ME1_ME2_ME3_eta1p6to2p2_mediumVeto")
 
     makeEtaPlots("1.2<|#eta|<2.4",
                  "h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta1p2to2p4", "Prompt L1Mu, hit in ME1, ME2, ME3",
                  "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p2to2p4", "Displaced L1Mu, hit in ME1, ME2, ME3 position based",
                  "h_single_displaced_L1Mu_rate_eta_position_ME1_ME2_ME3_eta1p2to2p4_mediumVeto", "Displaced L1Mu, hit in ME1, ME2, ME3 position based, medium veto",
-                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_ME1_ME2_ME3_eta1p2to2p4_mediumVeto", doEta=True)
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_ME1_ME2_ME3_eta1p2to2p4_mediumVeto")
 
     makeEtaPlots("1.6<|#eta|<2.2",
                  "h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_eta1p6to2p2", "Prompt L1Mu, hit in GE11, ME11, GE21, ME21",
                  "h_single_displaced_L1Mu_rate_eta_direction_GE11_ME11_GE21_ME21_eta1p6to2p2", "Displaced L1Mu, hit in GE11, ME11, GE21, ME21 direction based",
                  "h_single_displaced_L1Mu_rate_eta_direction_GE11_ME11_GE21_ME21_eta1p6to2p2_mediumVeto", "Displaced L1Mu, hit in GE11, ME11, GE21, ME21 direction based, medium veto",
-                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuDirectionBased_GE11_ME11_GE21_ME21_eta1p6to2p2_mediumVeto", doEta=True)
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuDirectionBased_GE11_ME11_GE21_ME21_eta1p6to2p2_mediumVeto")
 
     makeEtaPlots("1.6<|#eta|<2.2",
                  "h_single_prompt_L1Mu_rate_eta_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2", "Prompt L1Mu, hit in GE11, ME11, GE21, ME21, ME3",
                  "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2", "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based",
                  "h_single_displaced_L1Mu_rate_eta_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2_mediumVeto", "Displaced L1Mu, hit in GE11, ME11, GE21, ME21, ME3 hybrid based, medium veto",
-                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuHybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2_mediumVeto", doEta=True)
+                 "Prompt_L1Mu_trigger_rate_eta__L1Mu__L1Mu3st__DisplacedL1MuHybridBased_GE11_ME11_GE21_ME21_ME3_eta1p6to2p2_mediumVeto")
 
     makeEtaPlots("1.6<|#eta|<2.2",
                  "h_single_prompt_L1Mu_rate_eta_ME1_ME2_ME3_eta1p6to2p2", "Prompt L1Mu, hit in ME1, ME2, ME3",

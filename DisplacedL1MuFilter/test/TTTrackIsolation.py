@@ -96,12 +96,47 @@ def fillDPhiHistogram( h_dphi_ME11_ME21, treeHits, min_pt = 0, max_pt = 999 ):
         ## not a CSC muon
         if L1Mu_CSCTF_index == -1: continue
 
+        ## check even or odd
+        GE11_even_L1 = treeHits.GE11_ch_L1[L1Mu_CSCTF_index] % 2 ==0
+        GE11_even_L2 = treeHits.GE11_ch_L2[L1Mu_CSCTF_index] % 2 ==0
+        
+        GE21_even_L1 = treeHits.GE21_ch_L1[L1Mu_CSCTF_index] % 2 ==0
+        GE21_even_L2 = treeHits.GE21_ch_L2[L1Mu_CSCTF_index] % 2 ==0
 
         GE11_phi_L1 = treeHits.GE11_phi_L1[L1Mu_CSCTF_index]
         GE11_phi_L2 = treeHits.GE11_phi_L2[L1Mu_CSCTF_index]
 
         GE21_phi_L1 = treeHits.GE21_pad2_phi_L1[L1Mu_CSCTF_index]
         GE21_phi_L2 = treeHits.GE21_pad2_phi_L2[L1Mu_CSCTF_index]
+
+        GE11_z_L1 = treeHits.GE11_z_L1[L1Mu_CSCTF_index]
+        GE11_z_L2 = treeHits.GE11_z_L2[L1Mu_CSCTF_index]
+
+        GE21_z_L1 = treeHits.GE21_z_L1[L1Mu_CSCTF_index]
+        GE21_z_L2 = treeHits.GE21_z_L2[L1Mu_CSCTF_index]
+
+        """
+        if GE11_even_L1:
+            print "GE11 even L1", GE11_phi_L1, GE11_z_L1
+        else:
+            print "GE11 odd L1", GE11_phi_L1, GE11_z_L1
+            
+        if GE11_even_L2:
+            print "GE11 even L2", GE11_phi_L2, GE11_z_L2
+        else:
+            print "GE11 odd L2", GE11_phi_L2, GE11_z_L2
+        """
+
+        if GE21_even_L1:
+            print "GE21 even L1", GE21_phi_L1, GE21_z_L1
+        else:
+            print "GE21 odd L1", GE21_phi_L1, GE21_z_L1
+            
+        if GE21_even_L2:
+            print "GE21 even L2", GE21_phi_L2, GE21_z_L2
+        else:
+            print "GE21 odd L2", GE21_phi_L2, GE21_z_L2
+
 
         CSCTF_fit_phi1 = treeHits.CSCTF_fit_phi1[L1Mu_CSCTF_index]
         CSCTF_fit_phi2 = treeHits.CSCTF_fit_phi2[L1Mu_CSCTF_index]
@@ -142,8 +177,8 @@ def fillDPhiHistogram( h_dphi_ME11_ME21, treeHits, min_pt = 0, max_pt = 999 ):
         h_dphi_ME11_ME21.Fill(GE11_ME11_dphi, GE21_ME21_dphi)
 
 ##_________________________________________________
-def fillPtEtaHistogram(ptHistogram,
-                       etaHistogram,
+def fillPromptHistogram(mapTH1F,
+                       key,
                        treeHits,
                        doBXCut,
                        etaCutMin,
@@ -188,11 +223,14 @@ def fillPtEtaHistogram(ptHistogram,
                                                              hasMB2Cut,
                                                              hasMB3Cut,
                                                              hasMB4Cut)
+
     if (prompt_L1Mu_pt>0):
-        ptHistogram.Fill(prompt_L1Mu_pt)
-    ## apply a 10 GeV pT cut for the eta histograms!!!
+        mapTH1F[key.replace("rate_", "rate_pt_")].Fill(prompt_L1Mu_pt)
+    ## apply a 7/10 GeV pT cut for the eta histograms!!!
+    if (prompt_L1Mu_pt>=7):
+        mapTH1F[key.replace("rate_", "rate_eta_L1Pt7_")].Fill(abs(prompt_L1Mu_eta))
     if (prompt_L1Mu_pt>=10):
-        etaHistogram.Fill(abs(prompt_L1Mu_eta))
+        mapTH1F[key.replace("rate_", "rate_eta_L1Pt10_")].Fill(abs(prompt_L1Mu_eta))
 
 
 
@@ -305,8 +343,11 @@ def getMaxPromptPtEtaEvent(treeHits,
             has_CSC_ME11 = treeHits.CSCTF_ri1[L1Mu_CSCTF_index] == 1 or treeHits.CSCTF_ri1[L1Mu_CSCTF_index] == 4
             has_CSC_ME21 = treeHits.CSCTF_ri2[L1Mu_CSCTF_index] == 1
 
-            GE11_dPhi = treeHits.CSCTF_gemdphi1[L1Mu_CSCTF_index]
-            GE21_dPhi = treeHits.CSCTF_gemdphi2[L1Mu_CSCTF_index]
+            GE11_phi = getBestValue(treeHits.GE11_phi_L1[L1Mu_CSCTF_index], treeHits.GE11_phi_L2[L1Mu_CSCTF_index])
+            GE21_phi = getBestValue(treeHits.GE21_pad2_phi_L1[L1Mu_CSCTF_index], treeHits.GE21_pad2_phi_L2[L1Mu_CSCTF_index])
+
+            GE11_dPhi = treeHits.CSCTF_phi1[L1Mu_CSCTF_index] - GE11_phi
+            GE21_dPhi = treeHits.CSCTF_phi2[L1Mu_CSCTF_index] - GE21_phi
 
             CSC_ME1_ch  = treeHits.CSCTF_ch1[L1Mu_CSCTF_index]
             CSC_ME2_ch  = treeHits.CSCTF_ch2[L1Mu_CSCTF_index]
@@ -404,9 +445,9 @@ Displaced_L1Mu_pt = pt_endcap_position_based_algorithm(treeHits, i, L1Mu_CSCTF_i
 isIsolated = is_L1Mu_isolated(treeHits, i, 0.4, 4, 0.12, 0)
 """
 
-def fillDisplacedPtEtaHistogram(ptHistogram,
-                                etaHistogram,
-                                treeHits,
+def fillDisplacedHistogram(mapTH1F,
+                           key,
+                           treeHits,
                                 doBXCut,
                                 etaCutMin,
                                 etaCutMax,
@@ -440,13 +481,13 @@ def fillDisplacedPtEtaHistogram(ptHistogram,
                                                                       doHybridBasedGE21,
                                                                       doVeto,
                                                                       vetoType)
-    #print "check pT ok", displaced_L1Mu_pt
     if (displaced_L1Mu_pt>0):
-        ptHistogram.Fill(displaced_L1Mu_pt)
-        #print "Max displaced pT event", displaced_L1Mu_pt
+        mapTH1F[key.replace("rate_", "rate_pt_")].Fill(displaced_L1Mu_pt)
+    ## apply a 7/10 GeV pT cut for the eta histograms!!!
+    if (displaced_L1Mu_pt>=7):
+        mapTH1F[key.replace("rate_", "rate_eta_L1Pt7_")].Fill(abs(displaced_L1Mu_eta))
     if (displaced_L1Mu_pt>=10):
-        etaHistogram.Fill(abs(displaced_L1Mu_eta))
-        #print "Max displaced pT eta event", displaced_L1Mu_pt, abs(displaced_L1Mu_eta)
+        mapTH1F[key.replace("rate_", "rate_eta_L1Pt10_")].Fill(abs(displaced_L1Mu_eta))
 
 
 

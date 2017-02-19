@@ -49,7 +49,7 @@ def is_L1Mu_isolated(treeHits, L1Mu_index, vetoType):
     if L1Mu_L1Tk_dR_min <= dR_smallCone and L1Mu_L1Tk_pt >= ptCut_smallCone: isMatched = True
 
     ## isolated means neither matched nor unmatched!
-    return (not isMatched) and (not isUnmatched)
+    return (not isMatched)
 
 ##_________________________________________________
 def isME11StubDisabled(failRate):
@@ -451,10 +451,6 @@ def fillDisplacedHistogram(mapTH1F,
                            etaCutMin,
                            etaCutMax,
                            stubCut,
-                           hasMB1Cut=False,
-                           hasMB2Cut=False,
-                           hasMB3Cut=False,
-                           hasMB4Cut=False,
                            algorithm=0,
                            vetoType=0):
     doBXCut = True
@@ -465,14 +461,13 @@ def fillDisplacedHistogram(mapTH1F,
                                                                       etaCutMax,
                                                                       stubCut,
                                                                       qualityCut,
-                                                                      hasMB1Cut,
-                                                                      hasMB2Cut,
-                                                                      hasMB3Cut,
-                                                                      hasMB4Cut,
                                                                       algorithm,
                                                                       vetoType)
     if (displaced_L1Mu_pt>0):
-        mapTH1F[key.replace("rate_", "rate_pt_")].Fill(displaced_L1Mu_pt)
+        if mapTH1F[key.replace("rate_", "rate_pt_")]:
+            mapTH1F[key.replace("rate_", "rate_pt_")].Fill(displaced_L1Mu_pt)
+        else:
+            print "Histogram", key.replace("rate_", "rate_pt_"), "does not exist"
     ## apply a 7/10 GeV pT cut for the eta histograms!!!
     if (displaced_L1Mu_pt>=7):
         mapTH1F[key.replace("rate_", "rate_eta_L1Pt7_")].Fill(abs(displaced_L1Mu_eta))
@@ -493,10 +488,6 @@ def getMaxDisplacedPtEtaEvent(treeHits,
                               etaCutMax,
                               stubCut,
                               qualityCut,
-                              hasMB1Cut=False,
-                              hasMB2Cut=False,
-                              hasMB3Cut=False,
-                              hasMB4Cut=False,
                               algorithm=0,
                               vetoType=0):
 
@@ -601,19 +592,30 @@ def getMaxDisplacedPtEtaEvent(treeHits,
             if algorithm==5: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_hybrid_algorithm(treeHits, i, True)
 
         #print L1Mu_DTTF_index
-        if is_DT_Muon:
+        if L1Mu_DTTF_index != -1 and L1Mu_DTTF_index < len(treeHits.DTTF_phi1):
             has_DT_MB1 = treeHits.DTTF_phi1[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib1[L1Mu_DTTF_index] != 99
             has_DT_MB2 = treeHits.DTTF_phi2[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib2[L1Mu_DTTF_index] != 99
             has_DT_MB3 = treeHits.DTTF_phi3[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib3[L1Mu_DTTF_index] != 99
             has_DT_MB4 = treeHits.DTTF_phi4[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib4[L1Mu_DTTF_index] != 99
 
+            ## direction based MB1-MB4
+            if algorithm==3 or True: 
+                DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 3)
+            """
+            if algorithm==2: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 2)
+            if algorithm==3: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 3)
+            if algorithm==4: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 4)
+            if algorithm==5: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 5)
+            if algorithm==6: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 6)
+            """
+            
+            """
             if hasMB1Cut and not has_DT_MB1: continue
             if hasMB2Cut and not has_DT_MB2: continue
             if hasMB3Cut and not has_DT_MB3: continue
             if hasMB4Cut and not has_DT_MB4: continue
-
-            DisplacedL1Mu_pt, DisplacedL1Mu_eta = -1, -1
-
+            """
+            
         ## calculate the max pT for the muons that pass the criteria
         if DisplacedL1Mu_pt > max_displaced_L1Mu_pt:
             max_displaced_L1Mu_pt = DisplacedL1Mu_pt

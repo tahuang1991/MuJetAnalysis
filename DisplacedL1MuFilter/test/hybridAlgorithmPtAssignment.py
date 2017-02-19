@@ -161,17 +161,17 @@ def pt_endcap_position_based_algorithm(treeHits, L1Mu_index, doComparatorFit):
     CSCTF_isEven4 = CSCTF_ch4%2==0
 
     CSCTF_L1_DDY123 = treeHits.CSCTF_L1_DDY123[L1Mu_CSCTF_index] 
-    if CSCTF_L1_DDY123!=99:
-        if (not (ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3)):
-            print "AllTracks, DDY123_L1 ",CSCTF_L1_DDY123, " CSCTF_phi1 ",CSCTF_phi1," CSCTF_phi2 ",CSCTF_phi2," CSCTF_phi3 ",CSCTF_phi3
+    #if CSCTF_L1_DDY123!=99:
+        #if (not (ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3)):
+            #print "AllTracks, DDY123_L1 ",CSCTF_L1_DDY123, " CSCTF_phi1 ",CSCTF_phi1," CSCTF_phi2 ",CSCTF_phi2," CSCTF_phi3 ",CSCTF_phi3
             
     ## actual calctulation of the pT
     if ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3:
-        returnValue = treeHits.CSCTF_L1_position_pt[L1Mu_CSCTF_index]
-        #DDY123_L1 = abs(treeHits.CSCTF_L1_DDY123[L1Mu_CSCTF_index])
-        #parity3 = get_parity(CSCTF_isEven1, CSCTF_isEven2, CSCTF_isEven3, CSCTF_isEven4)
-        #etaPartition = get_eta_partition(CSCTF_eta2)
-        #returnValue = pt_from_DDY123_Tao(DDY123_L1, etaRanges[etaPartition], ME1ME2ME3ParityCases[parity3], doComparatorFit)
+        #returnValue = treeHits.CSCTF_L1_position_pt[L1Mu_CSCTF_index]
+        DDY123_L1 = abs(treeHits.CSCTF_L1_DDY123[L1Mu_CSCTF_index])
+        parity3 = get_parity(CSCTF_isEven1, CSCTF_isEven2, CSCTF_isEven3, CSCTF_isEven4)
+        etaPartition = get_eta_partition(CSCTF_eta2)
+        returnValue = pt_from_DDY123_Tao(DDY123_L1, etaRanges[etaPartition], ME1ME2ME3ParityCases[parity3], doComparatorFit)
 
     return returnValue, CSCTF_eta2
 

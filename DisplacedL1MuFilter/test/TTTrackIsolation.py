@@ -464,10 +464,7 @@ def fillDisplacedHistogram(mapTH1F,
                                                                       algorithm,
                                                                       vetoType)
     if (displaced_L1Mu_pt>0):
-        if mapTH1F[key.replace("rate_", "rate_pt_")]:
-            mapTH1F[key.replace("rate_", "rate_pt_")].Fill(displaced_L1Mu_pt)
-        else:
-            print "Histogram", key.replace("rate_", "rate_pt_"), "does not exist"
+        mapTH1F[key.replace("rate_", "rate_pt_")].Fill(displaced_L1Mu_pt)
     ## apply a 7/10 GeV pT cut for the eta histograms!!!
     if (displaced_L1Mu_pt>=7):
         mapTH1F[key.replace("rate_", "rate_eta_L1Pt7_")].Fill(abs(displaced_L1Mu_eta))
@@ -514,9 +511,6 @@ def getMaxDisplacedPtEtaEvent(treeHits,
         ## check if muon is isolated
         if (vetoType!=0) and (not is_L1Mu_isolated(treeHits, i, vetoType)): continue
 
-        ## eta cut
-        #if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) <= etaCutMax): continue
-
         L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[i]
         L1Mu_DTTF_index = treeHits.L1Mu_DTTF_index[i]
         L1Mu_eta_ME2 = -99
@@ -552,7 +546,7 @@ def getMaxDisplacedPtEtaEvent(treeHits,
         nDTStubs = 0
 
         DisplacedL1Mu_pt, DisplacedL1Mu_eta = -1, -1
-
+        
         #print L1Mu_CSCTF_index
         if L1Mu_CSCTF_index != -1 and L1Mu_CSCTF_index < len(treeHits.CSCTF_phi1):
             has_CSC_ME1 = treeHits.CSCTF_phi1[L1Mu_CSCTF_index] != 99
@@ -578,7 +572,8 @@ def getMaxDisplacedPtEtaEvent(treeHits,
 
             L1Mu_eta = treeHits.CSCTF_L1_eta_st2[L1Mu_CSCTF_index]
 
-            if not (etaCutMin <= abs(L1Mu_eta_ME2) and abs(L1Mu_eta_ME2) <= etaCutMax): continue
+            ## eta cut
+            if not (etaCutMin <=abs(L1Mu_eta_ME2) and abs(L1Mu_eta_ME2) < etaCutMax): continue
 
             ## position based
             if algorithm==1: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_position_based_algorithm(treeHits, i, True)
@@ -592,11 +587,14 @@ def getMaxDisplacedPtEtaEvent(treeHits,
             if algorithm==5: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_endcap_hybrid_algorithm(treeHits, i, True)
 
         #print L1Mu_DTTF_index
-        if L1Mu_DTTF_index != -1 and L1Mu_DTTF_index < len(treeHits.DTTF_phi1):
+        if False and L1Mu_DTTF_index != -1 and L1Mu_DTTF_index < len(treeHits.DTTF_phi1):
             has_DT_MB1 = treeHits.DTTF_phi1[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib1[L1Mu_DTTF_index] != 99
             has_DT_MB2 = treeHits.DTTF_phi2[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib2[L1Mu_DTTF_index] != 99
             has_DT_MB3 = treeHits.DTTF_phi3[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib3[L1Mu_DTTF_index] != 99
             has_DT_MB4 = treeHits.DTTF_phi4[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib4[L1Mu_DTTF_index] != 99
+
+            ## eta cut
+            if not (etaCutMin <=abs(L1Mu_eta) and abs(L1Mu_eta) < etaCutMax): continue
 
             ## direction based MB1-MB4
             if algorithm==3 or True: 

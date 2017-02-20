@@ -7,6 +7,7 @@ from Helpers import *
 ROOT.gErrorIgnoreLevel=1001
 from ROOT import *
 import random
+import re
 
 #______________________________________________________________________________
 if __name__ == "__main__":
@@ -40,7 +41,7 @@ if __name__ == "__main__":
   #nEvents = 30000
   #nEvents = 100000
   #nEvents = 273100
-  nEvents = 10000
+  #nEvents = 100000
   nEvents = 282300
   
   def displacedL1MuHybridTriggerRatePlots():
@@ -149,7 +150,7 @@ if __name__ == "__main__":
       #gPad.SetLogx(1);
       if doEta:
         gPad.SetLogx(0);
-        gPad.SetLogy(0)
+        gPad.SetLogy(1)
       gPad.SetGridx(1);
       gPad.SetGridy(1);
       gStyle.SetErrorX(0)
@@ -173,9 +174,15 @@ if __name__ == "__main__":
       b1 = TH1F("b1","b1",100,0,100)
       if doEta:
         b1 = TH1F("b1","b1",nmyetabin,myetabin)
-      b1.GetYaxis().SetRangeUser(0.2,8000)
-      b1.GetXaxis().SetRangeUser(2,50)
       b1.GetYaxis().SetTitleOffset(1.2)
+      if doEta:
+        legendTitleSplit = re.split('<', legendTitle)
+        print legendTitleSplit
+        minEta, maxEta = float(legendTitleSplit[0]), float(legendTitleSplit[2])
+        print minEta, maxEta
+        b1.GetXaxis().SetRangeUser(minEta,maxEta)
+      else:  
+        b1.GetXaxis().SetRangeUser(2,50)
 
       if not doEta:
         b1.GetYaxis().SetNdivisions(520)
@@ -216,14 +223,21 @@ if __name__ == "__main__":
           h41 = getRatePtHistogram(nEvents, h41)
 
       ## set the xy-range user
+      if h1 is not None: histogramMax = h11.GetMaximum()
+      if h2 is not None: histogramMax = max(h11.GetMaximum(), h21.GetMaximum())
+      if h3 is not None: histogramMax = max(h11.GetMaximum(), h21.GetMaximum(), h31.GetMaximum())
+      if h4 is not None: histogramMax = max(h11.GetMaximum(), h21.GetMaximum(), h31.GetMaximum(), h41.GetMaximum())
+
+      if h1 is not None: histogramMin = h11.GetMinimum()
+      if h2 is not None: histogramMin = min(h11.GetMinimum(), h21.GetMinimum())
+      if h3 is not None: histogramMin = min(h11.GetMinimum(), h21.GetMinimum(), h31.GetMinimum())
+      if h4 is not None: histogramMin = min(h11.GetMinimum(), h21.GetMinimum(), h31.GetMinimum(), h41.GetMinimum())
+
       if doEta:
-        b1.GetXaxis().SetRangeUser(0,2.5)
         ## calculate the maximum of the histograms, then add 20% to the scale
-        if h1 is not None: histogramMax = h11.GetMaximum()
-        if h2 is not None: histogramMax = max(h11.GetMaximum(), h21.GetMaximum())
-        if h3 is not None: histogramMax = max(h11.GetMaximum(), h21.GetMaximum(), h31.GetMaximum())
-        if h4 is not None: histogramMax = max(h11.GetMaximum(), h21.GetMaximum(), h31.GetMaximum(), h41.GetMaximum())
-        b1.GetYaxis().SetRangeUser(0,histogramMax*1.2)
+        b1.GetYaxis().SetRangeUser(0.1,histogramMax*2)
+      else:
+        b1.GetYaxis().SetRangeUser(0.8,histogramMax*10.)
 
       ## set empty bins for displaced trigger histograms!
       def setEmptyBins(h):
@@ -271,9 +285,9 @@ if __name__ == "__main__":
 
         ## get the pT cut
         if 'L1Pt7' in title:
-          tex = TLatex(0.15, 0.45,"p_{T}^{Trigger} #geq 7 GeV")
+          tex = TLatex(0.15, 0.85,"p_{T}^{Trigger} #geq 7 GeV")
         else:
-          tex = TLatex(0.15, 0.45,"p_{T}^{Trigger} #geq 10 GeV")
+          tex = TLatex(0.15, 0.85,"p_{T}^{Trigger} #geq 10 GeV")
         tex.SetTextSize(0.04)
         tex.SetNDC()
         tex.Draw("same")
@@ -320,13 +334,12 @@ if __name__ == "__main__":
 
       #latex = applyTdrStyle()
 
-      leg = TLegend(0.15,0.2,0.5,0.4,legendTitle,"brNDC")
-      leg.SetHeader(legendTitle)
-      leg.SetFillColor(kWhite)
-      leg.SetBorderSize(0)
-      leg.SetFillStyle(1001)
-      leg.SetTextSize(0.04)
       if doEta:
+        leg = TLegend(0.15,0.6,0.5,0.8,"","brNDC")
+        leg.SetFillColor(kWhite)
+        leg.SetBorderSize(0)
+        leg.SetFillStyle(1001)
+        leg.SetTextSize(0.04)
         leg.AddEntry(h11, h1Legend + " (" + str("%.1f"%h11.Integral()) + " kHz)", "p")
         leg.AddEntry(h21, h2Legend + " (" + str("%.1f"%h21.Integral()) + " kHz)", "p")
         if h3 is not None:
@@ -335,6 +348,12 @@ if __name__ == "__main__":
           leg.AddEntry(h41, h4Legend + " (" + str("%.1f"%h41.Integral()) + " kHz)", "p")
         leg.Draw("same")
       else:
+        leg = TLegend(0.15,0.75,0.8,0.9,legendTitle,"brNDC")
+        #leg.SetHeader(legendTitle)
+        leg.SetFillColor(kWhite)
+        leg.SetBorderSize(0)
+        leg.SetFillStyle(1001)
+        leg.SetTextSize(0.04)
         leg.AddEntry(h11, h1Legend, "p")
         leg.AddEntry(h21, h2Legend, "p")
         if h3 is not None:
@@ -785,7 +804,7 @@ if __name__ == "__main__":
 
     ## barrel trigger
     makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB4_eta0to0p9",
-              "0<|#eta|#leq0.9",
+              "0<|#eta|<0.9",
               "h_single_prompt_L1Mu_rate_pt_eta0to0p9", "Prompt L1Mu",
               "h_single_prompt_L1Mu_rate_pt_MB1_MB4_eta0to0p9", "Prompt L1Mu, hit in MB1, MB4",
               "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB4_eta0to0p9", "Displaced L1Mu, hit in MB1, MB4, direction based")
@@ -802,54 +821,79 @@ if __name__ == "__main__":
 
 
     makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB4_eta0to0p9_looseVeto",
-              "0<|#eta|#leq0.9",
+              "0<|#eta|<0.9",
               "h_single_prompt_L1Mu_rate_pt_MB1_MB4_eta0to0p9", "Prompt L1Mu, hit in MB1, MB4",
               "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB4_eta0to0p9", "Direction based, hit in MB1, MB4",
               "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB4_eta0to0p9_looseVeto", "Direction based, hit in MB1, MB4 + loose veto")
     makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB4_eta0to0p9_looseVeto",
-                 "0<|#eta|#leq0.9",
+                 "0<|#eta|<0.9",
                  "h_single_prompt_L1Mu_rate_eta_L1Pt7_MB1_MB4_eta0to0p9", "Prompt L1Mu, hit in MB1, MB4",
                  "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB4_eta0to0p9", "Direction based, hit in MB1, MB4",
                  "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB4_eta0to0p9_looseVeto", "Direction based, hit in MB1, MB4 + loose veto")
     makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB4_eta0to0p9_looseVeto",
-                 "0<|#eta|#leq0.9",
+                 "0<|#eta|<0.9",
                  "h_single_prompt_L1Mu_rate_eta_L1Pt10_MB1_MB4_eta0to0p9", "Prompt L1Mu, hit in MB1, MB4",
                  "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB4_eta0to0p9", "Direction based, hit in MB1, MB4",
                  "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB4_eta0to0p9_looseVeto", "Direction based, hit in MB1, MB4 + loose veto")
 
 
     makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB4_eta0to0p9_mediumVeto",
-              "0<|#eta|#leq0.9",
+              "0<|#eta|<0.9",
               "h_single_prompt_L1Mu_rate_pt_MB1_MB4_eta0to0p9", "Prompt L1Mu, hit in MB1, MB4",
               "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB4_eta0to0p9", "Direction based, hit in MB1, MB4",
               "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB4_eta0to0p9_mediumVeto", "Direction based, hit in MB1, MB4 + medium veto")
     makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB4_eta0to0p9_mediumVeto",
-                 "0<|#eta|#leq0.9",
+                 "0<|#eta|<0.9",
                  "h_single_prompt_L1Mu_rate_eta_L1Pt7_MB1_MB4_eta0to0p9", "Prompt L1Mu, hit in MB1, MB4",
                  "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB4_eta0to0p9", "Direction based, hit in MB1, MB4",
                  "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB4_eta0to0p9_mediumVeto", "Direction based, hit in MB1, MB4 + medium veto")
     makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB4_eta0to0p9_mediumVeto",
-                 "0<|#eta|#leq0.9",
+                 "0<|#eta|<0.9",
                  "h_single_prompt_L1Mu_rate_eta_L1Pt10_MB1_MB4_eta0to0p9", "Prompt L1Mu, hit in MB1, MB4",
                  "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB4_eta0to0p9", "Direction based, hit in MB1, MB4",
                  "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB4_eta0to0p9_mediumVeto", "Direction based, hit in MB1, MB4 + medium veto")
 
 
     makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB4_eta0to0p9_tightVeto",
-              "0<|#eta|#leq0.9",
+              "0<|#eta|<0.9",
               "h_single_prompt_L1Mu_rate_pt_MB1_MB4_eta0to0p9", "Prompt L1Mu, hit in MB1, MB4",
               "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB4_eta0to0p9", "Direction based, hit in MB1, MB4",
               "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB4_eta0to0p9_tightVeto", "Direction based, hit in MB1, MB4 + tight veto")
     makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB4_eta0to0p9_tightVeto",
-                 "0<|#eta|#leq0.9",
+                 "0<|#eta|<0.9",
                  "h_single_prompt_L1Mu_rate_eta_L1Pt7_MB1_MB4_eta0to0p9", "Prompt L1Mu, hit in MB1, MB4",
                  "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB4_eta0to0p9", "Direction based, hit in MB1, MB4",
                  "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB4_eta0to0p9_tightVeto", "Direction based, hit in MB1, MB4 + tight veto")
     makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB4_eta0to0p9_tightVeto",
-                 "0<|#eta|#leq0.9",
+                 "0<|#eta|<0.9",
                  "h_single_prompt_L1Mu_rate_eta_L1Pt10_MB1_MB4_eta0to0p9", "Prompt L1Mu, hit in MB1, MB4",
                  "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB4_eta0to0p9", "Direction based, hit in MB1, MB4",
                  "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB4_eta0to0p9_tightVeto", "Direction based, hit in MB1, MB4 + tight veto")
+
+
+
+    makePlot("Displaced_L1Mu_trigger_rate_pt__DisplacedL1MuDirectionBased_MB1_MB4_eta0to0p9_vetoCombination",
+              "0<|#eta|<0.9",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB4_eta0to0p9", "No veto",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB4_eta0to0p9_mediumVeto", "Medium veto",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB4_eta0to0p9_tightVeto", "Tight veto")
+    makeEtaPlot("Displaced_L1Mu_trigger_rate_eta_L1Pt7__DisplacedL1MuDirectionBased_MB1_MB4_eta0to0p9_vetoCombination",
+                 "0<|#eta|<0.9",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB4_eta0to0p9", "No veto",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB4_eta0to0p9_mediumVeto", "Medium veto",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB4_eta0to0p9_tightVeto", "Tight veto")
+    makeEtaPlot("Displaced_L1Mu_trigger_rate_eta_L1Pt10__DisplacedL1MuDirectionBased_MB1_MB4_eta0to0p9_vetoCombination",
+                 "0<|#eta|<0.9",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB4_eta0to0p9", "No veto",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB4_eta0to0p9_mediumVeto", "Medium veto",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB4_eta0to0p9_tightVeto", "Tight veto")
+
+
+
+
+
+
+
     exit(1)
 
 

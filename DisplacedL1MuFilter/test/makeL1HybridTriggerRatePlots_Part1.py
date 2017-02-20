@@ -40,9 +40,9 @@ if __name__ == "__main__":
 
   ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
 
-  location0 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v30_StubReco/0000/'
-  location1 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v30_StubReco/0001/'
-  location2 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v30_StubReco/0002/'
+  location0 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v31_StubReco/0000/'
+  location1 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v31_StubReco/0001/'
+  location2 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v31_StubReco/0002/'
 
   tree = addfiles(ch, dirname=location0, ext=".root")
   tree = addfiles(ch, dirname=location1, ext=".root")
@@ -279,7 +279,7 @@ if __name__ == "__main__":
 
     maxEntries = tree.GetEntries()
     if doTest:
-      maxEntries = 10000
+      maxEntries = 100000
 
     print "nEvents", maxEntries
     for k in range(0,maxEntries):
@@ -374,7 +374,7 @@ if __name__ == "__main__":
       ## 1: direction based
       #fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB2_eta0to0p9", tree, 0, 0.9, 0, algorithm=1)
       #fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB3_eta0to0p9", tree, 0, 0.9, 0, algorithm=2)
-      fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB4_eta0to0p9", tree, 0, 0.9, 0, algorithm=3)
+      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB4_eta0to0p9", tree, 0, 0.9, 0, algorithm=3)
       #fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB2_MB3_eta0to0p9", tree, 0, 0.9, 0, algorithm=4)
       #fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB2_MB4_eta0to0p9", tree, 0, 0.9, 0, algorithm=5)
       #fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB3_MB4_eta0to0p9", tree, 0, 0.9, 0, algorithm=6)
@@ -386,7 +386,7 @@ if __name__ == "__main__":
       ## 3: direction based - with GE21
       ## 4: hybrid based - no GE21
       ## 5: hybrid based - with GE21
-
+      
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_position_ME1_ME2_ME3_eta1p2to2p15", tree, 1.2, 2.15, 0, algorithm=1)
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_position_ME1_ME2_ME3_eta1p2to1p6", tree, 1.2, 1.6, 0, algorithm=1)
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_position_ME1_ME2_ME3_eta1p6to2p15", tree, 1.6, 2.15, 0, algorithm=1)
@@ -396,9 +396,9 @@ if __name__ == "__main__":
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", tree, 1.6, 2.15, 0, algorithm=5)
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_hybrid_GE11_ME1_ME2_ME3_eta1p2to2p15", tree, 1.2, 2.15, 0, algorithm=4)
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15", tree, 1.2, 2.15, 0, algorithm=5)
-
+      
       ## loose isolation
-      fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB4_eta0to0p9_looseVeto", tree, 0, 0.9, 0, algorithm=3, vetoType=1)
+      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB4_eta0to0p9_looseVeto", tree, 0, 0.9, 0, algorithm=3, vetoType=1)
 
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_position_ME1_ME2_ME3_eta1p6to2p15_looseVeto", tree, 1.6, 2.15, 0, algorithm=1, vetoType=1)
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_position_ME1_ME2_ME3_eta1p2to2p4_looseVeto", tree, 1.2, 2.4, 0, algorithm=1, vetoType=1)
@@ -415,7 +415,7 @@ if __name__ == "__main__":
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_looseVeto", tree, 1.2, 2.15, 0, algorithm=5, vetoType=1)
 
       ## medium isolation
-      fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB4_eta0to0p9_mediumVeto", tree, 0, 0.9, 0, algorithm=3, vetoType=2)
+      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB4_eta0to0p9_mediumVeto", tree, 0, 0.9, 0, algorithm=3, vetoType=2)
 
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_position_ME1_ME2_ME3_eta1p6to2p15_mediumVeto", tree, 1.6, 2.15, 0, algorithm=1, vetoType=2)
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_position_ME1_ME2_ME3_eta1p2to2p15_mediumVeto", tree, 1.2, 2.4, 0, algorithm=1, vetoType=2)
@@ -430,9 +430,9 @@ if __name__ == "__main__":
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15_mediumVeto", tree, 1.6, 2.15, 0, algorithm=5, vetoType=2)
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_hybrid_GE11_ME1_ME2_ME3_eta1p2to2p15_mediumVeto", tree, 1.2, 2.15, 0, algorithm=4, vetoType=2)
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_mediumVeto", tree, 1.2, 2.15, 0, algorithm=5, vetoType=2)
- 
+
       ## tight isolation
-      fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB4_eta0to0p9_tightVeto", tree, 0, 0.9, 0, algorithm=3, vetoType=3)
+      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB4_eta0to0p9_tightVeto", tree, 0, 0.9, 0, algorithm=3, vetoType=3)
 
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_position_ME1_ME2_ME3_eta1p6to2p15_tightVeto", tree, 1.6, 2.15, 0, algorithm=1, vetoType=3)
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_position_ME1_ME2_ME3_eta1p2to2p15_tightVeto", tree, 1.2, 2.4, 0, algorithm=1, vetoType=3)

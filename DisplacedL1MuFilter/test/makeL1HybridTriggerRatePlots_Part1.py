@@ -25,6 +25,10 @@ if __name__ == "__main__":
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170207_v2"; pu = 'PU140'; eff = False
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170215"; pu = 'PU140'; eff = False
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170219"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170219_v2"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170220"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170221"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170222"; pu = 'PU140'; eff = False
 
   ## extension for figures - add more?
   ext = ".png"
@@ -40,17 +44,21 @@ if __name__ == "__main__":
 
   ch = TChain("DisplacedL1MuFilter_PhaseIIGE21/L1MuTree")
 
-  location0 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v31_StubReco/0000/'
-  location1 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v31_StubReco/0001/'
-  location2 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v31_StubReco/0002/'
+  location0 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v30_StubReco/0000/'
+  location1 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v30_StubReco/0001/'
+  location2 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v30_StubReco/0002/'
 
   tree = addfiles(ch, dirname=location0, ext=".root")
   tree = addfiles(ch, dirname=location1, ext=".root")
   tree = addfiles(ch, dirname=location2, ext=".root")
 
+  #ch.Add("/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v30_StubReco/0000/out_ana_1.root")
   targetDir = label + "/"
 
+  tree = ch
+
   f = TFile.Open(label + ".root","RECREATE")
+  
 
   verbose = True
 
@@ -112,6 +120,7 @@ if __name__ == "__main__":
                        "h_single_prompt_L1Mu_rate_eta1p6to2p15",
                        "h_single_prompt_L1Mu_rate_eta1p2to1p6",
                        "h_single_prompt_L1Mu_rate_eta1p2to2p2",
+                       "h_single_prompt_L1Mu_rate_eta2p15to2p4",
 
                        "h_single_prompt_L1Mu_rate_2_stubs_eta0to2p4",
                        "h_single_prompt_L1Mu_rate_3_stubs_eta0to2p4",
@@ -152,6 +161,9 @@ if __name__ == "__main__":
                        "h_single_prompt_L1Mu_rate_2_stubs_ME21_eta1p6to2p2",
                        "h_single_prompt_L1Mu_rate_3_stubs_ME21_eta1p6to2p2",
 
+                       "h_single_prompt_L1Mu_rate_2_stubs_ME21_eta2p15to2p4",
+                       "h_single_prompt_L1Mu_rate_3_stubs_ME21_eta2p15to2p4",
+
                        "h_single_prompt_L1Mu_rate_2_stubs_ME11orME21_eta1p6to2p2",
                        "h_single_prompt_L1Mu_rate_3_stubs_ME11orME21_eta1p6to2p2",
 
@@ -163,6 +175,9 @@ if __name__ == "__main__":
 
                        "h_single_prompt_L1Mu_rate_2_stubs_GE21_ME21_eta1p6to2p2",
                        "h_single_prompt_L1Mu_rate_3_stubs_GE21_ME21_eta1p6to2p2",
+ 
+                       "h_single_prompt_L1Mu_rate_2_stubs_GE21_ME21_eta2p15to2p4",
+                       "h_single_prompt_L1Mu_rate_3_stubs_GE21_ME21_eta2p15to2p4",
 
                        "h_single_prompt_L1Mu_rate_GE11_ME11_OR_GE21_ME21_eta1p6to2p15",
                        "h_single_prompt_L1Mu_rate_2_stubs_GE11_ME11_OR_GE21_ME21_eta1p6to2p15",
@@ -172,6 +187,10 @@ if __name__ == "__main__":
 
                        "h_single_prompt_L1Mu_rate_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15",
                        "h_single_prompt_L1Mu_rate_GE11_ME11_ME21_ME3_eta1p6to2p2",
+
+                       "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p2to2p15_looseVeto",
+                       "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p2to2p15_mediumVeto",
+                       "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p2to2p15_tightVeto",
 
                        ## failing stations
                        "h_single_prompt_L1Mu_rate_2_stubs_ME11_Fail10p_eta1p6to2p2",
@@ -279,7 +298,7 @@ if __name__ == "__main__":
 
     maxEntries = tree.GetEntries()
     if doTest:
-      maxEntries = 100000
+      maxEntries = 10000
 
     print "nEvents", maxEntries
     for k in range(0,maxEntries):
@@ -368,6 +387,13 @@ if __name__ == "__main__":
       fillPromptHistogram(mapTH1F, "h_single_prompt_L1Mu_rate_GE11_ME11_OR_GE21_ME21_eta1p6to2p15", tree, 1.6, 2.15, 0, hasME11ME21Cut=True, hasGE11GE21Cut=True)
 
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_position_ME1_ME2_ME3_eta1p2to2p15", tree, 1.2, 2.15, 0, algorithm=1)
+      fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_position_ME1_ME2_ME3_eta1p2to2p15_looseVeto", tree, 1.2, 2.15, 0, algorithm=1, vetoType=1)
+      fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_position_ME1_ME2_ME3_eta1p2to2p15_mediumVeto", tree, 1.2, 2.15, 0, algorithm=1, vetoType=2)
+      fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_position_ME1_ME2_ME3_eta1p2to2p15_tightVeto", tree, 1.2, 2.15, 0, algorithm=1, vetoType=3)
+
+      fillPromptHistogram(mapTH1F, "h_single_prompt_L1Mu_rate_ME1_ME2_ME3_eta1p2to2p15_looseVeto", tree, 1.2, 2.15,  0,hasME1Cut=True, hasME2Cut=True, hasME3Cut=True, vetoType=1)
+      fillPromptHistogram(mapTH1F, "h_single_prompt_L1Mu_rate_ME1_ME2_ME3_eta1p2to2p15_looseVeto", tree, 1.2, 2.15,  0,hasME1Cut=True, hasME2Cut=True, hasME3Cut=True, vetoType=2)
+      fillPromptHistogram(mapTH1F, "h_single_prompt_L1Mu_rate_ME1_ME2_ME3_eta1p2to2p15_looseVeto", tree, 1.2, 2.15,  0,hasME1Cut=True, hasME2Cut=True, hasME3Cut=True, vetoType=3)
 
       ## displaced algorithms
       ##

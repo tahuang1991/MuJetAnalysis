@@ -12,7 +12,8 @@ import re
 #______________________________________________________________________________
 if __name__ == "__main__":
 
-  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170219"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170219_v2"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170222"; pu = 'PU140'; eff = False
 
   inputFile = TFile.Open(label + ".root")
 
@@ -28,7 +29,7 @@ if __name__ == "__main__":
 
   doTest = False
 
-  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170219"
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170222"; pu = 'PU140'; eff = False
   targetDir = label + "/"
 
   verbose = False
@@ -37,13 +38,13 @@ if __name__ == "__main__":
   import shutil
   shutil.copy2('index.php', targetDir + 'index.php')
 
-  #nEvents = 284900
   #nEvents = 30000
   #nEvents = 100000
   #nEvents = 273100
-  #nEvents = 100000
   nEvents = 282300
-  
+  nEvents = 283600
+  #nEvents = 10000
+ 
   def displacedL1MuHybridTriggerRatePlots():
 
     ## make plots
@@ -58,7 +59,7 @@ if __name__ == "__main__":
       gPad.SetTickx(1)
       gPad.SetTicky(1)
       gPad.SetLogx(0);
-      gPad.SetLogy(0)
+      gPad.SetLogy(1)
       gPad.SetGridx(1);
       gPad.SetGridy(1);
 
@@ -109,7 +110,7 @@ if __name__ == "__main__":
     def makeEtaPlot(title,
                      legendTitle,
                      h1, h1Legend,
-                     h2, h2Legend,
+                     h2=None, h2Legend=None,
                      h3=None, h3Legend=None,
                      h4=None, h4Legend=None):
       makePlot(title, 
@@ -123,7 +124,7 @@ if __name__ == "__main__":
     def makePlot(title, 
                   legendTitle,
                   h1, h1Legend,
-                  h2, h2Legend,
+                  h2=None, h2Legend=None,
                   h3=None, h3Legend=None,
                   h4=None, h4Legend=None,
                   doEta=False):
@@ -146,11 +147,11 @@ if __name__ == "__main__":
       gStyle.SetPadBottomMargin(0.13);
       gPad.SetTickx(1)
       gPad.SetTicky(1)
-      gPad.SetLogy(1)
+      gPad.SetLogy(0)
       #gPad.SetLogx(1);
       if doEta:
         gPad.SetLogx(0);
-        gPad.SetLogy(1)
+        gPad.SetLogy(0)
       gPad.SetGridx(1);
       gPad.SetGridy(1);
       gStyle.SetErrorX(0)
@@ -201,7 +202,8 @@ if __name__ == "__main__":
       b1.Draw()
 
       h11 = h1.Clone(h1.GetTitle() + "_clone")
-      h21 = h2.Clone(h2.GetTitle() + "_clone")
+      if h2 is not None:
+        h21 = h2.Clone(h2.GetTitle() + "_clone")
       if h3 is not None:
         h31 = h3.Clone(h3.GetTitle() + "_clone")
       if h4 is not None:
@@ -209,14 +211,16 @@ if __name__ == "__main__":
 
       if doEta:
         h11 = getRateEtaHistogram(nEvents, h11)
-        h21 = getRateEtaHistogram(nEvents, h21)
+        if h2 is not None:
+          h21 = getRateEtaHistogram(nEvents, h21)
         if h3 is not None:
           h31 = getRateEtaHistogram(nEvents, h31)
         if h4 is not None:
           h41 = getRateEtaHistogram(nEvents, h41)
       else:
         h11 = getRatePtHistogram(nEvents, h11)
-        h21 = getRatePtHistogram(nEvents, h21)
+        if h2 is not None:
+          h21 = getRatePtHistogram(nEvents, h21)
         if h3 is not None:
           h31 = getRatePtHistogram(nEvents, h31)
         if h4 is not None:
@@ -263,12 +267,13 @@ if __name__ == "__main__":
         h11.SetMarkerColor(kRed)
         h11.Draw("E1X0 same")
 
-        h21.SetLineColor(kGreen+2)
-        #h21.SetFillColor(kViolet)
-        h21.SetMarkerColor(kGreen+2)
-        h21.SetMarkerStyle(21)
-        h21.Draw("E1X0 same")
-
+        if h2 is not None:
+          h21.SetLineColor(kGreen+2)
+          #h21.SetFillColor(kViolet)
+          h21.SetMarkerColor(kGreen+2)
+          h21.SetMarkerStyle(21)
+          h21.Draw("E1X0 same")
+          
         if h3 is not None:
           h31.SetLineColor(kBlue)
           #h31.SetFillColor(kBlue)
@@ -285,9 +290,9 @@ if __name__ == "__main__":
 
         ## get the pT cut
         if 'L1Pt7' in title:
-          tex = TLatex(0.15, 0.85,"p_{T}^{Trigger} #geq 7 GeV")
+          tex = TLatex(0.2, 0.85,"p_{T}^{Trigger} #geq 7 GeV")
         else:
-          tex = TLatex(0.15, 0.85,"p_{T}^{Trigger} #geq 10 GeV")
+          tex = TLatex(0.2, 0.85,"p_{T}^{Trigger} #geq 10 GeV")
         tex.SetTextSize(0.04)
         tex.SetNDC()
         tex.Draw("same")
@@ -301,14 +306,14 @@ if __name__ == "__main__":
         h11.SetMarkerStyle(20)
         h11.Draw("E1X0 same")
 
-        if True: 
+        if h2 is not None: 
           if 'hybrid' in h2Legend:
             setEmptyBins(h21)
-        #h21.SetFillColor(kViolet)
-        h21.SetLineColor(kGreen+2)
-        h21.SetMarkerColor(kGreen+2)
-        h21.SetMarkerStyle(21)
-        h21.Draw("E1X0 same")
+          #h21.SetFillColor(kViolet)
+          h21.SetLineColor(kGreen+2)
+          h21.SetMarkerColor(kGreen+2)
+          h21.SetMarkerStyle(21)
+          h21.Draw("E1X0 same")
 
         if h3 is not None:
           if 'hybrid' in h3Legend:
@@ -341,7 +346,8 @@ if __name__ == "__main__":
         leg.SetFillStyle(1001)
         leg.SetTextSize(0.04)
         leg.AddEntry(h11, h1Legend + " (" + str("%.1f"%h11.Integral()) + " kHz)", "p")
-        leg.AddEntry(h21, h2Legend + " (" + str("%.1f"%h21.Integral()) + " kHz)", "p")
+        if h2 is not None:
+          leg.AddEntry(h21, h2Legend + " (" + str("%.1f"%h21.Integral()) + " kHz)", "p")
         if h3 is not None:
           leg.AddEntry(h31, h3Legend + " (" + str("%.1f"%h31.Integral()) + " kHz)", "p")
         if h4 is not None:
@@ -355,7 +361,8 @@ if __name__ == "__main__":
         leg.SetFillStyle(1001)
         leg.SetTextSize(0.04)
         leg.AddEntry(h11, h1Legend, "p")
-        leg.AddEntry(h21, h2Legend, "p")
+        if h2 is not None:
+          leg.AddEntry(h21, h2Legend, "p")
         if h3 is not None:
           leg.AddEntry(h31, h3Legend, "p")
         if h4 is not None:
@@ -423,11 +430,12 @@ if __name__ == "__main__":
       b1.SetStats(0)
       b1.Draw()
 
-      h21.SetLineColor(kRed)
-      h21.SetMarkerColor(kRed)
-      h21.SetMarkerStyle(20)
-      h21.Divide(h11)
-      h21.Draw("E1X0 same")
+      if h2 is not None:
+        h21.SetLineColor(kRed)
+        h21.SetMarkerColor(kRed)
+        h21.SetMarkerStyle(20)
+        h21.Divide(h11)
+        h21.Draw("E1X0 same")
 
       if h3 is not None:
         h31.SetLineColor(kGreen+2)
@@ -466,6 +474,11 @@ if __name__ == "__main__":
 
 
     ## Calibration plots
+    makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__CALIBRATE__eta0to2p4",
+              "0.0<|#eta|<2.4",
+              "h_single_prompt_L1Mu_rate_pt_eta0to2p4", "Prompt L1Mu, all")
+
+
     makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__CALIBRATE__eta0to2p4",
               "0.0<|#eta|<2.4",
               "h_single_prompt_L1Mu_rate_pt_eta0to2p4", "Prompt L1Mu, all",
@@ -617,6 +630,8 @@ if __name__ == "__main__":
                  "h_single_prompt_L1Mu_rate_eta_L1Pt10_eta1p6to2p15", "Prompt L1Mu",
                  "h_single_prompt_L1Mu_rate_eta_L1Pt10_2_stubs_ME11_eta1p6to2p15", "Prompt L1Mu, 2 CSC stubs, ME11",
                  "h_single_prompt_L1Mu_rate_eta_L1Pt10_2_stubs_GE11_ME11_eta1p6to2p15", "Prompt L1Mu, 2 CSC stubs, ME11, GE11")
+
+
 
     ## displaced trigger
     makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu3st__DisplacedL1MuPositionBased_ME1_ME2_ME3_eta1p6to2p15",
@@ -801,6 +816,152 @@ if __name__ == "__main__":
                  "h_single_displaced_L1Mu_rate_eta_L1Pt10_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid without GE21)",
                  "h_single_displaced_L1Mu_rate_eta_L1Pt10_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", "L1Mu (hybrid with GE21)")
 
+    ## eta extension
+    makePlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15",
+              "1.2<|#eta|<2.15",
+              "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p2to2p15", "L1Mu (constrained)",
+              "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p2to2p15", "L1Mu (unconstrained)",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15", "L1Mu (hybrid)")
+    makeEtaPlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15",
+                 "1.2<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_ME1_ME2_ME3_eta1p2to2p15", "L1Mu (constrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_position_ME1_ME2_ME3_eta1p2to2p15", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15", "L1Mu (hybrid)")
+    makeEtaPlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15",
+                 "1.2<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_ME1_ME2_ME3_eta1p2to2p15", "L1Mu (constrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_position_ME1_ME2_ME3_eta1p2to2p15", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15", "L1Mu (hybrid)")
+
+    makePlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_Combination",
+              "1.2<|#eta|<2.15",
+              "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p2to2p15", "L1Mu (constrained)",
+              "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p2to2p15", "L1Mu (unconstrained)",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME1_ME2_ME3_eta1p2to2p15", "L1Mu (hybrid without GE21)",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15", "L1Mu (hybrid with GE21)")
+    makeEtaPlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_Combination",
+                 "1.2<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_ME1_ME2_ME3_eta1p2to2p15", "L1Mu (constrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_position_ME1_ME2_ME3_eta1p2to2p15", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_hybrid_GE11_ME1_ME2_ME3_eta1p2to2p15", "L1Mu (hybrid without GE21)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15", "L1Mu (hybrid with GE21)")
+    makeEtaPlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_Combination",
+                 "1.2<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_ME1_ME2_ME3_eta1p2to2p15", "L1Mu (constrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_position_ME1_ME2_ME3_eta1p2to2p15", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_hybrid_GE11_ME1_ME2_ME3_eta1p2to2p15", "L1Mu (hybrid without GE21)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15", "L1Mu (hybrid with GE21)")
+
+
+    makePlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_looseVeto",
+              "1.2<|#eta|<2.15",
+              "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (constrained)",
+              "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (unconstrained)",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (hybrid)")
+    makeEtaPlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_looseVeto",
+                 "1.2<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_ME1_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (constrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_position_ME1_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (hybrid)")
+    makeEtaPlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_looseVeto",
+                 "1.2<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_ME1_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (constrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_position_ME1_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (hybrid)")
+
+    makePlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_Combination_looseVeto",
+              "1.2<|#eta|<2.15",
+              "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (constrained)",
+              "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (unconstrained)",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME1_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (hybrid without GE21)",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (hybrid with GE21)")
+    makeEtaPlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_Combination_looseVeto",
+                 "1.2<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_ME1_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (constrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_position_ME1_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_hybrid_GE11_ME1_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (hybrid without GE21)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (hybrid with GE21)")
+    makeEtaPlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_Combination_looseVeto",
+                 "1.2<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_ME1_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (constrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_position_ME1_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_hybrid_GE11_ME1_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (hybrid without GE21)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (hybrid with GE21)")
+
+
+    makePlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_mediumVeto",
+              "1.2<|#eta|<2.15",
+              "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (constrained)",
+              "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (unconstrained)",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (hybrid)")
+    makeEtaPlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_mediumVeto",
+                 "1.2<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_ME1_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (constrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_position_ME1_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (hybrid)")
+    makeEtaPlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_mediumVeto",
+                 "1.2<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_ME1_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (constrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_position_ME1_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (hybrid)")
+
+    makePlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_Combination_mediumVeto",
+              "1.2<|#eta|<2.15",
+              "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (constrained)",
+              "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (unconstrained)",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME1_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (hybrid without GE21)",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (hybrid with GE21)")
+    makeEtaPlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_Combination_mediumVeto",
+                 "1.2<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_ME1_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (constrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_position_ME1_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_hybrid_GE11_ME1_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (hybrid without GE21)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (hybrid with GE21)")
+    makeEtaPlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_Combination_mediumVeto",
+                 "1.2<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_ME1_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (constrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_position_ME1_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_hybrid_GE11_ME1_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (hybrid without GE21)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_mediumVeto", "L1Mu (hybrid with GE21)")
+
+
+    makePlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_tightVeto",
+              "1.2<|#eta|<2.15",
+              "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (constrained)",
+              "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (unconstrained)",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (hybrid)")
+    makeEtaPlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_tightVeto",
+                 "1.2<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_ME1_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (constrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_position_ME1_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (hybrid)")
+    makeEtaPlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_tightVeto",
+                 "1.2<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_ME1_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (constrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_position_ME1_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (hybrid)")
+
+    makePlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_Combination_tightVeto",
+              "1.2<|#eta|<2.15",
+              "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (constrained)",
+              "h_single_displaced_L1Mu_rate_pt_position_ME1_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (unconstrained)",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME1_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (hybrid without GE21)",
+              "h_single_displaced_L1Mu_rate_pt_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (hybrid with GE21)")
+    makeEtaPlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_Combination_tightVeto",
+                 "1.2<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_ME1_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (constrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_position_ME1_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_hybrid_GE11_ME1_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (hybrid without GE21)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (hybrid with GE21)")
+    makeEtaPlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_Combination_tightVeto",
+                 "1.2<|#eta|<2.15",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_ME1_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (constrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_position_ME1_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (unconstrained)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_hybrid_GE11_ME1_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (hybrid without GE21)",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15_tightVeto", "L1Mu (hybrid with GE21)")
+
+
+
 
     ## barrel trigger
     makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB4_eta0to0p9",
@@ -887,9 +1048,6 @@ if __name__ == "__main__":
                  "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB4_eta0to0p9", "No veto",
                  "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB4_eta0to0p9_mediumVeto", "Medium veto",
                  "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB4_eta0to0p9_tightVeto", "Tight veto")
-
-
-
 
 
 

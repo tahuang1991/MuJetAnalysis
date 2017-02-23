@@ -50,12 +50,13 @@ if __name__ == "__main__":
   dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_L1MuANA_v2/160913_042859/0000/'
   dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU140_L1MuANA_v2/160913_042635/0000/'
 
+  dirname = "/Users/Sven/Documents/work/DisplacedMuL1Studies/DarkSUSY_MH-125_MGammaD-20000_ctauX_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v54/"
   ch = addfiles(ch, dirname=dirname)
-  ch = addfiles(ch, dirname=dirname2)
-  ch = addfiles(ch, dirname=dirname3)
+  #ch = addfiles(ch, dirname=dirname2)
+  #ch = addfiles(ch, dirname=dirname3)
   treeHits = ch
 
-  label = "DisplacedL1MuTrigger_20161005"
+  label = "DisplacedL1MuTrigger_20170220"
   targetDir = label + "/"
   
   verbose = False
@@ -157,6 +158,7 @@ if __name__ == "__main__":
     GenMuEta_MS2 = TH1F("GenMuEta_MS2","", 100,-5,5)
     GenMuEta_leading_MS2_random_pt10 = TH1F("GenMuEta_leading_MS2_random_pt10","", 100,-5,5)
     GenMuEta_leading_random_pt10 = TH1F("GenMuEta_leading_random_pt10","", 100,-5,5)
+    GenMuEta_leading_MS2_SingleMu_pt30 = TH1F("GenMuEta_leading_MS2_SingleMu_pt30","", 100,-5,5)
 
     GenMu_SIM_dR = TH1F("GenMu_SIM_dR","", 500,0,5)
 
@@ -472,6 +474,17 @@ if __name__ == "__main__":
       pt_muon1_choose_dark_boson = abs(treeHits.genGdMu_pt[choose_dark_boson*2+0])
       pt_muon2_choose_dark_boson = abs(treeHits.genGdMu_pt[choose_dark_boson*2+1])
 
+      if pt_muon1_choose_dark_boson > 30 or pt_muon2_choose_dark_boson > 30:
+
+        eta_prop_muon1_choose_dark_boson = treeHits.genGdMu_eta_prop[choose_dark_boson*2+0]
+        eta_prop_muon2_choose_dark_boson = treeHits.genGdMu_eta_prop[choose_dark_boson*2+1]
+
+        if abs(pt_muon1_choose_dark_boson) > abs(pt_muon2_choose_dark_boson):
+          GenMuEta_leading_MS2_SingleMu_pt30.Fill(eta_prop_muon1_choose_dark_boson)
+        else:
+          GenMuEta_leading_MS2_SingleMu_pt30.Fill(eta_prop_muon2_choose_dark_boson)
+
+
       if pt_muon1_choose_dark_boson > 10 and pt_muon2_choose_dark_boson > 10:
         
         eta_muon1_choose_dark_boson = treeHits.genGdMu_eta[choose_dark_boson*2+0]
@@ -499,6 +512,7 @@ if __name__ == "__main__":
       #print "lumi_number", lumi_number
       #print "run_number", run_number
 
+      continue
       for i in range(0,2):
 
         for j in range(0,2):
@@ -2793,6 +2807,9 @@ if __name__ == "__main__":
     ### close make2DMedianPlot
 
       
+    makeSimplePlot(GenMuEta_leading_MS2_SingleMu_pt30, targetDir + "GenMuEta_leading_MS2_SingleMu_pt30.png", ";Muon #eta at 2nd muon station; Entries", "")
+    makeSimplePlot(GenMuEta_leading_MS2_SingleMu_pt30, targetDir + "GenMuEta_leading_MS2_SingleMu_pt30.C", ";Muon #eta at 2nd muon station; Entries", "")
+
     makeSimplePlot(GenMuEta_leading_MS2_random_pt10, targetDir + "GenMuEta_leading_MS2_random_pt10.png", ";Muon #eta at 2nd muon station; Entries", "")
     makeSimplePlot(GenMuEta_leading_random_pt10, targetDir + "GenMuEta_leading_random_pt10.png", ";Muon #eta; Entries", "")
     makeSimplePlot(GenMuEta_leading_MS2_random_pt10, targetDir + "GenMuEta_leading_MS2_random_pt10.C", ";Muon #eta at 2nd muon station; Entries", "")

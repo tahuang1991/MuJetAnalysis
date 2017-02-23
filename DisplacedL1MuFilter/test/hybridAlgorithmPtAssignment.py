@@ -117,6 +117,19 @@ def pt_barrel_direction_based_algorithm(treeHits,
     if ok_DTTF_st2 and ok_DTTF_st3 and DT_type is 4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib3, 'DT2_DT3')
     if ok_DTTF_st2 and ok_DTTF_st4 and DT_type is 5: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib4, 'DT2_DT4')
     if ok_DTTF_st3 and ok_DTTF_st4 and DT_type is 6: returnValue = pt_from_DPhi_DT(abs_DTTF_phib3_phib4, 'DT3_DT4')
+    if DT_type is 7: 
+        if ok_DTTF_st1 and ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib4, 'DT1_DT4')
+        else:
+            if (ok_DTTF_st1 and ok_DTTF_st3) or (ok_DTTF_st2 and ok_DTTF_st4):
+                if ok_DTTF_st1 and ok_DTTF_st3: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib3, 'DT1_DT3')
+                if ok_DTTF_st2 and ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib4, 'DT2_DT4')
+            else:
+                if ok_DTTF_st1 and ok_DTTF_st2: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib2, 'DT1_DT2')
+                if ok_DTTF_st2 and ok_DTTF_st3: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib3, 'DT2_DT3')
+                if ok_DTTF_st3 and ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib3_phib4, 'DT3_DT4')
+
+
+        
 
     return returnValue, L1Mu_eta
 
@@ -261,12 +274,12 @@ def pt_endcap_hybrid_algorithm(treeHits, L1Mu_index, useGE21):
     ok_GE21 = GE21_phi_L1 != 99 or GE21_phi_L2 != 99
 
     if useGE21:
-        if ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3 and ok_GE11 and ok_GE21:
+        if ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3:
             returnValue = treeHits.CSCTF_L1_hybrid_pt_GE21[L1Mu_CSCTF_index]
             #if returnValue == 0.0:  returnValue = 2
             if returnValue == 30.0: returnValue = 120 ## very large value
     else:
-        if ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3 and ok_GE11:
+        if ok_CSCTF_st1 and ok_CSCTF_st2 and ok_CSCTF_st3:
             returnValue = treeHits.CSCTF_L1_hybrid_pt_noGE21[L1Mu_CSCTF_index]
             #if returnValue == 0.0:  returnValue = 2
             if returnValue == 30.0: returnValue = 120 ## very large value

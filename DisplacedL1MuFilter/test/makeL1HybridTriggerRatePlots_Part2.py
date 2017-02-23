@@ -41,7 +41,7 @@ if __name__ == "__main__":
   #nEvents = 30000
   #nEvents = 100000
   #nEvents = 273100
-  nEvents = 282300
+  #nEvents = 282300
   nEvents = 283600
   #nEvents = 10000
  
@@ -147,7 +147,7 @@ if __name__ == "__main__":
       gStyle.SetPadBottomMargin(0.13);
       gPad.SetTickx(1)
       gPad.SetTicky(1)
-      gPad.SetLogy(0)
+      gPad.SetLogy(1)
       #gPad.SetLogx(1);
       if doEta:
         gPad.SetLogx(0);
@@ -474,11 +474,6 @@ if __name__ == "__main__":
 
 
     ## Calibration plots
-    makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__CALIBRATE__eta0to2p4",
-              "0.0<|#eta|<2.4",
-              "h_single_prompt_L1Mu_rate_pt_eta0to2p4", "Prompt L1Mu, all")
-
-
     makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__CALIBRATE__eta0to2p4",
               "0.0<|#eta|<2.4",
               "h_single_prompt_L1Mu_rate_pt_eta0to2p4", "Prompt L1Mu, all",
@@ -852,7 +847,7 @@ if __name__ == "__main__":
                  "h_single_displaced_L1Mu_rate_eta_L1Pt10_hybrid_GE11_ME1_ME2_ME3_eta1p2to2p15", "L1Mu (hybrid without GE21)",
                  "h_single_displaced_L1Mu_rate_eta_L1Pt10_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15", "L1Mu (hybrid with GE21)")
 
-
+    
     makePlot("MuonTDR2017_Prompt_L1Mu_trigger_rate_pt__L1Mu__PositionBased_HybridBased_GE11_ME11_GE21_ME21_ME3_eta1p2to2p15_looseVeto",
               "1.2<|#eta|<2.15",
               "h_single_prompt_L1Mu_rate_pt_ME1_ME2_ME3_eta1p2to2p15_looseVeto", "L1Mu (constrained)",
@@ -1032,7 +1027,6 @@ if __name__ == "__main__":
                  "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB4_eta0to0p9_tightVeto", "Direction based, hit in MB1, MB4 + tight veto")
 
 
-
     makePlot("Displaced_L1Mu_trigger_rate_pt__DisplacedL1MuDirectionBased_MB1_MB4_eta0to0p9_vetoCombination",
               "0<|#eta|<0.9",
               "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB4_eta0to0p9", "No veto",
@@ -1050,6 +1044,206 @@ if __name__ == "__main__":
                  "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB4_eta0to0p9_tightVeto", "Tight veto")
 
 
+
+
+
+    makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB2_eta0to0p9",
+              "0<|#eta|<0.9",
+              "h_single_prompt_L1Mu_rate_pt_eta0to0p9", "Prompt L1Mu",
+              "h_single_prompt_L1Mu_rate_pt_MB1_MB2_eta0to0p9", "Prompt L1Mu, hit in MB1, MB2",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB2_eta0to0p9", "Displaced L1Mu, hit in MB1, MB2, direction based")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB2_eta0to0p9",
+                 "0<|#eta|<0.9",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_eta0to0p9", "Prompt L1Mu",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_MB1_MB2_eta0to0p9", "Prompt L1Mu, hit in MB1, MB2",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB2_eta0to0p9", "Displaced L1Mu, hit in MB1, MB2 direction based")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB2_eta0to0p9",
+                 "0<|#eta|<0.9",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_eta0to0p9", "Prompt L1Mu",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_MB1_MB2_eta0to0p9", "Prompt L1Mu, hit in MB1, MB2",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB2_eta0to0p9", "Displaced L1Mu, hit in MB1, MB2 direction based")
+
+
+    makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB2_eta0to0p9_looseVeto",
+              "0<|#eta|<0.9",
+              "h_single_prompt_L1Mu_rate_pt_MB1_MB2_eta0to0p9", "Prompt L1Mu, hit in MB1, MB2",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB2_eta0to0p9", "Direction based, hit in MB1, MB2",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB2_eta0to0p9_looseVeto", "Direction based, hit in MB1, MB2 + loose veto")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB2_eta0to0p9_looseVeto",
+                 "0<|#eta|<0.9",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_MB1_MB2_eta0to0p9", "Prompt L1Mu, hit in MB1, MB2",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB2_eta0to0p9", "Direction based, hit in MB1, MB2",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB2_eta0to0p9_looseVeto", "Direction based, hit in MB1, MB2 + loose veto")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB2_eta0to0p9_looseVeto",
+                 "0<|#eta|<0.9",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_MB1_MB2_eta0to0p9", "Prompt L1Mu, hit in MB1, MB2",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB2_eta0to0p9", "Direction based, hit in MB1, MB2",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB2_eta0to0p9_looseVeto", "Direction based, hit in MB1, MB2 + loose veto")
+
+
+    makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB2_eta0to0p9_mediumVeto",
+              "0<|#eta|<0.9",
+              "h_single_prompt_L1Mu_rate_pt_MB1_MB2_eta0to0p9", "Prompt L1Mu, hit in MB1, MB2",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB2_eta0to0p9", "Direction based, hit in MB1, MB2",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB2_eta0to0p9_mediumVeto", "Direction based, hit in MB1, MB2 + medium veto")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB2_eta0to0p9_mediumVeto",
+                 "0<|#eta|<0.9",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_MB1_MB2_eta0to0p9", "Prompt L1Mu, hit in MB1, MB2",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB2_eta0to0p9", "Direction based, hit in MB1, MB2",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB2_eta0to0p9_mediumVeto", "Direction based, hit in MB1, MB2 + medium veto")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB2_eta0to0p9_mediumVeto",
+                 "0<|#eta|<0.9",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_MB1_MB2_eta0to0p9", "Prompt L1Mu, hit in MB1, MB2",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB2_eta0to0p9", "Direction based, hit in MB1, MB2",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB2_eta0to0p9_mediumVeto", "Direction based, hit in MB1, MB2 + medium veto")
+
+
+    makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB2_eta0to0p9_tightVeto",
+              "0<|#eta|<0.9",
+              "h_single_prompt_L1Mu_rate_pt_MB1_MB2_eta0to0p9", "Prompt L1Mu, hit in MB1, MB2",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB2_eta0to0p9", "Direction based, hit in MB1, MB2",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB2_eta0to0p9_tightVeto", "Direction based, hit in MB1, MB2 + tight veto")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB2_eta0to0p9_tightVeto",
+                 "0<|#eta|<0.9",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_MB1_MB2_eta0to0p9", "Prompt L1Mu, hit in MB1, MB2",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB2_eta0to0p9", "Direction based, hit in MB1, MB2",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB2_eta0to0p9_tightVeto", "Direction based, hit in MB1, MB2 + tight veto")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB2_eta0to0p9_tightVeto",
+                 "0<|#eta|<0.9",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_MB1_MB2_eta0to0p9", "Prompt L1Mu, hit in MB1, MB2",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB2_eta0to0p9", "Direction based, hit in MB1, MB2",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB2_eta0to0p9_tightVeto", "Direction based, hit in MB1, MB2 + tight veto")
+
+
+    makePlot("Displaced_L1Mu_trigger_rate_pt__DisplacedL1MuDirectionBased_MB1_MB2_eta0to0p9_vetoCombination",
+              "0<|#eta|<0.9",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB2_eta0to0p9", "No veto",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB2_eta0to0p9_mediumVeto", "Medium veto",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB2_eta0to0p9_tightVeto", "Tight veto")
+    makeEtaPlot("Displaced_L1Mu_trigger_rate_eta_L1Pt7__DisplacedL1MuDirectionBased_MB1_MB2_eta0to0p9_vetoCombination",
+                 "0<|#eta|<0.9",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB2_eta0to0p9", "No veto",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB2_eta0to0p9_mediumVeto", "Medium veto",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB2_eta0to0p9_tightVeto", "Tight veto")
+    makeEtaPlot("Displaced_L1Mu_trigger_rate_eta_L1Pt10__DisplacedL1MuDirectionBased_MB1_MB2_eta0to0p9_vetoCombination",
+                 "0<|#eta|<0.9",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB2_eta0to0p9", "No veto",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB2_eta0to0p9_mediumVeto", "Medium veto",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB2_eta0to0p9_tightVeto", "Tight veto")
+
+
+
+
+
+
+
+    makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB3_eta0to0p9",
+              "0<|#eta|<0.9",
+              "h_single_prompt_L1Mu_rate_pt_eta0to0p9", "Prompt L1Mu",
+              "h_single_prompt_L1Mu_rate_pt_MB1_MB3_eta0to0p9", "Prompt L1Mu, hit in MB1, MB3",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB3_eta0to0p9", "Displaced L1Mu, hit in MB1, MB3, direction based")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB3_eta0to0p9",
+                 "0<|#eta|<0.9",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_eta0to0p9", "Prompt L1Mu",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_MB1_MB3_eta0to0p9", "Prompt L1Mu, hit in MB1, MB3",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB3_eta0to0p9", "Displaced L1Mu, hit in MB1, MB3 direction based")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB3_eta0to0p9",
+                 "0<|#eta|<0.9",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_eta0to0p9", "Prompt L1Mu",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_MB1_MB3_eta0to0p9", "Prompt L1Mu, hit in MB1, MB3",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB3_eta0to0p9", "Displaced L1Mu, hit in MB1, MB3 direction based")
+
+
+    makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB3_eta0to0p9_looseVeto",
+              "0<|#eta|<0.9",
+              "h_single_prompt_L1Mu_rate_pt_MB1_MB3_eta0to0p9", "Prompt L1Mu, hit in MB1, MB3",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB3_eta0to0p9", "Direction based, hit in MB1, MB3",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB3_eta0to0p9_looseVeto", "Direction based, hit in MB1, MB3 + loose veto")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB3_eta0to0p9_looseVeto",
+                 "0<|#eta|<0.9",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_MB1_MB3_eta0to0p9", "Prompt L1Mu, hit in MB1, MB3",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB3_eta0to0p9", "Direction based, hit in MB1, MB3",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB3_eta0to0p9_looseVeto", "Direction based, hit in MB1, MB3 + loose veto")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB3_eta0to0p9_looseVeto",
+                 "0<|#eta|<0.9",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_MB1_MB3_eta0to0p9", "Prompt L1Mu, hit in MB1, MB3",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB3_eta0to0p9", "Direction based, hit in MB1, MB3",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB3_eta0to0p9_looseVeto", "Direction based, hit in MB1, MB3 + loose veto")
+
+
+    makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB3_eta0to0p9_mediumVeto",
+              "0<|#eta|<0.9",
+              "h_single_prompt_L1Mu_rate_pt_MB1_MB3_eta0to0p9", "Prompt L1Mu, hit in MB1, MB3",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB3_eta0to0p9", "Direction based, hit in MB1, MB3",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB3_eta0to0p9_mediumVeto", "Direction based, hit in MB1, MB3 + medium veto")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB3_eta0to0p9_mediumVeto",
+                 "0<|#eta|<0.9",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_MB1_MB3_eta0to0p9", "Prompt L1Mu, hit in MB1, MB3",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB3_eta0to0p9", "Direction based, hit in MB1, MB3",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB3_eta0to0p9_mediumVeto", "Direction based, hit in MB1, MB3 + medium veto")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB3_eta0to0p9_mediumVeto",
+                 "0<|#eta|<0.9",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_MB1_MB3_eta0to0p9", "Prompt L1Mu, hit in MB1, MB3",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB3_eta0to0p9", "Direction based, hit in MB1, MB3",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB3_eta0to0p9_mediumVeto", "Direction based, hit in MB1, MB3 + medium veto")
+
+
+    makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB3_eta0to0p9_tightVeto",
+              "0<|#eta|<0.9",
+              "h_single_prompt_L1Mu_rate_pt_MB1_MB3_eta0to0p9", "Prompt L1Mu, hit in MB1, MB3",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB3_eta0to0p9", "Direction based, hit in MB1, MB3",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB3_eta0to0p9_tightVeto", "Direction based, hit in MB1, MB3 + tight veto")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB3_eta0to0p9_tightVeto",
+                 "0<|#eta|<0.9",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_MB1_MB3_eta0to0p9", "Prompt L1Mu, hit in MB1, MB3",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB3_eta0to0p9", "Direction based, hit in MB1, MB3",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB3_eta0to0p9_tightVeto", "Direction based, hit in MB1, MB3 + tight veto")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB3_eta0to0p9_tightVeto",
+                 "0<|#eta|<0.9",
+                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_MB1_MB3_eta0to0p9", "Prompt L1Mu, hit in MB1, MB3",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB3_eta0to0p9", "Direction based, hit in MB1, MB3",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB3_eta0to0p9_tightVeto", "Direction based, hit in MB1, MB3 + tight veto")
+
+
+    makePlot("Displaced_L1Mu_trigger_rate_pt__DisplacedL1MuDirectionBased_MB1_MB3_eta0to0p9_vetoCombination",
+              "0<|#eta|<0.9",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB3_eta0to0p9", "No veto",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB3_eta0to0p9_mediumVeto", "Medium veto",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB3_eta0to0p9_tightVeto", "Tight veto")
+    makeEtaPlot("Displaced_L1Mu_trigger_rate_eta_L1Pt7__DisplacedL1MuDirectionBased_MB1_MB3_eta0to0p9_vetoCombination",
+                 "0<|#eta|<0.9",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB3_eta0to0p9", "No veto",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB3_eta0to0p9_mediumVeto", "Medium veto",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB3_eta0to0p9_tightVeto", "Tight veto")
+    makeEtaPlot("Displaced_L1Mu_trigger_rate_eta_L1Pt10__DisplacedL1MuDirectionBased_MB1_MB3_eta0to0p9_vetoCombination",
+                 "0<|#eta|<0.9",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB3_eta0to0p9", "No veto",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB3_eta0to0p9_mediumVeto", "Medium veto",
+                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB3_eta0to0p9_tightVeto", "Tight veto")
+
+
+
+
+
+
+    makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB2_MB3_MB4_eta0to0p9",
+              "0<|#eta|<0.9",
+              "h_single_prompt_L1Mu_rate_pt_eta0to0p9", "Prompt L1Mu",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB2_MB3_MB4_eta0to0p9", "Direction based",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB2_MB3_MB4_eta0to0p9_mediumVeto", "Direction based, medium veto",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB2_MB3_MB4_eta0to0p9_tightVeto", "Direction based, tight veto")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB2_MB3_MB4_eta0to0p9",
+                "0<|#eta|<0.9",
+                "h_single_prompt_L1Mu_rate_eta_L1Pt7_eta0to0p9", "Prompt L1Mu",
+                "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB2_MB3_MB4_eta0to0p9", "Direction based",
+                "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB2_MB3_MB4_eta0to0p9_mediumVeto", "Direction based, medium veto",
+                "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB2_MB3_MB4_eta0to0p9_tightVeto", "Direction based, tight veto")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB2_MB3_MB4_eta0to0p9",
+                "0<|#eta|<0.9",
+                "h_single_prompt_L1Mu_rate_eta_L1Pt10_eta0to0p9", "Prompt L1Mu",
+                "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB2_MB3_MB4_eta0to0p9", "Direction based",
+                "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB2_MB3_MB4_eta0to0p9_mediumVeto", "Direction based, medium veto",
+                "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB2_MB3_MB4_eta0to0p9_tightVeto", "Direction based, tight veto")
 
 
     exit(1)

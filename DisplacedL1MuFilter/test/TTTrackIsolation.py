@@ -198,7 +198,8 @@ def fillPromptHistogram(mapTH1F,
                        hasMB1Cut=False,
                        hasMB2Cut=False,
                        hasMB3Cut=False,
-                       hasMB4Cut=False):
+                       hasMB4Cut=False,
+                       vetoType=0):
     doBXCut = True
     qualityCut=4
     prompt_L1Mu_pt, prompt_L1Mu_eta = getMaxPromptPtEtaEvent(treeHits,
@@ -222,7 +223,8 @@ def fillPromptHistogram(mapTH1F,
                                                              hasMB1Cut,
                                                              hasMB2Cut,
                                                              hasMB3Cut,
-                                                             hasMB4Cut)
+                                                             hasMB4Cut,
+                                                             vetoType)
 
     if (prompt_L1Mu_pt>0):
         mapTH1F[key.replace("rate_", "rate_pt_")].Fill(prompt_L1Mu_pt)
@@ -255,7 +257,8 @@ def getMaxPromptPtEtaEvent(treeHits,
                            hasMB1Cut=False,
                            hasMB2Cut=False,
                            hasMB3Cut=False,
-                           hasMB4Cut=False):
+                           hasMB4Cut=False,
+                           vetoType=0):
 
     max_prompt_L1Mu_pt = -1
     max_prompt_L1Mu_eta = -99
@@ -277,19 +280,8 @@ def getMaxPromptPtEtaEvent(treeHits,
 
         L1Mu_eta_ME2 = -99
 
-        """
-        ## get the DTTF index
-        getDTTFindex = True
-        if getDTTFindex:
-            iDTTF_index = -1
-            iDTTF_dEta = 99
-            for iDTTF in range(0,len(treeHits.DTTF_bx)):
-                if treeHits.DTTF_bx[iDTTF] == L1Mu_bx and deltaPhi2(L1Mu_phi, treeHits.DTTF_phi[iDTTF])<0.001:
-                    iDTTF_index = iDTTF
-                    #print "found index",
-            L1Mu_DTTF_index = iDTTF_index
-
-        """
+        ## BX cut
+        if abs(L1Mu_bx)>0 and doBXCut: continue
 
         ## eta cut
         if not (etaCutMin <= abs(L1Mu_eta) and abs(L1Mu_eta) < etaCutMax): continue
@@ -297,8 +289,8 @@ def getMaxPromptPtEtaEvent(treeHits,
         ## quality cut
         if L1Mu_quality < qualityCut: continue
 
-        ## BX cut
-        if abs(L1Mu_bx)>0 and doBXCut: continue
+        ## check if muon is isolated
+        if (vetoType!=0) and (not is_L1Mu_isolated(treeHits, i, vetoType)): continue
 
         ## CSC quantities
         has_CSC_ME1 = False
@@ -474,23 +466,23 @@ def fillDisplacedHistogram(mapTH1F,
 
 
 def fillDisplacedBarrelHistogram(mapTH1F,
-                           key,
-                           treeHits,
-                           etaCutMin,
-                           etaCutMax,
-                           stubCut,
-                           algorithm=0,
-                           vetoType=0):
+                                 key,
+                                 treeHits,
+                                 etaCutMin,
+                                 etaCutMax,
+                                 stubCut,
+                                 algorithm=0,
+                                 vetoType=0):
     doBXCut = True
     qualityCut=4
     displaced_L1Mu_pt, displaced_L1Mu_eta = getMaxDisplacedBarrelPtEtaEvent(treeHits,
-                                                                      doBXCut,
-                                                                      etaCutMin,
-                                                                      etaCutMax,
-                                                                      stubCut,
-                                                                      qualityCut,
-                                                                      algorithm,
-                                                                      vetoType)
+                                                                            doBXCut,
+                                                                            etaCutMin,
+                                                                            etaCutMax,
+                                                                            stubCut,
+                                                                            qualityCut,
+                                                                            algorithm,
+                                                                            vetoType)
     if (displaced_L1Mu_pt>0):
         mapTH1F[key.replace("rate_", "rate_pt_")].Fill(displaced_L1Mu_pt)
     ## apply a 7/10 GeV pT cut for the eta histograms!!!
@@ -529,11 +521,11 @@ def getMaxDisplacedPtEtaEvent(treeHits,
         L1Mu_bx = treeHits.L1Mu_bx[i]
         L1Mu_quality = treeHits.L1Mu_quality[i]
 
-        ## quality cut
-        if L1Mu_quality < qualityCut: continue
-
         ## BX cut
         if abs(L1Mu_bx)>0 and doBXCut: continue
+
+        ## quality cut
+        if L1Mu_quality < qualityCut: continue
 
         ## check if muon is isolated
         if (vetoType!=0) and (not is_L1Mu_isolated(treeHits, i, vetoType)): continue
@@ -646,11 +638,11 @@ def getMaxDisplacedBarrelPtEtaEvent(treeHits,
         L1Mu_bx = treeHits.L1Mu_bx[i]
         L1Mu_quality = treeHits.L1Mu_quality[i]
 
-        ## quality cut
-        if L1Mu_quality < qualityCut: continue
-
         ## BX cut
         if abs(L1Mu_bx)>0 and doBXCut: continue
+
+        ## quality cut
+        if L1Mu_quality < qualityCut: continue
 
         ## check if muon is isolated
         if (vetoType!=0) and (not is_L1Mu_isolated(treeHits, i, vetoType)): continue
@@ -684,15 +676,13 @@ def getMaxDisplacedBarrelPtEtaEvent(treeHits,
             if not (etaCutMin <=abs(L1Mu_eta) and abs(L1Mu_eta) < etaCutMax): continue
 
             ## direction based MB1-MB4
-            if algorithm==3 or True: 
-                DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 3)
-            """
+            if algorithm==1: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 1)
             if algorithm==2: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 2)
             if algorithm==3: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 3)
             if algorithm==4: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 4)
             if algorithm==5: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 5)
             if algorithm==6: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 6)
-            """
+            if algorithm==7: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 7)
             
             """
             if hasMB1Cut and not has_DT_MB1: continue

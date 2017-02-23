@@ -7,11 +7,11 @@ ROOT.gROOT.SetBatch(1)
 from Helpers import *
 from ROOT import *
 
-file = TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_20170223.root")
+file = TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_20170223_v2.root")
 treeHits = file.Get("L1MuTree")
 
 ## plots
-targetDir = 'DisplacedL1MuTrigger_20170223_PU140_StubRecovery/'
+targetDir = 'DisplacedL1MuTrigger_20170223_PU140_StubRecovery_v2/'
 
 ## Style
 gStyle.SetStatStyle(0)
@@ -394,7 +394,6 @@ def makeSimplePlot(hist, cTitle, title, option = ''):
     gPad.SetTicky(1)
     hist.Draw("colz")
     hist.SetTitle(title)
-    hist2 = get1DHistogramFractionY(hist, fraction=.9)[2]
     gPad.Update()
     hist2.Draw("p same")
     gPad.Update()
@@ -403,42 +402,47 @@ def makeSimplePlot(hist, cTitle, title, option = ''):
 
 
 ## comparison of prompt trigger efficiency for various trigger models (7)
-def MuonTDR2017_BarrelTriggerEfficiency():
+def MuonTDR2017_BarrelTriggerEfficiency(station1, station2, ptCut):
      
     preTitle = "L1"
 
     vetoCut = TCut("");                     postTitle=""
+    stationCut = TCut("ok_DTTF_st%d==1 && ok_DTTF_st%d==1"%(station1, station2))
+    directionPtCut = TCut("DTTF_DT%d_DT%d_pt>=%d"%(station1, station2, ptCut))
+    promptPtCut = TCut("L1Mu_pt>=%d"%ptCut)
 
-    stationCut = TCut("ok_DTTF_st1==1 && ok_DTTF_st4==1")
     ## prompt muon
-    prompt_dxy5to10_pt = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>0 && abs(gen_dxy)<5"), stationCut), TCut("L1Mu_pt>=15"))
-    prompt_dxy10to50_pt = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), stationCut), TCut("L1Mu_pt>=10"))
+    prompt_dxy0to5_pt = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>0 && abs(gen_dxy)<5"), stationCut), promptPtCut)
+    prompt_dxy5to10_pt = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>0 && abs(gen_dxy)<5"), stationCut), promptPtCut)
+    prompt_dxy10to50_pt = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), stationCut), promptPtCut)
     
-    ptCut = TCut("sim_pt>=5")
-    prompt_dxy5to10_eta = getEfficiency(treeHits, "sim_eta", AND(TCut("abs(gen_dxy)>5  && abs(gen_dxy)<10"), ptCut, stationCut), TCut("L1Mu_pt>=10"))
-    prompt_dxy10to50_eta = getEfficiency(treeHits, "sim_eta", AND(TCut("abs(gen_dxy)>10  && abs(gen_dxy)<50"), ptCut, stationCut), TCut("L1Mu_pt>=10"))
+    simPtCut = TCut("sim_pt>=5")
+    prompt_dxy0to5_eta = getEfficiency(treeHits, "sim_eta", AND(TCut("abs(gen_dxy)>5  && abs(gen_dxy)<10"), simPtCut, stationCut), promptPtCut)
+    prompt_dxy5to10_eta = getEfficiency(treeHits, "sim_eta", AND(TCut("abs(gen_dxy)>5  && abs(gen_dxy)<10"), simPtCut, stationCut), promptPtCut)
+    prompt_dxy10to50_eta = getEfficiency(treeHits, "sim_eta", AND(TCut("abs(gen_dxy)>10  && abs(gen_dxy)<50"), simPtCut, stationCut), promptPtCut)
 
-    direction_dxy5to10_pt = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>5  && abs(gen_dxy)<10"), stationCut), TCut("abs_DTTF_phib1_phib4<=0.07617314487632515"))
-    direction_dxy10to50_pt = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), stationCut), TCut("abs_DTTF_phib1_phib4<=0.07617314487632515"))
+    direction_dxy5to10_pt = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>5  && abs(gen_dxy)<10"), stationCut), directionPtCut)
+    direction_dxy10to50_pt = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), stationCut), directionPtCut)
 
-    ptCut = TCut("sim_pt>=5")#DTTF_DT1_DT4_pt>=10
-    direction_dxy5to10_eta = getEfficiencyEta(treeHits, "sim_eta", AND(TCut("abs(gen_dxy)>5  && abs(gen_dxy)<10"), stationCut, ptCut), TCut("abs_DTTF_phib1_phib4<=0.11520627802690593"))
-    direction_dxy10to50_eta = getEfficiencyEta(treeHits, "sim_eta", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), stationCut, ptCut), TCut("abs_DTTF_phib1_phib4<=0.11520627802690593"))
-
-    """
-    binLow = [4.0,5.0,6.0,7.0,8.0,9.0,10.0,12.0,14.0,16.0,18.0,20.0,24.0,28.0,32.0,36.0,42.0,50.0]
-    Pt_dict['DT1_DT4'] =  [4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 11.0, 13.0, 15.0, 17.0, 19.0, 22.0, 26.0, 30.0, 34.0, 39.0, 46.0, 55.0]
-    DPhi_dict['DT1_DT4'] =  [0.6350000000000002, 0.3602142857142858*1.3, 0.27009677419354844*1.15, 0.20673076923076922*1.15, 0.17068571428571422*1.1, 0.13912663755458526*0.8, 0.11520627802690593*1.14, 0.09131972789115654*1.1, 0.07617314487632515, 0.06748120300751885, 0.057713754646840185, 0.05274870017331027, 0.04392118226600989, 0.03952000000000001, 0.037006993006993026, 0.0378913043478261, 0.035904761904761925, 0.02742857142857146]
-
-    """
+    simPtCut = TCut("sim_pt>=5")
+    direction_dxy5to10_eta = getEfficiencyEta(treeHits, "sim_eta", AND(TCut("abs(gen_dxy)>5  && abs(gen_dxy)<10"), stationCut, simPtCut), directionPtCut)
+    direction_dxy10to50_eta = getEfficiencyEta(treeHits, "sim_eta", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<50"), stationCut, simPtCut), directionPtCut)
     
     makeEffPlot3(prompt_dxy5to10_pt, "L1Mu (constrained)",
-                 direction_dxy5to10_pt, "L1Mu (unconstrained)",
-                 direction_dxy10to50_pt, "L1Mu (unconstrained)",
+                 direction_dxy5to10_pt, "L1Mu (unc.) 5<|dxy|<10",
+                 direction_dxy10to50_pt, "L1Mu (unc.) 10<|dxy|<50",
                  None, None,
-                 targetDir + preTitle + "MuonTDR2017Displaced_L1MuPt10_SimMuPt_DT1_DT4_eta0to0p9_dxy5to50" + postTitle, "Displaced L1Mu algorithm;0<|#eta|<0.9")
+                 targetDir + preTitle + "MuonTDR2017Displaced_L1MuPt%d_SimMuPt_DT%d_DT%d_eta0to0p9_dxy5to50"%(ptCut, station1, station2) + postTitle, "hit in DT%d and DT%d;0<|#eta|<0.9"%(station1, station2))
 
-MuonTDR2017_BarrelTriggerEfficiency()
+for ptCut in [5, 7, 10, 15, 20]:
+    MuonTDR2017_BarrelTriggerEfficiency(1,2,ptCut)
+    MuonTDR2017_BarrelTriggerEfficiency(1,3,ptCut)
+    MuonTDR2017_BarrelTriggerEfficiency(1,4,ptCut)
+    MuonTDR2017_BarrelTriggerEfficiency(2,3,ptCut)
+    MuonTDR2017_BarrelTriggerEfficiency(2,4,ptCut)
+    MuonTDR2017_BarrelTriggerEfficiency(3,4,ptCut)
+
+
 
 ## comparison of prompt trigger efficiency for various trigger models (7) + track veto
 
@@ -496,3 +500,4 @@ def MuonTDR2017_BarrelTriggerAcceptanceAll():
                  targetDir + preTitle + "MuonTDR2017Displaced_Acceptance_SimMuPt_DTX_DTY_eta0to0p9_dxy5to50" + postTitle, "hit in 2 DT stations;0<|#eta|<0.9")
 
 MuonTDR2017_BarrelTriggerAcceptanceAll()
+

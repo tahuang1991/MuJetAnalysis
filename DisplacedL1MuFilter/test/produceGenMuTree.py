@@ -48,7 +48,7 @@ if __name__ == "__main__":
   print "Start run on", ch.GetEntries(), "events."
   treeHits = ch
 
-  f = ROOT.TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_20170223.root", "recreate")
+  f = ROOT.TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_20170223_v2.root", "recreate")
   t = ROOT.TTree("L1MuTree", "L1MuTree")
 
   ## ranges
@@ -293,6 +293,13 @@ if __name__ == "__main__":
   DTTF_phib3s = numpy.zeros(1, dtype=float)
   DTTF_phib4s = numpy.zeros(1, dtype=float)
   
+  DTTF_phib1_phib2s = numpy.zeros(1, dtype=float)
+  DTTF_phib1_phib3s = numpy.zeros(1, dtype=float)
+  DTTF_phib1_phib4s = numpy.zeros(1, dtype=float)
+  DTTF_phib2_phib3s = numpy.zeros(1, dtype=float)
+  DTTF_phib2_phib4s = numpy.zeros(1, dtype=float)
+  DTTF_phib3_phib4s = numpy.zeros(1, dtype=float)
+
   abs_DTTF_phib1_phib2s = numpy.zeros(1, dtype=float)
   abs_DTTF_phib1_phib3s = numpy.zeros(1, dtype=float)
   abs_DTTF_phib1_phib4s = numpy.zeros(1, dtype=float)
@@ -501,6 +508,13 @@ if __name__ == "__main__":
   t.Branch('DTTF_phib2', DTTF_phib2s, 'DTTF_phib2/D')
   t.Branch('DTTF_phib3', DTTF_phib3s, 'DTTF_phib3/D')
   t.Branch('DTTF_phib4', DTTF_phib4s, 'DTTF_phib4/D')
+
+  t.Branch('DTTF_phib1_phib2', DTTF_phib1_phib2s, 'DTTF_phib1_phib2/D')
+  t.Branch('DTTF_phib1_phib3', DTTF_phib1_phib3s, 'DTTF_phib1_phib3/D')
+  t.Branch('DTTF_phib1_phib4', DTTF_phib1_phib4s, 'DTTF_phib1_phib4/D')
+  t.Branch('DTTF_phib2_phib3', DTTF_phib2_phib3s, 'DTTF_phib2_phib3/D')
+  t.Branch('DTTF_phib2_phib4', DTTF_phib2_phib4s, 'DTTF_phib2_phib4/D')
+  t.Branch('DTTF_phib3_phib4', DTTF_phib3_phib4s, 'DTTF_phib3_phib4/D')
 
   t.Branch('abs_DTTF_phib1_phib2', abs_DTTF_phib1_phib2s, 'abs_DTTF_phib1_phib2/D')
   t.Branch('abs_DTTF_phib1_phib3', abs_DTTF_phib1_phib3s, 'abs_DTTF_phib1_phib3/D')
@@ -832,6 +846,13 @@ if __name__ == "__main__":
           DTTF_phib3s[0] = -99
           DTTF_phib4s[0] = -99
 
+          DTTF_phib1_phib2s[0] = -99
+          DTTF_phib1_phib3s[0] = -99
+          DTTF_phib1_phib4s[0] = -99
+          DTTF_phib2_phib3s[0] = -99
+          DTTF_phib2_phib4s[0] = -99
+          DTTF_phib3_phib4s[0] = -99
+
           abs_DTTF_phib1_phib2s[0] = -99
           abs_DTTF_phib1_phib3s[0] = -99
           abs_DTTF_phib1_phib4s[0] = -99
@@ -881,6 +902,13 @@ if __name__ == "__main__":
             DTTF_phib3s[0] = normalizedPhi(DTTF_phib3s[0] + DTTF_phi3s[0])
             DTTF_phib4s[0] = normalizedPhi(DTTF_phib4s[0] + DTTF_phi4s[0])
             
+            DTTF_phib1_phib2s[0] = deltaPhi(DTTF_phib1s[0], DTTF_phib2s[0])
+            DTTF_phib1_phib3s[0] = deltaPhi(DTTF_phib1s[0], DTTF_phib3s[0])
+            DTTF_phib1_phib4s[0] = deltaPhi(DTTF_phib1s[0], DTTF_phib4s[0])
+            DTTF_phib2_phib3s[0] = deltaPhi(DTTF_phib2s[0], DTTF_phib3s[0])
+            DTTF_phib2_phib4s[0] = deltaPhi(DTTF_phib2s[0], DTTF_phib4s[0])
+            DTTF_phib3_phib4s[0] = deltaPhi(DTTF_phib3s[0], DTTF_phib4s[0])
+
             abs_DTTF_phib1_phib2s[0] = abs(deltaPhi(DTTF_phib1s[0], DTTF_phib2s[0]))
             abs_DTTF_phib1_phib3s[0] = abs(deltaPhi(DTTF_phib1s[0], DTTF_phib3s[0]))
             abs_DTTF_phib1_phib4s[0] = abs(deltaPhi(DTTF_phib1s[0], DTTF_phib4s[0]))

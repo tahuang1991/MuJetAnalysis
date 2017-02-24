@@ -321,59 +321,6 @@ if __name__ == "__main__":
 
 	L1MuRatetree.Fill()
 
-    ## make plots
-    def makeDPhiPlot(h, xaxis, yaxis):
-      c = TCanvas("c","c",800,600)
-      c.Clear()
-      title = h.GetName()
-      gStyle.SetOptStat(111111)
-      gStyle.SetTitleBorderSize(0);
-      #gStyle.SetPadLeftMargin(0.126);
-      #gStyle.SetPadRightMargin(0.10);
-      #gStyle.SetPadTopMargin(0.06);
-      #gStyle.SetPadBottomMargin(0.13);
-      gPad.SetTickx(1)
-      gPad.SetTicky(1)
-      gPad.SetLogx(0);
-      gPad.SetLogy(0)
-      gPad.SetGridx(1);
-      gPad.SetGridy(1);
-
-      gStyle.SetTitleStyle(0)
-      gStyle.SetTitleAlign(13) ##// coord in top left
-      gStyle.SetTitleX(0.)
-      gStyle.SetTitleY(1.)
-      gStyle.SetTitleW(1)
-      gStyle.SetTitleH(0.058)
-      gStyle.SetTitleBorderSize(0)
-
-      gStyle.SetPadLeftMargin(0.126)
-      gStyle.SetPadRightMargin(0.10)
-      gStyle.SetPadTopMargin(0.06)
-      gStyle.SetPadBottomMargin(0.13)
-      gStyle.SetOptStat(0)
-      gStyle.SetMarkerStyle(1)
-
-      h.GetXaxis().SetTitleSize(0.05)
-      h.GetYaxis().SetTitleSize(0.05)
-      h.GetXaxis().SetLabelSize(0.05)
-      h.GetYaxis().SetLabelSize(0.05)
-
-      gStyle.SetTitleFontSize(0.065)
-
-      h.SetTitle("           #scale[1.4]{#font[61]{CMS}} #font[52]{Simulation preliminary}                                                           14 TeV, 140 PU")
-      #h.SetStats(0)
-      #h.GetYaxis().SetTitle("charge*#Delta#Phi(GE1/1-ME1/1)")
-      #h.GetXaxis().SetTitle("charge*#Delta#Phi(GE2/1-ME2/1)")
-      h.GetYaxis().SetTitle("%s"%(yaxis))
-      h.GetXaxis().SetTitle("%s"%(xaxis))
-      h.Draw("COLZ")
-
-      c.SaveAs(targetDir + title + ".png")
-      #c.SaveAs(targetDir + title + ".pdf")
-      c.SaveAs(targetDir + title + ".C")
-
-    #makeDPhiPlot(h_dphi_ME11_ME21, "dphi_ME11_ME21")
     c = TCanvas("c","c",800,600)
     c.Clear()
     h_eventcount.Draw()

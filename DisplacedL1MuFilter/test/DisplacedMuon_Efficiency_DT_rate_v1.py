@@ -74,8 +74,9 @@ def addFilesToChain(ch, filedir):
 ## draw an ellipse that includes 95% of the entries
 
 def getEllipse(x,y,a,b, alpha=0, x0=0, y0=0):
-  x1 = x*cos(alpha)+y*sin(alpha)-x0
-  y1 = x*sin(alpha)-y*cos(alpha)-y0
+  rad_alpha = alpha/180*2*pi
+  x1 = x*cos(rad_alpha)+y*sin(rad_alpha)-x0
+  y1 = x*sin(rad_alpha)-y*cos(rad_alpha)-y0
   #print "x ",x," y ",y," a ",a," b ",b," alpha ",alpha*180/pi," x1 ",x1," y1 ",y1
   return x1*x1/(a*a) + y1*y1/(b*b)
 
@@ -147,7 +148,7 @@ def get2dHisto(tree, to_draw, cut, nBinsX, minBinX, maxBinX, nBinsY, minBinY, ma
 def drawEllipse(signalHist1, 
                 signalHist2, 
                 signalHist3, 
-                rateHist, xtitle, ytitle, cTitle): #a, b, alpha, x0, y0, 
+                rateHist, xtitle, ytitle, cTitle, a_axis, b_axis, alpha, x0=0, y0=0):
     """takes 2 histograms, puts them on the same canvas and draws 2 ellipses"""
     gStyle.SetTitleBorderSize(0);
     gStyle.SetPadLeftMargin(0.126);
@@ -157,13 +158,7 @@ def drawEllipse(signalHist1,
     gPad.SetTickx(1)
     gPad.SetTicky(1)
 
-    a_axis = 0.02*4
-    b_axis = 0.02*4
-    alpha = -20
-    x0 = 0
-    y0 = 0
-
-    el1 = TEllipse(x0,y0,a_axis,b_axis,0,360, alpha*180.0/pi);
+    el1 = TEllipse(x0,y0,a_axis,b_axis,0, 360, alpha);
     el1.SetLineColor(kRed);
     #el2.SetLineWidth(2);
     el1.SetFillStyle(0)
@@ -202,17 +197,8 @@ def drawEllipse(signalHist1,
     c.SaveAs("BarrelEllipses_20170224/" + cTitle + ".C")
     c.SaveAs("BarrelEllipses_20170224/" + cTitle + ".pdf")
 
-    for a in range(50,200):
-        a_axis = a/1000.
-        b_axis = a/1000.
-        signalAcceptanceFactor, backgroundRejectionFactor = getBackgroundRejectionEllipse(a_axis, b_axis, alpha, x0, y0, signalHist1, rateHist) 
-        if signalAcceptanceFactor>0.90: 
-            print a_axis, b_axis, signalAcceptanceFactor, backgroundRejectionFactor
-            print ">>DONE"
-            break
 
-
-def drawEllipseTree(signalTree, rateTree, to_draw, cut, signalPtCut, signalBinning, rateBinning, xtitle, ytitle, cTitle): #a, b, alpha, x0, y0, 
+def drawEllipseTree(signalTree, rateTree, to_draw, cut, signalPtCut, signalBinning, rateBinning, xtitle, ytitle, cTitle, a_axis, b_axis, alpha): #a, b, alpha, x0, y0, 
 
     [nBinsX, minBinX, maxBinX, nBinsY, minBinY, maxBinY] = signalBinning
     signalHist1 = get2dHisto(signalTree, to_draw, TCut("%s"%cut + "&& sim_pt > %f"%signalPtCut), nBinsX, minBinX, maxBinX, nBinsY, minBinY, maxBinY)
@@ -226,10 +212,10 @@ def drawEllipseTree(signalTree, rateTree, to_draw, cut, signalPtCut, signalBinni
     [nBinsX, minBinX, maxBinX, nBinsY, minBinY, maxBinY] = rateBinning
     rateHist = get2dHisto(rateTree, to_draw, cut, nBinsX, minBinX, maxBinX, nBinsY, minBinY, maxBinY)
 
-    drawEllipse(signalHist1, signalHist2, signalHist3, rateHist, xtitle, ytitle, cTitle)
+    drawEllipse(signalHist1, signalHist2, signalHist3, rateHist, xtitle, ytitle, cTitle, a_axis, b_axis, alpha)
 
 
-def drawEllipseTreeSimple(signalTree, rateTree, st11, st12, st21, st22, signalPtCut):    
+def drawEllipseTreeSimple(signalTree, rateTree, st11, st12, st21, st22, signalPtCut, a_axis, b_axis, alpha):    
     to_draw = "DTTF_phib%d_phib%d:DTTF_phib%d_phib%d"%(st11,st12,st21,st22)
     stationCut = "ok_DTTF_st%d && ok_DTTF_st%d && ok_DTTF_st%d && ok_DTTF_st%d"%(st11,st12,st21,st22)
     xTitle = "d#Phi_{b}(MB%d,MB%d)"%(st11, st12)
@@ -237,10 +223,10 @@ def drawEllipseTreeSimple(signalTree, rateTree, st11, st12, st21, st22, signalPt
     cTitle = "DPhib_MB%d_MB%d__DPhib_MB%d_MB%d"%(st11,st12,st21,st22)
     signalBinning = [250, -0.5, 0.5, 250, -0.5, 0.5]
     rateBinning = [200, -1, 1, 200, -1, 1]
-    drawEllipseTree(signalTree, rateTree, to_draw, stationCut, signalPtCut, signalBinning, rateBinning, xTitle, yTitle, cTitle)
+    drawEllipseTree(signalTree, rateTree, to_draw, stationCut, signalPtCut, signalBinning, rateBinning, xTitle, yTitle, cTitle, a_axis, b_axis, alpha)
 
     
-def drawEllipseTreeSimpleAbs(signalTree, rateTree, st11, st12, st21, st22):    
+def drawEllipseTreeSimpleAbs(signalTree, rateTree, st11, st12, st21, st22, a_axis, b_axis, alpha):    
     to_draw = "abs(DTTF_phib%d_phib%d):abs(DTTF_phib%d_phib%d)"%(st11,st12,st21,st22)
     stationCut = "ok_DTTF_st%d && ok_DTTF_st%d && ok_DTTF_st%d && ok_DTTF_st%d"%(st11,st12,st21,st22)
     xTitle = "d#Phi_{b}(MB%d,MB%d)"%(st11, st12)
@@ -248,7 +234,7 @@ def drawEllipseTreeSimpleAbs(signalTree, rateTree, st11, st12, st21, st22):
     cTitle = "DPhib_MB%d_MB%d__DPhib_MB%d_MB%d__abs"%(st11,st12,st21,st22)
     signalBinning = [250, -0.5, 0.5, 250, -0.5, 0.5]
     rateBinning = [200, -1, 1, 200, -1, 1]
-    drawEllipseTree(signalTree, rateTree, to_draw, stationCut, signalBinning, rateBinning, xTitle, yTitle, cTitle)
+    drawEllipseTree(signalTree, rateTree, to_draw, stationCut, signalBinning, rateBinning, xTitle, yTitle, cTitle, a_axis, b_axis, alpha)
 
 
 def getEllipseCut(signalTree, rateTree, st11, st12, st21, st22, signalPtCut, a_axis, b_axis, alpha, x0=0, y0=0):
@@ -266,19 +252,51 @@ def getEllipseCut(signalTree, rateTree, st11, st12, st21, st22, signalPtCut, a_a
     return signalAcceptanceFactor, backgroundRejectionFactor
 
 
-def getEllipseCutManyCombinations(signalTree, rateTree, signalPtCut, a_axis, b_axis, alpha):
+def getEllipseCutManyCombinations(signalTree, rateTree, signalPtCut, a_axis, b_axis):
     print "Pt cut", signalPtCut
     pairs = [(1,2), (1,3), (1,4), (2,3), (2,4), (3,4)]
+
+    ## dictionary with nominal alphas
+    nominal_alphas = {
+        ((1, 2),(1, 3)) : 25,
+        ((1, 2),(1, 4)) : 10,
+        ((1, 2),(2, 3)) : 30,
+        ((1, 2),(2, 4)) : 15,
+        ((1, 2),(3, 4)) : 30,
+        
+        ((1, 3),(1, 4)) : 30,
+        ((1, 3),(2, 3)) : 50,
+        ((1, 3),(2, 4)) : 40,
+        ((1, 3),(3, 4)) : 50,
+        
+        ((1, 4),(2, 3)) : 70,
+        ((1, 4),(2, 4)) : 40,
+        ((1, 4),(3, 4)) : 70,
+        
+        ((2, 3),(2, 4)) : 35,
+        ((2, 3),(3, 4)) : 40,
+        
+        ((2, 4),(3, 4)) : 60,
+        }
+
     for p in range(0,len(pairs)):
         for q in range(p,len(pairs)):
             first = pairs[p]
             second = pairs[q]
             if first == second: 
                 continue
+            alpha = nominal_alphas[(first,second)]
             print "\tCombination", first, second, "a=", a_axis, "b=", b_axis, "alpha=", alpha, "A,R=", 
             print getEllipseCut(signalTree, rateTree, first[0], first[1], second[0], second[1], signalPtCut, a_axis, b_axis, alpha)        
         print
             #drawEllipseTreeSimpleAbs(signalTree, rateTree, p[0], p[1], q[0], q[1])        
+
+
+############################################################################################################################################
+############################################################################################################################################
+############################################################ E X E C U T I O N ############################################################ 
+############################################################################################################################################
+############################################################################################################################################
 
 
 signalFile = TFile.Open("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_20170223_v2.root")
@@ -289,5 +307,63 @@ rateTree = rateFile.Get("L1MuTriggerRate")
 
 signalAcceptance = 0.90
 
-#drawEllipseTreeSimple(signalTree, rateTree, 1, 2, 2, 3)        
-getEllipseCutManyCombinations(signalTree, rateTree, 10, 0.07, 0.07, 20)
+"""
+## get the nominal alphas
+## dot not remove!!!
+#(1, 2) (1, 3)
+drawEllipseTreeSimple(signalTree, rateTree, 1, 2, 1, 3, 10, 0.15, 0.04, 25)
+#(1, 2) (1, 4)
+drawEllipseTreeSimple(signalTree, rateTree, 1, 2, 1, 4, 10, 0.15, 0.04, 10)        
+#(1, 2) (2, 3)
+drawEllipseTreeSimple(signalTree, rateTree, 1, 2, 2, 3, 10, 0.15, 0.04, 30)        
+#(1, 2) (2, 4)
+drawEllipseTreeSimple(signalTree, rateTree, 1, 2, 2, 4, 10, 0.15, 0.04, 15)        
+#(1, 2) (3, 4)
+drawEllipseTreeSimple(signalTree, rateTree, 1, 2, 3, 4, 10, 0.15, 0.04, 30)        
+
+#(1, 3) (1, 4)
+drawEllipseTreeSimple(signalTree, rateTree, 1, 3, 1, 4, 10, 0.15, 0.04, 30)        
+#(1, 3) (2, 3)
+drawEllipseTreeSimple(signalTree, rateTree, 1, 3, 2, 3, 10, 0.15, 0.04, 50)        
+#(1, 3) (2, 4)
+drawEllipseTreeSimple(signalTree, rateTree, 1, 3, 2, 4, 10, 0.15, 0.04, 40)        
+#(1, 3) (3, 4)
+drawEllipseTreeSimple(signalTree, rateTree, 1, 3, 3, 4, 10, 0.15, 0.04, 50)        
+
+#(1, 4) (2, 3)
+drawEllipseTreeSimple(signalTree, rateTree, 1, 4, 2, 3, 10, 0.15, 0.04, 70)        
+#(1, 4) (2, 4)
+drawEllipseTreeSimple(signalTree, rateTree, 1, 4, 2, 4, 10, 0.15, 0.04, 50)        
+#(1, 4) (3, 4)
+drawEllipseTreeSimple(signalTree, rateTree, 1, 4, 3, 4, 10, 0.15, 0.04, 70)        
+
+#(2, 3) (2, 4)
+drawEllipseTreeSimple(signalTree, rateTree, 2, 3, 2, 4, 10, 0.15, 0.04, 30)        
+#(2, 3) (3, 4)
+drawEllipseTreeSimple(signalTree, rateTree, 2, 3, 3, 4, 10, 0.15, 0.04, 40)        
+
+#(2, 4) (3, 4)
+drawEllipseTreeSimple(signalTree, rateTree, 2, 4, 3, 4, 10, 0.15, 0.04, 60)        
+"""
+
+if len(sys.argv)>=3:
+    #take dir name from arguments, condor mode
+    ptCut = int(sys.argv[1])
+    fraction = int(sys.argv[2]) 
+
+    a_axis_range = [0.05,1]
+    b_axis_range = [0.07,1]
+    getEllipseCutManyCombinations(signalTree, rateTree, ptCut, 0.07, 0.07)
+
+getEllipseCutManyCombinations(signalTree, rateTree, 10, 0.07, 0.07)
+
+"""
+for a in range(50,200):
+    a_axis = a/1000.
+    b_axis = a/1000.
+    signalAcceptanceFactor, backgroundRejectionFactor = getBackgroundRejectionEllipse(a_axis, b_axis, alpha, x0, y0, signalHist1, rateHist) 
+    if signalAcceptanceFactor>0.90: 
+        print a_axis, b_axis, signalAcceptanceFactor, backgroundRejectionFactor
+        print ">>DONE"
+        break
+"""

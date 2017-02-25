@@ -632,6 +632,8 @@ def getMaxDisplacedBarrelPtEtaEvent(treeHits,
         return max_displaced_L1Mu_pt, max_displaced_L1Mu_eta
 
     pts = list(treeHits.L1Mu_pt)
+    nGoodMuons = 0
+    iL1Mu = -1
     for i in range(0,len(pts)):
 
         L1Mu_eta = treeHits.L1Mu_eta[i]
@@ -647,33 +649,22 @@ def getMaxDisplacedBarrelPtEtaEvent(treeHits,
         ## check if muon is isolated
         if (vetoType!=0) and (not is_L1Mu_isolated(treeHits, i, vetoType)): continue
 
-        L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[i]
+        ## eta cut
+        if not (etaCutMin <=abs(L1Mu_eta) and abs(L1Mu_eta) < etaCutMax): continue
+
         L1Mu_DTTF_index = treeHits.L1Mu_DTTF_index[i]
-        L1Mu_eta_ME2 = -99
 
-        ## define the L1Mu objects!!
-        is_CSC_Muon =   (1.2 <= abs(L1Mu_eta) and abs(L1Mu_eta) <= 2.4) and L1Mu_CSCTF_index != -1
-        is_DT_Muon =    (0.0 <= abs(L1Mu_eta) and abs(L1Mu_eta) <= 0.9) and L1Mu_DTTF_index != -1
-        is_DTCSC_Muon = (0.9 <= abs(L1Mu_eta) and abs(L1Mu_eta) <= 1.2) and (L1Mu_DTTF_index != -1 or L1Mu_CSCTF_index != -1)
-
-        ## DT quantities
-        has_DT_MB1 = False
-        has_DT_MB2 = False
-        has_DT_MB3 = False
-        has_DT_MB4 = False
         nDTStubs = 0
 
         DisplacedL1Mu_pt, DisplacedL1Mu_eta = -1, -1
         
         #print L1Mu_DTTF_index
         if L1Mu_DTTF_index != -1 and L1Mu_DTTF_index < len(treeHits.DTTF_phi1):
+            nGoodMuons += 1
             has_DT_MB1 = treeHits.DTTF_phi1[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib1[L1Mu_DTTF_index] != 99
             has_DT_MB2 = treeHits.DTTF_phi2[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib2[L1Mu_DTTF_index] != 99
             has_DT_MB3 = treeHits.DTTF_phi3[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib3[L1Mu_DTTF_index] != 99
             has_DT_MB4 = treeHits.DTTF_phi4[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib4[L1Mu_DTTF_index] != 99
-
-            ## eta cut
-            if not (etaCutMin <=abs(L1Mu_eta) and abs(L1Mu_eta) < etaCutMax): continue
 
             ## direction based MB1-MB4
             if algorithm==1: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 1)
@@ -683,17 +674,23 @@ def getMaxDisplacedBarrelPtEtaEvent(treeHits,
             if algorithm==5: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 5)
             if algorithm==6: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 6)
             if algorithm==7: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 7)
-            
-            """
-            if hasMB1Cut and not has_DT_MB1: continue
-            if hasMB2Cut and not has_DT_MB2: continue
-            if hasMB3Cut and not has_DT_MB3: continue
-            if hasMB4Cut and not has_DT_MB4: continue
-            """
-            
-        ## calculate the max pT for the muons that pass the criteria
-        if DisplacedL1Mu_pt > max_displaced_L1Mu_pt:
-            max_displaced_L1Mu_pt = DisplacedL1Mu_pt
-            max_displaced_L1Mu_eta = DisplacedL1Mu_eta
 
-    return max_displaced_L1Mu_pt, max_displaced_L1Mu_eta
+            ## get the highest pT using all algorithms
+            if algorithm==9:
+                pt12 = pt_barrel_direction_based_algorithm(treeHits, i, 10)
+                pt13 = pt_barrel_direction_based_algorithm(treeHits, i, 11)
+                pt14 = pt_barrel_direction_based_algorithm(treeHits, i, 12)
+                pt23 = pt_barrel_direction_based_algorithm(treeHits, i, 13)
+                pt24 = pt_barrel_direction_based_algorithm(treeHits, i, 14)
+                pt34 = pt_barrel_direction_based_algorithm(treeHits, i, 15)
+                
+                DisplacedL1Mu_pt = max(pt12[0], pt13[0], pt14[0], pt23[0], pt24[0], pt34[0])
+                DisplacedL1Mu_pt = L1Mu_eta
+
+                ## calculate the max pT for the muons that pass the criteria
+                if DisplacedL1Mu_pt > max_displaced_L1Mu_pt:
+                    iL1Mu = i
+                    max_displaced_L1Mu_pt = DisplacedL1Mu_pt
+                    max_displaced_L1Mu_eta = DisplacedL1Mu_eta
+
+    return max_displaced_L1Mu_pt, max_displaced_L1Mu_eta, iL1Mu

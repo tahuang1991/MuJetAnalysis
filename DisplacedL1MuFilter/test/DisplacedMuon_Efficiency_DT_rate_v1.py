@@ -419,12 +419,12 @@ for a in range(1,50):
             nIter += 1
             if nIter%1000==0:
                 print "Processing", nIter
-            a_axis = a/100.
-            b_axis = b/100.
+            a_axis = a/50.
+            b_axis = b/50.
             #continue
             alpha = getNominalAlpha(combination) + c/2.
             acceptance, rejection = getEllipseCutTuple(signalTree, rateTree, int(ptCut), combination, a_axis, b_axis, alpha)
-            #print "a ", a_axis, "b", b_axis, "alpha", alpha, "acceptance", acceptance, "rejection", rejection
+            print "a ", a_axis, "b", b_axis, "alpha", alpha, "acceptance", acceptance, "rejection", rejection
             
             ## check if this combination is good
             if acceptance > 0.90:

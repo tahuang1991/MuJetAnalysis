@@ -185,7 +185,7 @@ if __name__ == "__main__":
     nEvents = maxEntries
     print "nEvents", nEvents
     for k in range(0,nEvents):
-      if k%1000==0: print "Processing event", k
+      if k%1==0: print "Processing event", k
 
       h_eventcount.Fill(1)
       ch.GetEntry(k)
@@ -254,7 +254,14 @@ if __name__ == "__main__":
 
       minQuality = 4
 
-      
+      ## function that returns the most likely high pT muon in the event
+      max_pt, max_eta, found_index = getMaxDisplacedBarrelPtEtaEvent(treeHits,
+                                                                     doBXCut,
+                                                                     etaCutMin,
+                                                                     etaCutMax,
+                                                                     stubCut,
+                                                                     qualityCut, 
+                                                                     algorithm=9)
       for i in range(0,len(pts)):
         initbranches()
 
@@ -265,18 +272,23 @@ if __name__ == "__main__":
         L1Mu_quality[0] = treeHits.L1Mu_quality[i]
         L1Mu_DTTF_index = treeHits.L1Mu_DTTF_index[i]
         L1Mu_charge[0] = treeHits.L1Mu_charge[i]
-
+     
         ## eta cut
         if not (etaCutMin <= abs(L1Mu_eta[0]) and abs(L1Mu_eta[0]) <= etaCutMax): continue
-
+     
         ## quality cut
         if L1Mu_quality[0] < qualityCut: continue
-
+     
         ## BX cut
         if abs(L1Mu_bx[0]) != 0 and doBXCut: continue
-
+      
+        print L1Mu_DTTF_index
+      
         ## not a CSC muon
         if L1Mu_DTTF_index == -1: continue
+
+        ## in case there is more than 1 muon, pick the one with likely the highest pT
+        if found_index != i: continue
 
         DTTF_phib1s[0] = treeHits.DTTF_phib1[L1Mu_DTTF_index]
         DTTF_phib2s[0] = treeHits.DTTF_phib2[L1Mu_DTTF_index]
@@ -318,8 +330,10 @@ if __name__ == "__main__":
         DTTF_DT2_DT3_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib2_phib3s[0], 'DT2_DT3')
         DTTF_DT2_DT4_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib2_phib4s[0], 'DT2_DT4')
         DTTF_DT3_DT4_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib3_phib4s[0], 'DT3_DT4')
-
+        
 	L1MuRatetree.Fill()
+
+    print "rate events", L1MuRatetree.GetEntries()
 
     c = TCanvas("c","c",800,600)
     c.Clear()

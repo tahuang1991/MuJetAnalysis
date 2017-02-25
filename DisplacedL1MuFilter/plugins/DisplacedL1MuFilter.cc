@@ -2269,7 +2269,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
             // extra selection - stub not too far from track
             if (reco::deltaR(gp.eta(), normalizedPhi(gp.phi()),
-                             event_.CSCTF_eta[j] , normalizedPhi(event_.CSCTF_phi[j])) < 0.2){
+                             event_.CSCTF_eta[j] , normalizedPhi(event_.CSCTF_phi[j])) < 1){
 
               // add the stub to the collection
               std::vector<CSCCorrelatedLCTDigi> v;
@@ -2576,11 +2576,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       event_.CSCTF_L1_direction_pt_GE21[j] = ptAssignmentUnit.getDirectionPt();
     }
 
-    ptAssignmentUnit.runHybrid(false);
-    event_.CSCTF_L1_hybrid_pt_noGE21[j] = ptAssignmentUnit.getHybridPt();
+    if (ptAssignmentUnit.getNParity()>=0){
+      ptAssignmentUnit.runHybrid(false);
+      event_.CSCTF_L1_hybrid_pt_noGE21[j] = ptAssignmentUnit.getHybridPt();
 
-    ptAssignmentUnit.runHybrid(true);
-    event_.CSCTF_L1_hybrid_pt_GE21[j] = ptAssignmentUnit.getHybridPt();
+      ptAssignmentUnit.runHybrid(true);
+      event_.CSCTF_L1_hybrid_pt_GE21[j] = ptAssignmentUnit.getHybridPt();
+    }
   } // loop on csctf tracks
 
   // Store the RPCb variables

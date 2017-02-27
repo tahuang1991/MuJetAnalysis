@@ -6,8 +6,6 @@ ROOT.gROOT.SetBatch(1)
 #from Helpers import *
 ROOT.gErrorIgnoreLevel=1001
 from ROOT import * 
-import random
-import os
 import numpy as np
 from math import *
 
@@ -35,44 +33,7 @@ ROOT.gStyle.SetPadBottomMargin(0.13)
 
 ROOT.gStyle.SetMarkerStyle(1)
 
-def frange(end,start=0,inc=0,precision=1):
-    """A range function that accepts float increments."""
-    import math
-    if not start:
-        start = end + 0.0
-        end = 0.0
-    else: end += 0.0
-
-    if not inc:
-        inc = 1.0
-    count = int(math.ceil((start - end) / inc))
-
-    L = [None] * (count+1)
-
-    L[0] = end
-    for i in (xrange(1,count)):
-        L[i] = L[i-1] + inc
-    L[count] = start
-    return L
-
-def addFilesToChain(ch, filedir):
-    if os.path.isdir(filedir):
-    	  ls = os.listdir(filedir)
-    	  for x in ls:
-	      	if not(x.endswith(".root")):
-			#print "x.endswith(.root) ", x.endswith(".root")
-			continue
-		x = filedir[:]+x
-    		if os.path.isdir(x):
-			continue
-		ch.Add(x)
-    elif os.path.isfile(filedir):
-	  ch.Add(filedir)
-    else:
-	  print " it is not file or dir ", filedir
-
 ## draw an ellipse that includes 95% of the entries
-
 def getEllipse(x,y,a,b, alpha=0, x0=0, y0=0):
   rad_alpha = alpha/180*2*pi
   x1 = x*cos(rad_alpha)+y*sin(rad_alpha)-x0
@@ -197,8 +158,8 @@ def drawEllipse(signalHist1,
     #el2.SetLineWidth(2);
     el1.SetFillStyle(0)
     
-    c = TCanvas(cTitle,"",1000,1000)
-    c.Divide(2,2)
+    c = TCanvas(cTitle,"",1000,400)
+    c.Divide(2)
     c.cd(1)
     signalHist1.Draw("colz")
     signalHist1.GetXaxis().SetTitle(xtitle)
@@ -209,7 +170,8 @@ def drawEllipse(signalHist1,
     tex2 = addLatexText(0.2, 0.82, "a: %f"%a_axis)
     tex3 = addLatexText(0.2, 0.77, "b: %f"%b_axis)
     tex4 = addLatexText(0.2, 0.72, "#alpha: %f"%alpha)
-
+    
+    """
     c.cd(2)
     signalHist2.Draw("colz")
     signalHist2.GetXaxis().SetTitle(xtitle)
@@ -224,13 +186,14 @@ def drawEllipse(signalHist1,
     signalHist3.Draw("colz")
     signalHist3.GetXaxis().SetTitle(xtitle)
     signalHist3.GetYaxis().SetTitle(ytitle)
-    signalHist3.SetTitle("Signal, p_{T} > %d GeV, 20 < dxy < 10 cm"%pt)
+    signalHist3.SetTitle("Signal, p_{T} > %d GeV, 20 < dxy < 50 cm"%pt)
     el1.Draw('same')
     tex21 = addLatexText(0.2, 0.82, "a: %f"%a_axis)
     tex22 = addLatexText(0.2, 0.77, "b: %f"%b_axis)
     tex23 = addLatexText(0.2, 0.72, "#alpha: %f"%alpha)
-
-    c.cd(4)
+    """
+    
+    c.cd(2)
     rateHist.Draw("colz")
     rateHist.GetXaxis().SetTitle(xtitle)
     rateHist.GetYaxis().SetTitle(ytitle)
@@ -242,12 +205,11 @@ def drawEllipse(signalHist1,
     tex44 = addLatexText(0.2, 0.72, "#alpha: %f"%alpha)
 
     c.cd()
-    c.SaveAs("BarrelEllipses_20170226/" + cTitle + ".C")
-    c.SaveAs("BarrelEllipses_20170226/" + cTitle + ".pdf")
+    c.SaveAs("BarrelEllipses_20170227/" + cTitle + ".C")
+    c.SaveAs("BarrelEllipses_20170227/" + cTitle + ".pdf")
 
 
-def drawEllipseTree(signalTree, rateTree, to_draw, cut, signalPtCut, signalBinning, rateBinning, xtitle, ytitle, cTitle, a_axis, b_axis, alpha, x0, y0, acc, rej, pt): #a, b, alpha, x0, y0, 
-
+def drawEllipseTreeToHistogram(signalTree, rateTree, to_draw, cut, signalPtCut, signalBinning, rateBinning, xTitle, yTitle, cTitle, a_axis, b_axis, alpha, x0, y0, acc, rej):
     [nBinsX, minBinX, maxBinX, nBinsY, minBinY, maxBinY] = signalBinning
     signalHist1 = get2dHisto(signalTree, to_draw, TCut("%s"%cut + "&& sim_pt > %f"%signalPtCut), nBinsX, minBinX, maxBinX, nBinsY, minBinY, maxBinY)
 
@@ -260,9 +222,9 @@ def drawEllipseTree(signalTree, rateTree, to_draw, cut, signalPtCut, signalBinni
     [nBinsX, minBinX, maxBinX, nBinsY, minBinY, maxBinY] = rateBinning
     rateHist = get2dHisto(rateTree, to_draw, cut, nBinsX, minBinX, maxBinX, nBinsY, minBinY, maxBinY)
 
-    drawEllipse(signalHist1, signalHist2, signalHist3, rateHist, xtitle, ytitle, cTitle, a_axis, b_axis, alpha, x0, y0, acc, rej, pt)
+    drawEllipse(signalHist1, signalHist2, signalHist3, rateHist, xTitle, yTitle, cTitle, a_axis, b_axis, alpha, x0, y0, acc, rej, signalPtCut)
 
-
+    
 def drawEllipseTreeSimple(signalTree, rateTree, st11, st12, st21, st22, signalPtCut, a_axis, b_axis, alpha, x0, y0, acc, rej):    
     to_draw = "DTTF_phib%d_phib%d:DTTF_phib%d_phib%d"%(st11,st12,st21,st22)
     stationCut = "ok_DTTF_st%d && ok_DTTF_st%d && ok_DTTF_st%d && ok_DTTF_st%d"%(st11,st12,st21,st22)
@@ -271,9 +233,10 @@ def drawEllipseTreeSimple(signalTree, rateTree, st11, st12, st21, st22, signalPt
     cTitle = "DPhib_MB%d_MB%d__DPhib_MB%d_MB%d__Pt%d"%(st11,st12,st21,st22,signalPtCut)
     signalBinning = [250, -0.5, 0.5, 250, -0.5, 0.5]
     rateBinning = [200, -1, 1, 200, -1, 1]
-    drawEllipseTree(signalTree, rateTree, to_draw, stationCut, signalPtCut, signalBinning, rateBinning, xTitle, yTitle, cTitle, a_axis, b_axis, alpha, x0, y0, acc, rej, signalPtCut)
 
-    
+    drawEllipseTreeToHistogram(signalTree, rateTree, to_draw, stationCut, signalPtCut, signalBinning, rateBinning, xTitle, yTitle, cTitle, a_axis, b_axis, alpha, x0, y0, acc, rej)
+
+
 def drawEllipseTreeSimple2(signalTree, rateTree, combination, signalPtCut, a_axis, b_axis, alpha, x0, y0, acc, rej):
     st11 = combination[0][0]
     st12 = combination[0][1]
@@ -363,6 +326,10 @@ def getNominalAlpha(combination):
         ((2, 4),(3, 4)) : 60.,
         }
     return nominal_alphas[combination]
+
+
+def printBestValues(combination, ptCut, bestAcceptance, bestRejection, bestA, bestB, bestAngle):
+  print "Combo", combination, ptCut, ":", "[", bestA, ",", bestB, ",", bestAngle, "],", "#Acceptance", bestAcceptance, " #Rejection", bestRejection
 
 
 ############################################################################################################################################
@@ -466,9 +433,9 @@ for a in np.arange(0.01,0.5,0.02):
                     bestB = b_axis
                     bestAngle = alpha
                     #print "current best", bestAcceptance, bestRejection, bestA, bestB, bestAngle
-print "nIter", nIter 
-print "Combination", combination
-print "Optimal values:"
-print "CombinationNumber", int(arguments[2]), "ptCut", ptCut, "Acceptance", bestAcceptance, "Rejection", bestRejection, "bestA", bestA, "bestB", bestB, "bestAngle", bestAngle
 
+## print the best values!!
+print "nIter", nIter 
+printBestValues(int(arguments[2]), ptCut, bestAcceptance, bestRejection, bestA, bestB, bestAngle)
 drawEllipseTreeSimple2(signalTree, rateTree, combination, int(ptCut), bestA, bestB, bestAngle, 0, 0, bestAcceptance, bestRejection)
+

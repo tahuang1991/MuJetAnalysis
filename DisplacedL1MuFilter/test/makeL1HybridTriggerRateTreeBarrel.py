@@ -14,7 +14,7 @@ import numpy as n
 #______________________________________________________________________________
 if __name__ == "__main__":
 
-  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170223_BarrelTree"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170224_BarrelTree"; pu = 'PU140'; eff = False
 
   ## extension for figures - add more?
   ext = ".png"
@@ -33,6 +33,10 @@ if __name__ == "__main__":
   location0 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v30_StubReco/0000/'
   location1 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v30_StubReco/0001/'
   location2 = '/Users/Sven/Documents/work/DisplacedMuL1Studies/NeutrinoGun_14TeV_PU140_L1MuANA_v30_StubReco/0002/'
+
+  location0 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v30_StubReco/170214_220654/0000/'
+  location1 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v30_StubReco/170214_220654/0001/'
+  location2 = '/eos/uscms/store/user/lpcgem/Neutrino_Pt2to20_gun/NeutrinoGun_14TeV_PU140_L1MuANA_v30_StubReco/170214_220654/0002/'
 
   tree = addfiles(ch, dirname=location0, ext=".root")
   tree = addfiles(ch, dirname=location1, ext=".root")
@@ -65,7 +69,7 @@ if __name__ == "__main__":
         addPlotToMapTH1F_v2(arg[i].replace("rate_", "rate_pt_"), ptbins)
         addPlotToMapTH1F_v2(arg[i].replace("rate_", "rate_eta_"), etabins)
 
-     
+
     ## binning
     ptbin = [
       1, 2.0,   2.5,   3.0,   3.5,   4.0,   4.5,   5.0,   6.0,   7.0,   8.0,
@@ -86,24 +90,24 @@ if __name__ == "__main__":
     ok_DTTF_st2s = n.zeros(1, dtype=int)
     ok_DTTF_st3s = n.zeros(1, dtype=int)
     ok_DTTF_st4s = n.zeros(1, dtype=int)
-    
+
     DTTF_phi1s = n.zeros(1, dtype=float)
     DTTF_phi2s = n.zeros(1, dtype=float)
     DTTF_phi3s = n.zeros(1, dtype=float)
     DTTF_phi4s = n.zeros(1, dtype=float)
-    
+
     DTTF_phib1s = n.zeros(1, dtype=float)
     DTTF_phib2s = n.zeros(1, dtype=float)
     DTTF_phib3s = n.zeros(1, dtype=float)
     DTTF_phib4s = n.zeros(1, dtype=float)
-    
+
     DTTF_phib1_phib2s = n.zeros(1, dtype=float)
     DTTF_phib1_phib3s = n.zeros(1, dtype=float)
     DTTF_phib1_phib4s = n.zeros(1, dtype=float)
     DTTF_phib2_phib3s = n.zeros(1, dtype=float)
     DTTF_phib2_phib4s = n.zeros(1, dtype=float)
     DTTF_phib3_phib4s = n.zeros(1, dtype=float)
-    
+
     abs_DTTF_phib1_phib2s = n.zeros(1, dtype=float)
     abs_DTTF_phib1_phib3s = n.zeros(1, dtype=float)
     abs_DTTF_phib1_phib4s = n.zeros(1, dtype=float)
@@ -142,17 +146,17 @@ if __name__ == "__main__":
     L1MuRatetree.Branch('ok_DTTF_st2', ok_DTTF_st2s, 'ok_DTTF_st2/I')
     L1MuRatetree.Branch('ok_DTTF_st3', ok_DTTF_st3s, 'ok_DTTF_st3/I')
     L1MuRatetree.Branch('ok_DTTF_st4', ok_DTTF_st4s, 'ok_DTTF_st4/I')
-    
+
     L1MuRatetree.Branch('DTTF_phi1', DTTF_phi1s, 'DTTF_phi1/D')
     L1MuRatetree.Branch('DTTF_phi2', DTTF_phi2s, 'DTTF_phi2/D')
     L1MuRatetree.Branch('DTTF_phi3', DTTF_phi3s, 'DTTF_phi3/D')
     L1MuRatetree.Branch('DTTF_phi4', DTTF_phi4s, 'DTTF_phi4/D')
-    
+
     L1MuRatetree.Branch('DTTF_phib1', DTTF_phib1s, 'DTTF_phib1/D')
     L1MuRatetree.Branch('DTTF_phib2', DTTF_phib2s, 'DTTF_phib2/D')
     L1MuRatetree.Branch('DTTF_phib3', DTTF_phib3s, 'DTTF_phib3/D')
     L1MuRatetree.Branch('DTTF_phib4', DTTF_phib4s, 'DTTF_phib4/D')
-    
+
     L1MuRatetree.Branch('DTTF_phib1_phib2', DTTF_phib1_phib2s, 'DTTF_phib1_phib2/D')
     L1MuRatetree.Branch('DTTF_phib1_phib3', DTTF_phib1_phib3s, 'DTTF_phib1_phib3/D')
     L1MuRatetree.Branch('DTTF_phib1_phib4', DTTF_phib1_phib4s, 'DTTF_phib1_phib4/D')
@@ -260,7 +264,7 @@ if __name__ == "__main__":
                                                                      etaCutMin,
                                                                      etaCutMax,
                                                                      stubCut,
-                                                                     qualityCut, 
+                                                                     qualityCut,
                                                                      algorithm=9)
       for i in range(0,len(pts)):
         initbranches()
@@ -272,18 +276,18 @@ if __name__ == "__main__":
         L1Mu_quality[0] = treeHits.L1Mu_quality[i]
         L1Mu_DTTF_index = treeHits.L1Mu_DTTF_index[i]
         L1Mu_charge[0] = treeHits.L1Mu_charge[i]
-     
+
         ## eta cut
         if not (etaCutMin <= abs(L1Mu_eta[0]) and abs(L1Mu_eta[0]) <= etaCutMax): continue
-     
+
         ## quality cut
         if L1Mu_quality[0] < qualityCut: continue
-     
+
         ## BX cut
         if abs(L1Mu_bx[0]) != 0 and doBXCut: continue
-      
+
         print L1Mu_DTTF_index
-      
+
         ## not a CSC muon
         if L1Mu_DTTF_index == -1: continue
 
@@ -294,22 +298,22 @@ if __name__ == "__main__":
         DTTF_phib2s[0] = treeHits.DTTF_phib2[L1Mu_DTTF_index]
         DTTF_phib3s[0] = treeHits.DTTF_phib3[L1Mu_DTTF_index]
         DTTF_phib4s[0] = treeHits.DTTF_phib4[L1Mu_DTTF_index]
-        
+
         DTTF_phi1s[0] = treeHits.DTTF_phi1[L1Mu_DTTF_index]
         DTTF_phi2s[0] = treeHits.DTTF_phi2[L1Mu_DTTF_index]
         DTTF_phi3s[0] = treeHits.DTTF_phi3[L1Mu_DTTF_index]
         DTTF_phi4s[0] = treeHits.DTTF_phi4[L1Mu_DTTF_index]
-        
-        ok_DTTF_st1s[0] = DTTF_phib1s[0] != 99 and DTTF_phi1s[0] != 99 
-        ok_DTTF_st2s[0] = DTTF_phib2s[0] != 99 and DTTF_phi2s[0] != 99 
+
+        ok_DTTF_st1s[0] = DTTF_phib1s[0] != 99 and DTTF_phi1s[0] != 99
+        ok_DTTF_st2s[0] = DTTF_phib2s[0] != 99 and DTTF_phi2s[0] != 99
         ok_DTTF_st3s[0] = DTTF_phib3s[0] != 99 and DTTF_phi3s[0] != 99
         ok_DTTF_st4s[0] = DTTF_phib4s[0] != 99 and DTTF_phi4s[0] != 99
-        
+
         DTTF_phib1s[0] = normalizedPhi(DTTF_phib1s[0] + DTTF_phi1s[0])
         DTTF_phib2s[0] = normalizedPhi(DTTF_phib2s[0] + DTTF_phi2s[0])
         DTTF_phib3s[0] = normalizedPhi(DTTF_phib3s[0] + DTTF_phi3s[0])
         DTTF_phib4s[0] = normalizedPhi(DTTF_phib4s[0] + DTTF_phi4s[0])
-        
+
         DTTF_phib1_phib2s[0] = deltaPhi(DTTF_phib1s[0], DTTF_phib2s[0])
         DTTF_phib1_phib3s[0] = deltaPhi(DTTF_phib1s[0], DTTF_phib3s[0])
         DTTF_phib1_phib4s[0] = deltaPhi(DTTF_phib1s[0], DTTF_phib4s[0])
@@ -323,14 +327,14 @@ if __name__ == "__main__":
         abs_DTTF_phib2_phib3s[0] = abs(deltaPhi(DTTF_phib2s[0], DTTF_phib3s[0]))
         abs_DTTF_phib2_phib4s[0] = abs(deltaPhi(DTTF_phib2s[0], DTTF_phib4s[0]))
         abs_DTTF_phib3_phib4s[0] = abs(deltaPhi(DTTF_phib3s[0], DTTF_phib4s[0]))
-        
+
         DTTF_DT1_DT2_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib1_phib2s[0], 'DT1_DT2')
         DTTF_DT1_DT3_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib1_phib3s[0], 'DT1_DT3')
         DTTF_DT1_DT4_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib1_phib4s[0], 'DT1_DT4')
         DTTF_DT2_DT3_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib2_phib3s[0], 'DT2_DT3')
         DTTF_DT2_DT4_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib2_phib4s[0], 'DT2_DT4')
         DTTF_DT3_DT4_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib3_phib4s[0], 'DT3_DT4')
-        
+
 	L1MuRatetree.Fill()
 
     print "rate events", L1MuRatetree.GetEntries()
@@ -339,13 +343,13 @@ if __name__ == "__main__":
     c.Clear()
     h_eventcount.Draw()
     c.SaveAs("h_eventcount.png")
-    #make plots before write into root 
-    targetroot = TFile("target.root","RECREATE")
+    #make plots before write into root
+    targetroot = TFile(label + ".root","RECREATE")
     h_eventcount.Write()
     #h_dphi_ME11_ME21.Write()
     L1MuRatetree.Write()
     targetroot.Close()
- 
+
 
     ## trigger rate plots
   displacedL1MuHybridTriggerRate()

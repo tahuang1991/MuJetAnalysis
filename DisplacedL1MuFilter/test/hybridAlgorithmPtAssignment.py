@@ -131,6 +131,10 @@ def pt_barrel_direction_based_algorithm(treeHits,
         
     return returnValue, L1Mu_eta
 
+
+def DT_ellipse_parameters(combination, ptCut):
+    
+
 def pt_endcap_position_based_algorithm(treeHits, L1Mu_index, doComparatorFit):
     '''First argument is the analysis tree. Second argument is the L1Mu to CSCTF index'''
     returnValue = 0

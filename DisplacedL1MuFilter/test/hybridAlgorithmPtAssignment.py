@@ -121,8 +121,12 @@ def pt_barrel_direction_based_algorithm(treeHits,
         if ok_DTTF_st2 and ok_DTTF_st3 and not ok_DTTF_st1 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib3, 'DT2_DT3')
         if ok_DTTF_st2 and ok_DTTF_st4 and not ok_DTTF_st1 and not ok_DTTF_st3: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib4, 'DT2_DT4')
         if ok_DTTF_st3 and ok_DTTF_st4 and not ok_DTTF_st1 and not ok_DTTF_st2: returnValue = pt_from_DPhi_DT(abs_DTTF_phib3_phib4, 'DT3_DT4')
-
+        
     return returnValue, L1Mu_eta
+
+
+def DT_ellipse_parameters(combination, ptCut):
+    
 
 def pt_endcap_position_based_algorithm(treeHits, L1Mu_index, doComparatorFit):
     '''First argument is the analysis tree. Second argument is the L1Mu to CSCTF index'''

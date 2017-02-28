@@ -101,8 +101,10 @@ def getBackgroundRejectionEllipse(a_axis, b_axis, alpha, x0, y0, signalHist, bac
 def getEvents(ch, cut, nBinsX, minBinX, maxBinX, nBinsY, minBinY, maxBinY):
     hist = TH2F("hist","hist", nBinsX, minBinX, maxBinX, nBinsY, minBinY, maxBinY)
     ch.Draw("1:1>>hist",cut)
-    return hist.GetEntries()
-
+    returnValue = hist.GetEntries()
+    del hist
+    return returnValue
+    
 
 def getEffandRateFromEllipse(signalChain, backgroundChain, cuts, signalPtCut, signalX, signalY, backgroundX, backgroundY, a_axis, b_axis, alpha, x0, y0):
     newSignalX = "(%s*TMath::Cos(%f)+%s*TMath::Sin(%f)-%f)"%(signalX, alpha, signalY, alpha, x0)
@@ -211,7 +213,7 @@ def drawEllipse(signalHist1,
 
 def drawEllipseTreeToHistogram(signalTree, rateTree, to_draw, cut, signalPtCut, signalBinning, rateBinning, xTitle, yTitle, cTitle, a_axis, b_axis, alpha, x0, y0, acc, rej):
     [nBinsX, minBinX, maxBinX, nBinsY, minBinY, maxBinY] = signalBinning
-    signalHist1 = get2dHisto(signalTree, to_draw, TCut("%s"%cut + "&& sim_pt > %f"%signalPtCut), nBinsX, minBinX, maxBinX, nBinsY, minBinY, maxBinY)
+    signalHist1 = get2dHisto(signalTree, to_draw, TCut("%s"%cut + "&& sim_pt > %f && abs(gen_dxy)>10 && abs(gen_dxy) < 50"%signalPtCut), nBinsX, minBinX, maxBinX, nBinsY, minBinY, maxBinY)
 
     [nBinsX, minBinX, maxBinX, nBinsY, minBinY, maxBinY] = signalBinning
     signalHist2 = get2dHisto(signalTree, to_draw, TCut("%s"%cut + "&& sim_pt > %f && abs(gen_dxy)>10 && abs(gen_dxy) < 20"%signalPtCut), nBinsX, minBinX, maxBinX, nBinsY, minBinY, maxBinY)
@@ -409,18 +411,18 @@ print ptCut
 combination = DT_dPhi_combinations[int(arguments[2])]
 print combination
 
-#combination = ((2, 4),(3, 4))
 nIter=0
-for a in np.arange(0.01,0.5,0.02):
-    for b in np.arange(0.01,0.5,0.02):
+for a in np.arange(0.00,0.5,0.02):
+    for b in np.arange(0.00,0.5,0.02):
         for c in range(-5,11):
             nIter += 1
-            if nIter%1000==0:
-                print "Processing", nIter
             a_axis = a
             b_axis = b
             alpha = getNominalAlpha(combination) + c
-            print "a ", a_axis, "b", b_axis, "alpha", alpha
+            if nIter%1000==0:
+                print "Processing", nIter
+                print "a ", a_axis, "b", b_axis, "alpha", alpha
+            acceptance = 0
             acceptance, rejection = getEllipseCutTuple(signalTree, rateTree, int(ptCut), combination, a_axis, b_axis, alpha, 0, 0)
             #print "a ", a_axis, "b", b_axis, "alpha", alpha, "acceptance", acceptance, "rejection", rejection
             

@@ -4,8 +4,7 @@ sys.argv.append( '-b' )
 import ROOT
 ROOT.gROOT.SetBatch(1)
 from Helpers import *
-from hybridAlgorithmPtAssignment import *
-from TTTrackIsolation import *
+from TriggerAlgorithms import *
 
 ROOT.gErrorIgnoreLevel=1001
 from ROOT import *
@@ -29,7 +28,7 @@ if __name__ == "__main__":
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170220"; pu = 'PU140'; eff = False
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170221"; pu = 'PU140'; eff = False
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170222"; pu = 'PU140'; eff = False
-  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170223"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170227"; pu = 'PU140'; eff = False
 
   ## extension for figures - add more?
   ext = ".png"
@@ -56,7 +55,7 @@ if __name__ == "__main__":
   targetDir = label + "/"
 
   f = TFile.Open(label + ".root","RECREATE")
-  
+
 
   verbose = True
 
@@ -84,7 +83,7 @@ if __name__ == "__main__":
         addPlotToMapTH1F_v2(arg[i].replace("rate_", "rate_eta_L1Pt10_"), etabins)
 
     ## binning
-        
+
     ptbin = [
       2.0,   2.5,   3.0,   3.5,   4.0,   4.5,   5.0,   6.0,   7.0,   8.0,
       10.0,  12.0,  14.0,  16.0,  18.0,  20.0,  25.0,  30.0,  35.0,  40.0,
@@ -173,7 +172,7 @@ if __name__ == "__main__":
 
                        "h_single_prompt_L1Mu_rate_2_stubs_GE21_ME21_eta1p6to2p2",
                        "h_single_prompt_L1Mu_rate_3_stubs_GE21_ME21_eta1p6to2p2",
- 
+
                        "h_single_prompt_L1Mu_rate_2_stubs_GE21_ME21_eta2p15to2p4",
                        "h_single_prompt_L1Mu_rate_3_stubs_GE21_ME21_eta2p15to2p4",
 
@@ -324,7 +323,7 @@ if __name__ == "__main__":
       fillDPhiHistogram( h_dphi_ME11_ME21_charge_Pt20to140, tree, 20, 999 )
       fillDPhiHistogram( h_dphi_ME11_ME21_charge_Pt30to140, tree, 30, 999 )
       """
-      
+
       ## calibrate trigger rate
       fillPromptHistogram(mapTH1F, "h_single_prompt_L1Mu_rate_eta0to2p4", tree, 0.0, 2.4, 0)
       fillPromptHistogram(mapTH1F, "h_single_prompt_L1Mu_rate_eta1p1to2p4", tree, 1.1, 2.4, 0)
@@ -421,17 +420,17 @@ if __name__ == "__main__":
       ## 3: direction based - with GE21
       ## 4: hybrid based - no GE21
       ## 5: hybrid based - with GE21
-      
+
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_position_ME1_ME2_ME3_eta1p2to2p15", tree, 1.2, 2.15, 0, algorithm=1)
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_position_ME1_ME2_ME3_eta1p2to1p6", tree, 1.2, 1.6, 0, algorithm=1)
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_position_ME1_ME2_ME3_eta1p6to2p15", tree, 1.6, 2.15, 0, algorithm=1)
-      
+
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_hybrid_ME1_ME2_ME3_eta1p2to1p6", tree, 1.2, 1.6, 0, algorithm=4)
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_hybrid_GE11_ME11_ME21_ME3_eta1p6to2p15", tree, 1.6, 2.15, 0, algorithm=4)
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_hybrid_GE11_ME11_GE21_ME21_ME3_eta1p6to2p15", tree, 1.6, 2.15, 0, algorithm=5)
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_hybrid_GE11_ME1_ME2_ME3_eta1p2to2p15", tree, 1.2, 2.15, 0, algorithm=4)
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_hybrid_GE11_ME1_GE21_ME2_ME3_eta1p2to2p15", tree, 1.2, 2.15, 0, algorithm=5)
-      
+
       ## loose isolation
       fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB2_eta0to0p9_looseVeto", tree, 0, 0.9, 0, algorithm=1, vetoType=1)
       fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB3_eta0to0p9_looseVeto", tree, 0, 0.9, 0, algorithm=2, vetoType=1)
@@ -513,7 +512,7 @@ if __name__ == "__main__":
 
 
     ## output ROOT file
-    
+
     f.Write();
     f.Close();
 

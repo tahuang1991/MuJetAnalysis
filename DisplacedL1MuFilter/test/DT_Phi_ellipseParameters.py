@@ -9,7 +9,7 @@ import numpy as np
 import os
 import random
 
-    
+
 ## PT : [a_axis_, b_axis, alpha[deg] ]
 dphi_dict = {}
 
@@ -196,9 +196,9 @@ dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4'] = {
 
 
 #______________________________________________________________________________
-def getEllipseParameters(dphi11, dphi12, dphi21, dphi22, pt):
+def getEllipseParameters(dphi11, dphi12, dphi21, dphi22):
   dphiString = 'DPhib_MB%d_MB%d__DPhib_MB%d_MB%d'%(dphi11, dphi12, dphi21, dphi22)
-  return dphi_dict[dphiString][pt]
+  return dphi_dict[dphiString]
 
 
 #______________________________________________________________________________
@@ -230,49 +230,49 @@ def get_best_combination_station(stations):
   if 1 in stations and 2 in stations and 3 in stations:
     combinations = [
       'DPhib_MB1_MB3__DPhib_MB2_MB3'
-      'DPhib_MB1_MB2__DPhib_MB2_MB3',                                                      
+      'DPhib_MB1_MB2__DPhib_MB2_MB3',
       'DPhib_MB1_MB2__DPhib_MB1_MB3']
     return combinations[0]
-    
+
 
   if 1 in stations and 2 in stations and 4 in stations:
     combinations = [
-      'DPhib_MB1_MB4__DPhib_MB2_MB4',                                                      
-      'DPhib_MB1_MB2__DPhib_MB1_MB4',                                                      
-      'DPhib_MB1_MB2__DPhib_MB2_MB4']                                                      
+      'DPhib_MB1_MB4__DPhib_MB2_MB4',
+      'DPhib_MB1_MB2__DPhib_MB1_MB4',
+      'DPhib_MB1_MB2__DPhib_MB2_MB4']
     return combinations[0]
 
 
   if 1 in stations and 3 in stations and 4 in stations:
     combinations = [
-      'DPhib_MB1_MB3__DPhib_MB1_MB4',                                                      
-      'DPhib_MB1_MB4__DPhib_MB3_MB4',                                                      
-      'DPhib_MB1_MB3__DPhib_MB3_MB4']                                                      
+      'DPhib_MB1_MB3__DPhib_MB1_MB4',
+      'DPhib_MB1_MB4__DPhib_MB3_MB4',
+      'DPhib_MB1_MB3__DPhib_MB3_MB4']
     return combinations[0]
 
 
   if 2 in stations and 3 in stations and 4 in stations:
     combinations = [
-      'DPhib_MB2_MB4__DPhib_MB3_MB4',                                                      
-      'DPhib_MB2_MB3__DPhib_MB2_MB4',                                                      
-      'DPhib_MB2_MB3__DPhib_MB3_MB4']                                                
+      'DPhib_MB2_MB4__DPhib_MB3_MB4',
+      'DPhib_MB2_MB3__DPhib_MB2_MB4',
+      'DPhib_MB2_MB3__DPhib_MB3_MB4']
     return combinations[0]
 
-    
-  if (1 in stations and 2 in stations and 
+
+  if (1 in stations and 2 in stations and
       3 in stations and 4 in stations):
     combinations = [
-      'DPhib_MB1_MB4__DPhib_MB2_MB3',                                                      
-      'DPhib_MB1_MB3__DPhib_MB2_MB4',                                                      
+      'DPhib_MB1_MB4__DPhib_MB2_MB3',
+      'DPhib_MB1_MB3__DPhib_MB2_MB4',
       'DPhib_MB1_MB2__DPhib_MB3_MB4']
     return combinations[0]
-    
+
 
 #______________________________________________________________________________
 def pt_from_DPhi_DT_ellipse(dphi11, dphi12, dphi21, dphi22, x, y):
   default_pt = 2
-  
-  dphiString = get_best_combination_station([dphi11, dphi12, dphi21, dphi22])
+
+  dphiString = getEllipseParametersString([dphi11, dphi12, dphi21, dphi22])
 
   for ptCut in [40, 30, 20, 15, 10, 7, 5, 3]:
     ## get the parameters for this ellips

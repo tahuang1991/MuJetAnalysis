@@ -1,6 +1,7 @@
 ## this file contains functions that check if a L1Mu is isolated
 from Helpers import *
-from hybridAlgorithmPtAssignment import *
+from BarrelTriggerAlgorithms import *
+from EndcapTriggerAlgorithms import *
 import random
 
 ##_________________________________________________
@@ -99,7 +100,7 @@ def fillDPhiHistogram( h_dphi_ME11_ME21, treeHits, min_pt = 0, max_pt = 999 ):
         ## check even or odd
         GE11_even_L1 = treeHits.GE11_ch_L1[L1Mu_CSCTF_index] % 2 ==0
         GE11_even_L2 = treeHits.GE11_ch_L2[L1Mu_CSCTF_index] % 2 ==0
-        
+
         GE21_even_L1 = treeHits.GE21_ch_L1[L1Mu_CSCTF_index] % 2 ==0
         GE21_even_L2 = treeHits.GE21_ch_L2[L1Mu_CSCTF_index] % 2 ==0
 
@@ -120,7 +121,7 @@ def fillDPhiHistogram( h_dphi_ME11_ME21, treeHits, min_pt = 0, max_pt = 999 ):
             print "GE11 even L1", GE11_phi_L1, GE11_z_L1
         else:
             print "GE11 odd L1", GE11_phi_L1, GE11_z_L1
-            
+
         if GE11_even_L2:
             print "GE11 even L2", GE11_phi_L2, GE11_z_L2
         else:
@@ -131,7 +132,7 @@ def fillDPhiHistogram( h_dphi_ME11_ME21, treeHits, min_pt = 0, max_pt = 999 ):
             print "GE21 even L1", GE21_phi_L1, GE21_z_L1
         else:
             print "GE21 odd L1", GE21_phi_L1, GE21_z_L1
-            
+
         if GE21_even_L2:
             print "GE21 even L2", GE21_phi_L2, GE21_z_L2
         else:
@@ -565,7 +566,7 @@ def getMaxDisplacedPtEtaEvent(treeHits,
         nDTStubs = 0
 
         DisplacedL1Mu_pt, DisplacedL1Mu_eta = -1, -1
-        
+
         #print L1Mu_CSCTF_index
         if L1Mu_CSCTF_index != -1 and L1Mu_CSCTF_index < len(treeHits.CSCTF_phi1):
             has_CSC_ME1 = treeHits.CSCTF_phi1[L1Mu_CSCTF_index] != 99
@@ -657,7 +658,7 @@ def getMaxDisplacedBarrelPtEtaEvent(treeHits,
         nDTStubs = 0
 
         DisplacedL1Mu_pt, DisplacedL1Mu_eta = -1, -1
-        
+
         #print L1Mu_DTTF_index
         if L1Mu_DTTF_index != -1 and L1Mu_DTTF_index < len(treeHits.DTTF_phi1):
             nGoodMuons += 1
@@ -683,9 +684,12 @@ def getMaxDisplacedBarrelPtEtaEvent(treeHits,
                 pt23 = pt_barrel_direction_based_algorithm(treeHits, i, 13)
                 pt24 = pt_barrel_direction_based_algorithm(treeHits, i, 14)
                 pt34 = pt_barrel_direction_based_algorithm(treeHits, i, 15)
-                
+
                 DisplacedL1Mu_pt = max(pt12[0], pt13[0], pt14[0], pt23[0], pt24[0], pt34[0])
-                DisplacedL1Mu_pt = L1Mu_eta
+                DisplacedL1Mu_eta = L1Mu_eta
+
+            if algorithm==16:
+                DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 15)
 
                 ## calculate the max pT for the muons that pass the criteria
                 if DisplacedL1Mu_pt > max_displaced_L1Mu_pt:

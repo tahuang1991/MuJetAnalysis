@@ -39,6 +39,10 @@ if __name__ == "__main__":
   dirname2='/Users/Sven/Documents/work/DisplacedMuL1Studies/DarkSUSY_MH-125_MGammaD-20000_ctauX_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_L1MuANA_v54/'
   dirname3='/Users/Sven/Documents/work/DisplacedMuL1Studies/DarkSUSY_MH-125_MGammaD-20000_ctauX_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU140_L1MuANA_v54/'
 
+  dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v54/170214_025720/0000/'
+  dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_L1MuANA_v54/170214_025529/0000/'
+  dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU140_L1MuANA_v54/170214_022535/0000/'
+
   print "Start run on", ch.GetEntries(), "events."
   ch = addfiles(ch, dirname=dirname1)
   print "Start run on", ch.GetEntries(), "events."
@@ -48,7 +52,7 @@ if __name__ == "__main__":
   print "Start run on", ch.GetEntries(), "events."
   treeHits = ch
 
-  f = ROOT.TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_20170223_v2.root", "recreate")
+  f = ROOT.TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_20170224.root", "recreate")
   t = ROOT.TTree("L1MuTree", "L1MuTree")
 
   ## ranges
@@ -292,7 +296,7 @@ if __name__ == "__main__":
   DTTF_phib2s = numpy.zeros(1, dtype=float)
   DTTF_phib3s = numpy.zeros(1, dtype=float)
   DTTF_phib4s = numpy.zeros(1, dtype=float)
-  
+
   DTTF_phib1_phib2s = numpy.zeros(1, dtype=float)
   DTTF_phib1_phib3s = numpy.zeros(1, dtype=float)
   DTTF_phib1_phib4s = numpy.zeros(1, dtype=float)
@@ -529,8 +533,8 @@ if __name__ == "__main__":
   t.Branch('DTTF_DT2_DT3_pt', DTTF_DT2_DT3_pts, 'DTTF_DT2_DT3_pt/D')
   t.Branch('DTTF_DT2_DT4_pt', DTTF_DT2_DT4_pts, 'DTTF_DT2_DT4_pt/D')
   t.Branch('DTTF_DT3_DT4_pt', DTTF_DT3_DT4_pts, 'DTTF_DT3_DT4_pt/D')
-  
-  
+
+
   print "Start run on", treeHits.GetEntries(), "events."
   for k in range(0,treeHits.GetEntries()):
       treeHits.GetEntry(k)
@@ -870,7 +874,7 @@ if __name__ == "__main__":
           ## check if it's a DT muon
           L1Mu_DTTF_index  = treeHits.L1Mu_DTTF_index[L1Mu_index]
           if L1Mu_DTTF_index  != 99 and L1Mu_DTTF_index  != -1:
-            
+
             L1Mu_pts[0] = treeHits.L1Mu_pt[L1Mu_index]
             L1Mu_etas[0] = treeHits.L1Mu_eta[L1Mu_index]
             L1Mu_phis[0] = treeHits.L1Mu_phi[L1Mu_index]
@@ -881,7 +885,7 @@ if __name__ == "__main__":
             L1Mu_L1Tk_pt_prop = treeHits.L1Mu_L1Tk_pt_prop[L1Mu_index]
             L1Mu_L1Tk_dR_min = treeHits.L1Mu_L1Tk_dR_prop[L1Mu_index]
             L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt_prop[L1Mu_index]
-            
+
             DTTF_phib1s[0] = treeHits.DTTF_phib1[L1Mu_DTTF_index]
             DTTF_phib2s[0] = treeHits.DTTF_phib2[L1Mu_DTTF_index]
             DTTF_phib3s[0] = treeHits.DTTF_phib3[L1Mu_DTTF_index]
@@ -891,9 +895,9 @@ if __name__ == "__main__":
             DTTF_phi2s[0] = treeHits.DTTF_phi2[L1Mu_DTTF_index]
             DTTF_phi3s[0] = treeHits.DTTF_phi3[L1Mu_DTTF_index]
             DTTF_phi4s[0] = treeHits.DTTF_phi4[L1Mu_DTTF_index]
-              
-            ok_DTTF_st1s[0] = DTTF_phib1s[0] != 99 and DTTF_phi1s[0] != 99 
-            ok_DTTF_st2s[0] = DTTF_phib2s[0] != 99 and DTTF_phi2s[0] != 99 
+
+            ok_DTTF_st1s[0] = DTTF_phib1s[0] != 99 and DTTF_phi1s[0] != 99
+            ok_DTTF_st2s[0] = DTTF_phib2s[0] != 99 and DTTF_phi2s[0] != 99
             ok_DTTF_st3s[0] = DTTF_phib3s[0] != 99 and DTTF_phi3s[0] != 99
             ok_DTTF_st4s[0] = DTTF_phib4s[0] != 99 and DTTF_phi4s[0] != 99
 
@@ -901,7 +905,7 @@ if __name__ == "__main__":
             DTTF_phib2s[0] = normalizedPhi(DTTF_phib2s[0] + DTTF_phi2s[0])
             DTTF_phib3s[0] = normalizedPhi(DTTF_phib3s[0] + DTTF_phi3s[0])
             DTTF_phib4s[0] = normalizedPhi(DTTF_phib4s[0] + DTTF_phi4s[0])
-            
+
             DTTF_phib1_phib2s[0] = deltaPhi(DTTF_phib1s[0], DTTF_phib2s[0])
             DTTF_phib1_phib3s[0] = deltaPhi(DTTF_phib1s[0], DTTF_phib3s[0])
             DTTF_phib1_phib4s[0] = deltaPhi(DTTF_phib1s[0], DTTF_phib4s[0])
@@ -915,15 +919,15 @@ if __name__ == "__main__":
             abs_DTTF_phib2_phib3s[0] = abs(deltaPhi(DTTF_phib2s[0], DTTF_phib3s[0]))
             abs_DTTF_phib2_phib4s[0] = abs(deltaPhi(DTTF_phib2s[0], DTTF_phib4s[0]))
             abs_DTTF_phib3_phib4s[0] = abs(deltaPhi(DTTF_phib3s[0], DTTF_phib4s[0]))
-            
+
             DTTF_DT1_DT2_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib1_phib2s[0], 'DT1_DT2')
             DTTF_DT1_DT3_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib1_phib3s[0], 'DT1_DT3')
             DTTF_DT1_DT4_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib1_phib4s[0], 'DT1_DT4')
             DTTF_DT2_DT3_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib2_phib3s[0], 'DT2_DT3')
             DTTF_DT2_DT4_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib2_phib4s[0], 'DT2_DT4')
             DTTF_DT3_DT4_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib3_phib4s[0], 'DT3_DT4')
-            
-            #print DTTF_DT1_DT2_pts[0], DTTF_DT1_DT3_pts[0], DTTF_DT1_DT4_pts[0] 
+
+            #print DTTF_DT1_DT2_pts[0], DTTF_DT1_DT3_pts[0], DTTF_DT1_DT4_pts[0]
             #print
 
             if L1Mu_L1Tk_dR_min <= 0.12 and L1Mu_L1Tk_pt >= 4:
@@ -936,8 +940,8 @@ if __name__ == "__main__":
               L1Mu_isTightVetos[0] = 1
 
           t.Fill()
-          continue    
-          
+          continue
+
 
           if verbose and False:
             print "\t\tGE11_sim_L1_phis", GE11_sim_pad_L1_phis[0]

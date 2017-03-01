@@ -10,177 +10,177 @@ dphi_dict = {}
 
 ## 3 station combinations 1-2-3
 dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3'] = {                                                      
-  3 : [ 0.12 , 0.48 , 53.0 ], #Acceptance 0.900242530849  #Rejection 0.684418145957
-  5 : [ 0.08 , 0.22 , 59.0 ], #Acceptance 0.900314517925  #Rejection 0.765285996055
-  7 : [ 0.16 , 0.08 , 45.0 ], #Acceptance 0.900654529625  #Rejection 0.841927303466
-  10 : [ 0.06 , 0.22 , 53.0 ], #Acceptance 0.903643186616  #Rejection 0.898844744999
-  15 : [ 0.18 , 0.06 , 58.0 ], #Acceptance 0.900689995071  #Rejection 0.937447168216
-  20 : [ 0.14 , 0.06 , 55.0 ], #Acceptance 0.904300798352  #Rejection 0.94674556213
-  30 : [ 0.1 , 0.06 , 52.0 ], #Acceptance 0.900384480951  #Rejection 0.954916877994
-  40 : [ 0.04 , 0.2 , 50.0 ], #Acceptance 0.900641025641  #Rejection 0.96449704142
+  3 : [ 0.31 , 0.11 , 45.0 ], #Acceptance 0.900029316916  #Rejection 0.680191603269
+  5 : [ 0.45 , 0.13 , 58.0 ], #Acceptance 0.900439768426  #Rejection 0.763031839955
+  7 : [ 0.15 , 0.07 , 48.0 ], #Acceptance 0.900172571944  #Rejection 0.841927303466
+  10 : [ 0.07 , 0.21 , 50.0 ], #Acceptance 0.903017746853  #Rejection 0.898844744999
+  15 : [ 0.05 , 0.15 , 53.0 ], #Acceptance 0.903739526861  #Rejection 0.933784164553
+  20 : [ 0.37 , 0.05 , 58.0 ], #Acceptance 0.900077259851  #Rejection 0.951535643843
+  30 : [ 0.35 , 0.05 , 55.0 ], #Acceptance 0.900034952814  #Rejection 0.958861651169
+  40 : [ 0.21 , 0.05 , 55.0 ], #Acceptance 0.900641025641  #Rejection 0.960552268245
   }
 
 dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3'] = {                                                      
-  3 : [ 0.26 , 0.1 , 27.0 ], #Acceptance 0.90009594627  #Rejection 0.680473372781
-  5 : [ 0.1 , 0.16 , 32.0 ], #Acceptance 0.900453685148  #Rejection 0.76190476190
-  7 : [ 0.08 , 0.12 , 29.0 ], #Acceptance 0.901789462229  #Rejection 0.83798253029
-  10 : [ 0.18 , 0.06 , 37.0 ], #Acceptance 0.901688687358  #Rejection 0.897717666948
-  15 : [ 0.08 , 0.06 , 34.0 ], #Acceptance 0.900320354855  #Rejection 0.9056072133
-  20 : [ 0.04 , 0.18 , 29.0 ], #Acceptance 0.902137522534  #Rejection 0.949281487743
-  30 : [ 0.04 , 0.12 , 29.0 ], #Acceptance 0.905277874869  #Rejection 0.950972104818
-  40 : [ 0.12 , 0.04 , 37.0 ], #Acceptance 0.902243589744  #Rejection 0.952662721893
-  }
+ 3 : [ 0.11 , 0.25 , 35.0 ], #Acceptance 0.901108712454  #Rejection 0.676528599606
+ 5 : [ 0.09 , 0.23 , 35.0 ], #Acceptance 0.900634602538  #Rejection 0.764158918005
+ 7 : [ 0.07 , 0.31 , 32.0 ], #Acceptance 0.900157024922  #Rejection 0.841927303466
+ 10 : [ 0.05 , 0.17 , 38.0 ], #Acceptance 0.90071143773  #Rejection 0.89123696816
+ 15 : [ 0.05 , 0.13 , 26.0 ], #Acceptance 0.906542631838  #Rejection 0.92786700479
+ 20 : [ 0.05 , 0.09 , 29.0 ], #Acceptance 0.902189029101  #Rejection 0.929839391378
+ 30 : [ 0.05 , 0.09 , 26.0 ], #Acceptance 0.91104508913  #Rejection 0.930966469428
+ 40 : [ 0.05 , 0.09 , 26.0 ], #Acceptance 0.916666666667  #Rejection 0.930966469428
+ }
 
 dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3'] = {
-  3 : [ 0.18 , 0.28 , 20.0 ], #Acceptance 0.900109272141  #Rejection 0.682727528881
-  5 : [ 0.1 , 0.16 , 34.0 ], #Acceptance 0.900133600534  #Rejection 0.761904761905
-  7 : [ 0.1 , 0.16 , 27.0 ], #Acceptance 0.90124531646  #Rejection 0.839954916878
-  10 : [ 0.08 , 0.32 , 33.0 ], #Acceptance 0.90010554296  #Rejection 0.898562975486
-  15 : [ 0.06 , 0.18 , 30.0 ], #Acceptance 0.901028831937  #Rejection 0.934911242604
-  20 : [ 0.22 , 0.06 , 28.0 ], #Acceptance 0.900283286119  #Rejection 0.950690335306
-  30 : [ 0.06 , 0.1 , 20.0 ], #Acceptance 0.903180706047  #Rejection 0.952662721893
-  40 : [ 0.04 , 0.16 , 24.0 ], #Acceptance 0.900641025641  #Rejection 0.955198647506
+  3 : [ 0.15 , 0.49 , 32.0 ], #Acceptance 0.900069294528  #Rejection 0.681036911806
+  5 : [ 0.13 , 0.45 , 30.0 ], #Acceptance 0.900258851035  #Rejection 0.76246830093
+  7 : [ 0.11 , 0.15 , 33.0 ], #Acceptance 0.90093437602  #Rejection 0.842209072978
+  10 : [ 0.09 , 0.11 , 20.0 ], #Acceptance 0.903721366586  #Rejection 0.898562975486
+  15 : [ 0.11 , 0.07 , 28.0 ], #Acceptance 0.900597585017  #Rejection 0.937447168216
+  20 : [ 0.05 , 0.17 , 27.0 ], #Acceptance 0.900077259851  #Rejection 0.942519019442
+  30 : [ 0.25 , 0.05 , 22.0 ], #Acceptance 0.901083537225  #Rejection 0.957171034094
+  40 : [ 0.23 , 0.05 , 25.0 ], #Acceptance 0.901442307692  #Rejection 0.964778810933
   }
 
 
 ## 3 station combinations 1-2-4
 dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4'] = {                                                      
-  3 : [ 0.3 , 0.2 , 39.0 ], #Acceptance 0.900537475636  #Rejection 0.623664122137
-  5 : [ 0.16 , 0.46 , 50.0 ], #Acceptance 0.900345210698  #Rejection 0.63893129771
-  7 : [ 0.14 , 0.34 , 47.0 ], #Acceptance 0.901468960878  #Rejection 0.775572519084
-  10 : [ 0.08 , 0.38 , 50.0 ], #Acceptance 0.900614030321  #Rejection 0.893129770992
-  15 : [ 0.06 , 0.2 , 50.0 ], #Acceptance 0.901374673462  #Rejection 0.954198473282
-  20 : [ 0.06 , 0.24 , 44.0 ], #Acceptance 0.900548159749  #Rejection 0.967938931298
-  30 : [ 0.06 , 0.16 , 41.0 ], #Acceptance 0.901699029126  #Rejection 0.973282442748
-  40 : [ 0.06 , 0.16 , 38.0 ], #Acceptance 0.900332225914  #Rejection 0.975572519084
+  3 : [ 0.19 , 0.45 , 47.0 ], #Acceptance 0.900064969582  #Rejection 0.625190839695
+  5 : [ 0.19 , 0.39 , 47.0 ], #Acceptance 0.900662645822  #Rejection 0.643511450382
+  7 : [ 0.15 , 0.45 , 44.0 ], #Acceptance 0.901360470415  #Rejection 0.773282442748
+  10 : [ 0.25 , 0.07 , 42.0 ], #Acceptance 0.900043471173  #Rejection 0.89465648855
+  15 : [ 0.07 , 0.17 , 47.0 ], #Acceptance 0.902530940859  #Rejection 0.952671755725
+  20 : [ 0.07 , 0.27 , 38.0 ], #Acceptance 0.900121022282  #Rejection 0.967175572519
+  30 : [ 0.05 , 0.15 , 47.0 ], #Acceptance 0.902669902913  #Rejection 0.974045801527
+  40 : [ 0.05 , 0.09 , 50.0 ], #Acceptance 0.901439645626  #Rejection 0.974809160305
   }
 
 dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4'] = {                                                      
-  3 : [ 0.2 , 0.44 , 14.0 ], #Acceptance 0.900005906326  #Rejection 0.625190839695
-  5 : [ 0.18 , 0.2 , 8.0 ], #Acceptance 0.900484088564  #Rejection 0.645038167939
-  7 : [ 0.3 , 0.14 , 19.0 ], #Acceptance 0.9002104715  #Rejection 0.775572519084
-  10 : [ 0.32 , 0.1 , 12.0 ], #Acceptance 0.900233657556  #Rejection 0.893129770992
-  15 : [ 0.08 , 0.08 , 5.0 ], #Acceptance 0.901802920646  #Rejection 0.945801526718
-  20 : [ 0.06 , 0.08 , 11.0 ], #Acceptance 0.910870648537  #Rejection 0.967175572519
-  30 : [ 0.06 , 0.08 , 17.0 ], #Acceptance 0.903155339806  #Rejection 0.970229007634
-  40 : [ 0.06 , 0.08 , 17.0 ], #Acceptance 0.915836101883  #Rejection 0.970229007634
+  3 : [ 0.19 , 0.43 , 8.0 ], #Acceptance 0.900340598114  #Rejection 0.624427480916
+  5 : [ 0.19 , 0.21 , 10.0 ], #Acceptance 0.900206332831  #Rejection 0.635114503817
+  7 : [ 0.15 , 0.19 , 14.0 ], #Acceptance 0.900123679129  #Rejection 0.774809160305
+  10 : [ 0.09 , 0.27 , 7.0 ], #Acceptance 0.900124979623  #Rejection 0.889312977099
+  15 : [ 0.07 , 0.15 , 8.0 ], #Acceptance 0.900304055501  #Rejection 0.953435114504
+  20 : [ 0.07 , 0.09 , 14.0 ], #Acceptance 0.908663771624  #Rejection 0.964122137405
+  30 : [ 0.05 , 0.29 , 11.0 ], #Acceptance 0.901213592233  #Rejection 0.975572519084
+  40 : [ 0.05 , 0.15 , 11.0 ], #Acceptance 0.900332225914  #Rejection 0.975572519084
   }    
 
 dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4'] = {                                                      
-  3 : [ 0.34 , 0.14 , 18.0 ], #Acceptance 0.900872167425  #Rejection 0.620610687023
-  5 : [ 0.0 , 0.14 , 15.0 ], #Acceptance 0.90318228712  #Rejection 0.641984732824
-  7 : [ 0.4 , 0.1 , 18.0 ], #Acceptance 0.900275565778  #Rejection 0.771755725191
-  10 : [ 0.06 , 0.2 , 13.0 ], #Acceptance 0.902678911047  #Rejection 0.887022900763
-  15 : [ 0.06 , 0.14 , 23.0 ], #Acceptance 0.905014774528  #Rejection 0.940458015267
-  20 : [ 0.0 , 0.04 , 18.0 ], #Acceptance 0.901758382573  #Rejection 0.967175572519
-  30 : [ 0.16 , 0.04 , 15.0 ], #Acceptance 0.900970873786  #Rejection 0.971755725191
-  40 : [ 0.04 , 0.2 , 23.0 ], #Acceptance 0.900332225914  #Rejection 0.974809160305
+  3 : [ 0.31 , 0.13 , 21.0 ], #Acceptance 0.900124032839  #Rejection 0.617557251908
+  5 : [ 0.11 , 0.35 , 13.0 ], #Acceptance 0.900563447345  #Rejection 0.631297709924
+  7 : [ 0.07 , 0.43 , 16.0 ], #Acceptance 0.900557640983  #Rejection 0.769465648855
+  10 : [ 0.25 , 0.07 , 18.0 ], #Acceptance 0.901537792751  #Rejection 0.891603053435
+  15 : [ 0.21 , 0.05 , 18.0 ], #Acceptance 0.900817952122  #Rejection 0.954961832061
+  20 : [ 0.05 , 0.15 , 23.0 ], #Acceptance 0.900263401438  #Rejection 0.96106870229
+  30 : [ 0.09 , 0.05 , 15.0 ], #Acceptance 0.906553398058  #Rejection 0.964122137405
+  40 : [ 0.09 , 0.05 , 15.0 ], #Acceptance 0.918050941307  #Rejection 0.964122137405
   }
 
 
 
 ## 3 station combinations 1-3-4
 dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4'] = {                                                      
-  3 : [ 0.22 , 0.24 , 27.0 ], #Acceptance 0.900484453734  #Rejection 0.62540929928
-  5 : [ 0.0 , 0.22 , 34.0 ], #Acceptance 0.900556543879  #Rejection 0.642436149312
-  7 : [ 0.16 , 0.2 , 30.0 ], #Acceptance 0.900058673968  #Rejection 0.768827766863
-  10 : [ 0.12 , 0.14 , 39.0 ], #Acceptance 0.900017869907  #Rejection 0.891290111329
-  15 : [ 0.08 , 0.1 , 27.0 ], #Acceptance 0.900425682866  #Rejection 0.951538965291
-  20 : [ 0.06 , 0.1 , 27.0 ], #Acceptance 0.90090143518  #Rejection 0.966601178782
-  30 : [ 0.24 , 0.06 , 31.0 ], #Acceptance 0.900542495479  #Rejection 0.973804846103
-  40 : [ 0.06 , 0.12 , 26.0 ], #Acceptance 0.902506963788  #Rejection 0.976424361493
+  3 : [ 0.23 , 0.25 , 26.0 ], #Acceptance 0.900808503054  #Rejection 0.624099541585
+  5 : [ 0.17 , 0.23 , 37.0 ], #Acceptance 0.900931925381  #Rejection 0.638506876228
+  7 : [ 0.17 , 0.41 , 26.0 ], #Acceptance 0.900094233949  #Rejection 0.776031434185
+  10 : [ 0.09 , 0.13 , 40.0 ], #Acceptance 0.902273945675  #Rejection 0.890635232482
+  15 : [ 0.07 , 0.17 , 30.0 ], #Acceptance 0.902979780064  #Rejection 0.948919449902
+  20 : [ 0.07 , 0.11 , 36.0 ], #Acceptance 0.901909619262  #Rejection 0.966601178782
+  30 : [ 0.05 , 0.11 , 27.0 ], #Acceptance 0.902551737995  #Rejection 0.974459724951
+  40 : [ 0.05 , 0.13 , 30.0 ], #Acceptance 0.902506963788  #Rejection 0.975114603798
   }
 
 dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4'] = {                                                      
-  3 : [ 0.16 , 0.44 , 75.0 ], #Acceptance 0.90106774251  #Rejection 0.62278978389
-  5 : [ 0.34 , 0.12 , 70.0 ], #Acceptance 0.900181162377  #Rejection 0.64047151277
-  7 : [ 0.12 , 0.34 , 75.0 ], #Acceptance 0.900236473872  #Rejection 0.768827766863
-  10 : [ 0.08 , 0.18 , 78.0 ], #Acceptance 0.904820407434  #Rejection 0.889980353635
-  15 : [ 0.06 , 0.2 , 75.0 ], #Acceptance 0.902305782192  #Rejection 0.949574328749
-  20 : [ 0.06 , 0.1 , 72.0 ], #Acceptance 0.901020045072  #Rejection 0.967256057629
-  30 : [ 0.12 , 0.06 , 74.0 ], #Acceptance 0.900542495479  #Rejection 0.972495088409
-  40 : [ 0.04 , 0.18 , 75.0 ], #Acceptance 0.901578458682  #Rejection 0.977079240341
+  3 : [ 0.33 , 0.15 , 67.0 ], #Acceptance 0.900484453734  #Rejection 0.623444662737
+  5 : [ 0.15 , 0.31 , 78.0 ], #Acceptance 0.901699009319  #Rejection 0.633922724296
+  7 : [ 0.27 , 0.11 , 67.0 ], #Acceptance 0.900272033853  #Rejection 0.773411918795
+  10 : [ 0.17 , 0.07 , 70.0 ], #Acceptance 0.901514474625  #Rejection 0.890635232482
+  15 : [ 0.07 , 0.21 , 69.0 ], #Acceptance 0.900957786449  #Rejection 0.952848722986
+  20 : [ 0.05 , 0.19 , 75.0 ], #Acceptance 0.90090143518  #Rejection 0.96463654224
+  30 : [ 0.05 , 0.15 , 69.0 ], #Acceptance 0.900743419731  #Rejection 0.974459724951
+  40 : [ 0.05 , 0.13 , 69.0 ], #Acceptance 0.901578458682  #Rejection 0.975114603798
   }
 
 dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4'] = {                                                      
-  3 : [ 0.14 , 0.0 , 54.0 ], #Acceptance 0.901019135112  #Rejection 0.627373935822
-  5 : [ 0.26 , 0.14 , 46.0 ], #Acceptance 0.900279087986  #Rejection 0.64047151277
-  7 : [ 0.1 , 0.28 , 45.0 ], #Acceptance 0.900787653575  #Rejection 0.751146037983
-  10 : [ 0.08 , 0.12 , 51.0 ], #Acceptance 0.905535203717  #Rejection 0.88605108055
-  15 : [ 0.06 , 0.1 , 51.0 ], #Acceptance 0.900957786449  #Rejection 0.941060903733
-  20 : [ 0.06 , 0.08 , 57.0 ], #Acceptance 0.901079350018  #Rejection 0.948919449902
-  30 : [ 0.04 , 0.12 , 51.0 ], #Acceptance 0.900542495479  #Rejection 0.973804846103
-  40 : [ 0.04 , 0.12 , 48.0 ], #Acceptance 0.907149489322  #Rejection 0.974459724951
+  3 : [ 0.15 , 0.17 , 60.0 ], #Acceptance 0.900565466064  #Rejection 0.618205631958
+  5 : [ 0.15 , 0.15 , 45.0 ], #Acceptance 0.901796934928  #Rejection 0.62540929928
+  7 : [ 0.11 , 0.17 , 51.0 ], #Acceptance 0.901054353431  #Rejection 0.765553372626
+  10 : [ 0.07 , 0.21 , 45.0 ], #Acceptance 0.900799678342  #Rejection 0.879502292076
+  15 : [ 0.05 , 0.45 , 48.0 ], #Acceptance 0.900035473572  #Rejection 0.948919449902
+  20 : [ 0.05 , 0.11 , 51.0 ], #Acceptance 0.904696951726  #Rejection 0.96463654224
+  30 : [ 0.05 , 0.09 , 51.0 ], #Acceptance 0.911593329315  #Rejection 0.966601178782
+  40 : [ 0.05 , 0.09 , 51.0 ], #Acceptance 0.922934076137  #Rejection 0.966601178782
   }
 
 
 ## 3 station combinations 2-3-4
 dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4'] = {                                                      
-  3 : [ 0.4 , 0.12 , 64.0 ], #Acceptance 0.900904984973  #Rejection 0.581612258494
-  5 : [ 0.34 , 0.12 , 64.0 ], #Acceptance 0.901566411801  #Rejection 0.596935376416
-  7 : [ 0.08 , 0.24 , 56.0 ], #Acceptance 0.900158654024  #Rejection 0.727514990007
-  10 : [ 0.08 , 0.3 , 69.0 ], #Acceptance 0.900016111584  #Rejection 0.834776815456
-  15 : [ 0.06 , 0.22 , 69.0 ], #Acceptance 0.900998003992  #Rejection 0.90073284477
-  20 : [ 0.06 , 0.16 , 66.0 ], #Acceptance 0.900607902736  #Rejection 0.9127248501
-  30 : [ 0.06 , 0.18 , 63.0 ], #Acceptance 0.900082747207  #Rejection 0.91672218521
-  40 : [ 0.06 , 0.22 , 63.0 ], #Acceptance 0.900186567164  #Rejection 0.916055962692
-}
+  3 : [ 0.11 , 0.29 , 56.0 ], #Acceptance 0.900703504088  #Rejection 0.583610926049
+  5 : [ 0.27 , 0.11 , 67.0 ], #Acceptance 0.90148183233  #Rejection 0.596269153897
+  7 : [ 0.31 , 0.09 , 64.0 ], #Acceptance 0.901616057263  #Rejection 0.73017988008
+  10 : [ 0.09 , 0.17 , 66.0 ], #Acceptance 0.901788385849  #Rejection 0.830779480346
+  15 : [ 0.07 , 0.15 , 63.0 ], #Acceptance 0.900671384504  #Rejection 0.890739506995
+  20 : [ 0.21 , 0.05 , 61.0 ], #Acceptance 0.900729483283  #Rejection 0.915389740173
+  30 : [ 0.05 , 0.29 , 69.0 ], #Acceptance 0.900289615225  #Rejection 0.926715522985
+  40 : [ 0.05 , 0.45 , 69.0 ], #Acceptance 0.900186567164  #Rejection 0.923384410393
+  }
 
 dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4'] = {                                                      
-  3 : [ 0.18 , 0.14 , 45.0 ], #Acceptance 0.900015111066  #Rejection 0.580946035976
-  5 : [ 0.18 , 0.14 , 36.0 ], #Acceptance 0.900652953515  #Rejection 0.596269153897
-  7 : [ 0.12 , 0.14 , 43.0 ], #Acceptance 0.901818986828  #Rejection 0.728181212525
-  10 : [ 0.08 , 0.22 , 30.0 ], #Acceptance 0.900407392916  #Rejection 0.832778147901
-  15 : [ 0.06 , 0.18 , 30.0 ], #Acceptance 0.901433496643  #Rejection 0.898067954697
-  20 : [ 0.06 , 0.28 , 36.0 ], #Acceptance 0.900729483283  #Rejection 0.918054630247
-  30 : [ 0.06 , 0.18 , 39.0 ], #Acceptance 0.900082747207  #Rejection 0.926715522985
-  40 : [ 0.06 , 0.1 , 39.0 ], #Acceptance 0.902052238806  #Rejection 0.92071952032
+  3 : [ 0.17 , 0.21 , 33.0 ], #Acceptance 0.901106465857  #Rejection 0.585609593604
+  5 : [ 0.17 , 0.21 , 39.0 ], #Acceptance 0.900839028351  #Rejection 0.598934043971
+  7 : [ 0.13 , 0.19 , 39.0 ], #Acceptance 0.90061985758  #Rejection 0.730846102598
+  10 : [ 0.11 , 0.09 , 38.0 ], #Acceptance 0.90031532672  #Rejection 0.831445702865
+  15 : [ 0.07 , 0.21 , 39.0 ], #Acceptance 0.90012701869  #Rejection 0.894070619587
+  20 : [ 0.07 , 0.09 , 39.0 ], #Acceptance 0.90103343465  #Rejection 0.902731512325
+  30 : [ 0.05 , 0.35 , 30.0 ], #Acceptance 0.900289615225  #Rejection 0.91672218521
+  40 : [ 0.11 , 0.05 , 35.0 ], #Acceptance 0.901119402985  #Rejection 0.904063957362
   }
 
 dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4'] = {                                                      
-  3 : [ 0.44 , 0.1 , 49.0 ], #Acceptance 0.900250172098  #Rejection 0.576282478348
-  5 : [ 0.26 , 0.1 , 49.0 ], #Acceptance 0.900500710468  #Rejection 0.590273151233
-  7 : [ 0.26 , 0.08 , 46.0 ], #Acceptance 0.90021399845  #Rejection 0.725516322452
-  10 : [ 0.32 , 0.06 , 40.0 ], #Acceptance 0.900246277073  #Rejection 0.832111925383
-  15 : [ 0.06 , 0.08 , 48.0 ], #Acceptance 0.901288332426  #Rejection 0.855429713524
-  20 : [ 0.36 , 0.04 , 40.0 ], #Acceptance 0.900425531915  #Rejection 0.920053297801
-  30 : [ 0.16 , 0.04 , 40.0 ], #Acceptance 0.900082747207  #Rejection 0.924050632911
-  40 : [ 0.22 , 0.04 , 40.0 ], #Acceptance 0.900186567164  #Rejection 0.921385742838
+  3 : [ 0.29 , 0.11 , 43.0 ], #Acceptance 0.900266962172  #Rejection 0.583610926049
+  5 : [ 0.19 , 0.11 , 43.0 ], #Acceptance 0.900128560796  #Rejection 0.597601598934
+  7 : [ 0.09 , 0.11 , 38.0 ], #Acceptance 0.90102571671  #Rejection 0.706862091939
+  10 : [ 0.09 , 0.07 , 43.0 ], #Acceptance 0.900131194329  #Rejection 0.81745502998
+  15 : [ 0.05 , 0.13 , 48.0 ], #Acceptance 0.906877154781  #Rejection 0.880079946702
+  20 : [ 0.11 , 0.05 , 37.0 ], #Acceptance 0.908389057751  #Rejection 0.882744836775
+  30 : [ 0.09 , 0.05 , 40.0 ], #Acceptance 0.902565163426  #Rejection 0.887408394404
+  40 : [ 0.05 , 0.09 , 48.0 ], #Acceptance 0.900186567164  #Rejection 0.887408394404
   }
 
 
 ## 4 station combinations
 dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3'] = {                                                      
-  3 : [ 0.2 , 0.38 , 73.0 ], #Acceptance 0.900453629032  #Rejection 0.615724381625
-  5 : [ 0.0 , 0.2 , 71.0 ], #Acceptance 0.900332456019  #Rejection 0.632508833922
-  7 : [ 0.42 , 0.14 , 80.0 ], #Acceptance 0.900380822678  #Rejection 0.764134275618
-  10 : [ 0.0 , 0.1 , 77.0 ], #Acceptance 0.902040042948  #Rejection 0.888692579505
-  15 : [ 0.08 , 0.16 , 79.0 ], #Acceptance 0.901094527363  #Rejection 0.950530035336
-  20 : [ 0.0 , 0.06 , 77.0 ], #Acceptance 0.908326463314  #Rejection 0.966431095406
-  30 : [ 0.14 , 0.06 , 71.0 ], #Acceptance 0.902158676759  #Rejection 0.971731448763
-  40 : [ 0.08 , 0.06 , 71.0 ], #Acceptance 0.901028277635  #Rejection 0.973498233216
+  3 : [ 0.33 , 0.21 , 71.0 ], #Acceptance 0.900361986804  #Rejection 0.620141342756
+  5 : [ 0.19 , 0.31 , 70.0 ], #Acceptance 0.900609502701  #Rejection 0.632508833922
+  7 : [ 0.15 , 0.25 , 73.0 ], #Acceptance 0.900027742049  #Rejection 0.763250883392
+  10 : [ 0.11 , 0.13 , 76.0 ], #Acceptance 0.900682119624  #Rejection 0.886925795053
+  15 : [ 0.07 , 0.25 , 69.0 ], #Acceptance 0.900895522388  #Rejection 0.947879858657
+  20 : [ 0.11 , 0.07 , 74.0 ], #Acceptance 0.900329760923  #Rejection 0.962014134276
+  30 : [ 0.05 , 0.49 , 66.0 ], #Acceptance 0.900196243342  #Rejection 0.974381625442
+  40 : [ 0.43 , 0.05 , 71.0 ], #Acceptance 0.901028277635  #Rejection 0.976148409894
   }
 
 dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4'] = {                                                      
-  3 : [ 0.14 , 0.34 , 44.0 ], #Acceptance 0.900843108504  #Rejection 0.60777385159
-  5 : [ 0.44 , 0.18 , 43.0 ], #Acceptance 0.900170845454  #Rejection 0.628975265018
-  7 : [ 0.12 , 0.15 , 38.0 ], #Acceptance 0.902221885955  #Rejection 0.764134275618
-  10 : [ 0.18 , 0.1 , 43.0 ], #Acceptance 0.900682119624  #Rejection 0.876325088339
-  15 : [ 0.08 , 0.12 , 45.0 ], #Acceptance 0.904228855721  #Rejection 0.931978798587
-  20 : [ 0.28 , 0.06 , 46.0 ], #Acceptance 0.900577081616  #Rejection 0.95406360424
-  30 : [ 0.12 , 0.06 , 43.0 ], #Acceptance 0.902719372021  #Rejection 0.962897526502
-  40 : [ 0.06 , 0.08 , 48.0 ], #Acceptance 0.901028277635  #Rejection 0.970848056537
+  3 : [ 0.21 , 0.15 , 42.0 ], #Acceptance 0.900545271261  #Rejection 0.60777385159
+  5 : [ 0.31 , 0.19 , 37.0 ], #Acceptance 0.90047097936  #Rejection 0.63074204947
+  7 : [ 0.11 , 0.49 , 41.0 ], #Acceptance 0.900027742049  #Rejection 0.762367491166
+  10 : [ 0.09 , 0.11 , 37.0 ], #Acceptance 0.900240005053  #Rejection 0.872791519435
+  15 : [ 0.07 , 0.13 , 38.0 ], #Acceptance 0.900945273632  #Rejection 0.93816254417
+  20 : [ 0.11 , 0.07 , 43.0 ], #Acceptance 0.902390766694  #Rejection 0.952296819788
+  30 : [ 0.05 , 0.33 , 38.0 ], #Acceptance 0.900196243342  #Rejection 0.962014134276
+  40 : [ 0.05 , 0.33 , 35.0 ], #Acceptance 0.901028277635  #Rejection 0.966431095406
   }
 
 dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4'] = {                                                      
-  3 : [ 0.16 , 0.1 , 40.0 ], #Acceptance 0.900843108504  #Rejection 0.541519434629
-  5 : [ 0.1 , 0.12 , 32.0 ], #Acceptance 0.901325206631  #Rejection 0.554770318021
-  7 : [ 0.08 , 0.1 , 32.0 ], #Acceptance 0.903205467706  #Rejection 0.663427561837
-  10 : [ 0.06 , 0.1 , 32.0 ], #Acceptance 0.9057980168  #Rejection 0.775618374558
-  15 : [ 0.06 , 0.08 , 29.0 ], #Acceptance 0.911791044776  #Rejection 0.787102473498
-  20 : [ 0.06 , 0.08 , 29.0 ], #Acceptance 0.911953833471  #Rejection 0.787102473498
-  30 : [ 0.06 , 0.08 , 29.0 ], #Acceptance 0.912251191477  #Rejection 0.787102473498
-  40 : [ 0.06 , 0.08 , 29.0 ], #Acceptance 0.915167095116  #Rejection 0.787102473498
+  3 : [ 0.09 , 0.31 , 32.0 ], #Acceptance 0.900384897361  #Rejection 0.540636042403
+  5 : [ 0.09 , 0.21 , 32.0 ], #Acceptance 0.90164842776  #Rejection 0.560954063604
+  7 : [ 0.07 , 0.13 , 35.0 ], #Acceptance 0.900582583037  #Rejection 0.679328621908
+  10 : [ 0.05 , 0.15 , 38.0 ], #Acceptance 0.903682182783  #Rejection 0.781802120141
+  15 : [ 0.05 , 0.13 , 32.0 ], #Acceptance 0.902039800995  #Rejection 0.827738515901
+  20 : [ 0.05 , 0.15 , 29.0 ], #Acceptance 0.902720527617  #Rejection 0.828621908127
+  30 : [ 0.05 , 0.11 , 32.0 ], #Acceptance 0.90243902439  #Rejection 0.832155477032
+  40 : [ 0.05 , 0.09 , 32.0 ], #Acceptance 0.901028277635  #Rejection 0.837455830389
   }
 
 
@@ -217,9 +217,9 @@ def failEllipse(x,y,a,b,alpha, x0=0, y0=0):
 def get_best_combination_station(stations):
   if 1 in stations and 2 in stations and 3 in stations:
     combinations = [
-      'DPhib_MB1_MB3__DPhib_MB2_MB3'
-      'DPhib_MB1_MB2__DPhib_MB2_MB3',
-      'DPhib_MB1_MB2__DPhib_MB1_MB3']
+      'DPhib_MB1_MB2__DPhib_MB1_MB3',
+      'DPhib_MB1_MB3__DPhib_MB2_MB3',
+      'DPhib_MB1_MB2__DPhib_MB2_MB3']
     return combinations[0]
 
 
@@ -250,8 +250,8 @@ def get_best_combination_station(stations):
   if (1 in stations and 2 in stations and
       3 in stations and 4 in stations):
     combinations = [
-      'DPhib_MB1_MB3__DPhib_MB2_MB4',
       'DPhib_MB1_MB4__DPhib_MB2_MB3',
+      'DPhib_MB1_MB3__DPhib_MB2_MB4',
       'DPhib_MB1_MB2__DPhib_MB3_MB4']
     return combinations[0]
 
@@ -440,13 +440,15 @@ def pt_barrel_direction_based_algorithm(treeHits,  L1Mu_index, algorithm):
         if ok_DTTF_st3 and ok_DTTF_st4 and not ok_DTTF_st1 and not ok_DTTF_st2: returnValue = pt_from_DPhi_DT(abs_DTTF_phib3_phib4, 'DT3_DT4')
 
         ## case 2: 3 stations
-        if     ok_DTTF_st1 and     ok_DTTF_st2 and     ok_DTTF_st3 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(1, 3, 2, 3, DTTF_phib1_phib3, DTTF_phib2_phib3)
+        if     ok_DTTF_st1 and     ok_DTTF_st2 and     ok_DTTF_st3 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(1, 2, 1, 3, DTTF_phib1_phib2, DTTF_phib1_phib3)
         if     ok_DTTF_st1 and     ok_DTTF_st2 and not ok_DTTF_st3 and     ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(1, 2, 1, 4, DTTF_phib1_phib2, DTTF_phib1_phib4)
-        if     ok_DTTF_st1 and not ok_DTTF_st2 and     ok_DTTF_st3 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(1, 4, 3, 4, DTTF_phib1_phib4, DTTF_phib3_phib4)
+        if     ok_DTTF_st1 and not ok_DTTF_st2 and     ok_DTTF_st3 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(1, 3, 1, 4, DTTF_phib1_phib3, DTTF_phib1_phib4)
         if not ok_DTTF_st1 and     ok_DTTF_st2 and     ok_DTTF_st3 and     ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(2, 3, 2, 4, DTTF_phib2_phib3, DTTF_phib2_phib4)
 
         ## case 3: 4 stations
-        if    ok_DTTF_st1 and      ok_DTTF_st2 and     ok_DTTF_st3 and     ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(1, 2, 3, 4, DTTF_phib1_phib3, DTTF_phib2_phib4)
+        if    ok_DTTF_st1 and      ok_DTTF_st2 and     ok_DTTF_st3 and     ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(1, 4, 2, 3, DTTF_phib1_phib4, DTTF_phib2_phib3)
 
     return returnValue, L1Mu_eta
 
+
+#  LocalWords:  dphi

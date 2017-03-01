@@ -13,7 +13,7 @@ import re
 if __name__ == "__main__":
 
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170219_v2"; pu = 'PU140'; eff = False
-  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170223"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_Barrel20170228"; pu = 'PU140'; eff = False
 
   inputFile = TFile.Open(label + ".root")
 
@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
   doTest = False
 
-  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170223"; pu = 'PU140'; eff = False
+  #label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170223"; pu = 'PU140'; eff = False
   targetDir = label + "/"
 
   verbose = False
@@ -472,23 +472,6 @@ if __name__ == "__main__":
       c.SaveAs(targetDir + title + "_ratio.C")
       c.SaveAs(targetDir + title + "_ratio.pdf")
 
-
-    ## Calibration plots
-    makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__CALIBRATE__eta0to2p4",
-              "0.0<|#eta|<2.4",
-              "h_single_prompt_L1Mu_rate_pt_eta0to2p4", "Prompt L1Mu, all",
-              "h_single_prompt_L1Mu_rate_pt_eta1p1to2p4", "Prompt L1Mu, endcap",
-              "h_single_prompt_L1Mu_rate_pt_eta0to1p1", "Prompt L1Mu, barrel")
-    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__CALIBRATE__eta0to2p4",
-                 "0.0<|#eta|<2.4",
-                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_eta0to2p4", "Prompt L1Mu, all",
-                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_eta1p1to2p4", "Prompt L1Mu, endcap",
-                 "h_single_prompt_L1Mu_rate_eta_L1Pt7_eta0to1p1", "Prompt L1Mu, barrel")
-    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__CALIBRATE__eta0to2p4",
-                 "0.0<|#eta|<2.4",
-                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_eta0to2p4", "Prompt L1Mu, all",
-                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_eta1p1to2p4", "Prompt L1Mu, endcap",
-                 "h_single_prompt_L1Mu_rate_eta_L1Pt10_eta0to1p1", "Prompt L1Mu, barrel")
 
     ## basic trigger rate plots
     makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__L1Mu3st_eta0to2p4",
@@ -1066,6 +1049,25 @@ if __name__ == "__main__":
                 "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB2_MB3_MB4_eta0to0p9_tightVeto", "Direction based, tight veto")
 
 
+
+    makePlot("Prompt_L1Mu_trigger_rate_pt__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB2_MB3_MB4_algo16_eta0to0p9",
+              "0<|#eta|<0.9",
+              "h_single_prompt_L1Mu_rate_pt_eta0to0p9", "Prompt L1Mu",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB2_MB3_MB4_algo16_eta0to0p9", "Direction based",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB2_MB3_MB4_algo16_eta0to0p9_mediumVeto", "Direction based, medium veto",
+              "h_single_displaced_L1Mu_rate_pt_direction_MB1_MB2_MB3_MB4_algo16_eta0to0p9_tightVeto", "Direction based, tight veto")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt7__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB2_MB3_MB4_algo16_eta0to0p9",
+                "0<|#eta|<0.9",
+                "h_single_prompt_L1Mu_rate_eta_L1Pt7_eta0to0p9", "Prompt L1Mu",
+                "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB2_MB3_MB4_algo16_eta0to0p9", "Direction based",
+                "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB2_MB3_MB4_algo16_eta0to0p9_mediumVeto", "Direction based, medium veto",
+                "h_single_displaced_L1Mu_rate_eta_L1Pt7_direction_MB1_MB2_MB3_MB4_algo16_eta0to0p9_tightVeto", "Direction based, tight veto")
+    makeEtaPlot("Prompt_L1Mu_trigger_rate_eta_L1Pt10__L1Mu__L1Mu2st__DisplacedL1MuDirectionBased_MB1_MB2_MB3_MB4_algo16_eta0to0p9",
+                "0<|#eta|<0.9",
+                "h_single_prompt_L1Mu_rate_eta_L1Pt10_eta0to0p9", "Prompt L1Mu",
+                "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB2_MB3_MB4_algo16_eta0to0p9", "Direction based",
+                "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB2_MB3_MB4_algo16_eta0to0p9_mediumVeto", "Direction based, medium veto",
+                "h_single_displaced_L1Mu_rate_eta_L1Pt10_direction_MB1_MB2_MB3_MB4_algo16_eta0to0p9_tightVeto", "Direction based, tight veto")
     exit(1)
 
 

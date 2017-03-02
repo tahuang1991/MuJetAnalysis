@@ -2246,7 +2246,7 @@ def getEfficiencyEta(t, to_draw, denom_cut, extra_num_cut, color = kBlue, marker
     t.Draw(to_draw + ">>num", num_cut, "goff")
     t.Draw(to_draw + ">>den", denom_cut, "goff")
 
-    print num.GetEntries(), den.GetEntries()
+    #print num.GetEntries(), den.GetEntries()
 
     useTEfficiency = True
     if useTEfficiency:

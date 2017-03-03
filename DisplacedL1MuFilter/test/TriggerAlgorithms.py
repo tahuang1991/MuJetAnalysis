@@ -2,7 +2,68 @@
 from Helpers import *
 from BarrelTriggerAlgorithms import *
 from EndcapTriggerAlgorithms import *
+from GEMCSCdPhiDict_wholeChamber import dphi_lct_pad
 import random
+
+#______________________________________________________________________________
+def passDPhicutTFTrack(st, ch, dphi, L1MuPt, Eff=90):
+
+  ME11GEMdPhi = [
+    [-2, 1.0, 1.0],
+    [5.0,  0.02131422,  0.00907379 ],
+    [7.0,  0.01480166,  0.00658598 ],
+    [10.0,  0.01019511,  0.00467867 ],
+    [15.0,  0.00685720,  0.00336636 ],
+    [20.0,  0.00528981,  0.00279064 ],
+    [30.0,  0.00381797,  0.00231837 ],
+    [40.0,  0.00313074,  0.00213513 ],
+  ]
+
+  ME21GEMdPhi = [
+    [-2, 1.0, 1.0],
+    [5.0,  0.00884066,  0.00479478 ],
+    [7.0,  0.00660301,  0.00403733 ],
+    [10.0,  0.00503144,  0.00369953 ],
+    [15.0,  0.00409270,  0.00358023 ],
+    [20.0,  0.00378257,  0.00358023 ],
+    [30.0,  0.00369842,  0.00358023 ],
+    [40.0,  0.00369842,  0.00358023 ],
+    ]
+
+  is_odd = ch%2==1
+
+  returnValue = False;
+
+  LUTsize = 8
+  #smalldphi = ((is_odd and abs(dphi)<GEMdPhi[LUTsize-2][1]) || (!is_odd and abs(dphi)<GEMdPhi[LUTsize-2][2]));
+
+  ptValues = [5, 7, 10, 15, 20, 30, 40]
+
+  dPhiLib = dphi_lct_pad['ME11']['Eff%d'%Eff]
+  if st==2:
+    dPhiLib = dphi_lct_pad['ME21']['Eff%d'%Eff]
+  #print dPhiLib
+  if (abs(dphi) < 99):# and ((chargesign_ == 1 and dphi < 0) || (chargesign_ == 0 and dphi > 0) || smalldphi)){
+    for ptCut in ptValues:
+      ptKey = "Pt%d"%(ptCut)
+      if ptCut < 10: ptKey = "Pt%d "%(ptCut)
+      #print "print row", ptCut, dPhiLib[ptKey]
+      
+      bendingOdd = dPhiLib[ptKey]['odd']
+      bendingEven = dPhiLib[ptKey]['even']
+
+      ## check with odd/even value
+      if L1MuPt >= ptCut:
+
+        ## check if pass/fail
+        if ((is_odd and bendingOdd > abs(dphi)) or (not is_odd and bendingEven > abs(dphi))):
+          returnValue = True;
+        else:
+          returnValue = False;
+  else:
+    returnValue = False;
+
+  return returnValue
 
 ##_________________________________________________
 def is_L1Mu_isolated(treeHits, L1Mu_index, vetoType):
@@ -192,6 +253,8 @@ def fillPromptHistogram(mapTH1F,
                        hasME21Cut=False,
                        hasGE11Cut=False,
                        hasGE21Cut=False,
+                       GE11ME11Eff=90,
+                       GE21ME21Eff=90,
                        hasME11ME21Cut=False,
                        hasGE11GE21Cut=False,
                        ME11FailRate=0,
@@ -217,6 +280,8 @@ def fillPromptHistogram(mapTH1F,
                                                              hasME21Cut,
                                                              hasGE11Cut,
                                                              hasGE21Cut,
+                                                             GE11ME11Eff,
+                                                             GE21ME21Eff,
                                                              hasME11ME21Cut,
                                                              hasGE11GE21Cut,
                                                              ME11FailRate,
@@ -251,6 +316,8 @@ def getMaxPromptPtEtaEvent(treeHits,
                            hasME21Cut=False,
                            hasGE11Cut=False,
                            hasGE21Cut=False,
+                           GE11ME11Eff=90,
+                           GE21ME21Eff=90,
                            hasME11ME21Cut=False,
                            hasGE11GE21Cut=False,
                            ME11FailRate=0,
@@ -376,10 +443,10 @@ def getMaxPromptPtEtaEvent(treeHits,
             if is_CSC_ME11_disabled: GE11_dPhi = 99
             if is_CSC_ME21_disabled: GE21_dPhi = 99
 
-            if hasGE11Cut and not passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt):
+            if hasGE11Cut and not passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt, GE11ME11Eff):
                 #print "muon failed the GE11 cut", CSC_ME1_ch, GE11_dPhi, L1Mu_pt
                 continue
-            if hasGE21Cut and not passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt):
+            if hasGE21Cut and not passDPhicutTFTrack(2, CSC_ME2_ch, GE21_dPhi, L1Mu_pt, GE21ME21Eff):
                 #print "muon failed the GE21 cut", CSC_ME1_ch, GE11_dPhi, L1Mu_pt
                 continue
             if (hasGE11GE21Cut and not (passDPhicutTFTrack(1, CSC_ME1_ch, GE11_dPhi, L1Mu_pt) or

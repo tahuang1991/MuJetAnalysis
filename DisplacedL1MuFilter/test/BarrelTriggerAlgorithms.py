@@ -2,188 +2,287 @@
 from Helpers import *
 from ROOT import *
 from math import *
+import pprint
 
-## PT : [a_axis_, b_axis, alpha[deg] ]
 dphi_dict = {}
 
-## the dictionary is ordened by station combination and by priority basedon best background rejection
+## intialize an empty dictionary
+def initalizeEmtpyDictionary(dphi_dict):
+  DT_dPhi_combinations = [
+    ((1, 2),(1, 3)),
+    ((1, 2),(1, 4)),
+    ((1, 2),(2, 3)),
+    ((1, 2),(2, 4)),
+    ((1, 2),(3, 4)),
+    ((1, 3),(1, 4)),
+    ((1, 3),(2, 3)),
+    ((1, 3),(2, 4)),
+    ((1, 3),(3, 4)),
+    ((1, 4),(2, 3)),
+    ((1, 4),(2, 4)),
+    ((1, 4),(3, 4)),
+    ((2, 3),(2, 4)),
+    ((2, 3),(3, 4)),
+    ((2, 4),(3, 4)),
+    ]
+  
+  for combination in DT_dPhi_combinations:
+    first = combination[0]
+    second = combination[1]
+    pString = "DPhib_MB%d_MB%d__DPhib_MB%d_MB%d"%(first[0], first[1], second[0], second[1])
+    dphi_dict[pString] = {}
+    for ptCut in [3,5,7,10,15,20,30,40]:
+      ## PT : [a_axis_, b_axis, alpha[deg] ]
+      dphi_dict[pString]['Pt%d'%(ptCut)] = []
+    
+  return dphi_dict
 
+#dphi_dict = initalizeEmtpyDictionary(dphi_dict)
 
-## 3 station combinations 1-2-3
-dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3'] = {                                                      
-  3 : [ 0.39 , 0.19 , 55.0 ], #Acceptance 0.900254703804  #Rejection 0.648069878839
-  5 : [ 0.31 , 0.09 , 45.0 ], #Acceptance 0.901193978197  #Rejection 0.744998591152
-  7 : [ 0.09 , 0.37 , 50.0 ], #Acceptance 0.90129051325  #Rejection 0.830092983939
-  10 : [ 0.07 , 0.29 , 50.0 ], #Acceptance 0.900205233453  #Rejection 0.892082276698
-  15 : [ 0.05 , 0.31 , 53.0 ], #Acceptance 0.900966183575  #Rejection 0.921949845027
-  20 : [ 0.05 , 0.17 , 53.0 ], #Acceptance 0.90065681445  #Rejection 0.931811777966
-  30 : [ 0.07 , 0.37 , 60.0 ], #Acceptance 0.900722021661  #Rejection 0.934065934066
-  40 : [ 0.05 , 0.33 , 47.0 ], #Acceptance 0.901098901099  #Rejection 0.951253874331
-  }
+"""
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt3'] = [ 0.27 , 0.41 , 23.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt5'] = [ 0.17 , 0.39 , 29.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt7'] = [ 0.11 , 0.37 , 32.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt10'] = [ 0.09 , 0.19 , 32.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt15'] = [ 0.07 , 0.15 , 35.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt20'] = [ 0.07 , 0.15 , 32.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt30'] = [ 0.07 , 0.25 , 26.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt40'] = [ 0.05 , 0.09 , 26.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt3'] = [ 0.21 , 0.37 , 5.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt5'] = [ 0.21 , 0.49 , 11.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt7'] = [ 0.15 , 0.17 , 19.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt10'] = [ 0.07 , 0.13 , 6.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt15'] = [ 0.07 , 0.17 , 11.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt20'] = [ 0.07 , 0.09 , 8.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt30'] = [ 0.05 , 0.07 , 5.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt40'] = [ 0.03 , 0.07 , 11.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt3'] = [ 0.15 , 0.43 , 38.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt5'] = [ 0.11 , 0.21 , 38.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt7'] = [ 0.17 , 0.07 , 30.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt10'] = [ 0.07 , 0.19 , 32.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt15'] = [ 0.05 , 0.25 , 35.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt20'] = [ 0.05 , 0.27 , 32.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt30'] = [ 0.05 , 0.17 , 32.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt40'] = [ 0.03 , 0.23 , 35.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt3'] = [ 0.13 , 0.39 , 13.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt5'] = [ 0.29 , 0.15 , 21.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt7'] = [ 0.23 , 0.11 , 18.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt10'] = [ 0.07 , 0.11 , 22.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt15'] = [ 0.15 , 0.05 , 18.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt20'] = [ 0.11 , 0.05 , 21.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt30'] = [ 0.03 , 0.13 , 10.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt40'] = [ 0.03 , 0.11 , 10.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt3'] = [ 0.09 , 0.31 , 35.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt5'] = [ 0.09 , 0.23 , 35.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt7'] = [ 0.07 , 0.13 , 38.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt10'] = [ 0.05 , 0.17 , 38.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt15'] = [ 0.05 , 0.15 , 29.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt20'] = [ 0.05 , 0.11 , 29.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt30'] = [ 0.05 , 0.11 , 29.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt40'] = [ 0.05 , 0.09 , 29.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt3'] = [ 0.23 , 0.39 , 36.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt5'] = [ 0.19 , 0.47 , 30.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt7'] = [ 0.17 , 0.31 , 35.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt10'] = [ 0.11 , 0.13 , 37.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt15'] = [ 0.09 , 0.11 , 30.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt20'] = [ 0.07 , 0.11 , 39.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt30'] = [ 0.05 , 0.09 , 33.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt40'] = [ 0.05 , 0.07 , 27.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt3'] = [ 0.45 , 0.17 , 45.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt5'] = [ 0.09 , 0.31 , 59.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt7'] = [ 0.07 , 0.37 , 56.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt15'] = [ 0.13 , 0.05 , 51.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt20'] = [ 0.05 , 0.13 , 59.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt30'] = [ 0.05 , 0.23 , 53.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt40'] = [ 0.03 , 0.13 , 56.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt3'] = [ 0.15 , 0.27 , 47.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt5'] = [ 0.15 , 0.25 , 47.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt7'] = [ 0.13 , 0.29 , 38.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt10'] = [ 0.11 , 0.11 , 35.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt15'] = [ 0.07 , 0.29 , 35.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt20'] = [ 0.07 , 0.09 , 45.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt30'] = [ 0.07 , 0.09 , 45.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt40'] = [ 0.07 , 0.13 , 42.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt3'] = [ 0.15 , 0.39 , 51.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt5'] = [ 0.15 , 0.31 , 51.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt7'] = [ 0.11 , 0.15 , 53.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt10'] = [ 0.09 , 0.11 , 54.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt15'] = [ 0.07 , 0.09 , 54.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt20'] = [ 0.05 , 0.11 , 51.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt30'] = [ 0.03 , 0.27 , 51.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt40'] = [ 0.03 , 0.07 , 48.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt3'] = [ 0.35 , 0.21 , 80.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt5'] = [ 0.21 , 0.35 , 66.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt7'] = [ 0.27 , 0.15 , 80.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt10'] = [ 0.11 , 0.15 , 66.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt15'] = [ 0.07 , 0.29 , 69.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt20'] = [ 0.09 , 0.07 , 80.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt30'] = [ 0.33 , 0.05 , 74.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt40'] = [ 0.33 , 0.05 , 74.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt3'] = [ 0.41 , 0.17 , 42.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt5'] = [ 0.13 , 0.31 , 37.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt7'] = [ 0.13 , 0.39 , 50.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt10'] = [ 0.05 , 0.21 , 37.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt15'] = [ 0.07 , 0.49 , 44.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt20'] = [ 0.05 , 0.19 , 50.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt30'] = [ 0.05 , 0.09 , 50.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt40'] = [ 0.03 , 0.07 , 47.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt3'] = [ 0.19 , 0.41 , 72.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt5'] = [ 0.19 , 0.35 , 72.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt7'] = [ 0.17 , 0.25 , 66.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt10'] = [ 0.09 , 0.21 , 75.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt20'] = [ 0.05 , 0.15 , 75.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt30'] = [ 0.05 , 0.07 , 69.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt40'] = [ 0.11 , 0.03 , 70.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt3'] = [ 0.17 , 0.19 , 32.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt5'] = [ 0.17 , 0.17 , 30.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt7'] = [ 0.15 , 0.13 , 37.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt10'] = [ 0.11 , 0.09 , 38.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt15'] = [ 0.07 , 0.35 , 39.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt20'] = [ 0.05 , 0.25 , 30.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt30'] = [ 0.05 , 0.13 , 32.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt40'] = [ 0.05 , 0.11 , 45.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt3'] = [ 0.27 , 0.11 , 43.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt5'] = [ 0.11 , 0.15 , 35.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt7'] = [ 0.09 , 0.11 , 35.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt10'] = [ 0.11 , 0.07 , 40.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt15'] = [ 0.05 , 0.15 , 48.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt20'] = [ 0.05 , 0.13 , 48.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt30'] = [ 0.05 , 0.15 , 48.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt40'] = [ 0.03 , 0.11 , 35.0 ]
+dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt3'] = [ 0.29 , 0.09 , 70.0 ]
+dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt5'] = [ 0.49 , 0.11 , 64.0 ]
+dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt7'] = [ 0.49 , 0.07 , 67.0 ]
+dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt10'] = [ 0.17 , 0.07 , 64.0 ]
+dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt15'] = [ 0.07 , 0.15 , 66.0 ]
+dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt20'] = [ 0.05 , 0.19 , 69.0 ]
+dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt30'] = [ 0.21 , 0.05 , 61.0 ]
+dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt40'] = [ 0.03 , 0.11 , 56.0 ]
 
-dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3'] = {                                                      
-  3 : [ 0.13 , 0.47 , 26.0 ], #Acceptance 0.900090378769  #Rejection 0.647224570301
-  5 : [ 0.09 , 0.43 , 35.0 ], #Acceptance 0.900155736287  #Rejection 0.74471682164
-  7 : [ 0.07 , 0.21 , 35.0 ], #Acceptance 0.900896463403  #Rejection 0.832065370527
-  10 : [ 0.05 , 0.23 , 38.0 ], #Acceptance 0.901487942535  #Rejection 0.883629191321
-  15 : [ 0.05 , 0.17 , 32.0 ], #Acceptance 0.90294246816  #Rejection 0.917441532826
-  20 : [ 0.05 , 0.17 , 26.0 ], #Acceptance 0.900246305419  #Rejection 0.925894618202
-  30 : [ 0.05 , 0.11 , 26.0 ], #Acceptance 0.904332129964  #Rejection 0.929839391378
-  40 : [ 0.05 , 0.09 , 26.0 ], #Acceptance 0.934065934066  #Rejection 0.930966469428
-  }
+pprint.pprint(dphi_dict)
+"""
 
-dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3'] = {
-  3 : [ 0.19 , 0.41 , 23.0 ], #Acceptance 0.900090378769  #Rejection 0.650042265427
-  5 : [ 0.15 , 0.17 , 35.0 ], #Acceptance 0.900415296764  #Rejection 0.74584389969
-  7 : [ 0.11 , 0.47 , 26.0 ], #Acceptance 0.900009851246  #Rejection 0.834037757115
-  10 : [ 0.09 , 0.27 , 20.0 ], #Acceptance 0.900205233453  #Rejection 0.894054663285
-  15 : [ 0.41 , 0.07 , 22.0 ], #Acceptance 0.90008783487  #Rejection 0.919413919414
-  20 : [ 0.23 , 0.07 , 28.0 ], #Acceptance 0.901067323481  #Rejection 0.935474781629
-  30 : [ 0.17 , 0.07 , 28.0 ], #Acceptance 0.900722021661  #Rejection 0.936038320654
-  40 : [ 0.05 , 0.19 , 26.0 ], #Acceptance 0.901098901099  #Rejection 0.962806424345
-  }
-
-
-## 3 station combinations 1-2-4
-dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4'] = {                                                      
-  3 : [ 0.47 , 0.15 , 42.0 ], #Acceptance 0.901776519053  #Rejection 0.58320610687
-  5 : [ 0.17 , 0.49 , 50.0 ], #Acceptance 0.900311931375  #Rejection 0.60534351145
-  7 : [ 0.29 , 0.15 , 36.0 ], #Acceptance 0.900507614213  #Rejection 0.754961832061
-  10 : [ 0.31 , 0.07 , 42.0 ], #Acceptance 0.901667298219  #Rejection 0.884732824427
-  15 : [ 0.07 , 0.19 , 47.0 ], #Acceptance 0.904511030622  #Rejection 0.949618320611
-  20 : [ 0.05 , 0.17 , 50.0 ], #Acceptance 0.904282115869  #Rejection 0.967175572519
-  30 : [ 0.05 , 0.09 , 50.0 ], #Acceptance 0.908333333333  #Rejection 0.974809160305
-  40 : [ 0.05 , 0.35 , 44.0 ], #Acceptance 0.916666666667  #Rejection 0.974809160305
-  }
-
-dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4'] = {                                                      
-  3 : [ 0.21 , 0.41 , 11.0 ], #Acceptance 0.900102986612  #Rejection 0.593893129771
-  5 : [ 0.21 , 0.23 , 20.0 ], #Acceptance 0.900311931375  #Rejection 0.603053435115
-  7 : [ 0.33 , 0.15 , 12.0 ], #Acceptance 0.900507614213  #Rejection 0.758778625954
-  10 : [ 0.11 , 0.13 , 14.0 ], #Acceptance 0.902425161046  #Rejection 0.880152671756
-  15 : [ 0.19 , 0.07 , 19.0 ], #Acceptance 0.900230490616  #Rejection 0.949618320611
-  20 : [ 0.07 , 0.07 , 5.0 ], #Acceptance 0.900503778338  #Rejection 0.964885496183
-  30 : [ 0.05 , 0.27 , 11.0 ], #Acceptance 0.902777777778  #Rejection 0.975572519084
-  40 : [ 0.15 , 0.05 , 6.0 ], #Acceptance 0.916666666667  #Rejection 0.976335877863
-  }    
-
-dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4'] = {                                                      
-  3 : [ 0.13 , 0.29 , 13.0 ], #Acceptance 0.900360453141  #Rejection 0.580916030534
-  5 : [ 0.41 , 0.13 , 21.0 ], #Acceptance 0.900051988563  #Rejection 0.604580152672
-  7 : [ 0.47 , 0.11 , 15.0 ], #Acceptance 0.900507614213  #Rejection 0.751145038168
-  10 : [ 0.43 , 0.07 , 18.0 ], #Acceptance 0.900530503979  #Rejection 0.890839694656
-  15 : [ 0.25 , 0.05 , 18.0 ], #Acceptance 0.900559762924  #Rejection 0.954198473282
-  20 : [ 0.11 , 0.05 , 15.0 ], #Acceptance 0.907430730479  #Rejection 0.961832061069
-  30 : [ 0.09 , 0.05 , 15.0 ], #Acceptance 0.916666666667  #Rejection 0.964122137405
-  40 : [ 0.17 , 0.03 , 21.0 ], #Acceptance 0.916666666667  #Rejection 0.976335877863
-  }
-
-
-
-## 3 station combinations 1-3-4
-dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4'] = {                                                      
-  3 : [ 0.23 , 0.39 , 36.0 ], #Acceptance 0.900840336134  #Rejection 0.584151931893
-  5 : [ 0.23 , 0.33 , 29.0 ], #Acceptance 0.900052994171  #Rejection 0.60248853962
-  7 : [ 0.19 , 0.17 , 30.0 ], #Acceptance 0.900667681855  #Rejection 0.751146037983
-  10 : [ 0.13 , 0.11 , 32.0 ], #Acceptance 0.904398289554  #Rejection 0.886705959398
-  15 : [ 0.11 , 0.07 , 35.0 ], #Acceptance 0.902361369063  #Rejection 0.948919449902
-  20 : [ 0.05 , 0.15 , 27.0 ], #Acceptance 0.900150526844  #Rejection 0.968565815324
-  30 : [ 0.05 , 0.15 , 36.0 ], #Acceptance 0.901746724891  #Rejection 0.977734119188
-  40 : [ 0.13 , 0.05 , 31.0 ], #Acceptance 0.909090909091  #Rejection 0.97969875573
-  }
-
-dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4'] = {                                                      
-  3 : [ 0.19 , 0.43 , 72.0 ], #Acceptance 0.900735294118  #Rejection 0.581532416503
-  5 : [ 0.27 , 0.13 , 73.0 ], #Acceptance 0.901430842607  #Rejection 0.598559266536
-  7 : [ 0.33 , 0.11 , 67.0 ], #Acceptance 0.901136230526  #Rejection 0.749836280288
-  10 : [ 0.13 , 0.09 , 70.0 ], #Acceptance 0.901496640195  #Rejection 0.885396201703
-  15 : [ 0.29 , 0.07 , 80.0 ], #Acceptance 0.90023879013  #Rejection 0.950884086444
-  20 : [ 0.05 , 0.13 , 75.0 ], #Acceptance 0.901655795283  #Rejection 0.967256057629
-  30 : [ 0.05 , 0.09 , 69.0 ], #Acceptance 0.903930131004  #Rejection 0.977079240341
-  40 : [ 0.09 , 0.05 , 74.0 ], #Acceptance 0.909090909091  #Rejection 0.978388998035
-  }
-
-dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4'] = {                                                      
-  3 : [ 0.15 , 0.41 , 51.0 ], #Acceptance 0.900105042017  #Rejection 0.582842174198
-  5 : [ 0.15 , 0.23 , 51.0 ], #Acceptance 0.900158982512  #Rejection 0.601178781925
-  7 : [ 0.19 , 0.11 , 52.0 ], #Acceptance 0.901136230526  #Rejection 0.744597249509
-  10 : [ 0.07 , 0.35 , 45.0 ], #Acceptance 0.900580329872  #Rejection 0.867059593975
-  15 : [ 0.19 , 0.05 , 53.0 ], #Acceptance 0.90023879013  #Rejection 0.924688932547
-  20 : [ 0.05 , 0.09 , 51.0 ], #Acceptance 0.905669844456  #Rejection 0.966601178782
-  30 : [ 0.05 , 0.07 , 48.0 ], #Acceptance 0.901746724891  #Rejection 0.966601178782
-  40 : [ 0.03 , 0.25 , 48.0 ], #Acceptance 0.909090909091  #Rejection 0.977734119188
-  }
-
-
-## 3 station combinations 2-3-4
-dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4'] = {                                                      
-  3 : [ 0.37 , 0.13 , 64.0 ], #Acceptance 0.900010659844  #Rejection 0.550299800133
-  5 : [ 0.11 , 0.31 , 56.0 ], #Acceptance 0.90076418039  #Rejection 0.57161892072
-  7 : [ 0.41 , 0.09 , 64.0 ], #Acceptance 0.901395016096  #Rejection 0.716189207195
-  10 : [ 0.19 , 0.09 , 55.0 ], #Acceptance 0.900107742035  #Rejection 0.8254497002
-  15 : [ 0.17 , 0.05 , 64.0 ], #Acceptance 0.904545454545  #Rejection 0.893404397069
-  20 : [ 0.05 , 0.19 , 69.0 ], #Acceptance 0.900404448938  #Rejection 0.929380413058
-  30 : [ 0.05 , 0.15 , 69.0 ], #Acceptance 0.907079646018  #Rejection 0.931379080613
-  40 : [ 0.15 , 0.05 , 64.0 ], #Acceptance 0.90625  #Rejection 0.896069287142
-  }
-
-dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4'] = {                                                      
-  3 : [ 0.17 , 0.21 , 38.0 ], #Acceptance 0.900223856732  #Rejection 0.550299800133
-  5 : [ 0.17 , 0.23 , 33.0 ], #Acceptance 0.900010763104  #Rejection 0.574283810793
-  7 : [ 0.13 , 0.21 , 36.0 ], #Acceptance 0.901395016096  #Rejection 0.718854097268
-  10 : [ 0.07 , 0.11 , 37.0 ], #Acceptance 0.904109589041  #Rejection 0.826782145237
-  15 : [ 0.07 , 0.21 , 42.0 ], #Acceptance 0.900534759358  #Rejection 0.898734177215
-  20 : [ 0.05 , 0.25 , 30.0 ], #Acceptance 0.900910010111  #Rejection 0.922051965356
-  30 : [ 0.33 , 0.05 , 44.0 ], #Acceptance 0.900442477876  #Rejection 0.932045303131
-  40 : [ 0.13 , 0.05 , 38.0 ], #Acceptance 0.90625  #Rejection 0.912058627582
-  }
-
-dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4'] = {                                                      
-  3 : [ 0.11 , 0.25 , 38.0 ], #Acceptance 0.900010659844  #Rejection 0.548301132578
-  5 : [ 0.25 , 0.11 , 46.0 ], #Acceptance 0.900226025186  #Rejection 0.569620253165
-  7 : [ 0.13 , 0.09 , 40.0 ], #Acceptance 0.900918087516  #Rejection 0.706862091939
-  10 : [ 0.07 , 0.09 , 35.0 ], #Acceptance 0.902416499923  #Rejection 0.811459027315
-  15 : [ 0.11 , 0.05 , 37.0 ], #Acceptance 0.902139037433  #Rejection 0.882744836775
-  20 : [ 0.05 , 0.09 , 48.0 ], #Acceptance 0.903437815976  #Rejection 0.887408394404
-  30 : [ 0.05 , 0.09 , 48.0 ], #Acceptance 0.904867256637  #Rejection 0.887408394404
-  40 : [ 0.11 , 0.05 , 37.0 ], #Acceptance 0.90625  #Rejection 0.882744836775
-  }
-
-
-## 4 station combinations
-dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3'] = {                                                      
-  3 : [ 0.35 , 0.21 , 80.0 ], #Acceptance 0.900401367623  #Rejection 0.57332155477
-  5 : [ 0.21 , 0.35 , 66.0 ], #Acceptance 0.900330231162  #Rejection 0.597173144876
-  7 : [ 0.27 , 0.15 , 80.0 ], #Acceptance 0.900970224155  #Rejection 0.745583038869
-  10 : [ 0.11 , 0.15 , 66.0 ], #Acceptance 0.900283039408  #Rejection 0.885159010601
-  15 : [ 0.07 , 0.29 , 69.0 ], #Acceptance 0.901819560273  #Rejection 0.947879858657
-  20 : [ 0.09 , 0.07 , 80.0 ], #Acceptance 0.902737752161  #Rejection 0.962014134276
-  30 : [ 0.33 , 0.05 , 74.0 ], #Acceptance 0.905844155844  #Rejection 0.975265017668
-  40 : [ 0.33 , 0.05 , 74.0 ], #Acceptance 0.911111111111  #Rejection 0.975265017668
-  }
-
-dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4'] = {                                                      
-  3 : [ 0.15 , 0.27 , 47.0 ], #Acceptance 0.900995986324  #Rejection 0.578621908127
-  5 : [ 0.15 , 0.25 , 47.0 ], #Acceptance 0.90108075653  #Rejection 0.592756183746
-  7 : [ 0.13 , 0.29 , 38.0 ], #Acceptance 0.900301104048  #Rejection 0.75
-  10 : [ 0.11 , 0.11 , 35.0 ], #Acceptance 0.900283039408  #Rejection 0.86925795053
-  15 : [ 0.07 , 0.29 , 35.0 ], #Acceptance 0.900303260045  #Rejection 0.936395759717
-  20 : [ 0.07 , 0.09 , 45.0 ], #Acceptance 0.906340057637  #Rejection 0.955830388693
-  30 : [ 0.07 , 0.09 , 45.0 ], #Acceptance 0.915584415584  #Rejection 0.955830388693
-  40 : [ 0.07 , 0.13 , 42.0 ], #Acceptance 0.911111111111  #Rejection 0.946996466431
-  }
-
-dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4'] = {                                                      
-  3 : [ 0.09 , 0.31 , 35.0 ], #Acceptance 0.900252712948  #Rejection 0.495583038869
-  5 : [ 0.09 , 0.23 , 35.0 ], #Acceptance 0.902581807265  #Rejection 0.517667844523
-  7 : [ 0.07 , 0.13 , 38.0 ], #Acceptance 0.902141184343  #Rejection 0.650176678445
-  10 : [ 0.05 , 0.17 , 38.0 ], #Acceptance 0.902242543  #Rejection 0.776501766784
-  15 : [ 0.05 , 0.15 , 29.0 ], #Acceptance 0.901061410159  #Rejection 0.828621908127
-  20 : [ 0.05 , 0.11 , 29.0 ], #Acceptance 0.907780979827  #Rejection 0.839222614841
-  30 : [ 0.05 , 0.11 , 29.0 ], #Acceptance 0.905844155844  #Rejection 0.839222614841
-  40 : [ 0.05 , 0.09 , 29.0 ], #Acceptance 0.911111111111  #Rejection 0.840989399293
-  }
-
+dphi_dict = {
+  'DPhib_MB1_MB2__DPhib_MB1_MB3': {'Pt10': [0.09, 0.19, 32.0],
+                                  'Pt15': [0.07, 0.15, 35.0],
+                                  'Pt20': [0.07, 0.15, 32.0],
+                                  'Pt3': [0.27, 0.41, 23.0],
+                                  'Pt30': [0.07, 0.25, 26.0],
+                                  'Pt40': [0.05, 0.09, 26.0],
+                                  'Pt5': [0.17, 0.39, 29.0],
+                                  'Pt7': [0.11, 0.37, 32.0]},
+ 'DPhib_MB1_MB2__DPhib_MB1_MB4': {'Pt10': [0.07, 0.13, 6.0],
+                                  'Pt15': [0.07, 0.17, 11.0],
+                                  'Pt20': [0.07, 0.09, 8.0],
+                                  'Pt3': [0.21, 0.37, 5.0],
+                                  'Pt30': [0.05, 0.07, 5.0],
+                                  'Pt40': [0.03, 0.07, 11.0],
+                                  'Pt5': [0.21, 0.49, 11.0],
+                                  'Pt7': [0.15, 0.17, 19.0]},
+ 'DPhib_MB1_MB2__DPhib_MB2_MB3': {'Pt10': [0.07, 0.19, 32.0],
+                                  'Pt15': [0.05, 0.25, 35.0],
+                                  'Pt20': [0.05, 0.27, 32.0],
+                                  'Pt3': [0.15, 0.43, 38.0],
+                                  'Pt30': [0.05, 0.17, 32.0],
+                                  'Pt40': [0.03, 0.23, 35.0],
+                                  'Pt5': [0.11, 0.21, 38.0],
+                                  'Pt7': [0.17, 0.07, 30.0]},
+ 'DPhib_MB1_MB2__DPhib_MB2_MB4': {'Pt10': [0.07, 0.11, 22.0],
+                                  'Pt15': [0.15, 0.05, 18.0],
+                                  'Pt20': [0.11, 0.05, 21.0],
+                                  'Pt3': [0.13, 0.39, 13.0],
+                                  'Pt30': [0.03, 0.13, 10.0],
+                                  'Pt40': [0.03, 0.11, 10.0],
+                                  'Pt5': [0.29, 0.15, 21.0],
+                                  'Pt7': [0.23, 0.11, 18.0]},
+ 'DPhib_MB1_MB2__DPhib_MB3_MB4': {'Pt10': [0.05, 0.17, 38.0],
+                                  'Pt15': [0.05, 0.15, 29.0],
+                                  'Pt20': [0.05, 0.11, 29.0],
+                                  'Pt3': [0.09, 0.31, 35.0],
+                                  'Pt30': [0.05, 0.11, 29.0],
+                                  'Pt40': [0.05, 0.09, 29.0],
+                                  'Pt5': [0.09, 0.23, 35.0],
+                                  'Pt7': [0.07, 0.13, 38.0]},
+ 'DPhib_MB1_MB3__DPhib_MB1_MB4': {'Pt10': [0.11, 0.13, 37.0],
+                                  'Pt15': [0.09, 0.11, 30.0],
+                                  'Pt20': [0.07, 0.11, 39.0],
+                                  'Pt3': [0.23, 0.39, 36.0],
+                                  'Pt30': [0.05, 0.09, 33.0],
+                                  'Pt40': [0.05, 0.07, 27.0],
+                                  'Pt5': [0.19, 0.47, 30.0],
+                                  'Pt7': [0.17, 0.31, 35.0]},
+ 'DPhib_MB1_MB3__DPhib_MB2_MB3': {'Pt10': [],
+                                  'Pt15': [0.13, 0.05, 51.0],
+                                  'Pt20': [0.05, 0.13, 59.0],
+                                  'Pt3': [0.45, 0.17, 45.0],
+                                  'Pt30': [0.05, 0.23, 53.0],
+                                  'Pt40': [0.03, 0.13, 56.0],
+                                  'Pt5': [0.09, 0.31, 59.0],
+                                  'Pt7': [0.07, 0.37, 56.0]},
+ 'DPhib_MB1_MB3__DPhib_MB2_MB4': {'Pt10': [0.11, 0.11, 35.0],
+                                  'Pt15': [0.07, 0.29, 35.0],
+                                  'Pt20': [0.07, 0.09, 45.0],
+                                  'Pt3': [0.15, 0.27, 47.0],
+                                  'Pt30': [0.07, 0.09, 45.0],
+                                  'Pt40': [0.07, 0.13, 42.0],
+                                  'Pt5': [0.15, 0.25, 47.0],
+                                  'Pt7': [0.13, 0.29, 38.0]},
+ 'DPhib_MB1_MB3__DPhib_MB3_MB4': {'Pt10': [0.09, 0.11, 54.0],
+                                  'Pt15': [0.07, 0.09, 54.0],
+                                  'Pt20': [0.05, 0.11, 51.0],
+                                  'Pt3': [0.15, 0.39, 51.0],
+                                  'Pt30': [0.03, 0.27, 51.0],
+                                  'Pt40': [0.03, 0.07, 48.0],
+                                  'Pt5': [0.15, 0.31, 51.0],
+                                  'Pt7': [0.11, 0.15, 53.0]},
+ 'DPhib_MB1_MB4__DPhib_MB2_MB3': {'Pt10': [0.11, 0.15, 66.0],
+                                  'Pt15': [0.07, 0.29, 69.0],
+                                  'Pt20': [0.09, 0.07, 80.0],
+                                  'Pt3': [0.35, 0.21, 80.0],
+                                  'Pt30': [0.33, 0.05, 74.0],
+                                  'Pt40': [0.33, 0.05, 74.0],
+                                  'Pt5': [0.21, 0.35, 66.0],
+                                  'Pt7': [0.27, 0.15, 80.0]},
+ 'DPhib_MB1_MB4__DPhib_MB2_MB4': {'Pt10': [0.05, 0.21, 37.0],
+                                  'Pt15': [0.07, 0.49, 44.0],
+                                  'Pt20': [0.05, 0.19, 50.0],
+                                  'Pt3': [0.41, 0.17, 42.0],
+                                  'Pt30': [0.05, 0.09, 50.0],
+                                  'Pt40': [0.03, 0.07, 47.0],
+                                  'Pt5': [0.13, 0.31, 37.0],
+                                  'Pt7': [0.13, 0.39, 50.0]},
+ 'DPhib_MB1_MB4__DPhib_MB3_MB4': {'Pt10': [0.09, 0.21, 75.0],
+                                  'Pt15': [],
+                                  'Pt20': [0.05, 0.15, 75.0],
+                                  'Pt3': [0.19, 0.41, 72.0],
+                                  'Pt30': [0.05, 0.07, 69.0],
+                                  'Pt40': [0.11, 0.03, 70.0],
+                                  'Pt5': [0.19, 0.35, 72.0],
+                                  'Pt7': [0.17, 0.25, 66.0]},
+ 'DPhib_MB2_MB3__DPhib_MB2_MB4': {'Pt10': [0.11, 0.09, 38.0],
+                                  'Pt15': [0.07, 0.35, 39.0],
+                                  'Pt20': [0.05, 0.25, 30.0],
+                                  'Pt3': [0.17, 0.19, 32.0],
+                                  'Pt30': [0.05, 0.13, 32.0],
+                                  'Pt40': [0.05, 0.11, 45.0],
+                                  'Pt5': [0.17, 0.17, 30.0],
+                                  'Pt7': [0.15, 0.13, 37.0]},
+ 'DPhib_MB2_MB3__DPhib_MB3_MB4': {'Pt10': [0.11, 0.07, 40.0],
+                                  'Pt15': [0.05, 0.15, 48.0],
+                                  'Pt20': [0.05, 0.13, 48.0],
+                                  'Pt3': [0.27, 0.11, 43.0],
+                                  'Pt30': [0.05, 0.15, 48.0],
+                                  'Pt40': [0.03, 0.11, 35.0],
+                                  'Pt5': [0.11, 0.15, 35.0],
+                                  'Pt7': [0.09, 0.11, 35.0]},
+ 'DPhib_MB2_MB4__DPhib_MB3_MB4': {'Pt10': [0.17, 0.07, 64.0],
+                                  'Pt15': [0.07, 0.15, 66.0],
+                                  'Pt20': [0.05, 0.19, 69.0],
+                                  'Pt3': [0.29, 0.09, 70.0],
+                                  'Pt30': [0.21, 0.05, 61.0],
+                                  'Pt40': [0.03, 0.11, 56.0],
+                                  'Pt5': [0.49, 0.11, 64.0],
+                                  'Pt7': [0.49, 0.07, 67.0]}}
 
 #______________________________________________________________________________
 def getEllipseParameters(dphi11, dphi12, dphi21, dphi22):
@@ -192,7 +291,7 @@ def getEllipseParameters(dphi11, dphi12, dphi21, dphi22):
 
 #______________________________________________________________________________
 def getEllipseParametersString(dphiString, pt):
-  return dphi_dict[dphiString][pt]
+  return dphi_dict[dphiString]["Pt%d"%pt]
 
 
 #______________________________________________________________________________
@@ -281,7 +380,7 @@ def pt_from_DPhi_DT_ellipse(dphi11, dphi12, dphi21, dphi22, x, y):
 
 def pt_from_DPhi_DT_ellipse_test():
   default_pt = 2
-  dphi11, dphi12, dphi21, dphi22, x, y = 1, 2, 3, 4, 0.01, 0.01
+  dphi11, dphi12, dphi21, dphi22, x, y = 1, 2, 3, 4, 0.2, 0.2
   dphiString = getEllipseParameters(dphi11, dphi12, dphi21, dphi22)
   print dphiString
   for ptCut in [40, 30, 20, 15, 10, 7, 5, 3]:
@@ -300,6 +399,7 @@ def pt_from_DPhi_DT_ellipse_test():
   print "returning default pt", default_pt
   return default_pt
   
+#pt_from_DPhi_DT_ellipse_test()
 
 #______________________________________________________________________________
 def pt_from_DPhi_DT(DPhi, DT_type):

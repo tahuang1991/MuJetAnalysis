@@ -564,6 +564,15 @@ def MuonTDR2017_BarrelTriggerEfficiency3Stubs(station1, station2, station3, ptCu
 
     vetoCut = TCut("");                     postTitle=""
     stationCut = TCut("has_L1Mu==1 && ok_DTTF_st%d==1 && ok_DTTF_st%d==1 && ok_DTTF_st%d==1"%(station1, station2, station3))
+    
+    extraCut = ""
+    if station1==1 and station2==2 and station3==3: extraCut = "&& ok_DTTF_st4==0"
+    if station1==1 and station2==2 and station3==4: extraCut = "&& ok_DTTF_st3==0"
+    if station1==1 and station2==3 and station3==4: extraCut = "&& ok_DTTF_st2==0"
+    if station1==2 and station2==3 and station3==4: extraCut = "&& ok_DTTF_st1==0"
+
+    stationCut += extraCut
+
     directionPtCut = TCut("DTTF_DT%d_DT%d_DT%d_pt>=%d"%(station1, station2, station3, ptCut))
     promptPtCut = TCut("L1Mu_pt>=%d"%ptCut)
 

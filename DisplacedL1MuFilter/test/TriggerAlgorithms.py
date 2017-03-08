@@ -4,6 +4,53 @@ from BarrelTriggerAlgorithms import *
 from EndcapTriggerAlgorithms import *
 from GEMCSCdPhiDict_wholeChamber import dphi_lct_pad
 import random
+##_________________________________________________
+def is_L1Mu_isolated(treeHits, L1Mu_index, vetoType):
+    """checks if muon is isolated from track trigger track"""
+
+    L1Mu_L1Tk_dR_min = treeHits.L1Mu_L1Tk_dR_prop[L1Mu_index]
+    L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt_prop[L1Mu_index]
+    verbose = False
+    if verbose:
+        print "Checking veto"
+        print "L1Mu_L1Tk_dR_min", L1Mu_L1Tk_dR_min
+        print "L1Mu_L1Tk_pt", L1Mu_L1Tk_pt
+    # The loose veto rejects prompt muons by matching a L1Tk within
+    # a radius R<0.12 with an L1Tk pT > 4 GeV. The medium and tight
+    # veto apply L1Tk pT cuts of 3 and 2 GeV respectively on L1Tk
+    # in R<0.12.
+
+    ## loose
+    if vetoType == 1:
+        dR_largeCone = 0.12
+        ptCut_largeCone = 4
+        dR_smallCone = 0.12
+        ptCut_smallCone = 4
+
+    ## medium
+    if vetoType == 2:
+        dR_largeCone = 0.12
+        ptCut_largeCone = 4
+        dR_smallCone = 0.12
+        ptCut_smallCone = 3
+
+    ## tight
+    if vetoType == 3:
+        dR_largeCone = 0.12
+        ptCut_largeCone = 4
+        dR_smallCone = 0.12
+        ptCut_smallCone = 2
+
+    isMatched = False
+    isUnmatched = False
+
+    ## check if matched or unmatched
+    ## L1Tk should have a momentum above a certain threshold to be matched or unmatched
+    #if L1Mu_L1Tk_dR_min <= dR_largeCone and L1Mu_L1Tk_pt >= ptCut_largeCone: isUnmatched = True
+    if L1Mu_L1Tk_dR_min <= dR_smallCone and L1Mu_L1Tk_pt >= ptCut_smallCone: isMatched = True
+
+    ## isolated means neither matched nor unmatched!
+    return (not isMatched)
 
 #______________________________________________________________________________
 def passDPhicutTFTrack(st, ch, dphi, L1MuPt, Eff=90):
@@ -64,54 +111,6 @@ def passDPhicutTFTrack(st, ch, dphi, L1MuPt, Eff=90):
     returnValue = False;
 
   return returnValue
-
-##_________________________________________________
-def is_L1Mu_isolated(treeHits, L1Mu_index, vetoType):
-    """checks if muon is isolated from track trigger track"""
-
-    L1Mu_L1Tk_dR_min = treeHits.L1Mu_L1Tk_dR_prop[L1Mu_index]
-    L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt_prop[L1Mu_index]
-    verbose = False
-    if verbose:
-        print "Checking veto"
-        print "L1Mu_L1Tk_dR_min", L1Mu_L1Tk_dR_min
-        print "L1Mu_L1Tk_pt", L1Mu_L1Tk_pt
-    # The loose veto rejects prompt muons by matching a L1Tk within
-    # a radius R<0.12 with an L1Tk pT > 4 GeV. The medium and tight
-    # veto apply L1Tk pT cuts of 3 and 2 GeV respectively on L1Tk
-    # in R<0.12.
-
-    ## loose
-    if vetoType == 1:
-        dR_largeCone = 0.12
-        ptCut_largeCone = 4
-        dR_smallCone = 0.12
-        ptCut_smallCone = 4
-
-    ## medium
-    if vetoType == 2:
-        dR_largeCone = 0.12
-        ptCut_largeCone = 4
-        dR_smallCone = 0.12
-        ptCut_smallCone = 3
-
-    ## tight
-    if vetoType == 3:
-        dR_largeCone = 0.12
-        ptCut_largeCone = 4
-        dR_smallCone = 0.12
-        ptCut_smallCone = 2
-
-    isMatched = False
-    isUnmatched = False
-
-    ## check if matched or unmatched
-    ## L1Tk should have a momentum above a certain threshold to be matched or unmatched
-    #if L1Mu_L1Tk_dR_min <= dR_largeCone and L1Mu_L1Tk_pt >= ptCut_largeCone: isUnmatched = True
-    if L1Mu_L1Tk_dR_min <= dR_smallCone and L1Mu_L1Tk_pt >= ptCut_smallCone: isMatched = True
-
-    ## isolated means neither matched nor unmatched!
-    return (not isMatched)
 
 ##_________________________________________________
 def isME11StubDisabled(failRate):
@@ -533,31 +532,6 @@ def fillDisplacedHistogram(mapTH1F,
 
 
 
-def fillDisplacedBarrelHistogram(mapTH1F,
-                                 key,
-                                 treeHits,
-                                 etaCutMin,
-                                 etaCutMax,
-                                 stubCut,
-                                 algorithm=0,
-                                 vetoType=0):
-    doBXCut = True
-    qualityCut=4
-    displaced_L1Mu_pt, displaced_L1Mu_eta, iLMu = getMaxDisplacedBarrelPtEtaEvent(treeHits,
-                                                                                  doBXCut,
-                                                                                  etaCutMin,
-                                                                                  etaCutMax,
-                                                                                  stubCut,
-                                                                                  qualityCut,
-                                                                                  algorithm,
-                                                                                  vetoType)
-    if (displaced_L1Mu_pt>0):
-        mapTH1F[key.replace("rate_", "rate_pt_")].Fill(displaced_L1Mu_pt)
-    ## apply a 7/10 GeV pT cut for the eta histograms!!!
-    if (displaced_L1Mu_pt>=7):
-        mapTH1F[key.replace("rate_", "rate_eta_L1Pt7_")].Fill(abs(displaced_L1Mu_eta))
-    if (displaced_L1Mu_pt>=10):
-        mapTH1F[key.replace("rate_", "rate_eta_L1Pt10_")].Fill(abs(displaced_L1Mu_eta))
 
 
 ## 1: postion based endcap
@@ -683,85 +657,3 @@ def getMaxDisplacedPtEtaEvent(treeHits,
 
 
 
-def getMaxDisplacedBarrelPtEtaEvent(treeHits,
-                              doBXCut,
-                              etaCutMin,
-                              etaCutMax,
-                              stubCut,
-                              qualityCut,
-                              algorithm=0,
-                              vetoType=0):
-
-    max_displaced_L1Mu_pt = -1
-    max_displaced_L1Mu_eta = -99
-
-    ## check if this event has L1Mus
-    if len(list(treeHits.L1Mu_pt))==0:
-        return max_displaced_L1Mu_pt, max_displaced_L1Mu_eta
-
-    pts = list(treeHits.L1Mu_pt)
-    nGoodMuons = 0
-    iL1Mu = -1
-    for i in range(0,len(pts)):
-
-        L1Mu_eta = treeHits.L1Mu_eta[i]
-        L1Mu_bx = treeHits.L1Mu_bx[i]
-        L1Mu_quality = treeHits.L1Mu_quality[i]
-
-        ## BX cut
-        if abs(L1Mu_bx)>0 and doBXCut: continue
-
-        ## quality cut
-        if L1Mu_quality < qualityCut: continue
-
-        ## check if muon is isolated
-        if (vetoType!=0) and (not is_L1Mu_isolated(treeHits, i, vetoType)): continue
-
-        ## eta cut
-        if not (etaCutMin <=abs(L1Mu_eta) and abs(L1Mu_eta) < etaCutMax): continue
-
-        L1Mu_DTTF_index = treeHits.L1Mu_DTTF_index[i]
-
-        nDTStubs = 0
-
-        DisplacedL1Mu_pt, DisplacedL1Mu_eta = -1, -1
-
-        #print L1Mu_DTTF_index
-        if L1Mu_DTTF_index != -1 and L1Mu_DTTF_index < len(treeHits.DTTF_phi1):
-            nGoodMuons += 1
-            has_DT_MB1 = treeHits.DTTF_phi1[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib1[L1Mu_DTTF_index] != 99
-            has_DT_MB2 = treeHits.DTTF_phi2[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib2[L1Mu_DTTF_index] != 99
-            has_DT_MB3 = treeHits.DTTF_phi3[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib3[L1Mu_DTTF_index] != 99
-            has_DT_MB4 = treeHits.DTTF_phi4[L1Mu_DTTF_index] != 99 and treeHits.DTTF_phib4[L1Mu_DTTF_index] != 99
-
-            ## direction based MB1-MB4
-            if algorithm==1: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 1)
-            if algorithm==2: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 2)
-            if algorithm==3: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 3)
-            if algorithm==4: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 4)
-            if algorithm==5: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 5)
-            if algorithm==6: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 6)
-            if algorithm==7: DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 7)
-
-            ## get the highest pT using all algorithms
-            if algorithm==9:
-                pt12 = pt_barrel_direction_based_algorithm(treeHits, i, 10)
-                pt13 = pt_barrel_direction_based_algorithm(treeHits, i, 11)
-                pt14 = pt_barrel_direction_based_algorithm(treeHits, i, 12)
-                pt23 = pt_barrel_direction_based_algorithm(treeHits, i, 13)
-                pt24 = pt_barrel_direction_based_algorithm(treeHits, i, 14)
-                pt34 = pt_barrel_direction_based_algorithm(treeHits, i, 15)
-
-                DisplacedL1Mu_pt = max(pt12[0], pt13[0], pt14[0], pt23[0], pt24[0], pt34[0])
-                DisplacedL1Mu_eta = L1Mu_eta
-
-            if algorithm==16:
-                DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 16)
-
-            ## calculate the max pT for the muons that pass the criteria
-            if DisplacedL1Mu_pt > max_displaced_L1Mu_pt:
-                iL1Mu = i
-                max_displaced_L1Mu_pt = DisplacedL1Mu_pt
-                max_displaced_L1Mu_eta = DisplacedL1Mu_eta
-
-    return max_displaced_L1Mu_pt, max_displaced_L1Mu_eta, iL1Mu

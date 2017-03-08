@@ -7,7 +7,7 @@ import pprint
 dphi_dict = {}
 
 ## intialize an empty dictionary
-def initalizeEmtpyDictionary(dphi_dict):
+def initalizeEmptyDictionary(dphi_dict):
   DT_dPhi_combinations = [
     ((1, 2),(1, 3)),
     ((1, 2),(1, 4)),
@@ -37,131 +37,131 @@ def initalizeEmtpyDictionary(dphi_dict):
     
   return dphi_dict
 
-#dphi_dict = initalizeEmtpyDictionary(dphi_dict)
+dphi_dict = initalizeEmptyDictionary(dphi_dict)
 
-"""
-dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt3'] = [ 0.27 , 0.41 , 23.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt5'] = [ 0.17 , 0.39 , 29.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt7'] = [ 0.11 , 0.37 , 32.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt10'] = [ 0.09 , 0.19 , 32.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt15'] = [ 0.07 , 0.15 , 35.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt20'] = [ 0.07 , 0.15 , 32.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt30'] = [ 0.07 , 0.25 , 26.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt40'] = [ 0.05 , 0.09 , 26.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt3'] = [ 0.21 , 0.37 , 5.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt5'] = [ 0.21 , 0.49 , 11.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt7'] = [ 0.15 , 0.17 , 19.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt10'] = [ 0.07 , 0.13 , 6.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt15'] = [ 0.07 , 0.17 , 11.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt20'] = [ 0.07 , 0.09 , 8.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt30'] = [ 0.05 , 0.07 , 5.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt40'] = [ 0.03 , 0.07 , 11.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt3'] = [ 0.15 , 0.43 , 38.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt5'] = [ 0.11 , 0.21 , 38.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt7'] = [ 0.17 , 0.07 , 30.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt10'] = [ 0.07 , 0.19 , 32.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt15'] = [ 0.05 , 0.25 , 35.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt20'] = [ 0.05 , 0.27 , 32.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt30'] = [ 0.05 , 0.17 , 32.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt40'] = [ 0.03 , 0.23 , 35.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt3'] = [ 0.13 , 0.39 , 13.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt5'] = [ 0.29 , 0.15 , 21.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt7'] = [ 0.23 , 0.11 , 18.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt10'] = [ 0.07 , 0.11 , 22.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt15'] = [ 0.15 , 0.05 , 18.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt20'] = [ 0.11 , 0.05 , 21.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt30'] = [ 0.03 , 0.13 , 10.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt40'] = [ 0.03 , 0.11 , 10.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt3'] = [ 0.09 , 0.31 , 35.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt5'] = [ 0.09 , 0.23 , 35.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt7'] = [ 0.07 , 0.13 , 38.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt10'] = [ 0.05 , 0.17 , 38.0 ]
-dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt15'] = [ 0.05 , 0.15 , 29.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt3'] = [ 0 , 0 , 0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt5'] = [ 0.29 , 0.19 , 33.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt7'] = [ 0.13 , 0.17 , 28.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt10'] = [ 0.11 , 0.35 , 26.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt15'] = [ 0.19 , 0.07 , 21.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt20'] = [ 0.23 , 0.07 , 28.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt30'] = [ 0.19 , 0.07 , 28.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB3']['Pt40'] = [ 0.05 , 0.19 , 26.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt3'] = [ 0 , 0 , 0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt5'] = [ 0.49 , 0.13 , 11.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt7'] = [ 0.21 , 0.25 , 7.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt10'] = [ 0.33 , 0.13 , 12.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt15'] = [ 0.19 , 0.07 , 13.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt20'] = [ 0.07 , 0.09 , 14.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt30'] = [ 0.05 , 0.29 , 11.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB1_MB4']['Pt40'] = [ 0.15 , 0.05 , 6.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt3'] = [ 0.37 , 0.49 , 40.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt5'] = [ 0.25 , 0.13 , 33.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt7'] = [ 0.09 , 0.27 , 38.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt10'] = [ 0.07 , 0.19 , 35.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt15'] = [ 0.05 , 0.31 , 32.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt20'] = [ 0.15 , 0.05 , 40.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt30'] = [ 0.05 , 0.13 , 26.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB3']['Pt40'] = [ 0.05 , 0.09 , 26.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt3'] = [ 0 , 0 , 0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt5'] = [ 0.13 , 0.41 , 22.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt7'] = [ 0.45 , 0.15 , 18.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt10'] = [ 0.37 , 0.09 , 18.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt15'] = [ 0.05 , 0.17 , 13.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt20'] = [ 0.11 , 0.05 , 15.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt30'] = [ 0.09 , 0.05 , 15.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB2_MB4']['Pt40'] = [ 0.17 , 0.03 , 21.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt3'] = [ 0.49 , 0.19 , 36.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt5'] = [ 0.29 , 0.09 , 36.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt7'] = [ 0.15 , 0.07 , 36.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt10'] = [ 0.07 , 0.13 , 32.0 ]
+dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt15'] = [ 0.05 , 0.19 , 32.0 ]
 dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt20'] = [ 0.05 , 0.11 , 29.0 ]
 dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt30'] = [ 0.05 , 0.11 , 29.0 ]
 dphi_dict['DPhib_MB1_MB2__DPhib_MB3_MB4']['Pt40'] = [ 0.05 , 0.09 , 29.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt3'] = [ 0.23 , 0.39 , 36.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt5'] = [ 0.19 , 0.47 , 30.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt7'] = [ 0.17 , 0.31 , 35.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt10'] = [ 0.11 , 0.13 , 37.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt15'] = [ 0.09 , 0.11 , 30.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt20'] = [ 0.07 , 0.11 , 39.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt30'] = [ 0.05 , 0.09 , 33.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt40'] = [ 0.05 , 0.07 , 27.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt3'] = [ 0.45 , 0.17 , 45.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt5'] = [ 0.09 , 0.31 , 59.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt7'] = [ 0.07 , 0.37 , 56.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt15'] = [ 0.13 , 0.05 , 51.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt20'] = [ 0.05 , 0.13 , 59.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt30'] = [ 0.05 , 0.23 , 53.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt40'] = [ 0.03 , 0.13 , 56.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt3'] = [ 0.15 , 0.27 , 47.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt5'] = [ 0.15 , 0.25 , 47.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt7'] = [ 0.13 , 0.29 , 38.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt10'] = [ 0.11 , 0.11 , 35.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt15'] = [ 0.07 , 0.29 , 35.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt3'] = [ 0 , 0 , 0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt5'] = [ 0.17 , 0.47 , 31.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt7'] = [ 0.21 , 0.49 , 30.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt10'] = [ 0.15 , 0.23 , 36.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt15'] = [ 0.09 , 0.23 , 36.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt20'] = [ 0.07 , 0.09 , 30.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt30'] = [ 0.05 , 0.15 , 36.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB1_MB4']['Pt40'] = [ 0.13 , 0.05 , 31.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt3'] = [ 0 , 0 , 0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt5'] = [ 0.37 , 0.09 , 51.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt7'] = [ 0.09 , 0.41 , 56.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt10'] = [ 0.07 , 0.23 , 56.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt15'] = [ 0.05 , 0.17 , 56.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt20'] = [ 0.05 , 0.17 , 53.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt30'] = [ 0.07 , 0.39 , 60.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB3']['Pt40'] = [ 0.05 , 0.33 , 47.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt3'] = [ 0 , 0 , 0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt5'] = [ 0.47 , 0.11 , 45.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt7'] = [ 0.23 , 0.13 , 45.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt10'] = [ 0.11 , 0.23 , 41.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt15'] = [ 0.07 , 0.15 , 41.0 ]
 dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt20'] = [ 0.07 , 0.09 , 45.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt30'] = [ 0.07 , 0.09 , 45.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt30'] = [ 0.13 , 0.05 , 47.0 ]
 dphi_dict['DPhib_MB1_MB3__DPhib_MB2_MB4']['Pt40'] = [ 0.07 , 0.13 , 42.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt3'] = [ 0.15 , 0.39 , 51.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt5'] = [ 0.15 , 0.31 , 51.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt7'] = [ 0.11 , 0.15 , 53.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt10'] = [ 0.09 , 0.11 , 54.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt15'] = [ 0.07 , 0.09 , 54.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt3'] = [ 0 , 0 , 0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt5'] = [ 0.17 , 0.33 , 59.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt7'] = [ 0.17 , 0.17 , 45.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt10'] = [ 0.11 , 0.11 , 45.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt15'] = [ 0.07 , 0.11 , 57.0 ]
 dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt20'] = [ 0.05 , 0.11 , 51.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt30'] = [ 0.03 , 0.27 , 51.0 ]
-dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt40'] = [ 0.03 , 0.07 , 48.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt3'] = [ 0.35 , 0.21 , 80.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt5'] = [ 0.21 , 0.35 , 66.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt7'] = [ 0.27 , 0.15 , 80.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt10'] = [ 0.11 , 0.15 , 66.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt15'] = [ 0.07 , 0.29 , 69.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt20'] = [ 0.09 , 0.07 , 80.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt30'] = [ 0.33 , 0.05 , 74.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt30'] = [ 0.05 , 0.07 , 48.0 ]
+dphi_dict['DPhib_MB1_MB3__DPhib_MB3_MB4']['Pt40'] = [ 0.03 , 0.25 , 48.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt3'] = [ 0 , 0 , 0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt5'] = [ 0.11 , 0.47 , 71.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt7'] = [ 0.43 , 0.21 , 80.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt10'] = [ 0.25 , 0.13 , 80.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt15'] = [ 0.13 , 0.09 , 71.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt20'] = [ 0.13 , 0.07 , 74.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt30'] = [ 0.05 , 0.17 , 66.0 ]
 dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB3']['Pt40'] = [ 0.33 , 0.05 , 74.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt3'] = [ 0.41 , 0.17 , 42.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt5'] = [ 0.13 , 0.31 , 37.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt7'] = [ 0.13 , 0.39 , 50.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt10'] = [ 0.05 , 0.21 , 37.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt15'] = [ 0.07 , 0.49 , 44.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt20'] = [ 0.05 , 0.19 , 50.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt3'] = [ 0 , 0 , 0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt5'] = [ 0 , 0 , 0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt7'] = [ 0.49 , 0.15 , 42.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt10'] = [ 0.33 , 0.09 , 42.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt15'] = [ 0.09 , 0.35 , 41.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt20'] = [ 0.17 , 0.05 , 39.0 ]
 dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt30'] = [ 0.05 , 0.09 , 50.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt40'] = [ 0.03 , 0.07 , 47.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt3'] = [ 0.19 , 0.41 , 72.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt5'] = [ 0.19 , 0.35 , 72.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt7'] = [ 0.17 , 0.25 , 66.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt10'] = [ 0.09 , 0.21 , 75.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt20'] = [ 0.05 , 0.15 , 75.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt30'] = [ 0.05 , 0.07 , 69.0 ]
-dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt40'] = [ 0.11 , 0.03 , 70.0 ]
-dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt3'] = [ 0.17 , 0.19 , 32.0 ]
-dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt5'] = [ 0.17 , 0.17 , 30.0 ]
-dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt7'] = [ 0.15 , 0.13 , 37.0 ]
-dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt10'] = [ 0.11 , 0.09 , 38.0 ]
-dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt15'] = [ 0.07 , 0.35 , 39.0 ]
-dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt20'] = [ 0.05 , 0.25 , 30.0 ]
-dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt30'] = [ 0.05 , 0.13 , 32.0 ]
-dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt40'] = [ 0.05 , 0.11 , 45.0 ]
-dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt3'] = [ 0.27 , 0.11 , 43.0 ]
-dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt5'] = [ 0.11 , 0.15 , 35.0 ]
-dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt7'] = [ 0.09 , 0.11 , 35.0 ]
-dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt10'] = [ 0.11 , 0.07 , 40.0 ]
-dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt15'] = [ 0.05 , 0.15 , 48.0 ]
-dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt20'] = [ 0.05 , 0.13 , 48.0 ]
-dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt30'] = [ 0.05 , 0.15 , 48.0 ]
-dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt40'] = [ 0.03 , 0.11 , 35.0 ]
-dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt3'] = [ 0.29 , 0.09 , 70.0 ]
-dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt5'] = [ 0.49 , 0.11 , 64.0 ]
-dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt7'] = [ 0.49 , 0.07 , 67.0 ]
-dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt10'] = [ 0.17 , 0.07 , 64.0 ]
-dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt15'] = [ 0.07 , 0.15 , 66.0 ]
-dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt20'] = [ 0.05 , 0.19 , 69.0 ]
-dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt30'] = [ 0.21 , 0.05 , 61.0 ]
-dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt40'] = [ 0.03 , 0.11 , 56.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB2_MB4']['Pt40'] = [ 0.05 , 0.35 , 44.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt3'] = [ 0 , 0 , 0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt5'] = [ 0.47 , 0.17 , 76.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt7'] = [ 0.27 , 0.19 , 70.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt10'] = [ 0.13 , 0.35 , 69.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt15'] = [ 0.07 , 0.13 , 78.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt20'] = [ 0.05 , 0.13 , 78.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt30'] = [ 0.05 , 0.07 , 75.0 ]
+dphi_dict['DPhib_MB1_MB4__DPhib_MB3_MB4']['Pt40'] = [ 0.09 , 0.05 , 74.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt3'] = [ 0 , 0 , 0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt5'] = [ 0.11 , 0.43 , 34.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt7'] = [ 0.19 , 0.21 , 41.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt10'] = [ 0.13 , 0.09 , 39.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt15'] = [ 0.11 , 0.07 , 41.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt20'] = [ 0.05 , 0.39 , 30.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt30'] = [ 0.15 , 0.05 , 44.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB2_MB4']['Pt40'] = [ 0.13 , 0.05 , 38.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt3'] = [ 0 , 0 , 0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt5'] = [ 0.11 , 0.35 , 37.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt7'] = [ 0.11 , 0.17 , 47.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt10'] = [ 0.07 , 0.13 , 44.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt15'] = [ 0.13 , 0.05 , 43.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt20'] = [ 0.05 , 0.09 , 48.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt30'] = [ 0.05 , 0.09 , 48.0 ]
+dphi_dict['DPhib_MB2_MB3__DPhib_MB3_MB4']['Pt40'] = [ 0.11 , 0.05 , 37.0 ]
+dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt3'] = [ 0 , 0 , 0 ]
+dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt5'] = [ 0.11 , 0.41 , 68.0 ]
+dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt7'] = [ 0.13 , 0.31 , 56.0 ]
+dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt10'] = [ 0.29 , 0.07 , 67.0 ]
+dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt15'] = [ 0.41 , 0.05 , 64.0 ]
+dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt20'] = [ 0.05 , 0.23 , 69.0 ]
+dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt30'] = [ 0.11 , 0.05 , 58.0 ]
+dphi_dict['DPhib_MB2_MB4__DPhib_MB3_MB4']['Pt40'] = [ 0.15 , 0.05 , 64.0 ]
 
 pprint.pprint(dphi_dict)
 """
-
 dphi_dict = {
   'DPhib_MB1_MB2__DPhib_MB1_MB3': {'Pt10': [0.09, 0.19, 32.0],
                                   'Pt15': [0.07, 0.15, 35.0],
@@ -211,7 +211,7 @@ dphi_dict = {
                                   'Pt40': [0.05, 0.07, 27.0],
                                   'Pt5': [0.19, 0.47, 30.0],
                                   'Pt7': [0.17, 0.31, 35.0]},
- 'DPhib_MB1_MB3__DPhib_MB2_MB3': {'Pt10': [],
+ 'DPhib_MB1_MB3__DPhib_MB2_MB3': {'Pt10': [0.07, 0.29, 53.0],
                                   'Pt15': [0.13, 0.05, 51.0],
                                   'Pt20': [0.05, 0.13, 59.0],
                                   'Pt3': [0.45, 0.17, 45.0],
@@ -252,7 +252,7 @@ dphi_dict = {
                                   'Pt5': [0.13, 0.31, 37.0],
                                   'Pt7': [0.13, 0.39, 50.0]},
  'DPhib_MB1_MB4__DPhib_MB3_MB4': {'Pt10': [0.09, 0.21, 75.0],
-                                  'Pt15': [],
+                                  'Pt15': [0.07, 0.11, 78.0],
                                   'Pt20': [0.05, 0.15, 75.0],
                                   'Pt3': [0.19, 0.41, 72.0],
                                   'Pt30': [0.05, 0.07, 69.0],
@@ -283,6 +283,7 @@ dphi_dict = {
                                   'Pt40': [0.03, 0.11, 56.0],
                                   'Pt5': [0.49, 0.11, 64.0],
                                   'Pt7': [0.49, 0.07, 67.0]}}
+"""
 
 #______________________________________________________________________________
 def getEllipseParameters(dphi11, dphi12, dphi21, dphi22):
@@ -370,6 +371,9 @@ def pt_from_DPhi_DT_ellipse(dphi11, dphi12, dphi21, dphi22, x, y):
     b_axis = params[1]
     alpha  = params[2]
 
+    ## do not consider dangerous cases!
+    if a_axis==0. or b_axis==0.: continue
+
     if passEllipse(x, y, a_axis, b_axis, alpha):
       return ptCut
 
@@ -443,9 +447,142 @@ def pt_from_DPhi_DT(DPhi, DT_type):
 
     return found_pt
 
+##_________________________________________________
+def is_L1Mu_isolated(treeHits, L1Mu_index, vetoType):
+    """checks if muon is isolated from track trigger track"""
+
+    L1Mu_L1Tk_dR_min = treeHits.L1Mu_L1Tk_dR_prop[L1Mu_index]
+    L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt_prop[L1Mu_index]
+    verbose = False
+    if verbose:
+        print "Checking veto"
+        print "L1Mu_L1Tk_dR_min", L1Mu_L1Tk_dR_min
+        print "L1Mu_L1Tk_pt", L1Mu_L1Tk_pt
+    # The loose veto rejects prompt muons by matching a L1Tk within
+    # a radius R<0.12 with an L1Tk pT > 4 GeV. The medium and tight
+    # veto apply L1Tk pT cuts of 3 and 2 GeV respectively on L1Tk
+    # in R<0.12.
+
+    ## loose
+    if vetoType == 1:
+        dR_largeCone = 0.12
+        ptCut_largeCone = 4
+        dR_smallCone = 0.12
+        ptCut_smallCone = 4
+
+    ## medium
+    if vetoType == 2:
+        dR_largeCone = 0.12
+        ptCut_largeCone = 4
+        dR_smallCone = 0.12
+        ptCut_smallCone = 3
+
+    ## tight
+    if vetoType == 3:
+        dR_largeCone = 0.12
+        ptCut_largeCone = 4
+        dR_smallCone = 0.12
+        ptCut_smallCone = 2
+
+    isMatched = False
+    isUnmatched = False
+
+    ## check if matched or unmatched
+    ## L1Tk should have a momentum above a certain threshold to be matched or unmatched
+    #if L1Mu_L1Tk_dR_min <= dR_largeCone and L1Mu_L1Tk_pt >= ptCut_largeCone: isUnmatched = True
+    if L1Mu_L1Tk_dR_min <= dR_smallCone and L1Mu_L1Tk_pt >= ptCut_smallCone: isMatched = True
+
+    ## isolated means neither matched nor unmatched!
+    return (not isMatched)
+
+
+
+#______________________________________________________________________________
+def fillDisplacedBarrelHistogram(mapTH1F,
+                                 key,
+                                 treeHits,
+                                 etaCutMin,
+                                 etaCutMax,
+                                 stubCut,
+                                 algorithm=0,
+                                 vetoType=0):
+    doBXCut = True
+    qualityCut=4
+    displaced_L1Mu_pt, displaced_L1Mu_eta, iLMu = getMaxDisplacedBarrelPtEtaEvent(treeHits,
+                                                                                  doBXCut,
+                                                                                  etaCutMin,
+                                                                                  etaCutMax,
+                                                                                  stubCut,
+                                                                                  qualityCut,
+                                                                                  algorithm,
+                                                                                  vetoType)
+    if (displaced_L1Mu_pt>0):
+        mapTH1F[key.replace("rate_", "rate_pt_")].Fill(displaced_L1Mu_pt)
+    ## apply a 7/10 GeV pT cut for the eta histograms!!!
+    if (displaced_L1Mu_pt>=7):
+        mapTH1F[key.replace("rate_", "rate_eta_L1Pt7_")].Fill(abs(displaced_L1Mu_eta))
+    if (displaced_L1Mu_pt>=10):
+        mapTH1F[key.replace("rate_", "rate_eta_L1Pt10_")].Fill(abs(displaced_L1Mu_eta))
+
+
+#______________________________________________________________________________
+def getMaxDisplacedBarrelPtEtaEvent(treeHits,
+                              doBXCut,
+                              etaCutMin,
+                              etaCutMax,
+                              stubCut,
+                              qualityCut,
+                              algorithm=0,
+                              vetoType=0):
+
+    max_displaced_L1Mu_pt = -1
+    max_displaced_L1Mu_eta = -99
+
+    ## check if this event has L1Mus
+    if len(list(treeHits.L1Mu_pt))==0:
+        return max_displaced_L1Mu_pt, max_displaced_L1Mu_eta
+
+    pts = list(treeHits.L1Mu_pt)
+    nGoodMuons = 0
+    iL1Mu = -1
+    for i in range(0,len(pts)):
+
+        L1Mu_eta = treeHits.L1Mu_eta[i]
+        L1Mu_bx = treeHits.L1Mu_bx[i]
+        L1Mu_quality = treeHits.L1Mu_quality[i]
+
+        ## BX cut
+        if abs(L1Mu_bx)>0 and doBXCut: continue
+
+        ## quality cut
+        if L1Mu_quality < qualityCut: continue
+
+        ## check if muon is isolated
+        if (vetoType!=0) and (not is_L1Mu_isolated(treeHits, i, vetoType)): continue
+
+        ## eta cut
+        if not (etaCutMin <=abs(L1Mu_eta) and abs(L1Mu_eta) < etaCutMax): continue
+
+        L1Mu_DTTF_index = treeHits.L1Mu_DTTF_index[i]
+
+        DisplacedL1Mu_pt, DisplacedL1Mu_eta = -1, -1
+
+        #print L1Mu_DTTF_index
+        if L1Mu_DTTF_index != -1 and L1Mu_DTTF_index < len(treeHits.DTTF_phi1):
+            DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, algorithm)
+
+            ## calculate the max pT for the muons that pass the criteria
+            if DisplacedL1Mu_pt > max_displaced_L1Mu_pt:
+                iL1Mu = i
+                max_displaced_L1Mu_pt = DisplacedL1Mu_pt
+                max_displaced_L1Mu_eta = DisplacedL1Mu_eta
+
+    return max_displaced_L1Mu_pt, max_displaced_L1Mu_eta, iL1Mu
+
+
 #______________________________________________________________________________
 def pt_barrel_direction_based_algorithm(treeHits,  L1Mu_index, algorithm):
-    returnValue = 0
+    returnValue = 2
 
 
     ## L1Mu variables
@@ -498,57 +635,50 @@ def pt_barrel_direction_based_algorithm(treeHits,  L1Mu_index, algorithm):
     L1Mu_DT_status = L1Mu_status(DTTF_phib1, DTTF_phib2, DTTF_phib3, DTTF_phib4)
 
     ## get the pT for this muon
-    if ok_DTTF_st1 and ok_DTTF_st2 and not ok_DTTF_st3 and not ok_DTTF_st4 and algorithm is 1: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib2, 'DT1_DT2')
-    if ok_DTTF_st1 and ok_DTTF_st3 and not ok_DTTF_st2 and not ok_DTTF_st4 and algorithm is 2: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib3, 'DT1_DT3')
-    if ok_DTTF_st1 and ok_DTTF_st4 and not ok_DTTF_st2 and not ok_DTTF_st3 and algorithm is 3: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib4, 'DT1_DT4')
-    if ok_DTTF_st2 and ok_DTTF_st3 and not ok_DTTF_st1 and not ok_DTTF_st4 and algorithm is 4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib3, 'DT2_DT3')
-    if ok_DTTF_st2 and ok_DTTF_st4 and not ok_DTTF_st1 and not ok_DTTF_st3 and algorithm is 5: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib4, 'DT2_DT4')
-    if ok_DTTF_st3 and ok_DTTF_st4 and not ok_DTTF_st1 and not ok_DTTF_st2 and algorithm is 6: returnValue = pt_from_DPhi_DT(abs_DTTF_phib3_phib4, 'DT3_DT4')
-    if algorithm is 7:
-        if ok_DTTF_st1 and ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib4, 'DT1_DT4')
+    
+    ## algorithm 1-6: 2 stations exclusive
+    if algorithm==1 and ok_DTTF_st1 and ok_DTTF_st2 and not ok_DTTF_st3 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib2, 'DT1_DT2')
+    if algorithm==2 and ok_DTTF_st1 and ok_DTTF_st3 and not ok_DTTF_st2 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib3, 'DT1_DT3')
+    if algorithm==3 and ok_DTTF_st1 and ok_DTTF_st4 and not ok_DTTF_st2 and not ok_DTTF_st3: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib4, 'DT1_DT4')
+    if algorithm==4 and ok_DTTF_st2 and ok_DTTF_st3 and not ok_DTTF_st1 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib3, 'DT2_DT3')
+    if algorithm==5 and ok_DTTF_st2 and ok_DTTF_st4 and not ok_DTTF_st1 and not ok_DTTF_st3: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib4, 'DT2_DT4')
+    if algorithm==6 and ok_DTTF_st3 and ok_DTTF_st4 and not ok_DTTF_st1 and not ok_DTTF_st2: returnValue = pt_from_DPhi_DT(abs_DTTF_phib3_phib4, 'DT3_DT4')
+
+    ## algorithm 7-10: 3 stations exclusive
+    if algorithm==7 and      ok_DTTF_st1 and     ok_DTTF_st2 and     ok_DTTF_st3 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(1, 2, 1, 3, DTTF_phib1_phib2, DTTF_phib1_phib3)
+    if algorithm==8 and      ok_DTTF_st1 and     ok_DTTF_st2 and not ok_DTTF_st3 and     ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(1, 2, 1, 4, DTTF_phib1_phib2, DTTF_phib1_phib4)
+    if algorithm==9 and      ok_DTTF_st1 and not ok_DTTF_st2 and     ok_DTTF_st3 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(1, 3, 1, 4, DTTF_phib1_phib3, DTTF_phib1_phib4)
+    if algorithm==10 and not ok_DTTF_st1 and     ok_DTTF_st2 and     ok_DTTF_st3 and     ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(2, 3, 2, 4, DTTF_phib2_phib3, DTTF_phib2_phib4)
+      
+    ## algorithm 11:1 4 stations exclusive
+    if algorithm==11 and ok_DTTF_st1 and ok_DTTF_st2 and ok_DTTF_st3 and ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(1, 4, 2, 3, DTTF_phib1_phib4, DTTF_phib2_phib3)
+
+    ## algorithm 12: simple combined trigger
+    if algorithm==12:
+      if ok_DTTF_st1 and ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib4, 'DT1_DT4')
+      else:
+        if (ok_DTTF_st1 and ok_DTTF_st3) or (ok_DTTF_st2 and ok_DTTF_st4):
+          if ok_DTTF_st1 and ok_DTTF_st3: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib3, 'DT1_DT3')
+          if ok_DTTF_st2 and ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib4, 'DT2_DT4')
         else:
-            if (ok_DTTF_st1 and ok_DTTF_st3) or (ok_DTTF_st2 and ok_DTTF_st4):
-                if ok_DTTF_st1 and ok_DTTF_st3: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib3, 'DT1_DT3')
-                if ok_DTTF_st2 and ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib4, 'DT2_DT4')
-            else:
-                if ok_DTTF_st1 and ok_DTTF_st2: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib2, 'DT1_DT2')
-                if ok_DTTF_st2 and ok_DTTF_st3: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib3, 'DT2_DT3')
-                if ok_DTTF_st3 and ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib3_phib4, 'DT3_DT4')
+          if ok_DTTF_st1 and ok_DTTF_st2: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib2, 'DT1_DT2')
+          if ok_DTTF_st2 and ok_DTTF_st3: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib3, 'DT2_DT3')
+          if ok_DTTF_st3 and ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib3_phib4, 'DT3_DT4')
 
-    if algorithm is 8:
-        if ok_DTTF_st1 and ok_DTTF_st2 and not ok_DTTF_st3 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib2, 'DT1_DT2')
-        if ok_DTTF_st1 and ok_DTTF_st3 and not ok_DTTF_st2 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib3, 'DT1_DT3')
-        if ok_DTTF_st1 and ok_DTTF_st4 and not ok_DTTF_st2 and not ok_DTTF_st3: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib4, 'DT1_DT4')
-        if ok_DTTF_st2 and ok_DTTF_st3 and not ok_DTTF_st1 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib3, 'DT2_DT3')
-        if ok_DTTF_st2 and ok_DTTF_st4 and not ok_DTTF_st1 and not ok_DTTF_st3: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib4, 'DT2_DT4')
-        if ok_DTTF_st3 and ok_DTTF_st4 and not ok_DTTF_st1 and not ok_DTTF_st2: returnValue = pt_from_DPhi_DT(abs_DTTF_phib3_phib4, 'DT3_DT4')
-
-    if ok_DTTF_st1 and ok_DTTF_st2 and algorithm is 10: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib2, 'DT1_DT2')
-    if ok_DTTF_st1 and ok_DTTF_st3 and algorithm is 11: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib3, 'DT1_DT3')
-    if ok_DTTF_st1 and ok_DTTF_st4 and algorithm is 12: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib4, 'DT1_DT4')
-    if ok_DTTF_st2 and ok_DTTF_st3 and algorithm is 13: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib3, 'DT2_DT3')
-    if ok_DTTF_st2 and ok_DTTF_st4 and algorithm is 14: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib4, 'DT2_DT4')
-    if ok_DTTF_st3 and ok_DTTF_st4 and algorithm is 15: returnValue = pt_from_DPhi_DT(abs_DTTF_phib3_phib4, 'DT3_DT4')
-
-    if algorithm is 16:
-        ## case 1: 2 stations
-        if ok_DTTF_st1 and ok_DTTF_st2 and not ok_DTTF_st3 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib2, 'DT1_DT2')
-        if ok_DTTF_st1 and ok_DTTF_st3 and not ok_DTTF_st2 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib3, 'DT1_DT3')
-        if ok_DTTF_st1 and ok_DTTF_st4 and not ok_DTTF_st2 and not ok_DTTF_st3: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib4, 'DT1_DT4')
-        if ok_DTTF_st2 and ok_DTTF_st3 and not ok_DTTF_st1 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib3, 'DT2_DT3')
-        if ok_DTTF_st2 and ok_DTTF_st4 and not ok_DTTF_st1 and not ok_DTTF_st3: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib4, 'DT2_DT4')
-        if ok_DTTF_st3 and ok_DTTF_st4 and not ok_DTTF_st1 and not ok_DTTF_st2: returnValue = pt_from_DPhi_DT(abs_DTTF_phib3_phib4, 'DT3_DT4')
-
-        ## case 2: 3 stations
-        if     ok_DTTF_st1 and     ok_DTTF_st2 and     ok_DTTF_st3 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(1, 2, 1, 3, DTTF_phib1_phib2, DTTF_phib1_phib3)
-        if     ok_DTTF_st1 and     ok_DTTF_st2 and not ok_DTTF_st3 and     ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(1, 2, 1, 4, DTTF_phib1_phib2, DTTF_phib1_phib4)
-        if     ok_DTTF_st1 and not ok_DTTF_st2 and     ok_DTTF_st3 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(1, 3, 1, 4, DTTF_phib1_phib3, DTTF_phib1_phib4)
-        if not ok_DTTF_st1 and     ok_DTTF_st2 and     ok_DTTF_st3 and     ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(2, 3, 2, 4, DTTF_phib2_phib3, DTTF_phib2_phib4)
-
-        ## case 3: 4 stations
-        if    ok_DTTF_st1 and      ok_DTTF_st2 and     ok_DTTF_st3 and     ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(1, 4, 2, 3, DTTF_phib1_phib4, DTTF_phib2_phib3)
+    ## algorithm 13: elaborate combined trigger
+    if algorithm==13:
+      if ok_DTTF_st1 and ok_DTTF_st2 and not ok_DTTF_st3 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib2, 'DT1_DT2')
+      if ok_DTTF_st1 and ok_DTTF_st3 and not ok_DTTF_st2 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib3, 'DT1_DT3')
+      if ok_DTTF_st1 and ok_DTTF_st4 and not ok_DTTF_st2 and not ok_DTTF_st3: returnValue = pt_from_DPhi_DT(abs_DTTF_phib1_phib4, 'DT1_DT4')
+      if ok_DTTF_st2 and ok_DTTF_st3 and not ok_DTTF_st1 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib3, 'DT2_DT3')
+      if ok_DTTF_st2 and ok_DTTF_st4 and not ok_DTTF_st1 and not ok_DTTF_st3: returnValue = pt_from_DPhi_DT(abs_DTTF_phib2_phib4, 'DT2_DT4')
+      if ok_DTTF_st3 and ok_DTTF_st4 and not ok_DTTF_st1 and not ok_DTTF_st2: returnValue = pt_from_DPhi_DT(abs_DTTF_phib3_phib4, 'DT3_DT4')
+      
+      if     ok_DTTF_st1 and     ok_DTTF_st2 and     ok_DTTF_st3 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(1, 2, 1, 3, DTTF_phib1_phib2, DTTF_phib1_phib3)
+      if     ok_DTTF_st1 and     ok_DTTF_st2 and not ok_DTTF_st3 and     ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(1, 2, 1, 4, DTTF_phib1_phib2, DTTF_phib1_phib4)
+      if     ok_DTTF_st1 and not ok_DTTF_st2 and     ok_DTTF_st3 and not ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(1, 3, 1, 4, DTTF_phib1_phib3, DTTF_phib1_phib4)
+      if not ok_DTTF_st1 and     ok_DTTF_st2 and     ok_DTTF_st3 and     ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(2, 3, 2, 4, DTTF_phib2_phib3, DTTF_phib2_phib4)
+      
+      if ok_DTTF_st1 and ok_DTTF_st2 and ok_DTTF_st3 and ok_DTTF_st4: returnValue = pt_from_DPhi_DT_ellipse(1, 4, 2, 3, DTTF_phib1_phib4, DTTF_phib2_phib3)
 
     return returnValue, L1Mu_eta
-
-
-#  LocalWords:  dphi

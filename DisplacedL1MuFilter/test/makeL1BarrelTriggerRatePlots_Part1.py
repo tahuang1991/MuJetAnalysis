@@ -12,7 +12,7 @@ import random
 #______________________________________________________________________________
 if __name__ == "__main__":
 
-  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_Barrel20170302"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_Barrel20170306"; pu = 'PU140'; eff = False
 
   ## extension for figures - add more?
   ext = ".png"
@@ -114,8 +114,14 @@ if __name__ == "__main__":
                        "h_single_displaced_L1Mu_rate_direction_MB2_MB3_eta0to0p9",
                        "h_single_displaced_L1Mu_rate_direction_MB2_MB4_eta0to0p9",
                        "h_single_displaced_L1Mu_rate_direction_MB3_MB4_eta0to0p9",
+
+                       "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_eta0to0p9",
+                       "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB4_eta0to0p9",
+                       "h_single_displaced_L1Mu_rate_direction_MB1_MB3_MB4_eta0to0p9",
+                       "h_single_displaced_L1Mu_rate_direction_MB2_MB3_MB4_eta0to0p9",
+
                        "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_eta0to0p9",
-                       "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_algo16_eta0to0p9",
+                       "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_combined_eta0to0p9",
 
                        ## displaced muons + loose TT isolation
                        "h_single_displaced_L1Mu_rate_direction_MB1_MB2_eta0to0p9_looseVeto",
@@ -124,8 +130,14 @@ if __name__ == "__main__":
                        "h_single_displaced_L1Mu_rate_direction_MB2_MB3_eta0to0p9_looseVeto",
                        "h_single_displaced_L1Mu_rate_direction_MB2_MB4_eta0to0p9_looseVeto",
                        "h_single_displaced_L1Mu_rate_direction_MB3_MB4_eta0to0p9_looseVeto",
-                       "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_algo16_eta0to0p9",
-                       "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_algo16_eta0to0p9_looseVeto",
+
+                       "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_eta0to0p9_looseVeto",
+                       "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB4_eta0to0p9_looseVeto",
+                       "h_single_displaced_L1Mu_rate_direction_MB1_MB3_MB4_eta0to0p9_looseVeto",
+                       "h_single_displaced_L1Mu_rate_direction_MB2_MB3_MB4_eta0to0p9_looseVeto",
+
+                       "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_eta0to0p9_looseVeto",
+                       "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_combined_eta0to0p9_looseVeto",
 
                        ## displaced muons + medium TT isolation
                        "h_single_displaced_L1Mu_rate_direction_MB1_MB2_eta0to0p9_mediumVeto",
@@ -134,18 +146,14 @@ if __name__ == "__main__":
                        "h_single_displaced_L1Mu_rate_direction_MB2_MB3_eta0to0p9_mediumVeto",
                        "h_single_displaced_L1Mu_rate_direction_MB2_MB4_eta0to0p9_mediumVeto",
                        "h_single_displaced_L1Mu_rate_direction_MB3_MB4_eta0to0p9_mediumVeto",
-                       "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_eta0to0p9_mediumVeto",
-                       "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_algo16_eta0to0p9_mediumVeto",
 
-                       ## displaced muons + tight TT isolation
-                       "h_single_displaced_L1Mu_rate_direction_MB1_MB2_eta0to0p9_tightVeto",
-                       "h_single_displaced_L1Mu_rate_direction_MB1_MB3_eta0to0p9_tightVeto",
-                       "h_single_displaced_L1Mu_rate_direction_MB1_MB4_eta0to0p9_tightVeto",
-                       "h_single_displaced_L1Mu_rate_direction_MB2_MB3_eta0to0p9_tightVeto",
-                       "h_single_displaced_L1Mu_rate_direction_MB2_MB4_eta0to0p9_tightVeto",
-                       "h_single_displaced_L1Mu_rate_direction_MB3_MB4_eta0to0p9_tightVeto",
-                       "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_eta0to0p9_tightVeto",
-                       "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_algo16_eta0to0p9_tightVeto",
+                       "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_eta0to0p9_mediumVeto",
+                       "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB4_eta0to0p9_mediumVeto",
+                       "h_single_displaced_L1Mu_rate_direction_MB1_MB3_MB4_eta0to0p9_mediumVeto",
+                       "h_single_displaced_L1Mu_rate_direction_MB2_MB3_MB4_eta0to0p9_mediumVeto",
+
+                       "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_eta0to0p9_mediumVeto",
+                       "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_combined_eta0to0p9_mediumVeto",
                        )
 
 
@@ -186,44 +194,23 @@ if __name__ == "__main__":
       ## displaced algorithms
       ##
       ## 1: direction based
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB2_eta0to0p9", tree, 0, 0.9, 0, algorithm=1)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB3_eta0to0p9", tree, 0, 0.9, 0, algorithm=2)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB4_eta0to0p9", tree, 0, 0.9, 0, algorithm=3)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB2_MB3_eta0to0p9", tree, 0, 0.9, 0, algorithm=4)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB2_MB4_eta0to0p9", tree, 0, 0.9, 0, algorithm=5)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB3_MB4_eta0to0p9", tree, 0, 0.9, 0, algorithm=6)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_eta0to0p9", tree, 0, 0.9, 0, algorithm=7)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_algo16_eta0to0p9", tree, 0, 0.9, 0, algorithm=16)
+      vetos = ["", "_looseVeto", "_mediumVeto"]
+      for i in [0,1,2]:
+        veto = vetos[i]
+        fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB2_eta0to0p9" + veto, tree, 0, 0.9, 0, algorithm=1, vetoType=i)
+        fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB3_eta0to0p9" + veto, tree, 0, 0.9, 0, algorithm=2, vetoType=i)
+        fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB4_eta0to0p9" + veto, tree, 0, 0.9, 0, algorithm=3, vetoType=i)
+        fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB2_MB3_eta0to0p9" + veto, tree, 0, 0.9, 0, algorithm=4, vetoType=i)
+        fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB2_MB4_eta0to0p9" + veto, tree, 0, 0.9, 0, algorithm=5, vetoType=i)
+        fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB3_MB4_eta0to0p9" + veto, tree, 0, 0.9, 0, algorithm=6, vetoType=i)
 
-      ## loose isolation
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB2_eta0to0p9_looseVeto", tree, 0, 0.9, 0, algorithm=1, vetoType=1)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB3_eta0to0p9_looseVeto", tree, 0, 0.9, 0, algorithm=2, vetoType=1)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB4_eta0to0p9_looseVeto", tree, 0, 0.9, 0, algorithm=3, vetoType=1)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB2_MB3_eta0to0p9_looseVeto", tree, 0, 0.9, 0, algorithm=4, vetoType=1)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB2_MB4_eta0to0p9_looseVeto", tree, 0, 0.9, 0, algorithm=5, vetoType=1)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB3_MB4_eta0to0p9_looseVeto", tree, 0, 0.9, 0, algorithm=6, vetoType=1)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_eta0to0p9_looseVeto", tree, 0, 0.9, 0, algorithm=7, vetoType=1)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_algo16_eta0to0p9_looseVeto", tree, 0, 0.9, 0, algorithm=16, vetoType=1)
-
-      ## medium isolation
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB2_eta0to0p9_mediumVeto", tree, 0, 0.9, 0, algorithm=1, vetoType=2)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB3_eta0to0p9_mediumVeto", tree, 0, 0.9, 0, algorithm=2, vetoType=2)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB4_eta0to0p9_mediumVeto", tree, 0, 0.9, 0, algorithm=3, vetoType=2)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB2_MB3_eta0to0p9_mediumVeto", tree, 0, 0.9, 0, algorithm=4, vetoType=2)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB2_MB4_eta0to0p9_mediumVeto", tree, 0, 0.9, 0, algorithm=5, vetoType=2)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB3_MB4_eta0to0p9_mediumVeto", tree, 0, 0.9, 0, algorithm=6, vetoType=2)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_eta0to0p9_mediumVeto", tree, 0, 0.9, 0, algorithm=7, vetoType=2)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_algo16_eta0to0p9_mediumVeto", tree, 0, 0.9, 0, algorithm=16, vetoType=2)
-
-      ## tight isolation
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB2_eta0to0p9_tightVeto", tree, 0, 0.9, 0, algorithm=1, vetoType=3)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB3_eta0to0p9_tightVeto", tree, 0, 0.9, 0, algorithm=2, vetoType=3)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB4_eta0to0p9_tightVeto", tree, 0, 0.9, 0, algorithm=3, vetoType=3)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB2_MB3_eta0to0p9_tightVeto", tree, 0, 0.9, 0, algorithm=4, vetoType=3)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB2_MB4_eta0to0p9_tightVeto", tree, 0, 0.9, 0, algorithm=5, vetoType=3)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB3_MB4_eta0to0p9_tightVeto", tree, 0, 0.9, 0, algorithm=6, vetoType=3)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_eta0to0p9_tightVeto", tree, 0, 0.9, 0, algorithm=7, vetoType=3)
-      fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_algo16_eta0to0p9_tightVeto", tree, 0, 0.9, 0, algorithm=16, vetoType=3)
+        fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_eta0to0p9" + veto, tree, 0, 0.9, 0, algorithm=7, vetoType=i) 
+        fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB4_eta0to0p9" + veto, tree, 0, 0.9, 0, algorithm=8, vetoType=i)
+        fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB3_MB4_eta0to0p9" + veto, tree, 0, 0.9, 0, algorithm=9, vetoType=i)
+        fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB2_MB3_MB4_eta0to0p9" + veto, tree, 0, 0.9, 0, algorithm=10, vetoType=i)
+        
+        fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_eta0to0p9" + veto, tree, 0, 0.9, 0, algorithm=11, vetoType=i)
+        fillDisplacedBarrelHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_direction_MB1_MB2_MB3_MB4_combined_eta0to0p9" + veto, tree, 0, 0.9, 0, algorithm=13, vetoType=i)
 
     ## output ROOT file
     

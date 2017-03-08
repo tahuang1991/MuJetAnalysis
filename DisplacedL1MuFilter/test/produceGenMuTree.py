@@ -47,13 +47,13 @@ if __name__ == "__main__":
   print "Start run on", ch.GetEntries(), "events."
   ch = addfiles(ch, dirname=dirname1)
   print "Start run on", ch.GetEntries(), "events."
-  ch = addfiles(ch, dirname=dirname2)
+  #ch = addfiles(ch, dirname=dirname2)
   print "Start run on", ch.GetEntries(), "events."
-  ch = addfiles(ch, dirname=dirname3)
+  #ch = addfiles(ch, dirname=dirname3)
   print "Start run on", ch.GetEntries(), "events."
   treeHits = ch
 
-  f = ROOT.TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_Barrel20170302.root", "recreate")
+  f = ROOT.TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_Barrel20170307.root", "recreate")
   t = ROOT.TTree("L1MuTree", "L1MuTree")
 
   ## ranges
@@ -878,12 +878,12 @@ if __name__ == "__main__":
           abs_DTTF_phib2_phib4s[0] = -99
           abs_DTTF_phib3_phib4s[0] = -99
 
-          DTTF_DT1_DT2_pts[0] = -99
-          DTTF_DT1_DT3_pts[0] = -99
-          DTTF_DT1_DT4_pts[0] = -99
-          DTTF_DT2_DT3_pts[0] = -99
-          DTTF_DT2_DT4_pts[0] = -99
-          DTTF_DT3_DT4_pts[0] = -99
+          DTTF_DT1_DT2_pts[0] = 2
+          DTTF_DT1_DT3_pts[0] = 2
+          DTTF_DT1_DT4_pts[0] = 2
+          DTTF_DT2_DT3_pts[0] = 2
+          DTTF_DT2_DT4_pts[0] = 2
+          DTTF_DT3_DT4_pts[0] = 2
 
           DTTF_DT1_DT2_DT3_pts[0] = -99
           DTTF_DT1_DT2_DT4_pts[0] = -99
@@ -947,13 +947,21 @@ if __name__ == "__main__":
             DTTF_DT2_DT3_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib2_phib3s[0], 'DT2_DT3')
             DTTF_DT2_DT4_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib2_phib4s[0], 'DT2_DT4')
             DTTF_DT3_DT4_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib3_phib4s[0], 'DT3_DT4')
+            
+            if ok_DTTF_st1s[0] and ok_DTTF_st2s[0] and ok_DTTF_st3s[0] and not ok_DTTF_st4s[0]:
+              DTTF_DT1_DT2_DT3_pts[0] = pt_from_DPhi_DT_ellipse(1,2, 1,3, DTTF_phib1_phib2s[0], DTTF_phib1_phib3s[0])
 
-            DTTF_DT1_DT2_DT3_pts[0] = pt_from_DPhi_DT_ellipse(1,2, 1,3, DTTF_phib1_phib2s[0], DTTF_phib1_phib3s[0])
-            DTTF_DT1_DT2_DT4_pts[0] = pt_from_DPhi_DT_ellipse(1,2, 1,4, DTTF_phib1_phib2s[0], DTTF_phib1_phib4s[0])
-            DTTF_DT1_DT3_DT4_pts[0] = pt_from_DPhi_DT_ellipse(1,3, 1,4, DTTF_phib1_phib3s[0], DTTF_phib1_phib4s[0])
-            DTTF_DT2_DT3_DT4_pts[0] = pt_from_DPhi_DT_ellipse(2,3, 2,4, DTTF_phib2_phib3s[0], DTTF_phib2_phib4s[0])
+            if ok_DTTF_st1s[0] and ok_DTTF_st2s[0] and ok_DTTF_st4s[0] and not ok_DTTF_st3s[0]:
+              DTTF_DT1_DT2_DT4_pts[0] = pt_from_DPhi_DT_ellipse(1,2, 1,4, DTTF_phib1_phib2s[0], DTTF_phib1_phib4s[0])
+
+            if ok_DTTF_st1s[0] and ok_DTTF_st3s[0] and ok_DTTF_st4s[0] and not ok_DTTF_st2s[0]:
+              DTTF_DT1_DT3_DT4_pts[0] = pt_from_DPhi_DT_ellipse(1,3, 1,4, DTTF_phib1_phib3s[0], DTTF_phib1_phib4s[0])
+
+            if ok_DTTF_st2s[0] and ok_DTTF_st3s[0] and ok_DTTF_st4s[0] and not ok_DTTF_st1s[0]:
+              DTTF_DT2_DT3_DT4_pts[0] = pt_from_DPhi_DT_ellipse(2,3, 2,4, DTTF_phib2_phib3s[0], DTTF_phib2_phib4s[0])
           
-            DTTF_DT1_DT2_DT3_DT4_pts[0] = pt_from_DPhi_DT_ellipse(1,4, 2,3, DTTF_phib1_phib4s[0], DTTF_phib2_phib3s[0])
+            if ok_DTTF_st2s[0] and ok_DTTF_st3s[0] and ok_DTTF_st4s[0] and ok_DTTF_st1s[0]:
+              DTTF_DT1_DT2_DT3_DT4_pts[0] = pt_from_DPhi_DT_ellipse(1,4, 2,3, DTTF_phib1_phib4s[0], DTTF_phib2_phib3s[0])
 
 
             #print DTTF_DT1_DT2_pts[0], DTTF_DT1_DT3_pts[0], DTTF_DT1_DT4_pts[0]

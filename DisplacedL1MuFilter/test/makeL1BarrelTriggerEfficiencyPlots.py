@@ -7,11 +7,11 @@ ROOT.gROOT.SetBatch(1)
 from Helpers import *
 from ROOT import *
 
-file = TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_Barrel20170302.root")
+file = TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_Barrel20170303.root")
 treeHits = file.Get("L1MuTree")
 
 ## plots
-targetDir = 'DisplacedL1MuTrigger_20170302_PU140_StubRecovery/'
+targetDir = 'DisplacedL1MuTrigger_20170307_PU140_StubRecovery/'
 
 ## Style
 gStyle.SetStatStyle(0)
@@ -110,7 +110,7 @@ def makeEffPlot(eff1, eff2, eff3, plotName, plotTitle, doPt=True):
     latex3.SetNDC()
     latex3.Draw("same")
     #0<|#eta|<0.9
-    latex2 = TLatex(0.5, 0.5, etaRegion + ", p_{T}^{L1}>" + ptCut +  " GeV")
+    latex2 = TLatex(0.5, 0.5, etaRegion + ", p_{T}^{L1}#geq" + ptCut +  " GeV")
     latex2.SetTextSize(0.05)
     latex2.SetNDC()
     latex2.Draw("same")
@@ -349,7 +349,7 @@ def makeEffPlot3(eff1, legend1,
     #0<|#eta|<0.9
     try:
         float(ptCut)
-        latex2 = TLatex(0.5, 0.5, etaRegion + ", p_{T}^{L1}>" + ptCut +  " GeV")
+        latex2 = TLatex(0.5, 0.5, etaRegion + ", p_{T}^{L1}#geq" + ptCut +  " GeV")
         latex2.SetTextSize(0.05)
         latex2.SetNDC()
         latex2.Draw("same")
@@ -359,8 +359,8 @@ def makeEffPlot3(eff1, legend1,
         latex2.SetNDC()
         latex2.Draw("same")
 
-    leg = TLegend(0.35,0.2,0.92,0.45,"","brNDC")
-    leg.SetFillColor(kWhite)
+    leg = TLegend(0.5,0.2,0.92,0.45,"","brNDC")
+    #leg.SetFillColor(kWhite)
     leg.SetBorderSize(1)
     leg.SetFillStyle(1001)
     leg.SetTextSize(0.04)
@@ -397,7 +397,6 @@ def makeSimplePlot(hist, cTitle, title, option = ''):
     hist2.Draw("p same")
     gPad.Update()
     c.SaveAs(cTitle)
-
 
 
 ## acceptance of triggers for prompt muons
@@ -516,6 +515,74 @@ MuonTDR2017_BarrelTriggerAcceptance3Stubs(1,2,4)
 MuonTDR2017_BarrelTriggerAcceptance3Stubs(2,3,4)
 
 
+
+def MuonTDR2017_PromptTriggerEfficiency2Stubs(ptCut):
+
+    preTitle = "L1"
+
+    postTitle=""
+    promptPtCut = TCut("L1Mu_pt>=%d"%ptCut)
+
+    stationCut = TCut("ok_DTTF_st1==1 && ok_DTTF_st2==1")
+    stationCut = OR(stationCut, TCut("ok_DTTF_st1==1 && ok_DTTF_st3==1"))
+    stationCut = OR(stationCut, TCut("ok_DTTF_st1==1 && ok_DTTF_st4==1"))
+    stationCut = OR(stationCut, TCut("ok_DTTF_st2==1 && ok_DTTF_st3==1"))
+    stationCut = OR(stationCut, TCut("ok_DTTF_st2==1 && ok_DTTF_st4==1"))
+    stationCut = OR(stationCut, TCut("ok_DTTF_st3==1 && ok_DTTF_st4==1"))
+
+    ## prompt muon
+    prompt_dxy10to20_pt = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<20"), stationCut), promptPtCut)
+    prompt_dxy10to15_pt = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>10 && abs(gen_dxy)<15"), stationCut), promptPtCut)
+
+
+    prompt_dxy20to50_pt = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>20 && abs(gen_dxy)<50"), stationCut), promptPtCut)
+    prompt_dxy20to25_pt = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>20 && abs(gen_dxy)<25"), stationCut), promptPtCut)
+    prompt_dxy25to30_pt = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>25 && abs(gen_dxy)<30"), stationCut), promptPtCut)
+    prompt_dxy45to50_pt = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>45 && abs(gen_dxy)<50"), stationCut), promptPtCut)
+    
+    #simPtCut = TCut("sim_pt>=5")
+    ##prompt_dxy0to5_eta = getEfficiencyEta(treeHits, "sim_eta", AND(TCut("abs(gen_dxy)>5  && abs(gen_dxy)<10"), simPtCut, stationCut), promptPtCut)
+    #prompt_dxy5to10_eta = getEfficiencyEta(treeHits, "sim_eta", AND(TCut("abs(gen_dxy)>5  && abs(gen_dxy)<10"), simPtCut, stationCut), promptPtCut)
+    #prompt_dxy10to50_eta = getEfficiencyEta(treeHits, "sim_eta", AND(TCut("abs(gen_dxy)>10  && abs(gen_dxy)<50"), simPtCut, stationCut), promptPtCut)
+    
+    makeEffPlot3(
+        prompt_dxy10to15_pt, "10<|dxy|<15 cm",
+        prompt_dxy25to30_pt, "25<|dxy|<30 cm",
+        prompt_dxy45to50_pt, "45<|dxy|<50 cm",
+        None, None,
+        targetDir + preTitle + "MuonTDR2017Prompt_L1MuPt%d_SimMuPt_eta0to0p9_dxy10to50"%ptCut + postTitle, "L1Mu (constrained);0<|#eta|<0.9")
+
+
+def MuonTDR2017_PromptTriggerEfficiency2Stubs_JoseThesis(ptCut):
+    preTitle = "L1"
+
+    postTitle=""
+    promptPtCut = TCut("L1Mu_pt>=%d"%ptCut)
+
+    stationCut = TCut("ok_DTTF_st1==1 && ok_DTTF_st2==1")
+    stationCut = OR(stationCut, TCut("ok_DTTF_st1==1 && ok_DTTF_st3==1"))
+    stationCut = OR(stationCut, TCut("ok_DTTF_st1==1 && ok_DTTF_st4==1"))
+    stationCut = OR(stationCut, TCut("ok_DTTF_st2==1 && ok_DTTF_st3==1"))
+    stationCut = OR(stationCut, TCut("ok_DTTF_st2==1 && ok_DTTF_st4==1"))
+    stationCut = OR(stationCut, TCut("ok_DTTF_st3==1 && ok_DTTF_st4==1"))
+
+    ## prompt muon
+    prompt_dxy0to5_pt = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>0 && abs(gen_dxy)<5"), stationCut), promptPtCut)
+    prompt_dxy50to100_pt = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>50 && abs(gen_dxy)<100"), stationCut), promptPtCut)
+    prompt_dxy100to200_pt = getEfficiency(treeHits, "sim_pt", AND(TCut("abs(gen_dxy)>200 && abs(gen_dxy)<500"), stationCut), promptPtCut)
+    
+    #simPtCut = TCut("sim_pt>=5")
+    ##prompt_dxy0to5_eta = getEfficiencyEta(treeHits, "sim_eta", AND(TCut("abs(gen_dxy)>5  && abs(gen_dxy)<10"), simPtCut, stationCut), promptPtCut)
+    #prompt_dxy5to10_eta = getEfficiencyEta(treeHits, "sim_eta", AND(TCut("abs(gen_dxy)>5  && abs(gen_dxy)<10"), simPtCut, stationCut), promptPtCut)
+    #prompt_dxy10to50_eta = getEfficiencyEta(treeHits, "sim_eta", AND(TCut("abs(gen_dxy)>10  && abs(gen_dxy)<50"), simPtCut, stationCut), promptPtCut)
+    
+    makeEffPlot3(prompt_dxy0to5_pt, "0<|dxy|<5 cm",
+                 prompt_dxy50to100_pt, "50<|dxy|<100 cm",
+                 prompt_dxy100to200_pt, "200<|dxy|<500 cm",
+                 None, None,
+                 targetDir + preTitle + "MuonTDR2017Prompt_L1MuPt%d_SimMuPt_eta0to0p9_dxy0to200_JoseThesis"%ptCut + postTitle, "L1Mu (constrained);0<|#eta|<0.9")
+
+
 ## comparison of prompt trigger efficiency for various trigger models (7)
 ## comparison of prompt trigger efficiency for various trigger models (7) + track veto
 def MuonTDR2017_BarrelTriggerEfficiency2Stubs(station1, station2, ptCut, vetoType=0):
@@ -523,7 +590,7 @@ def MuonTDR2017_BarrelTriggerEfficiency2Stubs(station1, station2, ptCut, vetoTyp
     preTitle = "L1"
 
     vetoCut = TCut("");                     postTitle=""
-    stationCut = TCut("has_L1Mu==1 && ok_DTTF_st%d==1 && ok_DTTF_st%d==1"%(station1, station2))
+    stationCut = TCut("has_L1Mu==1 && ok_DTTF_st%d==1 && ok_DTTF_st%d==1 && sim_pt>3"%(station1, station2))
     directionPtCut = TCut("DTTF_DT%d_DT%d_pt>=%d"%(station1, station2, ptCut))
     promptPtCut = TCut("L1Mu_pt>=%d"%ptCut)
 
@@ -563,13 +630,13 @@ def MuonTDR2017_BarrelTriggerEfficiency3Stubs(station1, station2, station3, ptCu
     preTitle = "L1"
 
     vetoCut = TCut("");                     postTitle=""
-    stationCut = TCut("has_L1Mu==1 && ok_DTTF_st%d==1 && ok_DTTF_st%d==1 && ok_DTTF_st%d==1"%(station1, station2, station3))
+    stationCut = TCut("has_L1Mu==1 && ok_DTTF_st%d==1 && ok_DTTF_st%d==1 && ok_DTTF_st%d==1 && sim_pt>3"%(station1, station2, station3))
     
-    extraCut = ""
-    if station1==1 and station2==2 and station3==3: extraCut = "&& ok_DTTF_st4==0"
-    if station1==1 and station2==2 and station3==4: extraCut = "&& ok_DTTF_st3==0"
-    if station1==1 and station2==3 and station3==4: extraCut = "&& ok_DTTF_st2==0"
-    if station1==2 and station2==3 and station3==4: extraCut = "&& ok_DTTF_st1==0"
+    extraCut = TCut("")
+    if station1==1 and station2==2 and station3==3: extraCut = TCut("ok_DTTF_st4==0")
+    if station1==1 and station2==2 and station3==4: extraCut = TCut("ok_DTTF_st3==0")
+    if station1==1 and station2==3 and station3==4: extraCut = TCut("ok_DTTF_st2==0")
+    if station1==2 and station2==3 and station3==4: extraCut = TCut("ok_DTTF_st1==0")
 
     stationCut += extraCut
 
@@ -611,7 +678,7 @@ def MuonTDR2017_BarrelTriggerEfficiency4Stubs(ptCut, vetoType=0):
     preTitle = "L1"
 
     vetoCut = TCut("");                     postTitle=""
-    stationCut = TCut("has_L1Mu==1 && ok_DTTF_st1==1 && ok_DTTF_st2==1 && ok_DTTF_st3==1 && ok_DTTF_st4==1")
+    stationCut = TCut("has_L1Mu==1 && ok_DTTF_st1==1 && ok_DTTF_st2==1 && ok_DTTF_st3==1 && ok_DTTF_st4==1 && sim_pt>3")
     directionPtCut = TCut("DTTF_DT1_DT2_DT3_DT4_pt>=%d"%(ptCut))
     promptPtCut = TCut("L1Mu_pt>=%d"%ptCut)
 
@@ -643,7 +710,92 @@ def MuonTDR2017_BarrelTriggerEfficiency4Stubs(ptCut, vetoType=0):
                  None, None,
                  targetDir + preTitle + "MuonTDR2017Displaced_L1MuPt%d_SimMuPt_DT1_DT2_DT3_DT4_eta0to0p9_dxy5to50"%(ptCut) + postTitle, "hit in all DT stations;0<|#eta|<0.9")
 
+    
+def MuonTDR2017_BarrelTriggerEfficiency234Stubs(ptCut,vetoType):
 
+    preTitle = "L1"
+
+    vetoCut = TCut("");                     postTitle=""
+
+    if vetoType==0:   vetoCut = TCut("");                     postTitle=""; legSuffix = ""
+    elif vetoType==1: vetoCut = TCut("L1Mu_isLooseVeto==0");  postTitle="_looseVeto"; legSuffix = " + loose Veto"
+    elif vetoType==2: vetoCut = TCut("L1Mu_isMediumVeto==0"); postTitle="_mediumVeto"; legSuffix = " + medium Veto"
+    elif vetoType==3: vetoCut = TCut("L1Mu_isTightVeto==0");  postTitle="_tightVeto"; legSuffix = " + tight Veto"
+
+    def getStationCut(MB1, MB2, MB3, MB4):
+        stationCut = TCut("has_L1Mu==1")
+        stationCut += TCut("ok_DTTF_st1==%d"%(MB1))
+        stationCut += TCut("ok_DTTF_st2==%d"%(MB2))
+        stationCut += TCut("ok_DTTF_st3==%d"%(MB3))
+        stationCut += TCut("ok_DTTF_st4==%d"%(MB4))
+        SetOwnership( stationCut, True )
+        return stationCut
+
+    directionPtCut_12 = TCut("DTTF_DT1_DT2_pt>=%d"%(ptCut))
+    directionPtCut_13 = TCut("DTTF_DT1_DT3_pt>=%d"%(ptCut))
+    directionPtCut_14 = TCut("DTTF_DT1_DT4_pt>=%d"%(ptCut))
+    directionPtCut_23 = TCut("DTTF_DT2_DT3_pt>=%d"%(ptCut))
+    directionPtCut_24 = TCut("DTTF_DT2_DT4_pt>=%d"%(ptCut))
+    directionPtCut_34 = TCut("DTTF_DT3_DT4_pt>=%d"%(ptCut))
+    directionPtCut_123 = TCut("DTTF_DT1_DT2_DT3_pt>=%d"%(ptCut))
+    directionPtCut_124 = TCut("DTTF_DT1_DT2_DT4_pt>=%d"%(ptCut))
+    directionPtCut_134 = TCut("DTTF_DT1_DT3_DT4_pt>=%d"%(ptCut))
+    directionPtCut_234 = TCut("DTTF_DT2_DT3_DT4_pt>=%d"%(ptCut))
+    directionPtCut_1234 = TCut("DTTF_DT1_DT2_DT3_DT4_pt>=%d"%(ptCut))
+    
+    def directionDxyEfficiency(dxyMin, dxyMax):
+        dxyString = "abs(gen_dxy)>%f && abs(gen_dxy)<%f"%(dxyMin, dxyMax)
+        direction_dxy_pt_12 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyString), getStationCut(1,1,0,0)), AND(directionPtCut_12, vetoCut))
+        direction_dxy_pt_13 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyString), getStationCut(1,0,1,0)), AND(directionPtCut_13, vetoCut))
+        direction_dxy_pt_14 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyString), getStationCut(1,0,0,1)), AND(directionPtCut_14, vetoCut))
+        direction_dxy_pt_23 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyString), getStationCut(0,1,1,0)), AND(directionPtCut_23, vetoCut))
+        direction_dxy_pt_24 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyString), getStationCut(0,1,0,1)), AND(directionPtCut_24, vetoCut))
+        direction_dxy_pt_34 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyString), getStationCut(0,0,1,1)), AND(directionPtCut_34, vetoCut))
+        direction_dxy_pt_123 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyString), getStationCut(1,1,1,0)), AND(directionPtCut_123, vetoCut))
+        direction_dxy_pt_124 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyString), getStationCut(1,1,0,1)), AND(directionPtCut_124, vetoCut))
+        direction_dxy_pt_134 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyString), getStationCut(1,0,1,1)), AND(directionPtCut_134, vetoCut))
+        direction_dxy_pt_234 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyString), getStationCut(0,1,1,1)), AND(directionPtCut_234, vetoCut))
+        direction_dxy_pt_1234 = getEfficiency(treeHits, "sim_pt", AND(TCut(dxyString), getStationCut(1,1,1,1)), AND(directionPtCut_1234, vetoCut))
+
+        direction_dxy_pt = (direction_dxy_pt_12 + direction_dxy_pt_13 + 
+                            direction_dxy_pt_14 + direction_dxy_pt_23 + 
+                            direction_dxy_pt_24 + direction_dxy_pt_34 + 
+                            direction_dxy_pt_123 + direction_dxy_pt_124 + 
+                            direction_dxy_pt_134 + direction_dxy_pt_234 + 
+                            direction_dxy_pt_1234)
+        SetOwnership( direction_dxy_pt, True )
+        del direction_dxy_pt_12
+        del direction_dxy_pt_13
+        del direction_dxy_pt_14
+        del direction_dxy_pt_23
+        del direction_dxy_pt_24
+        del direction_dxy_pt_34
+        del direction_dxy_pt_123
+        del direction_dxy_pt_124
+        del direction_dxy_pt_134
+        del direction_dxy_pt_234
+        del direction_dxy_pt_1234
+        return direction_dxy_pt
+    
+    direction_dxy10to20_pt = directionDxyEfficiency(10, 20)
+    direction_dxy20to50_pt = directionDxyEfficiency(20, 50)
+    direction_dxy10to15_pt = directionDxyEfficiency(10, 15)
+    direction_dxy25to30_pt = directionDxyEfficiency(25, 30)
+    direction_dxy45to50_pt = directionDxyEfficiency(45, 50)
+
+    makeEffPlot3(direction_dxy10to15_pt, "10<|dxy|<15 cm" + legSuffix,
+                 direction_dxy25to30_pt, "25<|dxy|<30 cm" + legSuffix,
+                 direction_dxy45to50_pt, "45<|dxy|<50 cm" + legSuffix,
+                 None, None,
+                 targetDir + preTitle + "MuonTDR2017Displaced_L1MuPt%d_SimMuPt_DT1_DT2_DT3_DT4_combined_eta0to0p9_dxy5to50"%(ptCut) + postTitle, "L1Mu (unconstrained);0<|#eta|<0.9")
+
+
+
+for ptCut in [7, 10, 15, 20]:
+    MuonTDR2017_PromptTriggerEfficiency2Stubs(ptCut)
+    MuonTDR2017_PromptTriggerEfficiency2Stubs_JoseThesis(ptCut)
+
+#exit(1)
 
 for ptCut in [7, 10, 15]:
     for veto in [0,1,2]:
@@ -660,3 +812,7 @@ for ptCut in [7, 10, 15]:
         MuonTDR2017_BarrelTriggerEfficiency3Stubs(2,3,4,ptCut,veto)
 
         MuonTDR2017_BarrelTriggerEfficiency4Stubs(ptCut,veto)
+
+for ptCut in [7, 10, 15, 20]:
+    for veto in [0,1,2]:
+        MuonTDR2017_BarrelTriggerEfficiency234Stubs(ptCut,veto)

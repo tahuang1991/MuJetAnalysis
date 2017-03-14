@@ -113,6 +113,7 @@
 #include <L1Trigger/CSCTrackFinder/interface/CSCTFPtLUT.h>
 #include "GEMCode/GEMValidation/interface/SimTrackMatchManager.h"
 #include "GEMCode/GEMValidation/interface/DisplacedMuonTriggerPtassignment.h"
+#include "GEMCode/GEMValidation/interface/L1TrackTriggerVeto.h"
 
 #include "DataFormats/CSCDigi/interface/CSCComparatorDigiCollection.h"
 #include "DataFormats/CSCDigi/interface/CSCWireDigiCollection.h"
@@ -489,6 +490,14 @@ struct MyEvent
   Float_t GE21_sim_pad2_phi_L1[kMaxGEM], GE21_sim_pad2_phi_L2[kMaxGEM];
   Float_t GE21_sim_pad4_phi_L1[kMaxGEM], GE21_sim_pad4_phi_L2[kMaxGEM];
   Float_t GE21_sim_pad8_phi_L1[kMaxGEM], GE21_sim_pad8_phi_L2[kMaxGEM];
+
+  // ttt veto
+  Int_t isSimLooseVeto[kMaxSIM];
+  Int_t isSimMediumVeto[kMaxSIM];
+  Int_t isSimTightVeto[kMaxSIM];
+  Int_t isL1LooseVeto[kMaxL1Mu];
+  Int_t isL1MediumVeto[kMaxL1Mu];
+  Int_t isL1TightVeto[kMaxL1Mu];
 };
 
 bool
@@ -1435,6 +1444,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       SimTrackMatchManager match(sim_muon, sim_vertex, cfg_, iEvent, iEventSetup);
       const DisplacedGENMuonMatcher& match_disp = match.genMuons();
       std::cout << "sim dxy " << match_disp.matchedGenMudxy() << std::endl;
+      event_.dxy_sim[k] = match_disp.matchedGenMudxy();
+
+      L1TrackTriggerVeto trkVeto(TTTracks, iEventSetup, iEvent);
+      trkVeto.setEtaPhiReference(sim_muon.momentum().eta(), normalizedPhi(sim_muon.momentum().phi()));
+      trkVeto.calculateTTIsolation();
+      event_.isSimLooseVeto[k] = trkVeto.isLooseVeto();
+      event_.isSimMediumVeto[k] = trkVeto.isMediumVeto();
+      event_.isSimTightVeto[k] = trkVeto.isTightVeto();
 
       const SimHitMatcher& match_sh = match.simhits();
 
@@ -1751,6 +1768,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       event_.CSCTF_sim_eta_st2[k] = ptAssignmentUnit.getTrackEta();
 
       if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runPositionbased()){
+
         event_.CSCTF_sim_DDY123[k] = ptAssignmentUnit.getdeltaY123();
         event_.CSCTF_sim_position_pt[k] = ptAssignmentUnit.getPositionPt();
       }
@@ -1935,14 +1953,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       const double l1Tk_eta_corr = l1Tk_eta;
       const double l1Tk_phi_corr = phiHeavyCorr(l1Tk_pt, l1Tk_eta, l1Tk_phi, l1Tk_charge);
 
-      if(verbose) {
-        cout << "l1Tk " << j << endl;
-        cout << "l1Tk_pt " << l1Tk_pt << endl;
-        cout << "l1Tk_eta " << l1Tk_eta << endl;
-        cout << "l1Tk_phi " << l1Tk_phi << endl;
-        cout << "l1Tk_phi_corr " << l1Tk_phi_corr << endl;
-        cout << "l1Tk_charge " << l1Tk_charge << endl;
-      }
+      // if(verbose) {
+      //   cout << "l1Tk " << j << endl;
+      //   cout << "l1Tk_pt " << l1Tk_pt << endl;
+      //   cout << "l1Tk_eta " << l1Tk_eta << endl;
+      //   cout << "l1Tk_phi " << l1Tk_phi << endl;
+      //   cout << "l1Tk_phi_corr " << l1Tk_phi_corr << endl;
+      //   cout << "l1Tk_charge " << l1Tk_charge << endl;
+      // }
 
       double l1Tk_eta_prop = -99;
       double l1Tk_phi_prop = -99;
@@ -2560,6 +2578,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     event_.CSCTF_L1_eta_st2[j] = ptAssignmentUnit.getTrackEta();
 
     if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runPositionbased()){
+
       event_.CSCTF_L1_DDY123[j] = ptAssignmentUnit.getdeltaY123();
       event_.CSCTF_L1_position_pt[j] = ptAssignmentUnit.getPositionPt();
     }
@@ -2830,6 +2849,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     event_.L1Mu_quality[i] = l1Mu.quality();
     event_.L1Mu_bx[i] = l1Mu.bx();
 
+    L1TrackTriggerVeto trkVeto(TTTracks, iEventSetup, iEvent);
+    trkVeto.setEtaPhiReference(event_.L1Mu_eta[i], event_.L1Mu_phi[i]);
+    trkVeto.calculateTTIsolation();
+    event_.isL1LooseVeto[i] = trkVeto.isLooseVeto();
+    event_.isL1MediumVeto[i] = trkVeto.isMediumVeto();
+    event_.isL1TightVeto[i] = trkVeto.isTightVeto();
+
     if(verbose) {
       cout << "l1Mu " << i << endl;
       cout << "l1Mu_pt " << event_.L1Mu_pt[i] << endl;
@@ -2901,8 +2927,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       }
     }
 
-
-    if(verbose) {
+    if(false) {
       int tempIndex = event_.L1Mu_CSCTF_index[i];
       if (tempIndex != -1) { // and bestDrL1MuL1CSCTrack < 0.2
         // Print matching CSCTF track
@@ -4955,6 +4980,7 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("eta_sim", event_.eta_sim, "eta_sim[4]/F");
   event_tree_->Branch("phi_sim", event_.phi_sim, "phi_sim[4]/F");
   event_tree_->Branch("charge_sim", event_.charge_sim, "charge_sim[4]/F");
+  event_tree_->Branch("dxy_sim", event_.dxy_sim, "dxy_sim[4]/F");
   event_tree_->Branch("has_sim", &event_.has_sim);
   event_tree_->Branch("eta_sim_prop", &event_.eta_sim_prop);
   event_tree_->Branch("phi_sim_prop", &event_.phi_sim_prop);
@@ -5489,6 +5515,13 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("GE21_sim_pad4_phi_L2", event_.GE21_sim_pad4_phi_L2,"GE21_sim_pad4_phi_L2[50]/F");
   event_tree_->Branch("GE21_sim_pad8_phi_L1", event_.GE21_sim_pad8_phi_L1,"GE21_sim_pad8_phi_L1[50]/F");
   event_tree_->Branch("GE21_sim_pad8_phi_L2", event_.GE21_sim_pad8_phi_L2,"GE21_sim_pad8_phi_L2[50]/F");
+
+  event_tree_->Branch("isL1LooseVeto", event_.isL1LooseVeto,"isL1LooseVeto[50]/I");
+  event_tree_->Branch("isL1MediumVeto", event_.isL1MediumVeto,"isL1MediumVeto[50]/I");
+  event_tree_->Branch("isL1TightVeto", event_.isL1TightVeto,"isL1TightVeto[50]/I");
+  event_tree_->Branch("isSimLooseVeto", event_.isSimLooseVeto,"isSimLooseVeto[50]/I");
+  event_tree_->Branch("isSimMediumVeto", event_.isSimMediumVeto,"isSimMediumVeto[50]/I");
+  event_tree_->Branch("isSimTightVeto", event_.isSimTightVeto,"isSimTightVeto[50]/I");
 }
 
 
@@ -5646,6 +5679,7 @@ DisplacedL1MuFilter::clearBranches()
     event_.eta_sim[i] = -99;
     event_.phi_sim[i] = -99;
     event_.charge_sim[i] = -99;
+    event_.dxy_sim[i] = -99;
   }
   event_.has_sim = -99;
   event_.eta_sim_prop = -99;
@@ -5871,6 +5905,13 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_sim_Phi2_noGE21[i] = 99;
     event_.CSCTF_sim_Phi1_GE21[i] = 99;
     event_.CSCTF_sim_Phi2_GE21[i] = 99;
+
+    event_.isL1LooseVeto[i] = -1;
+    event_.isL1MediumVeto[i] = -1;
+    event_.isL1TightVeto[i] = -1;
+    event_.isSimLooseVeto[i] = -1;
+    event_.isSimMediumVeto[i] = -1;
+    event_.isSimTightVeto[i] = -1;
   }
 
   event_.nRPCb = 0;

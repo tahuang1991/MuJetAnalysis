@@ -476,14 +476,14 @@ def fillDisplacedBarrelHistogram(mapTH1F,
                                  vetoType=0):
     doBXCut = True
     qualityCut=4
-    displaced_L1Mu_pt, displaced_L1Mu_eta = getMaxDisplacedBarrelPtEtaEvent(treeHits,
-                                                                            doBXCut,
-                                                                            etaCutMin,
-                                                                            etaCutMax,
-                                                                            stubCut,
-                                                                            qualityCut,
-                                                                            algorithm,
-                                                                            vetoType)
+    displaced_L1Mu_pt, displaced_L1Mu_eta, iLMu = getMaxDisplacedBarrelPtEtaEvent(treeHits,
+                                                                                  doBXCut,
+                                                                                  etaCutMin,
+                                                                                  etaCutMax,
+                                                                                  stubCut,
+                                                                                  qualityCut,
+                                                                                  algorithm,
+                                                                                  vetoType)
     if (displaced_L1Mu_pt>0):
         mapTH1F[key.replace("rate_", "rate_pt_")].Fill(displaced_L1Mu_pt)
     ## apply a 7/10 GeV pT cut for the eta histograms!!!
@@ -689,12 +689,12 @@ def getMaxDisplacedBarrelPtEtaEvent(treeHits,
                 DisplacedL1Mu_eta = L1Mu_eta
 
             if algorithm==16:
-                DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 15)
+                DisplacedL1Mu_pt, DisplacedL1Mu_eta = pt_barrel_direction_based_algorithm(treeHits, i, 16)
 
-                ## calculate the max pT for the muons that pass the criteria
-                if DisplacedL1Mu_pt > max_displaced_L1Mu_pt:
-                    iL1Mu = i
-                    max_displaced_L1Mu_pt = DisplacedL1Mu_pt
-                    max_displaced_L1Mu_eta = DisplacedL1Mu_eta
+            ## calculate the max pT for the muons that pass the criteria
+            if DisplacedL1Mu_pt > max_displaced_L1Mu_pt:
+                iL1Mu = i
+                max_displaced_L1Mu_pt = DisplacedL1Mu_pt
+                max_displaced_L1Mu_eta = DisplacedL1Mu_eta
 
     return max_displaced_L1Mu_pt, max_displaced_L1Mu_eta, iL1Mu

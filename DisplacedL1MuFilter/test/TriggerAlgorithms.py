@@ -4,52 +4,24 @@ from BarrelTriggerAlgorithms import *
 from EndcapTriggerAlgorithms import *
 from GEMCSCdPhiDict_wholeChamber import dphi_lct_pad
 import random
+
 ##_________________________________________________
 def is_L1Mu_isolated(treeHits, L1Mu_index, vetoType):
     """checks if muon is isolated from track trigger track"""
 
-    L1Mu_L1Tk_dR_min = treeHits.L1Mu_L1Tk_dR_prop[L1Mu_index]
-    L1Mu_L1Tk_pt = treeHits.L1Mu_L1Tk_pt_prop[L1Mu_index]
-    verbose = False
-    if verbose:
-        print "Checking veto"
-        print "L1Mu_L1Tk_dR_min", L1Mu_L1Tk_dR_min
-        print "L1Mu_L1Tk_pt", L1Mu_L1Tk_pt
+    isL1LooseVeto = treeHits.isL1LooseVeto[L1Mu_index]==1
+    isL1MediumVeto = treeHits.isL1MediumVeto[L1Mu_index]==1
+    isL1TightVeto = treeHits.isL1TightVeto[L1Mu_index]==1
+    
     # The loose veto rejects prompt muons by matching a L1Tk within
     # a radius R<0.12 with an L1Tk pT > 4 GeV. The medium and tight
     # veto apply L1Tk pT cuts of 3 and 2 GeV respectively on L1Tk
     # in R<0.12.
 
-    ## loose
-    if vetoType == 1:
-        dR_largeCone = 0.12
-        ptCut_largeCone = 4
-        dR_smallCone = 0.12
-        ptCut_smallCone = 4
-
-    ## medium
-    if vetoType == 2:
-        dR_largeCone = 0.12
-        ptCut_largeCone = 4
-        dR_smallCone = 0.12
-        ptCut_smallCone = 3
-
-    ## tight
-    if vetoType == 3:
-        dR_largeCone = 0.12
-        ptCut_largeCone = 4
-        dR_smallCone = 0.12
-        ptCut_smallCone = 2
-
     isMatched = False
-    isUnmatched = False
-
-    ## check if matched or unmatched
-    ## L1Tk should have a momentum above a certain threshold to be matched or unmatched
-    #if L1Mu_L1Tk_dR_min <= dR_largeCone and L1Mu_L1Tk_pt >= ptCut_largeCone: isUnmatched = True
-    if L1Mu_L1Tk_dR_min <= dR_smallCone and L1Mu_L1Tk_pt >= ptCut_smallCone: isMatched = True
-
-    ## isolated means neither matched nor unmatched!
+    if vetoType == 1 and isL1LooseVeto:  isMatched = True
+    if vetoType == 2 and isL1MediumVeto: isMatched = True
+    if vetoType == 3 and isL1TightVeto:  isMatched = True
     return (not isMatched)
 
 #______________________________________________________________________________
@@ -573,13 +545,10 @@ def getMaxDisplacedPtEtaEvent(treeHits,
         if (vetoType!=0) and (not is_L1Mu_isolated(treeHits, i, vetoType)): continue
 
         L1Mu_CSCTF_index = treeHits.L1Mu_CSCTF_index[i]
-        L1Mu_DTTF_index = treeHits.L1Mu_DTTF_index[i]
         L1Mu_eta_ME2 = -99
 
         ## define the L1Mu objects!!
         is_CSC_Muon =   (1.2 <= abs(L1Mu_eta) and abs(L1Mu_eta) <= 2.4) and L1Mu_CSCTF_index != -1
-        is_DT_Muon =    (0.0 <= abs(L1Mu_eta) and abs(L1Mu_eta) <= 0.9) and L1Mu_DTTF_index != -1
-        is_DTCSC_Muon = (0.9 <= abs(L1Mu_eta) and abs(L1Mu_eta) <= 1.2) and (L1Mu_DTTF_index != -1 or L1Mu_CSCTF_index != -1)
 
         ## CSC quantities
         has_CSC_ME1 = False
@@ -598,13 +567,6 @@ def getMaxDisplacedPtEtaEvent(treeHits,
         nCSCStubs = 0
         CSCTF_eta2 = -99
 
-
-        ## DT quantities
-        has_DT_MB1 = False
-        has_DT_MB2 = False
-        has_DT_MB3 = False
-        has_DT_MB4 = False
-        nDTStubs = 0
 
         DisplacedL1Mu_pt, DisplacedL1Mu_eta = -1, -1
 

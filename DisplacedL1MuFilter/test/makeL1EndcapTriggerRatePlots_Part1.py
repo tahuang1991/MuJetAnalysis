@@ -29,7 +29,7 @@ if __name__ == "__main__":
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170221"; pu = 'PU140'; eff = False
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170222"; pu = 'PU140'; eff = False
   label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170227"; pu = 'PU140'; eff = False
-  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170302"; pu = 'PU140'; eff = False
+  label = "Neutrino_Pt2to20_gun_TTI2023Upg14D_PU140bx25_ILT_SLHC14_20170314"; pu = 'PU140'; eff = False
 
   ## extension for figures - add more?
   ext = ".png"
@@ -57,6 +57,8 @@ if __name__ == "__main__":
 
   f = TFile.Open(label + ".root","RECREATE")
 
+  draw_1D(tree, "L1Mu_quality", "L1Mu_quality_endcap", "", "(10,0,10)", "abs(L1Mu_eta) > 1.1 && abs(L1Mu_bx) == 0")
+  draw_1D(tree, "L1Mu_quality", "L1Mu_quality_barrel", "", "(10,0,10)", "abs(L1Mu_eta) <= 1.1 && abs(L1Mu_bx) == 0")
 
   verbose = True
 
@@ -284,7 +286,7 @@ if __name__ == "__main__":
 
     print "nEvents", maxEntries
     for k in range(0,maxEntries):
-      if k%1000==0: print "Processing event", k
+      if k%1==0: print "Processing event", k
 
       ## get event
       tree.GetEntry(k)
@@ -366,8 +368,6 @@ if __name__ == "__main__":
       fillPromptHistogram(mapTH1F, "h_single_prompt_L1Mu_rate_2_stubs_GE21_ME21_eta2p15to2p4_97p", tree, 2.15, 2.4, 2, hasME21Cut=True, hasGE21Cut=True, GE21ME21Eff=97)
       fillPromptHistogram(mapTH1F, "h_single_prompt_L1Mu_rate_2_stubs_GE21_ME21_eta2p15to2p4_98p", tree, 2.15, 2.4, 2, hasME21Cut=True, hasGE21Cut=True, GE21ME21Eff=98)
 
-      continue
-
       fillPromptHistogram(mapTH1F, "h_single_prompt_L1Mu_rate_2_stubs_GE11_ME11_GE21_ME21_eta1p6to2p15", tree, 1.6, 2.15, 2, hasME11Cut=True, hasGE11Cut=True, hasME21Cut=True, hasGE21Cut=True)
       fillPromptHistogram(mapTH1F, "h_single_prompt_L1Mu_rate_3_stubs_GE11_ME11_GE21_ME21_eta1p6to2p15", tree, 1.6, 2.15, 3, hasME11Cut=True, hasGE11Cut=True, hasME21Cut=True, hasGE21Cut=True)
 
@@ -398,6 +398,7 @@ if __name__ == "__main__":
       ## 5: hybrid based - with GE21
 
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_position_ME1_ME2_ME3_eta1p2to2p15", tree, 1.2, 2.15, 0, algorithm=1)
+
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_position_ME1_ME2_ME3_eta1p2to1p6", tree, 1.2, 1.6, 0, algorithm=1)
       fillDisplacedHistogram(mapTH1F, "h_single_displaced_L1Mu_rate_position_ME1_ME2_ME3_eta1p6to2p15", tree, 1.6, 2.15, 0, algorithm=1)
 

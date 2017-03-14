@@ -113,6 +113,7 @@
 #include <L1Trigger/CSCTrackFinder/interface/CSCTFPtLUT.h>
 #include "GEMCode/GEMValidation/interface/SimTrackMatchManager.h"
 #include "GEMCode/GEMValidation/interface/DisplacedMuonTriggerPtassignment.h"
+#include "GEMCode/GEMValidation/interface/L1TrackTriggerVeto.h"
 
 #include "DataFormats/CSCDigi/interface/CSCComparatorDigiCollection.h"
 #include "DataFormats/CSCDigi/interface/CSCWireDigiCollection.h"
@@ -491,12 +492,12 @@ struct MyEvent
   Float_t GE21_sim_pad8_phi_L1[kMaxGEM], GE21_sim_pad8_phi_L2[kMaxGEM];
 
   // ttt veto
-  Int_t isL1LooseVeto[kMaxCSCTF];
-  Int_t isL1MediumVeto[kMaxCSCTF];
-  Int_t isL1TightVeto[kMaxCSCTF];
-  Int_t isSimLooseVeto[kMaxCSCTF];
-  Int_t isSimMediumVeto[kMaxCSCTF];
-  Int_t isSimTightVeto[kMaxCSCTF];
+  Int_t isSimLooseVeto[kMaxSIM];
+  Int_t isSimMediumVeto[kMaxSIM];
+  Int_t isSimTightVeto[kMaxSIM];
+  Int_t isL1LooseVeto[kMaxL1Mu];
+  Int_t isL1MediumVeto[kMaxL1Mu];
+  Int_t isL1TightVeto[kMaxL1Mu];
 };
 
 bool
@@ -1445,6 +1446,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       std::cout << "sim dxy " << match_disp.matchedGenMudxy() << std::endl;
       event_.dxy_sim[k] = match_disp.matchedGenMudxy();
 
+      L1TrackTriggerVeto trkVeto(TTTracks, iEventSetup, iEvent);
+      trkVeto.setEtaPhiReference(sim_muon.momentum().eta(), normalizedPhi(sim_muon.momentum().phi()));
+      trkVeto.calculateTTIsolation();
+      event_.isSimLooseVeto[k] = trkVeto.isLooseVeto();
+      event_.isSimMediumVeto[k] = trkVeto.isMediumVeto();
+      event_.isSimTightVeto[k] = trkVeto.isTightVeto();
+
       const SimHitMatcher& match_sh = match.simhits();
 
       //const CSCDigiMatcher& match_cd = match.cscDigis();
@@ -1760,11 +1768,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       event_.CSCTF_sim_eta_st2[k] = ptAssignmentUnit.getTrackEta();
 
       if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runPositionbased()){
-        ptAssignmentUnit.setTTTracks(TTTracks);
-        ptAssignmentUnit.calculateTTIsolation();
-        event_.isSimLooseVeto[k] = ptAssignmentUnit.isLooseVeto();
-        event_.isSimMediumVeto[k] = ptAssignmentUnit.isMediumVeto();
-        event_.isSimTightVeto[k] = ptAssignmentUnit.isTightVeto();
 
         event_.CSCTF_sim_DDY123[k] = ptAssignmentUnit.getdeltaY123();
         event_.CSCTF_sim_position_pt[k] = ptAssignmentUnit.getPositionPt();
@@ -2575,11 +2578,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     event_.CSCTF_L1_eta_st2[j] = ptAssignmentUnit.getTrackEta();
 
     if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runPositionbased()){
-      ptAssignmentUnit.setTTTracks(TTTracks);
-      ptAssignmentUnit.calculateTTIsolation();
-      event_.isL1LooseVeto[j] = ptAssignmentUnit.isLooseVeto();
-      event_.isL1MediumVeto[j] = ptAssignmentUnit.isMediumVeto();
-      event_.isL1TightVeto[j] = ptAssignmentUnit.isTightVeto();
 
       event_.CSCTF_L1_DDY123[j] = ptAssignmentUnit.getdeltaY123();
       event_.CSCTF_L1_position_pt[j] = ptAssignmentUnit.getPositionPt();
@@ -2850,6 +2848,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     event_.L1Mu_charge[i] = l1Mu.charge();
     event_.L1Mu_quality[i] = l1Mu.quality();
     event_.L1Mu_bx[i] = l1Mu.bx();
+
+    L1TrackTriggerVeto trkVeto(TTTracks, iEventSetup, iEvent);
+    trkVeto.setEtaPhiReference(event_.L1Mu_eta[i], event_.L1Mu_phi[i]);
+    trkVeto.calculateTTIsolation();
+    event_.isL1LooseVeto[i] = trkVeto.isLooseVeto();
+    event_.isL1MediumVeto[i] = trkVeto.isMediumVeto();
+    event_.isL1TightVeto[i] = trkVeto.isTightVeto();
 
     if(verbose) {
       cout << "l1Mu " << i << endl;

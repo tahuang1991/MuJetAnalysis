@@ -1446,9 +1446,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       std::cout << "sim dxy " << match_disp.matchedGenMudxy() << std::endl;
       event_.dxy_sim[k] = match_disp.matchedGenMudxy();
 
-      L1TrackTriggerVeto trkVeto(TTTracks, iEventSetup, iEvent);
-      trkVeto.setEtaPhiReference(sim_muon.momentum().eta(), normalizedPhi(sim_muon.momentum().phi()));
-      trkVeto.calculateTTIsolation();
+      L1TrackTriggerVeto trkVeto(cfg_, iEventSetup, iEvent,
+                                 sim_muon.momentum().eta(),
+                                 normalizedPhi(sim_muon.momentum().phi()));
       event_.isSimLooseVeto[k] = trkVeto.isLooseVeto();
       event_.isSimMediumVeto[k] = trkVeto.isMediumVeto();
       event_.isSimTightVeto[k] = trkVeto.isTightVeto();
@@ -2849,9 +2849,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     event_.L1Mu_quality[i] = l1Mu.quality();
     event_.L1Mu_bx[i] = l1Mu.bx();
 
-    L1TrackTriggerVeto trkVeto(TTTracks, iEventSetup, iEvent);
-    trkVeto.setEtaPhiReference(event_.L1Mu_eta[i], event_.L1Mu_phi[i]);
-    trkVeto.calculateTTIsolation();
+    L1TrackTriggerVeto trkVeto(cfg_, iEventSetup, iEvent,
+                               event_.L1Mu_eta[i], event_.L1Mu_phi[i]);
     event_.isL1LooseVeto[i] = trkVeto.isLooseVeto();
     event_.isL1MediumVeto[i] = trkVeto.isMediumVeto();
     event_.isL1TightVeto[i] = trkVeto.isTightVeto();

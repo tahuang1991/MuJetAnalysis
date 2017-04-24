@@ -36,4 +36,6 @@
 <use name="Geometry/Records"/>
 <use name="Geometry/TrackingGeometryAligner"/>
 <use name="Geometry/DTGeometryBuilder"/>
-<flags EDM_PLUGIN="1"/>
+<!--
+flags EDM_PLUGIN="1"/
+-->

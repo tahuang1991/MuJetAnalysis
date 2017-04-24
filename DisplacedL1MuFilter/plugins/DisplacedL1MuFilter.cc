@@ -65,8 +65,8 @@
 #include "DataFormats/L1Trigger/interface/L1MuonParticleFwd.h"
 #include "DataFormats/L1Trigger/interface/L1MuonParticle.h"
 #include "DataFormats/L1GlobalMuonTrigger/interface/L1MuGMTReadoutCollection.h"
-#include "DataFormats/L1TrackTrigger/interface/L1TkMuonParticle.h"
-#include "DataFormats/L1TrackTrigger/interface/L1TkMuonParticleFwd.h"
+//#include "DataFormats/L1TrackTrigger/interface/L1TkMuonParticle.h"
+//#include "DataFormats/L1TrackTrigger/interface/L1TkMuonParticleFwd.h"
 #include "DataFormats/L1TrackTrigger/interface/TTTrack.h"
 
 #include "FWCore/ServiceRegistry/interface/Service.h"
@@ -113,7 +113,8 @@
 #include <L1Trigger/CSCTrackFinder/interface/CSCTFPtLUT.h>
 #include "GEMCode/GEMValidation/interface/SimTrackMatchManager.h"
 #include "GEMCode/GEMValidation/interface/DisplacedMuonTriggerPtassignment.h"
-#include "GEMCode/GEMValidation/interface/L1TrackTriggerVeto.h"
+//#include "GEMCode/GEMValidation/interface/L1TrackTriggerVeto.h"
+#include "GEMCode/GEMValidation/interface/CSCStubPatterns.h"
 
 #include "DataFormats/CSCDigi/interface/CSCComparatorDigiCollection.h"
 #include "DataFormats/CSCDigi/interface/CSCWireDigiCollection.h"
@@ -122,8 +123,8 @@
 #include "DataFormats/CSCDigi/interface/CSCCorrelatedLCTDigiCollection.h"
 
 #include "DataFormats/GEMDigi/interface/GEMDigiCollection.h"
-#include "DataFormats/GEMDigi/interface/GEMCSCPadDigiCollection.h"
-#include "DataFormats/GEMDigi/interface/GEMCSCCoPadDigiCollection.h"
+#include "DataFormats/GEMDigi/interface/GEMPadDigiCollection.h"
+#include "DataFormats/GEMDigi/interface/GEMCoPadDigiCollection.h"
 //
 // class declaration
 //
@@ -148,15 +149,20 @@ typedef std::vector<CSCCorrelatedLCTDigi> CSCCorrelatedLCTDigiContainer;
 typedef std::pair<CSCDetId, CSCCorrelatedLCTDigiContainer> CSCCorrelatedLCTDigiContainerId;
 typedef std::vector<std::pair<CSCDetId, CSCCorrelatedLCTDigiContainer> > CSCCorrelatedLCTDigiContainerIds;
 
-typedef std::pair<GEMDetId, GEMCSCCoPadDigi> GEMCSCCoPadDigiId;
-typedef std::vector<GEMCSCCoPadDigi> GEMCSCCoPadDigiContainer;
-typedef std::pair<GEMDetId, GEMCSCCoPadDigiContainer> GEMCSCCoPadDigiContainerId;
-typedef std::vector<std::pair<GEMDetId, GEMCSCCoPadDigiContainer> > GEMCSCCoPadDigiContainerIds;
+//typedef MuonDigiCollection<GEMDetId, GEMPadDigi> GEMPadDigiCollection;
+//typedef MuonDigiCollection<GEMDetId, GEMCoPadDigi> GEMCoPadDigiCollection;
 
+//typedef std::pair<GEMDetId, GEMCSCCoPadDigi> GEMCSCCoPadDigiId;
+//typedef std::vector<GEMCSCCoPadDigi> GEMCSCCoPadDigiContainer;
+
+//typedef std::pair<GEMDetId, GEMCSCCoPadDigiContainer> GEMCSCCoPadDigiContainerId;
+//typedef std::vector<std::pair<GEMDetId, GEMCSCCoPadDigiContainer> > GEMCSCCoPadDigiContainerIds;
+
+typedef GEMPadDigi GEMCSCPadDigi;
 typedef std::pair<GEMDetId, GEMCSCPadDigi> GEMCSCPadDigiId;
 typedef std::vector<GEMCSCPadDigi> GEMCSCPadDigiContainer;
-typedef std::pair<GEMDetId, GEMCSCPadDigiContainer> GEMCSCPadDigiContainerId;
-typedef std::vector<std::pair<GEMDetId, GEMCSCPadDigiContainer> > GEMCSCPadDigiContainerIds;
+//typedef std::pair<GEMDetId, GEMCSCPadDigiContainer> GEMCSCPadDigiContainerId;
+//typedef std::vector<std::pair<GEMDetId, GEMCSCPadDigiContainer> > GEMCSCPadDigiContainerIds;
 
 typedef std::vector<std::pair<L1MuDTTrack,std::vector<L1MuDTTrackSegPhi> > > L1MuDTTrackCollection;
 
@@ -774,8 +780,8 @@ private:
 
   void extrapolate(const SimTrack&tk, const SimVertex&, GlobalPoint&);
   void extrapolate(const reco::GenParticle &tk, int station, GlobalPoint&, GlobalVector&);
-  void extrapolate(const TTTrack< Ref_PixelDigi_ > &tk, int station, GlobalPoint&, GlobalVector&);
-  GlobalPoint extrapolateGP(const TTTrack< Ref_PixelDigi_ > &tk, int station=2);
+  //void extrapolate(const TTTrack< Ref_PixelDigi_ > &tk, int station, GlobalPoint&, GlobalVector&);
+  //GlobalPoint extrapolateGP(const TTTrack< Ref_PixelDigi_ > &tk, int station=2);
   TrajectoryStateOnSurface propagateToZ(const GlobalPoint &, const GlobalVector &, double, double) const;
   TrajectoryStateOnSurface propagateToR(const GlobalPoint &, const GlobalVector &, double, double) const;
 
@@ -846,7 +852,73 @@ private:
   edm::ESHandle< L1MuTriggerScales > muScales;
   edm::ESHandle< L1MuTriggerPtScale > muPtScale;
 
+  int minNHitsChamberCSCSimHit_;
+  int minNHitsChamberCSCWireDigi_;
+  int minNHitsChamberCSCStripDigi_;
+  int minNHitsChamberCLCT_;
+  int minNHitsChamberALCT_;
+  int minNHitsChamberLCT_;
+  int minNHitsChamberMPLCT_;
+  int verboseSimTrack_;
+  double simTrackMinPt_;
+  double simTrackMinEta_;
+  double simTrackMaxEta_;
+  double simTrackOnlyMuon_;
+
   edm::ParameterSet cfg_;
+  edm::EDGetTokenT<reco::GenParticleCollection> genParticleInput_;                                         
+  edm::EDGetTokenT<edm::SimVertexContainer> simVertexInput_;
+  edm::EDGetTokenT<edm::SimTrackContainer> simTrackInput_;
+
+  edm::EDGetTokenT<edm::PSimHitContainer> gemSimHitInput_;
+  edm::EDGetTokenT<edm::PSimHitContainer> cscSimHitInput_;
+  edm::EDGetTokenT<edm::PSimHitContainer> rpcSimHitInput_;
+  edm::EDGetTokenT<edm::PSimHitContainer> me0SimHitInput_;
+  edm::EDGetTokenT<edm::PSimHitContainer> dtSimHitInput_;
+
+  edm::EDGetTokenT<GEMDigiCollection> gemDigiInput_;
+  edm::EDGetTokenT<GEMPadDigiCollection> gemPadDigiInput_;
+  edm::EDGetTokenT<GEMCoPadDigiCollection> gemCoPadDigiInput_;
+  edm::EDGetTokenT<GEMRecHitCollection> gemRecHitInput_;
+
+  edm::EDGetTokenT<ME0DigiPreRecoCollection> me0DigiInput_;
+
+  edm::EDGetTokenT<CSCComparatorDigiCollection> cscComparatorDigiInput_;
+  edm::EDGetTokenT<CSCWireDigiCollection> cscWireDigiInput_;
+  edm::EDGetTokenT<CSCCLCTDigiCollection> clctInputs_;
+  edm::EDGetTokenT<CSCALCTDigiCollection> alctInputs_;
+  edm::EDGetTokenT<CSCCorrelatedLCTDigiCollection> lctInputs_;
+  edm::EDGetTokenT<CSCCorrelatedLCTDigiCollection> mplctInputs_;
+  edm::EDGetTokenT<CSCRecHit2DCollection> cscRecHit2DInput_;
+  edm::EDGetTokenT<CSCSegmentCollection> cscSegmentInput_;
+
+  edm::EDGetTokenT<DTDigiCollection> dtDigiInput_;
+  edm::EDGetTokenT<DTLocalTriggerCollection> dtStubInput_;
+  edm::EDGetTokenT<DTRecHitCollection> dtRecHit1DPairInput_;
+  edm::EDGetTokenT<DTRecSegment2DCollection> dtRecSegment2DInput_;
+  edm::EDGetTokenT<DTRecSegment4DCollection> dtRecSegment4DInput_;
+
+  edm::EDGetTokenT<RPCDigiCollection> rpcDigiInput_;
+  edm::EDGetTokenT<RPCRecHitCollection> rpcRecHitInput_;
+
+  edm::EDGetTokenT<L1CSCTrackCollection> cscTfTrackInputLabel_; 
+  edm::EDGetTokenT<L1MuRegionalCandCollection> cscTfCandInputLabel_; 
+  edm::EDGetTokenT<L1MuRegionalCandCollection> dtTfCandInputLabel_; 
+  edm::EDGetTokenT<L1MuRegionalCandCollection> rpcfTfCandInputLabel_; 
+  edm::EDGetTokenT<L1MuRegionalCandCollection> rpcbTfCandInputLabel_; 
+
+  edm::EDGetTokenT<L1MuRegionalCandCollection> gmtRegCandCSCInputLabel_;
+  edm::EDGetTokenT<L1MuRegionalCandCollection> gmtRegCandDTInputLabel_;
+  edm::EDGetTokenT<L1MuRegionalCandCollection> gmtRegCandRPCfInputLabel_;
+  edm::EDGetTokenT<L1MuRegionalCandCollection> gmtRegCandRPCbInputLabel_;
+  edm::EDGetTokenT<L1MuGMTCandCollection> gmtCandInputLabel_;
+  edm::EDGetTokenT<l1extra::L1MuonParticleCollection> l1ExtraMuonInputLabel_;
+
+  edm::EDGetTokenT<reco::TrackExtraCollection> recoTrackExtraInputLabel_;
+  edm::EDGetTokenT<reco::TrackCollection> recoTrackInputLabel_;
+  edm::EDGetTokenT<reco::RecoChargedCandidateCollection> recoChargedCandidateInputLabel_;
+
+
 };
 
 DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) :
@@ -874,6 +946,141 @@ DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) :
   doStubRecovery_ = iConfig.getParameter<bool>("doStubRecovery");
   L1Mu_input = iConfig.getParameter<edm::InputTag>("L1Mu_input");
   L1TkMu_input = iConfig.getParameter<edm::InputTag>("L1TkMu_input");
+
+  auto displacedGenMu = cfg_.getParameter<edm::ParameterSet>("displacedGenMu");
+  genParticleInput_ = consumes<reco::GenParticleCollection>(displacedGenMu.getParameter<edm::InputTag>("validInputTags"));
+
+  auto simVertex = cfg_.getParameter<edm::ParameterSet>("simVertex");
+  simVertexInput_ = consumes<edm::SimVertexContainer>(simVertex.getParameter<edm::InputTag>("validInputTags"));
+
+  auto simTrack = cfg_.getParameter<edm::ParameterSet>("simTrack");
+  verboseSimTrack_ = simTrack.getParameter<int>("verbose");
+  simTrackInput_ = consumes<edm::SimTrackContainer>(simTrack.getParameter<edm::InputTag>("validInputTags"));
+  simTrackMinPt_ = simTrack.getParameter<double>("minPt");
+  simTrackMinEta_ = simTrack.getParameter<double>("minEta");
+  simTrackMaxEta_ = simTrack.getParameter<double>("maxEta");
+  simTrackOnlyMuon_ = simTrack.getParameter<bool>("onlyMuon");
+    
+  auto gemSimHit_ = cfg_.getParameter<edm::ParameterSet>("gemSimHit");
+  gemSimHitInput_ = consumes<edm::PSimHitContainer>(gemSimHit_.getParameter<edm::InputTag>("validInputTags"));
+
+  auto cscSimHit_= cfg_.getParameter<edm::ParameterSet>("cscSimHit");
+  cscSimHitInput_ = consumes<edm::PSimHitContainer>(cscSimHit_.getParameter<edm::InputTag>("validInputTags"));
+  minNHitsChamberCSCSimHit_ = cscSimHit_.getParameter<int>("minNHitsChamber");
+
+  auto me0SimHit_ = cfg_.getParameter<edm::ParameterSet>("me0SimHit");
+  me0SimHitInput_ = consumes<edm::PSimHitContainer>(me0SimHit_.getParameter<edm::InputTag>("validInputTags"));
+
+  auto rpcSimHit_ = cfg_.getParameter<edm::ParameterSet>("rpcSimHit");
+  rpcSimHitInput_ = consumes<edm::PSimHitContainer>(rpcSimHit_.getParameter<edm::InputTag>("validInputTags"));
+
+  auto dtSimHit_ = cfg_.getParameter<edm::ParameterSet>("dtSimHit");
+  dtSimHitInput_ = consumes<edm::PSimHitContainer>(dtSimHit_.getParameter<edm::InputTag>("validInputTags"));
+
+  auto gemDigi_= cfg_.getParameter<edm::ParameterSet>("gemStripDigi");
+  gemDigiInput_ = consumes<GEMDigiCollection>(gemDigi_.getParameter<edm::InputTag>("validInputTags"));
+
+  auto gemPad_= cfg_.getParameter<edm::ParameterSet>("gemPadDigi");
+  gemPadDigiInput_ = consumes<GEMPadDigiCollection>(gemPad_.getParameter<edm::InputTag>("validInputTags"));
+
+  auto gemCoPad_= cfg_.getParameter<edm::ParameterSet>("gemCoPadDigi");
+  gemCoPadDigiInput_ = consumes<GEMCoPadDigiCollection>(gemCoPad_.getParameter<edm::InputTag>("validInputTags"));
+
+  auto gemRecHit_= cfg_.getParameter<edm::ParameterSet>("gemRecHit");
+  gemRecHitInput_ = consumes<GEMRecHitCollection>(gemRecHit_.getParameter<edm::InputTag>("validInputTags"));
+
+  auto me0Digi_= cfg_.getParameter<edm::ParameterSet>("me0DigiPreReco");
+  me0DigiInput_ = consumes<ME0DigiPreRecoCollection>(me0Digi_.getParameter<edm::InputTag>("validInputTags"));
+
+  auto cscComparatorDigi = cfg_.getParameter<edm::ParameterSet>("cscStripDigi");
+  minNHitsChamberCSCStripDigi_ = cscComparatorDigi.getParameter<int>("minNHitsChamber");
+  cscComparatorDigiInput_ = consumes<CSCComparatorDigiCollection>(cscComparatorDigi.getParameter<edm::InputTag>("validInputTags"));
+
+  auto cscWireDigi = cfg_.getParameter<edm::ParameterSet>("cscWireDigi");
+  minNHitsChamberCSCWireDigi_ = cscWireDigi.getParameter<int>("minNHitsChamber");
+  cscWireDigiInput_ = consumes<CSCWireDigiCollection>(cscWireDigi.getParameter<edm::InputTag>("validInputTags"));
+
+  auto cscCLCT = cfg_.getParameter<edm::ParameterSet>("cscCLCT");
+  minNHitsChamberCLCT_ = cscCLCT.getParameter<int>("minNHitsChamber");
+  clctInputs_ = consumes<CSCCLCTDigiCollection>(cscCLCT.getParameter<edm::InputTag>("validInputTags"));
+
+  auto cscALCT = cfg_.getParameter<edm::ParameterSet>("cscALCT");
+  minNHitsChamberALCT_ = cscALCT.getParameter<int>("minNHitsChamber");
+  alctInputs_ = consumes<CSCALCTDigiCollection>(cscALCT.getParameter<edm::InputTag>("validInputTags"));
+
+  auto cscLCT = cfg_.getParameter<edm::ParameterSet>("cscLCT");
+  minNHitsChamberLCT_ = cscLCT.getParameter<int>("minNHitsChamber");
+  lctInputs_ = consumes<CSCCorrelatedLCTDigiCollection>(cscLCT.getParameter<edm::InputTag>("validInputTags"));
+
+  auto cscMPLCT = cfg_.getParameter<edm::ParameterSet>("cscMPLCT");
+  minNHitsChamberMPLCT_ = cscMPLCT.getParameter<int>("minNHitsChamber");
+  mplctInputs_ = consumes<CSCCorrelatedLCTDigiCollection>(cscMPLCT.getParameter<edm::InputTag>("validInputTags"));
+
+  auto cscRecHit2D = cfg_.getParameter<edm::ParameterSet>("cscRecHit");
+  cscRecHit2DInput_ = consumes<CSCRecHit2DCollection>(cscRecHit2D.getParameter<edm::InputTag>("validInputTags"));
+
+  auto cscSegment2D = cfg_.getParameter<edm::ParameterSet>("cscSegment");
+  cscSegmentInput_ = consumes<CSCSegmentCollection>(cscSegment2D.getParameter<edm::InputTag>("validInputTags"));
+
+  auto dtDigi_= cfg_.getParameter<edm::ParameterSet>("dtDigi");
+  dtDigiInput_ = consumes<DTDigiCollection>(dtDigi_.getParameter<edm::InputTag>("validInputTags"));
+
+  auto dtStub_= cfg_.getParameter<edm::ParameterSet>("dtLocalTrigger");
+  dtStubInput_ = consumes<DTLocalTriggerCollection>(dtStub_.getParameter<edm::InputTag>("validInputTags"));
+
+  auto dtRecHit1DPair = cfg_.getParameter<edm::ParameterSet>("dtRecHit");
+  dtRecHit1DPairInput_ = consumes<DTRecHitCollection>(dtRecHit1DPair.getParameter<edm::InputTag>("validInputTags"));
+
+  auto dtSegment2D = cfg_.getParameter<edm::ParameterSet>("dtRecSegment2D");
+  dtRecSegment2DInput_ = consumes<DTRecSegment2DCollection>(dtSegment2D.getParameter<edm::InputTag>("validInputTags"));
+
+  auto dtSegment4D = cfg_.getParameter<edm::ParameterSet>("dtRecSegment4D");
+  dtRecSegment4DInput_ = consumes<DTRecSegment4DCollection>(dtSegment4D.getParameter<edm::InputTag>("validInputTags"));
+
+  auto rpcDigi_= cfg_.getParameter<edm::ParameterSet>("rpcStripDigi");
+  rpcDigiInput_ = consumes<RPCDigiCollection>(rpcDigi_.getParameter<edm::InputTag>("validInputTags"));
+
+  auto rpcRecHit_= cfg_.getParameter<edm::ParameterSet>("rpcRecHit");
+  rpcRecHitInput_ = consumes<RPCRecHitCollection>(rpcRecHit_.getParameter<edm::InputTag>("validInputTags"));
+
+  auto tfTrack = cfg_.getParameter<edm::ParameterSet>("cscTfTrack");
+  cscTfTrackInputLabel_ = consumes<L1CSCTrackCollection>(tfTrack.getParameter<edm::InputTag>("validInputTags"));
+
+  auto tfCand = cfg_.getParameter<edm::ParameterSet>("cscTfCand");
+  cscTfCandInputLabel_ = consumes<L1MuRegionalCandCollection>(tfCand.getParameter<edm::InputTag>("validInputTags"));
+
+  auto dtTfCand = cfg_.getParameter<edm::ParameterSet>("dtTfCand");
+  dtTfCandInputLabel_ = consumes<L1MuRegionalCandCollection>(dtTfCand.getParameter<edm::InputTag>("validInputTags"));
+
+  auto rpcfTfCand = cfg_.getParameter<edm::ParameterSet>("rpcfTfCand");
+  rpcfTfCandInputLabel_ = consumes<L1MuRegionalCandCollection>(rpcfTfCand.getParameter<edm::InputTag>("validInputTags"));
+
+  auto rpcbTfCand = cfg_.getParameter<edm::ParameterSet>("rpcbTfCand");
+  rpcbTfCandInputLabel_ = consumes<L1MuRegionalCandCollection>(rpcbTfCand.getParameter<edm::InputTag>("validInputTags"));
+
+  auto gmtRegCandCSC = cfg_.getParameter<edm::ParameterSet>("gmtRegCandCSC");
+  auto gmtRegCandDT = cfg_.getParameter<edm::ParameterSet>("gmtRegCandDT");
+  auto gmtRegCandRPCf = cfg_.getParameter<edm::ParameterSet>("gmtRegCandRPCf");
+  auto gmtRegCandRPCb = cfg_.getParameter<edm::ParameterSet>("gmtRegCandRPCb");
+  auto gmtCand = cfg_.getParameter<edm::ParameterSet>("gmtCand");
+  auto l1ExtraMuonParticle = cfg_.getParameter<edm::ParameterSet>("l1ExtraMuonParticle");
+
+  gmtRegCandCSCInputLabel_ = consumes<L1MuRegionalCandCollection>(gmtRegCandCSC.getParameter<edm::InputTag>("validInputTags"));
+  gmtRegCandDTInputLabel_ = consumes<L1MuRegionalCandCollection>(gmtRegCandDT.getParameter<edm::InputTag>("validInputTags"));
+  gmtRegCandRPCfInputLabel_ = consumes<L1MuRegionalCandCollection>(gmtRegCandRPCf.getParameter<edm::InputTag>("validInputTags"));
+  gmtRegCandRPCbInputLabel_ = consumes<L1MuRegionalCandCollection>(gmtRegCandRPCb.getParameter<edm::InputTag>("validInputTags"));
+  gmtCandInputLabel_ = consumes<L1MuGMTCandCollection>(gmtCand.getParameter<edm::InputTag>("validInputTags"));
+  l1ExtraMuonInputLabel_ = consumes<l1extra::L1MuonParticleCollection>(l1ExtraMuonParticle.getParameter<edm::InputTag>("validInputTags"));
+
+  auto recoTrackExtra = cfg_.getParameter<edm::ParameterSet>("recoTrackExtra");
+  recoTrackExtraInputLabel_ = consumes<reco::TrackExtraCollection>(recoTrackExtra.getParameter<edm::InputTag>("validInputTags"));
+
+  auto recoTrack = cfg_.getParameter<edm::ParameterSet>("recoTrack");
+  recoTrackInputLabel_ = consumes<reco::TrackCollection>(recoTrack.getParameter<edm::InputTag>("validInputTags"));
+
+  auto recoChargedCandidate = cfg_.getParameter<edm::ParameterSet>("recoChargedCandidate");
+  recoChargedCandidateInputLabel_ = consumes<reco::RecoChargedCandidateCollection>(recoChargedCandidate.getParameter<edm::InputTag>("validInputTags"));
+
 
   bookL1MuTree();
 
@@ -984,21 +1191,23 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   const GEMDigiCollection& GEMDigis(*hGEMDigis.product());
 
   // GEM pads and copads
-  edm::Handle< GEMCSCPadDigiCollection > hGEMCSCPads;
+  //edm::Handle< GEMCSCPadDigiCollection > hGEMCSCPads;
+  edm::Handle< GEMPadDigiCollection > hGEMCSCPads;
   iEvent.getByLabel("simMuonGEMCSCPadDigis", hGEMCSCPads);
   //const GEMCSCPadDigiCollection& GEMCSCPads(*hGEMCSCPads.product());
 
-  edm::Handle< GEMCSCPadDigiCollection > hGEMCSCCoPads;
+  edm::Handle< GEMPadDigiCollection > hGEMCSCCoPads;
   iEvent.getByLabel("simMuonGEMCSCPadDigis", "Coincidence", hGEMCSCCoPads);
   //const GEMCSCCoPadDigiCollection& GEMCSCCoPads(*hGEMCSCCoPads.product());
 
   // L1 TrackingTrigger Analysis
+  /*
   edm::Handle< std::vector< TTTrack< Ref_PixelDigi_ > > > TTTrackHandle;
   iEvent.getByLabel("TTTracksFromPixelDigis", "Level1TTTracks", TTTrackHandle);
   std::vector< TTTrack< Ref_PixelDigi_ > > TTTracks;
   if (processTTI_){
     TTTracks = *TTTrackHandle.product();
-  }
+  }*/
 
   edm::Handle<edm::SimTrackContainer> sim_tracks;
   iEvent.getByLabel("g4SimHits", sim_tracks);
@@ -1021,9 +1230,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   event_.event = iEvent.id().event();
 
   event_.nL1Mu = l1GmtCands.size();
-  if (processTTI_){
+  /*if (processTTI_){
     event_.nL1Tk = TTTracks.size();
-  }
+  }*/
   event_.beamSpot_x = 0;
   event_.beamSpot_y = 0;
   event_.beamSpot_z = 0;
@@ -1441,17 +1650,64 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
              <<" phi "<< sim_muon.momentum().phi() << endl << endl;
       }
       auto sim_vertex = sim_vtxs[sim_muon.vertIndex()];
-      SimTrackMatchManager match(sim_muon, sim_vertex, cfg_, iEvent, iEventSetup);
+      //SimTrackMatchManager match(sim_muon, sim_vertex, cfg_, iEvent, iEventSetup);
+      SimTrackMatchManager match(sim_muon, sim_vertex, cfg_, iEvent, iEventSetup,
+                               genParticleInput_,
+                               simVertexInput_,
+                               simTrackInput_,
+                               gemSimHitInput_,
+                               cscSimHitInput_,
+                               rpcSimHitInput_,
+                               me0SimHitInput_,
+                               dtSimHitInput_,
+                               gemDigiInput_,
+                               gemPadDigiInput_,
+                               gemCoPadDigiInput_,
+                               gemRecHitInput_,
+                               me0DigiInput_,
+                               cscComparatorDigiInput_,
+                               cscWireDigiInput_,
+                               clctInputs_,
+                               alctInputs_,
+                               lctInputs_,
+                               mplctInputs_,
+                               cscRecHit2DInput_,
+                               cscSegmentInput_,
+                               dtDigiInput_,
+                               dtStubInput_,
+                               dtRecHit1DPairInput_,
+                               dtRecSegment2DInput_,
+                               dtRecSegment4DInput_,
+                               rpcDigiInput_,
+                               rpcRecHitInput_,
+                               cscTfTrackInputLabel_, 
+                               cscTfCandInputLabel_, 
+                               dtTfCandInputLabel_, 
+                               rpcfTfCandInputLabel_, 
+                               rpcbTfCandInputLabel_, 
+                               gmtRegCandCSCInputLabel_,
+                               gmtRegCandDTInputLabel_,
+                               gmtRegCandRPCfInputLabel_,
+                               gmtRegCandRPCbInputLabel_,
+                               gmtCandInputLabel_,
+                               l1ExtraMuonInputLabel_,
+                               recoTrackExtraInputLabel_,
+                               recoTrackInputLabel_,
+                               recoChargedCandidateInputLabel_);
+
+        
       const DisplacedGENMuonMatcher& match_disp = match.genMuons();
       std::cout << "sim dxy " << match_disp.matchedGenMudxy() << std::endl;
       event_.dxy_sim[k] = match_disp.matchedGenMudxy();
-
+     
+      /*
       L1TrackTriggerVeto trkVeto(TTTracks, iEventSetup, iEvent);
       trkVeto.setEtaPhiReference(sim_muon.momentum().eta(), normalizedPhi(sim_muon.momentum().phi()));
       trkVeto.calculateTTIsolation();
       event_.isSimLooseVeto[k] = trkVeto.isLooseVeto();
       event_.isSimMediumVeto[k] = trkVeto.isMediumVeto();
       event_.isSimTightVeto[k] = trkVeto.isTightVeto();
+      */
 
       const SimHitMatcher& match_sh = match.simhits();
 
@@ -1697,7 +1953,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           auto layer_geo = cscChamber->layer(l)->geometry();
           LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, 20);
           GlobalPoint csc_gp = cscGeometry_->idToDet(l_id)->surface().toGlobal(csc_intersect);
-          double delta = reco::deltaPhi(csc_gp.phi(), match_sh.simHitsMeanPosition(match_sh.hitsInChamber(d)).phi());
+          double delta = reco::deltaPhi(float(csc_gp.phi()), match_sh.simHitsMeanPosition(match_sh.hitsInChamber(d)).phi());
           if (delta<minDist){
             minDist = delta;
             closestCompDigi = jj;
@@ -1924,7 +2180,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   /////////////////
   // L1 analysis //
   /////////////////
-
+  /*
   if (processTTI_){
     for (int i=0; i<2; ++i){
       for (int j=0; j<2; ++j){
@@ -1990,7 +2246,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       event_.L1Tk_dphi_corr[j] = My_dPhi(event_.L1Tk_phi_corr[j], event_.L1Tk_phi[j]);
       event_.L1Tk_dR_corr[j] = reco::deltaR(event_.L1Tk_eta_corr[j], event_.L1Tk_phi_corr[j], event_.L1Tk_eta[j], event_.L1Tk_phi[j]);
     } // end of loop on TTTracks
-  }
+  }*/
 
   if (processDTTF_){
     // store the DTTF variables
@@ -2286,7 +2542,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
             auto gp = getCSCSpecificPoint2(bestMatchingStub.first.rawId(), bestMatchingStub.second);
 
             // extra selection - stub not too far from track
-            if (reco::deltaR(gp.eta(), normalizedPhi(gp.phi()),
+            if (reco::deltaR(float(gp.eta()), normalizedPhi(float(gp.phi())),
                              event_.CSCTF_eta[j] , normalizedPhi(event_.CSCTF_phi[j])) < 1){
 
               // add the stub to the collection
@@ -2849,12 +3105,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     event_.L1Mu_quality[i] = l1Mu.quality();
     event_.L1Mu_bx[i] = l1Mu.bx();
 
+    /*
     L1TrackTriggerVeto trkVeto(TTTracks, iEventSetup, iEvent);
     trkVeto.setEtaPhiReference(event_.L1Mu_eta[i], event_.L1Mu_phi[i]);
     trkVeto.calculateTTIsolation();
     event_.isL1LooseVeto[i] = trkVeto.isLooseVeto();
     event_.isL1MediumVeto[i] = trkVeto.isMediumVeto();
     event_.isL1TightVeto[i] = trkVeto.isTightVeto();
+    */
 
     if(verbose) {
       cout << "l1Mu " << i << endl;
@@ -2873,8 +3131,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         if ( ( event_.L1Mu_quality[i] > 0 ) &&
              ( reco::deltaPhi( event_.L1Mu_phi[i], event_.DTTF_phi[j] ) < 0.001 ) &&
              ( event_.L1Mu_bx[i] == event_.DTTF_bx[j] ) ) {
-          double drL1MuL1DTTrack = reco::deltaR(l1Mu.etaValue(),
-                                                normalizedPhi(l1Mu.phiValue()),
+          double drL1MuL1DTTrack = reco::deltaR(float(l1Mu.etaValue()),
+                                                normalizedPhi(float(l1Mu.phiValue())),
                                                 event_.DTTF_eta[j],
                                                 event_.DTTF_phi[j]);
           if (drL1MuL1DTTrack < bestDrL1MuL1DTTrack and drL1MuL1DTTrack < 0.3) {
@@ -2914,8 +3172,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       if ( ( event_.L1Mu_quality[i] > 0 ) &&
            ( reco::deltaPhi( event_.L1Mu_phi[i], event_.CSCTF_phi[j] ) < 0.001 ) &&
            ( event_.L1Mu_bx[i] == event_.CSCTF_bx[j] ) ) {
-        double drL1MuL1CSCTrack = reco::deltaR(l1Mu.etaValue(),
-                                               normalizedPhi(l1Mu.phiValue()),
+        double drL1MuL1CSCTrack = reco::deltaR(float(l1Mu.etaValue()),
+                                               normalizedPhi(float(l1Mu.phiValue())),
                                                event_.CSCTF_eta[j],
                                                event_.CSCTF_phi[j]);
         if (drL1MuL1CSCTrack < bestDrL1MuL1CSCTrack and drL1MuL1CSCTrack < 0.3) {
@@ -3099,8 +3357,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         if ( ( event_.L1Mu_quality[i] > 0 ) &&
              ( reco::deltaPhi( event_.L1Mu_phi[i], event_.RPCb_phi[j] ) < 0.001 ) &&
              ( event_.L1Mu_bx[i] == event_.RPCb_bx[j] ) ) {
-          double drL1MuL1RPCb = reco::deltaR(l1Mu.etaValue(),
-                                             normalizedPhi(l1Mu.phiValue()),
+          double drL1MuL1RPCb = reco::deltaR(float(l1Mu.etaValue()),
+                                             normalizedPhi(float(l1Mu.phiValue())),
                                              event_.RPCb_eta[j],
                                              event_.RPCb_phi[j]);
           if (drL1MuL1RPCb < bestDrL1MuL1RPCb and drL1MuL1RPCb < 0.3) {
@@ -3136,8 +3394,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         if ( ( event_.L1Mu_quality[i] > 0 ) &&
              ( reco::deltaPhi( event_.L1Mu_phi[i], event_.RPCf_phi[j] ) < 0.001 ) &&
              ( event_.L1Mu_bx[i] == event_.RPCf_bx[j] ) ) {
-          double drL1MuL1RPCf = reco::deltaR(l1Mu.etaValue(),
-                                             normalizedPhi(l1Mu.phiValue()),
+          double drL1MuL1RPCf = reco::deltaR(float(l1Mu.etaValue()),
+                                             normalizedPhi(float(l1Mu.phiValue())),
                                              event_.RPCf_eta[j],
                                              event_.RPCf_phi[j]);
           if (drL1MuL1RPCf < bestDrL1MuL1RPCf and drL1MuL1RPCf < 0.3) {
@@ -3166,6 +3424,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       }
     }
 
+    /*
     if (processTTI_){
       // calculate the number of L1Tk within 0.12
       for (unsigned int j=0; j<TTTracks.size(); ++j) {
@@ -3226,7 +3485,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           event_.L1Mu_L1Tk_pt_corr[i] = l1Tk_pt;
         }
       } // end of loop on TTTracks
-    }
+    }*/
 
     if (doGenAnalysis_) {
 
@@ -3325,6 +3584,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           break;
         };
 
+	/*
         if (processTTI_){
           for (int k=0; k<2; ++k){
             for (int j=0; j<2; ++j){
@@ -3338,7 +3598,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
               }
             }
           }
-        }
+        }*/
       }
     }
   }
@@ -3353,8 +3613,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           // auto gem_gp1 = getGlobalPointPad(gem_id,copad.first());
 
           // auto gem_gp2 = getGlobalPointPad(gem_id,copad.second());
-          // float dPhi1(reco::deltaPhi(gem_gp1.phi(), event_.CSCTF_phi1[ event_.L1Mu_CSCTF_index[i] ] ));
-          // float dPhi2(reco::deltaPhi(gem_gp2.phi(), event_.CSCTF_phi1[ event_.L1Mu_CSCTF_index[i] ] ));
+          // float dPhi1(reco::deltaPhi(float(gem_gp1.phi()), event_.CSCTF_phi1[ event_.L1Mu_CSCTF_index[i] ] ));
+          // float dPhi2(reco::deltaPhi(float(gem_gp2.phi()), event_.CSCTF_phi1[ event_.L1Mu_CSCTF_index[i] ] ));
 
           //   if (dPhi1 < bestGEMCSCDPhi or dPhi2 < bestGEMCSCDPhi) {
           //     bestGEMCSCDPhi = std::min(dPhi1, dPhi2);
@@ -3617,8 +3877,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     //   if (std::abs(l1Tk_eta - sim_muon.momentum().eta()) < event_.dEta_sim_L1Tk)
     //     event_.dEta_sim_L1Tk = std::abs(l1Tk_eta - sim_muon.momentum().eta());
 
-    //   if ( reco::deltaPhi(sim_muon.momentum().phi(), l1Tk_phi) < event_.dPhi_sim_L1Tk)
-    //     event_.dPhi_sim_L1Tk = reco::deltaPhi(sim_muon.momentum().phi(), l1Tk_phi);
+    //   if ( reco::deltaPhi(float(sim_muon.momentum().phi()), l1Tk_phi) < event_.dPhi_sim_L1Tk)
+    //     event_.dPhi_sim_L1Tk = reco::deltaPhi(float(sim_muon.momentum().phi()), l1Tk_phi);
 
     //   if (reco::deltaR(l1Tk_eta, l1Tk_phi, sim_muon.momentum().eta(), sim_muon.momentum().phi()) < event_.dR_sim_L1Tk)
     //     event_.dR_sim_L1Tk = reco::deltaR(l1Tk_eta, l1Tk_phi, sim_muon.momentum().eta(), sim_muon.momentum().phi());
@@ -4346,7 +4606,7 @@ DisplacedL1MuFilter::fillCSCStubProperties(const CSCDetId& ch_id,
     event_.CSCTF_val1[index] = stub.isValid();
     event_.CSCTF_phi1[index] = gp.phi();
     event_.CSCTF_eta1[index] = gp.eta();
-    event_.CSCTF_gemdphi1[index] = stub.getGEMDPhi();
+    //event_.CSCTF_gemdphi1[index] = stub.getGEMDPhi();
     event_.CSCTF_R1[index] = csc_R;
     event_.CSCTF_x1[index] = csc_x;
     event_.CSCTF_y1[index] = csc_y;
@@ -4376,7 +4636,7 @@ DisplacedL1MuFilter::fillCSCStubProperties(const CSCDetId& ch_id,
     event_.CSCTF_val2[index] = stub.isValid();
     event_.CSCTF_phi2[index] = gp.phi();
     event_.CSCTF_eta2[index] = gp.eta();
-    event_.CSCTF_gemdphi2[index] = stub.getGEMDPhi();
+    //event_.CSCTF_gemdphi2[index] = stub.getGEMDPhi();
     event_.CSCTF_R2[index] = csc_R;
     event_.CSCTF_x2[index] = csc_x;
     event_.CSCTF_y2[index] = csc_y;
@@ -4713,7 +4973,7 @@ DisplacedL1MuFilter::extrapolate(const reco::GenParticle &tk, int station, Globa
   }
 }
 
-void
+/*void
 DisplacedL1MuFilter::extrapolate(const TTTrack< Ref_PixelDigi_ > &tk, int station, GlobalPoint& gp, GlobalVector& gv)
 {
   TrajectoryStateOnSurface tsos;
@@ -4743,7 +5003,7 @@ DisplacedL1MuFilter::extrapolate(const TTTrack< Ref_PixelDigi_ > &tk, int statio
     gp = GlobalPoint();
     gv = GlobalVector();
   }
-}
+}*/
 
 // void
 // DisplacedL1MuFilter::extrapolate(const SimTrack&tk, const SimVertex& vtx, double z, GlobalPoint& gp)
@@ -4787,7 +5047,7 @@ DisplacedL1MuFilter::extrapolate(const TTTrack< Ref_PixelDigi_ > &tk, int statio
 //   }
 // }
 
-GlobalPoint
+/*GlobalPoint
 DisplacedL1MuFilter::extrapolateGP(const TTTrack< Ref_PixelDigi_ > &tk, int station)
 {
   TrajectoryStateOnSurface tsos;
@@ -4812,7 +5072,7 @@ DisplacedL1MuFilter::extrapolateGP(const TTTrack< Ref_PixelDigi_ > &tk, int stat
 
   if (tsos.isValid()) return tsos.globalPosition();
   else                return GlobalPoint();
-}
+}*/
 
 TrajectoryStateOnSurface
 DisplacedL1MuFilter::propagateToZ(const GlobalPoint &inner_point, const GlobalVector &inner_vec, double charge, double z) const

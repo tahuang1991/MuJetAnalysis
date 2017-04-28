@@ -347,6 +347,11 @@ struct MyEvent
   Float_t CSCTF_y1[kMaxCSCTF], CSCTF_y2[kMaxCSCTF], CSCTF_y3[kMaxCSCTF], CSCTF_y4[kMaxCSCTF];
   Float_t CSCTF_z1[kMaxCSCTF], CSCTF_z2[kMaxCSCTF], CSCTF_z3[kMaxCSCTF], CSCTF_z4[kMaxCSCTF];
 
+  // Matching the L1Mu to CSCTF
+  Float_t ME0_phi[kMaxCSCTF];
+  Float_t ME0_eta[kMaxCSCTF];
+  Float_t ME0_dphi[kMaxCSCTF];
+
   // pT assignment module branches
   Float_t CSCTF_sim_DDY123[kMaxCSCTF];
   Float_t CSCTF_L1_DDY123[kMaxCSCTF];
@@ -1189,6 +1194,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
    iEvent.getByToken(cscTfTrackInputLabel_, hl1Tracks);
    const l1t::EMTFTrackCollection& l1Tracks(*hl1Tracks.product());
 
+   edm::Handle< ME0SegmentCollection > hME0Segments;
+   iEvent.getByToken(me0SegmentInput_, hME0Segments);
+   const ME0SegmentCollection& me0Segments(*hME0Segments.product());
+
    // if (iEventSetup.get< L1MuTriggerScalesRcd >().cacheIdentifier() != muScalesCacheID_ ||
    //     iEventSetup.get< L1MuTriggerPtScaleRcd >().cacheIdentifier() != muPtScaleCacheID_ )
    //   {
@@ -1956,110 +1965,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         }
       }
 
-
-      //SIM based analysis to get the positions - obsolete since I derive the positions using only
-      //DIGI-L1 quantities
-
-    /*
-    // CSC digis in chambers
-    if(verbose) std::cout<<std::endl<<"++++ CSC digi  and stub analysis ++++"<<std::endl;
-    for (auto d: match_csc.chamberIdsLCT()){
-      auto detId = CSCDetId(d);
-      //if (not (detId.station()!=1 or detId.station()!=2)) continue;
-      //if (detId.ring()!=1) continue; // dont consider me1a for this part
-      auto cscChamber = cscGeometry_->chamber(detId);
-      if(verbose) std::cout << "\tNumber of matching CSC comparator strips " << match_cd.cscComparatorDigisInChamber(d).size() << std::endl;
-      if(verbose) std::cout << "\tNumber of matching CSC LCTs " << match_csc.cscLctsInChamber(d).size() << std::endl;
-      // if(verbose) for (auto p: match_csc.cscLctsInChamber(d)) std::cout << "\t " <<p << std::endl;
-      auto bestMatchingLCT = match_csc.bestCscLctInChamber(detId);
-      if(verbose) std::cout << " BEST LCT " << match_csc.bestCscLctInChamber(detId) << std::endl;
-      if(verbose) std::cout << "\tNumber of matching CSC CLCTs " << match_csc.cscClctsInChamber(d).size() << std::endl;
-      if(verbose) for (auto p: match_csc.cscClctsInChamber(d)) std::cout << "\t " <<p << std::endl;
-
-      std::vector<float> phis;
-      std::vector<float> zs;
-      std::vector<float> ephis;
-      std::vector<float> ezs;
-      int keyWireGroup = bestMatchingLCT.getKeyWG();
-      float localY = cscChamber->layer(3)->geometry()->yOfWireGroup(keyWireGroup);
-      float radius = cscChamber->layer(3)->surface().toGlobal(LocalPoint(0,0,0)).perp() + localY;
-      for (int l=1; l<=6; l++){
-        CSCDetId l_id(detId.endcap(), detId.station(), detId.ring(), detId.chamber(), l);
-        if(verbose) std::cout << "\tCSCId " << l_id << std::endl;
-        if(verbose) std::cout << "\tPrinting available comparator strips in detId: " << match_cd.cscComparatorDigisInDetId(l_id.rawId()).size() << std::endl;
-        int closestCompDigi = -1;
-        double minDist = 99;
-        int jj=0;
-        double bestz = 99;
-        double bestphi = 99;
-        for (auto p: match_cd.cscComparatorDigisInDetId(l_id.rawId())){
-          float fractional_strip = match_cd.getFractionalStrip(p);
-          auto layer_geo = cscChamber->layer(l)->geometry();
-          LocalPoint csc_intersect = layer_geo->intersectionOfStripAndWire(fractional_strip, 20);
-          GlobalPoint csc_gp = cscGeometry_->idToDet(l_id)->surface().toGlobal(csc_intersect);
-          double delta = reco::deltaPhi(float(csc_gp.phi()), match_sh.simHitsMeanPosition(match_sh.hitsInChamber(d)).phi());
-          if (delta<minDist){
-            minDist = delta;
-            closestCompDigi = jj;
-            bestz = csc_gp.z();
-            bestphi = csc_gp.phi();
-            if(verbose) std::cout << "minDist closestCompDigi bestz bestphi " << " " << minDist
-                                  << " " << closestCompDigi << " " << bestz << " " << bestphi << std::endl;
-          }
-          ++jj;
-        }
-        if (minDist<99){
-          zs.push_back(bestz);
-          ezs.push_back(0);
-          phis.push_back(bestphi);
-          ephis.push_back(gemvalidation::cscHalfStripWidth(detId)/sqrt(12));
-        }
-
-        if(verbose) std::cout << std::endl;
-      }
-      auto compDigis = match_csc.matchingComparatorDigisLCT(detId, bestMatchingLCT);
-      if(verbose) std::cout << "Matching compDigis " << compDigis.size() << std::endl;
-
-      float alpha = 0., beta = 0.;
-      fitStraightLineErrors(zs, phis, ezs, ephis,
-                            alpha, beta,
-                            event_.lumi, event_.run, event_.event, k, 0, produceFitPlots_);
-
-      float z_pos_L3 = cscChamber->layer(CSCConstants::KEY_CLCT_LAYER)->centerOfStrip(20).z();
-      float bestFitPhi = alpha + beta * z_pos_L3;
-      if(verbose) std::cout << "best fit phi position " << z_pos_L3 << " " << bestFitPhi << std::endl;
-
-      if (detId.station()==1) {
-        event_.CSCTF_fit_phi1[k] = bestFitPhi;
-        event_.CSCTF_fit_x1[k] = radius*cos(bestFitPhi);
-        event_.CSCTF_fit_y1[k] = radius*sin(bestFitPhi);
-        event_.CSCTF_fit_z1[k] = z_pos_L3;
-        event_.CSCTF_fit_R1[k] = radius;
-      }
-      if (detId.station()==2) {
-        event_.CSCTF_fit_phi2[k] = bestFitPhi;
-        event_.CSCTF_fit_x2[k] = radius*cos(bestFitPhi);
-        event_.CSCTF_fit_y2[k] = radius*sin(bestFitPhi);
-        event_.CSCTF_fit_z2[k] = z_pos_L3;
-        event_.CSCTF_fit_R2[k] = radius;
-      }
-      if (detId.station()==3) {
-        event_.CSCTF_fit_phi3[k] = bestFitPhi;
-        event_.CSCTF_fit_x3[k] = radius*cos(bestFitPhi);
-        event_.CSCTF_fit_y3[k] = radius*sin(bestFitPhi);
-        event_.CSCTF_fit_z3[k] = z_pos_L3;
-        event_.CSCTF_fit_R3[k] = radius;
-      }
-      if (detId.station()==4) {
-        event_.CSCTF_fit_phi4[k] = bestFitPhi;
-        event_.CSCTF_fit_x4[k] = radius*cos(bestFitPhi);
-        event_.CSCTF_fit_y4[k] = radius*sin(bestFitPhi);
-        event_.CSCTF_fit_z4[k] = z_pos_L3;
-        event_.CSCTF_fit_R4[k] = radius;
-      }
-    }
-    */
-
       DisplacedMuonTriggerPtassignment ptAssignmentUnit(match_csc.allLctsMatched2SimMuon(),
                                                         match_gd.allGempadsMatch2SimMuon_2strip(),
                                                         iEventSetup,
@@ -2465,6 +2370,31 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       v.push_back(stub);
       chamberid_lct[ch_id] = v;
     }
+
+    // Match CSCTF/EMTF to ME0 segment
+    for (auto thisSegment = me0Segments.begin(); thisSegment != me0Segments.end(); ++thisSegment){
+      ME0DetId id = thisSegment->me0DetId();
+
+      auto chamber = me0Geometry_->chamber(id);
+
+      const int zSign(event_.CSCTF_eta[j] > 0);
+      if ( zSign * chamber->toGlobal(thisSegment->localPosition()).z() < 0 ) continue;
+
+      LocalPoint thisPosition(thisSegment->localPosition());
+      GlobalPoint SegPos(chamber->toGlobal(thisPosition));
+
+      float segment_eta = SegPos.eta();
+      float segment_phi = SegPos.phi();
+
+      // get the ME0 segment which matches closest to the track in station 1!!
+      cout << "segment eta " << segment_eta << endl;
+      cout << "segment phi " << segment_phi << endl;
+    }
+
+    // fill the properties of the best matching one!
+    event_.ME0_eta[j] = 0;
+    event_.ME0_phi[j] = 0;
+    event_.ME0_dphi[j] = 0;
 
     /*
     CSCTF stub recovery per CSCTF track

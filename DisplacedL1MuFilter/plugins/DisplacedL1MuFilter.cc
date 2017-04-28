@@ -5093,9 +5093,9 @@ DisplacedL1MuFilter::propagateFromME0ToCSC(ME0Segment segment, double charge, in
   const CSCLayer* csclayer(cscGeometry_->layer(csclayerId));
   const GlobalPoint gp_csc = csclayer->centerOfWireGroup(10);
   LocalPoint lp(segment.localPosition());
-  GlobalPoint SegPos(me0Chamber.toGlobal(lp));
+  GlobalPoint SegPos(me0Chamber->toGlobal(lp));
   LocalVector lv(segment.localDirection());
-  GlobalVector SegVec(me0Chamber.toGlobal(lv));
+  GlobalVector SegVec(me0Chamber->toGlobal(lv));
   return propagateToZ(SegPos, SegVec, charge, gp_csc.z());
 
 }

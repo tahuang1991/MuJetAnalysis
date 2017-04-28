@@ -1166,10 +1166,15 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   iEventSetup.get<MuonGeometryRecord>().get(me0_geom_);
   me0Geometry_ = &*me0_geom_;
 
-   typedef std::vector<L1MuGMTCand> GMTs;
-   edm::Handle<GMTs> aH;
-   iEvent.getByToken(gmtCandInputLabel_, aH);
-   const GMTs& l1GmtCands(*aH.product());
+   // typedef std::vector<L1MuGMTCand> GMTs;
+   // edm::Handle<GMTs> aH;
+   // iEvent.getByToken(gmtCandInputLabel_, aH);
+   // const GMTs& l1GmtCands(*aH.product());
+
+  edm::Handle<BXVector<l1t::RegionalMuonCand> > aH;
+  iEvent.getByToken(gmtInputLabel_, aH);
+  const BXVector<l1t::RegionalMuonCand>& l1GmtCands(*aH.product());
+
 
    // edm::Handle<L1MuDTTrackCollection > L1DTTrackPhiH;
    // iEvent.getByToken(L1DTTrackPhiInputLabel_, L1DTTrackPhiH);
@@ -1264,7 +1269,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   event_.run = iEvent.id().run();
   event_.event = iEvent.id().event();
 
-  event_.nL1Mu = l1GmtCands.size();
+  event_.nL1Mu = l1GmtCands.size(0); // only consider GMT in time!!
   /*if (processTTI_){
     event_.nL1Tk = TTTracks.size();
   }*/
@@ -3132,15 +3137,34 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   // also check which DTTF, CSCTF, RPCf, RPCb this L1Mu corresponds to!
   if(verbose) std::cout << "Number of L1Mu candidates before selections " << event_.nL1Mu << std::endl;
 
-  for (unsigned int i=0; i<l1GmtCands.size(); ++i) {
-    auto l1Mu = l1GmtCands[i];
-    event_.L1Mu_pt[i] = l1Mu.ptValue();
-    event_.L1Mu_eta[i] = l1Mu.etaValue();
-    event_.L1Mu_phi[i] = normalizedPhi(l1Mu.phiValue());
-    event_.L1Mu_charge[i] = l1Mu.charge();
-    event_.L1Mu_quality[i] = l1Mu.quality();
-    event_.L1Mu_bx[i] = l1Mu.bx();
+  // first loop on BX
+  int iL1Mu = 0;
+  for (int iBX = l1GmtCands.getFirstBX(); iBX <= l1GmtCands.getLastBX(); ++iBX){
+    // for each BX loop on GMTs
+    for (unsigned int j = 0; j<l1GmtCands.size(iBX); ++j) {
 
+      auto l1Mu = l1GmtCands.at(iBX,j);
+      event_.L1Mu_pt[iL1Mu] = l1Mu.hwPt() * 0.5;
+      event_.L1Mu_eta[iL1Mu] = l1Mu.hwEta() * 0.010875;
+      event_.L1Mu_phi[iL1Mu] = normalizedPhi(l1Mu.hwPhi() * 2.0 * 3.1415926/576.0);
+      event_.L1Mu_charge[iL1Mu] = l1Mu.hwSign() == 0? 1 : -1;;
+      event_.L1Mu_quality[iL1Mu] = l1Mu.hwQual();
+      event_.L1Mu_bx[iL1Mu] = iBX;
+
+      if(verbose) {
+        cout << "l1Mu " << iL1Mu << endl;
+        cout << "l1Mu_pt " << event_.L1Mu_pt[iL1Mu] << endl;
+        cout << "l1Mu_eta " << event_.L1Mu_eta[iL1Mu] << endl;
+        cout << "l1Mu_phi " << event_.L1Mu_phi[iL1Mu] << endl;
+        cout << "l1Mu_quality " << event_.L1Mu_quality[iL1Mu] << endl;
+        cout << "l1Mu_charge " << event_.L1Mu_charge[iL1Mu] << endl;
+        cout << "l1Mu_bx " << event_.L1Mu_bx[iL1Mu] << endl;
+      }
+    }
+  }
+
+  // match L1Mu to EMTF
+  for (int i=0; i<=iL1Mu; i++){
     /*
     L1TrackTriggerVeto trkVeto(TTTracks, iEventSetup, iEvent);
     trkVeto.setEtaPhiReference(event_.L1Mu_eta[i], event_.L1Mu_phi[i]);
@@ -3150,15 +3174,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     event_.isL1TightVeto[i] = trkVeto.isTightVeto();
     */
 
-    if(verbose) {
-      cout << "l1Mu " << i << endl;
-      cout << "l1Mu_pt " << event_.L1Mu_pt[i] << endl;
-      cout << "l1Mu_eta " << event_.L1Mu_eta[i] << endl;
-      cout << "l1Mu_phi " << event_.L1Mu_phi[i] << endl;
-      cout << "l1Mu_quality " << event_.L1Mu_quality[i] << endl;
-      cout << "l1Mu_charge " << event_.L1Mu_charge[i] << endl;
-      cout << "l1Mu_bx " << event_.L1Mu_bx[i] << endl;
-    }
 
     // if (processDTTF_){
     //   // Matching to DTTF
@@ -3208,8 +3223,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       if ( ( event_.L1Mu_quality[i] > 0 ) &&
            ( reco::deltaPhi( event_.L1Mu_phi[i], event_.CSCTF_phi[j] ) < 0.001 ) &&
            ( event_.L1Mu_bx[i] == event_.CSCTF_bx[j] ) ) {
-        double drL1MuL1CSCTrack = reco::deltaR(float(l1Mu.etaValue()),
-                                               normalizedPhi(float(l1Mu.phiValue())),
+        double drL1MuL1CSCTrack = reco::deltaR(float(event_.L1Mu_eta[i]),
+                                               normalizedPhi(float(event_.L1Mu_eta[i])),
                                                event_.CSCTF_eta[j],
                                                event_.CSCTF_phi[j]);
         if (drL1MuL1CSCTrack < bestDrL1MuL1CSCTrack and drL1MuL1CSCTrack < 0.3) {

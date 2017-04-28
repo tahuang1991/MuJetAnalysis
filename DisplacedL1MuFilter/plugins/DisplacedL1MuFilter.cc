@@ -761,7 +761,7 @@ private:
                        const CSCCorrelatedLCTDigiId& newCoPad,
                        int refBx) const;
 
-  bool stubInCSCTFTracks(const CSCCorrelatedLCTDigi& stub, const L1CSCTrackCollection& l1Tracks) const;
+  bool stubInCSCTFTracks(const CSCCorrelatedLCTDigi& stub, const l1t::EMTFTrackCollection& l1Tracks) const;
   bool stubInDTTFTracks(const L1MuDTTrackSegPhi& candidateStub,
                         const L1MuDTTrackCollection& l1Tracks) const;
 
@@ -1117,9 +1117,8 @@ DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) :
 
   bookL1MuTree();
 
-  muScalesCacheID_ = 0ULL ;
-  muPtScaleCacheID_ = 0ULL ;
-
+  // muScalesCacheID_ = 0ULL ;
+  // muPtScaleCacheID_ = 0ULL ;
 }
 
 DisplacedL1MuFilter::~DisplacedL1MuFilter()
@@ -1181,19 +1180,19 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
    // const vector<L1MuDTTrackSegPhi>& DTTrackPhis(*DTTrackPhiH.product());
 
    //tracks produced by TF
-   edm::Handle< L1CSCTrackCollection > hl1Tracks;
+   edm::Handle< l1t::EMTFTrackCollection > hl1Tracks;
    iEvent.getByToken(cscTfTrackInputLabel_, hl1Tracks);
-   const L1CSCTrackCollection& l1Tracks(*hl1Tracks.product());
+   const l1t::EMTFTrackCollection& l1Tracks(*hl1Tracks.product());
 
-    if (iEventSetup.get< L1MuTriggerScalesRcd >().cacheIdentifier() != muScalesCacheID_ ||
-        iEventSetup.get< L1MuTriggerPtScaleRcd >().cacheIdentifier() != muPtScaleCacheID_ )
-      {
-        iEventSetup.get< L1MuTriggerScalesRcd >().get( muScales );
-        iEventSetup.get< L1MuTriggerPtScaleRcd >().get( muPtScale );
+   // if (iEventSetup.get< L1MuTriggerScalesRcd >().cacheIdentifier() != muScalesCacheID_ ||
+   //     iEventSetup.get< L1MuTriggerPtScaleRcd >().cacheIdentifier() != muPtScaleCacheID_ )
+   //   {
+   //     iEventSetup.get< L1MuTriggerScalesRcd >().get( muScales );
+   //     iEventSetup.get< L1MuTriggerPtScaleRcd >().get( muPtScale );
 
-        muScalesCacheID_  = iEventSetup.get< L1MuTriggerScalesRcd >().cacheIdentifier();
-        muPtScaleCacheID_ = iEventSetup.get< L1MuTriggerPtScaleRcd >().cacheIdentifier();
-      }
+   //     muScalesCacheID_  = iEventSetup.get< L1MuTriggerScalesRcd >().cacheIdentifier();
+   //     muPtScaleCacheID_ = iEventSetup.get< L1MuTriggerPtScaleRcd >().cacheIdentifier();
+   //   }
 
    // edm::Handle< std::vector<L1MuRegionalCand> > hL1MuRPCbs;
    // iEvent.getByToken(L1MuRPCbsInputLabel_, hL1MuRPCbs);
@@ -2409,18 +2408,18 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   event_.nCSCTF = l1Tracks.size();
   if(verbose) std::cout << std::endl<< "Number of L1CSCTracks " <<event_.nCSCTF << std::endl;
   for (int j=0; j<event_.nCSCTF; ++j) {
-    auto track = l1Tracks[j].first;
-    const int sign(track.endcap()==1 ? 1 : -1);
-    unsigned gpt = 0, quality = 0;
-    csc::L1Track::decodeRank(track.rank(), gpt, quality);
+    auto track = l1Tracks[j];
+    // const int sign(track.endcap()==1 ? 1 : -1);
+    // unsigned gpt = 0, quality = 0;
+    // csc::L1Track::decodeRank(track.rank(), gpt, quality);
 
     // calculate pt, eta and phi (don't forget to store the sign)
-    event_.CSCTF_pt[j] = muPtScale->getPtScale()->getLowEdge(gpt & 0x1f) + 1.e-6;
-    event_.CSCTF_eta[j] = muScales->getRegionalEtaScale(2)->getCenter(track.eta_packed()) * sign;
-    event_.CSCTF_phi[j] = normalizedPhi(muScales->getPhiScale()->getLowEdge(phiL1CSCTrack(track)));
-    event_.CSCTF_bx[j] = track.bx();
-    event_.CSCTF_quality[j] = quality;
-    event_.CSCTF_charge[j] = track.chargeValue();
+    event_.CSCTF_pt[j] = track.Pt(); //muPtScale->getPtScale()->getLowEdge(gpt & 0x1f) + 1.e-6;
+    event_.CSCTF_eta[j] = track.Eta(); //muScales->getRegionalEtaScale(2)->getCenter(track.eta_packed()) * sign;
+    event_.CSCTF_phi[j] = track.Phi_glob_rad(); //normalizedPhi(muScales->getPhiScale()->getLowEdge(phiL1CSCTrack(track)));
+    event_.CSCTF_bx[j] = track.BX();
+    event_.CSCTF_quality[j] = track.Quality();//quality;
+    event_.CSCTF_charge[j] = track.Charge();//chargeValue();
 
     if(verbose) {
       std::cout << std::endl
@@ -2433,35 +2432,32 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       std::cout << "Print CSCTF stubs:" << std::endl;
     }
     event_.CSCTF_nStubs[j] = 0;
-    auto stubCollection(l1Tracks[j].second);
+    auto stubCollection(l1Tracks[j].Hits());
 
     // organize stubs in a map
     std::map<unsigned int, CSCCorrelatedLCTDigiContainer> chamberid_lct;
     std::map<unsigned int, GEMCSCPadDigiContainer> detid_pads;
 
-    for (auto detUnitIt = stubCollection.begin(); detUnitIt != stubCollection.end(); detUnitIt++) {
-      const CSCDetId& ch_id = (*detUnitIt).first;
-      const auto range = (*detUnitIt).second;
+    int iStub = 0;
+    for (const auto& csc_stub: stubCollection) {
+      iStub++;
+      const CSCCorrelatedLCTDigi& stub = csc_stub.CSC_LCTDigi();
+      const CSCDetId& ch_id = csc_stub.CSC_DetId();
+      //if (!(*digiIt).isValid()) continue;
+      event_.CSCTF_nStubs[j] += 1;
+      auto gp = getCSCSpecificPoint2(ch_id.rawId(), stub);
+      if(verbose)std::cout << "\t" << ch_id << " " << stub
+                           << " GP " << gp
+                           << " key eta " << gp.eta() << " key phi " << gp.phi() << std::endl;
+
+      // stub position
+      float z_pos_L3, bestFitPhi, bestFitDPhi;
+      fitComparatorsLCT(*hCSCComparators.product(), stub, ch_id, iStub, z_pos_L3, bestFitPhi, bestFitDPhi);
+
+      fillCSCStubProperties(ch_id, stub, j, gp, z_pos_L3, bestFitPhi, bestFitDPhi);
+
       std::vector<CSCCorrelatedLCTDigi> v;
-      for (auto digiIt = range.first; digiIt != range.second; digiIt++) {
-        //if (!(*digiIt).isValid()) continue;
-        event_.CSCTF_nStubs[j] += 1;
-        auto stub = *digiIt;
-        auto gp = getCSCSpecificPoint2(ch_id.rawId(), stub);
-        if(verbose)std::cout << "\t" << ch_id << " " << stub
-                             << " GP " << gp
-                             << " key eta " << gp.eta() << " key phi " << gp.phi() << std::endl;
-
-        // stub position
-
-        float z_pos_L3, bestFitPhi, bestFitDPhi;
-
-        fitComparatorsLCT(*hCSCComparators.product(), stub, ch_id, int(digiIt-range.first), z_pos_L3, bestFitPhi, bestFitDPhi);
-
-        fillCSCStubProperties(ch_id, stub, j, gp, z_pos_L3, bestFitPhi, bestFitDPhi);
-
-        v.push_back(stub);
-      }
+      v.push_back(stub);
       chamberid_lct[ch_id] = v;
     }
 
@@ -2498,7 +2494,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                            allxs, allys, sign_z);
 
 
-      int triggerSector = track.sector();
+      int triggerSector = track.Sector();
       //std::cout << "trigger sector " << triggerSector << std::endl;
 
       for (int endcap=1; endcap<=2; endcap++){
@@ -3300,7 +3296,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       event_.CSCTF_fitline_y4[ event_.L1Mu_CSCTF_index[i] ] = allys[3];
 
       if (doStubRecovery and event_.L1Mu_CSCTF_index[i] != -1) {
-        int triggerSector = (l1Tracks[ event_.L1Mu_CSCTF_index[i] ].first).sector();
+        int triggerSector = l1Tracks[event_.L1Mu_CSCTF_index[i]].Sector();
         std::cout << "trigger sector " << triggerSector << std::endl;
 
         for (int endcap=1; endcap<=2; endcap++){
@@ -4327,23 +4323,23 @@ DisplacedL1MuFilter::pickBestMatchingStub(float xref, float yref,
 }
 
 bool
-DisplacedL1MuFilter::stubInCSCTFTracks(const CSCCorrelatedLCTDigi& candidateStub, const L1CSCTrackCollection& l1Tracks) const
+DisplacedL1MuFilter::stubInCSCTFTracks(const CSCCorrelatedLCTDigi& candidateStub, const l1t::EMTFTrackCollection& l1Tracks) const
 {
   bool isMatched = false;
-  for (auto tftrack: l1Tracks){
-    auto stubCollection = tftrack.second;
-    for (auto detUnitIt = stubCollection.begin(); detUnitIt != stubCollection.end(); detUnitIt++) {
-      const auto range = (*detUnitIt).second;
-      for (auto digiIt = range.first; digiIt != range.second; digiIt++) {
-        //if (!(*digiIt).isValid()) continue;
-        auto stub = *digiIt;
-        if (candidateStub == stub) {
-          isMatched = true;
-          break;
-        }
-      }
-    }
-  }
+  // for (auto tftrack: l1Tracks){
+  //   auto stubCollection = tftrack.second;
+  //   for (auto detUnitIt = stubCollection.begin(); detUnitIt != stubCollection.end(); detUnitIt++) {
+  //     const auto range = (*detUnitIt).second;
+  //     for (auto digiIt = range.first; digiIt != range.second; digiIt++) {
+  //       //if (!(*digiIt).isValid()) continue;
+  //       auto stub = *digiIt;
+  //       if (candidateStub == stub) {
+  //         isMatched = true;
+  //         break;
+  //       }
+  //     }
+  //   }
+  // }
   return isMatched;
 }
 

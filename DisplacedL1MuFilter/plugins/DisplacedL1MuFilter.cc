@@ -790,6 +790,7 @@ private:
   //GlobalPoint extrapolateGP(const TTTrack< Ref_PixelDigi_ > &tk, int station=2);
   TrajectoryStateOnSurface propagateToZ(const GlobalPoint &, const GlobalVector &, double, double) const;
   TrajectoryStateOnSurface propagateToR(const GlobalPoint &, const GlobalVector &, double, double) const;
+  TrajectoryStateOnSurface propagateFromME0ToCSC(ME0Segment segment, double charge, int st, bool evenodd) const;
 
   // ----------member data ---------------------------
 
@@ -2342,7 +2343,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       std::cout << "Print CSCTF stubs:" << std::endl;
     }
     event_.CSCTF_nStubs[j] = 0;
-    auto stubCollection(l1Tracks[j].Hits());
+    auto stubCollection(*l1Tracks[j].PtrHits());
 
     // organize stubs in a map
     std::map<unsigned int, CSCCorrelatedLCTDigiContainer> chamberid_lct;
@@ -5080,6 +5081,25 @@ DisplacedL1MuFilter::propagateToR(const GlobalPoint &inner_point, const GlobalVe
   if (!tsos.isValid()) tsos = propagatorOpposite_->propagate(state_start, *my_cyl);
   return tsos;
 }
+
+TrajectoryStateOnSurface
+DisplacedL1MuFilter::propagateFromME0ToCSC(ME0Segment segment, double charge, int st, bool evenodd) const
+{
+  int chamber = (evenodd? 1:2);
+  int ring = 1;
+  ME0DetId me0Id(segment.me0DetId());
+  auto me0Chamber(me0Geometry_->chamber(me0id));
+  CSCDetId csclayerId(me0Id.region(), st, ring, chamber,  CSCConstants::KEY_CLCT_LAYER);  
+  const CSCLayer* csclayer(cscGeometry_->layer(csclayerId));
+  const GlobalPoint gp_csc = csclayer->centerOfWireGroup(10);
+  LocalPoint lp(segment.localPosition());
+  GlobalPoint SegPos(me0Chamber.toGlobal(lp));
+  LocalVector lv(segment.localDirection());
+  GlobalVector SegVec(me0Chamber.toGlobal(lv));
+  return propagateToZ(SegPos, SegVec, charge, gp_csc.z());
+
+}
+
 
 void DisplacedL1MuFilter::bookL1MuTree()
 {

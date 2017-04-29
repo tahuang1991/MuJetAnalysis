@@ -5088,8 +5088,9 @@ DisplacedL1MuFilter::propagateFromME0ToCSC(ME0Segment segment, double charge, in
   int chamber = (evenodd? 1:2);
   int ring = 1;
   ME0DetId me0Id(segment.me0DetId());
+  int endcap = (me0Id.region()>0) ? 1:2;
   auto me0Chamber(me0Geometry_->chamber(me0Id));
-  CSCDetId csclayerId(me0Id.region(), st, ring, chamber,  CSCConstants::KEY_CLCT_LAYER);  
+  CSCDetId csclayerId(endcap, st, ring, chamber,  CSCConstants::KEY_CLCT_LAYER);  
   const CSCLayer* csclayer(cscGeometry_->layer(csclayerId));
   const GlobalPoint gp_csc = csclayer->centerOfWireGroup(10);
   LocalPoint lp(segment.localPosition());

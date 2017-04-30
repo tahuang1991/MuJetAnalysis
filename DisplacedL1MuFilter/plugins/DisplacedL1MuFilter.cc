@@ -790,7 +790,7 @@ private:
   //GlobalPoint extrapolateGP(const TTTrack< Ref_PixelDigi_ > &tk, int station=2);
   TrajectoryStateOnSurface propagateToZ(const GlobalPoint &, const GlobalVector &, double, double) const;
   TrajectoryStateOnSurface propagateToR(const GlobalPoint &, const GlobalVector &, double, double) const;
-  TrajectoryStateOnSurface propagateFromME0ToCSC(ME0Segment segment, double charge, int st, bool evenodd) const;
+  TrajectoryStateOnSurface propagateFromME0ToCSC(ME0Segment segment,float pt, double charge, int st, bool evenodd) const;
 
   // ----------member data ---------------------------
 
@@ -5083,7 +5083,7 @@ DisplacedL1MuFilter::propagateToR(const GlobalPoint &inner_point, const GlobalVe
 }
 
 TrajectoryStateOnSurface
-DisplacedL1MuFilter::propagateFromME0ToCSC(ME0Segment segment, double charge, int st, bool evenodd) const
+DisplacedL1MuFilter::propagateFromME0ToCSC(ME0Segment segment,float pt, double charge, int st, bool evenodd) const
 {
   int chamber = (evenodd? 1:2);
   int ring = 1;
@@ -5096,7 +5096,9 @@ DisplacedL1MuFilter::propagateFromME0ToCSC(ME0Segment segment, double charge, in
   LocalPoint lp(segment.localPosition());
   GlobalPoint SegPos(me0Chamber->toGlobal(lp));
   LocalVector lv(segment.localDirection());
-  GlobalVector SegVec(me0Chamber->toGlobal(lv));
+  GlobalVector SegDir(me0Chamber->toGlobal(lv));
+  float ratio = pt/SegDir.perp();
+  GlobalVector SegVec(SegDir.x() * ratio, SegDir.y() * ratio, SegDir.z() * ratio);
   return propagateToZ(SegPos, SegVec, charge, gp_csc.z());
 
 }

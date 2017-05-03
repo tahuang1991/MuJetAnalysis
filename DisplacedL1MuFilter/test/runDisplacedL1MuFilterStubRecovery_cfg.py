@@ -4,21 +4,17 @@ process = cms.Process("test3")
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'PH2_1K_FB_V3::All', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase2_realistic', '')
 process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
 process.load('TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorOpposite_cfi')
 process.load('TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorAlong_cfi')
 process.load('TrackPropagation.SteppingHelixPropagator.SteppingHelixPropagatorAny_cfi')
-process.load('Geometry.TrackerGeometryBuilder.StackedTrackerGeometry_cfi')
-process.load('Configuration.Geometry.GeometryExtended2023TTI_cff')
-process.load('Configuration.Geometry.GeometryExtended2023TTIReco_cff')
-process.load('Geometry.GEMGeometryBuilder.gemGeometry_cfi')
-process.load('Geometry.GEMGeometryBuilder.me0Geometry_cfi')
-
+process.load('Configuration.Geometry.GeometryExtended2023D4Reco_cff')
+process.load('Configuration.Geometry.GeometryExtended2023D4_cff')
 process.load('Configuration.StandardSequences.L1Reco_cff')
-process.load("SLHCUpgradeSimulations.L1TrackTrigger.L1TkMuonSequence_cfi")
+#process.load("SLHCUpgradeSimulations.L1TrackTrigger.L1TkMuonSequence_cfi")
 #process.pMuons = cms.Path( process.L1TkMuons ) #process.l1extraParticles +
-process.load("L1Trigger.TrackTrigger.TrackTrigger_cff")
+#process.load("L1Trigger.TrackTrigger.TrackTrigger_cff")
 process.load('L1TriggerConfig.L1ScalesProducers.L1MuTriggerScalesConfig_cff')
 
 process.maxEvents = cms.untracked.PSet(
@@ -66,7 +62,7 @@ process.DisplacedL1MuFilter_PhaseIIGE21 = cms.EDFilter("DisplacedL1MuFilter",
     processRPCb = cms.bool(False),
     processRPCf = cms.bool(False),
     processTTI = cms.bool(False),
-    processDTTF = cms.bool(True),
+    processDTTF = cms.bool(False),
     doSimAnalysis = cms.bool(True),
     doGenAnalysis = cms.bool(True),
     doStubRecovery = cms.bool(True)
@@ -102,7 +98,8 @@ process.source = cms.Source(
 )
 from MuJetAnalysis.HLTBendingAngle.InputFileHelpers import useInputDir
 #process = useInputDir(process, "/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_DTTFmod/160622_185508/0000/","out_DTTF_ctau_1000_PU140_full")
-process = useInputDir(process, "/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU0_TTI_DTTFmod_v3/161010_033846/0000/","out_DTTFmod")
+#process = useInputDir(process, "/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU0_TTI_DTTFmod_v3/161010_033846/0000/","out_DTTFmod")
+process = useInputDir(process, "/eos/uscms/store/user/lpcgem/SingleNu_91X_FlatPt05_50_phase2_realistic_Extended2023D4_GEN_SIM_v2/DIGI_L1_ME0Reco_PU200/170427_203329/0000/","step2")
 
 process.dump=cms.EDAnalyzer('EventContentAnalyzer')
 #process.l1extraParticles + + process.dump

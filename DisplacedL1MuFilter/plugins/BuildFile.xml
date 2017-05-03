@@ -31,9 +31,12 @@
 <use name="L1Trigger/DTTrackFinder"/>
 <use name="L1Trigger/CSCTrackFinder"/>
 <use name="L1Trigger/CSCCommonTrigger"/>
+<use name="L1Trigger/L1TMuonEndCap"/>
 <use name="RecoMuon/DetLayers"/>
 <use name="RecoMuon/Records"/>
 <use name="GEMCode/GEMValidation"/>
 <use name="root"/>
 
-<flags EDM_PLUGIN="1"/>
+<library file="DisplacedL1MuFilter.cc" name="MuJetAnalysisDisplacedL1MuFilterPlugins">
+  <flags EDM_PLUGIN="1"/>
+</library>

@@ -61,7 +61,7 @@
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/Math/interface/LorentzVector.h"
-#include "L1Trigger/CSCTrackFinder/test/src/TFTrack.h"
+// #include "L1Trigger/CSCTrackFinder/test/src/TFTrack.h"
 #include "DataFormats/L1Trigger/interface/L1MuonParticleFwd.h"
 #include "DataFormats/L1Trigger/interface/L1MuonParticle.h"
 #include "DataFormats/L1GlobalMuonTrigger/interface/L1MuGMTReadoutCollection.h"
@@ -784,13 +784,24 @@ private:
                              const GlobalPoint& GP,
                              float z, float phi, float dphi);
 
+  GlobalPoint
+  getME0SpecificPoint(unsigned int rawId, const ME0Segment& seg) const;
+
+  ME0Segment
+  pickBestMatchingME0Segment(float xref, float yref,
+                             const ME0Segment& oldME0Segment,
+                             const ME0Segment& newME0Segment,
+                             int refBx) const;
+  bool
+  isME0SegmentValid(const ME0Segment& seg) const;
+
   void extrapolate(const SimTrack&tk, const SimVertex&, GlobalPoint&);
   void extrapolate(const reco::GenParticle &tk, int station, GlobalPoint&, GlobalVector&);
   //void extrapolate(const TTTrack< Ref_PixelDigi_ > &tk, int station, GlobalPoint&, GlobalVector&);
   //GlobalPoint extrapolateGP(const TTTrack< Ref_PixelDigi_ > &tk, int station=2);
   TrajectoryStateOnSurface propagateToZ(const GlobalPoint &, const GlobalVector &, double, double) const;
   TrajectoryStateOnSurface propagateToR(const GlobalPoint &, const GlobalVector &, double, double) const;
-  TrajectoryStateOnSurface propagateFromME0ToCSC(ME0Segment segment,float pt, double charge, int st, bool evenodd) const;
+  TrajectoryStateOnSurface propagateFromME0ToCSC(const ME0Segment& segment,float pt, double charge, int st, bool evenodd = true) const;
 
   // ----------member data ---------------------------
 
@@ -1069,8 +1080,8 @@ DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) :
   auto rpcRecHit_= cfg_.getParameter<edm::ParameterSet>("rpcRecHit");
   rpcRecHitInput_ = consumes<RPCRecHitCollection>(rpcRecHit_.getParameter<edm::InputTag>("validInputTags"));
 
-  auto tfTrack = cfg_.getParameter<edm::ParameterSet>("cscTfTrack");
-  cscTfTrackInputLabel_ = consumes<L1CSCTrackCollection>(tfTrack.getParameter<edm::InputTag>("validInputTags"));
+  // auto tfTrack = cfg_.getParameter<edm::ParameterSet>("cscTfTrack");
+  // cscTfTrackInputLabel_ = consumes<L1CSCTrackCollection>(tfTrack.getParameter<edm::InputTag>("validInputTags"));
 
   auto tfCand = cfg_.getParameter<edm::ParameterSet>("cscTfCand");
   cscTfCandInputLabel_ = consumes<L1MuRegionalCandCollection>(tfCand.getParameter<edm::InputTag>("validInputTags"));
@@ -1192,12 +1203,11 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
    //tracks produced by TF
    edm::Handle< l1t::EMTFTrackCollection > hl1Tracks;
-   iEvent.getByToken(cscTfTrackInputLabel_, hl1Tracks);
+   iEvent.getByToken(emtfTrackInputLabel_, hl1Tracks);
    const l1t::EMTFTrackCollection& l1Tracks(*hl1Tracks.product());
 
-   edm::Handle< ME0SegmentCollection > hME0Segments;
-   iEvent.getByToken(me0SegmentInput_, hME0Segments);
-   const ME0SegmentCollection& me0Segments(*hME0Segments.product());
+   edm::Handle< ME0SegmentCollection > me0Segments;
+   iEvent.getByToken(me0SegmentInput_, me0Segments);
 
    // if (iEventSetup.get< L1MuTriggerScalesRcd >().cacheIdentifier() != muScalesCacheID_ ||
    //     iEventSetup.get< L1MuTriggerPtScaleRcd >().cacheIdentifier() != muPtScaleCacheID_ )
@@ -1246,8 +1256,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   iEvent.getByToken(gemPadDigiInput_, hGEMCSCPads);
   //const GEMCSCPadDigiCollection& GEMCSCPads(*hGEMCSCPads.product());
 
-  edm::Handle< GEMPadDigiCollection > hGEMCSCCoPads;
-  iEvent.getByToken(gemCoPadDigiInput_, hGEMCSCCoPads);
+  // edm::Handle< GEMPadDigiCollection > hGEMCSCCoPads;
+  // iEvent.getByToken(gemCoPadDigiInput_, hGEMCSCCoPads);
   //const GEMCSCCoPadDigiCollection& GEMCSCCoPads(*hGEMCSCCoPads.product());
 
   // L1 TrackingTrigger Analysis
@@ -2343,22 +2353,23 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       std::cout << "Print CSCTF stubs:" << std::endl;
     }
     event_.CSCTF_nStubs[j] = 0;
-    auto stubCollection(*l1Tracks[j].PtrHits());
 
     // organize stubs in a map
     std::map<unsigned int, CSCCorrelatedLCTDigiContainer> chamberid_lct;
     std::map<unsigned int, GEMCSCPadDigiContainer> detid_pads;
 
     int iStub = 0;
-    for (const auto& csc_stub: stubCollection) {
+    for (const auto& csc_stub: track.Hits()) {
       iStub++;
-      const CSCCorrelatedLCTDigi& stub = csc_stub.CSC_LCTDigi();
-      const CSCDetId& ch_id = csc_stub.CSC_DetId();
+      if (not csc_stub.Is_CSC_hit()) continue;
+      const CSCCorrelatedLCTDigi& stub = csc_stub.CreateCSCCorrelatedLCTDigi();
+      const CSCDetId& ch_id = csc_stub.CreateCSCDetId();
       //if (!(*digiIt).isValid()) continue;
       event_.CSCTF_nStubs[j] += 1;
+      if(verbose)std::cout << "\t" << ch_id << " " << stub;
+
       auto gp = getCSCSpecificPoint2(ch_id.rawId(), stub);
-      if(verbose)std::cout << "\t" << ch_id << " " << stub
-                           << " GP " << gp
+      if(verbose)std::cout << " GP " << gp
                            << " key eta " << gp.eta() << " key phi " << gp.phi() << std::endl;
 
       // stub position
@@ -2371,31 +2382,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       v.push_back(stub);
       chamberid_lct[ch_id] = v;
     }
-
-    // Match CSCTF/EMTF to ME0 segment
-    for (auto thisSegment = me0Segments.begin(); thisSegment != me0Segments.end(); ++thisSegment){
-      ME0DetId id = thisSegment->me0DetId();
-
-      auto chamber = me0Geometry_->chamber(id);
-
-      const int zSign(event_.CSCTF_eta[j] > 0);
-      if ( zSign * chamber->toGlobal(thisSegment->localPosition()).z() < 0 ) continue;
-
-      LocalPoint thisPosition(thisSegment->localPosition());
-      GlobalPoint SegPos(chamber->toGlobal(thisPosition));
-
-      float segment_eta = SegPos.eta();
-      float segment_phi = SegPos.phi();
-
-      // get the ME0 segment which matches closest to the track in station 1!!
-      cout << "segment eta " << segment_eta << endl;
-      cout << "segment phi " << segment_phi << endl;
-    }
-
-    // fill the properties of the best matching one!
-    event_.ME0_eta[j] = 0;
-    event_.ME0_phi[j] = 0;
-    event_.ME0_dphi[j] = 0;
 
     /*
     CSCTF stub recovery per CSCTF track
@@ -2545,6 +2531,42 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           }
         }
       }
+
+      cout << "Checking matching ME0 segments" << endl;
+      ME0Segment bestMatchingME0Segment;
+      // Match CSCTF/EMTF to ME0 segment
+      for (auto thisSegment = me0Segments->begin(); thisSegment != me0Segments->end(); ++thisSegment){
+        cout << "Candidate segment " << *thisSegment << endl;
+
+        ME0DetId id = ME0DetId(thisSegment->me0DetId());
+        cout << "ME0DetId " << id  << endl;
+        auto chamber = me0Geometry_->chamber(id);
+
+        const int zSign(event_.CSCTF_eta[j] > 0);
+        if ( zSign * chamber->toGlobal(thisSegment->localPosition()).z() < 0 ) continue;
+
+        LocalPoint thisPosition(thisSegment->localPosition());
+        GlobalPoint SegPos(chamber->toGlobal(thisPosition));
+
+        // BXs have to match
+        int deltaBX = std::abs(thisSegment->time() - (event_.CSCTF_bx[j]));
+        if (deltaBX > 1) continue;
+
+        if(verbose) std::cout << id << std::endl;
+        if(verbose) std::cout<<"Candidate " << *thisSegment << std::endl;
+        bestMatchingME0Segment = pickBestMatchingME0Segment(allxs[0], allys[0],
+                                                            bestMatchingME0Segment, *thisSegment, 6 + event_.CSCTF_bx[j]);
+      }
+
+      // fill the properties of the best matching one!
+      auto bestMatchingME0Chamber = me0Geometry_->chamber(bestMatchingME0Segment.me0DetId());
+
+      LocalPoint thisPosition(bestMatchingME0Segment.localPosition());
+      GlobalPoint SegPos(bestMatchingME0Chamber->toGlobal(thisPosition));
+
+      event_.ME0_eta[j] = SegPos.eta();
+      event_.ME0_phi[j] = SegPos.phi();
+      event_.ME0_dphi[j] = bestMatchingME0Segment.deltaPhi();
     }
 
 
@@ -4206,6 +4228,18 @@ DisplacedL1MuFilter::getCSCSpecificPoint2(unsigned int rawId, const CSCCorrelate
   return csc_gp;
 }
 
+
+GlobalPoint
+DisplacedL1MuFilter::getME0SpecificPoint(unsigned int rawId, const ME0Segment& seg) const
+{
+  ME0DetId Id = ME0DetId(rawId);
+  auto chamber = me0Geometry_->chamber(Id);
+  LocalPoint thisPosition(seg.localPosition());
+  GlobalPoint SegPos(chamber->toGlobal(thisPosition));
+  return SegPos;
+}
+
+
 CSCCorrelatedLCTDigiId
 DisplacedL1MuFilter::pickBestMatchingStub(float xref, float yref,
                                           const CSCCorrelatedLCTDigiId& oldStub,
@@ -4269,23 +4303,89 @@ DisplacedL1MuFilter::pickBestMatchingStub(float xref, float yref,
 }
 
 bool
+DisplacedL1MuFilter::isME0SegmentValid(const ME0Segment& seg) const
+{
+  return (seg.nRecHits() != 0 and seg.chi2()!=0);
+}
+
+ME0Segment
+DisplacedL1MuFilter::pickBestMatchingME0Segment(float xref, float yref,
+                                                const ME0Segment& oldME0Segment,
+                                                const ME0Segment& newME0Segment,
+                                                int refBx) const
+{
+  bool debug=false;
+
+  if (debug){
+  std::cout << "In function pickBestMatchingME0Segment" << std::endl;
+  std::cout << "candidate 1 " << oldME0Segment.me0DetId() << " "  << oldME0Segment << std::endl;
+  std::cout << "candidate 2 " << newME0Segment.me0DetId() << " "  << newME0Segment << std::endl;
+  }
+
+  // check for invalid/valid
+  if (not isME0SegmentValid(oldME0Segment)) {
+    if (debug) cout<<"Old segment invalid"<<endl;
+    return newME0Segment;
+  }
+  if (not isME0SegmentValid(oldME0Segment)) {
+    if (debug) cout<< "New segment invalid"<<endl;
+    return oldME0Segment;
+  }
+
+  int deltaBXOld = std::abs(oldME0Segment.time() - refBx);
+  int deltaBXNew = std::abs(newME0Segment.time() - refBx);
+
+  if (deltaBXOld==0 and deltaBXNew!=0) {
+    if (debug) cout<<"Old segment in time, new segment out of time"<<endl;
+    return oldME0Segment;
+  }
+  if (deltaBXNew==0 and deltaBXOld!=0) {
+    if (debug) cout<<"New segment in time, old segment out of time"<<endl;
+    return newME0Segment;
+  }
+  if ( (deltaBXOld!=0 and deltaBXNew!=0) or
+       (deltaBXOld==0 and deltaBXNew==0) ){
+    if (debug) cout<<"Both segments out of time"<<endl;
+    // pick the one with the better matching wiregroup and halfstrip
+    auto gpOld = getME0SpecificPoint(oldME0Segment.me0DetId().rawId(), oldME0Segment);
+    auto gpNew = getME0SpecificPoint(newME0Segment.me0DetId().rawId(), newME0Segment);
+    float deltaXYOld = TMath::Sqrt( (xref-gpOld.x())*(xref-gpOld.x()) + (yref-gpOld.y())*(yref-gpOld.y()) );
+    float deltaXYNew = TMath::Sqrt( (xref-gpNew.x())*(xref-gpNew.x()) + (yref-gpNew.y())*(yref-gpNew.y()) );
+    if (debug) {
+      cout<<"xref "<< xref << " yref " << yref << endl;
+      cout <<"gpOld " << gpOld << " gpNew " << gpNew << endl;
+      cout << "deltaXYOld " << deltaXYOld << " deltaXYNew " << deltaXYNew <<endl;
+    }
+    if (deltaXYOld < deltaXYNew) {
+      if (debug) cout<<"Old  ME0 segment better matching XY"<<endl;
+      return oldME0Segment;
+    }
+    else {
+      if (debug) cout<<"New ME0 segment better matching XY"<<endl;
+      return newME0Segment;
+    }
+  }
+  std::cout << "All else fails" << std::endl;
+  // in case all else fails...
+  return ME0Segment();
+}
+
+
+bool
 DisplacedL1MuFilter::stubInCSCTFTracks(const CSCCorrelatedLCTDigi& candidateStub, const l1t::EMTFTrackCollection& l1Tracks) const
 {
   bool isMatched = false;
-  // for (auto tftrack: l1Tracks){
-  //   auto stubCollection = tftrack.second;
-  //   for (auto detUnitIt = stubCollection.begin(); detUnitIt != stubCollection.end(); detUnitIt++) {
-  //     const auto range = (*detUnitIt).second;
-  //     for (auto digiIt = range.first; digiIt != range.second; digiIt++) {
-  //       //if (!(*digiIt).isValid()) continue;
-  //       auto stub = *digiIt;
-  //       if (candidateStub == stub) {
-  //         isMatched = true;
-  //         break;
-  //       }
-  //     }
-  //   }
-  // }
+  for (const auto& tftrack: l1Tracks){
+    l1t::EMTFHitCollection trackHits = tftrack.Hits();
+    for (const auto& hit : trackHits){
+      if (hit.Is_CSC_hit()) continue;
+      CSCCorrelatedLCTDigi csc_hit = hit.CSC_LCTDigi();
+      if (csc_hit == candidateStub) {
+        isMatched = true;
+        break;
+      }
+    }
+  }
   return isMatched;
 }
 
@@ -5083,24 +5183,35 @@ DisplacedL1MuFilter::propagateToR(const GlobalPoint &inner_point, const GlobalVe
 }
 
 TrajectoryStateOnSurface
-DisplacedL1MuFilter::propagateFromME0ToCSC(ME0Segment segment,float pt, double charge, int st, bool evenodd) const
+DisplacedL1MuFilter::propagateFromME0ToCSC(const ME0Segment& segment,float pt, double charge, int st, bool evenodd) const
 {
-  int chamber = (evenodd? 1:2);
-  int ring = 1;
+  double Zmin = 0., Zmax = 0.;
+  if (st == 1){
+    Zmax = 600.; Zmin = -600.;
+  }
+  else if (st == 2){
+   Zmax = 828.; Zmin = -828.;
+  }
+
+  // int chamber = (evenodd? 1:2);
+  // int ring = 1;
   ME0DetId me0Id(segment.me0DetId());
-  int endcap = (me0Id.region()>0) ? 1:2;
   auto me0Chamber(me0Geometry_->chamber(me0Id));
-  CSCDetId csclayerId(endcap, st, ring, chamber,  CSCConstants::KEY_CLCT_LAYER);  
-  const CSCLayer* csclayer(cscGeometry_->layer(csclayerId));
-  const GlobalPoint gp_csc = csclayer->centerOfWireGroup(10);
+  // int endcap = (me0Id.region()>0) ? 1:2;
+  // CSCDetId csclayerId(endcap, st, ring, chamber,  CSCConstants::KEY_CLCT_LAYER);
+  // const CSCLayer* csclayer(cscGeometry_->layer(csclayerId));
+  // const GlobalPoint gp_csc = csclayer->centerOfWireGroup(10);
   LocalPoint lp(segment.localPosition());
   GlobalPoint SegPos(me0Chamber->toGlobal(lp));
   LocalVector lv(segment.localDirection());
   GlobalVector SegDir(me0Chamber->toGlobal(lv));
   float ratio = pt/SegDir.perp();
   GlobalVector SegVec(SegDir.x() * ratio, SegDir.y() * ratio, SegDir.z() * ratio);
-  return propagateToZ(SegPos, SegVec, charge, gp_csc.z());
 
+  TrajectoryStateOnSurface result;
+  if (me0Id.region() == -1) result = propagateToZ(SegPos, SegVec, charge, Zmin);
+  if (me0Id.region() ==  1) result = propagateToZ(SegPos, SegVec, charge, Zmax);
+  return result;
 }
 
 

@@ -352,6 +352,11 @@ struct MyEvent
   Float_t ME0_eta[kMaxCSCTF];
   Float_t ME0_dphi[kMaxCSCTF];
 
+  Float_t L1Mu_me0_eta[kMaxCSCTF], L1Mu_me0_phi[kMaxCSCTF], L1Mu_me0_dPhi[kMaxCSCTF];
+  Float_t L1Mu_me0_dR[kMaxCSCTF], L1Mu_me0_st1_dphi[kMaxCSCTF];
+  Float_t L1Mu_me0_st2_eta[kMaxCSCTF], L1Mu_me0_st2_phi[kMaxCSCTF];
+  Int_t L1Mu_me0_st1_isEven[kMaxCSCTF];
+
   // pT assignment module branches
   Float_t CSCTF_sim_DDY123[kMaxCSCTF];
   Float_t CSCTF_L1_DDY123[kMaxCSCTF];
@@ -2314,7 +2319,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     // calculate pt, eta and phi (don't forget to store the sign)
     event_.CSCTF_pt[j] = track.Pt(); //muPtScale->getPtScale()->getLowEdge(gpt & 0x1f) + 1.e-6;
     event_.CSCTF_eta[j] = track.Eta(); //muScales->getRegionalEtaScale(2)->getCenter(track.eta_packed()) * sign;
-    event_.CSCTF_phi[j] = track.Phi_glob_rad(); //normalizedPhi(muScales->getPhiScale()->getLowEdge(phiL1CSCTrack(track)));
+    event_.CSCTF_phi[j] = normalizedPhi(track.Phi_glob_rad()); //normalizedPhi(muScales->getPhiScale()->getLowEdge(phiL1CSCTrack(track)));
     event_.CSCTF_bx[j] = track.BX();
     event_.CSCTF_quality[j] = track.Quality();//quality;
     event_.CSCTF_charge[j] = track.Charge();//chargeValue();
@@ -2536,19 +2541,36 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
       if (isME0SegmentValid(bestMatchingME0Segment)){
         // fill the properties of the best matching one!
+
+        if(verbose) std::cout << "Determine best candidate properties..." << std::endl;
         auto bestMatchingME0Chamber = me0Geometry_->chamber(bestMatchingME0Segment.me0DetId());
 
         LocalPoint thisPosition(bestMatchingME0Segment.localPosition());
         GlobalPoint SegPos(bestMatchingME0Chamber->toGlobal(thisPosition));
+        GlobalPoint gp_ME0_st2(propagateFromME0ToCSC(bestMatchingME0Segment, event_.CSCTF_pt[j], event_.CSCTF_charge[j], 2).globalPosition());
 
-        event_.ME0_eta[j] = SegPos.eta();
-        event_.ME0_phi[j] = SegPos.phi();
-        event_.ME0_dphi[j] = bestMatchingME0Segment.deltaPhi();
+        event_.L1Mu_me0_eta[j] = SegPos.eta();
+        event_.L1Mu_me0_phi[j] = normalizedPhi(float(SegPos.phi()));
+        event_.L1Mu_me0_dPhi[j] = bestMatchingME0Segment.deltaPhi();
+        event_.L1Mu_me0_dR[j] = reco::deltaR(event_.CSCTF_eta[j],
+                                             event_.CSCTF_phi[j],
+                                             event_.L1Mu_me0_eta[j],
+                                             event_.L1Mu_me0_phi[j]);
+
+        event_.L1Mu_me0_st1_dphi[j] = reco::deltaPhi(float(event_.CSCTF_fit_phi1[j]), float(event_.L1Mu_me0_phi[j]));
+        event_.L1Mu_me0_st2_eta[j] = gp_ME0_st2.eta();
+        event_.L1Mu_me0_st2_phi[j] = gp_ME0_st2.phi();
+        event_.L1Mu_me0_st1_isEven[j] = bestMatchingME0Segment.me0DetId().chamber()==0;
+
+        if(verbose) {
+          std::cout<<"Best candidate " << bestMatchingME0Segment << std::endl;
+          std::cout<<"delta phi " << event_.L1Mu_me0_dPhi[j] << std::endl;
+        }
       }
       else {
         if(verbose) cout << "No best matching ME0 stub!" << endl;
       }
-  }
+    }
 
 
     stubMissingSt1 = event_.CSCTF_st1[j] == 99;
@@ -4295,22 +4317,27 @@ DisplacedL1MuFilter::pickBestMatchingME0Segment(float xref, float yref,
                                                 const ME0Segment& newME0Segment,
                                                 int refBx) const
 {
-  bool debug=false;
+  bool debug=true;
 
   if (debug){
-  std::cout << "In function pickBestMatchingME0Segment" << std::endl;
-  std::cout << "candidate 1 " << oldME0Segment.me0DetId() << " "  << oldME0Segment << std::endl;
-  std::cout << "candidate 2 " << newME0Segment.me0DetId() << " "  << newME0Segment << std::endl;
+    std::cout << "In function pickBestMatchingME0Segment..." << std::endl;
   }
 
   // check for invalid/valid
-  if (not isME0SegmentValid(oldME0Segment)) {
+  if (not isME0SegmentValid(oldME0Segment) and isME0SegmentValid(newME0Segment)) {
     if (debug) cout<<"Old segment invalid"<<endl;
+    if (debug) cout <<"Returning " << newME0Segment << endl;
     return newME0Segment;
   }
-  if (not isME0SegmentValid(oldME0Segment)) {
+  if (not isME0SegmentValid(oldME0Segment) and isME0SegmentValid(oldME0Segment)) {
     if (debug) cout<< "New segment invalid"<<endl;
+    if (debug) cout <<"Returning " << oldME0Segment << endl;
     return oldME0Segment;
+  }
+
+  if (debug){
+    std::cout << "candidate 1 " << oldME0Segment.me0DetId() << " "  << oldME0Segment << std::endl;
+    std::cout << "candidate 2 " << newME0Segment.me0DetId() << " "  << newME0Segment << std::endl;
   }
 
   int deltaBXOld = std::abs(oldME0Segment.time() - refBx);
@@ -5653,6 +5680,15 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_sim_hybrid_pt_GE21", event_.CSCTF_sim_hybrid_pt_GE21,"CSCTF_sim_hybrid_pt_GE21[50]/F");
   event_tree_->Branch("CSCTF_L1_hybrid_pt_GE21", event_.CSCTF_L1_hybrid_pt_GE21,"CSCTF_L1_hybrid_pt_GE21[50]/F");
 
+  event_tree_->Branch("L1Mu_me0_eta", event_.L1Mu_me0_eta,"L1Mu_me0_eta[50]/F");
+  event_tree_->Branch("L1Mu_me0_phi", event_.L1Mu_me0_phi,"L1Mu_me0_phi[50]/F");
+  event_tree_->Branch("L1Mu_me0_dPhi", event_.L1Mu_me0_dPhi,"L1Mu_me0_dPhi[50]/F");
+  event_tree_->Branch("L1Mu_me0_dR", event_.L1Mu_me0_dR,"L1Mu_me0_dR[50]/F");
+  event_tree_->Branch("L1Mu_me0_st1_dphi", event_.L1Mu_me0_st1_dphi,"L1Mu_me0_st1_dphi[50]/F");
+  event_tree_->Branch("L1Mu_me0_st2_eta", event_.L1Mu_me0_st2_eta,"L1Mu_me0_st2_eta[50]/F");
+  event_tree_->Branch("L1Mu_me0_st2_phi", event_.L1Mu_me0_st2_phi,"L1Mu_me0_st2_phi[50]/F");
+  event_tree_->Branch("L1Mu_me0_st1_isEven", event_.L1Mu_me0_st1_isEven,"L1Mu_me0_st1_isEven[50]/I");
+
   if (processRPCb_) {
   event_tree_->Branch("nRPCb", &event_.nRPCb);
   event_tree_->Branch("L1Mu_RPCb_index", event_.L1Mu_RPCb_index,"L1Mu_RPCb_index[nL1Mu]/I");
@@ -6268,6 +6304,15 @@ DisplacedL1MuFilter::clearBranches()
     event_.isSimLooseVeto[i] = -1;
     event_.isSimMediumVeto[i] = -1;
     event_.isSimTightVeto[i] = -1;
+
+    event_.L1Mu_me0_eta[i]= 99;
+    event_.L1Mu_me0_phi[i]= 99;
+    event_.L1Mu_me0_dPhi[i]= 99;
+    event_.L1Mu_me0_dR[i]= 99;
+    event_.L1Mu_me0_st1_dphi[i]= 99;
+    event_.L1Mu_me0_st2_eta[i]= 99;
+    event_.L1Mu_me0_st2_phi[i]= 99;
+    event_.L1Mu_me0_st1_isEven[i]= 99;
   }
 
   event_.nRPCb = 0;

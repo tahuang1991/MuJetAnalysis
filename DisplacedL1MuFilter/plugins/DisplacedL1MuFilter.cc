@@ -1183,15 +1183,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   iEventSetup.get<MuonGeometryRecord>().get(me0_geom_);
   me0Geometry_ = &*me0_geom_;
 
-   // typedef std::vector<L1MuGMTCand> GMTs;
-   // edm::Handle<GMTs> aH;
-   // iEvent.getByToken(gmtCandInputLabel_, aH);
-   // const GMTs& l1GmtCands(*aH.product());
-
   edm::Handle<BXVector<l1t::RegionalMuonCand> > aH;
   iEvent.getByToken(gmtInputLabel_, aH);
   const BXVector<l1t::RegionalMuonCand>& l1GmtCands(*aH.product());
-
 
    // edm::Handle<L1MuDTTrackCollection > L1DTTrackPhiH;
    // iEvent.getByToken(L1DTTrackPhiInputLabel_, L1DTTrackPhiH);
@@ -1208,16 +1202,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
    edm::Handle< ME0SegmentCollection > me0Segments;
    iEvent.getByToken(me0SegmentInput_, me0Segments);
-
-   // if (iEventSetup.get< L1MuTriggerScalesRcd >().cacheIdentifier() != muScalesCacheID_ ||
-   //     iEventSetup.get< L1MuTriggerPtScaleRcd >().cacheIdentifier() != muPtScaleCacheID_ )
-   //   {
-   //     iEventSetup.get< L1MuTriggerScalesRcd >().get( muScales );
-   //     iEventSetup.get< L1MuTriggerPtScaleRcd >().get( muPtScale );
-
-   //     muScalesCacheID_  = iEventSetup.get< L1MuTriggerScalesRcd >().cacheIdentifier();
-   //     muPtScaleCacheID_ = iEventSetup.get< L1MuTriggerPtScaleRcd >().cacheIdentifier();
-   //   }
 
    // edm::Handle< std::vector<L1MuRegionalCand> > hL1MuRPCbs;
    // iEvent.getByToken(L1MuRPCbsInputLabel_, hL1MuRPCbs);
@@ -1238,7 +1222,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   // comparator digis
   edm::Handle< CSCComparatorDigiCollection > hCSCComparators;
   iEvent.getByToken(cscComparatorDigiInput_, hCSCComparators);
-  //const CSCComparatorDigiCollection& CSCComparators(*hCSCComparators.product());
 
   // LCTs
   edm::Handle< CSCCorrelatedLCTDigiCollection > hCSCCorrelatedLCTs;
@@ -1251,14 +1234,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   const GEMDigiCollection& GEMDigis(*hGEMDigis.product());
 
   // GEM pads and copads
-  //edm::Handle< GEMCSCPadDigiCollection > hGEMCSCPads;
   edm::Handle< GEMPadDigiCollection > hGEMCSCPads;
   iEvent.getByToken(gemPadDigiInput_, hGEMCSCPads);
-  //const GEMCSCPadDigiCollection& GEMCSCPads(*hGEMCSCPads.product());
-
-  // edm::Handle< GEMPadDigiCollection > hGEMCSCCoPads;
-  // iEvent.getByToken(gemCoPadDigiInput_, hGEMCSCCoPads);
-  //const GEMCSCCoPadDigiCollection& GEMCSCCoPads(*hGEMCSCCoPads.product());
 
   // L1 TrackingTrigger Analysis
   /*
@@ -2532,14 +2509,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         }
       }
 
-      cout << "Checking matching ME0 segments" << endl;
+      if(verbose) cout << "Checking matching ME0 segments" << endl;
       ME0Segment bestMatchingME0Segment;
-      // Match CSCTF/EMTF to ME0 segment
-      for (auto thisSegment = me0Segments->begin(); thisSegment != me0Segments->end(); ++thisSegment){
-        cout << "Candidate segment " << *thisSegment << endl;
 
-        ME0DetId id = ME0DetId(thisSegment->me0DetId());
-        cout << "ME0DetId " << id  << endl;
+      // Match EMTF to ME0 segment
+      for (auto thisSegment = me0Segments->begin(); thisSegment != me0Segments->end(); ++thisSegment){
+
+        ME0DetId id = thisSegment->me0DetId();
         auto chamber = me0Geometry_->chamber(id);
 
         const int zSign(event_.CSCTF_eta[j] > 0);
@@ -2550,24 +2526,29 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
         // BXs have to match
         int deltaBX = std::abs(thisSegment->time() - (event_.CSCTF_bx[j]));
-        if (deltaBX > 1) continue;
+        if (deltaBX > 0) continue; // segment must be in time!
 
         if(verbose) std::cout << id << std::endl;
         if(verbose) std::cout<<"Candidate " << *thisSegment << std::endl;
         bestMatchingME0Segment = pickBestMatchingME0Segment(allxs[0], allys[0],
-                                                            bestMatchingME0Segment, *thisSegment, 6 + event_.CSCTF_bx[j]);
+                                                            bestMatchingME0Segment, *thisSegment, event_.CSCTF_bx[j]);
       }
 
-      // fill the properties of the best matching one!
-      auto bestMatchingME0Chamber = me0Geometry_->chamber(bestMatchingME0Segment.me0DetId());
+      if (isME0SegmentValid(bestMatchingME0Segment)){
+        // fill the properties of the best matching one!
+        auto bestMatchingME0Chamber = me0Geometry_->chamber(bestMatchingME0Segment.me0DetId());
 
-      LocalPoint thisPosition(bestMatchingME0Segment.localPosition());
-      GlobalPoint SegPos(bestMatchingME0Chamber->toGlobal(thisPosition));
+        LocalPoint thisPosition(bestMatchingME0Segment.localPosition());
+        GlobalPoint SegPos(bestMatchingME0Chamber->toGlobal(thisPosition));
 
-      event_.ME0_eta[j] = SegPos.eta();
-      event_.ME0_phi[j] = SegPos.phi();
-      event_.ME0_dphi[j] = bestMatchingME0Segment.deltaPhi();
-    }
+        event_.ME0_eta[j] = SegPos.eta();
+        event_.ME0_phi[j] = SegPos.phi();
+        event_.ME0_dphi[j] = bestMatchingME0Segment.deltaPhi();
+      }
+      else {
+        if(verbose) cout << "No best matching ME0 stub!" << endl;
+      }
+  }
 
 
     stubMissingSt1 = event_.CSCTF_st1[j] == 99;

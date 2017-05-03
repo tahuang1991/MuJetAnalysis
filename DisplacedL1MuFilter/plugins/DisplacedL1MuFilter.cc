@@ -2542,12 +2542,25 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       if (isME0SegmentValid(bestMatchingME0Segment)){
         // fill the properties of the best matching one!
 
-        if(verbose) std::cout << "Determine best candidate properties..." << std::endl;
-        auto bestMatchingME0Chamber = me0Geometry_->chamber(bestMatchingME0Segment.me0DetId());
+        if(verbose) {
+          std::cout << "Determine best candidate properties..." << std::endl;
+          std::cout << "Best candidate " << bestMatchingME0Segment << std::endl;
+          std::cout << "ME0DetId " << ME0DetId(bestMatchingME0Segment.me0DetId()) << std::endl;
+        }
+        auto bestMatchingME0Chamber = me0Geometry_->chamber(ME0DetId(bestMatchingME0Segment.me0DetId()));
 
         LocalPoint thisPosition(bestMatchingME0Segment.localPosition());
+        if(verbose) std::cout << "LocalPoint " << thisPosition << std::endl;
         GlobalPoint SegPos(bestMatchingME0Chamber->toGlobal(thisPosition));
-        GlobalPoint gp_ME0_st2(propagateFromME0ToCSC(bestMatchingME0Segment, event_.CSCTF_pt[j], event_.CSCTF_charge[j], 2).globalPosition());
+        if(verbose) std::cout << "GlobalPoint " << SegPos << std::endl;
+
+        auto tsos_ME0_st2 = propagateFromME0ToCSC(bestMatchingME0Segment, event_.CSCTF_pt[j], event_.CSCTF_charge[j], 2);
+        if (tsos_ME0_st2.isValid()){
+          GlobalPoint gp_ME0_st2(tsos_ME0_st2.globalPosition());
+          if(verbose) std::cout << "GlobalPoint " << gp_ME0_st2 << std::endl;
+          event_.L1Mu_me0_st2_eta[j] = gp_ME0_st2.eta();
+          event_.L1Mu_me0_st2_phi[j] = gp_ME0_st2.phi();
+        }
 
         event_.L1Mu_me0_eta[j] = SegPos.eta();
         event_.L1Mu_me0_phi[j] = normalizedPhi(float(SegPos.phi()));
@@ -2558,12 +2571,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                                              event_.L1Mu_me0_phi[j]);
 
         event_.L1Mu_me0_st1_dphi[j] = reco::deltaPhi(float(event_.CSCTF_fit_phi1[j]), float(event_.L1Mu_me0_phi[j]));
-        event_.L1Mu_me0_st2_eta[j] = gp_ME0_st2.eta();
-        event_.L1Mu_me0_st2_phi[j] = gp_ME0_st2.phi();
-        event_.L1Mu_me0_st1_isEven[j] = bestMatchingME0Segment.me0DetId().chamber()==0;
+        event_.L1Mu_me0_st1_isEven[j] = bestMatchingME0Segment.me0DetId().chamber()/2==0;
+        if(verbose) std::cout << "Basic properties done " << std::endl;
 
         if(verbose) {
-          std::cout<<"Best candidate " << bestMatchingME0Segment << std::endl;
           std::cout<<"delta phi " << event_.L1Mu_me0_dPhi[j] << std::endl;
         }
       }
@@ -4308,7 +4319,7 @@ DisplacedL1MuFilter::pickBestMatchingStub(float xref, float yref,
 bool
 DisplacedL1MuFilter::isME0SegmentValid(const ME0Segment& seg) const
 {
-  return (seg.nRecHits() != 0 and seg.chi2()!=0);
+  return seg.nRecHits() != 0;
 }
 
 ME0Segment
@@ -4329,15 +4340,16 @@ DisplacedL1MuFilter::pickBestMatchingME0Segment(float xref, float yref,
     if (debug) cout <<"Returning " << newME0Segment << endl;
     return newME0Segment;
   }
-  if (not isME0SegmentValid(oldME0Segment) and isME0SegmentValid(oldME0Segment)) {
+  if (not isME0SegmentValid(newME0Segment) and isME0SegmentValid(oldME0Segment)) {
     if (debug) cout<< "New segment invalid"<<endl;
     if (debug) cout <<"Returning " << oldME0Segment << endl;
     return oldME0Segment;
   }
 
   if (debug){
-    std::cout << "candidate 1 " << oldME0Segment.me0DetId() << " "  << oldME0Segment << std::endl;
-    std::cout << "candidate 2 " << newME0Segment.me0DetId() << " "  << newME0Segment << std::endl;
+    std::cout << "Both ME0 segments valid " << std::endl;
+    std::cout << "candidate 1 " << ME0DetId(oldME0Segment.me0DetId()) << " "  << oldME0Segment << std::endl;
+    std::cout << "candidate 2 " << ME0DetId(newME0Segment.me0DetId()) << " "  << newME0Segment << std::endl;
   }
 
   int deltaBXOld = std::abs(oldME0Segment.time() - refBx);

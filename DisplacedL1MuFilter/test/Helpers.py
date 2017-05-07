@@ -1741,14 +1741,20 @@ def addfiles(ch, dirname=".", ext=".root"):
   theInputFiles = []
   if not os.path.isdir(dirname):
     print "ERROR: This is not a valid directory: ", dirname
-    exit()
-  ls = os.listdir(dirname)
-  theInputFiles.extend([dirname[:] + x for x in ls if x.endswith(ext)])
-  for pfile in theInputFiles:
-    #print pfile
-    rootFile = TFile(pfile)
-    #if(not rootFile.IsZombie()):
-    ch.Add(pfile)
+  else:
+    ls = os.listdir(dirname)
+    theInputFiles.extend([dirname[:] + x for x in ls if x.endswith(ext)])
+    for pfile in theInputFiles:
+      #print pfile
+      ## follow guidelines!!!
+      #if '/eos/uscms' in pfile:
+      #  pfile = pfile[10:]
+      #  print pfile
+      #  pfile = 'root://cmsxrootd.fnal.gov/' + pfile
+      #rootFile = TFile(pfile)
+      print 'root://cmsxrootd.fnal.gov/' + pfile[10:]
+      #if(not rootFile.IsZombie()):
+      ch.Add('root://cmsxrootd.fnal.gov/' + pfile[10:])
 
   return ch
 

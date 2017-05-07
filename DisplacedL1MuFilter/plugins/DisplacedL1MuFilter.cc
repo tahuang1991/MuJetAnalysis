@@ -264,6 +264,7 @@ struct MyEvent
 
   Int_t nL1Mu;
   Int_t nL1Tk;
+  Int_t nME0Seg;
   Float_t L1Mu_pt[kMaxL1Mu], L1Mu_eta[kMaxL1Mu], L1Mu_phi[kMaxL1Mu];
   Int_t L1Mu_charge[kMaxL1Mu], L1Mu_bx[kMaxL1Mu];
   Int_t L1Mu_quality[kMaxL1Mu];
@@ -353,7 +354,7 @@ struct MyEvent
   Float_t ME0_dphi[kMaxCSCTF];
 
   Float_t L1Mu_me0_eta[kMaxCSCTF], L1Mu_me0_phi[kMaxCSCTF], L1Mu_me0_dPhi[kMaxCSCTF];
-  Float_t L1Mu_me0_dR[kMaxCSCTF], L1Mu_me0_st1_dphi[kMaxCSCTF];
+  Float_t L1Mu_me0_dR[kMaxCSCTF], L1Mu_me0_st1_dphi[kMaxCSCTF], L1Mu_me0_st1_dphi_norm[kMaxCSCTF];
   Float_t L1Mu_me0_st2_eta[kMaxCSCTF], L1Mu_me0_st2_phi[kMaxCSCTF];
   Int_t L1Mu_me0_st1_isEven[kMaxCSCTF];
 
@@ -564,7 +565,7 @@ phiL1DTTrack(const L1MuDTTrack& track)
 {
   int phi_local = track.phi_packed(); //range: 0 < phi_local < 31
   if ( phi_local > 15 ) phi_local -= 32; //range: -16 < phi_local < 15
-  double dttrk_phi_global = normalizedPhi((phi_local*(M_PI/72.))+((M_PI/6.)*track.spid().sector()));// + 12*i->scNum(); //range: -16 < phi_global < 147
+  double dttrk_phi_global = normalizedPhi((float) ( (phi_local*(M_PI/72.))+((M_PI/6.)*track.spid().sector()) ) );// + 12*i->scNum(); //range: -16 < phi_global < 147
   // if(dttrk_phi_global < 0) dttrk_phi_global+=2*M_PI; //range: 0 < phi_global < 147
   // if(dttrk_phi_global > 2*M_PI) dttrk_phi_global-=2*M_PI; //range: 0 < phi_global < 143
   return dttrk_phi_global;
@@ -799,6 +800,11 @@ private:
                              int refBx) const;
   bool
   isME0SegmentValid(const ME0Segment& seg) const;
+  int getME0SegmentBX(const ME0Segment& seg) const {
+    if (std::abs(seg.time()) < 12.5) return 0;
+    if (std::abs(seg.time()) < 12.5+25 and std::abs(seg.time()) >= 12.5) return 1;
+    return 2;
+  }
 
   void extrapolate(const SimTrack&tk, const SimVertex&, GlobalPoint&);
   void extrapolate(const reco::GenParticle &tk, int station, GlobalPoint&, GlobalVector&);
@@ -1204,9 +1210,28 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
    edm::Handle< l1t::EMTFTrackCollection > hl1Tracks;
    iEvent.getByToken(emtfTrackInputLabel_, hl1Tracks);
    const l1t::EMTFTrackCollection& l1Tracks(*hl1Tracks.product());
+   // for (const auto& track: l1Tracks){
+   //   std::cout << std::endl
+   //             << "L1CSC pt  = " << track.Pt()
+   //             << ", eta  = " << track.Eta()
+   //             << ", phi  = " << normalizedPhi(track.Phi_glob_rad())
+   //             << ", bx = " << track.BX()
+   //             << std::endl<< std::endl;
+   // }
 
    edm::Handle< ME0SegmentCollection > me0Segments;
    iEvent.getByToken(me0SegmentInput_, me0Segments);
+   int iSeg=0;
+   for (auto thisSegment = me0Segments->begin(); thisSegment != me0Segments->end(); ++thisSegment){
+      iSeg++;
+   //   ME0DetId id = thisSegment->me0DetId();
+   //   std::cout << "\tME0DetId " << id << std::endl;
+   //   std::cout << "\tME0Segment " << *thisSegment << std::endl << std::endl;
+   //   LocalPoint thisPosition(thisSegment->localPosition());
+   //   GlobalPoint SegPos = me0Geometry_->idToDet(thisSegment->me0DetId())->surface().toGlobal(thisPosition);
+   //   std::cout << "\teta phi " << SegPos.eta() << " " << SegPos.phi() << std::endl;
+   }
+   event_.nME0Seg = iSeg;
 
    // edm::Handle< std::vector<L1MuRegionalCand> > hL1MuRPCbs;
    // iEvent.getByToken(L1MuRPCbsInputLabel_, hL1MuRPCbs);
@@ -2319,7 +2344,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     // calculate pt, eta and phi (don't forget to store the sign)
     event_.CSCTF_pt[j] = track.Pt(); //muPtScale->getPtScale()->getLowEdge(gpt & 0x1f) + 1.e-6;
     event_.CSCTF_eta[j] = track.Eta(); //muScales->getRegionalEtaScale(2)->getCenter(track.eta_packed()) * sign;
-    event_.CSCTF_phi[j] = normalizedPhi(track.Phi_glob_rad()); //normalizedPhi(muScales->getPhiScale()->getLowEdge(phiL1CSCTrack(track)));
+    event_.CSCTF_phi[j] = normalizedPhi((float) track.Phi_glob_rad()); //normalizedPhi(muScales->getPhiScale()->getLowEdge(phiL1CSCTrack(track)));
     event_.CSCTF_bx[j] = track.BX();
     event_.CSCTF_quality[j] = track.Quality();//quality;
     event_.CSCTF_charge[j] = track.Charge();//chargeValue();
@@ -2329,6 +2354,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                 << "L1CSC pt  = " << event_.CSCTF_pt[j]
                 << ", eta  = " << event_.CSCTF_eta[j]
                 << ", phi  = " << event_.CSCTF_phi[j]
+                << ", phi-original  = " << track.Phi_glob_rad()
                 << ", bx = " << event_.CSCTF_bx[j]
                 << ", quality = " << event_.CSCTF_quality[j]
                 << std::endl<< std::endl;
@@ -2365,6 +2391,26 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       chamberid_lct[ch_id] = v;
     }
 
+    std::vector<float> xs;
+    std::vector<float> ys;
+    std::vector<float> zs;
+    //std::cout << "Get stub positions" << std::endl;
+    getStubPositions(j, xs, ys, zs);
+
+    //std::cout << "fit stub positions with straight line" << std::endl;
+    float alpha_x, beta_x, alpha_y, beta_y;
+    fitStraightLine(zs, xs, alpha_x, beta_x);
+    fitStraightLine(zs, ys, alpha_y, beta_y);
+
+    //std::cout << "Get positions stations" << std::endl;
+    std::vector<float> allxs;
+    std::vector<float> allys;
+    int sign_z = int(event_.CSCTF_eta[j]/std::abs(event_.CSCTF_eta[j]));
+    getPositionsStations(alpha_x, beta_x, alpha_y, beta_y,
+                         allxs, allys, sign_z);
+
+
+
     /*
     CSCTF stub recovery per CSCTF track
     The CSC track-finder may drop certain stubs if they don't match the pattern
@@ -2378,25 +2424,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
     //bool doStubRecovery = true;
     if (doStubRecovery_ and atLeast1StubMissing){
-
-      std::vector<float> xs;
-      std::vector<float> ys;
-      std::vector<float> zs;
-      //std::cout << "Get stub positions" << std::endl;
-      getStubPositions(j, xs, ys, zs);
-
-      //std::cout << "fit stub positions with straight line" << std::endl;
-      float alpha_x, beta_x, alpha_y, beta_y;
-      fitStraightLine(zs, xs, alpha_x, beta_x);
-      fitStraightLine(zs, ys, alpha_y, beta_y);
-
-      //std::cout << "Get positions stations" << std::endl;
-      std::vector<float> allxs;
-      std::vector<float> allys;
-      int sign_z = int(event_.CSCTF_eta[j]/std::abs(event_.CSCTF_eta[j]));
-      getPositionsStations(alpha_x, beta_x, alpha_y, beta_y,
-                           allxs, allys, sign_z);
-
 
       int triggerSector = track.Sector();
       //std::cout << "trigger sector " << triggerSector << std::endl;
@@ -2513,119 +2540,129 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           }
         }
       }
-
-      if(verbose) cout << "Checking matching ME0 segments" << endl;
-      ME0Segment bestMatchingME0Segment;
-
-      // Match EMTF to ME0 segment
-      for (auto thisSegment = me0Segments->begin(); thisSegment != me0Segments->end(); ++thisSegment){
-
-        ME0DetId id = thisSegment->me0DetId();
-        auto chamber = me0Geometry_->chamber(id);
-
-        const int zSign(event_.CSCTF_eta[j] > 0);
-        if ( zSign * chamber->toGlobal(thisSegment->localPosition()).z() < 0 ) continue;
-
-        LocalPoint thisPosition(thisSegment->localPosition());
-        GlobalPoint SegPos(chamber->toGlobal(thisPosition));
-
-        // BXs have to match
-        int deltaBX = std::abs(thisSegment->time() - (event_.CSCTF_bx[j]));
-        if (deltaBX > 0) continue; // segment must be in time!
-
-        if(verbose) std::cout << id << std::endl;
-        if(verbose) std::cout<<"Candidate " << *thisSegment << std::endl;
-        bestMatchingME0Segment = pickBestMatchingME0Segment(allxs[0], allys[0],
-                                                            bestMatchingME0Segment, *thisSegment, event_.CSCTF_bx[j]);
-      }
-
-      if (isME0SegmentValid(bestMatchingME0Segment)){
-        // fill the properties of the best matching one!
-
-        if(verbose) {
-          std::cout << "Determine best candidate properties..." << std::endl;
-          std::cout << "Best candidate " << bestMatchingME0Segment << std::endl;
-          std::cout << "ME0DetId " << ME0DetId(bestMatchingME0Segment.me0DetId()) << std::endl;
-        }
-        auto bestMatchingME0Chamber = me0Geometry_->chamber(ME0DetId(bestMatchingME0Segment.me0DetId()));
-
-        LocalPoint thisPosition(bestMatchingME0Segment.localPosition());
-        if(verbose) std::cout << "LocalPoint " << thisPosition << std::endl;
-        GlobalPoint SegPos(bestMatchingME0Chamber->toGlobal(thisPosition));
-        if(verbose) std::cout << "GlobalPoint " << SegPos << std::endl;
-
-        auto tsos_ME0_st2 = propagateFromME0ToCSC(bestMatchingME0Segment, event_.CSCTF_pt[j], event_.CSCTF_charge[j], 2);
-        if (tsos_ME0_st2.isValid()){
-          GlobalPoint gp_ME0_st2(tsos_ME0_st2.globalPosition());
-          if(verbose) std::cout << "GlobalPoint " << gp_ME0_st2 << std::endl;
-          event_.L1Mu_me0_st2_eta[j] = gp_ME0_st2.eta();
-          event_.L1Mu_me0_st2_phi[j] = gp_ME0_st2.phi();
-        }
-
-        event_.L1Mu_me0_eta[j] = SegPos.eta();
-        event_.L1Mu_me0_phi[j] = normalizedPhi(float(SegPos.phi()));
-        event_.L1Mu_me0_dPhi[j] = bestMatchingME0Segment.deltaPhi();
-        event_.L1Mu_me0_dR[j] = reco::deltaR(event_.CSCTF_eta[j],
-                                             event_.CSCTF_phi[j],
-                                             event_.L1Mu_me0_eta[j],
-                                             event_.L1Mu_me0_phi[j]);
-
-        event_.L1Mu_me0_st1_dphi[j] = reco::deltaPhi(float(event_.CSCTF_fit_phi1[j]), float(event_.L1Mu_me0_phi[j]));
-        event_.L1Mu_me0_st1_isEven[j] = bestMatchingME0Segment.me0DetId().chamber()/2==0;
-        if(verbose) std::cout << "Basic properties done " << std::endl;
-
-        if(verbose) {
-          std::cout<<"delta phi " << event_.L1Mu_me0_dPhi[j] << std::endl;
-        }
-      }
-      else {
-        if(verbose) cout << "No best matching ME0 stub!" << endl;
-      }
     }
 
 
     stubMissingSt1 = event_.CSCTF_st1[j] == 99;
     stubMissingSt2 = event_.CSCTF_st2[j] == 99;
-    if(verbose) cout << "Stub missing in station 1: " << bool(stubMissingSt1) << endl;
-    if(verbose) cout << "Stub missing in station 2: " << bool(stubMissingSt2) << endl;
+    if(verbose) cout << "Stub still missing in station 1: " << bool(stubMissingSt1) << endl;
+    if(verbose) cout << "Stub still missing in station 2: " << bool(stubMissingSt2) << endl;
 
     // do a fit through all stubs
-    std::vector<float> xs;
-    std::vector<float> ys;
-    std::vector<float> zs;
+    std::vector<float> xs_new;
+    std::vector<float> ys_new;
+    std::vector<float> zs_new;
 
     if (event_.CSCTF_st1[j] != 99) {
-      xs.push_back(event_.CSCTF_fit_x1[j]);
-      ys.push_back(event_.CSCTF_fit_y1[j]);
-      zs.push_back(event_.CSCTF_fit_z1[j]);
+      xs_new.push_back(event_.CSCTF_fit_x1[j]);
+      ys_new.push_back(event_.CSCTF_fit_y1[j]);
+      zs_new.push_back(event_.CSCTF_fit_z1[j]);
     }
     if (event_.CSCTF_st2[j] != 99) {
-      xs.push_back(event_.CSCTF_fit_x2[j]);
-      ys.push_back(event_.CSCTF_fit_y2[j]);
-      zs.push_back(event_.CSCTF_fit_z2[j]);
+      xs_new.push_back(event_.CSCTF_fit_x2[j]);
+      ys_new.push_back(event_.CSCTF_fit_y2[j]);
+      zs_new.push_back(event_.CSCTF_fit_z2[j]);
     }
     if (event_.CSCTF_st3[j] != 99) {
-      xs.push_back(event_.CSCTF_fit_x3[j]);
-      ys.push_back(event_.CSCTF_fit_y3[j]);
-      zs.push_back(event_.CSCTF_fit_z3[j]);
+      xs_new.push_back(event_.CSCTF_fit_x3[j]);
+      ys_new.push_back(event_.CSCTF_fit_y3[j]);
+      zs_new.push_back(event_.CSCTF_fit_z3[j]);
     }
     if (event_.CSCTF_st4[j] != 99) {
-      xs.push_back(event_.CSCTF_fit_x4[j]);
-      ys.push_back(event_.CSCTF_fit_y4[j]);
-      zs.push_back(event_.CSCTF_fit_z4[j]);
+      xs_new.push_back(event_.CSCTF_fit_x4[j]);
+      ys_new.push_back(event_.CSCTF_fit_y4[j]);
+      zs_new.push_back(event_.CSCTF_fit_z4[j]);
     }
 
-    float alpha_x, beta_x, alpha_y, beta_y;
-    fitStraightLine(zs, xs, alpha_x, beta_x);
-    fitStraightLine(zs, ys, alpha_y, beta_y);
+    float alpha_x_new, beta_x_new, alpha_y_new, beta_y_new;
+    fitStraightLine(zs_new, xs_new, alpha_x_new, beta_x_new);
+    fitStraightLine(zs_new, ys_new, alpha_y_new, beta_y_new);
 
     //std::cout << "Get positions stations" << std::endl;
-    std::vector<float> allxs;
-    std::vector<float> allys;
+    std::vector<float> allxs_new;
+    std::vector<float> allys_new;
 
-    int sign_z = int(event_.CSCTF_eta[j]/std::abs(event_.CSCTF_eta[j]));
-    getPositionsStations(alpha_x, beta_x, alpha_y, beta_y,
-                         allxs, allys, sign_z);
+    getPositionsStations(alpha_x_new, beta_x_new, alpha_y_new, beta_y_new,
+                         allxs_new, allys_new, sign_z);
+
+
+
+
+
+    if(verbose) cout << "Checking matching ME0 segments" << endl;
+    ME0Segment bestMatchingME0Segment;
+
+    if(verbose) cout << "Find best match:" << endl;
+    // Match EMTF to ME0 segment
+    for (auto thisSegment = me0Segments->begin(); thisSegment != me0Segments->end(); ++thisSegment){
+
+      ME0DetId id = thisSegment->me0DetId();
+      LocalPoint thisPosition(thisSegment->localPosition());
+      GlobalPoint SegPos = me0Geometry_->idToDet(thisSegment->me0DetId())->surface().toGlobal(thisPosition);
+
+      if (event_.CSCTF_eta[j] * SegPos.eta() < 0 ) continue;
+
+      if(verbose) {
+        std::cout << "ME0DetId " << id << std::endl;
+        std::cout<<"Candidate " << *thisSegment << std::endl;
+        std::cout<<"eta phi " << SegPos.eta() << " " << normalizedPhi((float)SegPos.phi()) << std::endl;
+      }
+      // BXs have to match
+      //int deltaBX = std::abs(getME0SegmentBX(*thisSegment) - (event_.CSCTF_bx[j]));
+      //if (deltaBX > 0) continue; // segment must be in time!
+
+      bestMatchingME0Segment = pickBestMatchingME0Segment(allxs_new[0], allys_new[0],
+                                                          bestMatchingME0Segment, *thisSegment, event_.CSCTF_bx[j]);
+    }
+
+    // fill the properties of the best matching one!
+    if (isME0SegmentValid(bestMatchingME0Segment)){
+
+      LocalPoint thisPosition(bestMatchingME0Segment.localPosition());
+      GlobalPoint SegPos = me0Geometry_->idToDet(bestMatchingME0Segment.me0DetId())->surface().toGlobal(thisPosition);
+      if(verbose) {
+        std::cout << "Determine best candidate properties..." << std::endl;
+        std::cout << "ME0DetId " << ME0DetId(bestMatchingME0Segment.me0DetId()) << std::endl;
+        std::cout << "Best candidate " << bestMatchingME0Segment << std::endl;
+        std::cout << "eta phi " << SegPos.eta() << " " << normalizedPhi((float)SegPos.phi()) << " original " << SegPos.phi() << std::endl;
+      }
+
+      event_.L1Mu_me0_eta[j] = SegPos.eta();
+      event_.L1Mu_me0_phi[j] = normalizedPhi(float(SegPos.phi()));
+      event_.L1Mu_me0_dPhi[j] = bestMatchingME0Segment.deltaPhi();
+      event_.L1Mu_me0_dR[j] = reco::deltaR(event_.CSCTF_eta[j],
+                                           event_.CSCTF_phi[j],
+                                           event_.L1Mu_me0_eta[j],
+                                           event_.L1Mu_me0_phi[j]);
+
+      auto tsos_ME0_st2 = propagateFromME0ToCSC(bestMatchingME0Segment, event_.CSCTF_pt[j], event_.CSCTF_charge[j], 2);
+      if (tsos_ME0_st2.isValid()){
+        GlobalPoint gp_ME0_st2(tsos_ME0_st2.globalPosition());
+        if(verbose) std::cout << "Propagated GlobalPoint st2 " << gp_ME0_st2 << std::endl;
+        event_.L1Mu_me0_st2_eta[j] = gp_ME0_st2.eta();
+        event_.L1Mu_me0_st2_phi[j] = normalizedPhi(float(gp_ME0_st2.phi()));
+      }
+
+      event_.L1Mu_me0_st1_dphi[j] = reco::deltaPhi(float(event_.CSCTF_fit_phi1[j]), float(event_.L1Mu_me0_phi[j]));
+      event_.L1Mu_me0_st1_isEven[j] = bestMatchingME0Segment.me0DetId().chamber()/2==0;
+      float dist_ME0_ME11 = std::abs(SegPos.z() - event_.CSCTF_fit_z1[j]);
+
+      event_.L1Mu_me0_st1_dphi_norm[j] = event_.L1Mu_me0_st1_dphi[j]/dist_ME0_ME11;
+
+      if(verbose) {
+        std::cout << "phi ME1/1, phi ME0, dPhi(ME1/1,ME0): "
+                  << event_.CSCTF_phi1[j] << ", "
+                  << event_.L1Mu_me0_phi[j]   << ", "
+                  << event_.L1Mu_me0_st1_dphi[j] << ", "
+                  << event_.L1Mu_me0_st1_dphi_norm[j]
+                  << std::endl;
+        std::cout << "ME0 dphi: " << event_.L1Mu_me0_dPhi[j] << std::endl;
+      }
+    }
+    else {
+      if(verbose) cout << "No best matching ME0 stub!" << endl;
+    }
+
 
 
     if(verbose) std::cout << "Matching pads" << std::endl;
@@ -2808,7 +2845,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           // L1
           if ( std::abs(p.z() - 794.439) < 0.01 or std::abs(p.z() + 794.439) < 0.01 or
                std::abs(p.z() - 796.941) < 0.01 or std::abs(p.z() + 796.941) < 0.01) {
-            float dPhiGEMCSC(std::abs(reco::deltaPhi(event_.CSCTF_fit_phi2[j], p.phi())));
+            float dPhiGEMCSC(std::abs(reco::deltaPhi(event_.CSCTF_fit_phi2[j], (float)p.phi())));
             if (dPhiGEMCSC  < minDPhi_L1) {
               std::cout << "New 2-pad GE21 phi L1 " << p.phi() << std::endl;
               minDPhi_L1 = dPhiGEMCSC;
@@ -2818,7 +2855,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           // L2
           if ( std::abs(p.z() - 798.179) < 0.01 or std::abs(p.z() + 798.179) < 0.01 or
                std::abs(p.z() - 800.781) < 0.01 or std::abs(p.z() + 800.781) < 0.01) {
-            float dPhiGEMCSC(std::abs(reco::deltaPhi(event_.CSCTF_fit_phi2[j], p.phi())));
+            float dPhiGEMCSC(std::abs(reco::deltaPhi(event_.CSCTF_fit_phi2[j], (float)p.phi())));
             if (dPhiGEMCSC  < minDPhi_L2) {
               std::cout << "New 2-pad GE21 phi L2 " << p.phi() << std::endl;
               minDPhi_L2 = dPhiGEMCSC;
@@ -2837,7 +2874,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                                                       detid_pads,
                                                       iEventSetup,
                                                       iEvent);
-    ptAssignmentUnit.setVerbose(true);
+    ptAssignmentUnit.setVerbose(false);
     ptAssignmentUnit.setCharge(event_.CSCTF_charge[j]);
     event_.CSCTF_L1_eta_st2[j] = ptAssignmentUnit.getTrackEta();
 
@@ -4247,9 +4284,12 @@ GlobalPoint
 DisplacedL1MuFilter::getME0SpecificPoint(unsigned int rawId, const ME0Segment& seg) const
 {
   ME0DetId Id = ME0DetId(rawId);
-  auto chamber = me0Geometry_->chamber(Id);
+  // auto chamber = me0Geometry_->chamber(Id);
+  // LocalPoint thisPosition(thisSegment->localPosition());
+  // GlobalPoint SegPos =
+
   LocalPoint thisPosition(seg.localPosition());
-  GlobalPoint SegPos(chamber->toGlobal(thisPosition));
+  GlobalPoint SegPos(me0Geometry_->idToDet(Id)->surface().toGlobal(thisPosition));
   return SegPos;
 }
 
@@ -4291,7 +4331,7 @@ DisplacedL1MuFilter::pickBestMatchingStub(float xref, float yref,
   }
   if ( (deltaBXOld!=0 and deltaBXNew!=0) or
        (deltaBXOld==0 and deltaBXNew==0) ){
-    if (debug) cout<<"Both stubs out of time"<<endl;
+    if (debug) cout<<"Both stubs int time or out of time"<<endl;
     // pick the one with the better matching wiregroup and halfstrip
     auto gpOld = getCSCSpecificPoint2(oldStub.first.rawId(), oldStub.second);
     auto gpNew = getCSCSpecificPoint2(newStub.first.rawId(), newStub.second);
@@ -4352,8 +4392,8 @@ DisplacedL1MuFilter::pickBestMatchingME0Segment(float xref, float yref,
     std::cout << "candidate 2 " << ME0DetId(newME0Segment.me0DetId()) << " "  << newME0Segment << std::endl;
   }
 
-  int deltaBXOld = std::abs(oldME0Segment.time() - refBx);
-  int deltaBXNew = std::abs(newME0Segment.time() - refBx);
+  int deltaBXOld = std::abs(getME0SegmentBX(oldME0Segment) - refBx);
+  int deltaBXNew = std::abs(getME0SegmentBX(newME0Segment) - refBx);
 
   if (deltaBXOld==0 and deltaBXNew!=0) {
     if (debug) cout<<"Old segment in time, new segment out of time"<<endl;
@@ -5336,6 +5376,7 @@ void DisplacedL1MuFilter::bookL1MuTree()
 
   event_tree_->Branch("nL1Mu", &event_.nL1Mu);
   event_tree_->Branch("nL1Tk", &event_.nL1Tk);
+  event_tree_->Branch("nME0Seg", &event_.nME0Seg);
 
   event_tree_->Branch("L1Mu_pt",event_.L1Mu_pt,"L1Mu_pt[nL1Mu]/F");
   event_tree_->Branch("L1Mu_eta", event_.L1Mu_eta,"L1Mu_eta[nL1Mu]/F");
@@ -5697,6 +5738,7 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("L1Mu_me0_dPhi", event_.L1Mu_me0_dPhi,"L1Mu_me0_dPhi[50]/F");
   event_tree_->Branch("L1Mu_me0_dR", event_.L1Mu_me0_dR,"L1Mu_me0_dR[50]/F");
   event_tree_->Branch("L1Mu_me0_st1_dphi", event_.L1Mu_me0_st1_dphi,"L1Mu_me0_st1_dphi[50]/F");
+  event_tree_->Branch("L1Mu_me0_st1_dphi_norm", event_.L1Mu_me0_st1_dphi_norm,"L1Mu_me0_st1_dphi_norm[50]/F");
   event_tree_->Branch("L1Mu_me0_st2_eta", event_.L1Mu_me0_st2_eta,"L1Mu_me0_st2_eta[50]/F");
   event_tree_->Branch("L1Mu_me0_st2_phi", event_.L1Mu_me0_st2_phi,"L1Mu_me0_st2_phi[50]/F");
   event_tree_->Branch("L1Mu_me0_st1_isEven", event_.L1Mu_me0_st1_isEven,"L1Mu_me0_st1_isEven[50]/I");
@@ -6322,6 +6364,7 @@ DisplacedL1MuFilter::clearBranches()
     event_.L1Mu_me0_dPhi[i]= 99;
     event_.L1Mu_me0_dR[i]= 99;
     event_.L1Mu_me0_st1_dphi[i]= 99;
+    event_.L1Mu_me0_st1_dphi_norm[i]= 99;
     event_.L1Mu_me0_st2_eta[i]= 99;
     event_.L1Mu_me0_st2_phi[i]= 99;
     event_.L1Mu_me0_st1_isEven[i]= 99;

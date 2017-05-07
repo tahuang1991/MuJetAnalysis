@@ -68,7 +68,7 @@ process.DisplacedL1MuFilter_PhaseIIGE21 = cms.EDFilter("DisplacedL1MuFilter",
     processDTTF = cms.bool(True),
     doSimAnalysis = cms.bool(True),
     doGenAnalysis = cms.bool(True),
-    doStubRecovery = cms.bool(True)
+    doStubRecovery = cms.bool(False)
 )
 matching = process.DisplacedL1MuFilter_PhaseIIGE21.simTrackMatching
 matching.simTrack.minPt = 1.5

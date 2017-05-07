@@ -12,7 +12,7 @@ def is_L1Mu_isolated(treeHits, L1Mu_index, vetoType):
     isL1LooseVeto = treeHits.isL1LooseVeto[L1Mu_index]==1
     isL1MediumVeto = treeHits.isL1MediumVeto[L1Mu_index]==1
     isL1TightVeto = treeHits.isL1TightVeto[L1Mu_index]==1
-    
+
     # The loose veto rejects prompt muons by matching a L1Tk within
     # a radius R<0.12 with an L1Tk pT > 4 GeV. The medium and tight
     # veto apply L1Tk pT cuts of 3 and 2 GeV respectively on L1Tk
@@ -67,7 +67,7 @@ def passDPhicutTFTrack(st, ch, dphi, L1MuPt, Eff=90):
       ptKey = "Pt%d"%(ptCut)
       if ptCut < 10: ptKey = "Pt%d "%(ptCut)
       #print "print row", ptCut, dPhiLib[ptKey]
-      
+
       bendingOdd = dPhiLib[ptKey]['odd']
       bendingEven = dPhiLib[ptKey]['even']
 
@@ -301,6 +301,7 @@ def getMaxPromptPtEtaEvent(treeHits,
 
     max_prompt_L1Mu_pt = -1
     max_prompt_L1Mu_eta = -99
+    max_prompt_L1Mu_index = -99
 
     ## check if this event has L1Mus
     if len(list(treeHits.L1Mu_pt))==0:
@@ -464,8 +465,9 @@ def getMaxPromptPtEtaEvent(treeHits,
         if L1Mu_pt > max_prompt_L1Mu_pt:
             max_prompt_L1Mu_pt = L1Mu_pt
             max_prompt_L1Mu_eta = L1Mu_eta#L1Mu_eta
+            max_prompt_L1Mu_index = i
 
-    return max_prompt_L1Mu_pt, max_prompt_L1Mu_eta
+    return max_prompt_L1Mu_pt, max_prompt_L1Mu_eta, max_prompt_L1Mu_index
 
 
 

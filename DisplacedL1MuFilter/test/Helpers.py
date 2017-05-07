@@ -42,60 +42,6 @@ def get_golden_pT(L1Mu_pt, L1Mu_eta):
   ## look-up-tables
 
 
-#______________________________________________________________________________
-def passDPhicutTFTrack(st, ch, dphi, pt):
-
-  ME11GEMdPhi = [
-    [-2, 1.0, 1.0],
-    [5.0,  0.02131422,  0.00907379 ],
-    [7.0,  0.01480166,  0.00658598 ],
-    [10.0,  0.01019511,  0.00467867 ],
-    [15.0,  0.00685720,  0.00336636 ],
-    [20.0,  0.00528981,  0.00279064 ],
-    [30.0,  0.00381797,  0.00231837 ],
-    [40.0,  0.00313074,  0.00213513 ],
-  ]
-
-  ME21GEMdPhi = [
-    [-2, 1.0, 1.0],
-    [5.0,  0.00884066,  0.00479478 ],
-    [7.0,  0.00660301,  0.00403733 ],
-    [10.0,  0.00503144,  0.00369953 ],
-    [15.0,  0.00409270,  0.00358023 ],
-    [20.0,  0.00378257,  0.00358023 ],
-    [30.0,  0.00369842,  0.00358023 ],
-    [40.0,  0.00369842,  0.00358023 ],
-    ]
-
-  is_odd = ch%2==1
-
-  returnValue = False;
-
-  LUTsize = 8
-  #smalldphi = ((is_odd and abs(dphi)<GEMdPhi[LUTsize-2][1]) || (!is_odd and abs(dphi)<GEMdPhi[LUTsize-2][2]));
-
-  dPhiLib = ME11GEMdPhi
-  if st==2:
-    dPhiLib = ME21GEMdPhi
-  if (abs(dphi) < 99):# and ((chargesign_ == 1 and dphi < 0) || (chargesign_ == 0 and dphi > 0) || smalldphi)){
-    for row in dPhiLib:
-      ptValue = row[0]
-      bendingOdd = row[1]
-      bendingEven = row[2]
-
-      ## check with odd/even value
-      if pt >= ptValue:
-
-        ## check if pass/fail
-        if ((is_odd and bendingOdd > abs(dphi)) or (not is_odd and bendingEven > abs(dphi))):
-          returnValue = True;
-        else:
-          returnValue = False;
-  else:
-    returnValue = False;
-
-  return returnValue
-
 
 #______________________________________________________________________________
 def fitStraightLine(v, w, debug=False):
@@ -2246,7 +2192,7 @@ def getEfficiencyEta(t, to_draw, denom_cut, extra_num_cut, color = kBlue, marker
     t.Draw(to_draw + ">>num", num_cut, "goff")
     t.Draw(to_draw + ">>den", denom_cut, "goff")
 
-    print num.GetEntries(), den.GetEntries()
+    #print num.GetEntries(), den.GetEntries()
 
     useTEfficiency = True
     if useTEfficiency:

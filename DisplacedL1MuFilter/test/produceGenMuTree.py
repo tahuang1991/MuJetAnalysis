@@ -8,7 +8,8 @@ ROOT.gErrorIgnoreLevel=1001
 from ROOT import *
 import random
 import numpy
-
+from BarrelTriggerAlgorithms import *
+from EndcapTriggerAlgorithms import *
 
 def deltaPhi(phi1, phi2):
   result = phi1 - phi2;
@@ -39,20 +40,20 @@ if __name__ == "__main__":
   dirname2='/Users/Sven/Documents/work/DisplacedMuL1Studies/DarkSUSY_MH-125_MGammaD-20000_ctauX_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_L1MuANA_v54/'
   dirname3='/Users/Sven/Documents/work/DisplacedMuL1Studies/DarkSUSY_MH-125_MGammaD-20000_ctauX_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU140_L1MuANA_v54/'
 
-  dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v54/170214_025720/0000/'
-  dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_L1MuANA_v54/170214_025529/0000/'
-  dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU140_L1MuANA_v54/170214_022535/0000/'
+  #dirname1='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_L1MuANA_v54/170214_025720/0000/'
+  #dirname2='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau100_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_100_14TeV_PU140_L1MuANA_v54/170214_025529/0000/'
+  #dirname3='/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau10_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_10_14TeV_PU140_L1MuANA_v54/170214_022535/0000/'
 
   print "Start run on", ch.GetEntries(), "events."
   ch = addfiles(ch, dirname=dirname1)
   print "Start run on", ch.GetEntries(), "events."
-  ch = addfiles(ch, dirname=dirname2)
+  #ch = addfiles(ch, dirname=dirname2)
   print "Start run on", ch.GetEntries(), "events."
-  ch = addfiles(ch, dirname=dirname3)
+  #ch = addfiles(ch, dirname=dirname3)
   print "Start run on", ch.GetEntries(), "events."
   treeHits = ch
 
-  f = ROOT.TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_20170224.root", "recreate")
+  f = ROOT.TFile("out_ana_pu140_displaced_L1Mu_DDY123_StubRec_Barrel20170307.root", "recreate")
   t = ROOT.TTree("L1MuTree", "L1MuTree")
 
   ## ranges
@@ -318,6 +319,12 @@ if __name__ == "__main__":
   DTTF_DT2_DT4_pts = numpy.zeros(1, dtype=float)
   DTTF_DT3_DT4_pts = numpy.zeros(1, dtype=float)
 
+  DTTF_DT1_DT2_DT3_pts = numpy.zeros(1, dtype=float)
+  DTTF_DT1_DT2_DT4_pts = numpy.zeros(1, dtype=float)
+  DTTF_DT1_DT3_DT4_pts = numpy.zeros(1, dtype=float)
+  DTTF_DT2_DT3_DT4_pts = numpy.zeros(1, dtype=float)
+
+  DTTF_DT1_DT2_DT3_DT4_pts = numpy.zeros(1, dtype=float)
 
   ## branches
   t.Branch('gen_pt', gen_pts, 'gen_pt/D')
@@ -533,6 +540,13 @@ if __name__ == "__main__":
   t.Branch('DTTF_DT2_DT3_pt', DTTF_DT2_DT3_pts, 'DTTF_DT2_DT3_pt/D')
   t.Branch('DTTF_DT2_DT4_pt', DTTF_DT2_DT4_pts, 'DTTF_DT2_DT4_pt/D')
   t.Branch('DTTF_DT3_DT4_pt', DTTF_DT3_DT4_pts, 'DTTF_DT3_DT4_pt/D')
+
+  t.Branch('DTTF_DT1_DT2_DT3_pt', DTTF_DT1_DT2_DT3_pts, 'DTTF_DT1_DT2_DT3_pt/D')
+  t.Branch('DTTF_DT1_DT2_DT4_pt', DTTF_DT1_DT2_DT4_pts, 'DTTF_DT1_DT2_DT4_pt/D')
+  t.Branch('DTTF_DT1_DT3_DT4_pt', DTTF_DT1_DT3_DT4_pts, 'DTTF_DT1_DT3_DT4_pt/D')
+  t.Branch('DTTF_DT2_DT3_DT4_pt', DTTF_DT2_DT3_DT4_pts, 'DTTF_DT2_DT3_DT4_pt/D')
+
+  t.Branch('DTTF_DT1_DT2_DT3_DT4_pt', DTTF_DT1_DT2_DT3_DT4_pts, 'DTTF_DT1_DT2_DT3_DT4_pt/D')
 
 
   print "Start run on", treeHits.GetEntries(), "events."
@@ -864,12 +878,19 @@ if __name__ == "__main__":
           abs_DTTF_phib2_phib4s[0] = -99
           abs_DTTF_phib3_phib4s[0] = -99
 
-          DTTF_DT1_DT2_pts[0] = -99
-          DTTF_DT1_DT3_pts[0] = -99
-          DTTF_DT1_DT4_pts[0] = -99
-          DTTF_DT2_DT3_pts[0] = -99
-          DTTF_DT2_DT4_pts[0] = -99
-          DTTF_DT3_DT4_pts[0] = -99
+          DTTF_DT1_DT2_pts[0] = 2
+          DTTF_DT1_DT3_pts[0] = 2
+          DTTF_DT1_DT4_pts[0] = 2
+          DTTF_DT2_DT3_pts[0] = 2
+          DTTF_DT2_DT4_pts[0] = 2
+          DTTF_DT3_DT4_pts[0] = 2
+
+          DTTF_DT1_DT2_DT3_pts[0] = -99
+          DTTF_DT1_DT2_DT4_pts[0] = -99
+          DTTF_DT1_DT3_DT4_pts[0] = -99
+          DTTF_DT2_DT3_DT4_pts[0] = -99
+          
+          DTTF_DT1_DT2_DT3_DT4_pts[0] = -99
 
           ## check if it's a DT muon
           L1Mu_DTTF_index  = treeHits.L1Mu_DTTF_index[L1Mu_index]
@@ -926,6 +947,22 @@ if __name__ == "__main__":
             DTTF_DT2_DT3_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib2_phib3s[0], 'DT2_DT3')
             DTTF_DT2_DT4_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib2_phib4s[0], 'DT2_DT4')
             DTTF_DT3_DT4_pts[0] = pt_from_DPhi_DT(abs_DTTF_phib3_phib4s[0], 'DT3_DT4')
+            
+            if ok_DTTF_st1s[0] and ok_DTTF_st2s[0] and ok_DTTF_st3s[0] and not ok_DTTF_st4s[0]:
+              DTTF_DT1_DT2_DT3_pts[0] = pt_from_DPhi_DT_ellipse(1,2, 1,3, DTTF_phib1_phib2s[0], DTTF_phib1_phib3s[0])
+
+            if ok_DTTF_st1s[0] and ok_DTTF_st2s[0] and ok_DTTF_st4s[0] and not ok_DTTF_st3s[0]:
+              DTTF_DT1_DT2_DT4_pts[0] = pt_from_DPhi_DT_ellipse(1,2, 1,4, DTTF_phib1_phib2s[0], DTTF_phib1_phib4s[0])
+
+            if ok_DTTF_st1s[0] and ok_DTTF_st3s[0] and ok_DTTF_st4s[0] and not ok_DTTF_st2s[0]:
+              DTTF_DT1_DT3_DT4_pts[0] = pt_from_DPhi_DT_ellipse(1,3, 1,4, DTTF_phib1_phib3s[0], DTTF_phib1_phib4s[0])
+
+            if ok_DTTF_st2s[0] and ok_DTTF_st3s[0] and ok_DTTF_st4s[0] and not ok_DTTF_st1s[0]:
+              DTTF_DT2_DT3_DT4_pts[0] = pt_from_DPhi_DT_ellipse(2,3, 2,4, DTTF_phib2_phib3s[0], DTTF_phib2_phib4s[0])
+          
+            if ok_DTTF_st2s[0] and ok_DTTF_st3s[0] and ok_DTTF_st4s[0] and ok_DTTF_st1s[0]:
+              DTTF_DT1_DT2_DT3_DT4_pts[0] = pt_from_DPhi_DT_ellipse(1,4, 2,3, DTTF_phib1_phib4s[0], DTTF_phib2_phib3s[0])
+
 
             #print DTTF_DT1_DT2_pts[0], DTTF_DT1_DT3_pts[0], DTTF_DT1_DT4_pts[0]
             #print

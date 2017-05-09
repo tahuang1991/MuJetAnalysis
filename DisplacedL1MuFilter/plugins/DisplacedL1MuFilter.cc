@@ -824,6 +824,7 @@ private:
   edm::InputTag L1Mu_input;
   edm::InputTag L1TkMu_input;
   edm::InputTag fakeGE21Pad_input;
+  edm::InputTag fakeGE21Digi_input;
 
   edm::ESHandle<MagneticField> magfield_;
   edm::ESHandle<Propagator> propagator_;
@@ -877,6 +878,7 @@ DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) :
   L1Mu_input = iConfig.getParameter<edm::InputTag>("L1Mu_input");
   L1TkMu_input = iConfig.getParameter<edm::InputTag>("L1TkMu_input");
   fakeGE21Pad_input = iConfig.getParameter<edm::InputTag>("fakeGE21Pad_input");
+  fakeGE21Digi_input = iConfig.getParameter<edm::InputTag>("fakeGE21Digi_input");
   ignoreGE21L2Pads_ = iConfig.getParameter<bool>("ignoreGE21L2Pads");
 
   bookL1MuTree();
@@ -984,7 +986,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
   // GEM pads and copads
   edm::Handle< GEMDigiCollection > hGEMDigis;
-  iEvent.getByLabel("simMuonGEMDigis", hGEMDigis);
+  iEvent.getByLabel(fakeGE21Digi_input, hGEMDigis);
   const GEMDigiCollection& GEMDigis(*hGEMDigis.product());
 
   // GEM pads and copads

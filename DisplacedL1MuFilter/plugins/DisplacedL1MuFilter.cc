@@ -1870,7 +1870,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
               event_.GE11_sim_z_L2[k] = gem_z;
             }
           }
-          if (detId.station()==3) {
+          if (detId.station()==2) {
             if (detId.layer()==1) {
               event_.GE21_sim_phi_L1[k] = gem_phi;
               event_.GE21_sim_bx_L1[k] = gem_bx;
@@ -1935,7 +1935,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
               event_.GE11_sim_pad_z_L2[k] = gem_z;
             }
           }
-          if (detId.station()==3) {
+          if (detId.station()==2) {
             if (detId.layer()==1) {
               event_.GE21_sim_pad_phi_L1[k] = gem_phi;
               event_.GE21_sim_pad_bx_L1[k] = gem_bx;
@@ -1967,7 +1967,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           std::cout << "firstPositionPad4 " << firstPositionPad4 << std::endl;
           std::cout << "firstPositionPad8 " << firstPositionPad8 << std::endl;
         }
-        if (detId.station()==3) {
+        if (detId.station()==2) {
           if (detId.layer()==1) {
             event_.GE21_sim_pad1_phi_L1[k] = firstPositionPad1;
             event_.GE21_sim_pad2_phi_L1[k] = firstPositionPad2;
@@ -2718,7 +2718,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           //int index = i;
           // chambers need to be compatible
           if (gem_id.region() == csc_st2.zendcap() and
-              gem_id.station() == 3 and
+              gem_id.station() == 2 and
               csc_st2.chamber() == gem_id.chamber() and
               csc_st2.ring() == 1) {
             if(verbose) std::cout << "Investigate GE21 chamber " << gem_id << std::endl;
@@ -2787,7 +2787,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       // found pad is not empty
       if (bestPad_GE21_L1.second != GEMCSCPadDigi()){
         if(verbose) std::cout << "Best pad GE21 L1" << bestPad_GE21_L1.second << std::endl;
-        if (bestPad_GE21_L1.first.station()==3 and bestPad_GE21_L1.first.layer()==1) {
+        if (bestPad_GE21_L1.first.station()==2 and bestPad_GE21_L1.first.layer()==1) {
 
           // save pad to detid_pads
           detid_pads[bestPad_GE21_L1.first] = convert4StripPadTo2StripPad(bestPad_GE21_L1, GEMDigis);
@@ -2805,7 +2805,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
       if (bestPad_GE21_L2.second != GEMCSCPadDigi()){
         if(verbose) std::cout << "Best pad GE21 L2" << bestPad_GE21_L2.second << std::endl;
-        if (bestPad_GE21_L2.first.station()==3 and bestPad_GE21_L2.first.layer()==2) {
+        if (bestPad_GE21_L2.first.station()==2 and bestPad_GE21_L2.first.layer()==2) {
 
           // save pad to detid_pads
           detid_pads[bestPad_GE21_L2.first] = convert4StripPadTo2StripPad(bestPad_GE21_L2, GEMDigis);
@@ -4622,7 +4622,7 @@ DisplacedL1MuFilter::positionPad2InDetId(const GEMDigiCollection& hGEMDigis, uns
     // no cut on the eta partition!
     if (gem_id.station() == 2) continue;
     if (gem_id.region() == csc_id.zendcap() and
-        (gem_id.station() == csc_id.station() or (gem_id.station( )== 3 and csc_id.station() == 2)) and
+        (gem_id.station() == csc_id.station() or (gem_id.station()== 2 and csc_id.station() == 2)) and
         csc_id.chamber() == gem_id.chamber() and
         (csc_id.ring() == 4 or csc_id.ring() == 1)) {
 
@@ -4673,7 +4673,7 @@ DisplacedL1MuFilter::positionPad4InDetId(const GEMDigiCollection& hGEMDigis, uns
     // no cut on the eta partition!
     if (gem_id.station() == 2) continue;
     if (gem_id.region() == csc_id.zendcap() and
-        (gem_id.station() == csc_id.station() or (gem_id.station()==3 and csc_id.station()==2)) and
+        (gem_id.station() == csc_id.station() or (gem_id.station()==2 and csc_id.station()==2)) and
         csc_id.chamber() == gem_id.chamber() and
         (csc_id.ring() == 4 or csc_id.ring() == 1)) {
 
@@ -5497,6 +5497,7 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_bx", event_.CSCTF_bx,"CSCTF_bx[nCSCTF]/I");
   event_tree_->Branch("CSCTF_nStubs", event_.CSCTF_nStubs,"CSCTF_nStubs[nCSCTF]/I");
   event_tree_->Branch("CSCTF_quality", event_.CSCTF_quality,"CSCTF_quality[nCSCTF]/I");
+  event_tree_->Branch("CSCTF_charge", event_.CSCTF_charge,"CSCTF_charge[nCSCTF]/I");
 
   event_tree_->Branch("CSCTF_st1", event_.CSCTF_st1,"CSCTF_st1[nCSCTF]/I");
   event_tree_->Branch("CSCTF_ri1", event_.CSCTF_ri1,"CSCTF_ri1[nCSCTF]/I");
@@ -6201,6 +6202,8 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_eta[i] = 99;
     event_.CSCTF_phi[i] = 99;
     event_.CSCTF_nStubs[i] = 0;
+    event_.CSCTF_quality[i] = 0;
+    event_.CSCTF_charge[i] = 99;
 
     event_.CSCTF_st1[i] = 99;
     event_.CSCTF_ri1[i] = 99;

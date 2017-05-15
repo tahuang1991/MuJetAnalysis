@@ -766,6 +766,10 @@ private:
   pickBestMatchingPad(float x1, float y1,
                       const GEMCSCPadDigiId& oldPad,
                       const GEMCSCPadDigiId& newPad, int refBx) const;
+  GEMCSCPadDigiId
+  pickBestMatchingPad(float x1, float y1, float z1,
+                      const GEMCSCPadDigiId& oldPad,
+                      const GEMCSCPadDigiId& newPad, int refBx) const;
   void fillCSCStubProperties(const CSCDetId& ch_id,
                              const CSCCorrelatedLCTDigi& stub,
                              int index,
@@ -2416,11 +2420,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
                   bestPad_GE11_L1 = pickBestMatchingPad(event_.CSCTF_fit_x1[j],
                                                         event_.CSCTF_fit_y1[j],
+                                                        event_.CSCTF_fit_z1[j],
                                                         bestPad_GE11_L1, std::make_pair(gem_id, GE11_pad), event_.CSCTF_bx[j]);
                 }
                 if (gem_id.layer()==2){
                   bestPad_GE11_L2 = pickBestMatchingPad(event_.CSCTF_fit_x1[j],
                                                         event_.CSCTF_fit_y1[j],
+                                                        event_.CSCTF_fit_z1[j],
                                                         bestPad_GE11_L2, std::make_pair(gem_id, GE11_pad), event_.CSCTF_bx[j]);
                 }
               }
@@ -2447,11 +2453,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                 if (gem_id.layer()==1){
                   bestPad_GE21_L1 = pickBestMatchingPad(event_.CSCTF_fit_x2[j],
                                                         event_.CSCTF_fit_y2[j],
+                                                        event_.CSCTF_fit_z2[j],
                                                         bestPad_GE21_L1, std::make_pair(gem_id, pad), event_.CSCTF_bx[j]);
                 }
                 if (gem_id.layer()==2){
                   bestPad_GE21_L2 = pickBestMatchingPad(event_.CSCTF_fit_x2[j],
                                                         event_.CSCTF_fit_y2[j],
+                                                        event_.CSCTF_fit_z2[j],
                                                         bestPad_GE21_L2, std::make_pair(gem_id, pad), event_.CSCTF_bx[j]);
                 }
               }
@@ -2483,11 +2491,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 		    if (gem_id.layer()==1){
 		      bestPad_GE21_L1 = pickBestMatchingPad(event_.CSCTF_fit_x2[j],
 							    event_.CSCTF_fit_y2[j],
+							    event_.CSCTF_fit_z2[j],
 							    bestPad_GE21_L1, std::make_pair(gem_id, pad), event_.CSCTF_bx[j]);
 		    }
 		    if (gem_id.layer()==2){
 		      bestPad_GE21_L2 = pickBestMatchingPad(event_.CSCTF_fit_x2[j],
 							    event_.CSCTF_fit_y2[j],
+							    event_.CSCTF_fit_z2[j],
 							    bestPad_GE21_L2, std::make_pair(gem_id, pad), event_.CSCTF_bx[j]);
 		    }
 		  }
@@ -2977,6 +2987,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       cout << "l1Mu_quality " << event_.L1Mu_quality[i] << endl;
       cout << "l1Mu_charge " << event_.L1Mu_charge[i] << endl;
       cout << "l1Mu_bx " << event_.L1Mu_bx[i] << endl;
+      cout << "medium veto ? " << (event_.isL1MediumVeto[i]==1 ? "True":"False") << endl;
     }
 
     if (processDTTF_){
@@ -4283,6 +4294,67 @@ DisplacedL1MuFilter::pickBestMatchingPad(float xref, float yref,
       if (debug) cout<<"New copad better matching XY"<<endl;
       return newPad;
     }
+  }
+  // in case all else fails...
+  return GEMCSCPadDigiId();
+}
+
+
+GEMCSCPadDigiId
+DisplacedL1MuFilter::pickBestMatchingPad(float xref, float yref, float zref,
+                                         const GEMCSCPadDigiId& oldPad,
+                                         const GEMCSCPadDigiId& newPad,
+                                         int bxref) const
+{
+  bool debug = false;
+  // check for invalid/valid
+  if (oldPad.second == GEMCSCPadDigi()) {
+    if (debug) cout<<"Old pad invalid"<<endl;
+    return newPad;
+  }
+  if (newPad.second == GEMCSCPadDigi()) {
+    if (debug) cout<< "New pad invalid"<<endl;
+    return oldPad;
+  }
+
+  // check the timing
+  bool oldPadInTime = oldPad.second.bx() - bxref==0 and oldPad.second.bx() - bxref==0;
+  bool newPadInTime = newPad.second.bx() - bxref==0 and newPad.second.bx() - bxref==0;
+  if (oldPadInTime and not newPadInTime) {
+    if (debug) cout<<"Old copad in time, new copad out of time"<<endl;
+    return oldPad;
+  }
+  if (newPadInTime and not oldPadInTime) {
+    if (debug) cout<<"New copad in time, old copad out of time"<<endl;
+    return newPad;
+  }
+
+
+  GlobalPoint gpRef(xref, yref, zref);
+  // both copads in time, check the closest matching one!
+  if ((oldPadInTime and newPadInTime) or (not oldPadInTime and  not newPadInTime)){
+    if (debug) cout << "check better matching one in space" << endl;
+    auto gpOld = getGlobalPointPad(oldPad.first.rawId(), oldPad.second);
+    auto gpNew = getGlobalPointPad(newPad.first.rawId(), newPad.second);
+    bool dEtaOld = std::fabs(gpOld.eta()-gpRef.eta())<.2 ;
+    bool dEtaNew = std::fabs(gpNew.eta()-gpRef.eta())<.2 ;
+    float dPhiOld = deltaPhi(gpOld.phi(), gpRef.phi());
+    float dPhiNew = deltaPhi(gpNew.phi(), gpRef.phi());
+
+    //if (debug) {
+      cout<<"Ref CSC eta "<< gpRef.eta() << " phi " << gpRef.phi() << endl;
+      cout <<"Old pad "<< oldPad.second <<" gpOld eta " << gpOld.eta() << " phi " << gpOld.phi() <<" dEta "<< abs(gpOld.eta()-gpRef.eta()) << " dPhi "<< dPhiOld << endl;
+      cout <<"New pad "<< newPad.second <<" gpNew eta " << gpNew.eta() << " phi " << gpNew.phi() <<" dEta "<< abs(gpNew.eta()-gpRef.eta()) << " dPhi "<< dPhiNew << endl;
+    //}
+    if (dEtaOld  and std::fabs(dPhiOld) < .5 and ((dPhiOld < dPhiNew) or (not(dEtaNew)))) {
+      if (debug) cout<<"Old better matching dphi "<<endl;
+      return oldPad;
+    }
+    else if (dEtaNew and std::fabs(dPhiNew) < .5 and ((dPhiOld >= dPhiNew) or (not(dEtaOld)))) {
+      if (debug) cout<<"New copad better matching dphi "<<endl;
+      return newPad;
+    }
+    else return GEMCSCPadDigiId();
   }
   // in case all else fails...
   return GEMCSCPadDigiId();

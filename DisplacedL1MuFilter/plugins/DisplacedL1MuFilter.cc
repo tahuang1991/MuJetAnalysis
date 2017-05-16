@@ -94,6 +94,8 @@
 #include "DataFormats/L1DTTrackFinder/interface/L1MuDTTrackCand.h"
 #include "DataFormats/L1DTTrackFinder/interface/L1MuDTTrackContainer.h"
 #include "DataFormats/L1GlobalMuonTrigger/interface/L1MuRegionalCand.h"
+#include "DataFormats/L1Trigger/interface/Muon.h"
+
 #include "L1Trigger/DTTrackFinder/interface/L1MuDTTrack.h"
 #include "L1Trigger/DTTrackFinder/src/L1MuDTTrackSegPhi.h"
 #include "DataFormats/L1CSCTrackFinder/interface/L1CSCTrackCollection.h"
@@ -948,7 +950,8 @@ private:
   edm::EDGetTokenT<l1extra::L1MuonParticleCollection> l1ExtraMuonInputLabel_;
 
   edm::EDGetTokenT<l1t::EMTFTrackCollection> emtfTrackInputLabel_;
-  edm::EDGetTokenT< BXVector<l1t::RegionalMuonCand> > gmtInputLabel_;
+  edm::EDGetTokenT< BXVector<l1t::RegionalMuonCand> > emtfCandInputLabel_;
+  edm::EDGetTokenT< BXVector<l1t::Muon> > upgradeGmtInputLabel_;
 
   edm::EDGetTokenT<reco::TrackExtraCollection> recoTrackExtraInputLabel_;
   edm::EDGetTokenT<reco::TrackCollection> recoTrackInputLabel_;
@@ -1123,8 +1126,11 @@ DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) :
   auto emtfTrack = cfg_.getParameter<edm::ParameterSet>("upgradeEmtfTrack");
   emtfTrackInputLabel_ = consumes<l1t::EMTFTrackCollection>(emtfTrack.getParameter<edm::InputTag>("validInputTags"));
 
-  auto upgradegmt = cfg_.getParameter<edm::ParameterSet>("upgradeGMT");
-  gmtInputLabel_ = consumes< BXVector<l1t::RegionalMuonCand> >(upgradegmt.getParameter<edm::InputTag>("validInputTags"));
+  auto emtfCand = cfg_.getParameter<edm::ParameterSet>("upgradeEmtfCand");
+  emtfCandInputLabel_ = consumes< BXVector<l1t::RegionalMuonCand> >(emtfCand.getParameter<edm::InputTag>("validInputTags"));
+
+  auto upgradeGmt = cfg_.getParameter<edm::ParameterSet>("upgradeGMT");
+  upgradeGmtInputLabel_ = consumes< BXVector<l1t::Muon> >(upgradeGmt.getParameter<edm::InputTag>("validInputTags"));
 
   auto recoTrackExtra = cfg_.getParameter<edm::ParameterSet>("recoTrackExtra");
   recoTrackExtraInputLabel_ = consumes<reco::TrackExtraCollection>(recoTrackExtra.getParameter<edm::InputTag>("validInputTags"));
@@ -1194,9 +1200,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   iEventSetup.get<MuonGeometryRecord>().get(me0_geom_);
   me0Geometry_ = &*me0_geom_;
 
-  edm::Handle<BXVector<l1t::RegionalMuonCand> > aH;
-  iEvent.getByToken(gmtInputLabel_, aH);
-  const BXVector<l1t::RegionalMuonCand>& l1GmtCands(*aH.product());
+  edm::Handle<BXVector<l1t::Muon> > aH;
+  iEvent.getByToken(upgradeGmtInputLabel_, aH);
+  const BXVector<l1t::Muon>& l1GmtCands(*aH.product());
 
    // edm::Handle<L1MuDTTrackCollection > L1DTTrackPhiH;
    // iEvent.getByToken(L1DTTrackPhiInputLabel_, L1DTTrackPhiH);
@@ -1752,7 +1758,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                                  // cscTfTrackInputLabel_,
                                  // cscTfCandInputLabel_,
                                  emtfTrackInputLabel_,
-                                 gmtInputLabel_,
+                                 emtfCandInputLabel_,
                                  dtTfCandInputLabel_,
                                  rpcfTfCandInputLabel_,
                                  rpcbTfCandInputLabel_,
@@ -1983,6 +1989,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         }
       }
 
+      /*
       DisplacedMuonTriggerPtassignment ptAssignmentUnit(match_csc.allLctsMatched2SimMuon(),
                                                         match_gd.allGempadsMatch2SimMuon_2strip(),
                                                         iEventSetup,
@@ -2015,6 +2022,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         ptAssignmentUnit.runHybrid(true);
         event_.CSCTF_sim_hybrid_pt_GE21[k] = ptAssignmentUnit.getHybridPt();
       }
+      */
 
       // recover the missing stubs in station 1 and 2... (because they were not used in the track building)
       // GEM digis and pads in superchambers
@@ -2337,6 +2345,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   if(verbose) std::cout << std::endl<< "Number of L1CSCTracks " <<event_.nCSCTF << std::endl;
   for (int j=0; j<event_.nCSCTF; ++j) {
     auto track = l1Tracks[j];
+
+    if (track.BX() != 0) continue;
     // const int sign(track.endcap()==1 ? 1 : -1);
     // unsigned gpt = 0, quality = 0;
     // csc::L1Track::decodeRank(track.rank(), gpt, quality);
@@ -2583,7 +2593,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     std::vector<float> allys_new;
 
     getPositionsStations(alpha_x_new, beta_x_new, alpha_y_new, beta_y_new,
-                         allxs_new, allys_new, sign_z);
+                         allxs_new, allys_new, sign_z, 568);
 
 
 
@@ -2602,14 +2612,15 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
       if (event_.CSCTF_eta[j] * SegPos.eta() < 0 ) continue;
 
+      // BXs have to match
+      int deltaBX = std::abs(getME0SegmentBX(*thisSegment) - (event_.CSCTF_bx[j]));
+      if (deltaBX > 0) continue; // segment must be in time!
+
       if(verbose) {
         std::cout << "ME0DetId " << id << std::endl;
         std::cout<<"Candidate " << *thisSegment << std::endl;
         std::cout<<"eta phi " << SegPos.eta() << " " << normalizedPhi((float)SegPos.phi()) << std::endl;
       }
-      // BXs have to match
-      //int deltaBX = std::abs(getME0SegmentBX(*thisSegment) - (event_.CSCTF_bx[j]));
-      //if (deltaBX > 0) continue; // segment must be in time!
 
       bestMatchingME0Segment = pickBestMatchingME0Segment(allxs_new[0], allys_new[0],
                                                           bestMatchingME0Segment, *thisSegment, event_.CSCTF_bx[j]);
@@ -2835,13 +2846,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         for (auto p: positionPads4GE11) std::cout << p << " " << p.phi() << std::endl;
       }
       */
-      if (not stubMissingSt2){
+      if (not stubMissingSt2 and false){
         std::vector<GlobalPoint> positionPadsGE21 = positionPad2InDetId(GEMDigis, event_.CSCTF_id2[j], event_.CSCTF_bx[j]);
         std::cout << "Check positions of 2-strip pads for " << CSCDetId(event_.CSCTF_id2[j]) << " in BX " << event_.CSCTF_bx[j] << std::endl;
         std::cout << "GE21: " << std::endl;
         float minDPhi_L1=99, minDPhi_L2=992;
         std::cout << "size " << positionPadsGE21.size() << std::endl;
-        for (auto p: positionPadsGE21){
+        for (const auto& p: positionPadsGE21){
           // L1
           if ( std::abs(p.z() - 794.439) < 0.01 or std::abs(p.z() + 794.439) < 0.01 or
                std::abs(p.z() - 796.941) < 0.01 or std::abs(p.z() + 796.941) < 0.01) {
@@ -2870,6 +2881,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       }
     } // check if match to pads
 
+    /*
     DisplacedMuonTriggerPtassignment ptAssignmentUnit(chamberid_lct,
                                                       detid_pads,
                                                       iEventSetup,
@@ -2903,6 +2915,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       ptAssignmentUnit.runHybrid(true);
       event_.CSCTF_L1_hybrid_pt_GE21[j] = ptAssignmentUnit.getHybridPt();
     }
+    */
+
   } // loop on csctf tracks
 
   // // Store the RPCb variables
@@ -3148,10 +3162,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     for (unsigned int j = 0; j<l1GmtCands.size(iBX); ++j) {
 
       auto l1Mu = l1GmtCands.at(iBX,j);
-      event_.L1Mu_pt[iL1Mu] = l1Mu.hwPt() * 0.5;
-      event_.L1Mu_eta[iL1Mu] = l1Mu.hwEta() * 0.010875;
-      event_.L1Mu_phi[iL1Mu] = normalizedPhi(l1Mu.hwPhi() * 2.0 * 3.1415926/576.0);
-      event_.L1Mu_charge[iL1Mu] = l1Mu.hwSign() == 0? 1 : -1;;
+      event_.L1Mu_pt[iL1Mu] = l1Mu.pt();
+      event_.L1Mu_eta[iL1Mu] = l1Mu.eta();
+      event_.L1Mu_phi[iL1Mu] = normalizedPhi(l1Mu.phi());
+      event_.L1Mu_charge[iL1Mu] = l1Mu.charge();
       event_.L1Mu_quality[iL1Mu] = l1Mu.hwQual();
       event_.L1Mu_bx[iL1Mu] = iBX;
 
@@ -3164,6 +3178,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         cout << "l1Mu_charge " << event_.L1Mu_charge[iL1Mu] << endl;
         cout << "l1Mu_bx " << event_.L1Mu_bx[iL1Mu] << endl;
       }
+      iL1Mu++;
     }
   }
 

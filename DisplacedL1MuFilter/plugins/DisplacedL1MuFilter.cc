@@ -1716,7 +1716,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     for (unsigned int k=0; k<skim_sim_trks.size(); ++k) {
 
       auto sim_muon = skim_sim_trks[k];
-      if(verbose) {
+      if(verbose>10) {
         cout << "Mu "<< k
              <<" pT " << sim_muon.momentum().pt()
              <<" eta "<< sim_muon.momentum().eta()
@@ -2601,7 +2601,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
     if(verbose) cout << "Checking matching ME0 segments" << endl;
     ME0Segment bestMatchingME0Segment;
-
+    float minDR_ME0_Track = 999;
     if(verbose) cout << "Find best match:" << endl;
     // Match EMTF to ME0 segment
     for (auto thisSegment = me0Segments->begin(); thisSegment != me0Segments->end(); ++thisSegment){
@@ -2610,11 +2610,18 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       LocalPoint thisPosition(thisSegment->localPosition());
       GlobalPoint SegPos = me0Geometry_->idToDet(thisSegment->me0DetId())->surface().toGlobal(thisPosition);
 
+      // must be the same endcap
       if (event_.CSCTF_eta[j] * SegPos.eta() < 0 ) continue;
 
       // BXs have to match
       int deltaBX = std::abs(getME0SegmentBX(*thisSegment) - (event_.CSCTF_bx[j]));
       if (deltaBX > 0) continue; // segment must be in time!
+
+      // cannot be too far in phi
+      if (reco::deltaPhi((float) event_.CSCTF_fit_phi1[j], (float) event_.L1Mu_me0_phi[j]) > 0.3) {
+        //std::cout << "ALARM!!!! Too large deltaPhi" << std::endl;
+        continue;
+      }
 
       if(verbose) {
         std::cout << "ME0DetId " << id << std::endl;
@@ -2622,8 +2629,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         std::cout<<"eta phi " << SegPos.eta() << " " << normalizedPhi((float)SegPos.phi()) << std::endl;
       }
 
-      bestMatchingME0Segment = pickBestMatchingME0Segment(allxs_new[0], allys_new[0],
-                                                          bestMatchingME0Segment, *thisSegment, event_.CSCTF_bx[j]);
+      float deltaR = reco::deltaPhi((float) event_.CSCTF_fit_phi1[j], (float) event_.L1Mu_me0_phi[j]);
+      if (deltaR < minDR_ME0_Track){
+        minDR_ME0_Track = deltaR;
+        bestMatchingME0Segment = *thisSegment;
+      }
+      // bestMatchingME0Segment = pickBestMatchingME0Segment(allxs_new[0], allys_new[0],
+      //                                                     bestMatchingME0Segment, *thisSegment, event_.CSCTF_bx[j]);
     }
 
     // fill the properties of the best matching one!
@@ -2645,6 +2657,11 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                                            event_.CSCTF_phi[j],
                                            event_.L1Mu_me0_eta[j],
                                            event_.L1Mu_me0_phi[j]);
+
+      // cannot be too far in phi
+      if (reco::deltaPhi((float) event_.CSCTF_phi[j], (float) event_.L1Mu_me0_phi[j]) > 0.3) {
+        std::cout << "ALARM!!!! Too large deltaPhi" << std::endl;
+      }
 
       auto tsos_ME0_st2 = propagateFromME0ToCSC(bestMatchingME0Segment, event_.CSCTF_pt[j], event_.CSCTF_charge[j], 2);
       if (tsos_ME0_st2.isValid()){

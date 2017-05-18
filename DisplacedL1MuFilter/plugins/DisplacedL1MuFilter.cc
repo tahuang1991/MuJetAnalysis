@@ -1759,6 +1759,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                                  // cscTfCandInputLabel_,
                                  emtfTrackInputLabel_,
                                  emtfCandInputLabel_,
+				 upgradeGmtInputLabel_,
                                  dtTfCandInputLabel_,
                                  rpcfTfCandInputLabel_,
                                  rpcbTfCandInputLabel_,
@@ -2613,13 +2614,26 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       // must be the same endcap
       if (event_.CSCTF_eta[j] * SegPos.eta() < 0 ) continue;
 
+      auto tsos_ME0_st2 = propagateFromME0ToCSC(*thisSegment, event_.CSCTF_pt[j], event_.CSCTF_charge[j], 2);
+      if (not tsos_ME0_st2.isValid()) {
+	  std::cout <<"skip this Segment since it can not propagate to st2 "<< std::endl;
+	  continue; 
+      }
+      GlobalPoint gp_ME0_st2(tsos_ME0_st2.globalPosition());
+
       // BXs have to match
       int deltaBX = std::abs(getME0SegmentBX(*thisSegment) - (event_.CSCTF_bx[j]));
       if (deltaBX > 0) continue; // segment must be in time!
+      
+      //check eta diff 
+      if (std::fabs(SegPos.eta() - event_.CSCTF_eta[j])>0.25){
+        std::cout << "ALARM!!!! Too large deltaEta, Seg eta "<< SegPos.eta() <<" L1Mu_eta "<< event_.CSCTF_eta[j] << std::endl;
+        continue;
+      }
 
       // cannot be too far in phi
-      if (reco::deltaPhi((float) event_.CSCTF_fit_phi1[j], (float) event_.L1Mu_me0_phi[j]) > 0.3) {
-        //std::cout << "ALARM!!!! Too large deltaPhi" << std::endl;
+      if (std::fabs(reco::deltaPhi((float) gp_ME0_st2.phi(), (float) event_.CSCTF_phi[j])) > 0.3) {
+        std::cout << "ALARM!!!! Too large deltaPhi, Seg phi "<< gp_ME0_st2.phi() <<" L1Mu_phi "<< event_.CSCTF_phi[j] << std::endl;
         continue;
       }
 
@@ -2629,10 +2643,11 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         std::cout<<"eta phi " << SegPos.eta() << " " << normalizedPhi((float)SegPos.phi()) << std::endl;
       }
 
-      float deltaR = reco::deltaPhi((float) event_.CSCTF_fit_phi1[j], (float) event_.L1Mu_me0_phi[j]);
+      float deltaR = std::fabs(reco::deltaPhi((float) gp_ME0_st2.phi(), (float) event_.CSCTF_phi[j]));
       if (deltaR < minDR_ME0_Track){
         minDR_ME0_Track = deltaR;
         bestMatchingME0Segment = *thisSegment;
+	std::cout <<"\t so far bestMatchingME0Segment, minDR_ME0_Track "<< minDR_ME0_Track << std::endl;
       }
       // bestMatchingME0Segment = pickBestMatchingME0Segment(allxs_new[0], allys_new[0],
       //                                                     bestMatchingME0Segment, *thisSegment, event_.CSCTF_bx[j]);
@@ -2650,29 +2665,29 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         std::cout << "eta phi " << SegPos.eta() << " " << normalizedPhi((float)SegPos.phi()) << " original " << SegPos.phi() << std::endl;
       }
 
+      // cannot be too far in phi, ignore
+      //if (reco::deltaPhi((float) event_.CSCTF_phi[j], (float) event_.L1Mu_me0_phi[j]) > 0.3) {
+        //std::cout << "ALARM!!!! Too large deltaPhi" << std::endl;
+      //}
+
+      auto tsos_ME0_st2 = propagateFromME0ToCSC(bestMatchingME0Segment, event_.CSCTF_pt[j], event_.CSCTF_charge[j], 2);
+      if (tsos_ME0_st2.isValid()){
+        GlobalPoint gp_ME0_st2(tsos_ME0_st2.globalPosition());
+        if(verbose) std::cout << "Propagated GlobalPoint st2 " << gp_ME0_st2 <<" eta "<< gp_ME0_st2.eta() <<" phi "<< gp_ME0_st2.phi() << std::endl;
+        event_.L1Mu_me0_st2_eta[j] = gp_ME0_st2.eta();
+        event_.L1Mu_me0_st2_phi[j] = normalizedPhi(float(gp_ME0_st2.phi()));
+      }
+
       event_.L1Mu_me0_eta[j] = SegPos.eta();
       event_.L1Mu_me0_phi[j] = normalizedPhi(float(SegPos.phi()));
       event_.L1Mu_me0_dPhi[j] = bestMatchingME0Segment.deltaPhi();
       event_.L1Mu_me0_dR[j] = reco::deltaR(event_.CSCTF_eta[j],
                                            event_.CSCTF_phi[j],
                                            event_.L1Mu_me0_eta[j],
-                                           event_.L1Mu_me0_phi[j]);
+                                           event_.L1Mu_me0_st2_phi[j]);
 
-      // cannot be too far in phi
-      if (reco::deltaPhi((float) event_.CSCTF_phi[j], (float) event_.L1Mu_me0_phi[j]) > 0.3) {
-        std::cout << "ALARM!!!! Too large deltaPhi" << std::endl;
-      }
-
-      auto tsos_ME0_st2 = propagateFromME0ToCSC(bestMatchingME0Segment, event_.CSCTF_pt[j], event_.CSCTF_charge[j], 2);
-      if (tsos_ME0_st2.isValid()){
-        GlobalPoint gp_ME0_st2(tsos_ME0_st2.globalPosition());
-        if(verbose) std::cout << "Propagated GlobalPoint st2 " << gp_ME0_st2 << std::endl;
-        event_.L1Mu_me0_st2_eta[j] = gp_ME0_st2.eta();
-        event_.L1Mu_me0_st2_phi[j] = normalizedPhi(float(gp_ME0_st2.phi()));
-      }
-
-      event_.L1Mu_me0_st1_dphi[j] = reco::deltaPhi(float(event_.CSCTF_fit_phi1[j]), float(event_.L1Mu_me0_phi[j]));
-      event_.L1Mu_me0_st1_isEven[j] = bestMatchingME0Segment.me0DetId().chamber()/2==0;
+      event_.L1Mu_me0_st1_dphi[j] = reco::deltaPhi(float(event_.CSCTF_phi1[j]), float(event_.L1Mu_me0_phi[j]));
+      event_.L1Mu_me0_st1_isEven[j] = bestMatchingME0Segment.me0DetId().chamber()/2==0;//here should be whether ME11 chamber is even or not
       float dist_ME0_ME11 = std::abs(SegPos.z() - event_.CSCTF_fit_z1[j]);
 
       event_.L1Mu_me0_st1_dphi_norm[j] = event_.L1Mu_me0_st1_dphi[j]/dist_ME0_ME11;

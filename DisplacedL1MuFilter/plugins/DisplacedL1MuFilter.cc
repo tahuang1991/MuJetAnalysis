@@ -1225,6 +1225,12 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
    //             << std::endl<< std::endl;
    // }
 
+   edm::Handle< ME0DigiPreRecoCollection > me0DigiPreRecos;
+   iEvent.getByToken(me0DigiInput_, me0DigiPreRecos);
+
+   edm::Handle< ME0RecHitCollection > me0RecHits;
+   iEvent.getByToken(me0RecHitInput_, me0RecHits);
+
    edm::Handle< ME0SegmentCollection > me0Segments;
    iEvent.getByToken(me0SegmentInput_, me0Segments);
    int iSeg=0;
@@ -2599,7 +2605,85 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
 
 
+    if(verbose) cout << "Checking matching ME0 digis " << endl;
+    for (const auto& sch : me0Geometry_->chambers()){
+      const ME0DetId& schid = sch->id();
 
+      if (event_.CSCTF_eta[j] * schid.region() < 0 ) {
+        continue;
+      }
+      for (const auto& ch : sch->layers()){
+        // const ME0DetId& chid = ch->id();
+        for (const auto& par : ch->etaPartitions()){
+          const ME0DetId& parid = par->id();
+          cout<<parid<<endl;
+          auto range = me0DigiPreRecos->get(parid);
+          for (ME0DigiPreRecoCollection::const_iterator digiIt = range.first; digiIt!=range.second; ++digiIt){
+            if (digiIt->tof()==0){
+              GlobalPoint SegPos = me0Geometry_->etaPartition(parid)->toGlobal(LocalPoint(digiIt->x(), digiIt->y(), 0));
+              if (std::abs(SegPos.eta()) > 2.4 or std::abs(SegPos.eta()) < 2.0) continue;
+              cout<<"\t digi "<<*digiIt<<" "<<SegPos.eta()<<" "<<SegPos.phi()<<endl;
+            }
+          }
+        }
+      }
+    }
+
+    // ME0DigiPreRecoCollection::DigiRangeIterator detUnitIt;
+    // for (detUnitIt = me0DigiPreRecos->begin();detUnitIt != me0DigiPreRecos->end(); ++detUnitIt)
+    //   {
+    //     const ME0DetId& id = (*detUnitIt).first;
+
+    //     if (event_.CSCTF_eta[j] * id.region() < 0 ) {
+    //       continue;
+    //     }
+    //     // ME0DetId print-out
+    //     cout<<"--------------"<<endl;
+    //     cout<<"id: "<<id<<endl;
+
+    //     // Loop over the me0DigiPreRecos of this DetUnit
+    //     const ME0DigiPreRecoCollection::Range& range = (*detUnitIt).second;
+    //   }
+
+    // if(verbose) cout << "Checking matching ME0 segments out of " << me0DigiPreRecos->end()-me0DigiPreRecos->begin() << " available " << endl;
+    // int nME0RechitsGood = 0;
+    // for (auto thisDigi = me0DigiPreRecos->begin(); thisDigi != me0Digis->end(); ++thisDigi){
+    //   ME0DetId id = thisDigi->me0Id();
+    //   LocalPoint thisPosition(thisDigi->localPosition());
+    //   GlobalPoint SegPos = me0Geometry_->chamber(id)->toGlobal(thisPosition);
+    //   // must be the same endcap
+    //   if (event_.CSCTF_eta[j] * SegPos.eta() < 0 ) {
+    //     continue;
+    //   }
+    //   if (thisDigi->tof()!=0) continue;
+    //   if (std::abs(SegPos.eta()) > 2.4 or std::abs(SegPos.eta()) < 2.0) continue;
+    //   std::cout << "Candidate " << *thisDigi << " " << thisDigi->tof() << " " << SegPos.eta() << " " << SegPos.phi() <<std::endl;
+    //   nME0RechitsGood++;
+    // }
+
+
+
+
+    if(verbose) cout << "Checking matching ME0 segments out of " << me0Segments->end()-me0Segments->begin() << " available " << endl;
+    int nME0RechitsGood = 0;
+    for (auto thisRecHit = me0RecHits->begin(); thisRecHit != me0RecHits->end(); ++thisRecHit){
+      ME0DetId id = thisRecHit->me0Id();
+      LocalPoint thisPosition(thisRecHit->localPosition());
+      GlobalPoint SegPos = me0Geometry_->chamber(id)->toGlobal(thisPosition);
+      // must be the same endcap
+      if (event_.CSCTF_eta[j] * SegPos.eta() < 0 ) {
+        continue;
+      }
+      if (thisRecHit->tof()!=0) continue;
+      if (std::abs(SegPos.eta()) > 2.4 or std::abs(SegPos.eta()) < 2.0) continue;
+      std::cout << "Candidate " << *thisRecHit << " " << thisRecHit->tof() << " " << SegPos.eta() << " " << SegPos.phi() <<std::endl;
+      nME0RechitsGood++;
+    }
+
+
+
+
+    if(verbose) cout << "Checking matching ME0 rechits out of " << nME0RechitsGood << " available " << endl;
     if(verbose) cout << "Checking matching ME0 segments" << endl;
     ME0Segment bestMatchingME0Segment;
     float minDR_ME0_Track = 999;
@@ -2616,16 +2700,16 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
       auto tsos_ME0_st2 = propagateFromME0ToCSC(*thisSegment, event_.CSCTF_pt[j], event_.CSCTF_charge[j], 2);
       if (not tsos_ME0_st2.isValid()) {
-	  std::cout <<"skip this Segment since it can not propagate to st2 "<< std::endl;
-	  continue; 
+        std::cout <<"skip this Segment since it can not propagate to st2 "<< std::endl;
+        continue;
       }
       GlobalPoint gp_ME0_st2(tsos_ME0_st2.globalPosition());
 
       // BXs have to match
       int deltaBX = std::abs(getME0SegmentBX(*thisSegment) - (event_.CSCTF_bx[j]));
       if (deltaBX > 0) continue; // segment must be in time!
-      
-      //check eta diff 
+
+      //check eta diff
       if (std::fabs(SegPos.eta() - event_.CSCTF_eta[j])>0.25){
         std::cout << "ALARM!!!! Too large deltaEta, Seg eta "<< SegPos.eta() <<" L1Mu_eta "<< event_.CSCTF_eta[j] << std::endl;
         continue;
@@ -2647,7 +2731,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       if (deltaR < minDR_ME0_Track){
         minDR_ME0_Track = deltaR;
         bestMatchingME0Segment = *thisSegment;
-	std::cout <<"\t so far bestMatchingME0Segment, minDR_ME0_Track "<< minDR_ME0_Track << std::endl;
+        std::cout <<"\t so far bestMatchingME0Segment, minDR_ME0_Track "<< minDR_ME0_Track << std::endl;
       }
       // bestMatchingME0Segment = pickBestMatchingME0Segment(allxs_new[0], allys_new[0],
       //                                                     bestMatchingME0Segment, *thisSegment, event_.CSCTF_bx[j]);

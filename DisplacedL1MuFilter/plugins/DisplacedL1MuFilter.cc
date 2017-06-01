@@ -1781,6 +1781,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
       DisplacedMuonTriggerPtassignment ptAssignmentUnit(match_csc.allLctsMatched2SimMuon(),
                                                         match_gd.allGempadsMatch2SimMuon_2strip(),
+							cfg_,
                                                         iEventSetup,
                                                         iEvent,
 							-1, true);
@@ -2694,6 +2695,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
     DisplacedMuonTriggerPtassignment ptAssignmentUnit(chamberid_lct,
                                                       detid_pads,
+						      cfg_,
                                                       iEventSetup,
                                                       iEvent,
 						      -1, true);

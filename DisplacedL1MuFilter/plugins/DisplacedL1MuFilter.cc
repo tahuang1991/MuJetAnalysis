@@ -2709,7 +2709,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       int deltaBX = std::abs(getME0SegmentBX(*thisSegment) - (event_.CSCTF_bx[j]));
       if (deltaBX > 0) continue; // segment must be in time!
 
-      //check eta diff
+      if(verbose) {
+             std::cout <<"ME0gp eta "<< SegPos.eta() <<" phi "<< SegPos.phi() <<" gp_ME0_st2 eta "<< gp_ME0_st2.eta()<<" phi "<< gp_ME0_st2.phi()<<" L1Mu eta "<< event_.CSCTF_eta[j] <<" phi "<< event_.CSCTF_phi[j]  <<" pt "<< event_.CSCTF_pt[j] <<" quality "<< event_.CSCTF_quality[j] << std::endl;
+      }
+
       if (std::fabs(SegPos.eta() - event_.CSCTF_eta[j])>0.25){
         std::cout << "ALARM!!!! Too large deltaEta, Seg eta "<< SegPos.eta() <<" L1Mu_eta "<< event_.CSCTF_eta[j] << std::endl;
         continue;
@@ -2725,6 +2728,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         std::cout << "ME0DetId " << id << std::endl;
         std::cout<<"Candidate " << *thisSegment << std::endl;
         std::cout<<"eta phi " << SegPos.eta() << " " << normalizedPhi((float)SegPos.phi()) << std::endl;
+	if (event_.CSCTF_phi1[j] != 99 and  std::fabs(reco::deltaPhi(float(event_.CSCTF_phi1[j]), float(SegPos.phi()))) > 0.3)
+	    std::cout << "ALARM!!!! Too large deltaPhi, Seg phi "<< SegPos.phi()<<" L1Mu_phi "<< event_.CSCTF_phi[j] <<" CSCTF_phi1 "<< event_.CSCTF_phi1[j] <<" propagate ME0 to st2 phi "<< gp_ME0_st2.phi() << std::endl;
+
       }
 
       float deltaR = std::fabs(reco::deltaPhi((float) gp_ME0_st2.phi(), (float) event_.CSCTF_phi[j]));

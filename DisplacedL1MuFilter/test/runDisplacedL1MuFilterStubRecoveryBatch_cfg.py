@@ -101,13 +101,12 @@ if doRpc:
 
 process.source = cms.Source(
     "PoolSource",
-    #fileNames = cms.untracked.vstring(options.inputFiles),
+    fileNames = cms.untracked.vstring(options.inputFiles),
     #skipEvents=cms.untracked.uint32(0)
     #fileNames = cms.untracked.vstring('file:out_DTTF_ctau_1000_PU140.root')
     #fileNames = cms.untracked.vstring('/store/mc/TP2023HGCALDR/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/GEN-SIM-DIGI-RAW/HGCALForMUO_PU140BX25_newsplit_PH2_1K_FB_V6-v2/40000/0097F2D6-523D-E511-BA2B-0025907254C8.root')
     #fileNames = cms.untracked.vstring("file:/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU0_TTI_DTTFmod_v3/161010_033403/0000/out_DTTFmod_1.root")
     #fileNames = cms.untracked.vstring("file:/eos/uscms/store/user/lpcgem/SLHC23_patch1_2023Muon_gen_sim_Pt2_50_1M/PromptMu_14TeV_PU0_TTI_DTTFmod_v3/161010_034533/0000/out_DTTFmod_1.root")
-    fileNames = cms.untracked.vstring("file:/eos/uscms/store/user/lpcgem/SingleNu_91X_200k_FlatPt05_50_phase2_realistic_Extended2023D4_GEN_SIM_v3/DIGI_L1_ME0Reco_PU200/170509_022946/0000/step2_489.root")
 )
 from MuJetAnalysis.HLTBendingAngle.InputFileHelpers import useInputDir
 #process = useInputDir(process, "/eos/uscms/store/user/lpcgem/DarkSUSY_MH-125_MGammaD-20000_ctau1000_14TeV_madgraph-pythia6-tauola/DarkSUSY_mH_125_mGammaD_20000_cT_1000_14TeV_PU140_DTTFmod/160622_185508/0000/","out_DTTF_ctau_1000_PU140_full")
@@ -124,8 +123,7 @@ process.TFileService = cms.Service(
 #    fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140.test.root")
     #fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU0.root")
     #fileName = cms.string("out_filter_ana_DarkSUSY_mH_125_mGammaD_20000_ctau_1000_14TeV_PU140.root")
-    #fileName = cms.string(options.outputFile)
-    fileName = cms.string("out_rate.root")
+    fileName = cms.string(options.outputFile)
 )
 
 

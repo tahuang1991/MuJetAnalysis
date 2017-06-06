@@ -369,6 +369,12 @@ struct MyEvent
   Float_t CSCTF_L1_DPhi12_GE21[kMaxCSCTF];
   Float_t CSCTF_sim_eta_st2[kMaxCSCTF];
   Float_t CSCTF_L1_eta_st2[kMaxCSCTF];
+  Float_t CSCTF_L1_eta_st1[kMaxCSCTF];
+
+  Float_t CSCTF_L1_DPhi12_noME0_noGE21[kMaxCSCTF];
+  Float_t CSCTF_L1_DPhi12_noME0_GE21[kMaxCSCTF];
+  Float_t CSCTF_L1_DPhi12_ME0_noGE21[kMaxCSCTF];
+  Float_t CSCTF_L1_DPhi12_ME0_GE21[kMaxCSCTF];
 
   Float_t CSCTF_sim_position_pt[kMaxCSCTF];
   Float_t CSCTF_L1_position_pt[kMaxCSCTF];
@@ -382,8 +388,8 @@ struct MyEvent
   Float_t CSCTF_L1_hybrid_pt_GE21[kMaxCSCTF];
 
   // directions
-  Float_t CSCTF_L1_Phi1_noGE21[kMaxCSCTF], CSCTF_L1_Phi2_noGE21[kMaxCSCTF];
-  Float_t CSCTF_L1_Phi1_GE21[kMaxCSCTF], CSCTF_L1_Phi2_GE21[kMaxCSCTF];
+  Float_t CSCTF_L1_Phi1_noME0[kMaxCSCTF], CSCTF_L1_Phi2_noGE21[kMaxCSCTF];
+  Float_t CSCTF_L1_Phi1_ME0[kMaxCSCTF], CSCTF_L1_Phi2_GE21[kMaxCSCTF];
   Float_t CSCTF_sim_Phi1_noGE21[kMaxCSCTF], CSCTF_sim_Phi2_noGE21[kMaxCSCTF];
   Float_t CSCTF_sim_Phi1_GE21[kMaxCSCTF], CSCTF_sim_Phi2_GE21[kMaxCSCTF];
 
@@ -899,6 +905,8 @@ private:
   double simTrackOnlyMuon_;
 
   edm::ParameterSet cfg_;
+  edm::ParameterSet displacedMuPt_cfg_;
+
   edm::EDGetTokenT<reco::GenParticleCollection> genParticleInput_;
   edm::EDGetTokenT<edm::SimVertexContainer> simVertexInput_;
   edm::EDGetTokenT<edm::SimTrackContainer> simTrackInput_;
@@ -991,6 +999,8 @@ DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) :
   doStubRecovery_ = iConfig.getParameter<bool>("doStubRecovery");
   L1Mu_input = iConfig.getParameter<edm::InputTag>("L1Mu_input");
   L1TkMu_input = iConfig.getParameter<edm::InputTag>("L1TkMu_input");
+  
+  displacedMuPt_cfg_ = cfg_.getParameter<edm::ParameterSet>("displacedMuPtAssignment");
 
   auto displacedGenMu = cfg_.getParameter<edm::ParameterSet>("displacedGenMu");
   genParticleInput_ = consumes<reco::GenParticleCollection>(displacedGenMu.getParameter<edm::InputTag>("validInputTags"));
@@ -1034,7 +1044,7 @@ DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) :
   auto gemRecHit_= cfg_.getParameter<edm::ParameterSet>("gemRecHit");
   gemRecHitInput_ = consumes<GEMRecHitCollection>(gemRecHit_.getParameter<edm::InputTag>("validInputTags"));
 
-  auto me0Digi_= cfg_.getParameter<edm::ParameterSet>("me0DigiPreReco");
+  auto me0Digi_= cfg_.getParameter<edm::ParameterSet>("me0ReDigiPreReco");
   me0DigiInput_ = consumes<ME0DigiPreRecoCollection>(me0Digi_.getParameter<edm::InputTag>("validInputTags"));
 
   auto me0RecHit_ = cfg_.getParameter<edm::ParameterSet>("me0RecHit");
@@ -3003,31 +3013,47 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       }
     } // check if match to pads
 
-    /*
+    
     DisplacedMuonTriggerPtassignment ptAssignmentUnit(chamberid_lct,
-                                                      detid_pads,
+                                                      gemPadDigiInput_,
+						      me0SegmentInput_,
+						      displacedMuPt_cfg_, 
                                                       iEventSetup,
                                                       iEvent);
     ptAssignmentUnit.setVerbose(false);
     ptAssignmentUnit.setCharge(event_.CSCTF_charge[j]);
     event_.CSCTF_L1_eta_st2[j] = ptAssignmentUnit.getTrackEta();
+    event_.CSCTF_L1_eta_st1[j] = ptAssignmentUnit.getCSCEta(1);
 
     if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runPositionbased()){
 
       event_.CSCTF_L1_DDY123[j] = ptAssignmentUnit.getdeltaY123();
       event_.CSCTF_L1_position_pt[j] = ptAssignmentUnit.getPositionPt();
     }
+    //for direction based, by default, ME0 is turned on
     if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(false)){
-      event_.CSCTF_L1_DPhi12_noGE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
-      event_.CSCTF_L1_Phi1_noGE21[j] = ptAssignmentUnit.getlocalPhiDirection(1);
+      event_.CSCTF_L1_DPhi12_ME0_noGE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
+      event_.CSCTF_L1_Phi1_ME0[j] = ptAssignmentUnit.getlocalPhiDirection(1);
       event_.CSCTF_L1_Phi2_noGE21[j] = ptAssignmentUnit.getlocalPhiDirection(2);
       event_.CSCTF_L1_direction_pt_noGE21[j] = ptAssignmentUnit.getDirectionPt();
+
+      //run ME11only and ME21only
+      if (ptAssignmentUnit.checkME0Region() and ptAssignmentUnit.runDirectionbased(false, false)){
+	  event_.CSCTF_L1_DPhi12_noME0_noGE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
+	  event_.CSCTF_L1_Phi1_noME0[j] = ptAssignmentUnit.getlocalPhiDirection(1);
+      }
     }
     if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(true)){
-      event_.CSCTF_L1_DPhi12_GE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
-      event_.CSCTF_L1_Phi1_GE21[j] = ptAssignmentUnit.getlocalPhiDirection(1);
+      event_.CSCTF_L1_DPhi12_ME0_GE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
+      event_.CSCTF_L1_Phi1_ME0[j] = ptAssignmentUnit.getlocalPhiDirection(1);
       event_.CSCTF_L1_Phi2_GE21[j] = ptAssignmentUnit.getlocalPhiDirection(2);
       event_.CSCTF_L1_direction_pt_GE21[j] = ptAssignmentUnit.getDirectionPt();
+
+      //run ME11only and GE21+ME21
+      if (ptAssignmentUnit.checkME0Region() and ptAssignmentUnit.runDirectionbased(true, false)){
+	  event_.CSCTF_L1_DPhi12_noME0_GE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
+      }
+
     }
 
     if (ptAssignmentUnit.getNParity()>=0){
@@ -3037,7 +3063,6 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       ptAssignmentUnit.runHybrid(true);
       event_.CSCTF_L1_hybrid_pt_GE21[j] = ptAssignmentUnit.getHybridPt();
     }
-    */
 
   } // loop on csctf tracks
 
@@ -5846,16 +5871,23 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_sim_DPhi12_GE21", event_.CSCTF_sim_DPhi12_GE21,"CSCTF_sim_DPhi12_GE21[50]/F");
   event_tree_->Branch("CSCTF_L1_DPhi12_GE21", event_.CSCTF_L1_DPhi12_GE21,"CSCTF_L1_DPhi12_GE21[50]/F");
 
+  event_tree_->Branch("CSCTF_L1_DPhi12_ME0_GE21", event_.CSCTF_L1_DPhi12_ME0_GE21,"CSCTF_L1_DPhi12_ME0_GE21[50]/F");
+  event_tree_->Branch("CSCTF_L1_DPhi12_ME0_noGE21", event_.CSCTF_L1_DPhi12_ME0_noGE21,"CSCTF_L1_DPhi12_ME0_noGE21[50]/F");
+  event_tree_->Branch("CSCTF_L1_DPhi12_noME0_GE21", event_.CSCTF_L1_DPhi12_noME0_GE21,"CSCTF_L1_DPhi12_noME0_GE21[50]/F");
+  event_tree_->Branch("CSCTF_L1_DPhi12_noME0_noGE21", event_.CSCTF_L1_DPhi12_noME0_noGE21,"CSCTF_L1_DPhi12_noME0_noGE21[50]/F");
+
   event_tree_->Branch("CSCTF_sim_eta_st2", event_.CSCTF_sim_eta_st2,"CSCTF_sim_eta_st2[50]/F");
   event_tree_->Branch("CSCTF_L1_eta_st2", event_.CSCTF_L1_eta_st2,"CSCTF_L1_eta_st2[50]/F");
+
+  event_tree_->Branch("CSCTF_L1_eta_st1", event_.CSCTF_L1_eta_st1,"CSCTF_L1_eta_st1[50]/F");
 
   event_tree_->Branch("CSCTF_sim_Phi1_noGE21", event_.CSCTF_sim_Phi1_noGE21,"CSCTF_sim_Phi1_noGE21[50]/F");
   event_tree_->Branch("CSCTF_sim_Phi2_noGE21", event_.CSCTF_sim_Phi2_noGE21,"CSCTF_sim_Phi2_noGE21[50]/F");
   event_tree_->Branch("CSCTF_sim_Phi1_GE21", event_.CSCTF_sim_Phi1_GE21,"CSCTF_sim_Phi1_GE21[50]/F");
   event_tree_->Branch("CSCTF_sim_Phi2_GE21", event_.CSCTF_sim_Phi2_GE21,"CSCTF_sim_Phi2_GE21[50]/F");
-  event_tree_->Branch("CSCTF_L1_Phi1_noGE21", event_.CSCTF_L1_Phi1_noGE21,"CSCTF_L1_Phi1_noGE21[50]/F");
+  event_tree_->Branch("CSCTF_L1_Phi1_noME0", event_.CSCTF_L1_Phi1_noME0,"CSCTF_L1_Phi1_noME0[50]/F");
   event_tree_->Branch("CSCTF_L1_Phi2_noGE21", event_.CSCTF_L1_Phi2_noGE21,"CSCTF_L1_Phi2_noGE21[50]/F");
-  event_tree_->Branch("CSCTF_L1_Phi1_GE21", event_.CSCTF_L1_Phi1_GE21,"CSCTF_L1_Phi1_GE21[50]/F");
+  event_tree_->Branch("CSCTF_L1_Phi1_ME0", event_.CSCTF_L1_Phi1_ME0,"CSCTF_L1_Phi1_ME0[50]/F");
   event_tree_->Branch("CSCTF_L1_Phi2_GE21", event_.CSCTF_L1_Phi2_GE21,"CSCTF_L1_Phi2_GE21[50]/F");
 
   event_tree_->Branch("CSCTF_sim_position_pt", event_.CSCTF_sim_position_pt,"CSCTF_sim_position_pt[50]/F");
@@ -6467,6 +6499,11 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_sim_DPhi12_GE21[i] = 99;
     event_.CSCTF_L1_DPhi12_GE21[i] = 99;
 
+    event_.CSCTF_L1_DPhi12_ME0_GE21[i] = 99;
+    event_.CSCTF_L1_DPhi12_ME0_noGE21[i] = 99;
+    event_.CSCTF_L1_DPhi12_noME0_GE21[i] = 99;
+    event_.CSCTF_L1_DPhi12_noME0_noGE21[i] = 99;
+
     event_.CSCTF_sim_position_pt[i] = 99;
     event_.CSCTF_L1_position_pt[i] = 99;
 
@@ -6482,10 +6519,11 @@ DisplacedL1MuFilter::clearBranches()
 
     event_.CSCTF_sim_eta_st2[i] = 99;
     event_.CSCTF_L1_eta_st2[i] = 99;
+    event_.CSCTF_L1_eta_st1[i] = 99;
 
-    event_.CSCTF_L1_Phi1_noGE21[i] = 99;
+    event_.CSCTF_L1_Phi1_noME0[i] = 99;
     event_.CSCTF_L1_Phi2_noGE21[i] = 99;
-    event_.CSCTF_L1_Phi1_GE21[i] = 99;
+    event_.CSCTF_L1_Phi1_ME0[i] = 99;
     event_.CSCTF_L1_Phi2_GE21[i] = 99;
     event_.CSCTF_sim_Phi1_noGE21[i] = 99;
     event_.CSCTF_sim_Phi2_noGE21[i] = 99;

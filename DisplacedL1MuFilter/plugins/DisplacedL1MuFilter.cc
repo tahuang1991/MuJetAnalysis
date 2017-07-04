@@ -356,7 +356,7 @@ struct MyEvent
   Float_t ME0_dphi[kMaxCSCTF];
 
   Float_t L1Mu_me0_eta[kMaxCSCTF], L1Mu_me0_phi[kMaxCSCTF], L1Mu_me0_dPhi[kMaxCSCTF];
-  Float_t L1Mu_me0_dR[kMaxCSCTF], L1Mu_me0_st1_dphi[kMaxCSCTF], L1Mu_me0_st1_dphi_norm[kMaxCSCTF];
+  Float_t L1Mu_me0_dR[kMaxCSCTF], L1Mu_me0_st1_dR[kMaxCSCTF], L1Mu_me0_st1_dphi[kMaxCSCTF], L1Mu_me0_st1_dphi_norm[kMaxCSCTF];
   Float_t L1Mu_me0_st2_eta[kMaxCSCTF], L1Mu_me0_st2_phi[kMaxCSCTF];
   Int_t L1Mu_me0_st1_isEven[kMaxCSCTF];
 
@@ -370,6 +370,8 @@ struct MyEvent
   Float_t CSCTF_sim_eta_st2[kMaxCSCTF];
   Float_t CSCTF_L1_eta_st2[kMaxCSCTF];
   Float_t CSCTF_L1_eta_st1[kMaxCSCTF];
+
+  Bool_t CSCTF_L1_isME0Region[kMaxCSCTF];
 
   Float_t CSCTF_L1_DPhi12_noME0_noGE21[kMaxCSCTF];
   Float_t CSCTF_L1_DPhi12_noME0_GE21[kMaxCSCTF];
@@ -388,6 +390,7 @@ struct MyEvent
   Float_t CSCTF_L1_hybrid_pt_GE21[kMaxCSCTF];
 
   // directions
+  Float_t CSCTF_L1_Phi1[kMaxCSCTF];
   Float_t CSCTF_L1_Phi1_noME0[kMaxCSCTF], CSCTF_L1_Phi2_noGE21[kMaxCSCTF];
   Float_t CSCTF_L1_Phi1_ME0[kMaxCSCTF], CSCTF_L1_Phi2_GE21[kMaxCSCTF];
   Float_t CSCTF_sim_Phi1_noGE21[kMaxCSCTF], CSCTF_sim_Phi2_noGE21[kMaxCSCTF];
@@ -2499,8 +2502,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                 int deltaBX = std::abs(stub.getBX() - (6 + event_.CSCTF_bx[j]));
                 if (deltaBX > 1) continue;
 
+                auto gp = getCSCSpecificPoint2(ch_id.rawId(), stub);
+		float dR = reco::deltaR(float(gp.eta()), normalizedPhi(float(gp.phi())),
+			                             event_.CSCTF_eta[j] , normalizedPhi(event_.CSCTF_phi[j]));
                 if(verbose) std::cout << ch_id << std::endl;
-                if(verbose) std::cout<<"Candidate " << stub << std::endl;
+                if(verbose) std::cout<<"Candidate " << stub <<" dR (track, stub) "<<dR << std::endl;
+		if (dR > 0.4) continue;
+
                 bestMatchingStub = pickBestMatchingStub(allxs[ch_id.station()-1], allys[ch_id.station()-1],
                                                         bestMatchingStub, std::make_pair(ch_id, stub), 6 + event_.CSCTF_bx[j]);
               }
@@ -2522,8 +2530,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                   int deltaBX = std::abs(stub.getBX() - (6 + event_.CSCTF_bx[j]));
                   if (deltaBX > 1) continue;
 
+                  auto gp = getCSCSpecificPoint2(ch_id.rawId(), stub);
+		  float dR = reco::deltaR(float(gp.eta()), normalizedPhi(float(gp.phi())),
+			                             event_.CSCTF_eta[j] , normalizedPhi(event_.CSCTF_phi[j]));
+
                   if(verbose) std::cout << me1a_id << std::endl;
-                  if(verbose) std::cout<<"Candidate " << stub << std::endl;
+                  if(verbose) std::cout<<"Candidate " << stub <<" dR (track, stub) "<< dR << std::endl;
+		  if(dR > 0.4) continue;
                   bestMatchingStub = pickBestMatchingStub(allxs[me1a_id.station()-1], allys[me1a_id.station()-1],
                                                           bestMatchingStub, std::make_pair(me1a_id, stub), 6 + event_.CSCTF_bx[j]);
 
@@ -2537,7 +2550,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
             // extra selection - stub not too far from track
             if (reco::deltaR(float(gp.eta()), normalizedPhi(float(gp.phi())),
-                             event_.CSCTF_eta[j] , normalizedPhi(event_.CSCTF_phi[j])) < 1){
+                             event_.CSCTF_eta[j] , normalizedPhi(event_.CSCTF_phi[j])) < .5){
 
               // add the stub to the collection
               std::vector<CSCCorrelatedLCTDigi> v;
@@ -2615,7 +2628,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
 
 
-    if(verbose) cout << "Checking matching ME0 digis " << endl;
+    /*if(verbose) cout << "Checking matching ME0 digis " << endl;
     for (const auto& sch : me0Geometry_->chambers()){
       const ME0DetId& schid = sch->id();
 
@@ -2637,7 +2650,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
           }
         }
       }
-    }
+    }*/
 
     // ME0DigiPreRecoCollection::DigiRangeIterator detUnitIt;
     // for (detUnitIt = me0DigiPreRecos->begin();detUnitIt != me0DigiPreRecos->end(); ++detUnitIt)
@@ -2698,9 +2711,11 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     ME0Segment bestMatchingME0Segment;
     float minDR_ME0_Track = 999;
     if(verbose) cout << "Find best match:" << endl;
+    bool hasME0Segment  = false;
     // Match EMTF to ME0 segment
     for (auto thisSegment = me0Segments->begin(); thisSegment != me0Segments->end(); ++thisSegment){
 
+      hasME0Segment = true;
       ME0DetId id = thisSegment->me0DetId();
       LocalPoint thisPosition(thisSegment->localPosition());
       GlobalPoint SegPos = me0Geometry_->idToDet(thisSegment->me0DetId())->surface().toGlobal(thisPosition);
@@ -2723,13 +2738,13 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
              std::cout <<"ME0gp eta "<< SegPos.eta() <<" phi "<< SegPos.phi() <<" gp_ME0_st2 eta "<< gp_ME0_st2.eta()<<" phi "<< gp_ME0_st2.phi()<<" L1Mu eta "<< event_.CSCTF_eta[j] <<" phi "<< event_.CSCTF_phi[j]  <<" pt "<< event_.CSCTF_pt[j] <<" quality "<< event_.CSCTF_quality[j] << std::endl;
       }
 
-      if (std::fabs(SegPos.eta() - event_.CSCTF_eta[j])>0.25){
+      if (std::fabs(SegPos.eta() - event_.CSCTF_eta[j])>0.4){
         std::cout << "ALARM!!!! Too large deltaEta, Seg eta "<< SegPos.eta() <<" L1Mu_eta "<< event_.CSCTF_eta[j] << std::endl;
         continue;
       }
 
       // cannot be too far in phi
-      if (std::fabs(reco::deltaPhi((float) gp_ME0_st2.phi(), (float) event_.CSCTF_phi[j])) > 0.3) {
+      if (std::fabs(reco::deltaPhi((float) gp_ME0_st2.phi(), (float) event_.CSCTF_phi[j])) > 0.7) {
         std::cout << "ALARM!!!! Too large deltaPhi, Seg phi "<< gp_ME0_st2.phi() <<" L1Mu_phi "<< event_.CSCTF_phi[j] << std::endl;
         continue;
       }
@@ -2786,7 +2801,14 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                                            event_.L1Mu_me0_eta[j],
                                            event_.L1Mu_me0_st2_phi[j]);
 
-      event_.L1Mu_me0_st1_dphi[j] = reco::deltaPhi(float(event_.CSCTF_phi1[j]), float(event_.L1Mu_me0_phi[j]));
+      if (event_.CSCTF_phi1[j] != 99){
+	  event_.L1Mu_me0_st1_dphi[j] = reco::deltaPhi(float(event_.CSCTF_phi1[j]), float(event_.L1Mu_me0_phi[j]));
+	  event_.L1Mu_me0_st1_dR[j]  = reco::deltaR(event_.CSCTF_eta1[j],
+						    event_.CSCTF_phi1[j],
+						    event_.L1Mu_me0_eta[j],
+						    event_.L1Mu_me0_phi[j]);
+						    
+      }
       event_.L1Mu_me0_st1_isEven[j] = bestMatchingME0Segment.me0DetId().chamber()/2==0;//here should be whether ME11 chamber is even or not
       float dist_ME0_ME11 = std::abs(SegPos.z() - event_.CSCTF_fit_z1[j]);
 
@@ -2801,6 +2823,11 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
                   << std::endl;
         std::cout << "ME0 dphi: " << event_.L1Mu_me0_dPhi[j] << std::endl;
       }
+    }
+    else if(hasME0Segment){
+      event_.L1Mu_me0_dR[j] = 10;
+      event_.L1Mu_me0_st1_dR[j] = 10;
+      if(verbose) cout << "has ME0 segment, but No best matching ME0 stub!" << endl;
     }
     else {
       if(verbose) cout << "No best matching ME0 stub!" << endl;
@@ -3024,45 +3051,60 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     ptAssignmentUnit.setCharge(event_.CSCTF_charge[j]);
     event_.CSCTF_L1_eta_st2[j] = ptAssignmentUnit.getTrackEta();
     event_.CSCTF_L1_eta_st1[j] = ptAssignmentUnit.getCSCEta(1);
+    event_.CSCTF_L1_isME0Region[j] = ptAssignmentUnit.checkME0Region();
 
     if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runPositionbased()){
 
       event_.CSCTF_L1_DDY123[j] = ptAssignmentUnit.getdeltaY123();
       event_.CSCTF_L1_position_pt[j] = ptAssignmentUnit.getPositionPt();
     }
-    //for direction based, by default, ME0 is turned on
-    if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(false)){
-      event_.CSCTF_L1_DPhi12_ME0_noGE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
-      event_.CSCTF_L1_Phi1_ME0[j] = ptAssignmentUnit.getlocalPhiDirection(1);
+    //for direction based, runDirectionbased(useME0GE11, useGE21)
+    if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(true, false)){
+      event_.CSCTF_L1_DPhi12_noGE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
+      event_.CSCTF_L1_Phi1[j] = ptAssignmentUnit.getlocalPhiDirection(1);
       event_.CSCTF_L1_Phi2_noGE21[j] = ptAssignmentUnit.getlocalPhiDirection(2);
       event_.CSCTF_L1_direction_pt_noGE21[j] = ptAssignmentUnit.getDirectionPt();
 
-      //run ME11only and ME21only
-      if (ptAssignmentUnit.checkME0Region() and ptAssignmentUnit.runDirectionbased(false, false)){
-	  event_.CSCTF_L1_DPhi12_noME0_noGE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
-	  event_.CSCTF_L1_Phi1_noME0[j] = ptAssignmentUnit.getlocalPhiDirection(1);
+      if (ptAssignmentUnit.checkME0Region()){
+	  event_.CSCTF_L1_DPhi12_ME0_noGE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
+	  event_.CSCTF_L1_Phi1_ME0[j] = ptAssignmentUnit.getlocalPhiDirection(1);
       }
+
+    }else if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.checkME0Region() and event_.CSCTF_eta1[j] != 99){
+      std::cout <<"ptAssignmentUnit failed to find ME0 segment or LCT in ME11 "<< std::endl;
+      std::cout <<"ME0segment eta "<< event_.L1Mu_me0_eta[j]<<" phi "<< event_.L1Mu_me0_phi[j] << std::endl;
+      std::cout <<"stub a ME11 " << event_.CSCTF_eta1[j] <<" phi "<< event_.CSCTF_phi1[j] <<" track eta "<< event_.CSCTF_eta[j] <<" phi "<< event_.CSCTF_phi[j] << std::endl;
     }
-    if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(true)){
-      event_.CSCTF_L1_DPhi12_ME0_GE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
-      event_.CSCTF_L1_Phi1_ME0[j] = ptAssignmentUnit.getlocalPhiDirection(1);
+      //run ME11only and ME21only
+    if (ptAssignmentUnit.getNParity()>=0 and  ptAssignmentUnit.getMeRing()==1 and ptAssignmentUnit.runDirectionbased(false, false)){
+      event_.CSCTF_L1_DPhi12_noME0_noGE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
+      event_.CSCTF_L1_Phi1_noME0[j] = ptAssignmentUnit.getlocalPhiDirection(1);
+    }
+
+    if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.runDirectionbased(true, true)){
+      event_.CSCTF_L1_DPhi12_GE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
+      event_.CSCTF_L1_Phi1[j] = ptAssignmentUnit.getlocalPhiDirection(1);
       event_.CSCTF_L1_Phi2_GE21[j] = ptAssignmentUnit.getlocalPhiDirection(2);
       event_.CSCTF_L1_direction_pt_GE21[j] = ptAssignmentUnit.getDirectionPt();
-
-      //run ME11only and GE21+ME21
-      if (ptAssignmentUnit.checkME0Region() and ptAssignmentUnit.runDirectionbased(true, false)){
-	  event_.CSCTF_L1_DPhi12_noME0_GE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
+     
+      if (ptAssignmentUnit.checkME0Region()){
+	  event_.CSCTF_L1_DPhi12_ME0_GE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
+	  event_.CSCTF_L1_Phi1_ME0[j] = ptAssignmentUnit.getlocalPhiDirection(1);
       }
-
     }
 
-    if (ptAssignmentUnit.getNParity()>=0){
-      ptAssignmentUnit.runHybrid(false);
-      event_.CSCTF_L1_hybrid_pt_noGE21[j] = ptAssignmentUnit.getHybridPt();
-
-      ptAssignmentUnit.runHybrid(true);
-      event_.CSCTF_L1_hybrid_pt_GE21[j] = ptAssignmentUnit.getHybridPt();
+    //run ME11only and GE21+ME21
+    if (ptAssignmentUnit.getNParity()>=0 and ptAssignmentUnit.getMeRing()==1 and ptAssignmentUnit.runDirectionbased(false, true)){
+      event_.CSCTF_L1_DPhi12_noME0_GE21[j] = ptAssignmentUnit.getdeltaPhiDirection(1, 2);
     }
+
+    //if (ptAssignmentUnit.getNParity()>=0){
+    //  ptAssignmentUnit.runHybrid(false);
+    //  event_.CSCTF_L1_hybrid_pt_noGE21[j] = ptAssignmentUnit.getHybridPt();
+
+    //  ptAssignmentUnit.runHybrid(true);
+    //  event_.CSCTF_L1_hybrid_pt_GE21[j] = ptAssignmentUnit.getHybridPt();
+    //}
 
   } // loop on csctf tracks
 
@@ -3387,19 +3429,23 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
     double bestDrL1MuL1CSCTrack = 99;
     for (unsigned int j=0; j<l1Tracks.size(); ++j) {
       if ( ( event_.L1Mu_quality[i] > 0 ) &&
-           ( reco::deltaPhi( event_.L1Mu_phi[i], event_.CSCTF_phi[j] ) < 0.001 ) &&
+           ( std::fabs(reco::deltaPhi( event_.L1Mu_phi[i], event_.CSCTF_phi[j] )) < 0.1 ) &&
            ( event_.L1Mu_bx[i] == event_.CSCTF_bx[j] ) ) {
         double drL1MuL1CSCTrack = reco::deltaR(float(event_.L1Mu_eta[i]),
-                                               normalizedPhi(float(event_.L1Mu_eta[i])),
+                                               normalizedPhi(float(event_.L1Mu_phi[i])),
                                                event_.CSCTF_eta[j],
                                                event_.CSCTF_phi[j]);
-        if (drL1MuL1CSCTrack < bestDrL1MuL1CSCTrack and drL1MuL1CSCTrack < 0.3) {
-          std::cout << "new best csctf track " << drL1MuL1CSCTrack << " " << event_.CSCTF_eta[j] << " " << event_.CSCTF_quality[j] << std::endl;
+	std::cout <<"Matching L1Mu to CSCTF track, L1Mu index "<< i <<" eta "<< event_.L1Mu_eta[i]<<" phi "<< event_.L1Mu_phi[i]<<" CSCTF index "<< j <<" eta "<<event_.CSCTF_eta[j]<<" phi "<<event_.CSCTF_phi[j] <<" dR "<< drL1MuL1CSCTrack << std::endl;
+        if (drL1MuL1CSCTrack < bestDrL1MuL1CSCTrack and drL1MuL1CSCTrack < 0.2) {
+          std::cout <<"L1Mu index "<< i <<" new best csctf track index "<< j <<" dR " << drL1MuL1CSCTrack << " " << event_.CSCTF_eta[j] << " " << event_.CSCTF_quality[j] << std::endl;
 
           bestDrL1MuL1CSCTrack = drL1MuL1CSCTrack;
           event_.L1Mu_CSCTF_index[i] = j;
         }
       }
+    }
+    if (bestDrL1MuL1CSCTrack > 0.2){
+       std::cout <<"L1Mu index "<< i <<" dR "<< bestDrL1MuL1CSCTrack <<" Failed to find matched CSCTF "<< std::endl;
     }
 
     if(false) {
@@ -5876,6 +5922,7 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_L1_DPhi12_noME0_GE21", event_.CSCTF_L1_DPhi12_noME0_GE21,"CSCTF_L1_DPhi12_noME0_GE21[50]/F");
   event_tree_->Branch("CSCTF_L1_DPhi12_noME0_noGE21", event_.CSCTF_L1_DPhi12_noME0_noGE21,"CSCTF_L1_DPhi12_noME0_noGE21[50]/F");
 
+  event_tree_->Branch("CSCTF_L1_isME0Region", event_.CSCTF_L1_isME0Region,"CSCTF_L1_isME0Region[50]/B");
   event_tree_->Branch("CSCTF_sim_eta_st2", event_.CSCTF_sim_eta_st2,"CSCTF_sim_eta_st2[50]/F");
   event_tree_->Branch("CSCTF_L1_eta_st2", event_.CSCTF_L1_eta_st2,"CSCTF_L1_eta_st2[50]/F");
 
@@ -5885,6 +5932,7 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_sim_Phi2_noGE21", event_.CSCTF_sim_Phi2_noGE21,"CSCTF_sim_Phi2_noGE21[50]/F");
   event_tree_->Branch("CSCTF_sim_Phi1_GE21", event_.CSCTF_sim_Phi1_GE21,"CSCTF_sim_Phi1_GE21[50]/F");
   event_tree_->Branch("CSCTF_sim_Phi2_GE21", event_.CSCTF_sim_Phi2_GE21,"CSCTF_sim_Phi2_GE21[50]/F");
+  event_tree_->Branch("CSCTF_L1_Phi1", event_.CSCTF_L1_Phi1,"CSCTF_L1_Phi1[50]/F");
   event_tree_->Branch("CSCTF_L1_Phi1_noME0", event_.CSCTF_L1_Phi1_noME0,"CSCTF_L1_Phi1_noME0[50]/F");
   event_tree_->Branch("CSCTF_L1_Phi2_noGE21", event_.CSCTF_L1_Phi2_noGE21,"CSCTF_L1_Phi2_noGE21[50]/F");
   event_tree_->Branch("CSCTF_L1_Phi1_ME0", event_.CSCTF_L1_Phi1_ME0,"CSCTF_L1_Phi1_ME0[50]/F");
@@ -5907,6 +5955,7 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("L1Mu_me0_phi", event_.L1Mu_me0_phi,"L1Mu_me0_phi[50]/F");
   event_tree_->Branch("L1Mu_me0_dPhi", event_.L1Mu_me0_dPhi,"L1Mu_me0_dPhi[50]/F");
   event_tree_->Branch("L1Mu_me0_dR", event_.L1Mu_me0_dR,"L1Mu_me0_dR[50]/F");
+  event_tree_->Branch("L1Mu_me0_st1_dR", event_.L1Mu_me0_st1_dR,"L1Mu_me0_st1_dR[50]/F");
   event_tree_->Branch("L1Mu_me0_st1_dphi", event_.L1Mu_me0_st1_dphi,"L1Mu_me0_st1_dphi[50]/F");
   event_tree_->Branch("L1Mu_me0_st1_dphi_norm", event_.L1Mu_me0_st1_dphi_norm,"L1Mu_me0_st1_dphi_norm[50]/F");
   event_tree_->Branch("L1Mu_me0_st2_eta", event_.L1Mu_me0_st2_eta,"L1Mu_me0_st2_eta[50]/F");
@@ -6521,7 +6570,10 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_L1_eta_st2[i] = 99;
     event_.CSCTF_L1_eta_st1[i] = 99;
 
+    event_.CSCTF_L1_isME0Region[i] = false;
+
     event_.CSCTF_L1_Phi1_noME0[i] = 99;
+    event_.CSCTF_L1_Phi1[i] = 99;
     event_.CSCTF_L1_Phi2_noGE21[i] = 99;
     event_.CSCTF_L1_Phi1_ME0[i] = 99;
     event_.CSCTF_L1_Phi2_GE21[i] = 99;
@@ -6541,6 +6593,7 @@ DisplacedL1MuFilter::clearBranches()
     event_.L1Mu_me0_phi[i]= 99;
     event_.L1Mu_me0_dPhi[i]= 99;
     event_.L1Mu_me0_dR[i]= 99;
+    event_.L1Mu_me0_st1_dR[i]= 99;
     event_.L1Mu_me0_st1_dphi[i]= 99;
     event_.L1Mu_me0_st1_dphi_norm[i]= 99;
     event_.L1Mu_me0_st2_eta[i]= 99;

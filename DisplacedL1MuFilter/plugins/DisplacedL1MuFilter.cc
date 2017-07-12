@@ -941,13 +941,18 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
   iEvent.getByLabel("simGmtDigis", aH);
   const GMTs& l1GmtCands(*aH.product());
 
-  edm::Handle<L1MuDTTrackCollection > L1DTTrackPhiH;
-  iEvent.getByLabel("dttfDigis","DTTF", L1DTTrackPhiH);
-  const L1MuDTTrackCollection& L1DTTrackPhis(*L1DTTrackPhiH.product());
+  //edm::Handle<L1MuDTTrackCollection > L1DTTrackPhiH;
+  //edm::Handle<vector<L1MuDTTrackSegPhi> > DTTrackPhiH;
+  L1MuDTTrackCollection L1DTTrackPhis;
+  vector<L1MuDTTrackSegPhi> DTTrackPhis;
+  if (processDTTF_){
 
-  edm::Handle<vector<L1MuDTTrackSegPhi> > DTTrackPhiH;
-  iEvent.getByLabel("dttfDigis","DTTF", DTTrackPhiH);
-  const vector<L1MuDTTrackSegPhi>& DTTrackPhis(*DTTrackPhiH.product());
+      //iEvent.getByLabel("dttfDigis","DTTF", L1DTTrackPhiH);
+      //iEvent.getByLabel("dttfDigis","DTTF", DTTrackPhiH);
+      //L1DTTrackPhis = *L1DTTrackPhiH.product();
+      //DTTrackPhis = *DTTrackPhiH.product();
+  }
+
 
   // tracks produced by TF
   edm::Handle< L1CSCTrackCollection > hl1Tracks;
@@ -1013,9 +1018,9 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
   // L1 TrackingTrigger Analysis
   edm::Handle< std::vector< TTTrack< Ref_PixelDigi_ > > > TTTrackHandle;
-  iEvent.getByLabel("TTTracksFromPixelDigis", "Level1TTTracks", TTTrackHandle);
   std::vector< TTTrack< Ref_PixelDigi_ > > TTTracks;
   if (processTTI_){
+    iEvent.getByLabel("TTTracksFromPixelDigis", "Level1TTTracks", TTTrackHandle);
     TTTracks = *TTTrackHandle.product();
   }
 
@@ -2433,7 +2438,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
               }
             }
           }
-        }
+        }//else {} associate GEMPad to L1Mu by dR if ME11 stub is missing 
+
         if (not stubMissingSt2) {// and not GE21_copad_matched
            // get the CSCDetId of station 1
           CSCDetId csc_st2(event_.CSCTF_id2[ j ]);
@@ -2466,7 +2472,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
               }
             }
           }
-        }
+        }//else {} associate GE21 pads to L1Mu by dR if ME21 stub is missing
       }
       //loop for fake GE21 pad
       if (addFakeGE21DigiPad_){

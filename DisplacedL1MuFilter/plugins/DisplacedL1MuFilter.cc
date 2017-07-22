@@ -342,6 +342,8 @@ struct MyEvent
   Int_t CSCTF_val1[kMaxCSCTF], CSCTF_val2[kMaxCSCTF], CSCTF_val3[kMaxCSCTF], CSCTF_val4[kMaxCSCTF];
   Float_t CSCTF_phi1[kMaxCSCTF], CSCTF_phi2[kMaxCSCTF], CSCTF_phi3[kMaxCSCTF], CSCTF_phi4[kMaxCSCTF];
   Float_t CSCTF_eta1[kMaxCSCTF], CSCTF_eta2[kMaxCSCTF], CSCTF_eta3[kMaxCSCTF], CSCTF_eta4[kMaxCSCTF];
+  Float_t CSCTF_dR1[kMaxCSCTF], CSCTF_dR2[kMaxCSCTF], CSCTF_dR3[kMaxCSCTF],CSCTF_dR4[kMaxCSCTF];
+  Int_t CSCTF_isRecovered1[kMaxCSCTF],CSCTF_isRecovered2[kMaxCSCTF], CSCTF_isRecovered3[kMaxCSCTF], CSCTF_isRecovered4[kMaxCSCTF];
   Float_t CSCTF_phib1[kMaxCSCTF], CSCTF_phib2[kMaxCSCTF], CSCTF_phib3[kMaxCSCTF], CSCTF_phib4[kMaxCSCTF];
 
   Float_t CSCTF_gemdphi1[kMaxCSCTF], CSCTF_gemdphi2[kMaxCSCTF];
@@ -860,6 +862,10 @@ private:
   bool processTTI_;
   bool processDTTF_;
   bool doStubRecovery_;
+  bool stubRecoverySt1_;
+  bool stubRecoverySt2_;
+  bool stubRecoverySt3_;
+  bool stubRecoverySt4_;
   bool useTrackFinderStubs_;
 
   const RPCGeometry* rpcGeometry_;
@@ -1000,6 +1006,10 @@ DisplacedL1MuFilter::DisplacedL1MuFilter(const edm::ParameterSet& iConfig) :
   doSimAnalysis_ = iConfig.getParameter<bool>("doSimAnalysis");
   doGenAnalysis_ = iConfig.getParameter<bool>("doGenAnalysis");
   doStubRecovery_ = iConfig.getParameter<bool>("doStubRecovery");
+  stubRecoverySt1_ = iConfig.getParameter<bool>("stubRecoverySt1");
+  stubRecoverySt2_ = iConfig.getParameter<bool>("stubRecoverySt2");
+  stubRecoverySt3_ = iConfig.getParameter<bool>("stubRecoverySt3");
+  stubRecoverySt4_ = iConfig.getParameter<bool>("stubRecoverySt4");
   L1Mu_input = iConfig.getParameter<edm::InputTag>("L1Mu_input");
   L1TkMu_input = iConfig.getParameter<edm::InputTag>("L1TkMu_input");
   
@@ -2410,11 +2420,27 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
       if(verbose)std::cout << " GP " << gp
                            << " key eta " << gp.eta() << " key phi " << gp.phi() << std::endl;
 
+      if(ch_id.station() == 1 and ch_id.ring() == 4) std::cout <<" Found ME1a hits in EMTF hits "<< std::endl;
       // stub position
       float z_pos_L3, bestFitPhi, bestFitDPhi;
       fitComparatorsLCT(*hCSCComparators.product(), stub, ch_id, iStub, z_pos_L3, bestFitPhi, bestFitDPhi);
 
       fillCSCStubProperties(ch_id, stub, j, gp, z_pos_L3, bestFitPhi, bestFitDPhi);
+      switch(ch_id.station()) {
+      case 1:
+	  event_.CSCTF_isRecovered1[j] = 99;
+	  break;
+      case 2:
+	  event_.CSCTF_isRecovered2[j] = 99;
+	  break;
+      case 3:
+	  event_.CSCTF_isRecovered3[j] = 99;
+	  break;
+      case 4:
+	  event_.CSCTF_isRecovered4[j] = 99;
+	  break;
+      }
+    
 
       std::vector<CSCCorrelatedLCTDigi> v;
       v.push_back(stub);
@@ -2465,10 +2491,10 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
         for (int station=1; station<=4; station++){
 
           // ignore station where a L1Mu stub is present!
-          if (not stubMissingSt1 and station==1) continue;
-          if (not stubMissingSt2 and station==2) continue;
-          if (not stubMissingSt3 and station==3) continue;
-          if (not stubMissingSt4 and station==4) continue;
+          if (station==1 and not(stubMissingSt1 and stubRecoverySt1_)) continue;
+          if (station==2 and not(stubMissingSt2 and stubRecoverySt2_)) continue;
+          if (station==3 and not(stubMissingSt3 and stubRecoverySt3_)) continue;
+          if (station==4 and not(stubMissingSt4 and stubRecoverySt4_)) continue;
           if(verbose) std::cout << "Recovered stubs in station: " << station << std::endl;
           // temp storage of candidate stubs per station and ring
           CSCCorrelatedLCTDigiId bestMatchingStub;
@@ -2507,7 +2533,7 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 			                             event_.CSCTF_eta[j] , normalizedPhi(event_.CSCTF_phi[j]));
                 if(verbose) std::cout << ch_id << std::endl;
                 if(verbose) std::cout<<"Candidate " << stub <<" dR (track, stub) "<<dR << std::endl;
-		if (dR > 0.4) continue;
+		if (dR > .50) continue;
 
                 bestMatchingStub = pickBestMatchingStub(allxs[ch_id.station()-1], allys[ch_id.station()-1],
                                                         bestMatchingStub, std::make_pair(ch_id, stub), 6 + event_.CSCTF_bx[j]);
@@ -2536,7 +2562,8 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
                   if(verbose) std::cout << me1a_id << std::endl;
                   if(verbose) std::cout<<"Candidate " << stub <<" dR (track, stub) "<< dR << std::endl;
-		  if(dR > 0.4) continue;
+		  if(dR > .50) continue;
+		  std::cout <<" Found ME1a hits in EMTF hits "<< std::endl;
                   bestMatchingStub = pickBestMatchingStub(allxs[me1a_id.station()-1], allys[me1a_id.station()-1],
                                                           bestMatchingStub, std::make_pair(me1a_id, stub), 6 + event_.CSCTF_bx[j]);
 
@@ -2570,6 +2597,20 @@ DisplacedL1MuFilter::filter(edm::Event& iEvent, const edm::EventSetup& iEventSet
 
               fillCSCStubProperties(bestMatchingStub.first, bestMatchingStub.second, j,
                                     gp, z_pos_L3, bestFitPhi, bestFitDPhi);
+              switch(bestMatchingStub.first.station()) {
+              case 1:
+                  event_.CSCTF_isRecovered1[j] = 1; 
+                  break;
+              case 2:
+                  event_.CSCTF_isRecovered2[j] = 1; 
+                  break;
+              case 3:
+                  event_.CSCTF_isRecovered3[j] = 1; 
+                  break;
+              case 4:
+                  event_.CSCTF_isRecovered4[j] = 1; 
+                  break;
+              }
             }
             else{
               if(verbose) if (iStub!=0) std::cout << "\tNone " << std::endl;
@@ -4956,6 +4997,7 @@ DisplacedL1MuFilter::fillCSCStubProperties(const CSCDetId& ch_id,
     event_.CSCTF_val1[index] = stub.isValid();
     event_.CSCTF_phi1[index] = gp.phi();
     event_.CSCTF_eta1[index] = gp.eta();
+    event_.CSCTF_dR1[index] = reco::deltaR(gp.eta(), gp.phi(),  event_.CSCTF_eta[index],  event_.CSCTF_phi[index]);
     //event_.CSCTF_gemdphi1[index] = stub.getGEMDPhi();
     event_.CSCTF_R1[index] = csc_R;
     event_.CSCTF_x1[index] = csc_x;
@@ -4986,6 +5028,7 @@ DisplacedL1MuFilter::fillCSCStubProperties(const CSCDetId& ch_id,
     event_.CSCTF_val2[index] = stub.isValid();
     event_.CSCTF_phi2[index] = gp.phi();
     event_.CSCTF_eta2[index] = gp.eta();
+    event_.CSCTF_dR2[index] = reco::deltaR(gp.eta(), gp.phi(),  event_.CSCTF_eta[index],  event_.CSCTF_phi[index]);
     //event_.CSCTF_gemdphi2[index] = stub.getGEMDPhi();
     event_.CSCTF_R2[index] = csc_R;
     event_.CSCTF_x2[index] = csc_x;
@@ -5016,6 +5059,7 @@ DisplacedL1MuFilter::fillCSCStubProperties(const CSCDetId& ch_id,
     event_.CSCTF_val3[index] = stub.isValid();
     event_.CSCTF_phi3[index] = gp.phi();
     event_.CSCTF_eta3[index] = gp.eta();
+    event_.CSCTF_dR3[index] = reco::deltaR(gp.eta(), gp.phi(),  event_.CSCTF_eta[index],  event_.CSCTF_phi[index]);
     event_.CSCTF_R3[index] = csc_R;
     event_.CSCTF_x3[index] = csc_x;
     event_.CSCTF_y3[index] = csc_y;
@@ -5045,6 +5089,7 @@ DisplacedL1MuFilter::fillCSCStubProperties(const CSCDetId& ch_id,
     event_.CSCTF_val4[index] = stub.isValid();
     event_.CSCTF_phi4[index] = gp.phi();
     event_.CSCTF_eta4[index] = gp.eta();
+    event_.CSCTF_dR4[index] = reco::deltaR(gp.eta(), gp.phi(),  event_.CSCTF_eta[index],  event_.CSCTF_phi[index]);
     event_.CSCTF_R4[index] = csc_R;
     event_.CSCTF_x4[index] = csc_x;
     event_.CSCTF_y4[index] = csc_y;
@@ -5775,6 +5820,16 @@ void DisplacedL1MuFilter::bookL1MuTree()
   event_tree_->Branch("CSCTF_eta2", event_.CSCTF_eta2,"CSCTF_eta2[nCSCTF]/F");
   event_tree_->Branch("CSCTF_eta3", event_.CSCTF_eta3,"CSCTF_eta3[nCSCTF]/F");
   event_tree_->Branch("CSCTF_eta4", event_.CSCTF_eta4,"CSCTF_eta4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_dR1",  event_.CSCTF_dR1, "CSCTF_dR1[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_dR2",  event_.CSCTF_dR2, "CSCTF_dR2[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_dR3",  event_.CSCTF_dR3, "CSCTF_dR3[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_dR4",  event_.CSCTF_dR4, "CSCTF_dR4[nCSCTF]/F");
+  event_tree_->Branch("CSCTF_isRecovered1",  event_.CSCTF_isRecovered1, "CSCTF_isRecovered1[nCSCTF]/B");
+  event_tree_->Branch("CSCTF_isRecovered2",  event_.CSCTF_isRecovered2, "CSCTF_isRecovered2[nCSCTF]/B");
+  event_tree_->Branch("CSCTF_isRecovered3",  event_.CSCTF_isRecovered3, "CSCTF_isRecovered3[nCSCTF]/B");
+  event_tree_->Branch("CSCTF_isRecovered4",  event_.CSCTF_isRecovered4, "CSCTF_isRecovered4[nCSCTF]/B");
+
+
 
   event_tree_->Branch("CSCTF_gemdphi1", event_.CSCTF_gemdphi1,"CSCTF_gemdphi1[nCSCTF]/F");
   event_tree_->Branch("CSCTF_gemdphi2", event_.CSCTF_gemdphi2,"CSCTF_gemdphi2[nCSCTF]/F");
@@ -6491,6 +6546,16 @@ DisplacedL1MuFilter::clearBranches()
     event_.CSCTF_eta2[i] = 99;
     event_.CSCTF_eta3[i] = 99;
     event_.CSCTF_eta4[i] = 99;
+
+    event_.CSCTF_dR1[i] = 99;
+    event_.CSCTF_dR2[i] = 99;
+    event_.CSCTF_dR3[i] = 99;
+    event_.CSCTF_dR4[i] = 99;
+
+    event_.CSCTF_isRecovered1[i] = 99;
+    event_.CSCTF_isRecovered2[i] = 99;
+    event_.CSCTF_isRecovered3[i] = 99;
+    event_.CSCTF_isRecovered4[i] = 99;
 
     event_.CSCTF_gemdphi1[i] = 99;
     event_.CSCTF_gemdphi2[i] = 99;
